@@ -31,6 +31,18 @@ export const routes = [
                                 loadChildren: () => import('./pages/form-records/form-records.module')
                                     .then(m => m.FormRecordsModule),
                                 // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'answer/:id',
+                                loadChildren: () => import('./pages/form-answer/form-answer.module')
+                                    .then(m => m.FormAnswerModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'builder/:id',
+                                loadChildren: () => import('./pages/form-builder/form-builder.module')
+                                    .then(m => m.FormBuilderModule),
+                                // canActivate: [WhoPermissionGuard]
                             }
                         ]
                     },

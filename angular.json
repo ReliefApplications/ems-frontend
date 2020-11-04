@@ -68,7 +68,9 @@
               "projects/back-office/src/assets"
             ],
             "styles": [
-              "projects/back-office/src/styles.scss"
+              "projects/back-office/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           },
@@ -132,7 +134,9 @@
               "projects/back-office/src/assets"
             ],
             "styles": [
-              "projects/back-office/src/styles.scss"
+              "projects/back-office/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           }
@@ -189,7 +193,9 @@
               "projects/front-office/src/assets"
             ],
             "styles": [
-              "projects/front-office/src/styles.scss"
+              "projects/front-office/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           },
@@ -253,7 +259,9 @@
               "projects/front-office/src/assets"
             ],
             "styles": [
-              "projects/front-office/src/styles.scss"
+              "projects/front-office/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           }

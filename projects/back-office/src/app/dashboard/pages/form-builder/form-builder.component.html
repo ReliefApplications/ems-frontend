@@ -1,0 +1,35 @@
+<ng-container *ngIf="form">
+    <!-- <div class="page-header">
+        <ng-container *ngIf="!formActive">
+            <h1 class="page-title">{{form.name}} {{ activeVersion ? activeVersion.id : '' }}</h1>
+            <button mat-icon-button color="accent" *ngIf="form.canUpdate">
+                <mat-icon (click)="toggleFormActive()">create</mat-icon>
+            </button>
+        </ng-container>
+        
+        <ng-container *ngIf="formActive">
+            <form [formGroup]="nameForm" (ngSubmit)="saveName()" class="page-title">
+                <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="formName" type="string">
+                </mat-form-field>
+                <button type="submit" mat-icon-button color="primary" [disabled]="!nameForm.valid">
+                    <mat-icon>save</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </form>
+        </ng-container>
+        <span class="flex-spacer"></span>
+        <app-access [access]="form.permissions" (save)="saveAccess($event)" *ngIf="form.canUpdate"></app-access>
+    </div>
+    <div class="form-actions">
+        <mat-button-toggle-group appearance="legacy" [value]="form.status" (change)="updateStatus($event)">
+            <mat-button-toggle *ngFor="let status of statuses" [value]="status.value" [className]="'toggle-' + status.value">{{status.text}}</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+    <app-history *ngIf="activeVersions" [dataSource]="form.versions" (open)="onOpenVersion($event)"></app-history> -->
+    <who-form-builder [form]="form"></who-form-builder>
+</ng-container>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>

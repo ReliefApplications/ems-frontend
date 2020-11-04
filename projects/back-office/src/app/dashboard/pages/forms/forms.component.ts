@@ -17,7 +17,6 @@ export class FormsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public forms: any;
   displayedColumns: string[] = ['name', 'createdAt', 'status', 'versions', 'recordsCount', 'core', 'actions'];
   dataSource = [];
 

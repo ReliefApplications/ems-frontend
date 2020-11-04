@@ -54,7 +54,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['/forms/edit', element.id]" *ngIf="element.canUpdate">
+          <button mat-menu-item [routerLink]="['/forms/builder', element.id]" *ngIf="element.canUpdate">
             <mat-icon>edit</mat-icon>
             Edit
           </button>

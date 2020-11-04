@@ -18,7 +18,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-
 @NgModule({
   declarations: [FormsComponent, AddFormComponent],
   imports: [
