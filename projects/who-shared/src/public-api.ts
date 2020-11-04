@@ -18,5 +18,6 @@ export * from './lib/models/user.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
+export * from './lib/components/access/public-api';
 
 export * from './lib/who-shared.module';

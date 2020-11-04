@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { User } from '../models/user.model';
+import { Role, User } from '../models/user.model';
 import { Record } from '../models/record.model';
 
 // === GET PROFILE ===
@@ -200,4 +200,23 @@ query GetRecordById($id: ID!) {
 export interface GetRecordByIdQueryResponse {
   loading: boolean;
   record: Record;
+}
+
+// === GET ROLES ===
+export const GET_ROLES = gql`
+{
+  roles {
+    id
+    title
+    permissions {
+      id
+      type
+    }
+    usersCount
+  }
+}`;
+
+export interface GetRolesQueryResponse {
+  loading: boolean;
+  roles: Role[];
 }

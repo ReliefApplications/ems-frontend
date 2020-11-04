@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { WhoAccessModule } from './components/access/public-api';
 import { WhoLayoutModule } from './components/layout/layout.module';
 
 @NgModule({
@@ -6,7 +7,8 @@ import { WhoLayoutModule } from './components/layout/layout.module';
   imports: [
   ],
   exports: [
-    WhoLayoutModule
+    WhoLayoutModule,
+    WhoAccessModule
   ]
 })
 export class WhoSharedModule { }

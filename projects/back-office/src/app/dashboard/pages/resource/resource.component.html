@@ -4,7 +4,7 @@
         <h1 class="page-title">
             {{resource.name}}
         </h1>
-        <!-- <app-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></app-access> -->
+        <who-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></who-access>
     </div>
     <mat-tab-group dynamicHeight>
         <mat-tab>
