@@ -1,1 +1,161 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@include mat-core();
+
+$who-palette: (
+  50: #e0f2f9,
+  100: #b3def1,
+  200: #80c8e8,
+  300: #4db1df,
+  400: #26a1d8,
+  500: #0090d1,
+  600: #0088cc,
+  700: #007dc6,
+  800: #0073c0,
+  900: #0061b5,
+  A100: #deeeff,
+  A200: #abd3ff,
+  A400: #78b8ff,
+  A700: #5eaaff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$who-palette-accent: (
+  main: #ff9c00,
+  lighter: #ffc947,
+  darker: #c66900,
+  200: #ffcc80,
+  // For slide toggle,
+    contrast:
+    (
+      main: $light-primary-text,
+      lighter: $dark-primary-text,
+      darker: $light-primary-text,
+    ),
+);
+
+$who-palette-warn: (
+  main: #ff0000,
+  lighter: #ffb3b3,
+  darker: #ff0000,
+  200: #ff0000,
+  // For slide toggle,
+  contrast:
+  (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $light-primary-text,
+  ),
+);
+
+$who-primary: mat-palette($who-palette);
+$who-accent: mat-palette($who-palette-accent, main, lighter, darker);
+$who-warn: mat-palette($who-palette-warn, main, lighter, darker);
+$who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
+
+// === CUSTOM THEME ===
+@mixin custom-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  
+  .snack-error {
+    background-color: mat-color($warn);
+    color: white;
+
+    .mat-simple-snackbar-action {
+      color: white;
+    }
+  }
+
+  .active-link {
+    .nav-icon {
+      color: mat-color($primary);
+    }
+  }
+
+  .mat-list-item:not(.active-link) {
+    color: mat-color($mat-grey, 500);
+  }
+}
+
+@mixin chip($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  
+  .warn-chip{
+    background-color: mat-color($warn, lighter) !important;
+    color: mat-color($warn) !important;
+  }
+
+   
+  .primary-chip{
+    background-color: #e9fae1 !important;
+    color: #67dd2d !important;
+  }
+   
+  .accent-chip{
+    background-color: rgba(255, 159, 0, 0.14) !important;
+    color: #ff9f00 !important;
+  }
+
+  .core-chip{
+    background-color: mat-color($primary, lighter) !important;
+    color: mat-color($primary) !important;
+    padding: 15px;
+  }
+}
+
+// === GLOBAL STYLES ==
+.mat-table{
+  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2); 
+  font-size: 14px;
+  opacity: 0.87;
+  border-radius: 4px;
+}
+
+.mat-header-cell{
+  border-bottom: 1px solid #d8d8d8 !important;
+  color: #767373;
+}
+
+.mat-row{
+  .mat-cell {
+    border-bottom: 1px solid #f2f3f5 !important;
+    color: #3f3c3c;
+  }
+  .mat-cell:first-child{
+    color: #000000;
+    font-weight: 500;
+  }  
+}
+
+.mat-chip{
+  border-radius: 0px !important;
+  min-width: 75px;  
+  max-width: 1px; //This works??
+  justify-content: center;
+  font-weight: 500 !important;
+}
+
+@include angular-material-theme($who-theme);
+@include chip($who-theme);
+@include custom-theme($who-theme);
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
