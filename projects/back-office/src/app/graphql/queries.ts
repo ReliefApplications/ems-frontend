@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Role, User } from 'who-shared';
+import { Permission, Role, User } from 'who-shared';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -38,4 +38,18 @@ export const GET_ROLES = gql`
 export interface GetRolesQueryResponse {
   loading: boolean;
   roles: Role[];
+}
+
+// === GET PERMISSIONS ===
+export const GET_PERMISSIONS = gql`
+{
+  permissions {
+    id
+    type
+  }
+}`;
+
+export interface GetPermissionsQueryResponse {
+  loading: boolean;
+  permissions: Permission[];
 }

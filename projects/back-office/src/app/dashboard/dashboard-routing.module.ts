@@ -24,6 +24,12 @@ export const routes = [
                         // canActivate: [WhoPermissionGuard]
                     },
                     {
+                        path: 'roles',
+                        loadChildren: () => import('./pages/roles/roles.module')
+                            .then(m => m.RolesModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
                         path: '**',
                         pathMatch: 'full',
                         redirectTo: 'users'

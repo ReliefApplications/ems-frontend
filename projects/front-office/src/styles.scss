@@ -146,6 +146,43 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }  
 }
 
+.action-button {
+  position: fixed !important;
+  bottom: 32px;
+  right: 32px;
+  z-index: 2000;
+}
+
+*:focus,
+*:active:focus,
+*.active:focus {
+  outline: none !important;
+  outline-style: none !important;
+}
+
+.page-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .page-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.clickable{
+  &:hover {
+    cursor:pointer;
+  }
+}
+
+.mat-column-actions {
+  width: 64px;
+}
+
 .mat-chip{
   border-radius: 0px !important;
   min-width: 75px;  
