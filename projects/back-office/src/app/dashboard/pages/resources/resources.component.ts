@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from 'projects/who-shared/src/lib/graphql/queries';
+import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-resources',

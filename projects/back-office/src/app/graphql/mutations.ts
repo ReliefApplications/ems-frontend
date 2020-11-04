@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Role, User } from 'who-shared';
+import { Dashboard, Form, Resource, Role, User, Record } from 'who-shared';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -104,4 +104,67 @@ mutation deleteForm($id: ID!) {
 export interface DeleteFormMutationResponse {
   loading: boolean;
   deleteForm: Form;
+}
+
+// === EDIT RESOURCE ===
+export const EDIT_RESOURCE = gql`
+mutation editResource($id: ID!, $permissions: JSON) {
+  editResource(id: $id, permissions: $permissions) {
+    id
+    name
+    createdAt
+    records {
+      id
+      data(display: true)
+    }
+    fields
+    forms {
+      id
+      name
+      status
+      createdAt
+      recordsCount
+      core
+      canCreate
+      canUpdate
+      canDelete
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export interface EditResourceMutationResponse {
+  loading: boolean;
+  editResource: Resource;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORD = gql`
+mutation deleteRecord($id: ID!) {
+  deleteRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRecordMutationResponse {
+  loading: boolean;
+  deleteRecord: Record;
 }

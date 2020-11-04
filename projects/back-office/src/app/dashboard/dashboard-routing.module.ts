@@ -25,9 +25,20 @@ export const routes = [
                     },
                     {
                         path: 'resources',
-                        loadChildren: () => import('./pages/resources/resources.module')
-                            .then(m => m.ResourcesModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/resources/resources.module')
+                                    .then(m => m.ResourcesModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: ':id',
+                                loadChildren: () => import('./pages/resource/resource.module')
+                                    .then(m => m.ResourceModule),
+                                // canActivate: [WhoPermissionGuard]
+                            }
+                        ]
                     }
                 ]
             },

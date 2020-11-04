@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Role, User } from 'who-shared';
+import { Dashboard, Form, Permission, Resource, Role, User } from 'who-shared';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -93,4 +93,83 @@ export const GET_FORMS = gql`
 export interface GetFormsQueryResponse {
   loading: boolean;
   forms: Form[];
+}
+
+// === GET RESOURCE BY ID ===
+export const GET_RESOURCE_BY_ID = gql`
+query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+  resource(id: $id) {
+    id
+    name
+    createdAt
+    records(filters: $filters) {
+      id
+      data(display: $display)
+    }
+    fields
+    forms {
+      id
+      name
+      status
+      createdAt
+      recordsCount
+      core
+      canCreate
+      canUpdate
+      canDelete
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canCreate
+    canUpdate
+  }
+}`;
+
+export interface GetResourceByIdQueryResponse {
+  loading: boolean;
+  resource: Resource;
+}
+
+// === GET RESOURCES ===
+export const GET_RESOURCES = gql`
+{
+  resources {
+    id
+    name
+    forms {
+      id
+      name
+    }
+  }
+}`;
+
+export const GET_RESOURCES_EXTENDED = gql`
+{
+  resources {
+    id
+    name
+    createdAt
+    recordsCount
+  }
+}`;
+
+export interface GetResourcesQueryResponse {
+  loading: boolean;
+  resources: Resource[];
 }
