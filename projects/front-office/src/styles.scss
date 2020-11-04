@@ -191,6 +191,43 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   font-weight: 500 !important;
 }
 
+// === FORMS ===
+.auth-form {
+  padding: 32px 24px;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  margin: 32px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  .form-group-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid darkgray;
+    padding-bottom: 4px;
+  }
+  .nested-form-group {
+    padding: 16px;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .form-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25em;
+  }
+  .form-slide-toggle {
+    margin-bottom: 1.25em;
+  }
+}
+
 @include angular-material-theme($who-theme);
 @include chip($who-theme);
 @include custom-theme($who-theme);

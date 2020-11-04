@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Role, User } from 'who-shared';
+import { Dashboard, Form, Role, User } from 'who-shared';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -72,4 +72,36 @@ mutation deleteDashboard($id: ID!) {
 export interface DeleteDashboardMutationResponse {
   loading: boolean;
   deleteDashboard: Dashboard;
+}
+
+// === ADD FORM ===
+export const ADD_FORM = gql`
+mutation addForm($name: String!, $newResource: Boolean, $resource: ID) {
+  addForm(name: $name, newResource: $newResource, resource: $resource) {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+    }
+  }
+}`;
+
+export interface AddFormMutationResponse {
+  loading: boolean;
+  addForm: Form;
+}
+
+// === DELETE FORM ===
+export const DELETE_FORM = gql`
+mutation deleteForm($id: ID!) {
+  deleteForm(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteFormMutationResponse {
+  loading: boolean;
+  deleteForm: Form;
 }

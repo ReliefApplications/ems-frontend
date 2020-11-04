@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Permission, Role, User } from 'who-shared';
+import { Dashboard, Form, Permission, Role, User } from 'who-shared';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -69,4 +69,28 @@ export const GET_DASHBOARDS = gql`
 export interface GetDashboardsQueryResponse {
   loading: boolean;
   dashboards: Dashboard[];
+}
+
+// === GET FORMS ===
+export const GET_FORMS = gql`
+{
+  forms {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+    }
+    recordsCount
+    core
+    canCreate
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetFormsQueryResponse {
+  loading: boolean;
+  forms: Form[];
 }
