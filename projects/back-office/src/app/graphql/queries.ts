@@ -173,3 +173,54 @@ export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: Resource[];
 }
+
+// === GET FORM BY ID ===
+
+export const GET_FORM_BY_ID = gql`
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    status
+    fields
+    versions {
+      id
+      createdAt
+      structure
+    }
+    records(filters: $filters) {
+      id
+      data(display: $display)
+    }
+    resource{
+      id
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canCreate
+    canUpdate
+  }
+}`;
+
+export interface GetFormByIdQueryResponse {
+  loading: boolean;
+  form: Form;
+}

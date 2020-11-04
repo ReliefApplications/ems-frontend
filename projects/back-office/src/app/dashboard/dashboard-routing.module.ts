@@ -19,9 +19,20 @@ export const routes = [
                 children: [
                     {
                         path: 'forms',
-                        loadChildren: () => import('./pages/forms/forms.module')
-                            .then(m => m.FormsModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/forms/forms.module')
+                                    .then(m => m.FormsModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'records/:id',
+                                loadChildren: () => import('./pages/form-records/form-records.module')
+                                    .then(m => m.FormRecordsModule),
+                                // canActivate: [WhoPermissionGuard]
+                            }
+                        ]
                     },
                     {
                         path: 'resources',
