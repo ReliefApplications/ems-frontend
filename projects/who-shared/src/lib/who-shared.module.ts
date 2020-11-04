@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
-import { WhoSharedComponent } from './who-shared.component';
-
-
 
 @NgModule({
-  declarations: [WhoSharedComponent],
+  declarations: [],
   imports: [
   ],
-  exports: [WhoSharedComponent]
+  exports: []
 })
 export class WhoSharedModule { }

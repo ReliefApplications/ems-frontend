@@ -1,8 +1,29 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { MsalGuard } from '@azure/msal-angular';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    loadChildren: () => import('./dashboard/dashboard.module')
+    .then(m => m.DashboardModule),
+    canActivate: [MsalGuard]
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module')
+      .then(m => m.AuthModule)
+  },
+  {
+    path: '**',
+    redirectTo: '',
+    pathMatch: 'full'
+  }
+];
 
+/*  Root module of Routing. Separate the front into two modules: 'auth' and 'dashboard'.
+    Use lazy loading for performance.
+*/
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

@@ -1,0 +1,22 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    margin: 32px 0;
+}
+
+.login-button {
+    border: 1px solid darkgray;
+}
+
+.login-icon {
+    width: 24px;
+    margin-right: 16px;
+}
