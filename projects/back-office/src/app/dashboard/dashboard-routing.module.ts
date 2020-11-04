@@ -15,6 +15,23 @@ export const routes = [
         component: DashboardComponent,
         children: [
             {
+                path: '',
+                children: [
+                    {
+                        path: 'forms',
+                        loadChildren: () => import('./pages/forms/forms.module')
+                            .then(m => m.FormsModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'resources',
+                        loadChildren: () => import('./pages/resources/resources.module')
+                            .then(m => m.ResourcesModule),
+                        // canActivate: [WhoPermissionGuard]
+                    }
+                ]
+            },
+            {
                 path: 'dashboards',
                 children: [
                     {

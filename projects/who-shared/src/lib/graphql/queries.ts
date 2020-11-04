@@ -168,6 +168,16 @@ export const GET_RESOURCES = gql`
   }
 }`;
 
+export const GET_RESOURCES_EXTENDED = gql`
+{
+  resources {
+    id
+    name
+    createdAt
+    recordsCount
+  }
+}`;
+
 export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: Resource[];
