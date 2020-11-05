@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User } from 'who-shared';
+import { Dashboard, Form, Permission, Resource, Role, User, Record } from 'who-shared';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -223,4 +223,22 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
+}
+
+// === GET RECORD BY ID ===
+export const GET_RECORD_BY_ID = gql`
+query GetRecordById($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    form {
+      id
+      structure
+    }
+  }
+}`;
+
+export interface GetRecordByIdQueryResponse {
+  loading: boolean;
+  record: Record;
 }

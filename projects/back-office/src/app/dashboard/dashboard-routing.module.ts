@@ -39,9 +39,21 @@ export const routes = [
                                 // canActivate: [WhoPermissionGuard]
                             },
                             {
+                                path: 'builder',
+                                loadChildren: () => import('./pages/form-builder/form-builder.module')
+                                    .then(m => m.FormBuilderModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
                                 path: 'builder/:id',
                                 loadChildren: () => import('./pages/form-builder/form-builder.module')
                                     .then(m => m.FormBuilderModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'update/:id',
+                                loadChildren: () => import('./pages/update-record/update-record.module')
+                                    .then(m => m.UpdateRecordModule),
                                 // canActivate: [WhoPermissionGuard]
                             }
                         ]
@@ -59,6 +71,12 @@ export const routes = [
                                 path: ':id',
                                 loadChildren: () => import('./pages/resource/resource.module')
                                     .then(m => m.ResourceModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'update/:id',
+                                loadChildren: () => import('./pages/update-record/update-record.module')
+                                    .then(m => m.UpdateRecordModule),
                                 // canActivate: [WhoPermissionGuard]
                             }
                         ]
