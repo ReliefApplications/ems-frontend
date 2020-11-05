@@ -15,20 +15,9 @@ export const routes = [
         component: DashboardComponent,
         children: [
             {
-                path: 'settings',
-                children: [
-                    {
-                        path: 'users',
-                        loadChildren: () => import('./pages/users/users.module')
-                            .then(m => m.UsersModule),
-                        // canActivate: [WhoPermissionGuard]
-                    },
-                    {
-                        path: '**',
-                        pathMatch: 'full',
-                        redirectTo: 'users'
-                    }
-                ]
+                path: '',
+                loadChildren: () => import('./pages/dashboard/dashboard.module')
+                    .then(m => m.DashboardModule),
             },
             {
                 path: '**',

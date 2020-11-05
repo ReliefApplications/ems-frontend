@@ -17,6 +17,7 @@ import { environment } from '../environments/environment';
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -66,6 +67,7 @@ export function provideApollo(httpLink: HttpLink): any {
     AppRoutingModule,
     HttpClientModule,
     ApolloModule,
+    MatSnackBarModule,
     HttpLinkModule,
     BrowserAnimationsModule,
     // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.

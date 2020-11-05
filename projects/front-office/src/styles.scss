@@ -234,3 +234,36 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.widget-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-header{
+  height: 40px;
+  position: relative;
+  z-index: 1001;
+  background-color: #0090d1;
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 40px;
+}
+
+.widget-content{
+  flex: 1;
+  height: auto;
+}
+
+// === DIALOGS ===
+.tile-settings-dialog, .add-dialog {
+  mat-dialog-container {
+    width: 700px;
+  }
+}

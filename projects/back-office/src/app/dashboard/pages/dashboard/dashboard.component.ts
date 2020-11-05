@@ -1,10 +1,9 @@
-import { Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Dashboard, WhoSnackBarService } from 'who-shared';
-import { CdkDropList, CdkDragEnter, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { EditDashboardMutationResponse, EDIT_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
@@ -23,8 +22,6 @@ export class DashboardComponent implements OnInit {
   public dashboard: Dashboard;
 
   // === GRID ===
-  @ViewChildren(CdkDropList) dropsQuery: QueryList<CdkDropList>;
-  drops: CdkDropList[];
   private generatedTiles: number;
 
   // === DASHBOARD NAME EDITION ===

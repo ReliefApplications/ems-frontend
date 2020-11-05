@@ -13,6 +13,16 @@ export class DashboardComponent implements OnInit {
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   public navGroups = [
     {
+      name: 'Application',
+      navItems: [
+        {
+          name: 'Dashboard',
+          path: '/',
+          icon: 'dashboard'
+        }
+      ]
+    },
+    {
       name: 'Administration',
       navItems: [
         {
