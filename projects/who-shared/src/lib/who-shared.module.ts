@@ -14,6 +14,7 @@ import { WhoMapSettingsModule } from './components/widgets/map-settings/map-sett
 import { WhoSchedulerModule } from './components/widgets/scheduler/scheduler.module';
 import { WhoSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { WhoWidgetModule } from './components/widget/widget.module';
+import { WhoWidgetGridModule } from './components/widget-grid/widget-grid.module';
 
 @NgModule({
   declarations: [],
@@ -33,7 +34,8 @@ import { WhoWidgetModule } from './components/widget/widget.module';
     WhoMapSettingsModule,
     WhoSchedulerModule,
     WhoSchedulerSettingsModule,
-    WhoWidgetModule
+    WhoWidgetModule,
+    WhoWidgetGridModule
   ]
 })
 export class WhoSharedModule { }

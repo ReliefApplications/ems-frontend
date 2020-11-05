@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TileDataComponent } from './tile-data.component';
+import { WhoFloatingOptionsComponent } from './floating-options.component';
 
-describe('TileDataComponent', () => {
-  let component: TileDataComponent;
-  let fixture: ComponentFixture<TileDataComponent>;
+describe('WhoFloatingOptionsComponent', () => {
+  let component: WhoFloatingOptionsComponent;
+  let fixture: ComponentFixture<WhoFloatingOptionsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileDataComponent ]
+      declarations: [ WhoFloatingOptionsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TileDataComponent);
+    fixture = TestBed.createComponent(WhoFloatingOptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

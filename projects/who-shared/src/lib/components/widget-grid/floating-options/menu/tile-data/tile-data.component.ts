@@ -4,13 +4,13 @@ import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-tile-data',
+  selector: 'who-tile-data',
   templateUrl: './tile-data.component.html',
   styleUrls: ['./tile-data.component.scss']
 })
 /*  Modal content to edit the settings of a component.
 */
-export class TileDataComponent implements OnInit, AfterViewInit {
+export class WhoTileDataComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup = new FormGroup({});
@@ -20,7 +20,7 @@ export class TileDataComponent implements OnInit, AfterViewInit {
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
-    public dialogRef: MatDialogRef<TileDataComponent>,
+    public dialogRef: MatDialogRef<WhoTileDataComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       tile: any,
       template: any

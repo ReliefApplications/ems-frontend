@@ -7,7 +7,8 @@
             <mat-icon (click)="toggleFormActive()">create</mat-icon>
         </button>
         <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
-        <who-access [access]="dashboard.permissions" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate"></who-access>
+        <who-access [access]="dashboard.permissions" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
+        </who-access>
     </div>
     <ng-container *ngIf="formActive">
         <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">
@@ -23,23 +24,6 @@
             </button>
         </form>
     </ng-container>
-    <div class="grid-container">
-        <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
-            <mat-grid-tile *ngFor="let tile of tiles; let i = index;"
-                [colspan]="( tile.defaultCols > colsNumber ) ? colsNumber : tile.defaultCols"
-                [rowspan]=" ( tile.defaultRows > colsNumber ) ? colsNumber : tile.defaultRows">
-                <cdk-drop-list [cdkDropListConnectedTo]="drops" [cdkDropListData]="i">
-                    <div cdkDrag (cdkDragEntered)="onMove($event)" [cdkDragData]="i" class="grid-tile"
-                        cdkDragBoundary=".grid-container">
-                        <button class="tile-handle" mat-icon-button cdkDragHandle *ngIf="dashboard.canUpdate">
-                            <mat-icon>open_with</mat-icon>
-                        </button>
-                        <app-floating-options class="tile-options" [tile]="tile" (edit)="onEditTile($event)"
-                            (delete)="onDeleteTile($event)"  *ngIf="dashboard.canUpdate"></app-floating-options>
-                        <who-widget [widget]="tile"></who-widget>
-                    </div>
-                </cdk-drop-list>
-            </mat-grid-tile>
-        </mat-grid-list>
-    </div>
+    <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
+        (delete)="onDeleteTile($event)"></who-widget-grid>
 </ng-container>

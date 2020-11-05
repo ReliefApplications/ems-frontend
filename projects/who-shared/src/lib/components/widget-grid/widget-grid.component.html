@@ -1,0 +1,19 @@
+<div class="grid-container">
+    <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
+            [colspan]="( widget.defaultCols > colsNumber ) ? colsNumber : widget.defaultCols"
+            [rowspan]=" ( widget.defaultRows > colsNumber ) ? colsNumber : widget.defaultRows">
+            <cdk-drop-list [cdkDropListConnectedTo]="drops" [cdkDropListData]="i">
+                <div cdkDrag (cdkDragEntered)="onMove($event)" [cdkDragData]="i" class="grid-widget"
+                    cdkDragBoundary=".grid-container">
+                    <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
+                        <mat-icon>open_with</mat-icon>
+                    </button>
+                    <who-floating-options class="widget-options" [tile]="tile" (edit)="onEditWidget($event)"
+                        (delete)="onDeleteWidget($event)"  *ngIf="canUpdate"></who-floating-options>
+                    <who-widget [widget]="widget"></who-widget>
+                </div>
+            </cdk-drop-list>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

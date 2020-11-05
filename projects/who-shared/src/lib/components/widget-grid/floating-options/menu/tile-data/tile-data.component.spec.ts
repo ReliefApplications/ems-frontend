@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TileDisplayComponent } from './tile-display.component';
+import { WhoTileDataComponent } from './tile-data.component';
 
-describe('TileDisplayComponent', () => {
-  let component: TileDisplayComponent;
-  let fixture: ComponentFixture<TileDisplayComponent>;
+describe('WhoTileDataComponent', () => {
+  let component: WhoTileDataComponent;
+  let fixture: ComponentFixture<WhoTileDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileDisplayComponent ]
+      declarations: [ WhoTileDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TileDisplayComponent);
+    fixture = TestBed.createComponent(WhoTileDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

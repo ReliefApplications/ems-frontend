@@ -1,17 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TileDisplayComponent } from './menu/tile-display/tile-display.component';
-import { TileDataComponent } from './menu/tile-data/tile-data.component';
-import { WhoGridService } from 'who-shared';
+import { WhoTileDisplayComponent } from './menu/tile-display/tile-display.component';
+import { WhoTileDataComponent } from './menu/tile-data/tile-data.component';
+import { WhoGridService } from '../../../services/grid.service';
 
 @Component({
-  selector: 'app-floating-options',
+  selector: 'who-floating-options',
   templateUrl: './floating-options.component.html',
   styleUrls: ['./floating-options.component.scss']
 })
 /*  Button on top left of each widget, if user can see it, with menu of possible actions for that widget.
 */
-export class FloatingOptionsComponent implements OnInit {
+export class WhoFloatingOptionsComponent implements OnInit {
 
   // === WIDGET ===
   @Input() tile: any;
@@ -52,7 +52,7 @@ export class FloatingOptionsComponent implements OnInit {
   */
   onClick(item: any): void {
     if (item.name === 'Display') {
-      const dialogRef = this.dialog.open(TileDisplayComponent, {
+      const dialogRef = this.dialog.open(WhoTileDisplayComponent, {
         data: {
           tile: this.tile
         }
@@ -62,7 +62,7 @@ export class FloatingOptionsComponent implements OnInit {
       });
     }
     if (item.name === 'Settings') {
-      const dialogRef = this.dialog.open(TileDataComponent, {
+      const dialogRef = this.dialog.open(WhoTileDataComponent, {
         data: {
           tile: this.tile,
           template: this.gridService.findSettingsTemplate(this.tile)

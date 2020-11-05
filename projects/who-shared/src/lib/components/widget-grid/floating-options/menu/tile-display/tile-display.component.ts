@@ -3,20 +3,20 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-tile-display',
+  selector: 'who-tile-display',
   templateUrl: './tile-display.component.html',
-  styleUrls: ['./tile-display.component.css']
+  styleUrls: ['./tile-display.component.scss']
 })
 /*  Modal content to change the display of a widget.
 */
-export class TileDisplayComponent implements OnInit {
+export class WhoTileDisplayComponent implements OnInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<TileDisplayComponent>,
+    public dialogRef: MatDialogRef<WhoTileDisplayComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       tile: any
     }

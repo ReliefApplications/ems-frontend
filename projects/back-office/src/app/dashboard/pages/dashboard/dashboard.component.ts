@@ -25,7 +25,6 @@ export class DashboardComponent implements OnInit {
   // === GRID ===
   @ViewChildren(CdkDropList) dropsQuery: QueryList<CdkDropList>;
   drops: CdkDropList[];
-  colsNumber = 8;
   private generatedTiles: number;
 
   // === DASHBOARD NAME EDITION ===
@@ -43,7 +42,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.formActive = false;
     this.id = this.route.snapshot.params.id;
-    this.colsNumber = this.setColsNumber(window.innerWidth);
     this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
       query: GET_DASHBOARD_BY_ID,
       variables: {
@@ -70,16 +68,9 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  /*  Change display when windows size changes.
-  */
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
-
   /*  Add a new widget to the dashboard.
   */
-  onAdd(e: any) {
+  onAdd(e: any): void {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
     this.generatedTiles += 1;
@@ -89,7 +80,7 @@ export class DashboardComponent implements OnInit {
 
   /*  Edit the settings or display of a widget.
   */
-  onEditTile(e: any) {
+  onEditTile(e: any): void {
     const tile = this.tiles.find(x => x.id === e.id);
     const options = e.options;
     if (options) {
@@ -114,50 +105,20 @@ export class DashboardComponent implements OnInit {
 
   /*  Remove a widget from the dashboard.
   */
-  onDeleteTile(e: any) {
+  onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter(x => x.id !== e.id);
     this.autoSaveChanges();
   }
 
-  /*  Change the number of displayed columns.
-  */
-  private setColsNumber(width: number) {
-    if (width <= 480) {
-      return 1;
-    }
-    if (width <= 600) {
-      return 2;
-    }
-    if (width <= 800) {
-      return 4;
-    }
-    if (width <= 1024) {
-      return 6;
-    }
-    return 8;
-  }
-
   /*  Drag and drop a widget to move it.
   */
-  onMove($event: CdkDragEnter) {
-    moveItemInArray(this.tiles, $event.item.data, $event.container.data);
+  onMove(): void {
     this.autoSaveChanges();
-  }
-
-  /*  Material grid once template ready.
-  */
-  ngAfterViewInit() {
-    this.dropsQuery.changes.subscribe(() => {
-      this.drops = this.dropsQuery.toArray();
-    });
-    Promise.resolve().then(() => {
-      this.drops = this.dropsQuery.toArray();
-    });
   }
 
   /*  Save the dashboard changes in the database.
   */
-  private autoSaveChanges() {
+  private autoSaveChanges(): void {
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -171,7 +132,7 @@ export class DashboardComponent implements OnInit {
 
   /*  Edit the permissions layer.
   */
-  saveAccess(e: any) {
+  saveAccess(e: any): void {
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -187,7 +148,7 @@ export class DashboardComponent implements OnInit {
 
   /*  Update the name of the dashboard.
   */
-  saveName() {
+  saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
     this.apollo.mutate<EditDashboardMutationResponse>({
@@ -203,7 +164,7 @@ export class DashboardComponent implements OnInit {
 
   /*  Display the ShareUrl modal with the route to access the dashboard.
   */
-  public onShare() {
+  public onShare(): void {
     const dialogRef = this.dialog.open(ShareUrlComponent, {
       data: {
         url: window.location
