@@ -5,6 +5,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { WhoWidgetGridModule } from 'who-shared';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -12,7 +13,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     DashboardRoutingModule,
     MatProgressSpinnerModule,
-    WhoWidgetGridModule
+    WhoWidgetGridModule,
+    MatDialogModule
   ],
   exports: [DashboardComponent]
 })

@@ -102,6 +102,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
           display: true
         }
       }).valueChanges.subscribe(res => {
+        console.log(res);
         this.loading = false;
         this.canEdit = res.data.resource.canCreate;
         const fields = [];
