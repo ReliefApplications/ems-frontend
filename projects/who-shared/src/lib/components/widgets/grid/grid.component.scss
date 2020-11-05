@@ -1,11 +1,11 @@
-.tile-container {
+.widget-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-flow: column;
 }
 
-.tile-header{
+.widget-header{
     width: 100%;
     height: 40px;
     position: relative;
@@ -20,6 +20,6 @@
     padding: 0 40px;
 }
 
-.tile-content{
+.widget-content{
     flex-grow: 2
 }

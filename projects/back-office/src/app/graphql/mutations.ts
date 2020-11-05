@@ -311,3 +311,39 @@ export interface EditFormMutationResponse {
   loading: boolean;
   editForm: Form;
 }
+
+// === EDIT DASHBOARD ===
+export const EDIT_DASHBOARD = gql`
+mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: JSON) {
+  editDashboard(id: $id, structure: $structure, name: $name, permissions: $permissions) {
+    id
+    name
+    structure
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+  }
+}`;
+
+export interface EditDashboardMutationResponse {
+  loading: boolean;
+  editDashboard: Dashboard;
+}
