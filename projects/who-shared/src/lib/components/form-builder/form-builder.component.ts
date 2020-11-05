@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import * as SurveyKo from 'survey-knockout';
 import { EditFormMutationResponse, EDIT_FORM_STRUCTURE } from '../../graphql/mutations';
-import { Form } from '../../models/form.model';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomWidgets } from '../../survey/init';
@@ -22,18 +21,16 @@ initCreatorSettings(SurveyKo);
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class WhoFormBuilderComponent implements OnInit {
+export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
-  @Input() form: Form;
+  @Input() structure: any;
+  @Output() save: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
   surveyCreator: SurveyCreator.SurveyCreator;
   public json: any;
 
-  constructor(
-    private apollo: Apollo,
-    private snackBar: WhoSnackBarService
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     const options = {
@@ -47,32 +44,23 @@ export class WhoFormBuilderComponent implements OnInit {
       options
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.form.structure;
+    this.surveyCreator.text = this.structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
   }
 
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.text = this.structure;
+    }
+  }
+
   /*  Custom SurveyJS method, save the form when edited.
   */
- saveMySurvey = () => {
-  if (!this.form.id) {
-    alert('not valid');
-  } else {
-    this.apollo.mutate<EditFormMutationResponse>({
-      mutation: EDIT_FORM_STRUCTURE,
-      variables: {
-        id: this.form.id,
-        structure: this.surveyCreator.text
-      }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Form updated');
-      this.form = res.data.editForm;
-    }, (err) => {
-      this.snackBar.openSnackBar(err.message, { error: true });
-    });
+  saveMySurvey = () => {
+    this.save.emit(this.surveyCreator.text);
   }
-}
 
 }

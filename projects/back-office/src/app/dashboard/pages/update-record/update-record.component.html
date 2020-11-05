@@ -7,4 +7,6 @@
         </mat-option>
     </mat-select>
 </mat-form-field> -->
-<who-form [form]="record.form" [record]="record"></who-form>
+<ng-container *ngIf="!loading">
+    <who-form [form]="record.form" [record]="record"></who-form>
+</ng-container>

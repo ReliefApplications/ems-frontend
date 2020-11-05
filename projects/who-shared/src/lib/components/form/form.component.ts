@@ -34,13 +34,13 @@ export class WhoFormComponent implements OnInit {
 
   /*  Custom SurveyJS method, save a new record.
   */
-  public complete = (survey: any) => {
+  public complete = () => {
     if (this.record) {
       this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: this.form.id,
-          data: survey.data
+          data: this.survey.data
         }
       }).subscribe(() => {
         this.save.emit(true);
@@ -50,7 +50,7 @@ export class WhoFormComponent implements OnInit {
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
-          data: survey.data
+          data: this.survey.data
         }
       }).subscribe(() => {
         this.save.emit(true);

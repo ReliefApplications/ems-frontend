@@ -168,3 +168,146 @@ export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
 }
+
+// === EDIT FORM ===
+export const EDIT_FORM_STRUCTURE = gql`
+mutation editForm($id: ID!, $structure: JSON!) {
+  editForm(id: $id, structure: $structure) {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      structure
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export const EDIT_FORM_STATUS = gql`
+mutation editForm($id: ID!, $status: String!) {
+  editForm(id: $id, status: $status) {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      structure
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export const EDIT_FORM_NAME = gql`
+mutation editForm($id: ID!, $name: String!){
+  editForm(id: $id, name: $name){
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      structure
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export const EDIT_FORM_PERMISSIONS = gql`
+mutation editForm($id: ID!, $permissions: JSON!){
+  editForm(id: $id, permissions: $permissions){
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      structure
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+
+export interface EditFormMutationResponse {
+  loading: boolean;
+  editForm: Form;
+}

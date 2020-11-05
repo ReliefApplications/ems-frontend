@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { WhoSnackBarService } from 'who-shared';
+import { Form, WhoSnackBarService } from 'who-shared';
+import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
@@ -13,7 +15,33 @@ export class FormBuilderComponent implements OnInit {
 
   public loading = true;
   public id: string;
-  public form: any;
+  public form: Form;
+  public structure: any;
+  public activeVersions = false;
+  public activeVersion: any;
+
+  // === ENUM OF FORM STATUSES ===
+  public statuses = [
+    {
+      value: 'active',
+      text: 'Active',
+      color: 'primary'
+    },
+    {
+      value: 'pending',
+      text: 'Pending',
+      color: 'accent'
+    },
+    {
+      value: 'archived',
+      text: 'Archive',
+      color: 'warn'
+    }
+  ];
+
+  // === FORM EDITION ===
+  public formActive: boolean;
+  public nameForm: FormGroup;
 
   constructor(
     private apollo: Apollo,
@@ -23,6 +51,8 @@ export class FormBuilderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.formActive = false;
+
     this.id = this.route.snapshot.paramMap.get('id');
     const template = this.route.snapshot.paramMap.get('template');
     if (this.id !== null) {
@@ -35,9 +65,131 @@ export class FormBuilderComponent implements OnInit {
         if (res.data.form) {
           this.loading = res.loading;
           this.form = res.data.form;
+          this.nameForm = new FormGroup({
+            formName: new FormControl(this.form.name, Validators.required)
+          });
+          if ( template && !this.form.structure ) {
+            this.setTemplate(template);
+          } else {
+            this.structure = this.form.structure;
+          }
+        } else {
+          this.snackBar.openSnackBar('No access provided to this form.', { error: true });
+          // redirect to default screen if error
+          this.router.navigate(['/forms']);
         }
+      }, (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+        // redirect to default screen if error
+        this.router.navigate(['/forms']);
+      });
+    } else {
+      this.loading = false;
+      // redirect to default screen if error
+      this.router.navigate(['/forms']);
+    }
+  }
+
+  public toggleFormActive = () => this.formActive = !this.formActive;
+
+  /* Save the form
+  */
+  public onSave(structure: any): void {
+    if (!this.form.id) {
+      alert('not valid');
+    } else {
+      this.apollo.mutate<EditFormMutationResponse>({
+        mutation: EDIT_FORM_STRUCTURE,
+        variables: {
+          id: this.form.id,
+          structure
+        }
+      }).subscribe(res => {
+        this.snackBar.openSnackBar('Form updated');
+        this.form = res.data.editForm;
+        this.structure = this.form.structure;
+      }, (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
       });
     }
+  }
+
+  /*  Update the status of the form.
+  */
+  public updateStatus(e: any): void {
+    this.apollo.mutate<EditFormMutationResponse>({
+      mutation: EDIT_FORM_STATUS,
+      variables: {
+        id: this.id,
+        status: e.value
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
+      this.form = res.data.editForm;
+    });
+  }
+
+  /*  Available in previous version to change the template.
+  */
+  setTemplate(id: string): void {
+    this.apollo.watchQuery<GetFormByIdQueryResponse>({
+      query: GET_FORM_BY_ID,
+      variables: {
+        id
+      }
+    }).valueChanges.subscribe(res => {
+      this.structure = res.data.form.structure;
+    });
+  }
+
+  /*  Available in previous version to change the version.
+*/
+  public onOpenVersion(e: any): void {
+    this.activeVersion = e;
+    this.structure = this.activeVersion.structure;
+    // this.surveyCreator.makeNewViewActive('test');
+    // this.surveyCreator.saveSurveyFunc = null;
+  }
+
+  /*  Available in previous version to change the version.
+  */
+  public resetActiveVersion(): void {
+    this.activeVersion = null;
+    this.structure = this.form.structure;
+    // this.surveyCreator.makeNewViewActive('designer');
+    // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+  }
+
+  /*  Edit the form name.
+*/
+  public saveName(): void {
+    const { formName } = this.nameForm.value;
+    this.toggleFormActive();
+    this.apollo.mutate<EditFormMutationResponse>({
+      mutation: EDIT_FORM_NAME,
+      variables: {
+        id: this.id,
+        name: formName
+      }
+    }).subscribe(
+      res => {
+        this.snackBar.openSnackBar('Name updated', { duration: 1000 });
+        this.form.name = res.data.editForm.name;
+      });
+  }
+
+  /*  Edit the permissions layer.
+  */
+  saveAccess(e: any): void {
+    this.apollo.mutate<EditFormMutationResponse>({
+      mutation: EDIT_FORM_PERMISSIONS,
+      variables: {
+        id: this.id,
+        permissions: e
+      }
+    }).subscribe(res => {
+      this.form = res.data.editForm;
+    });
   }
 
 }

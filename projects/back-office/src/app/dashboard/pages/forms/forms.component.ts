@@ -88,9 +88,9 @@ export class FormsComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           const { id } = res.data.addForm;
           if (value.binding === 'fromResource' && value.template) {
-            this.router.navigate(['/forms/edit', { id, template: value.template }]);
+            this.router.navigate(['/forms/builder', { id, template: value.template }]);
           } else {
-            this.router.navigate(['/forms/edit', id]);
+            this.router.navigate(['/forms/builder', id]);
           }
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

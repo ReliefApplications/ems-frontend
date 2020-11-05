@@ -1,5 +1,5 @@
 <ng-container *ngIf="form">
-    <!-- <div class="page-header">
+    <div class="page-header">
         <ng-container *ngIf="!formActive">
             <h1 class="page-title">{{form.name}} {{ activeVersion ? activeVersion.id : '' }}</h1>
             <button mat-icon-button color="accent" *ngIf="form.canUpdate">
@@ -29,7 +29,7 @@
             <mat-button-toggle *ngFor="let status of statuses" [value]="status.value" [className]="'toggle-' + status.value">{{status.text}}</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
-    <app-history *ngIf="activeVersions" [dataSource]="form.versions" (open)="onOpenVersion($event)"></app-history> -->
-    <who-form-builder [form]="form"></who-form-builder>
+    <app-history *ngIf="activeVersions" [dataSource]="form.versions" (open)="onOpenVersion($event)"></app-history>
+    <who-form-builder [structure]="structure" (save)="onSave($event)"></who-form-builder>
 </ng-container>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
