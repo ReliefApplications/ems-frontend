@@ -32,6 +32,12 @@ export class WhoFormComponent implements OnInit {
     this.survey.onComplete.add(this.complete);
   }
 
+  public reset(): void {
+    this.survey.clear();
+    this.save.emit(false);
+    this.survey.render();
+  }
+
   /*  Custom SurveyJS method, save a new record.
   */
   public complete = () => {

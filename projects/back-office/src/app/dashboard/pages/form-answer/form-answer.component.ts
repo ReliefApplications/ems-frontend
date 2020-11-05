@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
+import { Form, WhoFormComponent } from 'who-shared';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
@@ -11,10 +12,14 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queri
 })
 export class FormAnswerComponent implements OnInit {
 
+  @ViewChild(WhoFormComponent)
+  private formComponent: WhoFormComponent;
+
   // === DATA ===
   public loading = true;
   public id: string;
-  public form: any;
+  public form: Form;
+  public completed = false;
 
   constructor(
     private apollo: Apollo,
@@ -34,5 +39,13 @@ export class FormAnswerComponent implements OnInit {
         this.form = res.data.form;
       });
     }
+  }
+
+  onComplete(e: any): void {
+    this.completed = e;
+  }
+
+  clearForm(): void {
+    this.formComponent.reset();
   }
 }
