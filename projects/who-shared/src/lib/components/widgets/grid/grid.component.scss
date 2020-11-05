@@ -1,25 +1,3 @@
-.widget-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-}
-
-.widget-header{
-    width: 100%;
-    height: 40px;
-    position: relative;
-    z-index: 1001;
-    background-color: #0090d1;
-    color: white;
-    text-align: center;
-    line-height: 40px;
-    pointer-events: none;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    padding: 0 40px;
-}
-
 .widget-content{
     flex-grow: 2
 }
