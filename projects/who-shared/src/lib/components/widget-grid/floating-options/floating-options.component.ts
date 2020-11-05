@@ -14,7 +14,7 @@ import { WhoGridService } from '../../../services/grid.service';
 export class WhoFloatingOptionsComponent implements OnInit {
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -39,7 +39,7 @@ export class WhoFloatingOptionsComponent implements OnInit {
       {
         name: 'Settings',
         icon: 'insert_chart',
-        disabled: !this.tile || !this.tile.settings
+        disabled: !this.widget || !this.widget.settings
       },
       {
         name: 'Delete',
@@ -54,27 +54,27 @@ export class WhoFloatingOptionsComponent implements OnInit {
     if (item.name === 'Display') {
       const dialogRef = this.dialog.open(WhoTileDisplayComponent, {
         data: {
-          tile: this.tile
+          tile: this.widget
         }
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'display', id: this.tile.id, options: res});
+        this.edit.emit({ type: 'display', id: this.widget.id, options: res});
       });
     }
     if (item.name === 'Settings') {
       const dialogRef = this.dialog.open(WhoTileDataComponent, {
         data: {
-          tile: this.tile,
-          template: this.gridService.findSettingsTemplate(this.tile)
+          tile: this.widget,
+          template: this.gridService.findSettingsTemplate(this.widget)
         },
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'data', id: this.tile.id, options: res });
+        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       });
     }
     if (item.name === 'Delete') {
-      this.delete.emit({id: this.tile.id});
+      this.delete.emit({id: this.widget.id});
     }
   }
 }

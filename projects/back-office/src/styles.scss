@@ -260,3 +260,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex: 1;
   height: auto;
 }
+
+// === DIALOGS ===
+.tile-settings-dialog, .add-dialog {
+  mat-dialog-container {
+    width: 700px;
+  }
+}

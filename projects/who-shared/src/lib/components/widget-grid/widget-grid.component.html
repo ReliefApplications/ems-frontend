@@ -9,7 +9,7 @@
                     <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
                         <mat-icon>open_with</mat-icon>
                     </button>
-                    <who-floating-options class="widget-options" [tile]="tile" (edit)="onEditWidget($event)"
+                    <who-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
                         (delete)="onDeleteWidget($event)"  *ngIf="canUpdate"></who-floating-options>
                     <who-widget [widget]="widget"></who-widget>
                 </div>
