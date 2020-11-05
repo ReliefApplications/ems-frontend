@@ -18,6 +18,24 @@ import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import 'hammerjs';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { DialogsModule } from '@progress/kendo-angular-dialog';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { EditorModule } from '@progress/kendo-angular-editor';
+import { GridModule } from '@progress/kendo-angular-grid';
+import { SchedulerModule } from '@progress/kendo-angular-scheduler';
+
+
+
+
+
+
+
+
+
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -94,7 +112,15 @@ export function provideApollo(httpLink: HttpLink): any {
         ['https://graph.microsoft.com/v1.0/me', ['user.read']]
       ],
       extraQueryParameters: {}
-    })
+    }),
+    ButtonsModule,
+    ChartsModule,
+    DateInputsModule,
+    DialogsModule,
+    DropDownsModule,
+    EditorModule,
+    GridModule,
+    SchedulerModule
   ],
   providers: [
     {

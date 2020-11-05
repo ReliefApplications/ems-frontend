@@ -1,0 +1,47 @@
+<kendo-grid id="subCustomGrid"
+    [autoSize]="true"
+    [data]="gridData"
+    [pageSize]="pageSize"
+    [skip]="skip"
+    [loading]="loading"
+    [columnMenu]="true"
+    [reorderable]="true"
+    [sortable]="(settings && settings.sortable) ? true : false"
+    [pageable]="(settings && settings.pageable) ? true : false"
+    [sort]="sort"
+    (sortChange)="sortChange($event)"
+    (pageChange)="pageChange($event)"
+    [filterable]="(settings && settings.filterable) ? 'menu' : false"
+    [filter]="filter"
+    (filterChange)="filterChange($event)"
+    (cellClick)="cellClickHandler($event)"
+    >
+    <ng-template kendoGridToolbarTemplate position="top" *ngIf="(canEdit && settings && settings.toolbar)">
+        <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button>
+    </ng-template>
+    <ng-container *ngIf="fields.length > 0">
+        <ng-container *ngFor="let field of fields">
+            <ng-container *ngIf="field.resource">
+                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
+                    <ng-template kendoGridEditTemplate
+                      let-dataItem
+                      let-formGroup="formGroup">
+                      <kendo-dropdownlist
+                        [data]="field.dropdown"
+                        textField="data"
+                        valueField="id"
+                        [valuePrimitive]="true"
+                        [defaultItem]="{id: null, data:'Select item...'}"
+                        [formControl]="formGroup.get(field.name)"
+                      >
+                      </kendo-dropdownlist>
+                    </ng-template>
+                  </kendo-grid-column>
+            </ng-container>
+            <ng-container *ngIf="!field.resource">
+                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
+                </kendo-grid-column>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</kendo-grid>

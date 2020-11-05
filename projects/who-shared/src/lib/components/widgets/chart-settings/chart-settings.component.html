@@ -1,0 +1,45 @@
+<form [formGroup]="tileForm">
+    <div class="form-group">
+        <div class="form-group-title">General</div>
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" type="string" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Chart Type</mat-label>
+            <mat-select formControlName="type">
+                <mat-option *ngFor="let type of types" [value]="type"> {{type}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="form-group">
+        <div class="form-group-title">Data</div>
+        <mat-radio-group formControlName="from" class="form-radio-group" (change)="getSources($event)">
+            <mat-radio-button value="resource">Use resource records</mat-radio-button>
+            <mat-radio-button value="form">Use form records</mat-radio-button>
+        </mat-radio-group>
+        <mat-form-field>
+            <mat-label>Data Source</mat-label>
+            <mat-select formControlName="source" (selectionChange)="getSource($event)">
+                <mat-option *ngFor="let source of sources" [value]="source.id"> {{source.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>X-Axis</mat-label>
+            <mat-select formControlName="xAxis" [disabled]="!(fields.length > 0)">
+                <mat-option *ngFor="let field of fields" [value]="field.name">
+                    {{field.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Y-Axis</mat-label>
+            <mat-select formControlName="yAxis" [disabled]="!(fields.length > 0)">
+                <mat-option *ngFor="let field of fields" [value]="field.name">
+                    {{field.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</form>

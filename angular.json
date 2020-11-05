@@ -68,6 +68,9 @@
               "projects/back-office/src/assets"
             ],
             "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+              },
               "projects/back-office/src/styles.scss",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css"
@@ -134,6 +137,9 @@
               "projects/back-office/src/assets"
             ],
             "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+              },
               "projects/back-office/src/styles.scss",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css"
@@ -292,6 +298,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "back-office"
 }

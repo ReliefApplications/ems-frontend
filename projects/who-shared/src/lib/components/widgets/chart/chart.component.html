@@ -1,0 +1,15 @@
+<div class="widget-container">
+    <div class="widget-header">{{settings.title}}</div>
+    <kendo-chart class="widget-content">
+        <kendo-chart-legend position="bottom" orientation="horizontal"></kendo-chart-legend>
+        <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
+        <kendo-chart-series *ngIf="!loading">
+            <kendo-chart-series-item 
+                [type]="settings.type" [data]="data" [categoryField]="settings.xAxis" [field]="settings.yAxis">
+            </kendo-chart-series-item>
+        </kendo-chart-series>
+    </kendo-chart>
+    <mat-spinner [diameter]="30" *ngIf="loading"></mat-spinner>
+</div>
+
+
