@@ -1,10 +1,42 @@
-# EmsFront
+UI Builder Front-end
+=======
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
+This front-end was made using [Angluar](https://angular.io/). It uses multiple external packages, but the relevant ones are:
+
+*   [Material Angular](https://material.angular.io/), for the UI
+*   [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards
+*   [SurveyJS](https://surveyjs.io/), for the form builder
+*   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
+
+It was made for a Proof of Concept of a UI Builder for WHO.
+
+To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
+
+*   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
+*   [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
+
+# General
+
+The project is seperated into three sub-projects:
+- back-office, an application accessible to administrators
+- front-office, an application that would depend on the logged user
+- who-shared, a library shared by both other projects
+
+Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
+
+
+# Useful commands
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+It is needed to use the `--project` flag in order to serve a specific project.
+
+For example, in order to serve the *back-office* application, the command is:
+```
+ng serve --project=who-shared
+```
 
 ## Code scaffolding
 
@@ -13,6 +45,13 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+
+It is needed to use the `--project` flag in order to build a specific project.
+
+For example, in order to build the *who-shared* library, the command is:
+```
+ng build --project=who-shared
+```
 
 ## Running unit tests
 
@@ -24,4 +63,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
