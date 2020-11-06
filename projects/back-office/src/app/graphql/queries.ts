@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record } from 'who-shared';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application } from 'who-shared';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -278,4 +278,45 @@ export const GET_DASHBOARD_BY_ID = gql`
 export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;
+}
+
+// === GET APPLICATIONS ===
+export const GET_APPLICATIONS = gql`
+{
+  applications {
+    id
+    name
+    createdAt
+    modifiedAt
+    pages {
+      id
+      name
+      createdAt
+      type
+      content
+    }
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApplicationsQueryResponse {
+  loading: boolean;
+  applications: Application[];
 }
