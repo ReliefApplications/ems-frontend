@@ -307,7 +307,7 @@ export function init(Survey: any): void {
       btnEl.innerText = 'Add';
       btnEl.style.width = '120px';
       btnEl.onclick = () => {
-        const event = new CustomEvent('addResource', {
+        const event = new CustomEvent('openForm', {
           detail: { template: question.addTemplate },
         });
         document.dispatchEvent(event);
