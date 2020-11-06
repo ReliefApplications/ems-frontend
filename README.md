@@ -20,7 +20,7 @@ To read more about the project, and how to setup the back-end, please refer to t
 The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- who-shared, a library shared by both other projects
+- who-ems, a library shared by both other projects
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
@@ -35,7 +35,7 @@ It is needed to use the `--project` flag in order to serve a specific project.
 
 For example, in order to serve the *back-office* application, the command is:
 ```
-ng serve --project=who-shared
+ng serve --project=who-ems
 ```
 
 ## Code scaffolding
@@ -48,9 +48,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 It is needed to use the `--project` flag in order to build a specific project.
 
-For example, in order to build the *who-shared* library, the command is:
+For example, in order to build the *who-ems* library, the command is:
 ```
-ng build --project=who-shared
+ng build --project=who-ems
 ```
 
 ## Running unit tests

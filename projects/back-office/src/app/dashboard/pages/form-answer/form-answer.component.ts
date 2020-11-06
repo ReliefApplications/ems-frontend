@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Form, WhoFormComponent } from 'who-shared';
+import { Form, WhoFormComponent } from '@who-ems';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({

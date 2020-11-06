@@ -16,9 +16,9 @@
       "dom"
     ],
     "paths": {
-      "who-shared": [
-        "dist/who-shared/who-shared",
-        "dist/who-shared"
+      "@who-ems": [
+        "dist/who-ems/who-ems",
+        "dist/who-ems"
       ]
     }
   }

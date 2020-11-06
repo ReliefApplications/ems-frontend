@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
-import { Record } from 'who-shared';
+import { Record } from '@who-ems';
 
 @Component({
   selector: 'app-update-record',

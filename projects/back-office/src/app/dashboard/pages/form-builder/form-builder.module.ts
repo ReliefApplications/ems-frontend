@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormBuilderRoutingModule } from './form-builder-routing.module';
 import { FormBuilderComponent } from './form-builder.component';
-import { WhoAccessModule, WhoFormBuilderModule } from 'who-shared';
+import { WhoAccessModule, WhoFormBuilderModule } from '@who-ems';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HistoryComponent } from './components/history/history.component';
 import { MatTableModule } from '@angular/material/table';

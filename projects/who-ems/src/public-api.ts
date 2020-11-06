@@ -1,5 +1,5 @@
 /*
- * Public API Surface of who-shared
+ * Public API Surface of @who-ems
 */
 
 // === SERVICES ===
@@ -35,4 +35,4 @@ export * from './lib/components/widgets/scheduler-settings/public-api';
 export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 
-export * from './lib/who-shared.module';
+export * from './lib/who-ems.module';

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { WhoAccessModule } from 'who-shared';
+import { WhoAccessModule } from '@who-ems';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { FloatingMenuComponent } from './components/floating-menu/floating-menu.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -17,7 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { WhoWidgetGridModule } from 'who-shared';
+import { WhoWidgetGridModule } from '@who-ems';
 
 @NgModule({
   declarations: [

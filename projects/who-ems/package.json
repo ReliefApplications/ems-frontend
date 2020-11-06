@@ -1,5 +1,5 @@
 {
-  "name": "who-shared",
+  "name": "@who-ems",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^10.2.0",

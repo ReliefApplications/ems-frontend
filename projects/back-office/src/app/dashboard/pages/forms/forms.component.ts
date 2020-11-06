@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from 'who-shared';
+import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from '@who-ems';
 import { AddFormComponent } from './components/add-form/add-form.component';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 

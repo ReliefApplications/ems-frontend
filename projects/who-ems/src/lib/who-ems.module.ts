@@ -38,4 +38,4 @@ import { WhoWidgetGridModule } from './components/widget-grid/widget-grid.module
     WhoWidgetGridModule
   ]
 })
-export class WhoSharedModule { }
+export class WhoEmsModule { }
