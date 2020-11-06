@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WhoPermissionGuard } from '@who-ems';
+import { WhoPermissionGuard } from '@who-ems/builder';
 import { DashboardComponent } from './dashboard.component';
 
 /*  Divide the dashboard module into three modules:

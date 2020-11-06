@@ -1,5 +1,5 @@
 /*
- * Public API Surface of @who-ems
+ * Public API Surface of @who-ems/builder
 */
 
 // === SERVICES ===

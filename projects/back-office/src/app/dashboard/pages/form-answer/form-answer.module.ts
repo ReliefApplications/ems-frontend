@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormAnswerRoutingModule } from './form-answer-routing.module';
 import { FormAnswerComponent } from './form-answer.component';
-import { WhoFormModule } from '@who-ems';
+import { WhoFormModule } from '@who-ems/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';

@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { GetUsersQueryResponse, GET_USERS } from '../../../graphql/queries';
 import { EditUserMutationResponse, EDIT_USER } from '../../../graphql/mutations';
-import { User, WhoSnackBarService } from '@who-ems';
+import { User, WhoSnackBarService } from '@who-ems/builder';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 
 @Component({

@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Dashboard, WhoSnackBarService } from '@who-ems';
+import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { EditDashboardMutationResponse, EDIT_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';

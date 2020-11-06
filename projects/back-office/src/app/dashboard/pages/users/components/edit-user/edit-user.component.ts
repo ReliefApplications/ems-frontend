@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import { GetRolesQueryResponse, GET_ROLES } from '../../../../../graphql/queries';
-import { Role } from '@who-ems';
+import { Role } from '@who-ems/builder';
 
 @Component({
   selector: 'app-edit-user',

@@ -16,7 +16,7 @@
       "dom"
     ],
     "paths": {
-      "@who-ems": [
+      "@who-ems/builder": [
         "dist/who-ems/who-ems",
         "dist/who-ems"
       ]

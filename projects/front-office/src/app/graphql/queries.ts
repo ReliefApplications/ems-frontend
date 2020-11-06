@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard } from '@who-ems';
+import { Dashboard } from '@who-ems/builder';
 
 
 // === GET DASHBOARD BY ID ===
