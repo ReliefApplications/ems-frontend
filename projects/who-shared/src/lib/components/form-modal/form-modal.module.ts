@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WhoFormComponent } from './form.component';
+import { WhoFormModalComponent } from './form-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [WhoFormComponent],
+  declarations: [WhoFormModalComponent],
   imports: [
     CommonModule,
     MatDialogModule
   ],
-  exports: [WhoFormComponent]
+  exports: [WhoFormModalComponent]
 })
-export class WhoFormModule { }
+export class WhoFormModalModule { }

@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import * as SurveyKo from 'survey-knockout';
-import { EditFormMutationResponse, EDIT_FORM_STRUCTURE } from '../../graphql/mutations';
-import { WhoSnackBarService } from '../../services/snackbar.service';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomWidgets } from '../../survey/init';
 
