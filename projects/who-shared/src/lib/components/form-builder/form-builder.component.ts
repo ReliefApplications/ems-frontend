@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as SurveyKo from 'survey-knockout';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomWidgets } from '../../survey/init';
+import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 
 // === CUSTOM WIDGETS / COMPONENTS ===
 initCustomWidgets(SurveyKo);
@@ -27,7 +29,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator: SurveyCreator.SurveyCreator;
   public json: any;
 
-  constructor() { }
+  constructor(
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     const options = {
@@ -58,6 +62,19 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   */
   saveMySurvey = () => {
     this.save.emit(this.surveyCreator.text);
+  }
+
+  /*  Event listener to trigger embedded forms.
+  */
+  @HostListener('document:openForm', ['$event'])
+  onOpenEmbeddedForm(event: any): void {
+    const dialogRef = this.dialog.open(WhoFormModalComponent, {
+      data: {
+        template: event.detail.template,
+        locale: event.locale
+      }
+    });
+    // dialogRef.afterClosed().subscribe(() => {});
   }
 
 }
