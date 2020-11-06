@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from 'who-shared';
 import { DeleteDashboardMutationResponse, DELETE_DASHBOARD, AddDashboardMutationResponse, ADD_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardsQueryResponse, GET_DASHBOARDS } from '../../../graphql/queries';
-import { AddDashboardComponent } from './add-dashboard/add-dashboard.component';
+import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
 
 @Component({
   selector: 'app-dashboards',
