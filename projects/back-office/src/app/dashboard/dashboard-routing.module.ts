@@ -101,6 +101,17 @@ export const routes = [
                 ]
             },
             {
+                path: 'applications',
+                children: [
+                    { 
+                        path: '',
+                        loadChildren: () => import('./pages/applications/applications.module')
+                            .then(m => m.ApplicationsModule),
+                        // canActivate: [WhoPermissionGuard]
+                    }
+                ]
+            },
+            {
                 path: 'settings',
                 children: [
                     {

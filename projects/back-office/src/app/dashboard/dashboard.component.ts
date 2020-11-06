@@ -34,6 +34,11 @@ export class DashboardComponent implements OnInit {
           name: 'My dashboards',
           path: '/dashboards',
           icon: 'dashboard',
+        },
+        {
+          name: 'My applications',
+          path: '/applications',
+          icon: 'dashboard',
         }
       ]
     },
