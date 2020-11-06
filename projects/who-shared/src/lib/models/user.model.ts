@@ -33,7 +33,8 @@ export enum Permissions {
     canManageForms = 'can_manage_forms',
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
-    canManageDashboards = 'can_manage_dashboards'
+    canManageDashboards = 'can_manage_dashboards',
+    canManageApplications = 'can_manage_applications'
 }
 
 /*  Enum of permissions types.
@@ -66,6 +67,9 @@ export class PermissionsManagement {
         },
         dashboards: {
             create: Permissions.canManageDashboards
+        },
+        applications: {
+            create: Permissions.canManageApplications
         }
     };
 
