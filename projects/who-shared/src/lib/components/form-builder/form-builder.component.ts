@@ -74,7 +74,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
         locale: event.locale
       }
     });
-    // dialogRef.afterClosed().subscribe(() => {});
+    dialogRef.afterClosed().subscribe(() => {});
   }
 
 }
