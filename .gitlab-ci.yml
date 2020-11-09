@@ -13,7 +13,7 @@ default:
     - NPM_PACKAGE_VERSION=$(node -p "require('./projects/who-ems/package.json').version")
 
 stages:
-  # - build
+  - build
   - deploy
 
 # validate_package_scope:
@@ -26,24 +26,24 @@ stages:
 #         exit 1
 #       fi
 
-# create_npmrc:
-#   stage: build
-#   script:
-#     - |
-#       echo '${CI_JOB_TOKEN}'
-#       if [[ ! -f .npmrc ]]; then
-#         echo 'No .npmrc found! Creating one now. Please review the following link for more information: https://docs.gitlab.com/ee/user/packages/npm_registry/index.html#authenticating-with-a-ci-job-token'
+create_npmrc:
+  stage: build
+  script:
+    - |
+      echo '${CI_JOB_TOKEN}'
+      if [[ ! -f .npmrc ]]; then
+        echo 'No .npmrc found! Creating one now. Please review the following link for more information: https://docs.gitlab.com/ee/user/packages/npm_registry/index.html#authenticating-with-a-ci-job-token'
 
-#         {
-#           echo '@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_SERVER_PROTOCOL}://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/'
-#           echo '//gitlab.com/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}'
-#           echo '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}'
-#         } >> .npmrc
+        {
+          echo '@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_SERVER_PROTOCOL}://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/'
+          echo '//gitlab.com/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}'
+          echo '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}'
+        } >> .npmrc
 
-#       fi
-#   artifacts:
-#     paths:
-#       - .npmrc
+      fi
+  artifacts:
+    paths:
+      - .npmrc
 
 # publish_package:
 #   stage: deploy
