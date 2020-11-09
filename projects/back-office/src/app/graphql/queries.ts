@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application } from 'who-shared';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`

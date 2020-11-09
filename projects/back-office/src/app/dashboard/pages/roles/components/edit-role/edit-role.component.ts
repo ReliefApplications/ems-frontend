@@ -2,8 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { GetPermissionsQueryResponse, GET_PERMISSIONS } from '../../../../graphql/queries';
-import { Permission, Role } from 'who-shared';
+import { GetPermissionsQueryResponse, GET_PERMISSIONS } from '../../../../../graphql/queries';
+import { Permission, Role } from '@who-ems/builder';
 
 @Component({
   selector: 'app-edit-role',

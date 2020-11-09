@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Role, WhoSnackBarService } from 'who-shared';
+import { Role, WhoSnackBarService } from '@who-ems/builder';
 import { AddRoleMutationResponse, ADD_ROLE, EditRoleMutationResponse, EDIT_ROLE } from '../../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
 import { AddRoleComponent } from './components/add-role/add-role.component';

@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from 'who-shared';
+import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { DeleteDashboardMutationResponse, DELETE_DASHBOARD, AddDashboardMutationResponse, ADD_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardsQueryResponse, GET_DASHBOARDS } from '../../../graphql/queries';
 import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';

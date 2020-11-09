@@ -10,14 +10,14 @@ export enum ContentType {
 /*  Model for Page object.
 */
 export interface Page {
-    id?: string,
-    name?: string,
-    createdAt?: Date,
-    modifiedAt?: Date,
-    type?: ContentType,
-    content?: string,
-    settings?: any,
-    permissions?: any,
-    application?: Application
+    id?: string;
+    name?: string;
+    createdAt?: Date;
+    modifiedAt?: Date;
+    type?: ContentType;
+    content?: string;
+    settings?: any;
+    permissions?: any;
+    application?: Application;
 }
 

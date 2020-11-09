@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UpdateRecordRoutingModule } from './update-record-routing.module';
 import { UpdateRecordComponent } from './update-record.component';
-import { WhoFormModule } from 'who-shared';
+import { WhoFormModule } from '@who-ems/builder';
 
 
 @NgModule({
