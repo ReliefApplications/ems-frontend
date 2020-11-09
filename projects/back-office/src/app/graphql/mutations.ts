@@ -383,3 +383,38 @@ export interface AddApplicationMutationResponse {
   loading: boolean;
   addApplication: Application;
 }
+
+// === EDIT APPLICATION ===
+export const EDIT_APPLICATION = gql`
+mutation editApplication($id: ID!, $name: String, $permissions: JSON) {
+  editApplication(id: $id, name: $name, permissions: $permissions) {
+    id
+    name
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+  }
+}`;
+
+export interface EditApplicationMutationResponse {
+  loading: boolean;
+  editApplication: Application;
+}

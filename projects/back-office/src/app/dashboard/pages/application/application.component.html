@@ -1,1 +1,25 @@
-<p>application works!</p>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && application">
+    <div *ngIf="!formActive" class="application-name-container">
+        <h1 class="application-name">{{application.name}}</h1>
+        <button mat-icon-button color="accent" *ngIf="application.canUpdate">
+            <mat-icon (click)="toggleFormActive()">create</mat-icon>
+        </button>
+        <who-access [access]="application.permissions" (save)="saveAccess($event)" *ngIf="application.canUpdate">
+        </who-access>
+    </div>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="applicationNameForm" (ngSubmit)="saveName()" class="application-name-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="applicationName" type="string">
+            </mat-form-field>
+            <button type="submit" mat-icon-button color="primary" [disabled]="!applicationNameForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </form>
+    </ng-container>
+</ng-container>
