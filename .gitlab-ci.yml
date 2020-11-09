@@ -65,8 +65,8 @@ deploy_back_office:
     - npm run build -- --prod who-ems
     - npm run build -- --prod
     - ./CI/deploy-back-office.sh
-  only:
-    - dev
+  # only:
+  #   - dev
 
 # deploy_front_office:
 #   stage: deploy
