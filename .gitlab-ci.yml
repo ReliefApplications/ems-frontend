@@ -68,6 +68,7 @@ deploy_back_office:
     - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts  
     - npm i
+    - echo @who-ems:registry=https://gitlab.com/api/v4/packages/npm/ >> .npmrc
     - npm i @who-ems/builder
   script:
     - npm run build -- --prod
