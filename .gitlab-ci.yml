@@ -71,5 +71,5 @@ deploy_back_office:
   script:
     - npm run build -- --prod
     - ./CI/deploy-back-office.sh
-  only:
-    - dev
+  # only:
+  #   - dev
