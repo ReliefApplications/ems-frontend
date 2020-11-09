@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record } from 'who-shared';
+import { Dashboard, Form, Resource, Role, User, Record, Application } from 'who-shared';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -346,4 +346,40 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: 
 export interface EditDashboardMutationResponse {
   loading: boolean;
   editDashboard: Dashboard;
+}
+
+// === DELETE APPLICATION ===
+export const DELETE_APPLICATION = gql`
+mutation deleteApplication($id: ID!) {
+  deleteApplication(id: $id){
+    id
+    name
+  }
+}`;
+
+export interface DeleteApplicationMutationResponse {
+  loading: boolean;
+  deleteApplication: Application;
+}
+
+// === ADD APPLICATION ===
+export const ADD_APPLICATION = gql`
+mutation addApplication($name: String!) {
+  addApplication(name: $name){
+    id
+    name
+    pages {
+      id
+      name
+      createdAt
+      type
+      content
+    }
+    createdAt
+  }
+}`;
+
+export interface AddApplicationMutationResponse {
+  loading: boolean;
+  addApplication: Application;
 }
