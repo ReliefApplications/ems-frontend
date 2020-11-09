@@ -62,7 +62,7 @@ deploy_back_office:
     # - echo @who-ems:registry=https://gitlab.com/api/v4/packages/npm/ >> .npmrc
     # - npm i @who-ems/builder
   script:
-    - npm run build -- --prod who-ems
+    - npm run build who-ems
     - npm run build -- --prod
     - ./CI/deploy-back-office.sh
   # only:
