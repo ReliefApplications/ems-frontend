@@ -4,6 +4,7 @@ import { WhoGridComponent } from './grid.component';
 import 'hammerjs';
 import { WhoSubGridComponent } from './sub-grid/sub-grid.component';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { WhoFormModalModule } from '../../form-modal/form-modal.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { GridModule } from '@progress/kendo-angular-grid';
   ],
   imports: [
     CommonModule,
-    GridModule
+    GridModule,
+    WhoFormModalModule
   ],
   exports: [WhoGridComponent]
 })

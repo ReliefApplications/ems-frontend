@@ -3,10 +3,10 @@ import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
-// import { WhoEmbeddedFormComponent } from '../../embedded-form/embedded-form.component';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -199,18 +199,18 @@ export class WhoGridComponent implements OnInit, OnChanges {
     Create a record if result not empty.
   */
   public onAdd(): void {
-    // const dialogRef = this.dialog.open(WhoEmbeddedFormComponent, {
-    //   data: {
-    //     template: this.settings.addTemplate,
-    //     locale: 'en'
-    //   }
-    // });
-    // dialogRef.afterClosed().subscribe(res => {
-    //   if (res) {
-    //     this.items.push(res.data.data);
-    //     this.loadItems();
-    //   }
-    // });
+    const dialogRef = this.dialog.open(WhoFormModalComponent, {
+      data: {
+        template: this.settings.addTemplate,
+        locale: 'en'
+      }
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.items.push(res.data.data);
+        this.loadItems();
+      }
+    });
   }
 
   /*  Inline edition of the data.
