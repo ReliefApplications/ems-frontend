@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Application } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
-import { GetApplicationByIdQueryResponse } from 'projects/back-office/src/app/graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GET_APPLICATION_BY_ID } from '../graphql/queries';
+import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
   providedIn: 'root'

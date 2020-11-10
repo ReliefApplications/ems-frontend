@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Application, User, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
@@ -22,7 +23,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private authService: WhoAuthService,
     private applicationService: ApplicationService,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -43,13 +45,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             navItems: application.pages.map(x => {
               return {
                 name: x.name,
-                path: '/',
+                path: `/${x.type}/${x.id}`,
                 icon: 'dashboard'
               };
             })
           }
         ];
-        console.log(this.navGroups);
+        this.router.navigate([this.navGroups[0].navItems[0].path]);
       } else {
         this.navGroups = [];
       }

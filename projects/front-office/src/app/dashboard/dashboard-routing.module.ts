@@ -15,15 +15,25 @@ export const routes = [
         component: DashboardComponent,
         children: [
             {
-                path: '',
+                path: 'dashboard/:id',
                 loadChildren: () => import('./pages/dashboard/dashboard.module')
                     .then(m => m.DashboardModule),
             },
             {
-                path: '**',
-                pathMatch: 'full',
-                redirectTo: 'settings'
-            }
+                path: 'form/:id',
+                loadChildren: () => import('./pages/form/form.module')
+                    .then(m => m.FormModule),
+            },
+            {
+                path: 'workflow/:id',
+                loadChildren: () => import('./pages/workflow/workflow.module')
+                    .then(m => m.WorkflowModule),
+            },
+            // {
+            //     path: '**',
+            //     pathMatch: 'full',
+            //     redirectTo: 'settings'
+            // }
         ]
     }
 ];

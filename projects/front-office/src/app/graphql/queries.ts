@@ -47,12 +47,13 @@ export const GET_APPLICATION_BY_ID = gql`
       pages {
         id
         name
+        type
       }
     }
   }
 `;
 
-export interface GetApplicationById {
+export interface GetApplicationByIdQueryResponse {
   loading: boolean;
   application: Application;
 }
