@@ -1,0 +1,16 @@
+.application-name-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  .application-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.td {
+    text-transform: capitalize;
+}

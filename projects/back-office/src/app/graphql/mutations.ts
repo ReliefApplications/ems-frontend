@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -382,4 +382,72 @@ mutation addApplication($name: String!) {
 export interface AddApplicationMutationResponse {
   loading: boolean;
   addApplication: Application;
+}
+
+// === EDIT APPLICATION ===
+export const EDIT_APPLICATION = gql`
+mutation editApplication($id: ID!, $name: String, $permissions: JSON) {
+  editApplication(id: $id, name: $name, permissions: $permissions) {
+    id
+    name
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+  }
+}`;
+
+export interface EditApplicationMutationResponse {
+  loading: boolean;
+  editApplication: Application;
+}
+
+// === DELETE PAGE ===
+export const DELETE_PAGE = gql`
+mutation deletePage($id: ID!) {
+  deletePage(id: $id){
+    id
+    name
+  }
+}`;
+
+export interface DeletePageMutationResponse {
+  loading: boolean;
+  deletePage: Page;
+}
+
+// === ADD PAGE ===
+export const ADD_PAGE = gql`
+mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+  addPage(name: $name, type: $type, content: $content, application: $application){
+    id
+    name
+    type
+    createdAt
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface AddPageMutationResponse {
+  loading: boolean;
+  addPage: Page;
 }

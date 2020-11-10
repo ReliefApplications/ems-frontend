@@ -24,7 +24,7 @@ export class AddApplicationComponent implements OnInit {
       name: ['', Validators.required]
     });
   }
-  
+
   /* Close the modal without sending any data.
   */
   onClose(): void {

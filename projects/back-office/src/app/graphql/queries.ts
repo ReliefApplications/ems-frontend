@@ -320,3 +320,48 @@ export interface GetApplicationsQueryResponse {
   loading: boolean;
   applications: Application[];
 }
+
+// === GET APPLICATION BY ID ===
+export const GET_APPLICATION_BY_ID = gql`
+  query GetApplicationById($id: ID!){
+    application(id: $id){
+      id
+      name
+      createdAt
+      pages {
+        id
+        name
+        type
+        createdAt
+        canSee
+        canUpdate
+        canDelete
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+    }
+  }
+`;
+
+export interface GetApplicationByIdQueryResponse {
+  loading: boolean;
+  application: Application;
+}
