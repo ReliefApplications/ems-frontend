@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard } from '@who-ems/builder';
-
+import { Dashboard, Application } from '@who-ems/builder';
 
 // === GET DASHBOARD BY ID ===
 export const GET_DASHBOARD_BY_ID = gql`
@@ -37,4 +36,23 @@ export const GET_DASHBOARD_BY_ID = gql`
 export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;
+}
+
+// === GET APPLICATION BY ID ===
+export const GET_APPLICATION_BY_ID = gql`
+  query GetApplicationById($id: ID!) {
+    application(id: $id) {
+      id
+      name
+      pages {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export interface GetApplicationById {
+  loading: boolean;
+  application: Application;
 }

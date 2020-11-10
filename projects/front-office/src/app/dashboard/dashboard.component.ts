@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { User, WhoAuthService } from '@who-ems/builder';
+import { Application, User, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
+import { ApplicationService } from '../services/application.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,48 +14,51 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public title = 'Front-office';
 
   private authSubscription: Subscription;
+  private applicationSubscription: Subscription;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [
-    {
-      name: 'Application',
-      navItems: [
-        {
-          name: 'Dashboard',
-          path: '/',
-          icon: 'dashboard'
-        }
-      ]
-    },
-    {
-      name: 'Administration',
-      navItems: [
-        {
-          name: 'Users',
-          path: '/settings/users',
-          icon: 'supervisor_account'
-        },
-        {
-          name: 'Roles',
-          path: '/settings/roles',
-          icon: 'admin_panel_settings'
-        }
-      ]
-    }
-  ];
+  public navGroups = [];
 
   constructor(
-    private authService: WhoAuthService
+    private authService: WhoAuthService,
+    private applicationService: ApplicationService,
+    private snackBar: WhoSnackBarService
   ) { }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user.subscribe((user: User) => {
-      console.log(user);
+      if (user) {
+        if (user.applications.length > 0) {
+          this.applicationService.loadApplication(user.applications[0].id);
+        } else {
+          this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
+        }
+      }
+    });
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      if (application) {
+        this.navGroups = [
+          {
+            name: application.name,
+            navItems: application.pages.map(x => {
+              return {
+                name: x.name,
+                path: '/',
+                icon: 'dashboard'
+              };
+            })
+          }
+        ];
+        console.log(this.navGroups);
+      } else {
+        this.navGroups = [];
+      }
     });
   }
 
   ngOnDestroy(): void {
     this.authSubscription.unsubscribe();
+    this.applicationSubscription.unsubscribe();
   }
 
 }
