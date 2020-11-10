@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
-import { WhoAccessModule } from 'who-shared';
+import { WhoAccessModule } from '@who-ems/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ContentType } from 'who-shared';
+import { ContentType } from '@who-ems/builder';
 
 @Component({
   selector: 'app-add-page',
@@ -9,10 +9,10 @@ import { ContentType } from 'who-shared';
   styleUrls: ['./add-page.component.scss']
 })
 export class AddPageComponent implements OnInit {
-  
+
   // === PAGE TYPE ===
   public pageTypes = Object.keys(ContentType);
-  public foo = [1, 2, 3]
+  public foo = [1, 2, 3];
 
   // === REACTIVE FORM ===
   public pageForm: FormGroup;
@@ -30,7 +30,7 @@ export class AddPageComponent implements OnInit {
       type: ['', Validators.required],
     });
   }
-  
+
   /* Close the modal without sending any data.
   */
   onClose(): void {

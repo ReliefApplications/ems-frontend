@@ -3,9 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from 'who-shared';
+import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement } from '@who-ems/builder';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../../graphql/queries';
-import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse, DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
+import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse,
+  DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
 import { Subscription } from 'rxjs';
 import { AddPageComponent } from './add-page/add-page.component';
 
@@ -58,7 +59,7 @@ export class ApplicationComponent implements OnInit {
         this.loading = res.loading;
         this.authSubscription = this.authService.user.subscribe(() => {
           this.canAdd = this.authService.userHasClaim(PermissionsManagement.mappedPermissions.applications.create);
-        })
+        });
       } else {
         this.snackBar.openSnackBar('No access provided to this application.', { error: true });
         this.router.navigate(['/applications']);
@@ -72,7 +73,7 @@ export class ApplicationComponent implements OnInit {
   }
 
   toggleFormActive = () => this.formActive = !this.formActive;
-  
+
   /*  Update the name of the application.
   */
   saveName(): void {
@@ -141,7 +142,7 @@ export class ApplicationComponent implements OnInit {
           this.router.navigate(['../pages', id]);
         });
       }
-    }); 
+    });
   }
 
 }
