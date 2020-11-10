@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { RolesRoutingModule } from './roles-routing.module';
 import { RolesComponent } from './roles.component';
-import { AddRoleComponent } from './add-role/add-role.component';
-import { EditRoleComponent } from './edit-role/edit-role.component';
+import { AddRoleComponent } from './components/add-role/add-role.component';
+import { EditRoleComponent } from './components/edit-role/edit-role.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';

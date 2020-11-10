@@ -3,38 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "who-shared": {
+    "who-ems": {
       "projectType": "library",
-      "root": "projects/who-shared",
-      "sourceRoot": "projects/who-shared/src",
+      "root": "projects/who-ems",
+      "sourceRoot": "projects/who-ems/src",
       "prefix": "who",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/who-shared/tsconfig.lib.json",
-            "project": "projects/who-shared/ng-package.json"
+            "tsConfig": "projects/who-ems/tsconfig.lib.json",
+            "project": "projects/who-ems/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/who-shared/tsconfig.lib.prod.json"
+              "tsConfig": "projects/who-ems/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/who-shared/src/test.ts",
-            "tsConfig": "projects/who-shared/tsconfig.spec.json",
-            "karmaConfig": "projects/who-shared/karma.conf.js"
+            "main": "projects/who-ems/src/test.ts",
+            "tsConfig": "projects/who-ems/tsconfig.spec.json",
+            "karmaConfig": "projects/who-ems/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/who-shared/tsconfig.lib.json",
-              "projects/who-shared/tsconfig.spec.json"
+              "projects/who-ems/tsconfig.lib.json",
+              "projects/who-ems/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

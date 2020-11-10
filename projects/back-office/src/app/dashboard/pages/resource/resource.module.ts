@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
-import { WhoAccessModule } from 'who-shared';
+import { WhoAccessModule } from '@who-ems/builder';
 
 @NgModule({
   declarations: [ResourceComponent],

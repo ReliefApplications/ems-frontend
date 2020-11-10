@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardsRoutingModule } from './dashboards-routing.module';
 import { DashboardsComponent } from './dashboards.component';
-import { AddDashboardComponent } from './add-dashboard/add-dashboard.component';
+import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
