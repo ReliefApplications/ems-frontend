@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { AddApplicationComponent } from './add-application/add-application.component';
+import { AddApplicationComponent } from './components/add-application/add-application.component';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent],

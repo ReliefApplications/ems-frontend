@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
-import { Dashboard, WhoSnackBarService } from 'who-shared';
+import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 
 @Component({
   selector: 'app-dashboard',

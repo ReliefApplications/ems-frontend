@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { WhoGridService } from 'who-shared';
+import { WhoGridService } from '@who-ems/builder';
 
 @Component({
   selector: 'app-floating-menu',

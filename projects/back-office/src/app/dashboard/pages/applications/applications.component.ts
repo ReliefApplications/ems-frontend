@@ -3,10 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { Permissions, PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from 'who-shared';
+import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse, ADD_APPLICATION } from '../../../graphql/mutations';
-import { AddApplicationComponent } from './add-application/add-application.component';
+import { AddApplicationComponent } from './components/add-application/add-application.component';
 
 @Component({
   selector: 'app-applications',
@@ -41,7 +41,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
-    })
+    });
   }
 
   ngOnDestroy(): void {
@@ -69,7 +69,9 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     Add a new application once closed, if result exists.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApplicationComponent);
+    const dialogRef = this.dialog.open(AddApplicationComponent, {
+      panelClass: 'add-dialog'
+    });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.apollo.mutate<AddApplicationMutationResponse>({

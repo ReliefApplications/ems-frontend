@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { WhoSnackBarService } from 'who-shared';
+import { WhoSnackBarService } from '@who-ems/builder';
 
 @Component({
   selector: 'app-share-url',

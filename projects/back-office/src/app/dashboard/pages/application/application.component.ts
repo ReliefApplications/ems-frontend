@@ -3,11 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from 'who-shared';
+import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement } from '@who-ems/builder';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../../graphql/queries';
-import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse, DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
+import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse,
+  DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
 import { Subscription } from 'rxjs';
-import { AddPageComponent } from './add-page/add-page.component';
+import { AddPageComponent } from './components/add-page/add-page.component';
 
 @Component({
   selector: 'app-application',
@@ -21,7 +22,7 @@ export class ApplicationComponent implements OnInit {
   public loading = true;
   public application: Application;
   public pages: Page[];
-  public displayedColumns = ['pages', 'type', 'createdAt', 'actions'];
+  public displayedColumns = ['name', 'type', 'createdAt', 'actions'];
 
   // === APPLICATION NAME EDITION ===
   public formActive: boolean;
@@ -58,7 +59,7 @@ export class ApplicationComponent implements OnInit {
         this.loading = res.loading;
         this.authSubscription = this.authService.user.subscribe(() => {
           this.canAdd = this.authService.userHasClaim(PermissionsManagement.mappedPermissions.applications.create);
-        })
+        });
       } else {
         this.snackBar.openSnackBar('No access provided to this application.', { error: true });
         this.router.navigate(['/applications']);
@@ -72,7 +73,7 @@ export class ApplicationComponent implements OnInit {
   }
 
   toggleFormActive = () => this.formActive = !this.formActive;
-  
+
   /*  Update the name of the application.
   */
   saveName(): void {
@@ -124,7 +125,9 @@ export class ApplicationComponent implements OnInit {
     Add a new page once closed, if result exists.
   */
   addPage(): void {
-    const dialogRef = this.dialog.open(AddPageComponent);
+    const dialogRef = this.dialog.open(AddPageComponent, {
+      panelClass: 'add-dialog'
+    });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.apollo.mutate<AddPageMutationResponse>({
@@ -141,7 +144,7 @@ export class ApplicationComponent implements OnInit {
           this.router.navigate(['../page', id], { relativeTo: this.route });
         });
       }
-    }); 
+    });
   }
 
 }

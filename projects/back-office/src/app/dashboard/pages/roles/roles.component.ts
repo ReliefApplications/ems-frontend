@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Role, WhoSnackBarService } from 'who-shared';
+import { Role, WhoSnackBarService } from '@who-ems/builder';
 import { AddRoleMutationResponse, ADD_ROLE, EditRoleMutationResponse, EDIT_ROLE } from '../../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
-import { AddRoleComponent } from './add-role/add-role.component';
-import { EditRoleComponent } from './edit-role/edit-role.component';
+import { AddRoleComponent } from './components/add-role/add-role.component';
+import { EditRoleComponent } from './components/edit-role/edit-role.component';
 
 @Component({
   selector: 'app-roles',

@@ -62,6 +62,7 @@
     "survey-knockout": "^1.8.12",
     "surveyjs-widgets": "^1.8.12",
     "tslib": "^2.0.0",
+    "uuid": "^8.3.1",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
