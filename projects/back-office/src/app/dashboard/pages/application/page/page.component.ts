@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Page, WhoSnackBarService, WhoAuthService, ContentType } from 'who-shared';
+import { Page, WhoSnackBarService, WhoAuthService, ContentType } from '@who-ems/builder';
 import { GetPageByIdQueryResponse, GET_PAGE_BY_ID } from '../../../../graphql/queries';
 
 @Component({
@@ -55,7 +55,7 @@ export class PageComponent implements OnInit {
       (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['..'], { relativeTo: this.route });
-      })
+      });
   }
 
 }
