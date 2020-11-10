@@ -111,9 +111,21 @@ export const routes = [
                     },
                     {
                         path: ':id',
-                        loadChildren: () => import('./pages/application/application.module')
-                            .then(m => m.ApplicationModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/application/application.module')
+                                    .then(m => m.ApplicationModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'page/:id',
+                                loadChildren: () => import('./pages/application/page/page.module')
+                                    .then(m => m.PageModule),
+                                // canActivate: [WhoPermissionGuard]
+                            }
+                        ]
+                        
                     }
                 ]
             },

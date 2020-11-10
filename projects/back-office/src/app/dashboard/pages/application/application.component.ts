@@ -138,7 +138,7 @@ export class ApplicationComponent implements OnInit {
           this.snackBar.openSnackBar(`${value.name} page created`);
           const id = res.data.addPage.id;
           this.pages = this.pages.concat([res.data.addPage]);
-          this.router.navigate(['../pages', id]);
+          this.router.navigate(['../page', id], { relativeTo: this.route });
         });
       }
     }); 
