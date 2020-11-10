@@ -22,7 +22,7 @@ export class ApplicationComponent implements OnInit {
   public loading = true;
   public application: Application;
   public pages: Page[];
-  public displayedColumns = ['pages', 'type', 'createdAt', 'actions'];
+  public displayedColumns = ['name', 'type', 'createdAt', 'actions'];
 
   // === APPLICATION NAME EDITION ===
   public formActive: boolean;
