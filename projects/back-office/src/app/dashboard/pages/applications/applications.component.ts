@@ -41,7 +41,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
-    })
+    });
   }
 
   ngOnDestroy(): void {

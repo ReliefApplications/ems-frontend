@@ -5,11 +5,11 @@ import { Form, WhoFormComponent } from '@who-ems/builder';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
-  selector: 'app-form-answer',
-  templateUrl: './form-answer.component.html',
-  styleUrls: ['./form-answer.component.scss']
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.scss']
 })
-export class FormAnswerComponent implements OnInit {
+export class FormComponent implements OnInit {
 
   @ViewChild(WhoFormComponent)
   private formComponent: WhoFormComponent;
@@ -26,6 +26,7 @@ export class FormAnswerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.route.snapshot);
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({

@@ -1,3 +1,5 @@
+import { Application } from './application.model';
+
 /*  Model for Permission object.
 */
 export interface Permission {
@@ -23,6 +25,7 @@ export interface User {
     roles?: Role[];
     permissions?: Permission[];
     oid?: string;
+    applications?: Application[];
 }
 
 /*  Enum of admin permissions.
