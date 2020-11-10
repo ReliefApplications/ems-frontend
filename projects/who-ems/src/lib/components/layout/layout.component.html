@@ -1,18 +1,29 @@
 <mat-toolbar color="primary">
-    <button mat-icon-button (click)="nav.toggle()" *ngIf="!largeDevice">
-        <mat-icon>menu</mat-icon>
+  <button mat-icon-button (click)="nav.toggle()" *ngIf="!largeDevice">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <ng-container *ngIf="!applications || applications.length === 0">
+    <h1>{{title}}</h1>
+  </ng-container>
+  <ng-container *ngIf="applications && applications.length > 0">
+    <button mat-button [matMenuTriggerFor]="applicationMenu">
+      {{title}}
+      <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    <h1>{{ title }}</h1>
-    <div class="account-container">
-        <div class="account-property">{{account.name}}</div>
-        <div class="account-property">{{account.userName}}</div>
-    </div>
-    <button mat-icon-button [matMenuTriggerFor]="accountMenu">
-        <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #accountMenu="matMenu">
-        <button mat-menu-item (click)="logout()">Logout</button>
+    <mat-menu #applicationMenu="matMenu">
+      <button mat-menu-item *ngFor="let application of applications" (click)="onOpenApplication(application)">{{application.name}}</button>
     </mat-menu>
+  </ng-container>
+  <div class="account-container">
+    <div class="account-property">{{account.name}}</div>
+    <div class="account-property">{{account.userName}}</div>
+  </div>
+  <button mat-icon-button [matMenuTriggerFor]="accountMenu">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #accountMenu="matMenu">
+    <button mat-menu-item (click)="logout()">Logout</button>
+  </mat-menu>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">

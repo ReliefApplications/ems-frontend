@@ -12,7 +12,8 @@ import { ApplicationService } from '../services/application.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
-  public title = 'Front-office';
+  public title: string;
+  public applications: Application[] = [];
 
   private authSubscription: Subscription;
   private applicationSubscription: Subscription;
@@ -31,6 +32,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.user.subscribe((user: User) => {
       if (user) {
         if (user.applications.length > 0) {
+          this.applications = user.applications;
           this.applicationService.loadApplication(user.applications[0].id);
         } else {
           this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
@@ -39,10 +41,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
+        console.log(application);
+        this.title = application.name;
         this.navGroups = [
           {
-            name: application.name,
-            navItems: application.pages.map(x => {
+            name: 'Pages',
+            navItems: application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
                 path: `/${x.type}/${x.id}`,
@@ -56,6 +60,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  onOpenApplication(application: Application): void {
+    this.applicationService.loadApplication(application.id);
   }
 
   ngOnDestroy(): void {

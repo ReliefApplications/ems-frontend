@@ -1,7 +1,8 @@
-import { Component, HostListener, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
+import { Application } from '../../models/application.model';
 
 @Component({
   selector: 'who-layout',
@@ -14,6 +15,10 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
   @Input() title: string;
 
   @Input() navGroups: any[];
+
+  @Input() applications: Application[];
+
+  @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
   filteredNavGroups = [];
 
@@ -73,6 +78,12 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
   @HostListener('window:resize', ['$event'])
   onResize(event): void {
     this.largeDevice = (event.target.innerWidth > 1024);
+  }
+
+  /* Emit the application to open
+  */
+  onOpenApplication(application: Application): void {
+    this.openApplication.emit(application);
   }
 
   /*  Call logout method of authService.
