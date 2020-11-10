@@ -17,6 +17,10 @@ export const GET_PROFILE = gql`
     permissions {
       type
     }
+    applications {
+      id
+      name
+    }
     oid
   }
 }`;
