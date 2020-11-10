@@ -14,9 +14,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { AddPageComponent } from './add-page/add-page.component';
 
 @NgModule({
-  declarations: [ApplicationComponent],
+  declarations: [ApplicationComponent, AddPageComponent],
   imports: [
     CommonModule,
     ApplicationRoutingModule,
@@ -32,6 +34,7 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogModule,
     MatTooltipModule,
     MatMenuModule,
+    MatTableModule
   ],
   exports: [ApplicationComponent]
 })

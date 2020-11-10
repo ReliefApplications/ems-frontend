@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
         {
           name: 'My applications',
           path: '/applications',
-          icon: 'dashboard',
+          icon: 'apps',
         }
       ]
     },

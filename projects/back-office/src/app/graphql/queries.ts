@@ -328,6 +328,15 @@ export const GET_APPLICATION_BY_ID = gql`
       id
       name
       createdAt
+      pages {
+        id
+        name
+        type
+        createdAt
+        canSee
+        canUpdate
+        canDelete
+      }
       permissions {
         canSee {
           id

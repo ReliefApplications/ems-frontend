@@ -3,9 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Application, WhoSnackBarService } from 'who-shared';
+import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from 'who-shared';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../../graphql/queries';
-import { EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
+import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse, DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
+import { Subscription } from 'rxjs';
+import { AddPageComponent } from './add-page/add-page.component';
 
 @Component({
   selector: 'app-application',
@@ -18,17 +20,24 @@ export class ApplicationComponent implements OnInit {
   public id: string;
   public loading = true;
   public application: Application;
+  public pages: Page[];
+  public displayedColumns = ['pages', 'type', 'createdAt', 'actions'];
 
   // === APPLICATION NAME EDITION ===
   public formActive: boolean;
   public applicationNameForm: FormGroup;
+
+  // === PERMISSIONS ===
+  public canAdd = false;
+  private authSubscription: Subscription;
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private authService: WhoAuthService
   ) { }
 
   ngOnInit(): void {
@@ -42,10 +51,14 @@ export class ApplicationComponent implements OnInit {
     }).valueChanges.subscribe((res) => {
       if (res.data.application) {
         this.application = res.data.application;
+        this.pages = res.data.application.pages;
         this.applicationNameForm = new FormGroup({
           applicationName: new FormControl(this.application.name, Validators.required)
         });
         this.loading = res.loading;
+        this.authSubscription = this.authService.user.subscribe(() => {
+          this.canAdd = this.authService.userHasClaim(PermissionsManagement.mappedPermissions.applications.create);
+        })
       } else {
         this.snackBar.openSnackBar('No access provided to this application.', { error: true });
         this.router.navigate(['/applications']);
@@ -74,6 +87,61 @@ export class ApplicationComponent implements OnInit {
     }).subscribe(res => {
       this.application.name = res.data.editApplication.name;
     });
+  }
+
+  /*  Edit the permissions layer.
+  */
+  saveAccess(e: any): void {
+    this.apollo.mutate<EditApplicationMutationResponse>({
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id: this.id,
+        permissions: e
+      }
+    }).subscribe(res => {
+      this.application = res.data.editApplication;
+    });
+  }
+
+  /*  Delete a page if authorized.
+  */
+  deletePage(id, e): void {
+    e.stopPropagation();
+    this.apollo.mutate<DeletePageMutationResponse>({
+      mutation: DELETE_PAGE,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Page deleted', { duration: 1000 });
+      this.pages = this.pages.filter(x => {
+        return x.id !== res.data.deletePage.id;
+      });
+    });
+  }
+
+  /*  Display the AddPage component if authorized.
+    Add a new page once closed, if result exists.
+  */
+  addPage(): void {
+    const dialogRef = this.dialog.open(AddPageComponent);
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<AddPageMutationResponse>({
+          mutation: ADD_PAGE,
+          variables: {
+            name: value.name,
+            type: value.type,
+            application: this.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar(`${value.name} page created`);
+          const id = res.data.addPage.id;
+          this.pages = this.pages.concat([res.data.addPage]);
+          this.router.navigate(['../pages', id]);
+        });
+      }
+    }); 
   }
 
 }
