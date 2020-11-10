@@ -8,7 +8,7 @@ import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../..
 import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse,
   DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
 import { Subscription } from 'rxjs';
-import { AddPageComponent } from './add-page/add-page.component';
+import { AddPageComponent } from './components/add-page/add-page.component';
 
 @Component({
   selector: 'app-application',
@@ -125,7 +125,9 @@ export class ApplicationComponent implements OnInit {
     Add a new page once closed, if result exists.
   */
   addPage(): void {
-    const dialogRef = this.dialog.open(AddPageComponent);
+    const dialogRef = this.dialog.open(AddPageComponent, {
+      panelClass: 'add-dialog'
+    });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.apollo.mutate<AddPageMutationResponse>({
