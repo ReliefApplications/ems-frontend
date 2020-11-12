@@ -120,7 +120,7 @@ export const routes = [
                             },
                             {
                                 path: 'dashboard/:id',
-                                loadChildren: () => import('./pages/application/dashboard/dashboard.module')
+                                loadChildren: () => import('./pages/dashboard/dashboard.module')
                                     .then(m => m.DashboardModule),
                                 // canActivate: [WhoPermissionGuard]
                             },
