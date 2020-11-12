@@ -119,9 +119,21 @@ export const routes = [
                                 // canActivate: [WhoPermissionGuard]
                             },
                             {
-                                path: 'page/:id',
-                                loadChildren: () => import('./pages/application/page/page.module')
-                                    .then(m => m.PageModule),
+                                path: 'dashboard/:id',
+                                loadChildren: () => import('./pages/application/dashboard/dashboard.module')
+                                    .then(m => m.DashboardModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'workflow/:id',
+                                loadChildren: () => import('./pages/application/workflow/workflow.module')
+                                    .then(m => m.WorkflowModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'form/:id',
+                                loadChildren: () => import('./pages/application/form/form.module')
+                                    .then(m => m.FormModule),
                                 // canActivate: [WhoPermissionGuard]
                             }
                         ]

@@ -55,7 +55,7 @@
     
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
-          [routerLink]="['../page', row.id]"></tr>
+          [routerLink]="['../' + row.type, row.id]"></tr>
     </table>
     <button mat-fab class="action-button" (click)="addPage()" *ngIf="canAdd">
         <mat-icon matTooltip="Add page">add</mat-icon>
