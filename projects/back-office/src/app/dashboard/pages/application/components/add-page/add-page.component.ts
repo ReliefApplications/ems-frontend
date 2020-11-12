@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ContentType, Form } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-page',
@@ -35,6 +34,7 @@ export class AddPageComponent implements OnInit {
       type: ['', Validators.required],
       content: [''],
     });
+    this.changeDisplay();
   }
 
   /* Close the modal without sending any data.
@@ -46,16 +46,24 @@ export class AddPageComponent implements OnInit {
   /* Change the form's display by adding a Content field if the selected type is form.
      Also fetch forms to display them in the select.
   */
-  changeDisplay(e) {
-    if (e === ContentType.form) {
-      this.apollo.watchQuery<GetFormsQueryResponse>({
-        query: GET_FORMS,
-      }).valueChanges.subscribe((res) => {
-        this.forms = res.data.forms
-        this.showContent = true;
-      });
-    } else {
-      this.showContent = false;
-    }
+  changeDisplay() {
+    const contentControl = this.pageForm.get('content');
+    this.pageForm.get('type').valueChanges.subscribe(type => {
+      if (type === ContentType.form) {
+        this.apollo.watchQuery<GetFormsQueryResponse>({
+          query: GET_FORMS,
+        }).valueChanges.subscribe((res) => {
+          this.forms = res.data.forms
+          contentControl.setValidators([Validators.required]);
+          contentControl.updateValueAndValidity();
+          this.showContent = true;
+        });
+      } else {
+        contentControl.setValidators(null);
+        contentControl.setValue(null);
+        contentControl.updateValueAndValidity();
+        this.showContent = false;
+      }
+    });
   } 
 }
