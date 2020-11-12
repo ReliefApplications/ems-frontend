@@ -3,12 +3,17 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement } from '@who-ems/builder';
+import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement, ContentType } from '@who-ems/builder';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../../graphql/queries';
-import { EditApplicationMutationResponse, EDIT_APPLICATION, DeletePageMutationResponse,
-  DELETE_PAGE, AddPageMutationResponse, ADD_PAGE } from '../../../graphql/mutations';
 import { Subscription } from 'rxjs';
 import { AddPageComponent } from './components/add-page/add-page.component';
+import 
+{ EditApplicationMutationResponse, 
+  EDIT_APPLICATION, 
+  DeletePageMutationResponse,
+  DELETE_PAGE, 
+  AddPageMutationResponse, 
+  ADD_PAGE } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-application',
@@ -138,7 +143,7 @@ export class ApplicationComponent implements OnInit {
             application: this.id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} page created`);
+          this.snackBar.openSnackBar(`${value.name} page of type ${value.type} created`);
           const id = res.data.addPage.id;
           this.pages = this.pages.concat([res.data.addPage]);
           this.router.navigate(['../page', id], { relativeTo: this.route });
