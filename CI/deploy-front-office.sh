@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Remove files
-REMOTE_PATH=/var/www/html/ems-back-office
-OUT=dist/back-office
+REMOTE_PATH=/var/www/html/ems-front-office
+OUT=dist/front-office
 CONNECTION=newton@92.243.16.149
 
 echo -e "Cleaning destination ..."
