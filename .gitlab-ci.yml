@@ -47,7 +47,7 @@ stages:
 #         echo "No new version of ${NPM_PACKAGE_NAME} published. This is most likely because version ${NPM_PACKAGE_VERSION} already exists in GitLab's NPM registry."; exit 0
 #       }
 
-deploy_back_office:
+deploy_offices:
   stage: deploy
   before_script:
     - apt-get update -qq
@@ -59,14 +59,33 @@ deploy_back_office:
     - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts  
     - npm i
-    # - echo @who-ems:registry=https://gitlab.com/api/v4/packages/npm/ >> .npmrc
-    # - npm i @who-ems/builder
   script:
     - npm run build who-ems
     - npm run build -- --prod
     - ./CI/deploy-back-office.sh
-  only:
-    - dev
+    - npm run build front-office -- --prod
+    - ./CI/deploy-front-office.sh
+  # only:
+  #   - dev
+
+# deploy_front_office:
+#   stage: deploy
+#   before_script:
+#     - apt-get update -qq
+#     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+#     - eval $(ssh-agent -s)
+#     - ssh-add <(echo "$SSH_PRIVATE_KEY")
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts  
+#     - npm i
+#   script:
+#     - npm run build who-ems
+#     - npm run build -- --prod
+#     - ./CI/deploy-front-office.sh
+#   only:
+#     - dev
 
 # deploy_front_office:
 #   stage: deploy
