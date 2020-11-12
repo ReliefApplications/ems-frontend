@@ -2,7 +2,7 @@
 
 # Remove files
 REMOTE_PATH=/var/www/html/ems-front-office
-OUT=dist/back-office
+OUT=dist/front-office
 CONNECTION=newton@92.243.16.149
 
 echo -e "Cleaning destination ..."
