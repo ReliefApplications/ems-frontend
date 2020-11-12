@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ContentType } from '@who-ems/builder';
+import { ContentType, Form } from '@who-ems/builder';
+import { Apollo } from 'apollo-angular';
+import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-page',
@@ -10,16 +13,18 @@ import { ContentType } from '@who-ems/builder';
 })
 export class AddPageComponent implements OnInit {
 
-  // === PAGE TYPE ===
+  // === DATA ===
   public pageTypes = Object.keys(ContentType);
-  public foo = [1, 2, 3];
+  public forms: Form[];
 
   // === REACTIVE FORM ===
   public pageForm: FormGroup;
+  public showContent = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddPageComponent>
+    private apollo: Apollo,
+    public dialogRef: MatDialogRef<AddPageComponent>,
   ) { }
 
   /*  Build the form.
@@ -28,6 +33,7 @@ export class AddPageComponent implements OnInit {
     this.pageForm = this.formBuilder.group({
       name: [''],
       type: ['', Validators.required],
+      content: [''],
     });
   }
 
@@ -36,4 +42,20 @@ export class AddPageComponent implements OnInit {
   onClose(): void {
     this.dialogRef.close();
   }
+
+  /* Change the form's display by adding a Content field if the selected type is form.
+     Also fetch forms to display them in the select.
+  */
+  changeDisplay(e) {
+    if (e === ContentType.form) {
+      this.apollo.watchQuery<GetFormsQueryResponse>({
+        query: GET_FORMS,
+      }).valueChanges.subscribe((res) => {
+        this.forms = res.data.forms
+        this.showContent = true;
+      });
+    } else {
+      this.showContent = false;
+    }
+  } 
 }

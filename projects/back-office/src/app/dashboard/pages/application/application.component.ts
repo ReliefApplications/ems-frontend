@@ -140,10 +140,11 @@ export class ApplicationComponent implements OnInit {
           variables: {
             name: value.name,
             type: value.type,
+            content: value.content,
             application: this.id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} page of type ${value.type} created`);
+          this.snackBar.openSnackBar(`${value.name} page created`);
           const id = res.data.addPage.id;
           this.pages = this.pages.concat([res.data.addPage]);
           this.router.navigate(['../page', id], { relativeTo: this.route });
