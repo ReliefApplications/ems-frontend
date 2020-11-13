@@ -1,5 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="onAdd()" *ngIf="canAdd">
+      <mat-icon>add</mat-icon>
+      Create an application
+    </button>
+  </div>
   <table mat-table [dataSource]="applications">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -31,6 +37,3 @@
       [routerLink]="['/applications', row.id]"></tr>
   </table>
 </ng-container>
-<button mat-fab class="action-button" (click)="onAdd()" *ngIf="canAdd">
-  <mat-icon matTooltip="Create application">add</mat-icon>
-</button>
