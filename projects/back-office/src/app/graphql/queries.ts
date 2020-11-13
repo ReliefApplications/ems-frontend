@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page } from '@who-ems/builder';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -371,7 +371,7 @@ export interface GetApplicationByIdQueryResponse {
   application: Application;
 }
 
-// === GET APPLICATIONPAGE BY ID ===
+// === GET PAGE BY ID ===
 export const GET_PAGE_BY_ID = gql`
   query GetPageById($id: ID!){
     page(id: $id){
@@ -412,4 +412,51 @@ export const GET_PAGE_BY_ID = gql`
 export interface GetPageByIdQueryResponse {
   loading: boolean;
   page: Page;
+}
+
+// === GET WORKFLOW BY ID ===
+export const GET_WORKFLOW_BY_ID = gql`
+  query GetWorkflowById($id: ID!){
+    workflow(id: $id){
+      id
+      name
+      createdAt
+      modifiedAt
+      steps {
+        id
+        name
+        type
+        content
+        createdAt
+      }
+      page {
+        id
+        name
+        canUpdate
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canCreate {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface GetWorkflowByIdQueryResponse {
+  loading: boolean;
+  workflow: Workflow;
 }

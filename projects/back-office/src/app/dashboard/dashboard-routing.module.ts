@@ -125,13 +125,13 @@ export const routes = [
                                 // canActivate: [WhoPermissionGuard]
                             },
                             {
-                                path: 'workflow/:workflowID',
+                                path: 'workflow/:id',
                                 loadChildren: () => import('./pages/application/workflow/workflow.module')
                                     .then(m => m.WorkflowModule),
                                 // canActivate: [WhoPermissionGuard]
                             },
                             {
-                                path: 'form/:formID',
+                                path: 'form/:id',
                                 loadChildren: () => import('./pages/application/form/form.module')
                                     .then(m => m.FormModule),
                                 // canActivate: [WhoPermissionGuard]
