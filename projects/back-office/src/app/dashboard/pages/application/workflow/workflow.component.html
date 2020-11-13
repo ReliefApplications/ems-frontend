@@ -22,4 +22,21 @@
             </button>
         </form>
     </ng-container>
+    <mat-horizontal-stepper>
+        <mat-step *ngFor="let step of this.steps">
+            <h2>{{step.name}}</h2>
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="deleteStep(step.id, $event)">
+                  <mat-icon>delete</mat-icon>
+                  Delete
+                </button>
+            </mat-menu>
+        </mat-step>
+    </mat-horizontal-stepper>
+    <button mat-fab class="action-button" (click)="addStep()">
+        <mat-icon matTooltip="Add step">add</mat-icon>
+    </button>
 </ng-container>
