@@ -119,8 +119,8 @@ export const routes = [
                                 // canActivate: [WhoPermissionGuard]
                             },
                             {
-                                path: 'dashboard/:dashboardID',
-                                loadChildren: () => import('./pages/application/dashboard/dashboard.module')
+                                path: 'dashboard/:id',
+                                loadChildren: () => import('./pages/dashboard/dashboard.module')
                                     .then(m => m.DashboardModule),
                                 // canActivate: [WhoPermissionGuard]
                             },
