@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             navItems: application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `/${x.type}/${x.id}`,
+                path: `/${x.type}/${x.content}`,
                 icon: 'dashboard'
               };
             })

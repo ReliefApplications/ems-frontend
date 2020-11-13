@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
     }).valueChanges.subscribe((res) => {
       if (res.data.dashboard) {
         this.dashboard = res.data.dashboard;
+        console.log(this.dashboard);
         this.dashboardNameForm = new FormGroup({
           dashboardName: new FormControl(this.dashboard.name, Validators.required)
         });

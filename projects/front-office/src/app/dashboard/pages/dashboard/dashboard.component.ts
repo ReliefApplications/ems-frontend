@@ -27,8 +27,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.id = this.route.snapshot.params.id;
-    this.id = '5fa2b81efe601d46e2ed4bf9';
+    this.id = this.route.snapshot.params.id;
     this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
       query: GET_DASHBOARD_BY_ID,
       variables: {
