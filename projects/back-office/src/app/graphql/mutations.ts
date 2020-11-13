@@ -452,12 +452,31 @@ export interface AddPageMutationResponse {
   loading: boolean;
   addPage: Page;
 }
+
 // === EDIT PAGE ===
 export const EDIT_PAGE = gql`
-mutation editPage($id: ID!, $name: String, $type: ContentEnumType, $content: ID, $permission: JSON) {
-  editPage(id: $id, name: $name, type: $type, content: $content, permissions: $permissions){
+mutation editPage($id: ID!, $name: String, $permissions: JSON) {
+  editPage(id: $id, name: $name, permissions: $permissions){
     id
     name
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
   }
 }`;
 

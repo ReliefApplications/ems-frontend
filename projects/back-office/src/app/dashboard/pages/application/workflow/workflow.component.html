@@ -1,1 +1,25 @@
-<p>workflow works!</p>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && workflow">
+    <div *ngIf="!formActive" class="workflow-name-container">
+        <h1 class="workflow-name">{{workflow.name}}</h1>
+        <button mat-icon-button color="accent" *ngIf="workflow.page.canUpdate">
+            <mat-icon (click)="toggleFormActive()">create</mat-icon>
+        </button>
+        <who-access [access]="workflow.page.permissions" (save)="saveAccess($event)" *ngIf="workflow.page.canUpdate">
+        </who-access>
+    </div>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()" class="workflow-name-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="workflowName" type="string">
+            </mat-form-field>
+            <button type="submit" mat-icon-button color="primary" [disabled]="!workflowNameForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </form>
+    </ng-container>
+</ng-container>
