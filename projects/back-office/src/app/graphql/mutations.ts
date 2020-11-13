@@ -440,6 +440,7 @@ mutation addPage($name: String, $type: String!, $content: ID, $application: ID!)
     id
     name
     type
+    content
     createdAt
     canSee
     canUpdate
