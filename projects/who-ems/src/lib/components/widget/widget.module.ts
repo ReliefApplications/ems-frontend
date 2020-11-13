@@ -6,6 +6,7 @@ import { WhoEditorModule } from '../widgets/editor/public-api';
 import { WhoGridModule } from '../widgets/grid/public-api';
 import { WhoMapModule } from '../widgets/map/map.module';
 import { WhoSchedulerModule } from '../widgets/scheduler/public-api';
+import 'hammerjs';
 
 @NgModule({
   declarations: [WhoWidgetComponent],
