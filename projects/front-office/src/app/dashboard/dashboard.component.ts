@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (user) {
         if (user.applications.length > 0) {
           this.applications = user.applications;
-          this.applicationService.loadApplication(user.applications[0].id);
+          this.applicationService.loadApplication(user.applications[1].id);
         } else {
           this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
         }
@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             navItems: application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `/${x.type}/${x.id}`,
+                path: `/${x.type}/${x.content}`,
                 icon: 'dashboard'
               };
             })
