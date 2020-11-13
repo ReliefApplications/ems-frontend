@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../../graphql/queries';
+import { AddStepComponent } from './component/add-step/add-step.component';
 import { 
   EditPageMutationResponse, EDIT_PAGE,
   AddStepMutationResponse, ADD_STEP,
@@ -30,6 +32,7 @@ export class WorkflowComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
+    public dialog: MatDialog,
     private snackBar: WhoSnackBarService
   ) { }
 
@@ -110,4 +113,29 @@ export class WorkflowComponent implements OnInit {
     });
   }
 
+    /*  Display the AddStep component if authorized.
+    Add a new page once closed, if result exists.
+  */
+  addStep(): void {
+    const dialogRef = this.dialog.open(AddStepComponent, {
+      panelClass: 'add-dialog'
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<AddStepMutationResponse>({
+          mutation: ADD_STEP,
+          variables: {
+            name: value.name,
+            type: value.type,
+            content: value.content,
+            workflow: this.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar(`${value.name} step created`);
+          const content = res.data.addStep.content;
+          this.steps = this.steps.concat([res.data.addStep]);
+        });
+      }
+    });
+  }
 }

@@ -24,7 +24,7 @@
     </ng-container>
     <mat-horizontal-stepper>
         <mat-step *ngFor="let step of this.steps">
-            <h2>{{step.name}}</h2>
+            <h2>{{step.name}} || {{step.type}}</h2>
             <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
                 <mat-icon>more_vert</mat-icon>
             </button>

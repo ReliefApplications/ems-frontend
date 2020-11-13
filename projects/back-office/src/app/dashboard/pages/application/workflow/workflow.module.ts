@@ -16,9 +16,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
+import { AddStepComponent } from './component/add-step/add-step.component';
 
 @NgModule({
-  declarations: [WorkflowComponent],
+  declarations: [WorkflowComponent, AddStepComponent],
   imports: [
     CommonModule,
     WorkflowRoutingModule,
@@ -35,7 +36,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatTooltipModule,
     MatMenuModule,
     MatTableModule,
-    MatStepperModule
+    MatStepperModule,
   ]
 })
 export class WorkflowModule { }

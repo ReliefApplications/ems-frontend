@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>New step</h1>
+<div mat-dialog-content>
+    <form [formGroup]="stepForm">
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type">
+                    <mat-option *ngFor="let type of stepTypes" [value]="type">{{ type }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="showContent">
+                <mat-label>Content</mat-label>
+                <mat-select formControlName="content">
+                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-button [mat-dialog-close]="stepForm.value" cdkFocusInitial color="primary" [disabled]="!stepForm.valid">Create</button>
+</div>
