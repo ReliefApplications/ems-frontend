@@ -41,7 +41,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
-        console.log(application);
         this.title = application.name;
         this.navGroups = [
           {

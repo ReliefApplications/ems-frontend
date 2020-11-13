@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application } from '@who-ems/builder';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -332,6 +332,7 @@ export const GET_APPLICATION_BY_ID = gql`
         id
         name
         type
+        content
         createdAt
         canSee
         canUpdate
@@ -364,4 +365,47 @@ export const GET_APPLICATION_BY_ID = gql`
 export interface GetApplicationByIdQueryResponse {
   loading: boolean;
   application: Application;
+}
+
+// === GET APPLICATIONPAGE BY ID ===
+export const GET_PAGE_BY_ID = gql`
+  query GetPageById($id: ID!){
+    page(id: $id){
+      id
+      name
+      createdAt
+      modifiedAt
+      type
+      content
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      application {
+        id
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface GetPageByIdQueryResponse {
+  loading: boolean;
+  page: Page;
 }

@@ -12,6 +12,12 @@
                     <mat-option *ngFor="let type of pageTypes" [value]="type">{{ type }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field *ngIf="showContent">
+                <mat-label>Content</mat-label>
+                <mat-select formControlName="content">
+                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
     </form>
 </div>

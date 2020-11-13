@@ -103,7 +103,7 @@ export const routes = [
             {
                 path: 'applications',
                 children: [
-                    { 
+                    {
                         path: '',
                         loadChildren: () => import('./pages/applications/applications.module')
                             .then(m => m.ApplicationsModule),
@@ -111,9 +111,32 @@ export const routes = [
                     },
                     {
                         path: ':id',
-                        loadChildren: () => import('./pages/application/application.module')
-                            .then(m => m.ApplicationModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/application/application.module')
+                                    .then(m => m.ApplicationModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'dashboard/:id',
+                                loadChildren: () => import('./pages/dashboard/dashboard.module')
+                                    .then(m => m.DashboardModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'workflow/:workflowID',
+                                loadChildren: () => import('./pages/application/workflow/workflow.module')
+                                    .then(m => m.WorkflowModule),
+                                // canActivate: [WhoPermissionGuard]
+                            },
+                            {
+                                path: 'form/:formID',
+                                loadChildren: () => import('./pages/application/form/form.module')
+                                    .then(m => m.FormModule),
+                                // canActivate: [WhoPermissionGuard]
+                            }
+                        ]
                     }
                 ]
             },
