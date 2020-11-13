@@ -1,0 +1,29 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && dashboard">
+    <app-floating-menu (add)="onAdd($event)" *ngIf="dashboard.canUpdate"></app-floating-menu>
+    <div *ngIf="!formActive" class="dashboard-name-container">
+        <h1 class="dashboard-name">{{dashboard.name}}</h1>
+        <button mat-icon-button color="accent" *ngIf="dashboard.canUpdate">
+            <mat-icon (click)="toggleFormActive()">create</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
+        <who-access [access]="dashboard.permissions" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
+        </who-access>
+    </div>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="dashboardName" type="string">
+            </mat-form-field>
+            <button type="submit" mat-icon-button color="primary" [disabled]="!dashboardNameForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </form>
+    </ng-container>
+    <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
+        (delete)="onDeleteTile($event)"></who-widget-grid>
+</ng-container>
