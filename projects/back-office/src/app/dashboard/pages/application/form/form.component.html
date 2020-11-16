@@ -1,1 +1,4 @@
-<p>form works!</p>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && form">
+    <h1 cass="form-name">{{form.name}}</h1>
+</ng-container>
