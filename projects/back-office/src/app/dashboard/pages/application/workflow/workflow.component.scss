@@ -10,3 +10,10 @@
     text-overflow: ellipsis;
   }
 }
+
+.add-step-button {
+  position: fixed !important;
+  top: 96px;
+  right: 32px;
+  z-index: 2000;
+}

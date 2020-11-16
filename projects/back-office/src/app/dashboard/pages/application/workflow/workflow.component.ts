@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
@@ -28,6 +29,11 @@ export class WorkflowComponent implements OnInit {
   public formActive: boolean;
   public workflowNameForm: FormGroup;
 
+  // === SELECTED STEP ===
+  @ViewChild('stepper') stepper: MatStepper;
+  public step: Step;
+  public loadingStep = false;
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -48,6 +54,8 @@ export class WorkflowComponent implements OnInit {
       if (res.data.workflow) {
         this.workflow = res.data.workflow;
         this.steps = res.data.workflow.steps;
+        this.step = this.steps[0];
+        this.navigateToSelectedStep();
         this.workflowNameForm = new FormGroup({
           workflowName: new FormControl(this.workflow.name, Validators.required)
         });
@@ -110,6 +118,7 @@ export class WorkflowComponent implements OnInit {
       this.steps = this.steps.filter(x => {
         return x.id !== res.data.deleteStep.id;
       });
+      this.stepper.reset();
     });
   }
 
@@ -135,8 +144,27 @@ export class WorkflowComponent implements OnInit {
           this.snackBar.openSnackBar(`${value.name} step created`);
           const content = res.data.addStep.content;
           this.steps = this.steps.concat([res.data.addStep]);
+          this.step = res.data.addStep;
+          setTimeout(() => {
+            this.stepper.selectedIndex = this.steps.length - 1;
+          }, 1000);
         });
       }
     });
+  }
+
+  /* Display selected step
+  */
+  stepChange(e): void {
+    this.step = this.steps[e.selectedIndex];
+    this.loadingStep = true;
+    setTimeout(() => {
+      this.navigateToSelectedStep();
+      this.loadingStep = false;
+    }, 1000);
+  }
+
+  navigateToSelectedStep(): void {
+    this.router.navigate(['./' + this.step.type + '/' + this.step.content ], { relativeTo: this.route });
   }
 }
