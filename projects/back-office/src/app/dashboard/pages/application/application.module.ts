@@ -15,10 +15,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { AddPageComponent } from './components/add-page/add-page.component';
+import { AddTabComponent } from './components/add-tab/add-tab.component';
 
 @NgModule({
-  declarations: [ApplicationComponent, AddPageComponent],
+  declarations: [ApplicationComponent, AddTabComponent],
   imports: [
     CommonModule,
     ApplicationRoutingModule,

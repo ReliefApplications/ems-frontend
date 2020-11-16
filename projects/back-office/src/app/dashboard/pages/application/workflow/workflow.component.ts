@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../../graphql/queries';
-import { AddStepComponent } from './component/add-step/add-step.component';
+import { AddTabComponent } from '../components/add-tab/add-tab.component';
 import { 
   EditPageMutationResponse, EDIT_PAGE,
   AddStepMutationResponse, ADD_STEP,
@@ -117,8 +117,9 @@ export class WorkflowComponent implements OnInit {
     Add a new page once closed, if result exists.
   */
   addStep(): void {
-    const dialogRef = this.dialog.open(AddStepComponent, {
-      panelClass: 'add-dialog'
+    const dialogRef = this.dialog.open(AddTabComponent, {
+      panelClass: 'add-dialog',
+      data: { showWorkflow: false }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
