@@ -16,9 +16,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
+import { AddTabComponent } from './components/add-tab/add-tab.component';
 
 @NgModule({
-  declarations: [WorkflowComponent],
+  declarations: [
+    WorkflowComponent,
+    AddTabComponent
+  ],
   imports: [
     CommonModule,
     WorkflowRoutingModule,

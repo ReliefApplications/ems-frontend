@@ -1,0 +1,42 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ApplicationComponent } from './application.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: ApplicationComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./pages/home/home.module')
+          .then(m => m.HomeModule),
+        // canActivate: [WhoPermissionGuard]
+      },
+      {
+        path: 'dashboard/:id',
+        loadChildren: () => import('../dashboard/pages/dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
+        // canActivate: [WhoPermissionGuard]
+      },
+      {
+        path: 'workflow/:id',
+        loadChildren: () => import('./pages/workflow/workflow.module')
+          .then(m => m.WorkflowModule),
+        // canActivate: [WhoPermissionGuard]
+      },
+      {
+        path: 'form/:id',
+        loadChildren: () => import('./pages/form/form.module')
+          .then(m => m.FormModule),
+        // canActivate: [WhoPermissionGuard]
+      }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ApplicationRoutingModule { }
