@@ -51,7 +51,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             ].concat(application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `/${x.type}/${x.content}`,
+                path: `./${x.type}/${x.content}`,
                 icon: 'dashboard',
                 class: null
               };
