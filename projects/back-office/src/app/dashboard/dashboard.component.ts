@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
-import { ApplicationService } from 'projects/front-office/src/app/services/application.service';
+import { ApplicationService } from '../services/application.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -75,18 +75,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      console.log(application);
       if (application) {
         this.title = application.name;
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages.filter(x => x.content).map(x => {
+            navItems: [
+              {
+                name: 'Add a page',
+                path: '/add-page',
+                icon: 'add_circle'
+              }
+            ].concat(application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
                 path: `/${x.type}/${x.content}`,
                 icon: 'dashboard'
               };
-            })
+            }))
+          },
+          {
+            name: 'Admnistration',
+            navItems: [
+              {
+                name: 'Users',
+                path: '/settings/users',
+                icon: 'supervisor_account'
+              },
+              {
+                name: 'Roles',
+                path: '/settings/roles',
+                icon: 'admin_panel_settings'
+              }
+            ]
           }
         ];
       } else {
