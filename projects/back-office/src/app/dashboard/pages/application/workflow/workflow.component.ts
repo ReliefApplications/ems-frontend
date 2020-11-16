@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, WhoSnackBarService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../../graphql/queries';
-import { EditPageMutationResponse, EDIT_PAGE } from '../../../../graphql/mutations';
+import { AddTabComponent } from '../components/add-tab/add-tab.component';
+import { 
+  EditPageMutationResponse, EDIT_PAGE,
+  AddStepMutationResponse, ADD_STEP,
+  DeleteStepMutationResponse, DELETE_STEP } from '../../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -17,6 +22,7 @@ export class WorkflowComponent implements OnInit {
   public id: string;
   public loading = true;
   public workflow: Workflow;
+  public steps: Step[];
 
   // === WORKFLOW NAME EDITION ===
   public formActive: boolean;
@@ -26,6 +32,7 @@ export class WorkflowComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
+    public dialog: MatDialog,
     private snackBar: WhoSnackBarService
   ) { }
 
@@ -40,6 +47,7 @@ export class WorkflowComponent implements OnInit {
     }).valueChanges.subscribe((res) => {
       if (res.data.workflow) {
         this.workflow = res.data.workflow;
+        this.steps = res.data.workflow.steps;
         this.workflowNameForm = new FormGroup({
           workflowName: new FormControl(this.workflow.name, Validators.required)
         });
@@ -86,5 +94,49 @@ export class WorkflowComponent implements OnInit {
     }).subscribe(res => {
       this.workflow.page.permissions = res.data.editPage.permissions;
     }); 
+  }
+
+  /*  Delete a step if authorized.
+  */
+  deleteStep(id, e): void {
+    e.stopPropagation();
+    this.apollo.mutate<DeleteStepMutationResponse>({
+      mutation: DELETE_STEP,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+      this.steps = this.steps.filter(x => {
+        return x.id !== res.data.deleteStep.id;
+      });
+    });
+  }
+
+    /*  Display the AddStep component if authorized.
+    Add a new page once closed, if result exists.
+  */
+  addStep(): void {
+    const dialogRef = this.dialog.open(AddTabComponent, {
+      panelClass: 'add-dialog',
+      data: { showWorkflow: false }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<AddStepMutationResponse>({
+          mutation: ADD_STEP,
+          variables: {
+            name: value.name,
+            type: value.type,
+            content: value.content,
+            workflow: this.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar(`${value.name} step created`);
+          const content = res.data.addStep.content;
+          this.steps = this.steps.concat([res.data.addStep]);
+        });
+      }
+    });
   }
 }

@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   declarations: [WorkflowComponent],
@@ -33,7 +34,8 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatTooltipModule,
     MatMenuModule,
-    MatTableModule
+    MatTableModule,
+    MatStepperModule,
   ]
 })
 export class WorkflowModule { }

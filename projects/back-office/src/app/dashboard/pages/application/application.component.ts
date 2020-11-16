@@ -6,7 +6,7 @@ import { Apollo } from 'apollo-angular';
 import { Application, Page, WhoSnackBarService, WhoAuthService, PermissionsManagement, ContentType } from '@who-ems/builder';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { AddPageComponent } from './components/add-page/add-page.component';
+import { AddTabComponent } from './components/add-tab/add-tab.component';
 import 
 { EditApplicationMutationResponse, 
   EDIT_APPLICATION, 
@@ -130,8 +130,9 @@ export class ApplicationComponent implements OnInit {
     Add a new page once closed, if result exists.
   */
   addPage(): void {
-    const dialogRef = this.dialog.open(AddPageComponent, {
-      panelClass: 'add-dialog'
+    const dialogRef = this.dialog.open(AddTabComponent, {
+      panelClass: 'add-dialog',
+      data: { showWorkflow: true }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
