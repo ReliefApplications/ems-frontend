@@ -14,6 +14,29 @@ const routes: Routes = [
         // canActivate: [WhoPermissionGuard]
       },
       {
+        path: 'add-page',
+        loadChildren: () => import('./pages/add-page/add-page.module')
+          .then(m => m.AddPageModule),
+        // canActivate: [WhoPermissionGuard]
+      },
+      {
+        path: 'settings',
+        children: [
+          {
+            path: 'roles',
+            loadChildren: () => import('./pages/roles/roles.module')
+              .then(m => m.RolesModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+          {
+            path: 'users',
+            loadChildren: () => import('./pages/users/users.module')
+              .then(m => m.UsersModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+        ]
+      },
+      {
         path: 'dashboard/:id',
         loadChildren: () => import('../dashboard/pages/dashboard/dashboard.module')
           .then(m => m.DashboardModule),

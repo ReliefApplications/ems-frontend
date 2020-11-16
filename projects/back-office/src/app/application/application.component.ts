@@ -44,7 +44,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             navItems: [
               {
                 name: 'Add a page',
-                path: '/add-page',
+                path: './add-page',
                 icon: 'add_circle',
                 class: 'nav-item-add'
               }
@@ -62,12 +62,12 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             navItems: [
               {
                 name: 'Users',
-                path: '/settings/users',
+                path: './settings/users',
                 icon: 'supervisor_account'
               },
               {
                 name: 'Roles',
-                path: '/settings/roles',
+                path: './settings/roles',
                 icon: 'admin_panel_settings'
               }
             ]
