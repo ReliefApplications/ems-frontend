@@ -34,7 +34,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
       this.applicationService.loadApplication(params.id);
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
-      console.log(application);
       if (application) {
         this.application = application;
         this.title = application.name;

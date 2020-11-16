@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
@@ -17,6 +17,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
   @Input() navGroups: any[];
 
   @Input() applications: Application[];
+
+  @Input() toolbar: TemplateRef<any>;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 

@@ -26,6 +26,10 @@
   </mat-menu>
 </mat-toolbar>
 
+<ng-container *ngIf="toolbar">
+  <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+</ng-container>
+
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #nav [mode]="largeDevice ? 'side' : 'over'" [opened]="largeDevice">
     <mat-nav-list>
