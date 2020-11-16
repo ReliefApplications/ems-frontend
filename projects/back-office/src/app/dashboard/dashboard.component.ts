@@ -1,17 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Application, WhoSnackBarService } from '@who-ems/builder';
+import { ApplicationService } from 'projects/front-office/src/app/services/application.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
-  public title = 'Back-office';
+  public title: string;
+  public dashboardTitle = 'Back-office';
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [
+  public navGroups = [];
+  private dashboardNavGroups = [
     {
       name: 'Data management',
       navItems: [
@@ -59,9 +65,38 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  constructor() { }
+  private applicationSubscription: Subscription;
+
+  constructor(
+    private applicationService: ApplicationService,
+    private snackBar: WhoSnackBarService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      if (application) {
+        this.title = application.name;
+        this.navGroups = [
+          {
+            name: 'Pages',
+            navItems: application.pages.filter(x => x.content).map(x => {
+              return {
+                name: x.name,
+                path: `/${x.type}/${x.content}`,
+                icon: 'dashboard'
+              };
+            })
+          }
+        ];
+      } else {
+        this.title = this.dashboardTitle;
+        this.navGroups = this.dashboardNavGroups;
+      }
+    });
   }
 
+  ngOnDestroy(): void {
+    this.applicationSubscription.unsubscribe();
+  }
 }
