@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
 import { WhoLayoutModule } from '@who-ems/builder';
+import { ApplicationToolbarModule } from './components/application-toolbar/application-toolbar.module';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { WhoLayoutModule } from '@who-ems/builder';
   imports: [
     CommonModule,
     ApplicationRoutingModule,
+    ApplicationToolbarModule,
     WhoLayoutModule
   ],
   exports: [ApplicationComponent]
