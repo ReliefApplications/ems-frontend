@@ -65,6 +65,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   ];
 
+  // === APPLICATION ===
+  public application: Application;
   private applicationSubscription: Subscription;
 
   constructor(
@@ -75,8 +77,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
-      console.log(application);
       if (application) {
+        this.application = application;
         this.title = application.name;
         this.navGroups = [
           {
@@ -85,13 +87,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               {
                 name: 'Add a page',
                 path: '/add-page',
-                icon: 'add_circle'
+                icon: 'add_circle',
+                class: 'nav-item-add'
               }
             ].concat(application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
                 path: `/${x.type}/${x.content}`,
-                icon: 'dashboard'
+                icon: 'dashboard',
+                class: null
               };
             }))
           },

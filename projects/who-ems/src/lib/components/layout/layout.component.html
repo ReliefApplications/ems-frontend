@@ -33,7 +33,7 @@
         <div mat-subheader>{{ group.name }}</div>
         <ng-container *ngFor="let item of group.navItems">
           <a mat-list-item [routerLink]="item.path" routerLinkActive="active-link"
-            (click)="largeDevice ? null : nav.toggle()">
+            (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
             <mat-icon mat-list-icon class="nav-icon">
               {{ item.icon }}
             </mat-icon>
