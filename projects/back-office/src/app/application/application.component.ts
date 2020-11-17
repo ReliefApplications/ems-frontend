@@ -50,6 +50,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               }
             ].concat(application.pages.filter(x => x.content).map(x => {
               return {
+                id: x.id,
                 name: x.name,
                 path: `./${x.type}/${x.content}`,
                 icon: 'dashboard',
@@ -90,7 +91,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onReorder(event: any): void {
-    console.log(event);
+    this.applicationService.reorderPages(event.filter(x => x.id).map(x => x.id));
   }
 
   ngOnDestroy(): void {

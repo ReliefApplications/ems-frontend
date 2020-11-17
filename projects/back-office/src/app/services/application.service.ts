@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE } from '../graphql/mutations';
+import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE,
+  EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -50,6 +51,19 @@ export class ApplicationService {
       const application = this._application.getValue();
       application.pages = application.pages.filter(x => x.id !== res.data.deletePage.id);
       this._application.next(application);
+    });
+  }
+
+  reorderPages(pages: string[]): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditApplicationMutationResponse>({
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id: application.id,
+        pages
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Pages reordered');
     });
   }
 
