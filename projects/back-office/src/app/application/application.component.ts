@@ -39,7 +39,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.title = application.name;
         this.navGroups = [
           {
-            name: 'Pages',
+            name: 'Display',
+            callback: (event) => this.onReorder(event),
             navItems: [
               {
                 name: 'Add a page',
@@ -53,6 +54,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 path: `./${x.type}/${x.content}`,
                 icon: 'dashboard',
                 class: null,
+                orderable: true,
                 action: {
                   icon: 'delete',
                   callback: () => this.onDelete(x.id)
@@ -61,7 +63,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             }))
           },
           {
-            name: 'Admnistration',
+            name: 'Administration',
             navItems: [
               {
                 name: 'Users',
@@ -85,6 +87,10 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   onDelete(id: string): void {
     this.applicationService.deletePage(id);
+  }
+
+  onReorder(event: any): void {
+    console.log(event);
   }
 
   ngOnDestroy(): void {

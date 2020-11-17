@@ -3,6 +3,7 @@ import { WhoAuthService } from '../../services/auth.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'who-layout',
@@ -67,6 +68,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
         if (navItems.length > 0) {
           const filteredGroup = {
             name: group.name,
+            callback: group.callback,
             navItems
           };
           this.filteredNavGroups.push(filteredGroup);
@@ -92,6 +94,11 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
     callback();
     event.preventDefault();
     event.stopPropagation();
+  }
+
+  drop(event: any, group: any): void {
+    moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
+    group.callback(group.navItems);
   }
 
   /*  Call logout method of authService.
