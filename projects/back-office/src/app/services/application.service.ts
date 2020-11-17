@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Application } from '@who-ems/builder';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Application, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DeletePageMutationResponse, DELETE_PAGE } from '../graphql/mutations';
+import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -14,7 +15,10 @@ export class ApplicationService {
   private _application = new BehaviorSubject<Application>(null);
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: WhoSnackBarService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   /*  Get the application from the database, using GraphQL.
@@ -44,8 +48,31 @@ export class ApplicationService {
       }
     }).subscribe(res => {
       const application = this._application.getValue();
-      application.pages = res.data.deletePage.pages;
+      application.pages = application.pages.filter(x => x.id !== res.data.deletePage.id);
       this._application.next(application);
     });
+  }
+
+  addPage(value: any): void {
+    const application = this._application.getValue();
+    if (application) {
+      this.apollo.mutate<AddPageMutationResponse>({
+        mutation: ADD_PAGE,
+        variables: {
+          name: value.name,
+          type: value.type,
+          content: value.content,
+          application: application.id
+        }
+      }).subscribe(res => {
+        this.snackBar.openSnackBar(`${value.name} page created`);
+        const content = res.data.addPage.content;
+        application.pages = application.pages.concat([res.data.addPage]);
+        this._application.next(application);
+        this.router.navigate([`/applications/${application.id}/${value.type}/${content}`]);
+      });
+    } else {
+      this.snackBar.openSnackBar('No opened application.', { error: true });
+    }
   }
 }

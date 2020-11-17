@@ -1,1 +1,21 @@
-<p>add-page works!</p>
+<form [formGroup]="pageForm">
+    <div class="form-group">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type">
+                <mat-option *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="showContent">
+            <mat-label>Content</mat-label>
+            <mat-select formControlName="content">
+                <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</form>
+<button (click)="onSubmit()"></button>

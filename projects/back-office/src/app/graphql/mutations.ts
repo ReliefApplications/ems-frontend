@@ -428,22 +428,12 @@ export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {
   deletePage(id: $id){
     id
-    pages {
-      id
-      name
-      type
-      content
-      createdAt
-      canSee
-      canUpdate
-      canDelete
-    }
   }
 }`;
 
 export interface DeletePageMutationResponse {
   loading: boolean;
-  deletePage: Application;
+  deletePage: Page;
 }
 
 // === ADD PAGE ===
