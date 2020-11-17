@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Application, Role } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
@@ -9,7 +9,7 @@ import { ApplicationService } from '../../../services/application.service';
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
-export class RolesComponent implements OnInit {
+export class RolesComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
@@ -30,8 +30,11 @@ export class RolesComponent implements OnInit {
       } else {
         this.roles = [];
       }
-      console.log(this.roles);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.applicationSubscription.unsubscribe();
   }
 
   onAdd(): void {}

@@ -1,5 +1,5 @@
 import { Page } from './page.model';
-import { Role } from './user.model';
+import { Role, User } from './user.model';
 
 /*  Model for Application object.
 */
@@ -10,6 +10,7 @@ export interface Application {
     modifiedAt?: Date;
     pages?: Page[];
     roles?: Role[];
+    users?: User[];
     settings?: any;
     permissions?: any;
     canSee?: boolean;
