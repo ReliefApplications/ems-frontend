@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Application } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { DeletePageMutationResponse, DELETE_PAGE } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -33,5 +34,18 @@ export class ApplicationService {
   */
   get application(): Observable<Application> {
     return this._application.asObservable();
+  }
+
+  deletePage(id: string): void {
+    this.apollo.mutate<DeletePageMutationResponse>({
+      mutation: DELETE_PAGE,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      const application = this._application.getValue();
+      application.pages = res.data.deletePage.pages;
+      this._application.next(application);
+    });
   }
 }

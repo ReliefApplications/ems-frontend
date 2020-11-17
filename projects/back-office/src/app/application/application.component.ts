@@ -35,6 +35,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
+        console.log(application);
         this.application = application;
         this.title = application.name;
         this.navGroups = [
@@ -84,7 +85,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onDelete(id: string): void {
-    console.log(id);
+    this.applicationService.deletePage(id);
   }
 
   ngOnDestroy(): void {
