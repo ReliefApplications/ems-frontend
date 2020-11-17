@@ -27,16 +27,11 @@
         </form>
     </ng-container>
     <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper >
-        <mat-step *ngFor="let step of this.steps; let i = index">
-            <div *ngIf="loadingStep">
-                <mat-spinner diameter="45" class="page-loader" *ngIf="loadingStep"></mat-spinner>
-            </div>
-            <div *ngIf="!loadingStep">
-                <router-outlet></router-outlet>
-                <button mat-fab color="warn" (click)="deleteStep(step.id, $event)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
+        <mat-step *ngFor="let step of this.steps; let i = index" completed="false">
+            <router-outlet *ngIf="i === stepper.selectedIndex"></router-outlet>
+            <button mat-fab color="warn" (click)="deleteStep(step.id, $event)">
+                <mat-icon>delete</mat-icon>
+            </button>
         </mat-step>
     </mat-horizontal-stepper>
 </ng-container>

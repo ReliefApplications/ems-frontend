@@ -32,7 +32,6 @@ export class WorkflowComponent implements OnInit {
   // === SELECTED STEP ===
   @ViewChild('stepper') stepper: MatStepper;
   public step: Step;
-  public loadingStep = false;
 
   constructor(
     private apollo: Apollo,
@@ -157,14 +156,11 @@ export class WorkflowComponent implements OnInit {
   */
   stepChange(e): void {
     this.step = this.steps[e.selectedIndex];
-    this.loadingStep = true;
-    setTimeout(() => {
-      this.navigateToSelectedStep();
-      this.loadingStep = false;
-    }, 200);
+    this.navigateToSelectedStep();
   }
 
   navigateToSelectedStep(): void {
+    console.log('navigate');
     this.router.navigate(['./' + this.step.type + '/' + this.step.content ], { relativeTo: this.route });
   }
 }

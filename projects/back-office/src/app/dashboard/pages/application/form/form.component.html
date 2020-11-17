@@ -1,4 +1,11 @@
-<app-form-answer></app-form-answer>
+<h1>Answer the form</h1>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading">
+    <who-form [form]="form" (save)="onComplete($event)"></who-form>
+</ng-container>
+<ng-container *ngIf="completed">
+    <button mat-raised-button (click)="clearForm()">New record</button>
+</ng-container>
 <button mat-fab color="accent" (click)="editForm()">
     <mat-icon>edit</mat-icon>
 </button>

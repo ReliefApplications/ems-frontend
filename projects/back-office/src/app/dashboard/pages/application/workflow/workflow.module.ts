@@ -36,6 +36,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatMenuModule,
     MatTableModule,
     MatStepperModule,
-  ]
+  ],
+  exports: [WorkflowComponent]
 })
 export class WorkflowModule { }
