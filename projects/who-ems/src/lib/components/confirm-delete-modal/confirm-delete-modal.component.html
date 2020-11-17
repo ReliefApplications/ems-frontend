@@ -1,5 +1,5 @@
 <h1 mat-dialog-title> {{this.modalText}} </h1>
 <div mat-dialog-actions>
-  <button mat-button (click)="this.onCancel()">{{ this.cancelText }}</button>
-  <button mat-button (click) = "this.onDelete()" cdkFocusInitial>{{ this.deleteText }}</button>
+  <button mat-button mat-dialog-close> {{ this.cancelText }} </button>
+  <button mat-button [mat-dialog-close] = "true"> {{ this.deleteText }} </button>
 </div>

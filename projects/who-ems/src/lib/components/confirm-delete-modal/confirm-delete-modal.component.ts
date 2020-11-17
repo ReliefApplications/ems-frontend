@@ -15,7 +15,6 @@ export class WhoConfirmDeleteModalComponent implements OnInit {
   @Input() modalText = 'Are you sure you want to delete this component?';
   @Input() cancelText = 'Cancel';
   @Input() deleteText = 'Delete';
-  @Input() onDelete;
   ngOnInit(): void {
   }
 
