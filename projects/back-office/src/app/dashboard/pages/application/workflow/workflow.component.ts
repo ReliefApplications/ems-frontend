@@ -141,7 +141,7 @@ export class WorkflowComponent implements OnInit {
             workflow: this.id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} step created`);
+          this.snackBar.openSnackBar('Step created');
           const content = res.data.addStep.content;
           this.steps = this.steps.concat([res.data.addStep]);
           this.step = res.data.addStep;
@@ -161,7 +161,7 @@ export class WorkflowComponent implements OnInit {
     setTimeout(() => {
       this.navigateToSelectedStep();
       this.loadingStep = false;
-    }, 1000);
+    }, 200);
   }
 
   navigateToSelectedStep(): void {

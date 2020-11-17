@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && form">
-    <h1 cass="form-name">{{form.name}}</h1>
-</ng-container>
+<app-form-answer></app-form-answer>
+<button mat-fab color="accent" (click)="editForm()">
+    <mat-icon>edit</mat-icon>
+</button>

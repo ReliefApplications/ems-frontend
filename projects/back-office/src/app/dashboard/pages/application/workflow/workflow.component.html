@@ -7,8 +7,9 @@
         </button>
         <who-access [access]="workflow.page.permissions" (save)="saveAccess($event)" *ngIf="workflow.page.canUpdate">
         </who-access>
-        <button mat-fab class="add-step-button" color="primary" (click)="addStep()">
-            <mat-icon matTooltip="Add step">add</mat-icon>
+        <button mat-raised-button class="add-step-button" color="primary" (click)="addStep()">
+            <mat-icon>add</mat-icon>
+            Add a new step
         </button>
     </div>
     <ng-container *ngIf="formActive">
@@ -28,7 +29,7 @@
     <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper >
         <mat-step *ngFor="let step of this.steps; let i = index">
             <div *ngIf="loadingStep">
-                <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+                <mat-spinner diameter="45" class="page-loader" *ngIf="loadingStep"></mat-spinner>
             </div>
             <div *ngIf="!loadingStep">
                 <router-outlet></router-outlet>
