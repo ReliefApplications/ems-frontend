@@ -52,7 +52,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: x.name,
                 path: `./${x.type}/${x.content}`,
                 icon: 'dashboard',
-                class: null
+                class: null,
+                action: {
+                  icon: 'delete',
+                  callback: () => this.onDelete(x.id)
+                }
               };
             }))
           },
@@ -77,6 +81,10 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  onDelete(id: string): void {
+    console.log(id);
   }
 
   ngOnDestroy(): void {

@@ -33,3 +33,14 @@
         color: #13AD38;
     }
 }
+
+.nav-item {
+    .nav-action {
+        color: transparent;
+    }
+    &:hover {
+        .nav-action {
+            color: #aeaeaf;
+        }
+    }
+}

@@ -88,6 +88,12 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
     this.openApplication.emit(application);
   }
 
+  onClick(callback: () => any, event: any): void {
+    callback();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   /*  Call logout method of authService.
     */
   logout(): void {
