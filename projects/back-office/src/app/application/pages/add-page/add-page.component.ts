@@ -19,6 +19,7 @@ export class AddPageComponent implements OnInit {
   // === REACTIVE FORM ===
   public pageForm: FormGroup;
   public showContent = false;
+  public step = 1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,7 +29,7 @@ export class AddPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({
-      name: [''],
+      name: ['', Validators.required],
       type: ['', Validators.required],
       content: [''],
     });
@@ -52,7 +53,49 @@ export class AddPageComponent implements OnInit {
     });
   }
 
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 1: {
+        return this.pageForm.controls.name.valid;
+      }
+      case 2: {
+        return this.pageForm.controls.type.valid;
+      }
+      case 3: {
+        return this.pageForm.controls.content.valid;
+      }
+      default: {
+        return true;
+      }
+    }
+  }
+
   onSubmit(): void {
     this.applicationService.addPage(this.pageForm.value);
+  }
+
+  onBack(): void {
+    this.step -= 1;
+  }
+
+  onNext(): void {
+    switch (this.step) {
+      case 1: {
+        this.step += 1;
+        break;
+      }
+      case 2: {
+        this.pageForm.controls.type.value === ContentType.form ? this.step += 1 : this.onSubmit();
+        break;
+      }
+      case 3: {
+        this.onSubmit();
+        break;
+      }
+      default: {
+        this.step += 1;
+        break;
+      }
+    }
   }
 }
