@@ -6,10 +6,10 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
   templateUrl: './confirm-delete-modal.component.html',
   styleUrls: ['./confirm-delete-modal.component.css']
 })
-export class ConfirmDeleteModalComponent implements OnInit {
+export class WhoConfirmDeleteModalComponent implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDeleteModalComponent>
+    public dialogRef: MatDialogRef<WhoConfirmDeleteModalComponent>
   ) {
   }
   @Input() modalText = 'Are you sure you want to delete this component?';
