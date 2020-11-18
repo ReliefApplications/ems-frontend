@@ -7,7 +7,6 @@ import { ApplicationService } from '../../../../../services/application.service'
 import { GetUsersQueryResponse, GET_USERS } from '../../../../../graphql/queries';
 import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AddRoleToUserMutationResponse, ADD_ROLE_TO_USER } from '../../../../../graphql/mutations';
 
 @Component({
   selector: 'app-invite-user',

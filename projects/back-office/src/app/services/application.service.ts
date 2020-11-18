@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoSnackBarService } from '@who-ems/builder';
+import { Application, User, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse, ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
-  EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
+  EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -117,6 +117,24 @@ export class ApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.users = application.users.concat([res.data.addRoleToUser]);
+      this._application.next(application);
+    });
+  }
+
+  editUser(user: User, value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditUserMutationResponse>({
+      mutation: EDIT_USER,
+      variables: {
+        id: user.id,
+        roles: value.roles,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${user.username} roles updated.`);
+      const index = application.users.indexOf(user);
+      application.users[index] = res.data.editUser;
+      console.log(application);
       this._application.next(application);
     });
   }

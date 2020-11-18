@@ -3,9 +3,16 @@ import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workf
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
-mutation editUser($id: ID!, $roles: [ID]!) {
-  editUser(id: $id, roles: $roles) {
+mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+  editUser(id: $id, roles: $roles, application: $application) {
     id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
   }
 }`;
 
