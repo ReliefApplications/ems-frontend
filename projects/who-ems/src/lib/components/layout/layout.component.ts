@@ -1,8 +1,9 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'who-layout',
@@ -17,6 +18,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
   @Input() navGroups: any[];
 
   @Input() applications: Application[];
+
+  @Input() toolbar: TemplateRef<any>;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
@@ -65,6 +68,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
         if (navItems.length > 0) {
           const filteredGroup = {
             name: group.name,
+            callback: group.callback,
             navItems
           };
           this.filteredNavGroups.push(filteredGroup);
@@ -84,6 +88,17 @@ export class WhoLayoutComponent implements OnInit, OnChanges {
   */
   onOpenApplication(application: Application): void {
     this.openApplication.emit(application);
+  }
+
+  onClick(callback: () => any, event: any): void {
+    callback();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  drop(event: any, group: any): void {
+    moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
+    group.callback(group.navItems);
   }
 
   /*  Call logout method of authService.
