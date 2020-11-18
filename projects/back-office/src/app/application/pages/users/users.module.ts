@@ -1,39 +1,35 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { WorkflowRoutingModule } from './workflow-routing.module';
-import { WorkflowComponent } from './workflow.component';
-import { WhoAccessModule } from '@who-ems/builder';
+import { UsersRoutingModule } from './users-routing.module';
+import { UsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 
+
 @NgModule({
-  declarations: [WorkflowComponent],
+  declarations: [UsersComponent],
   imports: [
     CommonModule,
-    WorkflowRoutingModule,
-    WhoAccessModule,
+    UsersRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    MatIconModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
     MatDialogModule,
-    MatTooltipModule,
+    MatButtonModule,
     MatMenuModule,
-    MatTableModule
-  ]
+    MatIconModule
+  ],
+  exports: [UsersComponent]
 })
-export class WorkflowModule { }
+export class UsersModule { }

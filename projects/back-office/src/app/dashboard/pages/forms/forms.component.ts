@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType } from '@who-ems/builder';
+import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType, WhoConfirmModalComponent } from '@who-ems/builder';
 import { AddFormComponent } from './components/add-form/add-form.component';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 
@@ -53,18 +53,31 @@ export class FormsComponent implements OnInit, OnDestroy {
 
   /*  Remove a form if authorized.
   */
-  deleteForm(id: any, e: any): void {
+  onDelete(element: any, e: any): void {
     e.stopPropagation();
-    this.apollo.mutate<DeleteFormMutationResponse>({
-      mutation: DELETE_FORM,
-      variables: {
-        id
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete form',
+        content: `Do you confirm the deletion of the form ${element.name} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
       }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
-      this.dataSource = this.dataSource.filter(x => {
-        return x.id !== id;
-      });
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const id = element.id;
+        this.apollo.mutate<DeleteFormMutationResponse>({
+          mutation: DELETE_FORM,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+          this.dataSource = this.dataSource.filter(x => {
+            return x.id !== element.id;
+          });
+        });
+      }
     });
   }
 

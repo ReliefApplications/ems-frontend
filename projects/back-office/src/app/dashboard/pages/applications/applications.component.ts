@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { PermissionsManagement, PermissionType, WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse, ADD_APPLICATION } from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
@@ -50,18 +50,31 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  deleteApplication(id, e): void {
+  onDelete(element: any, e): void {
     e.stopPropagation();
-    this.apollo.mutate<DeleteApplicationMutationResponse>({
-      mutation: DELETE_APPLICATION,
-      variables: {
-        id
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete application',
+        content: `Do you confirm the deletion of the application ${element.name} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
       }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
-      this.applications = this.applications.filter(x => {
-        return x.id !== res.data.deleteApplication.id;
-      });
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if ( value ) {
+        const id = element.id;
+        this.apollo.mutate<DeleteApplicationMutationResponse>({
+          mutation: DELETE_APPLICATION,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
+          this.applications = this.applications.filter(x => {
+            return x.id !== res.data.deleteApplication.id;
+          });
+        });
+      }
     });
   }
 
