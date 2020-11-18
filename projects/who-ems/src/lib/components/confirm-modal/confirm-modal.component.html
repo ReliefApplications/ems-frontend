@@ -1,0 +1,5 @@
+<h1 mat-dialog-title>{{ this.modalText }}</h1>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>{{ this.cancelText }}</button>
+  <button mat-button (click)="onConfirm()">{{ this.confirmText }}</button>
+</div>
