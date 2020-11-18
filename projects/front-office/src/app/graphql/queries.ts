@@ -50,6 +50,25 @@ export const GET_APPLICATION_BY_ID = gql`
         type
         content
       }
+      roles {
+        id
+        title
+        permissions {
+          id
+          type
+        }
+        usersCount
+      }
+      users {
+        id
+        username
+        name
+        roles {
+          id
+          title
+        }
+        oid
+      }
     }
   }
 `;

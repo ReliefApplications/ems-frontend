@@ -52,6 +52,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 icon: 'dashboard'
               };
             })
+          },
+          {
+            name: 'Administration',
+            navItems: [
+              {
+                name: 'Users',
+                path: './settings/users',
+                icon: 'supervisor_account'
+              },
+              {
+                name: 'Roles',
+                path: './settings/roles',
+                icon: 'admin_panel_settings'
+              }
+            ]
           }
         ];
         this.router.navigate([this.navGroups[0].navItems[0].path]);
