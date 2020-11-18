@@ -35,8 +35,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.applicationSubscription.unsubscribe();
   }
 
-  onEdit(user: User): void {
-    console.log(user);
-  }
+  onEdit(user: User): void {}
 
 }
