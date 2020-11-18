@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { AddTabComponent } from './components/add-tab/add-tab.component';
-import { EditPageMutationResponse, EDIT_PAGE, AddStepMutationResponse, ADD_STEP, DeleteStepMutationResponse, DELETE_STEP } from '../../../graphql/mutations';
+import {
+  EditPageMutationResponse, EDIT_PAGE,
+  AddStepMutationResponse, ADD_STEP,
+  DeleteStepMutationResponse, DELETE_STEP,
+  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -24,6 +29,11 @@ export class WorkflowComponent implements OnInit {
   // === WORKFLOW NAME EDITION ===
   public formActive: boolean;
   public workflowNameForm: FormGroup;
+
+  // === SELECTED STEP ===
+  public dragging: boolean;
+  public displayStep = false;
+  public selectedStep: Step;
 
   constructor(
     private apollo: Apollo,
@@ -107,6 +117,8 @@ export class WorkflowComponent implements OnInit {
       this.steps = this.steps.filter(x => {
         return x.id !== res.data.deleteStep.id;
       });
+      this.router.navigate(['./'], { relativeTo: this.route });
+      this.displayStep = false;
     });
   }
 
@@ -129,11 +141,59 @@ export class WorkflowComponent implements OnInit {
             workflow: this.id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} step created`);
-          const content = res.data.addStep.content;
+          this.snackBar.openSnackBar('Step created');
           this.steps = this.steps.concat([res.data.addStep]);
+          this.selectedStep = res.data.addStep;
+          this.navigateToSelectedStep();
+          this.displayStep = true;
         });
       }
     });
+  }
+
+  navigateToSelectedStep(): void {
+    console.log('navigate');
+    if (this.displayStep) {
+      console.log('oui');
+      this.router.navigate(['./'], { relativeTo: this.route });
+    }
+    setTimeout(() => {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    }, 100);
+  }
+
+  /* Drop a step dragged into the list
+  */
+  dropStep(event: CdkDragDrop<string[]>): void{
+    this.dragging = false;
+    moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
+    if (event.previousIndex !== event.currentIndex) {
+      this.apollo.mutate<EditWorkflowMutationResponse>({
+        mutation: EDIT_WORKFLOW,
+        variables: {
+          id: this.id,
+          steps: this.steps.map(step => step.id)
+        }
+      }).subscribe( () => {
+        this.snackBar.openSnackBar('New step order : ' + this.steps.map(step => step.name));
+      });
+    }
+  }
+
+  onDragStart(event: any): void {
+    this.dragging = true;
+  }
+
+  /* Display selected step on click*/
+  onStepClick(event: any, step: Step): void {
+    if (this.dragging) {
+      this.dragging = false;
+      return;
+    }
+    if (this.selectedStep !== step) {
+      this.selectedStep = step;
+      this.navigateToSelectedStep();
+      this.displayStep = true;
+    }
   }
 }

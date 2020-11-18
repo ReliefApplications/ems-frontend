@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Step } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -496,6 +496,20 @@ mutation editPage($id: ID!, $name: String, $permissions: JSON) {
 export interface EditPageMutationResponse {
   loading: boolean;
   editPage: Page;
+}
+
+// === EDIT WORKFLOW ===
+export const EDIT_WORKFLOW = gql`
+mutation editWorkflow($id: ID!, $name: String, $steps: [ID], $permissions: JSON) {
+  editWorkflow(id: $id, name: $name, steps: $steps, permissions: $permissions){
+    id
+    name
+  }
+}`;
+
+export interface EditWorkflowMutationResponse {
+  loading: boolean;
+  editWorkflow: Workflow;
 }
 
 // === DELETE STEP ===

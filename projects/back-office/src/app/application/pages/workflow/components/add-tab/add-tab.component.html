@@ -3,14 +3,14 @@
     <form [formGroup]="tabForm">
         <div class="form-group">
             <mat-form-field>
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
-            </mat-form-field>
-            <mat-form-field>
                 <mat-label>Type</mat-label>
                 <mat-select formControlName="type">
                     <mat-option *ngFor="let type of tabTypes" [value]="type">{{ type }}</mat-option>
                 </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="!showContent">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
             </mat-form-field>
             <mat-form-field *ngIf="showContent">
                 <mat-label>Content</mat-label>

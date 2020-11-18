@@ -33,8 +33,8 @@ export class AddTabComponent implements OnInit {
       this.tabTypes = this.tabTypes.filter(type => type !==  ContentType.workflow);
     }
     this.tabForm = this.formBuilder.group({
-      name: [''],
       type: ['', Validators.required],
+      name: [''],
       content: [''],
     });
     this.changeDisplay();
