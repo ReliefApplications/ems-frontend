@@ -11,9 +11,76 @@
   }
 }
 
-.add-step-button {
-  position: fixed !important;
-  top: 96px;
-  right: 32px;
-  z-index: 2000;
+.step-list {
+  width: 1000px;
+  max-width: 100%;
+  min-height: 60px;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  border-top-width: 1px;
+  border-top-color: #9c9c9c;
+  border-top-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #9c9c9c;
+  border-bottom-style: solid;
+  margin-bottom: 32px;
+}
+
+.step-box {
+  min-width: 90px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: move;
+  font-size: 16px;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.step-box.selected {
+  background-color: #77d4ff88;
+}
+
+.step-handle {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  color: #000;
+  cursor: move;
+  width: 24px;
+  height: 24px;
+}
+
+
+.step-placeholder {
+  min-width: 90px;
+  background:  #a8a8a8;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  background-color: #77d4ff88;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.step-box:last-child {
+  border: none;
+}
+
+.step-list.cdk-drop-list-dragging .step-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.delete-button {
+  margin-top: 16px;
 }

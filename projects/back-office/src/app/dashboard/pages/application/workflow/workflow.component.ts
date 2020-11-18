@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatStepper } from '@angular/material/stepper';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
@@ -10,7 +10,8 @@ import { AddTabComponent } from '../components/add-tab/add-tab.component';
 import { 
   EditPageMutationResponse, EDIT_PAGE,
   AddStepMutationResponse, ADD_STEP,
-  DeleteStepMutationResponse, DELETE_STEP } from '../../../../graphql/mutations';
+  DeleteStepMutationResponse, DELETE_STEP,
+  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -30,8 +31,9 @@ export class WorkflowComponent implements OnInit {
   public workflowNameForm: FormGroup;
 
   // === SELECTED STEP ===
-  @ViewChild('stepper') stepper: MatStepper;
-  public step: Step;
+  public dragging: boolean;
+  public displayStep: boolean = false;
+  public selectedStep: Step;
 
   constructor(
     private apollo: Apollo,
@@ -53,8 +55,6 @@ export class WorkflowComponent implements OnInit {
       if (res.data.workflow) {
         this.workflow = res.data.workflow;
         this.steps = res.data.workflow.steps;
-        this.step = this.steps[0];
-        this.navigateToSelectedStep();
         this.workflowNameForm = new FormGroup({
           workflowName: new FormControl(this.workflow.name, Validators.required)
         });
@@ -117,7 +117,8 @@ export class WorkflowComponent implements OnInit {
       this.steps = this.steps.filter(x => {
         return x.id !== res.data.deleteStep.id;
       });
-      this.stepper.reset();
+      this.router.navigate(['./'], { relativeTo: this.route });
+      this.displayStep = false;
     });
   }
 
@@ -141,26 +142,58 @@ export class WorkflowComponent implements OnInit {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar('Step created');
-          const content = res.data.addStep.content;
           this.steps = this.steps.concat([res.data.addStep]);
-          this.step = res.data.addStep;
-          setTimeout(() => {
-            this.stepper.selectedIndex = this.steps.length - 1;
-          }, 1000);
+          this.selectedStep = res.data.addStep;
+          this.navigateToSelectedStep();
+          this.displayStep = true;
         });
       }
     });
   }
 
-  /* Display selected step
-  */
-  stepChange(e): void {
-    this.step = this.steps[e.selectedIndex];
-    this.navigateToSelectedStep();
-  }
-
   navigateToSelectedStep(): void {
     console.log('navigate');
-    this.router.navigate(['./' + this.step.type + '/' + this.step.content ], { relativeTo: this.route });
+    if (this.displayStep) {
+      console.log('oui');
+      this.router.navigate(['./'], { relativeTo: this.route });
+    }
+    setTimeout(() => {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    }, 100);
+  }
+
+  /* Drop a step dragged into the list
+  */
+  dropStep(event: CdkDragDrop<string[]>) {
+    this.dragging = false;
+    moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
+    if (event.previousIndex !== event.currentIndex) {
+      this.apollo.mutate<EditWorkflowMutationResponse>({
+        mutation: EDIT_WORKFLOW,
+        variables: {
+          id: this.id,
+          steps: this.steps.map(step => step.id)
+        }
+      }).subscribe( () => {
+        this.snackBar.openSnackBar('New step order : ' + this.steps.map(step => step.name));
+      });
+    }
+  }
+
+  onDragStart(event: any) {
+    this.dragging = true;
+  }
+
+  /* Display selected step on click*/
+  onStepClick(event: any, step: Step) {
+    if (this.dragging) {
+      this.dragging = false;
+      return
+    }
+    if (this.selectedStep !== step) {
+      this.selectedStep = step;
+      this.navigateToSelectedStep();
+      this.displayStep = true;
+    }
   }
 }

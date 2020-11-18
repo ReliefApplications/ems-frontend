@@ -16,6 +16,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
+import {MatDividerModule} from '@angular/material/divider';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [WorkflowComponent],
@@ -36,6 +38,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatMenuModule,
     MatTableModule,
     MatStepperModule,
+    MatDividerModule,
+    DragDropModule
   ],
   exports: [WorkflowComponent]
 })
