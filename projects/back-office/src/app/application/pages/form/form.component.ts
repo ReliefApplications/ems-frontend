@@ -37,7 +37,6 @@ export class FormComponent implements OnInit {
       }).valueChanges.subscribe(res => {
         this.loading = res.loading;
         this.form = res.data.form;
-        console.log('init done')
       });
     }
   }

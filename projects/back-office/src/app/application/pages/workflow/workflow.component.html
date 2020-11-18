@@ -26,7 +26,7 @@
             Step
         </button>
         <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
-        (click)="onStepClick($event, step)" (cdkDragStarted)="onDragStart($event)" 
+        (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()" 
         [class.selected]="step === selectedStep" cdkDrag>
             <div class="step-placeholder" *cdkDragPlaceholder></div>
             {{step.name}}
@@ -35,10 +35,9 @@
             </div>
         </div>
     </div>
-    <ng-container *ngIf="displayStep">
-        <router-outlet></router-outlet>
-        <button mat-fab color="warn" class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </ng-container>
+    <a>{{route.snapshot.url}}</a>
 </ng-container>
+<router-outlet></router-outlet>
+<button *ngIf="displayStep" mat-fab color="warn" class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
+    <mat-icon>delete</mat-icon>
+</button>
