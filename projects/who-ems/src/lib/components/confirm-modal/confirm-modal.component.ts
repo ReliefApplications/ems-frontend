@@ -1,5 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
-import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+interface DialogData {
+  title?: string;
+  content?: string;
+  cancelText?: string;
+  confirmText?: string;
+  confirmColor?: string;
+}
 
 @Component({
   selector: 'who-confirm-modal',
@@ -8,18 +16,20 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 })
 export class WhoConfirmModalComponent implements OnInit {
 
-  constructor(
-    public dialogRef: MatDialogRef<WhoConfirmModalComponent>
-  ) {
+  public title = 'Confirm';
+  public content: string;
+  public cancelText = 'Cancel';
+  public confirmText = 'Confirm';
+  public confirmColor = 'primary';
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    if ( data.title ) { this.title = data.title; }
+    if ( data.content ) { this.content = data.content; }
+    if ( data.cancelText ) { this.cancelText = data.cancelText; }
+    if ( data.confirmText ) { this.confirmText = data.confirmText; }
+    if ( data.confirmColor ) { this.confirmColor = data.confirmColor; }
   }
-  @Input() modalText = 'Do you confirm?';
-  @Input() cancelText = 'Cancel';
-  @Input() confirmText = 'Confirm';
 
   ngOnInit(): void {
-  }
-
-  onConfirm(): void {
-    this.dialogRef.close();
   }
 }

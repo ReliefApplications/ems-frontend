@@ -48,6 +48,7 @@ export class ApplicationService {
         id
       }
     }).subscribe(res => {
+      this.snackBar.openSnackBar('Page deleted');
       const application = this._application.getValue();
       application.pages = application.pages.filter(x => x.id !== res.data.deletePage.id);
       this._application.next(application);
