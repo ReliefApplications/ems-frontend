@@ -351,6 +351,16 @@ export const GET_APPLICATION_BY_ID = gql`
         }
         usersCount
       }
+      users {
+        id
+        username
+        name
+        roles {
+          id
+          title
+        }
+        oid
+      }
       permissions {
         canSee {
           id
