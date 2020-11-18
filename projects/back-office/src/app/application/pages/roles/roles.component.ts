@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Application, Role } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../../../services/application.service';
+import { AddRoleComponent } from './components/add-role/add-role.component';
 
 @Component({
   selector: 'app-roles',
@@ -37,7 +38,14 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.applicationSubscription.unsubscribe();
   }
 
-  onAdd(): void {}
+  onAdd(): void {
+    const dialogRef = this.dialog.open(AddRoleComponent);
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.addRole(value);
+      }
+    });
+  }
 
   onEdit(role: Role): void {}
 

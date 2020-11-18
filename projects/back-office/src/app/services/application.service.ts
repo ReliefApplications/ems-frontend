@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoSnackBarService } from '@who-ems/builder';
+import { Application, User, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE,
-  EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
+import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse, ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
+  EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -89,5 +89,52 @@ export class ApplicationService {
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
     }
+  }
+
+  addRole(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleMutationResponse>({
+      mutation: ADD_ROLE,
+      variables: {
+        title: value.title,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.roles = application.roles.concat([res.data.addRole]);
+      this._application.next(application);
+    });
+  }
+
+  inviteUser(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleToUserMutationResponse>({
+      mutation: ADD_ROLE_TO_USER,
+      variables: {
+        id: value.user,
+        role: value.role
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.users = application.users.concat([res.data.addRoleToUser]);
+      this._application.next(application);
+    });
+  }
+
+  editUser(user: User, value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditUserMutationResponse>({
+      mutation: EDIT_USER,
+      variables: {
+        id: user.id,
+        roles: value.roles,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${user.username} roles updated.`);
+      const index = application.users.indexOf(user);
+      application.users[index] = res.data.editUser;
+      this._application.next(application);
+    });
   }
 }

@@ -152,9 +152,7 @@ export class WorkflowComponent implements OnInit {
   }
 
   navigateToSelectedStep(): void {
-    console.log('navigate');
     if (this.displayStep) {
-      console.log('oui');
       this.router.navigate(['./'], { relativeTo: this.route });
     }
     setTimeout(() => {

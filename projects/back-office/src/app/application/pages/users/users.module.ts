@@ -12,10 +12,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { InviteUserComponent } from './components/invite-user/invite-user.component';
+import { MatInputModule } from '@angular/material/input';
+import { EditUserComponent } from './components/edit-user/edit-user.component';
 
 
 @NgModule({
-  declarations: [UsersComponent],
+  declarations: [UsersComponent, InviteUserComponent, EditUserComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,
@@ -28,7 +32,9 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatInputModule,
+    MatAutocompleteModule
   ],
   exports: [UsersComponent]
 })
