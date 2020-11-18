@@ -25,7 +25,6 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    console.log(this.canUpdate)
   }
 
   /*  Material grid once template ready.
