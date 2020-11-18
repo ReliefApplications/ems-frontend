@@ -134,7 +134,6 @@ export class ApplicationService {
       this.snackBar.openSnackBar(`${user.username} roles updated.`);
       const index = application.users.indexOf(user);
       application.users[index] = res.data.editUser;
-      console.log(application);
       this._application.next(application);
     });
   }
