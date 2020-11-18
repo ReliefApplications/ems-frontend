@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Application, User } from '@who-ems/builder';
+import { MatDialog } from '@angular/material/dialog';
+import { Application, Role, User } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../../../services/application.service';
+import { InviteUserComponent } from './components/invite-user/invite-user.component';
 
 @Component({
   selector: 'app-users',
@@ -12,11 +14,12 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public users = [];
+  public users: User[] = [];
   public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
   private applicationSubscription: Subscription;
 
   constructor(
+    public dialog: MatDialog,
     private applicationService: ApplicationService
   ) { }
 
@@ -33,6 +36,15 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.applicationSubscription.unsubscribe();
+  }
+
+  onInvite(): void {
+    const dialogRef = this.dialog.open(InviteUserComponent);
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.inviteUser(value);
+      }
+    });
   }
 
   onEdit(user: User): void {}

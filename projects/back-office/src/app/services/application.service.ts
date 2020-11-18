@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, AddRoleMutationResponse, ADD_PAGE, ADD_ROLE, DeletePageMutationResponse, DELETE_PAGE,
+import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse, ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
   EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -102,6 +102,21 @@ export class ApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.roles = application.roles.concat([res.data.addRole]);
+      this._application.next(application);
+    });
+  }
+
+  inviteUser(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleToUserMutationResponse>({
+      mutation: ADD_ROLE_TO_USER,
+      variables: {
+        id: value.user,
+        role: value.role
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.users = application.users.concat([res.data.addRoleToUser]);
       this._application.next(application);
     });
   }

@@ -14,7 +14,7 @@ export interface EditUserMutationResponse {
   editUser: User;
 }
 
-// === ADD RECORD ===
+// === ADD ROLE ===
 export const ADD_ROLE = gql`
 mutation addRole($title: String!, $application: ID) {
   addRole(title: $title, application: $application) {
@@ -31,6 +31,25 @@ mutation addRole($title: String!, $application: ID) {
 export interface AddRoleMutationResponse {
   loading: boolean;
   addRole: Role;
+}
+
+export const ADD_ROLE_TO_USER = gql`
+mutation addRoleToUser($id: ID!, $role: ID!) {
+  addRoleToUser(id: $id, role: $role) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
+  }
+}`;
+
+export interface AddRoleToUserMutationResponse {
+  loading: boolean;
+  addRoleToUser: User;
 }
 
 // === ADD RECORD ===
