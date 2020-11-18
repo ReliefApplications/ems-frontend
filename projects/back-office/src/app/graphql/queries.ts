@@ -271,6 +271,10 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       canSee
       canUpdate
+      application {
+        id
+        name
+      }
     }
   }
 `;
@@ -337,6 +341,25 @@ export const GET_APPLICATION_BY_ID = gql`
         canSee
         canUpdate
         canDelete
+      }
+      roles {
+        id
+        title
+        permissions {
+          id
+          type
+        }
+        usersCount
+      }
+      users {
+        id
+        username
+        name
+        roles {
+          id
+          title
+        }
+        oid
       }
       permissions {
         canSee {

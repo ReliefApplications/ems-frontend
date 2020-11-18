@@ -23,7 +23,7 @@ export class AddTabComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<AddTabComponent>,
-    @Inject(MAT_DIALOG_DATA) public data : { showWorkflow: boolean }
+    @Inject(MAT_DIALOG_DATA) public data: { showWorkflow: boolean }
   ) { }
 
   /*  Build the form.
@@ -49,14 +49,14 @@ export class AddTabComponent implements OnInit {
   /* Change the form's display by adding a Content field if the selected type is form.
     Also fetch forms to display them in the select.
   */
-  changeDisplay() {
+  changeDisplay(): void {
     const contentControl = this.tabForm.get('content');
     this.tabForm.get('type').valueChanges.subscribe(type => {
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
           query: GET_FORMS,
         }).valueChanges.subscribe((res) => {
-          this.forms = res.data.forms
+          this.forms = res.data.forms;
           contentControl.setValidators([Validators.required]);
           contentControl.updateValueAndValidity();
           this.showContent = true;
@@ -68,5 +68,5 @@ export class AddTabComponent implements OnInit {
         this.showContent = false;
       }
     });
-  } 
+  }
 }

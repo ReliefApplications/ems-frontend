@@ -5,13 +5,13 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../../graphql/queries';
-import { AddTabComponent } from '../components/add-tab/add-tab.component';
-import { 
+import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
+import { AddTabComponent } from './components/add-tab/add-tab.component';
+import {
   EditPageMutationResponse, EDIT_PAGE,
   AddStepMutationResponse, ADD_STEP,
   DeleteStepMutationResponse, DELETE_STEP,
-  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../../graphql/mutations';
+  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -19,7 +19,7 @@ import {
   styleUrls: ['./workflow.component.scss']
 })
 export class WorkflowComponent implements OnInit {
-  
+
   // === DATA ===
   public id: string;
   public loading = true;
@@ -32,7 +32,7 @@ export class WorkflowComponent implements OnInit {
 
   // === SELECTED STEP ===
   public dragging: boolean;
-  public displayStep: boolean = false;
+  public displayStep = false;
   public selectedStep: Step;
 
   constructor(
@@ -100,7 +100,7 @@ export class WorkflowComponent implements OnInit {
       }
     }).subscribe(res => {
       this.workflow.page.permissions = res.data.editPage.permissions;
-    }); 
+    });
   }
 
   /*  Delete a step if authorized.
@@ -164,7 +164,7 @@ export class WorkflowComponent implements OnInit {
 
   /* Drop a step dragged into the list
   */
-  dropStep(event: CdkDragDrop<string[]>) {
+  dropStep(event: CdkDragDrop<string[]>): void{
     this.dragging = false;
     moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
     if (event.previousIndex !== event.currentIndex) {
@@ -180,15 +180,15 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-  onDragStart(event: any) {
+  onDragStart(event: any): void {
     this.dragging = true;
   }
 
   /* Display selected step on click*/
-  onStepClick(event: any, step: Step) {
+  onStepClick(event: any, step: Step): void {
     if (this.dragging) {
       this.dragging = false;
-      return
+      return;
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;

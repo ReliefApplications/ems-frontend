@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove files
-REMOTE_PATH=/var/www/html/ems-ui-poc
+REMOTE_PATH=/var/www/html/ems-back-office
 OUT=dist/back-office
 CONNECTION=newton@92.243.16.149
 

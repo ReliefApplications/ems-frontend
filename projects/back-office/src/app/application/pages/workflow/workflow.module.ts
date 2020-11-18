@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ApplicationRoutingModule } from './application-routing.module';
-import { ApplicationComponent } from './application.component';
+import { WorkflowRoutingModule } from './workflow-routing.module';
+import { WorkflowComponent } from './workflow.component';
 import { WhoAccessModule } from '@who-ems/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,13 +15,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import {MatDividerModule} from '@angular/material/divider';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AddTabComponent } from './components/add-tab/add-tab.component';
 
 @NgModule({
-  declarations: [ApplicationComponent, AddTabComponent],
+  declarations: [
+    WorkflowComponent,
+    AddTabComponent
+  ],
   imports: [
     CommonModule,
-    ApplicationRoutingModule,
+    WorkflowRoutingModule,
     WhoAccessModule,
     FormsModule,
     ReactiveFormsModule,
@@ -34,8 +40,11 @@ import { AddTabComponent } from './components/add-tab/add-tab.component';
     MatDialogModule,
     MatTooltipModule,
     MatMenuModule,
-    MatTableModule
+    MatTableModule,
+    MatStepperModule,
+    MatDividerModule,
+    DragDropModule
   ],
-  exports: [ApplicationComponent]
+  exports: [WorkflowComponent]
 })
-export class ApplicationModule { }
+export class WorkflowModule { }
