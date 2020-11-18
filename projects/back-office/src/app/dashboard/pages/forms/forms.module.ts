@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { WhoConfirmModalModule } from '@who-ems/builder';
 
 @NgModule({
   declarations: [FormsComponent, AddFormComponent],
@@ -36,7 +37,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatIconModule,
     MatChipsModule,
     MatRadioModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    WhoConfirmModalModule
   ],
   exports: [FormsComponent]
 })
