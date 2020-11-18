@@ -16,10 +16,14 @@ export interface EditUserMutationResponse {
 
 // === ADD RECORD ===
 export const ADD_ROLE = gql`
-mutation addRole($title: String!) {
-  addRole(title: $title) {
+mutation addRole($title: String!, $application: ID) {
+  addRole(title: $title, application: $application) {
     id
     title
+    permissions {
+      id
+      type
+    }
     usersCount
   }
 }`;

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE,
+import { AddPageMutationResponse, AddRoleMutationResponse, ADD_PAGE, ADD_ROLE, DeletePageMutationResponse, DELETE_PAGE,
   EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -89,5 +89,20 @@ export class ApplicationService {
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
     }
+  }
+
+  addRole(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleMutationResponse>({
+      mutation: ADD_ROLE,
+      variables: {
+        title: value.title,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.roles = application.roles.concat([res.data.addRole]);
+      this._application.next(application);
+    });
   }
 }
