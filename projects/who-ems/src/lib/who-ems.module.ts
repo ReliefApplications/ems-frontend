@@ -15,6 +15,10 @@ import { WhoSchedulerModule } from './components/widgets/scheduler/scheduler.mod
 import { WhoSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { WhoWidgetModule } from './components/widget/widget.module';
 import { WhoWidgetGridModule } from './components/widget-grid/widget-grid.module';
+<<<<<<< Updated upstream
+=======
+import {WhoConfirmDeleteModalModule} from './components/confirm-delete-modal/confirm-delete-modal.module';
+>>>>>>> Stashed changes
 
 @NgModule({
   declarations: [],
