@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard/:id',
-        loadChildren: () => import('../../../dashboard/dashboard.module')
+        loadChildren: () => import('../../../dashboard/pages/dashboard/dashboard.module')
           .then(m => m.DashboardModule),
       },
       {

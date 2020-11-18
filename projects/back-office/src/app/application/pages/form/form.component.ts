@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Form, WhoFormComponent } from '@who-ems/builder';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../../graphql/queries';
+import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-form',
@@ -10,7 +10,7 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../../graphql/qu
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
-  
+
   @ViewChild(WhoFormComponent)
   private formComponent: WhoFormComponent;
 
@@ -50,8 +50,7 @@ export class FormComponent implements OnInit {
     this.formComponent.reset();
   }
 
-  editForm() {
-    let id = this.route.snapshot.params.id;
-    this.router.navigate(['./forms/builder/', id]);
+  editForm(): void {
+    this.router.navigate(['./forms/builder/', this.id]);
   }
 }
