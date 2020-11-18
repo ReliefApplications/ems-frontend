@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Application } from '@who-ems/builder';
+import { Application, WhoConfirmModalComponent } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
 
@@ -26,7 +27,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationService: ApplicationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +60,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 orderable: true,
                 action: {
                   icon: 'delete',
-                  callback: () => this.onDelete(x.id)
+                  callback: () => this.onDelete(x)
                 }
               };
             }))
@@ -86,8 +88,18 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDelete(id: string): void {
-    this.applicationService.deletePage(id);
+  onDelete(item: any): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete page',
+        content: `Do you confirm the deletion of the page ${item.name} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if ( value ) { this.applicationService.deletePage(item.id); }
+    });
   }
 
   onReorder(event: any): void {

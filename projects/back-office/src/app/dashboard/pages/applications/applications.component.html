@@ -24,7 +24,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="deleteApplication(element.id, $event)" *ngIf="element.canDelete">
+          <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
             <mat-icon>delete</mat-icon>
             Delete
           </button>

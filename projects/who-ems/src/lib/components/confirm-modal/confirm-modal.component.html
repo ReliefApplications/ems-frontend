@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+<mat-dialog-content *ngIf="content">{{ content }}</mat-dialog-content>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ cancelText }}</button>
+  <button mat-raised-button [color]="confirmColor" [mat-dialog-close]="true">{{ confirmText }}</button>
+</div>
