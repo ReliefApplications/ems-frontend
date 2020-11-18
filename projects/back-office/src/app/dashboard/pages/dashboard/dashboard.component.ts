@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,13 +7,14 @@ import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { EditDashboardMutationResponse, EDIT_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public id: string;
@@ -28,6 +29,9 @@ export class DashboardComponent implements OnInit {
   public formActive: boolean;
   public dashboardNameForm: FormGroup;
 
+  // === ROUTE ===
+  private routeSubscription: Subscription;
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -37,32 +41,39 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.formActive = false;
-    this.id = this.route.snapshot.params.id;
-    this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
-      query: GET_DASHBOARD_BY_ID,
-      variables: {
-        id: this.id
-      }
-    }).valueChanges.subscribe((res) => {
-      if (res.data.dashboard) {
-        this.dashboard = res.data.dashboard;
-        this.dashboardNameForm = new FormGroup({
-          dashboardName: new FormControl(this.dashboard.name, Validators.required)
-        });
-        this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
-        this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
-        this.loading = res.loading;
-      } else {
-        this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });
-        this.router.navigate(['/dashboards']);
-      }
-    },
-      (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/dashboards']);
-      }
-    );
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      this.formActive = false;
+      this.loading = true;
+      this.id = params.id;
+      this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id
+        }
+      }).valueChanges.subscribe((res) => {
+        if (res.data.dashboard) {
+          this.dashboard = res.data.dashboard;
+          this.dashboardNameForm = new FormGroup({
+            dashboardName: new FormControl(this.dashboard.name, Validators.required)
+          });
+          this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
+          this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
+          this.loading = res.loading;
+        } else {
+          this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });
+          this.router.navigate(['/dashboards']);
+        }
+      },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.router.navigate(['/dashboards']);
+        }
+      );
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routeSubscription.unsubscribe();
   }
 
   /*  Add a new widget to the dashboard.

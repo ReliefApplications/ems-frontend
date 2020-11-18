@@ -10,6 +10,17 @@ const routes: Routes = [
     canActivate: [MsalGuard]
   },
   {
+    path: 'applications',
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./application/application.module')
+          .then(m => m.ApplicationModule),
+      }
+    ],
+    canActivate: [MsalGuard]
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module')
       .then(m => m.AuthModule)
@@ -21,7 +32,7 @@ const routes: Routes = [
   }
 ];
 
-/*  Root module of Routing. Separate the front into two modules: 'auth' and 'dashboard'.
+/*  Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
     Use lazy loading for performance.
 */
 @NgModule({

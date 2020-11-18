@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.routeSubscription.unsubscribe();
   }
 

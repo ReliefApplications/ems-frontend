@@ -4,12 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../../graphql/queries';
-import { AddTabComponent } from '../components/add-tab/add-tab.component';
-import { 
-  EditPageMutationResponse, EDIT_PAGE,
-  AddStepMutationResponse, ADD_STEP,
-  DeleteStepMutationResponse, DELETE_STEP } from '../../../../graphql/mutations';
+import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
+import { AddTabComponent } from './components/add-tab/add-tab.component';
+import { EditPageMutationResponse, EDIT_PAGE, AddStepMutationResponse, ADD_STEP, DeleteStepMutationResponse, DELETE_STEP } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -17,7 +14,7 @@ import {
   styleUrls: ['./workflow.component.scss']
 })
 export class WorkflowComponent implements OnInit {
-  
+
   // === DATA ===
   public id: string;
   public loading = true;
@@ -93,7 +90,7 @@ export class WorkflowComponent implements OnInit {
       }
     }).subscribe(res => {
       this.workflow.page.permissions = res.data.editPage.permissions;
-    }); 
+    });
   }
 
   /*  Delete a step if authorized.
