@@ -19,8 +19,9 @@
     (filterChange)="filterChange($event)"
     (cellClick)="cellClickHandler($event)"
     >
-    <ng-template kendoGridToolbarTemplate position="top" *ngIf="(canEdit && settings && settings.toolbar)">
+    <ng-template kendoGridToolbarTemplate position="top">
         <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button>
+        <button type="button" kendoGridExcelCommand class="k-button">Export</button>
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
         <ng-container *ngFor="let field of fields">
@@ -52,5 +53,6 @@
             <app-sub-grid [settings]="settings.childGrid" [parent]="dataItem"></app-sub-grid>
         </div>
     </ng-container>
+    <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
 </kendo-grid>
 </div>
