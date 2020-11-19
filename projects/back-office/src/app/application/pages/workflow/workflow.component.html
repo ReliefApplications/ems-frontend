@@ -35,10 +35,10 @@
                 <div class="step-handle" cdkDragHandle>
                     <mat-icon>drag_indicator</mat-icon>
                 </div>
+                <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
+                    <mat-icon>delete</mat-icon>
+                </button>
             </div>
-            <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
-                <mat-icon>delete</mat-icon>
-            </button>
         </div>
         <mat-divider></mat-divider>
     </div>
