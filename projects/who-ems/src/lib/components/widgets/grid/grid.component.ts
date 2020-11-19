@@ -50,6 +50,9 @@ export class WhoGridComponent implements OnInit, OnChanges {
   // === SETTINGS ===
   @Input() settings: any = null;
 
+  // === EXCEL ===
+  public excelFileName: string;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -104,6 +107,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
       }).valueChanges.subscribe(res => {
         this.loading = false;
         this.canEdit = res.data.resource.canCreate;
+        this.excelFileName = `${res.data.resource.name}.xlsx`;
         const fields = [];
         for (const field of res.data.resource.fields) {
           if (this.settings.fields.indexOf(field.name) > -1) {
@@ -132,6 +136,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
       }).valueChanges.subscribe(res => {
         this.loading = false;
         this.canEdit = res.data.form.canCreate;
+        this.excelFileName = `${res.data.form.name}.xlsx`;
         const fields = [];
         for (const field of res.data.form.fields) {
           if (this.settings.fields.indexOf(field.name) > -1) {
