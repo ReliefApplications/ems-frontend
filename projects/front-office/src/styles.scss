@@ -146,6 +146,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }  
 }
 
+.mat-spinner {
+  margin: auto;
+}
+
 .action-button {
   position: fixed !important;
   bottom: 32px;

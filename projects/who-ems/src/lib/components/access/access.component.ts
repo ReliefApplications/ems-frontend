@@ -13,6 +13,9 @@ export class WhoAccessComponent implements OnInit {
   @Input() access: any;
   @Input() application: string;
 
+  // === DISPLAY ===
+  @Input() menuItem: boolean;
+
   // === PASS THE RESULT TO PARENT COMPONENT ===
   @Output() save: EventEmitter<any> = new EventEmitter();
 

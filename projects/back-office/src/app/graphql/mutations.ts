@@ -426,23 +426,18 @@ mutation editApplication($id: ID!, $name: String, $pages: [ID], $permissions: JS
   editApplication(id: $id, name: $name, pages: $pages, permissions: $permissions) {
     id
     name
+    createdAt
     modifiedAt
     pages {
       id
       name
+      createdAt
       type
       content
-      createdAt
-      canSee
-      canUpdate
-      canDelete
     }
+    settings
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -457,6 +452,7 @@ mutation editApplication($id: ID!, $name: String, $pages: [ID], $permissions: JS
     }
     canSee
     canUpdate
+    canDelete
   }
 }`;
 
