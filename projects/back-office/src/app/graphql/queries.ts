@@ -271,9 +271,10 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       canSee
       canUpdate
-      application {
-        id
-        name
+      page {
+        application {
+          id
+        }
       }
     }
   }
