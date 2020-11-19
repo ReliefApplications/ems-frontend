@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WhoTileDisplayComponent } from './tile-display.component';
 
@@ -6,7 +6,7 @@ describe('WhoTileDisplayComponent', () => {
   let component: WhoTileDisplayComponent;
   let fixture: ComponentFixture<WhoTileDisplayComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WhoTileDisplayComponent ]
     })
