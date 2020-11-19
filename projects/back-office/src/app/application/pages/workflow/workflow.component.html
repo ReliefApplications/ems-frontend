@@ -20,35 +20,28 @@
             </button>
         </form>
     </ng-container>
-    <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
-        <button mat-button class="add-step-button" color="primary" (click)="addStep()">
-            <mat-icon>add</mat-icon>
-            Step
-        </button>
-        <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
-        (click)="onStepClick($event, step)" (cdkDragStarted)="onDragStart($event)" 
-        [class.selected]="step === selectedStep" 
-        [cdkDragDisabled]="step !== selectedStep" cdkDrag>
-            <div class="step-placeholder" *cdkDragPlaceholder></div>
-            {{step.name}}
-            <div *ngIf="step === selectedStep" class="step-handle" cdkDragHandle>
-                <svg width="12px" fill="currentColor" viewBox="0 0 24 24">
-                    <g>
-                        <rect id="svg_1" height="4.49695" width="4.64939" y="2.7965" x="4.03507" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                        <rect id="svg_2" height="4.49695" width="4.64939" y="9.88491" x="3.95885" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                        <rect id="svg_3" height="4.49695" width="4.64939" y="17" x="4.03507" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                        <rect id="svg_4" height="4.49695" width="4.64939" y="2.7965" x="14" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                        <rect id="svg_5" height="4.49695" width="4.64939" y="10" x="14" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                        <rect id="svg_6" height="4.49695" width="4.64939" y="17" x="14" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#fff" fill="#000"/>
-                    </g>
-                </svg>
+    <div class="step-list-container">
+        <mat-divider></mat-divider>
+        <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
+            <button mat-button class="add-step-button" color="primary" (click)="addStep()">
+                <mat-icon class="add-icon">add_circle</mat-icon>
+                Step
+            </button>
+            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
+            (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()" 
+            [class.selected]="step === selectedStep" cdkDrag>
+                <div class="step-placeholder" *cdkDragPlaceholder></div>
+                {{step.name}}
+                <div class="step-handle" cdkDragHandle>
+                    <mat-icon>drag_indicator</mat-icon>
+                </div>
             </div>
         </div>
+        <mat-divider></mat-divider>
     </div>
-    <ng-container *ngIf="displayStep">
-        <router-outlet></router-outlet>
-        <button mat-fab color="warn" class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </ng-container>
+    <!-- <a>{{route.snapshot.url}}</a> -->
 </ng-container>
+<router-outlet></router-outlet>
+<button *ngIf="displayStep" mat-fab color="warn" class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
+    <mat-icon>delete</mat-icon>
+</button>

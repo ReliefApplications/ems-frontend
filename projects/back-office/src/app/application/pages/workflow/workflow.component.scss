@@ -11,20 +11,22 @@
   }
 }
 
+.add-step-button {
+  .add-icon {
+    color: #13AD38;
+  }
+}
+
+.step-list-container {
+  margin: 0 -24px 32px;
+}
+
 .step-list {
-  width: 1000px;
-  max-width: 100%;
   min-height: 60px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  border-top-width: 1px;
-  border-top-color: #9c9c9c;
-  border-top-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #9c9c9c;
-  border-bottom-style: solid;
-  margin-bottom: 32px;
+  padding: 0 8px;
 }
 
 .step-box {
@@ -41,10 +43,16 @@
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-}
 
-.step-box.selected {
-  background-color: #77d4ff88;
+  .step-handle {
+    color: transparent;
+  }
+  &:hover {
+    background: #d3d3d354;
+    .step-handle {
+      color: #aeaeaf;
+    }
+  }
 }
 
 .step-handle {
@@ -57,6 +65,9 @@
   height: 24px;
 }
 
+.step-box.selected {
+  background-color: #77d4ff88;
+}
 
 .step-placeholder {
   min-width: 90px;

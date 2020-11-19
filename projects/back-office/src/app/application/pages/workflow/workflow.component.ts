@@ -152,12 +152,7 @@ export class WorkflowComponent implements OnInit {
   }
 
   navigateToSelectedStep(): void {
-    if (this.displayStep) {
-      this.router.navigate(['./'], { relativeTo: this.route });
-    }
-    setTimeout(() => {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
-    }, 100);
+    this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
   }
 
   /* Drop a step dragged into the list
@@ -178,12 +173,12 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-  onDragStart(event: any): void {
+  onDragStart(): void {
     this.dragging = true;
   }
 
   /* Display selected step on click*/
-  onStepClick(event: any, step: Step): void {
+  onStepClick(step: Step): void {
     if (this.dragging) {
       this.dragging = false;
       return;

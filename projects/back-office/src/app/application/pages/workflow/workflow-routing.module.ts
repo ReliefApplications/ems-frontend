@@ -8,6 +8,11 @@ const routes: Routes = [
     component: WorkflowComponent,
     children: [
       {
+        path: '',
+        loadChildren: () => import('./components/home/home.module')
+          .then(m => m.HomeModule),
+      },
+      {
         path: 'dashboard/:id',
         loadChildren: () => import('../../../dashboard/pages/dashboard/dashboard.module')
           .then(m => m.DashboardModule),
