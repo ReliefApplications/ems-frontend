@@ -11,6 +11,7 @@ export class WhoAccessComponent implements OnInit {
 
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
   @Input() access: any;
+  @Input() application: string;
 
   // === PASS THE RESULT TO PARENT COMPONENT ===
   @Output() save: EventEmitter<any> = new EventEmitter();
@@ -27,7 +28,8 @@ export class WhoAccessComponent implements OnInit {
   onClick(): void {
     const dialogRef = this.dialog.open(WhoEditAccessComponent, {
       data: {
-        access: this.access
+        access: this.access,
+        application: this.application
       }
     });
     dialogRef.afterClosed().subscribe(res => {

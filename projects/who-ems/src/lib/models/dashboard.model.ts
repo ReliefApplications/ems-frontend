@@ -1,4 +1,4 @@
-import { Application } from './application.model';
+import { Page } from './page.model';
 
 /*  Model for Dashboard object.
 */
@@ -13,5 +13,5 @@ export interface Dashboard {
     canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
-    application?: Application;
+    page?: Page;
 }

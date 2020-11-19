@@ -208,8 +208,8 @@ export interface GetRecordByIdQueryResponse {
 
 // === GET ROLES ===
 export const GET_ROLES = gql`
-{
-  roles {
+query GetRoles($application: ID) {
+  roles(application: $application) {
     id
     title
     permissions {
