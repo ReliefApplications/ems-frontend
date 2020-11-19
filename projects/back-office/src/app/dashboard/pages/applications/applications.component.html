@@ -24,6 +24,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+          <who-access menuItem="true" [access]="element.permissions" (save)="saveAccess($event, element)" *ngIf="element.canUpdate"></who-access>
           <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
             <mat-icon>delete</mat-icon>
             Delete

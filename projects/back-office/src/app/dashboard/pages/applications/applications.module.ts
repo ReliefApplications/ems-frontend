@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
-import { WhoConfirmModalModule } from '@who-ems/builder';
+import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent],
@@ -32,7 +32,8 @@ import { WhoConfirmModalModule } from '@who-ems/builder';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    WhoConfirmModalModule
+    WhoConfirmModalModule,
+    WhoAccessModule
   ],
   exports: [ApplicationsComponent]
 })

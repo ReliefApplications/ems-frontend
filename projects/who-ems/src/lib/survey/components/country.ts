@@ -1,4 +1,4 @@
-export function init(Survey: any){
+export function init(Survey: any): void{
     const component = {
     // Unique component name. It becomes a new question type. Please note, it should be written in lowercase.
     name: 'country',

@@ -34,7 +34,7 @@ export class WhoTileDisplayComponent implements OnInit {
 
   /*  Close the modal without sending any data.
   */
-  onClose() {
+  onClose(): void {
     this.dialogRef.close();
   }
 

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoSnackBarService } from '@who-ems/builder';
+import { Router } from '@angular/router';
+import { Application, User, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, ADD_PAGE, DeletePageMutationResponse, DELETE_PAGE,
-  EditApplicationMutationResponse, EDIT_APPLICATION } from '../graphql/mutations';
+import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
+  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
+  EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -18,8 +19,7 @@ export class ApplicationService {
   constructor(
     private apollo: Apollo,
     private snackBar: WhoSnackBarService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) { }
 
   /*  Get the application from the database, using GraphQL.
@@ -41,6 +41,8 @@ export class ApplicationService {
     return this._application.asObservable();
   }
 
+  /* Delete a page and the associated content.
+  */
   deletePage(id: string): void {
     this.apollo.mutate<DeletePageMutationResponse>({
       mutation: DELETE_PAGE,
@@ -55,6 +57,8 @@ export class ApplicationService {
     });
   }
 
+  /* Reorder the pages, using material Drag n Drop.
+  */
   reorderPages(pages: string[]): void {
     const application = this._application.getValue();
     this.apollo.mutate<EditApplicationMutationResponse>({
@@ -68,6 +72,8 @@ export class ApplicationService {
     });
   }
 
+  /* Add a new page to the opened application.
+  */
   addPage(value: any): void {
     const application = this._application.getValue();
     if (application) {
@@ -89,5 +95,58 @@ export class ApplicationService {
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
     }
+  }
+
+  /* Add a new role to the opened application.
+  */
+  addRole(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleMutationResponse>({
+      mutation: ADD_ROLE,
+      variables: {
+        title: value.title,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.roles = application.roles.concat([res.data.addRole]);
+      this._application.next(application);
+    });
+  }
+
+  /* Invite an user to the opened application.
+  */
+  inviteUser(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddRoleToUserMutationResponse>({
+      mutation: ADD_ROLE_TO_USER,
+      variables: {
+        id: value.user,
+        role: value.role
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
+      application.users = application.users.concat([res.data.addRoleToUser]);
+      this._application.next(application);
+    });
+  }
+
+  /* Edit an user that has access to the application.
+  */
+  editUser(user: User, value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditUserMutationResponse>({
+      mutation: EDIT_USER,
+      variables: {
+        id: user.id,
+        roles: value.roles,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${user.username} roles updated.`);
+      const index = application.users.indexOf(user);
+      application.users[index] = res.data.editUser;
+      this._application.next(application);
+    });
   }
 }

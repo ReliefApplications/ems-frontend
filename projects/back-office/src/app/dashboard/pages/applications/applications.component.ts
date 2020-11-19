@@ -3,10 +3,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { PermissionsManagement, PermissionType, WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
+import { Application, PermissionsManagement, PermissionType, WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
-import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse, ADD_APPLICATION } from '../../../graphql/mutations';
+import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
+  ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-applications',
@@ -17,7 +19,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public applications = [];
+  public applications = new MatTableDataSource<Application>([]);
   public displayedColumns = ['name', 'createdAt', 'actions'];
 
   // === PERMISSIONS ===
@@ -36,7 +38,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS
     }).valueChanges.subscribe(res => {
-      this.applications = res.data.applications;
+      this.applications.data = res.data.applications;
       this.loading = res.loading;
     });
     this.authSubscription = this.authService.user.subscribe(() => {
@@ -61,7 +63,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe(value => {
-      if ( value ) {
+      if (value) {
         const id = element.id;
         this.apollo.mutate<DeleteApplicationMutationResponse>({
           mutation: DELETE_APPLICATION,
@@ -70,7 +72,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
-          this.applications = this.applications.filter(x => {
+          this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data.deleteApplication.id;
           });
         });
@@ -98,6 +100,23 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/applications', id]);
         });
       }
+    });
+  }
+
+  /*  Edit the permissions layer.
+  */
+  saveAccess(e: any, element: Application): void {
+    this.apollo.mutate<EditApplicationMutationResponse>({
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id: element.id,
+        permissions: e
+      }
+    }).subscribe((res) => {
+      this.snackBar.openSnackBar(`${element.name} access edited.`);
+      const index = this.applications.data.findIndex(x => x.id === element.id);
+      this.applications.data[index] = res.data.editApplication;
+      this.applications.data = this.applications.data;
     });
   }
 }

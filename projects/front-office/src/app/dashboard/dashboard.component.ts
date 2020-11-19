@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ]
           }
         ];
-        this.router.navigate([this.navGroups[0].navItems[0].path]);
+        // this.router.navigate([this.navGroups[0].navItems[0].path]);
       } else {
         this.navGroups = [];
       }
