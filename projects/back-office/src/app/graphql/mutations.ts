@@ -370,9 +370,11 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: 
     }
     canSee
     canUpdate
-    application {
-      id
+    page {
       name
+      application {
+        id
+      }
     }
   }
 }`;

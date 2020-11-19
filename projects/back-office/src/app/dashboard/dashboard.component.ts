@@ -30,11 +30,12 @@ export class DashboardComponent implements OnInit {
     {
       name: 'UI builder',
       navItems: [
-        {
-          name: 'My dashboards',
-          path: '/dashboards',
-          icon: 'dashboard',
-        },
+        // Commented in order to prevent confusion about dashboards
+        // {
+        //   name: 'My dashboards',
+        //   path: '/dashboards',
+        //   icon: 'dashboard',
+        // },
         {
           name: 'My applications',
           path: '/applications',
