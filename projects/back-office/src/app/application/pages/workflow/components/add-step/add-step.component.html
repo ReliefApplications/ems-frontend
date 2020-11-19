@@ -1,0 +1,30 @@
+<form [formGroup]="stepForm">
+    <div class="form-group" [ngSwitch]="stage">
+        <ng-container *ngSwitchCase="1">
+            <label class="add-step-label">Enter a name for the step</label>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" type="text" placeholder="Enter a name for the step"/>
+            </mat-form-field>
+        </ng-container>
+        <ng-container *ngSwitchCase="2">
+            <label class="add-step-label">Select which type of step you want to create</label>
+            <mat-radio-group class="content-choice" formControlName="type">
+                <mat-radio-button *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-radio-button>
+            </mat-radio-group>
+        </ng-container>
+        <ng-container *ngSwitchCase="3">
+            <label class="add-step-label">Select one of the forms</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Form</mat-label>
+                <mat-select formControlName="content">
+                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+    </div>
+</form>
+<div class="add-step-stepper">
+    <button mat-flat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
+    <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
+</div>
