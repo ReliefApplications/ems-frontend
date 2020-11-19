@@ -24,7 +24,8 @@ export class WhoEditAccessComponent implements OnInit {
     private apollo: Apollo,
     public dialogRef: MatDialogRef<WhoEditAccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      access: any
+      access: any,
+      application: string
     }
   ) { }
 
@@ -32,7 +33,10 @@ export class WhoEditAccessComponent implements OnInit {
   */
   ngOnInit(): void {
     this.apollo.watchQuery<GetRolesQueryResponse>({
-      query: GET_ROLES
+      query: GET_ROLES,
+      variables: {
+        application: this.data.application
+      }
     }).valueChanges.subscribe(res => {
       this.roles = res.data.roles;
       this.loading = res.loading;

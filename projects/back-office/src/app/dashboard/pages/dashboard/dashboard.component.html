@@ -7,7 +7,7 @@
             <mat-icon (click)="toggleFormActive()">create</mat-icon>
         </button>
         <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
-        <who-access [access]="dashboard.permissions" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
+        <who-access [access]="dashboard.permissions" [application]="dashboard.application.id" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
         </who-access>
     </div>
     <ng-container *ngIf="formActive">
