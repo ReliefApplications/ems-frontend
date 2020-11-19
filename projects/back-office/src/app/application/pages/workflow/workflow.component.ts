@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 import {
@@ -34,7 +34,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === SELECTED STEP ===
   public dragging: boolean;
-  public displayStep = false;
   public selectedStep: Step;
 
   // === ROUTE ===
@@ -87,20 +86,32 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /*  Delete a step if authorized.
   */
-  deleteStep(id, e): void {
+  deleteStep(step: Step, e: any): void {
     e.stopPropagation();
-    this.apollo.mutate<DeleteStepMutationResponse>({
-      mutation: DELETE_STEP,
-      variables: {
-        id
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete step',
+        content: `Do you confirm the deletion of the step ${step.name} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
       }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
-      this.steps = this.steps.filter(x => {
-        return x.id !== res.data.deleteStep.id;
-      });
-      this.router.navigate(['./'], { relativeTo: this.route });
-      this.displayStep = false;
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<DeleteStepMutationResponse>({
+          mutation: DELETE_STEP,
+          variables: {
+            id: step.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+          this.steps = this.steps.filter(x => {
+            return x.id !== res.data.deleteStep.id;
+          });
+          this.selectedStep = null;
+          this.router.navigate(['./'], { relativeTo: this.route });
+        });
+      }
     });
   }
 
@@ -108,10 +119,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   addStep(): void {
     this.router.navigate(['./add-step'], { relativeTo: this.route });
-  }
-
-  navigateToSelectedStep(): void {
-    this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
   }
 
   /* Drop a step dragged into the list
@@ -127,7 +134,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: this.steps.map(step => step.id)
         }
       }).subscribe( () => {
-        this.snackBar.openSnackBar('New step order : ' + this.steps.map(step => step.name));
+        this.snackBar.openSnackBar('Steps reordered');
       });
     }
   }
@@ -144,8 +151,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;
-      this.navigateToSelectedStep();
-      this.displayStep = true;
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
     }
   }
 
