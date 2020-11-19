@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Application, User, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse, ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
+import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
+  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
   EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -18,8 +19,7 @@ export class ApplicationService {
   constructor(
     private apollo: Apollo,
     private snackBar: WhoSnackBarService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) { }
 
   /*  Get the application from the database, using GraphQL.
@@ -41,6 +41,8 @@ export class ApplicationService {
     return this._application.asObservable();
   }
 
+  /* Delete a page and the associated content.
+  */
   deletePage(id: string): void {
     this.apollo.mutate<DeletePageMutationResponse>({
       mutation: DELETE_PAGE,
@@ -55,6 +57,8 @@ export class ApplicationService {
     });
   }
 
+  /* Reorder the pages, using material Drag n Drop.
+  */
   reorderPages(pages: string[]): void {
     const application = this._application.getValue();
     this.apollo.mutate<EditApplicationMutationResponse>({
@@ -68,6 +72,8 @@ export class ApplicationService {
     });
   }
 
+  /* Add a new page to the opened application.
+  */
   addPage(value: any): void {
     const application = this._application.getValue();
     if (application) {
@@ -91,6 +97,8 @@ export class ApplicationService {
     }
   }
 
+  /* Add a new role to the opened application.
+  */
   addRole(value: any): void {
     const application = this._application.getValue();
     this.apollo.mutate<AddRoleMutationResponse>({
@@ -106,6 +114,8 @@ export class ApplicationService {
     });
   }
 
+  /* Invite an user to the opened application.
+  */
   inviteUser(value: any): void {
     const application = this._application.getValue();
     this.apollo.mutate<AddRoleToUserMutationResponse>({
@@ -121,6 +131,8 @@ export class ApplicationService {
     });
   }
 
+  /* Edit an user that has access to the application.
+  */
   editUser(user: User, value: any): void {
     const application = this._application.getValue();
     this.apollo.mutate<EditUserMutationResponse>({
