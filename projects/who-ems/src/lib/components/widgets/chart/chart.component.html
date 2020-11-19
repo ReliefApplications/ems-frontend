@@ -1,6 +1,8 @@
 <div class="widget-container">
     <div class="widget-header">{{settings.title}}</div>
-    <button (click)="onExport()">Export</button>
+    <button mat-icon-button class="export-button" (click)="onExport()">
+        <mat-icon>get_app</mat-icon>
+      </button>
     <kendo-chart #chart class="widget-content">
         <kendo-chart-legend position="bottom" orientation="horizontal"></kendo-chart-legend>
         <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
