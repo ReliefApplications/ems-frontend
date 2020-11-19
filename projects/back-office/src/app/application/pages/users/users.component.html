@@ -1,5 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="onInvite()">
+      <mat-icon>send</mat-icon>
+      Invite an user
+    </button>
+  </div>
   <table mat-table [dataSource]="users">
     <ng-container matColumnDef="username">
         <th mat-header-cell *matHeaderCellDef>Username</th>

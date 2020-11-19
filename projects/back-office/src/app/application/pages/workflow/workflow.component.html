@@ -20,24 +20,27 @@
             </button>
         </form>
     </ng-container>
-    <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
-        <button mat-button class="add-step-button" color="primary" (click)="addStep()">
-            <mat-icon class="add-icon">add_circle</mat-icon>
-            Step
-        </button>
-        <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
-        (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()" 
-        [class.selected]="step === selectedStep" cdkDrag>
-            <div class="step-placeholder" *cdkDragPlaceholder></div>
-            {{step.name}}
-            <div class="step-handle" cdkDragHandle>
-                <mat-icon>drag_indicator</mat-icon>
+    <div class="step-list-container">
+        <mat-divider></mat-divider>
+        <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
+            <button mat-button class="add-step-button" color="primary" (click)="addStep()">
+                <mat-icon class="add-icon">add_circle</mat-icon>
+                Step
+            </button>
+            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
+            (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()" 
+            [class.selected]="step === selectedStep" cdkDrag>
+                <div class="step-placeholder" *cdkDragPlaceholder></div>
+                {{step.name}}
+                <div class="step-handle" cdkDragHandle>
+                    <mat-icon>drag_indicator</mat-icon>
+                </div>
             </div>
             <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
                 <mat-icon>delete</mat-icon>
             </button>
         </div>
+        <mat-divider></mat-divider>
     </div>
-    <a>{{route.snapshot.url}}</a>
 </ng-container>
 <router-outlet></router-outlet>

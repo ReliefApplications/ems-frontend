@@ -31,7 +31,7 @@ export class WhoTileDataComponent implements OnInit, AfterViewInit {
 
   /*  Once the template is ready, inject the settings component linked to the widget type passed as a parameter.
   */
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const factory = this.componentFactoryResolver.resolveComponentFactory(this.data.template);
     const componentRef = this.settingsContainer.createComponent(factory);
     componentRef.instance.tile = this.data.tile;
@@ -40,7 +40,7 @@ export class WhoTileDataComponent implements OnInit, AfterViewInit {
 
   /*  Close the modal without sending any data.
   */
-  onClose() {
+  onClose(): void {
     this.dialogRef.close();
   }
 }

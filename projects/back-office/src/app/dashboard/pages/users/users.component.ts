@@ -49,6 +49,7 @@ export class UsersComponent implements OnInit {
   */
   onEdit(user: User): void {
     const dialogRef = this.dialog.open(EditUserComponent, {
+      panelClass: 'add-dialog',
       data: {
         roles: user.roles
       }

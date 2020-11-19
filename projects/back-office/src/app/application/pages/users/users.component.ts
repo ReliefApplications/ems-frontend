@@ -1,7 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { Application, User } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../../../services/application.service';
+import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { InviteUserComponent } from './components/invite-user/invite-user.component';
 
 @Component({
   selector: 'app-users',
@@ -12,11 +16,12 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public users = [];
+  public users = new MatTableDataSource<User>([]);
   public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
   private applicationSubscription: Subscription;
 
   constructor(
+    public dialog: MatDialog,
     private applicationService: ApplicationService
   ) { }
 
@@ -24,9 +29,9 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
-        this.users = application.users;
+        this.users.data = application.users;
       } else {
-        this.users = [];
+        this.users.data = [];
       }
     });
   }
@@ -35,6 +40,29 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.applicationSubscription.unsubscribe();
   }
 
-  onEdit(user: User): void {}
+  onInvite(): void {
+    const dialogRef = this.dialog.open(InviteUserComponent, {
+      panelClass: 'add-dialog'
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.inviteUser(value);
+      }
+    });
+  }
+
+  onEdit(user: User): void {
+    const dialogRef = this.dialog.open(EditUserComponent, {
+      panelClass: 'add-dialog',
+      data: {
+        roles: user.roles
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.editUser(user, value);
+      }
+    });
+  }
 
 }

@@ -11,6 +11,7 @@ import { AddStepMutationResponse, ADD_STEP } from '../graphql/mutations';
 })
 export class WorkflowService {
 
+  // tslint:disable-next-line: variable-name
   private _workflow = new BehaviorSubject<Workflow>(null);
 
   constructor(
@@ -29,9 +30,9 @@ export class WorkflowService {
     }
     }).valueChanges.subscribe(res => {
     this._workflow.next(res.data.workflow);
-    }); 
+    });
   }
-  
+
   /*  Return the workflow as an Observable.
   */
   get workflow(): Observable<Workflow> {
@@ -54,7 +55,7 @@ export class WorkflowService {
         this.loadWorkflow(workflow.id);
         const content = res.data.addStep.content;
         this.router.navigate(['../' + value.type + '/' + content], { relativeTo: route.parent });
-      })
+      });
     } else {
       this.snackBar.openSnackBar('No opened workflow.', { error: true });
       this.router.navigate(['../'], { relativeTo: route });

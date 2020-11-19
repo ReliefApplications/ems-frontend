@@ -20,20 +20,17 @@
     border-radius: 0%;
   }
 }
+
+.step-list-container {
+  margin: 0 -24px 32px;
+}
+
 .step-list {
-  width: 1000px;
-  max-width: 100%;
   min-height: 60px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  border-top-width: 1px;
-  border-top-color: #c0c0c0;
-  border-top-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #c0c0c0;
-  border-bottom-style: solid;
-  margin-bottom: 32px;
+  padding: 0 8px;
 }
 
 .step-box {
