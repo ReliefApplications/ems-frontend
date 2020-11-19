@@ -34,7 +34,6 @@ export class WorkflowComponent implements OnInit {
 
   // === SELECTED STEP ===
   public dragging: boolean;
-  public displayStep = false;
   public selectedStep: Step;
 
   // === ROUTE ===
@@ -100,7 +99,6 @@ export class WorkflowComponent implements OnInit {
         return x.id !== res.data.deleteStep.id;
       });
       this.router.navigate(['./'], { relativeTo: this.route });
-      this.displayStep = false;
     });
   }
 
@@ -127,7 +125,7 @@ export class WorkflowComponent implements OnInit {
           steps: this.steps.map(step => step.id)
         }
       }).subscribe( () => {
-        this.snackBar.openSnackBar('New step order : ' + this.steps.map(step => step.name));
+        this.snackBar.openSnackBar('Steps reordered');
       });
     }
   }
@@ -145,7 +143,6 @@ export class WorkflowComponent implements OnInit {
     if (this.selectedStep !== step) {
       this.selectedStep = step;
       this.navigateToSelectedStep();
-      this.displayStep = true;
     }
   }
 

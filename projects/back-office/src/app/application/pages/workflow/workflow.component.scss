@@ -38,12 +38,13 @@
 
 .step-box {
   min-width: 90px;
-  padding: 20px 24px;
+  padding: 20px 32px;
+  padding-left: 18px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  text-align: center;
+  text-align: left;
   box-sizing: border-box;
   cursor: move;
   font-size: 16px;
@@ -53,23 +54,31 @@
 
   .step-handle {
     color: transparent;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    cursor: move;
+    width: 24px;
+    height: 24px;
   }
+
+  .delete-button {
+    color: transparent;
+    position: absolute;
+    bottom: 1px;
+    right: -7px;
+    cursor: move;
+  }
+
   &:hover {
     background: #dddddd54;
     .step-handle {
       color: #aeaeaf;
     }
+    .delete-button {
+      color: #aeaeaf;
+    }
   }
-}
-
-.step-handle {
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  color: #000;
-  cursor: move;
-  width: 24px;
-  height: 24px;
 }
 
 .step-box.selected {

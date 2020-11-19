@@ -33,11 +33,11 @@
             <div class="step-handle" cdkDragHandle>
                 <mat-icon>drag_indicator</mat-icon>
             </div>
+            <button mat-icon-button class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
+                <mat-icon>delete</mat-icon>
+            </button>
         </div>
     </div>
     <a>{{route.snapshot.url}}</a>
 </ng-container>
 <router-outlet></router-outlet>
-<button *ngIf="displayStep" mat-fab color="warn" class="delete-button" (click)="deleteStep(selectedStep.id, $event)">
-    <mat-icon>delete</mat-icon>
-</button>
