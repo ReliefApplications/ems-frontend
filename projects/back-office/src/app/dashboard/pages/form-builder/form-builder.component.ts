@@ -107,7 +107,7 @@ export class FormBuilderComponent implements OnInit {
       }).subscribe(res => {
         this.snackBar.openSnackBar('Form updated');
         this.form = res.data.editForm;
-        this.structure = this.form.structure;
+        this.structure = structure; // Update current form to
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
       });
