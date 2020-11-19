@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 import {
@@ -86,19 +86,32 @@ export class WorkflowComponent implements OnInit {
 
   /*  Delete a step if authorized.
   */
-  deleteStep(id, e): void {
+  deleteStep(step: Step, e: any): void {
     e.stopPropagation();
-    this.apollo.mutate<DeleteStepMutationResponse>({
-      mutation: DELETE_STEP,
-      variables: {
-        id
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete step',
+        content: `Do you confirm the deletion of the step ${step.name} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
       }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
-      this.steps = this.steps.filter(x => {
-        return x.id !== res.data.deleteStep.id;
-      });
-      this.router.navigate(['./'], { relativeTo: this.route });
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<DeleteStepMutationResponse>({
+          mutation: DELETE_STEP,
+          variables: {
+            id: step.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+          this.steps = this.steps.filter(x => {
+            return x.id !== res.data.deleteStep.id;
+          });
+          this.selectedStep = null;
+          this.router.navigate(['./'], { relativeTo: this.route });
+        });
+      }
     });
   }
 
@@ -106,10 +119,6 @@ export class WorkflowComponent implements OnInit {
   */
   addStep(): void {
     this.router.navigate(['./add-step'], { relativeTo: this.route });
-  }
-
-  navigateToSelectedStep(): void {
-    this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
   }
 
   /* Drop a step dragged into the list
@@ -142,7 +151,7 @@ export class WorkflowComponent implements OnInit {
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;
-      this.navigateToSelectedStep();
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
     }
   }
 
