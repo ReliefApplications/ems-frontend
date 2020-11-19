@@ -5,12 +5,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { AddTabComponent } from './components/add-tab/add-tab.component';
+import { WorkflowService } from '../../../services/workflow.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
-  AddStepMutationResponse, ADD_STEP,
   DeleteStepMutationResponse, DELETE_STEP,
   EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../graphql/mutations';
 
@@ -24,8 +22,11 @@ export class WorkflowComponent implements OnInit {
   // === DATA ===
   public id: string;
   public loading = true;
-  public workflow: Workflow;
   public steps: Step[];
+
+  // === WORKFLOW ===
+  public workflow: Workflow;
+  private workflowSubscription: Subscription;
 
   // === WORKFLOW NAME EDITION ===
   public formActive: boolean;
@@ -41,6 +42,7 @@ export class WorkflowComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
+    private workflowService: WorkflowService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
@@ -51,29 +53,17 @@ export class WorkflowComponent implements OnInit {
     this.formActive = false;
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
-      this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
-        query: GET_WORKFLOW_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.workflow) {
-          this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps;
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(this.workflow.name, Validators.required)
-          });
-          this.loading = res.loading;
-        } else {
-          this.snackBar.openSnackBar('No access provided to this workflow.', { error: true });
-          this.router.navigate(['../../'], { relativeTo: this.route });
-        }
-      },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.router.navigate(['../../'], { relativeTo: this.route });
-        }
-      );
+      this.workflowService.loadWorkflow(this.id);
+    });
+    this.workflowSubscription = this.workflowService.workflow.subscribe((workflow: Workflow) => {
+      if (workflow) {
+        this.workflow = workflow;
+        this.steps = workflow.steps;
+        this.workflowNameForm = new FormGroup({
+          workflowName: new FormControl(this.workflow.name, Validators.required)
+        });
+        this.loading = false;
+      }
     });
   }
 
@@ -114,33 +104,10 @@ export class WorkflowComponent implements OnInit {
     });
   }
 
-    /*  Display the AddStep component if authorized.
-    Add a new page once closed, if result exists.
+  /*  Navigate to the add-step component
   */
   addStep(): void {
-    const dialogRef = this.dialog.open(AddTabComponent, {
-      panelClass: 'add-dialog',
-      data: { showWorkflow: false }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<AddStepMutationResponse>({
-          mutation: ADD_STEP,
-          variables: {
-            name: value.name,
-            type: value.type,
-            content: value.content,
-            workflow: this.id
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar('Step created');
-          this.steps = this.steps.concat([res.data.addStep]);
-          this.selectedStep = res.data.addStep;
-          this.navigateToSelectedStep();
-          this.displayStep = true;
-        });
-      }
-    });
+    this.router.navigate(['./add-step'], { relativeTo: this.route });
   }
 
   navigateToSelectedStep(): void {
@@ -184,5 +151,6 @@ export class WorkflowComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.routeSubscription.unsubscribe();
+    this.workflowSubscription.unsubscribe();
   }
 }

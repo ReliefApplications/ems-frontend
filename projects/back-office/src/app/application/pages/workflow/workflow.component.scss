@@ -15,6 +15,10 @@
   .add-icon {
     color: #13AD38;
   }
+  &:hover {
+    background: #dddddd54;
+    border-radius: 0%;
+  }
 }
 .step-list {
   width: 1000px;
@@ -51,7 +55,7 @@
     color: transparent;
   }
   &:hover {
-    background: #d3d3d354;
+    background: #dddddd54;
     .step-handle {
       color: #aeaeaf;
     }

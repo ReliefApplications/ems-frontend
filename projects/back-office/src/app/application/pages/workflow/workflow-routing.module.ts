@@ -13,6 +13,11 @@ const routes: Routes = [
           .then(m => m.HomeModule),
       },
       {
+        path: 'add-step',
+        loadChildren: () => import('./components/add-step/add-step.module')
+          .then(m => m.AddStepModule),
+      },
+      {
         path: 'dashboard/:id',
         loadChildren: () => import('../../../dashboard/pages/dashboard/dashboard.module')
           .then(m => m.DashboardModule),
