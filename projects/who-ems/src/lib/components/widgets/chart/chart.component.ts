@@ -1,6 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { saveAs } from '@progress/kendo-file-saver';
+import { ChartComponent } from '@progress/kendo-angular-charts';
 
 @Component({
   selector: 'who-chart',
@@ -18,6 +20,13 @@ export class WhoChartComponent implements OnChanges {
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
 
+  // === EXPORT ===
+  private fileName = 'chart.png';
+
+  // === CHART ===
+  @ViewChild('chart')
+  private chart: ChartComponent;
+
   constructor( private apollo: Apollo ) {
   }
 
@@ -29,6 +38,15 @@ export class WhoChartComponent implements OnChanges {
     } else {
       this.loading = false;
     }
+  }
+
+  public onExport(): void {
+    this.chart.exportImage({
+      width: 1200,
+      height: 800
+    }).then((dataURI) => {
+      saveAs(dataURI, this.fileName);
+    });
   }
 
   /*  Load the data, using widget parameters.
@@ -45,6 +63,7 @@ export class WhoChartComponent implements OnChanges {
         this.data = [];
         const dataToAggregate = [];
         if (res.data.resource){
+          this.fileName = `${res.data.resource.name}.png`;
           for (const record of res.data.resource.records) {
             const existingField = dataToAggregate.find(x => x[this.settings.xAxis] === record.data[this.settings.xAxis]);
             if (existingField) {
@@ -68,6 +87,7 @@ export class WhoChartComponent implements OnChanges {
         this.data = [];
         const dataToAggregate = [];
         if (res.data.form){
+          this.fileName = `${res.data.form.name}.png`;
           for (const record of res.data.form.records) {
             const existingField = dataToAggregate.find(x => x[this.settings.xAxis] === record.data[this.settings.xAxis]);
             if (existingField) {

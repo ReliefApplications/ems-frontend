@@ -1,6 +1,7 @@
 <div class="widget-container">
     <div class="widget-header">{{settings.title}}</div>
-    <kendo-chart class="widget-content">
+    <button (click)="onExport()">Export</button>
+    <kendo-chart #chart class="widget-content">
         <kendo-chart-legend position="bottom" orientation="horizontal"></kendo-chart-legend>
         <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
         <kendo-chart-series *ngIf="!loading">
