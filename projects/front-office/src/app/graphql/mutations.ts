@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Role, User } from '@who-ems/builder';
 
 // === ADD ROLE ===
 export const ADD_ROLE = gql`

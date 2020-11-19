@@ -1,5 +1,25 @@
 import gql from 'graphql-tag';
-import { Dashboard, Application, Form } from '@who-ems/builder';
+import { Dashboard, Application, Form, User } from '@who-ems/builder';
+
+// === GET USERS ===
+export const GET_USERS = gql`
+{
+  users {
+    id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
+  }
+}`;
+
+export interface GetUsersQueryResponse {
+  loading: boolean;
+  users: User[];
+}
 
 // === GET DASHBOARD BY ID ===
 export const GET_DASHBOARD_BY_ID = gql`

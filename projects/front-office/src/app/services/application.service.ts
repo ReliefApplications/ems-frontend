@@ -66,7 +66,7 @@ inviteUser(value: any): void {
       role: value.role
     }
   }).subscribe(res => {
-    this.snackBar.openSnackBar(`${value.title} role created`);
+    this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
     application.users = application.users.concat([res.data.addRoleToUser]);
     this._application.next(application);
   });
