@@ -45,7 +45,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflow = res.data.workflow;
           this.steps = res.data.workflow.steps;
           this.loading = res.loading;
-          if (this.steps.length > 0) { 
+          if (this.steps.length > 0) {
             this.stepChange({selectedIndex: 0});
           }
         } else {
