@@ -11,6 +11,7 @@ export interface Application {
     pages?: Page[];
     roles?: Role[];
     users?: User[];
+    usersCount?: number;
     settings?: any;
     permissions?: any;
     canSee?: boolean;

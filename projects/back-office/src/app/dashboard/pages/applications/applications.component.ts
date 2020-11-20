@@ -20,7 +20,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
-  public displayedColumns = ['name', 'createdAt', 'actions'];
+  public displayedColumns = ['name', 'createdAt', 'users', 'actions'];
 
   // === PERMISSIONS ===
   canAdd = false;
