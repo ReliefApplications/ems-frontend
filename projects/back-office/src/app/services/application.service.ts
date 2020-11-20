@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, User, WhoSnackBarService } from '@who-ems/builder';
+import { Application, Page, User, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
@@ -70,6 +70,17 @@ export class ApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar('Pages reordered');
     });
+  }
+
+  /* Update a specific page name in the opened application.
+  */
+  updatePageName(page: Page) {
+    const application = this._application.getValue();
+    application.pages = application.pages.map(x => {
+      if (x.id === page.id) x.name = page.name;
+      return x
+    })
+    this._application.next(application);
   }
 
   /* Add a new page to the opened application.
