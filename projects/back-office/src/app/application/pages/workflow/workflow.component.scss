@@ -5,9 +5,14 @@
   margin-bottom: 20px;
   
   .workflow-name {
+    display: inline-block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    border-radius: 6px;
+  }
+  .workflow-name:hover {
+    background-color: #dddddd54;
   }
 }
 

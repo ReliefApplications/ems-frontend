@@ -73,9 +73,14 @@
     margin-bottom: 20px;
   
     .dashboard-name {
+      display: inline-block;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      border-radius: 6px;
+    }
+    .dashboard-name:hover {
+      background-color: #dddddd54;
     }
   }
   
