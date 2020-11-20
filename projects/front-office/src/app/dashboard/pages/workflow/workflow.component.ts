@@ -22,8 +22,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   // === SELECTED STEP ===
-  public displayStep = false;
   public selectedStep: Step;
+  public selectedIndex: number;
 
   constructor(
     private apollo: Apollo,
@@ -45,35 +45,30 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflow = res.data.workflow;
           this.steps = res.data.workflow.steps;
           this.loading = res.loading;
-          if (this.steps.length > 0) { this.onStepClick(this.steps[0]); }
+          if (this.steps.length > 0) {
+            this.stepChange({selectedIndex: 0});
+          }
         } else {
           this.snackBar.openSnackBar('No access provided to this workflow.', { error: true });
-          // this.router.navigate(['../../'], { relativeTo: this.route });
         }
       },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-          // this.router.navigate(['../../'], { relativeTo: this.route });
         }
       );
     });
   }
 
-  ngOnDestroy(): void {
-    this.routeSubscription.unsubscribe();
-  }
-
-  navigateToSelectedStep(): void {
+  /* Display selected step
+  */
+  stepChange(e): void {
+    this.selectedStep = this.steps[e.selectedIndex];
+    this.selectedIndex = e.selectedIndex;
     this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
   }
 
-  /* Display selected step on click*/
-  onStepClick(step: Step): void {
-    if (this.selectedStep !== step) {
-      this.selectedStep = step;
-      this.navigateToSelectedStep();
-      this.displayStep = true;
-    }
+  ngOnDestroy(): void {
+    this.routeSubscription.unsubscribe();
   }
 
 }
