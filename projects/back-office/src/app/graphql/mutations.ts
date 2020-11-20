@@ -554,6 +554,22 @@ export interface DeleteStepMutationResponse {
   deleteStep: Step;
 }
 
+// === EDIT STEP ===
+export const EDIT_STEP = gql`
+mutation editStep($id: ID!, $name: String) {
+  editStep(id: $id, name: $name) {
+    id
+    name
+    type
+    content
+  }
+}`;
+
+export interface EditStepMutationResponse {
+  loading: boolean;
+  editStep: Step;
+}
+
 // === ADD STEP ===
 export const ADD_STEP = gql`
 mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {

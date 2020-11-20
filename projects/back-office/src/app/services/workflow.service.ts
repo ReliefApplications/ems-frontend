@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Workflow, WhoSnackBarService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -39,6 +39,8 @@ export class WorkflowService {
     return this._workflow.asObservable();
   }
 
+  /* Add a step to the opened workflow and navigate to it.
+  */
   addStep(value: any, route: ActivatedRoute): void {
     const workflow = this._workflow.getValue();
     if (workflow) {
@@ -60,5 +62,16 @@ export class WorkflowService {
       this.snackBar.openSnackBar('No opened workflow.', { error: true });
       this.router.navigate(['../'], { relativeTo: route });
     }
+  }
+
+  /* Update a specific step name in the opened workflow.
+  */
+  updateStepName(step: Step): void {
+    const workflow = this._workflow.getValue();
+    workflow.steps = workflow.steps.map(x => {
+      if (x.id === step.id) x.name = step.name;
+      return x
+    })
+    this._workflow.next(workflow);
   }
 }

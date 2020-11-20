@@ -272,7 +272,14 @@ export const GET_DASHBOARD_BY_ID = gql`
       canSee
       canUpdate
       page {
+        id
         application {
+          id
+        }
+      }
+      step {
+        id
+        workflow {
           id
         }
       }

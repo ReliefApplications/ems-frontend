@@ -5,9 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
-import { EditDashboardMutationResponse, EDIT_DASHBOARD } from '../../../graphql/mutations';
+import { 
+  EditDashboardMutationResponse, EDIT_DASHBOARD,
+  EditPageMutationResponse, EDIT_PAGE,
+  EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
+import { WorkflowService } from '../../../services/workflow.service';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +38,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
@@ -156,20 +163,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.dashboard.canUpdate) this.formActive = !this.formActive;
   }
 
-  /*  Update the name of the dashboard.
+  /*  Update the name of the dashboard and the step or page linked to it.
   */
   saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
-    this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: this.id,
-        name: dashboardName
-      }
-    }).subscribe(res => {
-      this.dashboard.name = res.data.editDashboard.name;
-    });
+    if (this.router.url.includes('/workflow/')) {
+      console.log(this.dashboard.step.id);
+      console.log('editstep');
+      this.apollo.mutate<EditStepMutationResponse>({
+        mutation: EDIT_STEP,
+        variables: {
+          id: this.dashboard.step.id,
+          name: dashboardName
+        }
+      }).subscribe(res => {
+        this.dashboard.name = res.data.editStep.name;
+        this.workflowService.updateStepName(res.data.editStep);
+      });
+    } else {
+      this.apollo.mutate<EditPageMutationResponse>({
+        mutation: EDIT_PAGE,
+        variables: {
+          id: this.dashboard.page.id,
+          name: dashboardName
+        }
+      }).subscribe(res => {
+        this.dashboard.name = res.data.editPage.name;
+        this.applicationService.updatePageName(res.data.editPage)
+      });
+    }
   }
 
   /*  Display the ShareUrl modal with the route to access the dashboard.

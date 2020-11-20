@@ -1,3 +1,4 @@
+import { Step } from 'dist/who-shared/public-api';
 import { Page } from './page.model';
 
 /*  Model for Dashboard object.
@@ -14,4 +15,5 @@ export interface Dashboard {
     canUpdate?: boolean;
     canDelete?: boolean;
     page?: Page;
+    step?: Step;
 }
