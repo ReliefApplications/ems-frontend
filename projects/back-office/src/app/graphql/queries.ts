@@ -293,6 +293,7 @@ export const GET_APPLICATIONS = gql`
     name
     createdAt
     modifiedAt
+    status
     pages {
       id
       name
@@ -334,6 +335,7 @@ export const GET_APPLICATION_BY_ID = gql`
       id
       name
       createdAt
+      status
       pages {
         id
         name

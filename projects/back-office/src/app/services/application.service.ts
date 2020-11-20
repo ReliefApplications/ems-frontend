@@ -60,7 +60,6 @@ export class ApplicationService {
       this.snackBar.openSnackBar('No opened application.', { error: true });
     }
   }
-  
 
   /* Delete a page and the associated content.
   */
