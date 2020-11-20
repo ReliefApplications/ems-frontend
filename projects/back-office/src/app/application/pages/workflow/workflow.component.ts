@@ -69,7 +69,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   toggleFormActive(): void {
-    if (this.workflow.page.canUpdate) this.formActive = !this.formActive;
+    if (this.workflow.page.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the workflow and his linked page.
@@ -85,7 +85,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.workflow.name = res.data.editPage.name;
-      this.applicationService.updatePageName(res.data.editPage)
+      this.applicationService.updatePageName(res.data.editPage);
     });
   }
 

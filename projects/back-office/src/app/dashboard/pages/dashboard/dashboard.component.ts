@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
-import { 
+import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
   EditPageMutationResponse, EDIT_PAGE,
   EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
@@ -160,7 +160,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleFormActive(): void {
-    if (this.dashboard.canUpdate) this.formActive = !this.formActive;
+    if (this.dashboard.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the dashboard and the step or page linked to it.
@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         this.dashboard.name = res.data.editPage.name;
-        this.applicationService.updatePageName(res.data.editPage)
+        this.applicationService.updatePageName(res.data.editPage);
       });
     }
   }

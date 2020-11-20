@@ -69,9 +69,9 @@ export class WorkflowService {
   updateStepName(step: Step): void {
     const workflow = this._workflow.getValue();
     workflow.steps = workflow.steps.map(x => {
-      if (x.id === step.id) x.name = step.name;
-      return x
-    })
+      if (x.id === step.id) { x.name = step.name; }
+      return x;
+    });
     this._workflow.next(workflow);
   }
 }

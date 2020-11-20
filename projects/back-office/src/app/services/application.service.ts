@@ -74,12 +74,12 @@ export class ApplicationService {
 
   /* Update a specific page name in the opened application.
   */
-  updatePageName(page: Page) {
+  updatePageName(page: Page): void {
     const application = this._application.getValue();
     application.pages = application.pages.map(x => {
-      if (x.id === page.id) x.name = page.name;
-      return x
-    })
+      if (x.id === page.id) { x.name = page.name; }
+      return x;
+    });
     this._application.next(application);
   }
 
