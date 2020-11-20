@@ -1,13 +1,12 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && workflow">
-    <div class="step-list-container">
-        <mat-divider></mat-divider>
-        <div class="step-list">
-            <div class="step-box" *ngFor="let step of steps" (click)="onStepClick(step)" [class.selected]="step === selectedStep">
-                {{step.name}}
+    <mat-horizontal-stepper (selectionChange)="stepChange($event)">
+        <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
+            <router-outlet *ngIf="i === selectedIndex"></router-outlet>
+            <div class="buttons">
+                <button mat-button class="next-button" matStepperNext>Next</button>
+                <button mat-button class="back-button" *ngIf="i > 0" matStepperPrevious>Back</button>
             </div>
-        </div>
-        <mat-divider></mat-divider>
-    </div>
-    <router-outlet></router-outlet>
+        </mat-step>
+    </mat-horizontal-stepper>
 </ng-container>

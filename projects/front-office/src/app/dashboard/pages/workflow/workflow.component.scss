@@ -1,38 +1,10 @@
-.step-list-container {
-    margin: 0 -24px 32px;
-}
-
-.step-list {
-    min-height: 60px;
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
-    padding: 0 24px;
-}
-
-.step-box {
-    min-width: 90px;
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
-    box-sizing: border-box;
-    font-size: 16px;
-    position: relative;
-    z-index: 1;
-    cursor: pointer;
-    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-
-.step-handle {
-    color: transparent;
-}
-    &:hover {
-        background: #d3d3d354;
+.buttons {
+    margin-top: 20px;
+    .next-button {
+        float: right;
     }
-}
-
-.step-box.selected {
-    background-color: #77d4ff88;
+    
+    .back-button {
+        float: left;
+    }
 }
