@@ -53,6 +53,22 @@ For example, in order to build the *who-ems* library, the command is:
 ng build --project=who-ems
 ```
 
+## Deploy the package
+
+Deployment of the npm @who-ems/builder package is a 3-steps process:
+
+- check that the current package version isn't already deployed. Increase it if a version exists.
+
+- Build the package:
+```
+ng build --project=who-ems
+```
+
+- Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
+```
+npm publish ./projects/who-ems
+```
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
