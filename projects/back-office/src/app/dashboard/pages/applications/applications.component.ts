@@ -21,7 +21,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
-  public displayedColumns = ['name', 'createdAt', 'usersCount', 'actions'];
+  public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
