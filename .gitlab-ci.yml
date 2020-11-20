@@ -66,4 +66,4 @@ deploy_offices:
     - npm run build front-office -- --prod
     - ./CI/deploy-front-office.sh
   only:
-    - dev
+    - stage
