@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent],
@@ -28,6 +29,7 @@ import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatSortModule,
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,

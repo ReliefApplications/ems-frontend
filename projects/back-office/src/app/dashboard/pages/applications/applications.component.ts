@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
@@ -9,18 +9,22 @@ import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMu
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss']
 })
-export class ApplicationsComponent implements OnInit, OnDestroy {
+export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
-  public displayedColumns = ['name', 'createdAt', 'users', 'actions'];
+  public displayedColumns = ['name', 'createdAt', 'usersCount', 'actions'];
+
+  // === SORTING ===
+  @ViewChild(MatSort) sort: MatSort;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -44,6 +48,10 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.applications.sort = this.sort;
   }
 
   ngOnDestroy(): void {
