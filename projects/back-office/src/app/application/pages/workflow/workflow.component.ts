@@ -66,7 +66,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleFormActive = () => this.formActive = !this.formActive;
+  toggleFormActive(): void {
+    if (this.workflow.page.canUpdate) this.formActive = !this.formActive;
+  }
 
   /*  Update the name of the workflow and his linked page.
   */

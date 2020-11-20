@@ -152,7 +152,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleFormActive = () => this.formActive = !this.formActive;
+  toggleFormActive(): void {
+    if (this.dashboard.canUpdate) this.formActive = !this.formActive;
+  }
 
   /*  Update the name of the dashboard.
   */
