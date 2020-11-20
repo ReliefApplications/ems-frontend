@@ -169,8 +169,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
     if (this.router.url.includes('/workflow/')) {
-      console.log(this.dashboard.step.id);
-      console.log('editstep');
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
