@@ -3,9 +3,9 @@
     <mat-horizontal-stepper (selectionChange)="stepChange($event)">
         <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
             <router-outlet *ngIf="i === selectedIndex"></router-outlet>
-            <div class="buttons">
-                <button mat-button class="next-button" matStepperNext>Next</button>
-                <button mat-button class="back-button" *ngIf="i > 0" matStepperPrevious>Back</button>
+            <div class="nav-buttons">
+                <button mat-button color="primary" class="next-button" *ngIf="i < (steps.length - 1)" matStepperNext>Next</button>
+                <button mat-button color="primary" class="back-button" *ngIf="i > 0" matStepperPrevious>Previous</button>
             </div>
         </mat-step>
     </mat-horizontal-stepper>
