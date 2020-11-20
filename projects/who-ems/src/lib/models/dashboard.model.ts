@@ -1,4 +1,4 @@
-import { Step } from 'dist/who-shared/public-api';
+import { Step } from './step.model';
 import { Page } from './page.model';
 
 /*  Model for Dashboard object.
