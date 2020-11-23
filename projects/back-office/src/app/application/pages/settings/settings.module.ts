@@ -5,9 +5,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [SettingsComponent],
@@ -16,8 +13,8 @@ import { MatRadioModule } from '@angular/material/radio';
     FormsModule,
     SettingsRoutingModule,
     MatFormFieldModule,
-    ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    ReactiveFormsModule
   ]
 })
 export class SettingsModule { }

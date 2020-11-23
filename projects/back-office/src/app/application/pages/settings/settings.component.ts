@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatFormFieldModule} from '@angular/material/form-field';
+import { ApplicationService } from '../../../services/application.service';
+import { Subscription } from 'rxjs';
+import { Application } from '@who-ems/builder';
 
 @Component({
   selector: 'app-settings',
@@ -10,10 +12,13 @@ import { MatFormFieldModule} from '@angular/material/form-field';
 export class SettingsComponent implements OnInit {
   @Input() data: any;
 
-  public settingsForm: FormBuilder;
+  public settingsForm: FormGroup;
+  private applicationSubscription: Subscription;
+  private id: string;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
@@ -21,7 +26,18 @@ export class SettingsComponent implements OnInit {
       name: [''],
       description: ['']
     });
+
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      if (application){
+        this.id = application.id;
+        const {name, description} = application;
+        this.settingsForm.get('name').setValue(name);
+        this.settingsForm.get('description').setValue(description);
+      }
+    })
   }
 
-  onSubmit(): void {}
+  onSubmit(): void {
+    this.applicationService.editApplication(this.id, this.settingsForm.value);
+  }
 }

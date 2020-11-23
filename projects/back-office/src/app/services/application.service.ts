@@ -35,6 +35,23 @@ export class ApplicationService {
     });
   }
 
+  /*
+    Edit Application
+  */
+ editApplication(id: string, value: any): void{
+  this.apollo.mutate<EditApplicationMutationResponse>(
+    {
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id,
+        description: value.descriptionm,
+        name: value.name
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Application updated');
+    });
+}
+
   /*  Return the application as an Observable.
   */
   get application(): Observable<Application> {
@@ -149,4 +166,6 @@ export class ApplicationService {
       this._application.next(application);
     });
   }
+
+
 }

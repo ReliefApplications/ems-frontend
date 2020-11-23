@@ -6,6 +6,7 @@ import { Role, User } from './user.model';
 export interface Application {
     id?: string;
     name?: string;
+    description ?: string;
     createdAt?: Date;
     modifiedAt?: Date;
     pages?: Page[];
