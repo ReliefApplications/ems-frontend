@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApplicationService } from '../../../services/application.service';
 import { Subscription } from 'rxjs';
@@ -10,8 +10,6 @@ import { Application } from '@who-ems/builder';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  @Input() data: any;
-
   public settingsForm: FormGroup;
   private applicationSubscription: Subscription;
   private id: string;
