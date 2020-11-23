@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, Page, User, WhoSnackBarService } from '@who-ems/builder';
+import { Application, Page, User, Role, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
-  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
+  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DeleteRoleMutationResponse, DELETE_PAGE,
+  DELETE_ROLE,
   EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -142,6 +143,21 @@ export class ApplicationService {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.roles = application.roles.concat([res.data.addRole]);
       this._application.next(application);
+    });
+  }
+
+  /* Delete an existing role.
+  */
+  deleteRole(role: Role): void {
+    this.apollo.mutate<DeleteRoleMutationResponse>({
+      mutation: DELETE_ROLE,
+      variables: {
+        id: role.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${role.title} role deleted.`);
+      const application = this._application.getValue();
+      this.loadApplication(application.id);
     });
   }
 
