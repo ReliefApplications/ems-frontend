@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddRoleComponent } from './components/add-role/add-role.component';
-
+import { WhoConfirmModalModule } from '@who-ems/builder';
 
 @NgModule({
   declarations: [RolesComponent, AddRoleComponent],
@@ -31,7 +31,8 @@ import { AddRoleComponent } from './components/add-role/add-role.component';
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    WhoConfirmModalModule
   ],
   exports: [RolesComponent]
 })
