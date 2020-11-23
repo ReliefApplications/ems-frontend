@@ -23,8 +23,8 @@ export interface GetUsersQueryResponse {
 
 // === GET ROLES ===
 export const GET_ROLES = gql`
-{
-  roles {
+query GetRoles($all: Boolean, $application: ID) {
+  roles(all: $all, application: $application) {
     id
     title
     permissions {

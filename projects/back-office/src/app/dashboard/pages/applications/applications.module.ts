@@ -17,9 +17,10 @@ import { AddApplicationComponent } from './components/add-application/add-applic
 import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
+import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 
 @NgModule({
-  declarations: [ApplicationsComponent, AddApplicationComponent],
+  declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
   imports: [
     CommonModule,
     ApplicationsRoutingModule,

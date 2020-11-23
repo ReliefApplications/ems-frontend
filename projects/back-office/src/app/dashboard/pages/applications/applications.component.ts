@@ -8,6 +8,7 @@ import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
+import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
@@ -128,7 +129,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Open a dialog to choose roles to fit in the preview.
   */
-  onPreview(e: any, element: Application): void {
-    this.snackBar.openSnackBar('Clicked on preview !');
+  onPreview(element: Application): void {
+    const dialogRef = this.dialog.open(ChoseRoleComponent, {
+      data: {
+        application: element.id
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        console.log(value.roles);
+      }
+    });
   }
 }
