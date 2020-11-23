@@ -22,19 +22,18 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.settingsForm = this.formBuilder.group({
-      name: [''],
-      description: ['']
-    });
-
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application){
         this.id = application.id;
         const {name, description} = application;
-        this.settingsForm.get('name').setValue(name);
-        this.settingsForm.get('description').setValue(description);
+        this.settingsForm = this.formBuilder.group(
+          {
+            name: [name, Validators.required],
+            description: [description]
+          }
+        );
       }
-    })
+    });
   }
 
   onSubmit(): void {

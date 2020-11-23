@@ -44,7 +44,7 @@ export class ApplicationService {
       mutation: EDIT_APPLICATION,
       variables: {
         id,
-        description: value.descriptionm,
+        description: value.description,
         name: value.name
       }
     }).subscribe(res => {
