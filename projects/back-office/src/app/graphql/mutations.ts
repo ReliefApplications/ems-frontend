@@ -59,7 +59,7 @@ export interface AddRoleToUserMutationResponse {
   addRoleToUser: User;
 }
 
-// === ADD RECORD ===
+// === ADD ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
@@ -72,6 +72,19 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
 export interface EditRoleMutationResponse {
   loading: boolean;
   editRole: Role;
+}
+
+// === DELETE ROLE ===
+export const DELETE_ROLE = gql`
+mutation deleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRoleMutationResponse {
+  loading: boolean;
+  deleteRole: Role;
 }
 
 // === ADD DASHBOARD ===
