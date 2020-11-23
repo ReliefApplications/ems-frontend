@@ -16,6 +16,7 @@ import { MatTableModule } from '@angular/material/table';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
 import { MatSortModule } from '@angular/material/sort';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent],
@@ -34,6 +35,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
+    MatChipsModule,
     WhoConfirmModalModule,
     WhoAccessModule
   ],
