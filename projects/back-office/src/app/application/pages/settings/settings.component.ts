@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApplicationService } from '../../../services/application.service';
 import { Subscription } from 'rxjs';
@@ -9,10 +9,10 @@ import { Application } from '@who-ems/builder';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
+
   public settingsForm: FormGroup;
   private applicationSubscription: Subscription;
-  private id: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,19 +22,22 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application){
-        this.id = application.id;
-        const {name, description} = application;
         this.settingsForm = this.formBuilder.group(
           {
-            name: [name, Validators.required],
-            description: [description]
+            id: [{ value: application.id, disabled: true }],
+            name: [application.name, Validators.required],
+            description: [application.description]
           }
         );
       }
     });
   }
 
+  ngOnDestroy(): void {
+    this.applicationSubscription.unsubscribe();
+  }
+
   onSubmit(): void {
-    this.applicationService.editApplication(this.id, this.settingsForm.value);
+    this.applicationService.editApplication(this.settingsForm.value);
   }
 }

@@ -38,14 +38,15 @@ export class ApplicationService {
   /*
     Edit Application
   */
- editApplication(id: string, value: any): void{
+ editApplication(value: any): void{
+  const application = this._application.getValue();
   this.apollo.mutate<EditApplicationMutationResponse>(
     {
       mutation: EDIT_APPLICATION,
       variables: {
-        id,
-        description: value.description,
-        name: value.name
+        id: application.id,
+        name: value.name,
+        description: value.description
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar('Application updated');

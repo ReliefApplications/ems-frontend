@@ -333,6 +333,7 @@ export const GET_APPLICATION_BY_ID = gql`
     application(id: $id){
       id
       name
+      description
       createdAt
       pages {
         id

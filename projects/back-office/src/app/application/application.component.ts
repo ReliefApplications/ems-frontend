@@ -70,7 +70,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             navItems: [
               {
                 name: 'Settings',
-                path: './settings',
+                path: './settings/edit',
                 icon: 'settings'
               }
               ,

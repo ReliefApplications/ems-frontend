@@ -23,7 +23,7 @@ const routes: Routes = [
         path: 'settings',
         children: [
           {
-            path: '',
+            path: 'edit',
             loadChildren: () => import('./pages/settings/settings.module')
               .then(m => m.SettingsModule)
           },
