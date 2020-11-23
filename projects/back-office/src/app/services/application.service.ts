@@ -41,6 +41,26 @@ export class ApplicationService {
     return this._application.asObservable();
   }
 
+  /* Change the application's status and navigate to the applications list
+  */
+  publish(): void {
+    const application = this._application.getValue();
+    if (application) {
+      this.apollo.mutate<EditApplicationMutationResponse>({
+        mutation: EDIT_APPLICATION,
+        variables: {
+          id: application.id,
+          status: 'active'
+        }
+      }).subscribe(res => {
+        this.snackBar.openSnackBar(`Application ${res.data.editApplication.name} published`);
+        this.router.navigate(['/applications']);
+      });
+    } else {
+      this.snackBar.openSnackBar('No opened application.', { error: true });
+    }
+  }
+
   /* Delete a page and the associated content.
   */
   deletePage(id: string): void {
