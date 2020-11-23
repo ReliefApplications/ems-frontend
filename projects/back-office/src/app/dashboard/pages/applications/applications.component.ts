@@ -125,4 +125,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applications.data = this.applications.data;
     });
   }
+
+  /*  Open a dialog to choose roles to fit in the preview.
+  */
+  onPreview(e: any, element: Application): void {
+    this.snackBar.openSnackBar('Clicked on preview !');
+  }
 }
