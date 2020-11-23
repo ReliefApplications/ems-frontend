@@ -19,5 +19,8 @@ export interface Page {
     settings?: any;
     permissions?: any;
     application?: Application;
+    canSee?: boolean;
+    canUpdate?: boolean;
+    canDelete?: boolean;
 }
 

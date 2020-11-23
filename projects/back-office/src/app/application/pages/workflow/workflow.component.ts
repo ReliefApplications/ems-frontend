@@ -7,6 +7,7 @@ import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
+import { ApplicationService } from '../../../services/application.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
@@ -42,6 +43,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private workflowService: WorkflowService,
+    private applicationService: ApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
@@ -66,7 +68,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleFormActive = () => this.formActive = !this.formActive;
+  toggleFormActive(): void {
+    if (this.workflow.page.canUpdate) { this.formActive = !this.formActive; }
+  }
 
   /*  Update the name of the workflow and his linked page.
   */
@@ -81,6 +85,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.workflow.name = res.data.editPage.name;
+      this.applicationService.updatePageName(res.data.editPage);
     });
   }
 
