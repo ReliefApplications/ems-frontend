@@ -23,6 +23,11 @@ const routes: Routes = [
         path: 'settings',
         children: [
           {
+            path: '',
+            loadChildren: () => import('./pages/settings/settings.module')
+              .then(m => m.SettingsModule)
+          },
+          {
             path: 'roles',
             loadChildren: () => import('./pages/roles/roles.module')
               .then(m => m.RolesModule),
