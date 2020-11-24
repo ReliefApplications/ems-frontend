@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Role } from '@who-ems/builder';
+import { Application, Role, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../../../services/application.service';
 import { AddRoleComponent } from './components/add-role/add-role.component';
@@ -47,6 +48,25 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEdit(role: Role): void {}
+  onEdit(role: Role): void { }
+
+  /* Display a modal to confirm the deletion of the role.
+    If confirmed, the role is removed from the system.
+  */
+  onDelete(item: any): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete role',
+        content: `Do you confirm the deletion of the role ${item.title} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.deleteRole(item);
+      }
+    });
+  }
 
 }

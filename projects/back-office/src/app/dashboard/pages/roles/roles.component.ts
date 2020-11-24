@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Role, WhoSnackBarService } from '@who-ems/builder';
-import { AddRoleMutationResponse, ADD_ROLE, EditRoleMutationResponse, EDIT_ROLE } from '../../../graphql/mutations';
+import { Role, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
+import { AddRoleMutationResponse, ADD_ROLE, DeleteRoleMutationResponse, DELETE_ROLE, EditRoleMutationResponse, EDIT_ROLE } from '../../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
 import { AddRoleComponent } from './components/add-role/add-role.component';
 import { EditRoleComponent } from './components/edit-role/edit-role.component';
@@ -58,6 +58,8 @@ export class RolesComponent implements OnInit {
         }).subscribe(res => {
           this.snackBar.openSnackBar(`${value.title} role created`);
           this.getRoles();
+        }, (err) => {
+          console.log(err);
         });
       }
     });
@@ -82,6 +84,33 @@ export class RolesComponent implements OnInit {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar(`${role.title} role updated.`);
+          this.getRoles();
+        });
+      }
+    });
+  }
+
+  /* Display a modal to confirm the deletion of the role.
+    If confirmed, the role is removed from the system.
+  */
+  onDelete(item: any): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete role',
+        content: `Do you confirm the deletion of the role ${item.title} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<DeleteRoleMutationResponse>({
+          mutation: DELETE_ROLE,
+          variables: {
+            id: item.id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar(`${item.title} role deleted.`);
           this.getRoles();
         });
       }

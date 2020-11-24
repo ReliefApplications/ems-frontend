@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, User, WhoSnackBarService } from '@who-ems/builder';
+import { Application, Page, User, Role, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
-  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DELETE_PAGE,
+  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DeleteRoleMutationResponse, DELETE_PAGE,
+  DELETE_ROLE,
   EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -59,6 +60,26 @@ export class ApplicationService {
     return this._application.asObservable();
   }
 
+  /* Change the application's status and navigate to the applications list
+  */
+  publish(): void {
+    const application = this._application.getValue();
+    if (application) {
+      this.apollo.mutate<EditApplicationMutationResponse>({
+        mutation: EDIT_APPLICATION,
+        variables: {
+          id: application.id,
+          status: 'active'
+        }
+      }).subscribe(res => {
+        this.snackBar.openSnackBar(`Application ${res.data.editApplication.name} published`);
+        this.router.navigate(['/applications']);
+      });
+    } else {
+      this.snackBar.openSnackBar('No opened application.', { error: true });
+    }
+  }
+
   /* Delete a page and the associated content.
   */
   deletePage(id: string): void {
@@ -88,6 +109,17 @@ export class ApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar('Pages reordered');
     });
+  }
+
+  /* Update a specific page name in the opened application.
+  */
+  updatePageName(page: Page): void {
+    const application = this._application.getValue();
+    application.pages = application.pages.map(x => {
+      if (x.id === page.id) { x.name = page.name; }
+      return x;
+    });
+    this._application.next(application);
   }
 
   /* Add a new page to the opened application.
@@ -129,6 +161,21 @@ export class ApplicationService {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.roles = application.roles.concat([res.data.addRole]);
       this._application.next(application);
+    });
+  }
+
+  /* Delete an existing role.
+  */
+  deleteRole(role: Role): void {
+    this.apollo.mutate<DeleteRoleMutationResponse>({
+      mutation: DELETE_ROLE,
+      variables: {
+        id: role.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${role.title} role deleted.`);
+      const application = this._application.getValue();
+      this.loadApplication(application.id);
     });
   }
 

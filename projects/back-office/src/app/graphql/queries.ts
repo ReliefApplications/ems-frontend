@@ -272,7 +272,14 @@ export const GET_DASHBOARD_BY_ID = gql`
       canSee
       canUpdate
       page {
+        id
         application {
+          id
+        }
+      }
+      step {
+        id
+        workflow {
           id
         }
       }
@@ -293,6 +300,7 @@ export const GET_APPLICATIONS = gql`
     name
     createdAt
     modifiedAt
+    status
     pages {
       id
       name
@@ -335,6 +343,7 @@ export const GET_APPLICATION_BY_ID = gql`
       name
       description
       createdAt
+      status
       pages {
         id
         name

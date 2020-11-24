@@ -59,7 +59,7 @@ export interface AddRoleToUserMutationResponse {
   addRoleToUser: User;
 }
 
-// === ADD RECORD ===
+// === ADD ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
@@ -72,6 +72,19 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
 export interface EditRoleMutationResponse {
   loading: boolean;
   editRole: Role;
+}
+
+// === DELETE ROLE ===
+export const DELETE_ROLE = gql`
+mutation deleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRoleMutationResponse {
+  loading: boolean;
+  deleteRole: Role;
 }
 
 // === ADD DASHBOARD ===
@@ -422,13 +435,14 @@ export interface AddApplicationMutationResponse {
 
 // === EDIT APPLICATION ===
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $pages: [ID], $permissions: JSON, $description: String) {
-  editApplication(id: $id, name: $name, pages: $pages, permissions: $permissions, description: $description) {
+mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
     name
     createdAt
     modifiedAt
+    status
     pages {
       id
       name
@@ -553,6 +567,22 @@ mutation deleteStep($id: ID!) {
 export interface DeleteStepMutationResponse {
   loading: boolean;
   deleteStep: Step;
+}
+
+// === EDIT STEP ===
+export const EDIT_STEP = gql`
+mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
+  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
+    id
+    name
+    type
+    content
+  }
+}`;
+
+export interface EditStepMutationResponse {
+  loading: boolean;
+  editStep: Step;
 }
 
 // === ADD STEP ===

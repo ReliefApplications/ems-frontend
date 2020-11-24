@@ -21,7 +21,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
-  public displayedColumns = ['name', 'createdAt', 'usersCount', 'actions'];
+  public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
@@ -92,9 +92,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     Add a new application once closed, if result exists.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApplicationComponent, {
-      panelClass: 'add-dialog'
-    });
+    const dialogRef = this.dialog.open(AddApplicationComponent);
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.apollo.mutate<AddApplicationMutationResponse>({
