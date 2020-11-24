@@ -39,5 +39,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm.value);
+    this.settingsForm.markAsPristine();
   }
 }

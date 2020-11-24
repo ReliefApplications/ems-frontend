@@ -1,19 +1,21 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm">
   <h1>General</h1>
   <div class="form-group">
-    <mat-form-field appearance="outline">
-      <mat-label>
-        Application Name *
-      </mat-label>
-      <input matInput formControlName="name" type='text' placeholder="Enter a name for the application" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>
-        Application ID
-      </mat-label>
-      <input matInput formControlName="id" type='text'/>
-    </mat-form-field>
+    <div class="form-group-row">
+      <mat-form-field appearance="outline" style="flex: 2;">
+        <mat-label>
+          Application Name *
+        </mat-label>
+        <input matInput formControlName="name" type='text' placeholder="Enter a name for the application" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>
+          Application ID
+        </mat-label>
+        <input matInput formControlName="id" type='text'/>
+      </mat-form-field>
+    </div>
 
     <mat-form-field appearance="outline">
       <mat-label>
