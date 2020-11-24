@@ -16,7 +16,7 @@ export class ChoseRoleComponent implements OnInit {
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
-  rolesForm: FormGroup;
+  roleForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,8 +36,8 @@ export class ChoseRoleComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       this.roles = res.data.roles;
     });
-    this.rolesForm = this.formBuilder.group({
-      roles: [null, Validators.required]
+    this.roleForm = this.formBuilder.group({
+      role: [null, Validators.required]
     });
   }
 

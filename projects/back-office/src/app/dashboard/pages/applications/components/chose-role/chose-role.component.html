@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Chose roles to simulate</h1>
+<h1 mat-dialog-title>Chose role to simulate</h1>
 <div mat-dialog-content>
-    <form [formGroup]="rolesForm" class="form-group">
+    <form [formGroup]="roleForm" class="form-group">
         <mat-form-field>
-            <mat-label>Roles</mat-label>
-            <mat-select formControlName="roles" multiple>
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role">
                 <mat-option *ngFor="let role of roles" [value]="role.id">
                     {{role.title}}
                 </mat-option>
@@ -13,5 +13,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="rolesForm.value" color="primary" [disabled]="!rolesForm.valid">See preview</button>
+    <button mat-button [mat-dialog-close]="roleForm.value" color="primary" [disabled]="!roleForm.valid">See preview</button>
 </div>
