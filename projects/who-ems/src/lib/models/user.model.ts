@@ -60,8 +60,8 @@ export class PermissionsManagement {
             access: Permissions.canSeeForms,
             create: Permissions.canManageForms
         },
-        users: {
-            list: {
+        settings: {
+            users: {
                 access: Permissions.canSeeUsers
             },
             roles: {
