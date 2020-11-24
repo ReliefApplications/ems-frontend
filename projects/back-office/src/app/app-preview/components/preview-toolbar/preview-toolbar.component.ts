@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./preview-toolbar.component.scss']
 })
 export class PreviewToolbarComponent implements OnInit {
-  
+
   @Input() title: string;
 
   constructor(

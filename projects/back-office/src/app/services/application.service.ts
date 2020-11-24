@@ -17,7 +17,7 @@ export class ApplicationService {
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application>(null);
 
-  private _roleID = new BehaviorSubject<string>(null);
+  private _roleId = new BehaviorSubject<string>(null);
 
   constructor(
     private apollo: Apollo,
@@ -31,8 +31,8 @@ export class ApplicationService {
     this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
-        id: id,
-        asRole: asRole ? this._roleID.getValue() : null
+        id,
+        asRole: asRole ? this._roleId.getValue() : null
       }
     }).valueChanges.subscribe(res => {
       this._application.next(res.data.application);
@@ -203,7 +203,6 @@ export class ApplicationService {
   /* Set role which will be used to load the application preview
   */
   setRole(id: string): void {
-    this._roleID.next(id);
-    console.log(this._roleID.getValue());
+    this._roleId.next(id);
   }
 }

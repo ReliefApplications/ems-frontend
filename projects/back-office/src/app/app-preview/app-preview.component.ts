@@ -33,7 +33,7 @@ export class AppPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
-      this.applicationService.loadApplication(params.id);
+      this.applicationService.loadApplication(params.id, true);
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {

@@ -14,7 +14,7 @@ export class ChoseRoleComponent implements OnInit {
 
   // === DATA ===
   public roles: Role[] = [];
-  public loading: boolean = true;
+  public loading = true;
 
   // === REACTIVE FORM ===
   roleForm: FormGroup;

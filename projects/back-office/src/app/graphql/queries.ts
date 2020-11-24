@@ -338,8 +338,8 @@ export interface GetApplicationsQueryResponse {
 
 // === GET APPLICATION BY ID ===
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!){
-    application(id: $id){
+  query GetApplicationById($id: ID!, $asRole: ID){
+    application(id: $id, asRole: $asRole){
       id
       name
       createdAt
