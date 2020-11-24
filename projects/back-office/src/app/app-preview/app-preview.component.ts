@@ -44,7 +44,7 @@ export class AppPreviewComponent implements OnInit {
             navItems: application.pages.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `/${x.type}/${x.content}`,
+                path: `./${x.type}/${x.content}`,
                 icon: 'dashboard'
               };
             })
