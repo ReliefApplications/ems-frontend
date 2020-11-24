@@ -35,6 +35,7 @@ query GetRoles($all: Boolean, $application: ID) {
   }
 }`;
 
+
 export interface GetRolesQueryResponse {
   loading: boolean;
   roles: Role[];

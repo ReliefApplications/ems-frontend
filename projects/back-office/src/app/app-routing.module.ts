@@ -21,6 +21,17 @@ const routes: Routes = [
     canActivate: [MsalGuard]
   },
   {
+    path: 'app-preview',
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./app-preview/app-preview.module')
+          .then(m => m.AppPreviewModule),
+      }
+    ],
+    canActivate: [MsalGuard]
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module')
       .then(m => m.AuthModule)
