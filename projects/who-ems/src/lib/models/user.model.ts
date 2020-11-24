@@ -21,6 +21,7 @@ export interface Role {
 export interface User {
     id?: string;
     username?: string;
+    isAdmin?: boolean;
     name?: string;
     roles?: Role[];
     permissions?: Permission[];
