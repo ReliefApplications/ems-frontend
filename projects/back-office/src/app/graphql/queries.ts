@@ -453,8 +453,8 @@ export interface GetPageByIdQueryResponse {
 
 // === GET WORKFLOW BY ID ===
 export const GET_WORKFLOW_BY_ID = gql`
-  query GetWorkflowById($id: ID!){
-    workflow(id: $id){
+  query GetWorkflowById($id: ID!, $asRole: ID){
+    workflow(id: $id, asRole: $asRole){
       id
       name
       createdAt
