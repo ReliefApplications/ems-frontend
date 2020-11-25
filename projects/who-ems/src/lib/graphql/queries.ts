@@ -3,6 +3,7 @@ import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
 import { Role, User } from '../models/user.model';
 import { Record } from '../models/record.model';
+import { Notification } from '../models/notification.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -10,6 +11,7 @@ export const GET_PROFILE = gql`
   me {
     id
     username
+    isAdmin
     name
     roles {
       title
@@ -223,4 +225,19 @@ query GetRoles($application: ID) {
 export interface GetRolesQueryResponse {
   loading: boolean;
   roles: Role[];
+}
+
+// === GET NOTIFICATIONS ===
+export const GET_NOTIFICATIONS = gql`
+query GetNotifications {
+  notifications {
+    action
+    content
+    createdAt
+  }
+}`;
+
+export interface GetNotificationsQueryResponse {
+  loading: boolean;
+  notifications: Notification[];
 }
