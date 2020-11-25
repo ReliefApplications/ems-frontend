@@ -43,7 +43,7 @@ export function provideApollo(httpLink: HttpLink): any {
   const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `ws://localhost:5000`,
+    uri: `ws://localhost:3000/graphql`,
     options: {
       reconnect: true
     }
