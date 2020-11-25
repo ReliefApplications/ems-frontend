@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow } from '@who-ems/builder';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -496,4 +496,44 @@ export const GET_WORKFLOW_BY_ID = gql`
 export interface GetWorkflowByIdQueryResponse {
   loading: boolean;
   workflow: Workflow;
+}
+
+// === GET STEP BY ID ===
+export const GET_STEP_BY_ID = gql`
+  query GetStepById($id: ID!){
+    step(id: $id){
+      id
+      name
+      createdAt
+      modifiedAt
+      content
+      workflow {
+        id
+        name
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
+export interface GetStepByIdQueryResponse {
+  loading: boolean;
+  step: Step;
 }

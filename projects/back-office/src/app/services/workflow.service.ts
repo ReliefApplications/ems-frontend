@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Workflow, Step, WhoSnackBarService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -55,8 +55,11 @@ export class WorkflowService {
       }).subscribe(res => {
         this.snackBar.openSnackBar(`${value.name} step created`);
         this.loadWorkflow(workflow.id);
-        const content = res.data.addStep.content;
-        this.router.navigate(['../' + value.type + '/' + content], { relativeTo: route.parent });
+        if (value.type === ContentType.form) {
+          this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
+        } else {
+          this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
+        }
       });
     } else {
       this.snackBar.openSnackBar('No opened workflow.', { error: true });

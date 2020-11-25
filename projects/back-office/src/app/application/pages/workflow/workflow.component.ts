@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 import { ApplicationService } from '../../../services/application.service';
@@ -156,7 +156,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+      if (this.selectedStep.type === ContentType.form) {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+      }
     }
   }
 
