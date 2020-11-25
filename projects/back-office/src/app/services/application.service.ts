@@ -205,4 +205,10 @@ export class ApplicationService {
   setRole(id: string): void {
     this._roleId.next(id);
   }
+
+  /*  Return the roleId as an Observable.
+  */
+  get roleId(): Observable<string> {
+    return this._roleId.asObservable();
+  }
 }

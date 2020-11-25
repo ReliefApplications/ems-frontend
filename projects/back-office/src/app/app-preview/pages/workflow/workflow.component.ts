@@ -4,6 +4,7 @@ import { Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-workflow',
@@ -25,20 +26,28 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public selectedStep: Step;
   public selectedIndex: number;
 
+  // === PREVIEWED ROLE ===
+  public role: string;
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: WhoSnackBarService,
-    private router: Router
+    private router: Router,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
+    this.applicationService.roleId.subscribe((role) => {
+      this.role = role;
+    });
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
       this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
         query: GET_WORKFLOW_BY_ID,
         variables: {
-          id: this.id
+          id: this.id,
+          asRole: this.role
         }
       }).valueChanges.subscribe((res) => {
         if (res.data.workflow) {

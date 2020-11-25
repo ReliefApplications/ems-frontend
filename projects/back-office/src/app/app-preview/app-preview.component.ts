@@ -4,7 +4,6 @@ import { Application, WhoAuthService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
 
-
 @Component({
   selector: 'app-app-preview',
   templateUrl: './app-preview.component.html',
