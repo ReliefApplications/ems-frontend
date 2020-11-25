@@ -43,9 +43,12 @@ export function provideApollo(httpLink: HttpLink): any {
   const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `ws://localhost:3000/graphql`,
+    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
     options: {
-      reconnect: true
+      reconnect: true,
+      connectionParams: {
+        authToken: localStorage.getItem('msal.idtoken')
+      }
     }
   });
 
