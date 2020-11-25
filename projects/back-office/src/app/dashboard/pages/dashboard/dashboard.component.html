@@ -4,7 +4,7 @@
     <div *ngIf="!formActive" class="dashboard-name-container">
         <h1 class="dashboard-name" (click)="toggleFormActive()">{{dashboard.name}}</h1>
         <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
-        <who-access [access]="dashboard.permissions" [application]="dashboard.page ? dashboard.page.application.id : dashboard.step.workflow.page.application.id" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
+        <who-access [access]="dashboard.permissions" [application]="dashboard.page ? dashboard.page.application.id : dashboard.step ? dashboard.step.workflow.page.application.id : null" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
         </who-access>
     </div>
     <ng-container *ngIf="formActive">
