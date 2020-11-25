@@ -23,8 +23,8 @@ export interface GetUsersQueryResponse {
 
 // === GET ROLES ===
 export const GET_ROLES = gql`
-{
-  roles {
+query GetRoles($all: Boolean, $application: ID) {
+  roles(all: $all, application: $application) {
     id
     title
     permissions {
@@ -34,6 +34,7 @@ export const GET_ROLES = gql`
     usersCount
   }
 }`;
+
 
 export interface GetRolesQueryResponse {
   loading: boolean;
@@ -281,6 +282,12 @@ export const GET_DASHBOARD_BY_ID = gql`
         id
         workflow {
           id
+          page {
+            id
+            application {
+              id
+            }
+          }
         }
       }
     }
@@ -337,8 +344,8 @@ export interface GetApplicationsQueryResponse {
 
 // === GET APPLICATION BY ID ===
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!){
-    application(id: $id){
+  query GetApplicationById($id: ID!, $asRole: ID){
+    application(id: $id, asRole: $asRole){
       id
       name
       description
@@ -447,8 +454,8 @@ export interface GetPageByIdQueryResponse {
 
 // === GET WORKFLOW BY ID ===
 export const GET_WORKFLOW_BY_ID = gql`
-  query GetWorkflowById($id: ID!){
-    workflow(id: $id){
+  query GetWorkflowById($id: ID!, $asRole: ID){
+    workflow(id: $id, asRole: $asRole){
       id
       name
       createdAt

@@ -8,8 +8,10 @@ import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
+import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-applications',
@@ -35,7 +37,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
+    private authService: WhoAuthService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
@@ -123,6 +126,22 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       const index = this.applications.data.findIndex(x => x.id === element.id);
       this.applications.data[index] = res.data.editApplication;
       this.applications.data = this.applications.data;
+    });
+  }
+
+  /*  Open a dialog to choose roles to fit in the preview.
+  */
+  onPreview(element: Application): void {
+    const dialogRef = this.dialog.open(ChoseRoleComponent, {
+      data: {
+        application: element.id
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.setRole(value.role);
+        this.router.navigate(['./app-preview', element.id]);
+      }
     });
   }
 }

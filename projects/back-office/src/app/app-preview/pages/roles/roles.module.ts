@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ApplicationsRoutingModule } from './applications-routing.module';
-import { ApplicationsComponent } from './applications.component';
+import { RolesRoutingModule } from './roles-routing.module';
+import { RolesComponent } from './roles.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -13,17 +13,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { AddApplicationComponent } from './components/add-application/add-application.component';
-import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
-import { MatSortModule } from '@angular/material/sort';
-import { MatChipsModule } from '@angular/material/chips';
-import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
+import { AddRoleComponent } from './components/add-role/add-role.component';
+
 
 @NgModule({
-  declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
+  declarations: [RolesComponent, AddRoleComponent],
   imports: [
     CommonModule,
-    ApplicationsRoutingModule,
+    RolesRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -31,15 +28,11 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatSortModule,
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule,
-    MatChipsModule,
-    WhoConfirmModalModule,
-    WhoAccessModule
+    MatIconModule
   ],
-  exports: [ApplicationsComponent]
+  exports: [RolesComponent]
 })
-export class ApplicationsModule { }
+export class RolesModule { }

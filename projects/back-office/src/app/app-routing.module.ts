@@ -21,6 +21,16 @@ const routes: Routes = [
               .then(m => m.ApplicationModule),
           }
         ]
+      },
+      {
+        path: 'app-preview',
+        children: [
+          {
+            path: ':id',
+            loadChildren: () => import('./app-preview/app-preview.module')
+              .then(m => m.AppPreviewModule),
+          }
+        ]
       }
     ],
     canActivate: [MsalGuard, AccessGuard]
@@ -41,7 +51,7 @@ const routes: Routes = [
     Use lazy loading for performance.
 */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
