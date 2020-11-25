@@ -21,6 +21,7 @@ export interface Form {
     core?: boolean;
     records?: Record[];
     fields?: any;
+    permissions?: any;
     canSee?: boolean;
     canCreate?: boolean;
     canUpdate?: boolean;

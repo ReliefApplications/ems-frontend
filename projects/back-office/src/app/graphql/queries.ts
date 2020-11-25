@@ -459,6 +459,24 @@ export const GET_WORKFLOW_BY_ID = gql`
       name
       createdAt
       modifiedAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
       steps {
         id
         name
@@ -487,6 +505,9 @@ export const GET_WORKFLOW_BY_ID = gql`
             id
             title
           }
+        }
+        application {
+          id
         }
       }
     }
