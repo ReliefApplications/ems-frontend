@@ -6,6 +6,7 @@ subscription NotificationSubscription {
     notification {
         action
         content
+        createdAt
     }
 }`;
 

@@ -233,6 +233,7 @@ query GetNotifications {
   notifications {
     action
     content
+    createdAt
   }
 }`;
 
