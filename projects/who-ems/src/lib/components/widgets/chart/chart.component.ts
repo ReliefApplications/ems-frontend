@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
+import { Subscription } from 'rxjs';
+import { RecordAddedSubscriptionResponse, RECORD_ADDED_SUBSCRIPTION } from '../../../graphql/subscriptions';
 
 @Component({
   selector: 'who-chart',
@@ -11,11 +13,12 @@ import { ChartComponent } from '@progress/kendo-angular-charts';
 })
 /*  Chart widget using KendoUI.
 */
-export class WhoChartComponent implements OnChanges {
+export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === DATA ===
   public loading = true;
   public data = [];
+  recordsSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
@@ -53,13 +56,15 @@ export class WhoChartComponent implements OnChanges {
   */
   private getRecords(): void {
     if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+      const recordsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.settings.source,
           display: true
         }
-      }).valueChanges.subscribe(res => {
+      });
+
+      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
         this.data = [];
         const dataToAggregate = [];
         if (res.data.resource){
@@ -75,6 +80,26 @@ export class WhoChartComponent implements OnChanges {
         }
         this.data = dataToAggregate;
         this.loading = res.loading;
+      });
+
+      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
+        document: RECORD_ADDED_SUBSCRIPTION,
+        variables: {
+          resource: this.settings.source
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          console.log(subscriptionData);
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newRecord = subscriptionData.data.recordAdded;
+          return {
+            ...prev,
+            resource: {
+              records: [newRecord, ...prev.resource.records]
+            }
+          };
+        }
       });
     } else {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -101,5 +126,9 @@ export class WhoChartComponent implements OnChanges {
         this.loading = res.loading;
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.recordsSubscription.unsubscribe();
   }
 }
