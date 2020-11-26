@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Application, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Application, WhoConfirmModalComponent, ContentType } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
 
@@ -54,7 +54,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               return {
                 id: x.id,
                 name: x.name,
-                path: `./${x.type}/${x.content}`,
+                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
                 icon: 'dashboard',
                 class: null,
                 orderable: true,

@@ -1,6 +1,22 @@
-<h1>Answer the form</h1>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<ng-container *ngIf="!loading && form">
+    <div *ngIf="!formActive" class="tab-name-container">
+        <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
+    </div>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="tabNameForm" (ngSubmit)="saveName()" class="tab-name-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="tabName" type="string">
+            </mat-form-field>
+            <button type="submit" mat-icon-button color="primary" [disabled]="!tabNameForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </form>
+    </ng-container>
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
 <ng-container *ngIf="completed">

@@ -1,0 +1,17 @@
+.tab-name-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .tab-name {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border-radius: 6px;
+    }
+    .tab-name:hover {
+        background-color: #dddddd54;
+    }
+}
