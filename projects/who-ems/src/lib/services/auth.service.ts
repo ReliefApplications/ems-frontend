@@ -4,7 +4,7 @@ import { Account } from 'msal';
 import { MsalService } from '@azure/msal-angular';
 import { Apollo } from 'apollo-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +37,19 @@ export class WhoAuthService {
         return true;
       }
       return false;
+    } else {
+      this.getProfile();
+      return false;
+    }
+  }
+
+  /*  Check if user is admin.
+    If user profile is empty, try to get it.
+  */
+  get userIsAdmin(): boolean {
+    const user = this._user.getValue();
+    if (user) {
+      return user.isAdmin;
     } else {
       this.getProfile();
       return false;

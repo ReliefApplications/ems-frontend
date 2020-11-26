@@ -1,35 +1,39 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
+import { AccessGuard } from './guards/access.guard';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./dashboard/dashboard.module')
-    .then(m => m.DashboardModule),
-    canActivate: [MsalGuard]
-  },
-  {
-    path: 'applications',
     children: [
       {
-        path: ':id',
-        loadChildren: () => import('./application/application.module')
-          .then(m => m.ApplicationModule),
-      }
-    ],
-    canActivate: [MsalGuard]
-  },
-  {
-    path: 'app-preview',
-    children: [
+        path: '',
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
+      },
       {
-        path: ':id',
-        loadChildren: () => import('./app-preview/app-preview.module')
-          .then(m => m.AppPreviewModule),
+        path: 'applications',
+        children: [
+          {
+            path: ':id',
+            loadChildren: () => import('./application/application.module')
+              .then(m => m.ApplicationModule),
+          }
+        ]
+      },
+      {
+        path: 'app-preview',
+        children: [
+          {
+            path: ':id',
+            loadChildren: () => import('./app-preview/app-preview.module')
+              .then(m => m.AppPreviewModule),
+          }
+        ]
       }
     ],
-    canActivate: [MsalGuard]
+    canActivate: [MsalGuard, AccessGuard]
   },
   {
     path: 'auth',
@@ -47,7 +51,7 @@ const routes: Routes = [
     Use lazy loading for performance.
 */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

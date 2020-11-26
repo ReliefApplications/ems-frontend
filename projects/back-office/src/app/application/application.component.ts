@@ -69,6 +69,12 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             name: 'Administration',
             navItems: [
               {
+                name: 'Settings',
+                path: './settings/edit',
+                icon: 'settings'
+              }
+              ,
+              {
                 name: 'Users',
                 path: './settings/users',
                 icon: 'supervisor_account'
