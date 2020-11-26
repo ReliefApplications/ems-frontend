@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
@@ -19,7 +19,7 @@ import { ApplicationService } from '../../../services/application.service';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
 
   @ViewChild(WhoFormComponent)
   private formComponent: WhoFormComponent;
@@ -65,12 +65,12 @@ export class FormComponent implements OnInit {
             variables: {
               id: this.step.content
             }
-          }).valueChanges.subscribe((res) => {
-            this.form = res.data.form;
+          }).valueChanges.subscribe((res2) => {
+            this.form = res2.data.form;
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.step.name, Validators.required)
             });
-            this.loading = res.data.loading;
+            this.loading = res2.data.loading;
           });
         });
       } else {
@@ -86,12 +86,12 @@ export class FormComponent implements OnInit {
             variables: {
               id: this.page.content
             }
-          }).valueChanges.subscribe((res) => {
-            this.form = res.data.form;
+          }).valueChanges.subscribe((res2) => {
+            this.form = res2.data.form;
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page.name, Validators.required)
             });
-            this.loading = res.data.loading;
+            this.loading = res2.data.loading;
           });
         });
       }
@@ -147,5 +147,4 @@ export class FormComponent implements OnInit {
   ngOnDestroy(): void {
     this.routeSubscription.unsubscribe();
   }
-
 }
