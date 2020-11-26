@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { WhoFormModule } from '@who-ems/builder';
+import { WhoFormModule, WhoAccessModule } from '@who-ems/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule,
     FormRoutingModule,
     WhoFormModule,
+    WhoAccessModule,
     FormsModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,

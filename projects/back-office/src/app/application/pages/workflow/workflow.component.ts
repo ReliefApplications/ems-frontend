@@ -89,6 +89,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  /*  Edit the permissions layer.
+  */
+  saveAccess(e: any): void {
+    this.apollo.mutate<EditPageMutationResponse>({
+      mutation: EDIT_PAGE,
+      variables: {
+        id: this.workflow.page.id,
+        permissions: e
+      }
+    }).subscribe(res => {
+      this.workflow.permissions = res.data.editPage.permissions;
+    });
+  }
+
   /*  Delete a step if authorized.
   */
   deleteStep(step: Step, e: any): void {
