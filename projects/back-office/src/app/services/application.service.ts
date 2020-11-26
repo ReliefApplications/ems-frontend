@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, Page, User, Role, WhoSnackBarService } from '@who-ems/builder';
+import { Application, Page, User, Role, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
@@ -143,7 +143,8 @@ export class ApplicationService {
         const content = res.data.addPage.content;
         application.pages = application.pages.concat([res.data.addPage]);
         this._application.next(application);
-        this.router.navigate([`/applications/${application.id}/${value.type}/${content}`]);
+        this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
+        `/applications/${application.id}/${value.type}/${content}`]);
       });
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });

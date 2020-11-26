@@ -532,6 +532,12 @@ export const GET_STEP_BY_ID = gql`
       workflow {
         id
         name
+        page {
+          id
+          application {
+            id
+          }
+        }
       }
       permissions {
         canSee {
