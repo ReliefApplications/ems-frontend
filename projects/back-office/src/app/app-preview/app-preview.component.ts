@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Application, WhoAuthService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
@@ -9,7 +9,7 @@ import { ApplicationService } from '../services/application.service';
   templateUrl: './app-preview.component.html',
   styleUrls: ['./app-preview.component.scss']
 })
-export class AppPreviewComponent implements OnInit {
+export class AppPreviewComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
   public title: string;
@@ -26,7 +26,6 @@ export class AppPreviewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: WhoAuthService,
     private applicationService: ApplicationService,
   ) { }
 
@@ -72,6 +71,7 @@ export class AppPreviewComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.routeSubscription.unsubscribe();
     this.applicationSubscription.unsubscribe();
   }
 

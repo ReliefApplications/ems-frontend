@@ -16,70 +16,69 @@ export const routes = [
         children: [
             {
                 path: '',
+                redirectTo: 'applications'
+            },
+            {
+                path: 'forms',
                 children: [
                     {
-                        path: 'forms',
-                        children: [
-                            {
-                                path: '',
-                                loadChildren: () => import('./pages/forms/forms.module')
-                                    .then(m => m.FormsModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'records/:id',
-                                loadChildren: () => import('./pages/form-records/form-records.module')
-                                    .then(m => m.FormRecordsModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'answer/:id',
-                                loadChildren: () => import('./pages/form-answer/form-answer.module')
-                                    .then(m => m.FormAnswerModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'builder',
-                                loadChildren: () => import('./pages/form-builder/form-builder.module')
-                                    .then(m => m.FormBuilderModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'builder/:id',
-                                loadChildren: () => import('./pages/form-builder/form-builder.module')
-                                    .then(m => m.FormBuilderModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'update/:id',
-                                loadChildren: () => import('./pages/update-record/update-record.module')
-                                    .then(m => m.UpdateRecordModule),
-                                // canActivate: [WhoPermissionGuard]
-                            }
-                        ]
+                        path: '',
+                        loadChildren: () => import('./pages/forms/forms.module')
+                            .then(m => m.FormsModule),
+                        // canActivate: [WhoPermissionGuard]
                     },
                     {
-                        path: 'resources',
-                        children: [
-                            {
-                                path: '',
-                                loadChildren: () => import('./pages/resources/resources.module')
-                                    .then(m => m.ResourcesModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: ':id',
-                                loadChildren: () => import('./pages/resource/resource.module')
-                                    .then(m => m.ResourceModule),
-                                // canActivate: [WhoPermissionGuard]
-                            },
-                            {
-                                path: 'update/:id',
-                                loadChildren: () => import('./pages/update-record/update-record.module')
-                                    .then(m => m.UpdateRecordModule),
-                                // canActivate: [WhoPermissionGuard]
-                            }
-                        ]
+                        path: 'records/:id',
+                        loadChildren: () => import('./pages/form-records/form-records.module')
+                            .then(m => m.FormRecordsModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'answer/:id',
+                        loadChildren: () => import('./pages/form-answer/form-answer.module')
+                            .then(m => m.FormAnswerModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'builder',
+                        loadChildren: () => import('./pages/form-builder/form-builder.module')
+                            .then(m => m.FormBuilderModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'builder/:id',
+                        loadChildren: () => import('./pages/form-builder/form-builder.module')
+                            .then(m => m.FormBuilderModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'update/:id',
+                        loadChildren: () => import('./pages/update-record/update-record.module')
+                            .then(m => m.UpdateRecordModule),
+                        // canActivate: [WhoPermissionGuard]
+                    }
+                ]
+            },
+            {
+                path: 'resources',
+                children: [
+                    {
+                        path: '',
+                        loadChildren: () => import('./pages/resources/resources.module')
+                            .then(m => m.ResourcesModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: ':id',
+                        loadChildren: () => import('./pages/resource/resource.module')
+                            .then(m => m.ResourceModule),
+                        // canActivate: [WhoPermissionGuard]
+                    },
+                    {
+                        path: 'update/:id',
+                        loadChildren: () => import('./pages/update-record/update-record.module')
+                            .then(m => m.UpdateRecordModule),
+                        // canActivate: [WhoPermissionGuard]
                     }
                 ]
             },

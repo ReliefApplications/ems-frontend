@@ -16,7 +16,7 @@ export class ApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application>(null);
-
+  // tslint:disable-next-line: variable-name
   private _roleId = new BehaviorSubject<string>(null);
 
   constructor(
@@ -38,6 +38,24 @@ export class ApplicationService {
       this._application.next(res.data.application);
     });
   }
+
+  /*
+    Edit Application
+  */
+ editApplication(value: any): void{
+  const application = this._application.getValue();
+  this.apollo.mutate<EditApplicationMutationResponse>(
+    {
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id: application.id,
+        name: value.name,
+        description: value.description
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Application updated');
+    });
+}
 
   /*  Return the application as an Observable.
   */
