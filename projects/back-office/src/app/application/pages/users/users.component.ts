@@ -55,7 +55,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(EditUserComponent, {
       panelClass: 'add-dialog',
       data: {
-        roles: user.roles
+        role: user.roles[0],
       }
     });
     dialogRef.afterClosed().subscribe(value => {

@@ -208,7 +208,7 @@ export class ApplicationService {
       mutation: EDIT_USER,
       variables: {
         id: user.id,
-        roles: value.roles,
+        roles: [value.role],
         application: application.id
       }
     }).subscribe(res => {
