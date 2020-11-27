@@ -6,9 +6,8 @@
     <h1>{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <button mat-button [matMenuTriggerFor]="applicationMenu">
-      {{title}}
-      <mat-icon>arrow_drop_down</mat-icon>
+    <button mat-raised-button (click)="openApplicationModal()">
+      Applications
     </button>
     <mat-menu #applicationMenu="matMenu">
       <button mat-menu-item *ngFor="let application of applications"

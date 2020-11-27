@@ -9,6 +9,8 @@ import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
+import { MatDialog } from '@angular/material/dialog';
+import { ApplicationModalComponent } from './application-modal/application-modal.component';
 
 @Component({
   selector: 'who-layout',
@@ -42,7 +44,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private authService: WhoAuthService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    public dialog: MatDialog
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -138,6 +141,12 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     */
   logout(): void {
     this.authService.logout();
+  }
+
+  openApplicationModal(): void {
+    this.dialog.open(ApplicationModalComponent, {
+      data: this.applications
+    });
   }
 
 }

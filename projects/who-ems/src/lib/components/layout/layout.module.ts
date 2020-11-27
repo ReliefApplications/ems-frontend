@@ -10,9 +10,12 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
+import { ApplicationModalComponent } from './application-modal/application-modal.component';
+import {MatCardModule} from '@angular/material/card';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [WhoLayoutComponent],
+  declarations: [WhoLayoutComponent, ApplicationModalComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -23,7 +26,9 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatSidenavModule,
     MatListModule,
     DragDropModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatCardModule,
+    MatDialogModule
   ],
   exports: [WhoLayoutComponent]
 })
