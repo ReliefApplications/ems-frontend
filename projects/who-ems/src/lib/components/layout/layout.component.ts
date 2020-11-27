@@ -28,7 +28,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
-  @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
   filteredNavGroups = [];
 
@@ -118,12 +117,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize(event): void {
     this.largeDevice = (event.target.innerWidth > 1024);
-  }
-
-  /* Emit the application to open
-  */
-  onOpenApplication(application: Application): void {
-    this.openApplication.emit(application);
   }
 
   onClick(callback: () => any, event: any): void {
