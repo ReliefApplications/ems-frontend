@@ -125,6 +125,10 @@ export function provideApollo(httpLink: HttpLink): any {
   ],
   providers: [
     {
+      provide: 'environment',
+      useValue: environment
+    },
+    {
       // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
       provide: APOLLO_OPTIONS,
       useFactory: provideApollo,

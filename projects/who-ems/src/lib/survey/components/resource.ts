@@ -1,6 +1,4 @@
-const API_GRAPHQL = `http://localhost:3000/graphql`;
-
-export function init(Survey: any): void {
+export function init(Survey: any, API_URL: string): void {
   const component = {
     name: 'resource',
     title: 'Resource',
@@ -19,7 +17,6 @@ export function init(Survey: any): void {
         visibleIndex: 3,
         required: true,
         choices: (obj, choicesCallback) => {
-          const url = API_GRAPHQL;
           const xhr = new XMLHttpRequest();
           const query = {
             query: `{
@@ -30,7 +27,7 @@ export function init(Survey: any): void {
                           }`,
           };
           xhr.responseType = 'json';
-          xhr.open('POST', url);
+          xhr.open('POST', API_URL);
           const token = localStorage.getItem('msal.idtoken');
           // Apollo client doesn't intercept the request, so it has to be built 'manually'
           xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -62,7 +59,6 @@ export function init(Survey: any): void {
         visibleIndex: 3,
         choices: (obj, choicesCallback) => {
           if (obj.resource) {
-            const url = API_GRAPHQL;
             const xhr = new XMLHttpRequest();
             const query = {
               query: `
@@ -78,7 +74,7 @@ export function init(Survey: any): void {
               },
             };
             xhr.responseType = 'json';
-            xhr.open('POST', url);
+            xhr.open('POST', API_URL);
             const token = localStorage.getItem('msal.idtoken');
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -110,7 +106,6 @@ export function init(Survey: any): void {
         visibleIndex: 3,
         choices: (obj, choicesCallback) => {
           if (obj.resource) {
-            const url = API_GRAPHQL;
             const xhr = new XMLHttpRequest();
             const query = {
               query: `
@@ -129,7 +124,7 @@ export function init(Survey: any): void {
               },
             };
             xhr.responseType = 'json';
-            xhr.open('POST', url);
+            xhr.open('POST', API_URL);
             const token = localStorage.getItem('msal.idtoken');
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -173,7 +168,6 @@ export function init(Survey: any): void {
         visibleIndex: 3,
         choices: (obj, choicesCallback) => {
           if (obj.resource && obj.canAddNew) {
-            const url = API_GRAPHQL;
             const xhr = new XMLHttpRequest();
             const query = {
               query: `
@@ -192,7 +186,7 @@ export function init(Survey: any): void {
               },
             };
             xhr.responseType = 'json';
-            xhr.open('POST', url);
+            xhr.open('POST', API_URL);
             const token = localStorage.getItem('msal.idtoken');
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -211,7 +205,6 @@ export function init(Survey: any): void {
       });
     },
     onLoaded(question): void {
-      const url = API_GRAPHQL;
       const xhr = new XMLHttpRequest();
       const query = {
         query: `query GetResourceById($id: ID!) {
@@ -229,7 +222,7 @@ export function init(Survey: any): void {
         },
       };
       xhr.responseType = 'json';
-      xhr.open('POST', url);
+      xhr.open('POST', API_URL);
       const token = localStorage.getItem('msal.idtoken');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.setRequestHeader('Content-Type', 'application/json');
@@ -250,7 +243,6 @@ export function init(Survey: any): void {
         document.addEventListener('saveResourceFromEmbed', (e: CustomEvent) => {
           const detail = e.detail;
           if (detail.template === question.addTemplate) {
-            const url = API_GRAPHQL;
             const xhr = new XMLHttpRequest();
             const query = {
               query: `query GetResourceById($id: ID!) {
@@ -268,7 +260,7 @@ export function init(Survey: any): void {
               },
             };
             xhr.responseType = 'json';
-            xhr.open('POST', url);
+            xhr.open('POST', API_URL);
             const token = localStorage.getItem('msal.idtoken');
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.setRequestHeader('Content-Type', 'application/json');
