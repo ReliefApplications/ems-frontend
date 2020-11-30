@@ -55,7 +55,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 id: x.id,
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: 'dashboard',
+                icon: this.getNavIcon(x.type),
                 class: null,
                 orderable: true,
                 action: {
@@ -92,6 +92,17 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 
   onDelete(item: any): void {

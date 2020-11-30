@@ -43,7 +43,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
               return {
                 name: x.name,
                 path: `./${x.type}/${x.content}`,
-                icon: 'dashboard'
+                icon: this.getNavIcon(x.type)
               };
             })
           },
@@ -68,6 +68,17 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 
   ngOnDestroy(): void {
