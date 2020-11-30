@@ -11,6 +11,9 @@ export const GET_USERS = gql`
     roles {
       id
       title
+      application {
+        id
+      }
     }
     oid
   }

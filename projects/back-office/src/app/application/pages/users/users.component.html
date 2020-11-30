@@ -18,10 +18,8 @@
     </ng-container>
 
     <ng-container matColumnDef="roles">
-      <th mat-header-cell *matHeaderCellDef>Roles</th>
-      <td mat-cell *matCellDef="let element">
-        <span *ngFor="let role of element.roles"> {{role.title}},</span>
-      </td>
+      <th mat-header-cell *matHeaderCellDef>Role</th>
+      <td mat-cell *matCellDef="let element">{{element.roles[0].title}}</td>
   </ng-container>
 
     <ng-container matColumnDef="oid">

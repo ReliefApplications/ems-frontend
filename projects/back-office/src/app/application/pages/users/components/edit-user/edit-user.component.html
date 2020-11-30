@@ -3,7 +3,7 @@
     <form [formGroup]="userForm">
         <mat-form-field>
             <mat-label>Roles</mat-label>
-            <mat-select formControlName="roles" multiple>
+            <mat-select formControlName="role">
                 <mat-option *ngFor="let role of roles" [value]="role.id">
                     {{role.title}}
                 </mat-option>
