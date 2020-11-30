@@ -88,18 +88,19 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
           resource: this.settings.source
         },
         updateQuery: (prev, { subscriptionData }) => {
-          console.log(subscriptionData);
-          return prev;
-          // if (!subscriptionData.data) {
-          //   return prev;
-          // }
-          // const newRecord = subscriptionData.data.recordAdded;
-          // return {
-          //   ...prev,
-          //   resource: {
-          //     records: [newRecord, ...prev.resource.records]
-          //   }
-          // };
+          // console.log(subscriptionData);
+          // return prev;
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newRecord = subscriptionData.data.recordAdded;
+          newRecord.data.id = newRecord.id;
+          return {
+            ...prev,
+            resource: {
+              records: [newRecord, ...prev.resource.records]
+            }
+          };
         }
       });
     } else {

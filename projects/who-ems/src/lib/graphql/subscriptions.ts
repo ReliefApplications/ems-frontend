@@ -19,7 +19,7 @@ export const RECORD_ADDED_SUBSCRIPTION = gql`
 subscription RecordAddedSubscription($resource: ID) {
     recordAdded(resource: $resource) {
         id
-        data
+        data(display: true)
     }
 }`;
 

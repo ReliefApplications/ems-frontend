@@ -384,6 +384,7 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: 
     canSee
     canUpdate
     page {
+      id
       name
       application {
         id

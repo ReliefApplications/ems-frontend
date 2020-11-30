@@ -7,6 +7,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
+import { Record } from '../../../models/record.model';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -210,9 +211,11 @@ export class WhoGridComponent implements OnInit, OnChanges {
         locale: 'en'
       }
     });
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res: {template: string, data: Record}) => {
       if (res) {
-        this.items.push(res.data.data);
+        const data = res.data.data;
+        data.id = res.data.id;
+        this.items.push(this.setDataType(data));
         this.loadItems();
       }
     });
