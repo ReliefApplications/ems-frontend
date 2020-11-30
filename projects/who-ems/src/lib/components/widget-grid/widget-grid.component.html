@@ -10,7 +10,7 @@
                         (delete)="onDeleteWidget($event)"  *ngIf="canUpdate"></who-floating-options>
                     <who-widget [widget]="widget"></who-widget>
                     <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
-                        <mat-icon>open_with</mat-icon>
+                        <mat-icon>drag_indicator</mat-icon>
                     </button>
                 </div>
             </cdk-drop-list>
