@@ -6,10 +6,10 @@ import { init as initResourceComponent } from './components/resource';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey): void{
+export function initCustomWidgets(Survey, API_URL): void{
     initCustomWidget(Survey);
     initFullnameComponent(Survey);
     initCountryComponent(Survey);
-    initResourceInputWidget(Survey);
-    initResourceComponent(Survey);
+    initResourceInputWidget(Survey, API_URL);
+    initResourceComponent(Survey, API_URL);
 }
