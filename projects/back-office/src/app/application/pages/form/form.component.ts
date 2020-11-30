@@ -132,6 +132,32 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
+  /*  Edit the permissions layer.
+  */
+  saveAccess(e: any): void {
+    if (this.router.url.includes('/workflow/')) {
+      this.apollo.mutate<EditStepMutationResponse>({
+        mutation: EDIT_STEP,
+        variables: {
+          id: this.id,
+          permissions: e
+        }
+      }).subscribe(res => {
+        this.form.permissions = res.data.editStep.permissions;
+      });
+    } else {
+      this.apollo.mutate<EditPageMutationResponse>({
+        mutation: EDIT_PAGE,
+        variables: {
+          id: this.id,
+          permissions: e
+        }
+      }).subscribe(res => {
+        this.form.permissions = res.data.editPage.permissions;
+      });
+    }
+  }
+
   onComplete(e: any): void {
     this.completed = e;
   }

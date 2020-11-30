@@ -11,6 +11,9 @@ export const GET_USERS = gql`
     roles {
       id
       title
+      application {
+        id
+      }
     }
     oid
   }
@@ -460,6 +463,24 @@ export const GET_WORKFLOW_BY_ID = gql`
       name
       createdAt
       modifiedAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
       steps {
         id
         name
@@ -489,6 +510,9 @@ export const GET_WORKFLOW_BY_ID = gql`
             title
           }
         }
+        application {
+          id
+        }
       }
     }
   }
@@ -511,6 +535,12 @@ export const GET_STEP_BY_ID = gql`
       workflow {
         id
         name
+        page {
+          id
+          application {
+            id
+          }
+        }
       }
       permissions {
         canSee {
