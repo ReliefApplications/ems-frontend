@@ -49,9 +49,7 @@
     z-index: 1100;
 }
 .widget-options {
-    position: absolute;
-    top: 0;
-    left: 0;
+    float: left;
     color: darkgray;
     width: 40px;
     height: 40px;
@@ -63,7 +61,9 @@
 }
 
 .more-button {
-    float: left;
+    position: absolute;
+    top: 0;
+    left: 0;
     font-size: 2em;
 }
 
