@@ -11,6 +11,9 @@ import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 // === CUSTOM WIDGETS / COMPONENTS ===
 initCustomWidgets(Survey);
 
+// === STYLE ===
+Survey.StylesManager.applyTheme('darkblue');
+
 @Component({
   selector: 'who-form',
   templateUrl: './form.component.html',

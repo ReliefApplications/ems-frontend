@@ -4,6 +4,7 @@ export function init(Survey: any): void {
   const component = {
     name: 'resource',
     title: 'Resource',
+    category: 'Resource',
     questionJSON: {
       name: 'resource',
       type: 'dropdown',
