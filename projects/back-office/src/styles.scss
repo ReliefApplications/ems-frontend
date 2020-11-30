@@ -72,7 +72,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-  
+
   .snack-error {
     background-color: mat-color($warn);
     color: white;
@@ -97,18 +97,18 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-  
+
   .warn-chip{
     background-color: mat-color($warn, lighter) !important;
     color: mat-color($warn) !important;
   }
 
-   
+
   .primary-chip{
     background-color: #e9fae1 !important;
     color: #67dd2d !important;
   }
-   
+
   .accent-chip{
     background-color: rgba(255, 159, 0, 0.14) !important;
     color: #ff9f00 !important;
@@ -123,7 +123,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 
 // === GLOBAL STYLES ==
 .mat-table{
-  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2); 
+  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   font-size: 14px;
   opacity: 0.87;
   border-radius: 4px;
@@ -143,7 +143,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   .mat-cell:first-child{
     color: #000000;
     font-weight: 500;
-  }  
+  }
 }
 
 .mat-spinner {
@@ -189,7 +189,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 
 .mat-chip{
   border-radius: 0px !important;
-  min-width: 75px;  
+  min-width: 75px;
   max-width: 1px; //This works??
   justify-content: center;
   font-weight: 500 !important;
@@ -222,7 +222,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
     padding: 16px;
     border: 1px solid darkgray;
     border-radius: 4px;
-    
+
     .form-group:last-child {
       margin-bottom: 0;
     }
@@ -255,14 +255,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 40px;
   position: relative;
   z-index: 1001;
-  background-color: #0090d1;
-  color: white;
-  text-align: center;
+  background-color: white;
+  color: black;
+  text-align: left;
   line-height: 40px;
   pointer-events: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding: 0 40px;
+  border-bottom: 1px solid #d8d8d8;
 }
 
 .widget-content{
