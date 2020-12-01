@@ -67,6 +67,11 @@ export class WhoFloatingOptionsComponent implements OnInit {
           tile: this.widget,
           template: this.gridService.findSettingsTemplate(this.widget)
         },
+        // hasBackdrop: false,
+        position: {
+          bottom: '0',
+          right: '0'
+        },
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
