@@ -3,7 +3,7 @@
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
-  
+
   .workflow-name {
     display: inline-block;
     overflow: hidden;
@@ -17,12 +17,20 @@
 }
 
 .add-step-button {
-  .add-icon {
-    color: #13AD38;
-  }
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 15px;
+  border-color: #13AD38;
+  color: #13AD38;
+  background-color: white;
   &:hover {
     background: #dddddd54;
     border-radius: 0%;
+  }
+  .add-icon {
+    color: #13AD38;
   }
 }
 
@@ -44,9 +52,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   box-sizing: border-box;
   font-size: 16px;
   position: relative;
@@ -55,20 +63,16 @@
 
   .step-handle {
     color: transparent;
-    position: absolute;
-    top: 1px;
-    right: 1px;
     cursor: move;
     width: 24px;
     height: 24px;
+    margin-right: 20px;
   }
 
   .delete-button {
     color: transparent;
-    position: absolute;
-    bottom: 1px;
-    right: -7px;
     cursor: pointer;
+    margin-left: 20px;
   }
 
   &:hover {
