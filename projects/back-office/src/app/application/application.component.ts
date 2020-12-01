@@ -43,14 +43,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           {
             name: 'Display',
             callback: (event) => this.onReorder(event),
-            navItems: [
-              {
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add'
-              }
-            ].concat(application.pages.filter(x => x.content).map(x => {
+            navItems: []
+            .concat(application.pages.filter(x => x.content).map(x => {
               return {
                 id: x.id,
                 name: x.name,
@@ -64,6 +58,15 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 }
               };
             }))
+            .concat(
+              {
+                name: 'Add a page',
+                path: './add-page',
+                icon: 'add_circle',
+                class: 'nav-item-add',
+                isAddPage: true
+              }
+            )
           },
           {
             name: 'Administration',

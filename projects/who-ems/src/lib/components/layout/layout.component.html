@@ -46,8 +46,11 @@
         <div cdkDropList (cdkDropListDropped)="drop($event, group)" class="nav-items-list">
           <ng-container *ngFor="let item of group.navItems">
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
+              <button mat-button routerLink="item.path" class="nav-action success-button" [class]="item.class ? item.class : ''" *ngIf="item.isAddPage === true">
+                Add a Page
+              </button>
               <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
-                (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''" *ngIf="item.isAddPage !== true">
                 <mat-icon mat-list-icon class="nav-icon">
                   {{ item.icon }}
                 </mat-icon>

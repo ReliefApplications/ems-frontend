@@ -19,7 +19,7 @@
     align-content: center;
     font-size: 12px;
     margin-left: auto;
-  
+
     .account-property {
       white-space: nowrap;
       overflow: hidden;
@@ -56,11 +56,11 @@
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-  
+
 .cdk-drag-placeholder {
     opacity: 0;
 }
-  
+
 .cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -71,4 +71,11 @@
 
 .nav-item-handle {
     cursor: move;
+}
+
+.success-button {
+  color: #13AD38;
+  background-color:white;
+  margin: 0 auto;
+  border: 2px solid #13AD38;
 }
