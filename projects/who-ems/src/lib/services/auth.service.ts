@@ -73,7 +73,8 @@ export class WhoAuthService {
   */
   private getProfile(): void {
     this.apollo.watchQuery<GetProfileQueryResponse>({
-      query: GET_PROFILE
+      query: GET_PROFILE,
+      fetchPolicy: 'network-only'
     }).valueChanges.subscribe(res => {
       this._user.next(res.data.me);
     });
