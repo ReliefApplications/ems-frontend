@@ -51,17 +51,25 @@
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
               <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
                 (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
-                <mat-icon mat-list-icon class="nav-icon">
-                  {{ item.icon }}
-                </mat-icon>
-                <div mat-line>{{ item.name }}</div>
-                <button mat-icon-button class="nav-action" *ngIf="item.action"
-                  (click)="onClick(item.action.callback, $event)">
-                  <mat-icon>{{ item.action.icon }}</mat-icon>
-                </button>
-                <div cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
-                  <mat-icon>drag_indicator</mat-icon>
-                </div>
+                <ng-container *ngIf="item.isAddPage">
+                  <button mat-stroked-button class="add-page-button" [class]="item.class ? item.class : ''">
+                    <mat-icon>add</mat-icon>
+                    Add a Page
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="!item.isAddPage">
+                  <mat-icon mat-list-icon class="nav-icon">
+                    {{ item.icon }}
+                  </mat-icon>
+                  <div mat-line>{{ item.name }}</div>
+                  <button mat-icon-button class="nav-action" *ngIf="item.action"
+                    (click)="onClick(item.action.callback, $event)">
+                    <mat-icon>{{ item.action.icon }}</mat-icon>
+                  </button>
+                  <div cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
+                    <mat-icon>drag_indicator</mat-icon>
+                  </div>
+                </ng-container>
               </a>
               <mat-list *cdkDragPreview>
                 <a mat-list-item class="nav-item" [class]="item.class ? item.class : ''">
