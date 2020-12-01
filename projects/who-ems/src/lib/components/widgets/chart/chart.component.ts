@@ -104,13 +104,15 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
         }
       });
     } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
+      const recordsQuery = this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
         variables: {
           id: this.settings.source,
           display: true
         }
-      }).valueChanges.subscribe(res => {
+      });
+
+      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
         this.data = [];
         const dataToAggregate = [];
         if (res.data.form){
@@ -126,6 +128,28 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
         }
         this.data = dataToAggregate;
         this.loading = res.loading;
+      });
+
+      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
+        document: RECORD_ADDED_SUBSCRIPTION,
+        variables: {
+          form: this.settings.source
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          // console.log(subscriptionData);
+          // return prev;
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newRecord = subscriptionData.data.recordAdded;
+          return {
+            ...prev,
+            form: {
+              ...prev.form,
+              records: [newRecord, ...prev.form.records]
+            }
+          };
+        }
       });
     }
   }

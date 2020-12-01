@@ -16,8 +16,8 @@ export interface NotificationSubscriptionResponse {
 }
 
 export const RECORD_ADDED_SUBSCRIPTION = gql`
-subscription RecordAddedSubscription($resource: ID) {
-    recordAdded(resource: $resource) {
+subscription RecordAddedSubscription($resource: ID, $form: ID) {
+    recordAdded(resource: $resource, form: $form) {
         id
         data(display: true)
     }
