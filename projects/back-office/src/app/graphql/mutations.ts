@@ -576,6 +576,24 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
     name
     type
     content
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
   }
 }`;
 
