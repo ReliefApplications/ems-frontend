@@ -189,7 +189,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
       recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
         document: RECORD_ADDED_SUBSCRIPTION,
         variables: {
-          resource: this.settings.source
+          form: this.settings.source
         },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
@@ -198,7 +198,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
           const newRecord = subscriptionData.data.recordAdded;
           return {
             ...prev,
-            resource: {
+            form: {
               ...prev.form,
               records: [newRecord, ...prev.form.records]
             }
