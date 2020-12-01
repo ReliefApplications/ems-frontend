@@ -4,13 +4,17 @@
 
 // === DASHBOARD WIDGETS===
 
+.mat-grid-tile {
+    overflow: unset;
+}
+
 .widget-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-  
+
 .widget-content{
     flex: 1;
     height: auto;
@@ -23,43 +27,41 @@
     right: 0px;
     bottom: 0px;
     background-color: white;
-    border: 1px solid darkgray;
-    border-radius: 4px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 5px 0 rgba(219,134,134,.2);
 }
-.grid-widget:active {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
+
+// .grid-widget:active {
+//     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+//         0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+// }
+
 .widget-handle {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     color: darkgray;
     cursor: move;
     width: 40px;
     height: 40px;
     z-index: 1100;
 }
+
 .widget-options {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     color: darkgray;
     width: 40px;
     height: 40px;
     z-index: 1100;
 }
+
 .widget-content {
     flex: 1;
     max-height: 100% !important;
-}
-
-.more-button {
-    float: right;
-    font-size: 2em;
 }
 
 .dashboard-card-content {
