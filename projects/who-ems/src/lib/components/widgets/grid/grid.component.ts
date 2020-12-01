@@ -8,6 +8,8 @@ import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutati
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Record } from '../../../models/record.model';
+import { Subscription } from 'rxjs';
+import { RecordAddedSubscriptionResponse, RECORD_ADDED_SUBSCRIPTION } from '../../../graphql/subscriptions';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -37,6 +39,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
+  recordsSubscription: Subscription;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -99,13 +102,15 @@ export class WhoGridComponent implements OnInit, OnChanges {
   private getRecords(): void {
     this.loading = true;
     if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+      const recordsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.settings.source,
           display: true
         }
-      }).valueChanges.subscribe(res => {
+      });
+
+      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
         this.loading = false;
         this.canEdit = res.data.resource.canCreate;
         this.excelFileName = `${res.data.resource.name}.xlsx`;
@@ -128,14 +133,36 @@ export class WhoGridComponent implements OnInit, OnChanges {
         this.skip = 0;
         this.loadItems();
       });
+
+      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
+        document: RECORD_ADDED_SUBSCRIPTION,
+        variables: {
+          resource: this.settings.source
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newRecord = subscriptionData.data.recordAdded;
+          return {
+            ...prev,
+            resource: {
+              ...prev.resource,
+              records: [newRecord, ...prev.resource.records]
+            }
+          };
+        }
+      });
     } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
+      const recordsQuery = this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
         variables: {
           id: this.settings.source,
           display: true
         }
-      }).valueChanges.subscribe(res => {
+      });
+
+      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
         this.loading = false;
         this.canEdit = res.data.form.canCreate;
         this.excelFileName = `${res.data.form.name}.xlsx`;
@@ -149,7 +176,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
         this.getResourceDropdown();
         const gridData = [];
         for (const record of res.data.form.records) {
-          let data = record.data;
+          let data = { ...record.data };
           data.id = record.id;
           data = this.setDataType(data);
           gridData.push(data);
@@ -157,6 +184,26 @@ export class WhoGridComponent implements OnInit, OnChanges {
         this.items = gridData;
         this.skip = 0;
         this.loadItems();
+      });
+
+      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
+        document: RECORD_ADDED_SUBSCRIPTION,
+        variables: {
+          resource: this.settings.source
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newRecord = subscriptionData.data.recordAdded;
+          return {
+            ...prev,
+            resource: {
+              ...prev.form,
+              records: [newRecord, ...prev.form.records]
+            }
+          };
+        }
       });
     }
   }
@@ -211,14 +258,6 @@ export class WhoGridComponent implements OnInit, OnChanges {
       data: {
         template: this.settings.addTemplate,
         locale: 'en'
-      }
-    });
-    dialogRef.afterClosed().subscribe((res: {template: string, data: Record}) => {
-      if (res) {
-        const data = res.data.data;
-        data.id = res.data.id;
-        this.items.push(this.setDataType(data));
-        this.loadItems();
       }
     });
   }

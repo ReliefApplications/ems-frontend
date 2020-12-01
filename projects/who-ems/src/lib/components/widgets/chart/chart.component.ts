@@ -88,8 +88,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
           resource: this.settings.source
         },
         updateQuery: (prev, { subscriptionData }) => {
-          // console.log(subscriptionData);
-          // return prev;
           if (!subscriptionData.data) {
             return prev;
           }
@@ -136,8 +134,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
           form: this.settings.source
         },
         updateQuery: (prev, { subscriptionData }) => {
-          // console.log(subscriptionData);
-          // return prev;
           if (!subscriptionData.data) {
             return prev;
           }
