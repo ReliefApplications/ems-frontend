@@ -2,8 +2,9 @@
 <ng-container *ngIf="!loading && form">
     <div *ngIf="!formActive" class="tab-name-container">
         <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
-        <who-access [access]="form.permissions" [application]="page ? page.application.id : step ? step.workflow.page.application.id : null" 
-        (save)="saveAccess($event)" *ngIf="form.canUpdate"></who-access>
+        <who-access [access]="page ? page.permissions : step ? step.permissions : null" 
+        [application]="page ? page.application.id : step ? step.workflow.page.application.id : null" 
+        (save)="saveAccess($event)" *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></who-access>
     </div>
     <ng-container *ngIf="formActive">
         <form [formGroup]="tabNameForm" (ngSubmit)="saveName()" class="tab-name-container">

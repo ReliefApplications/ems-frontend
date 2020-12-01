@@ -277,6 +277,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         application {
           id
         }
+        canUpdate
       }
       step {
         id
@@ -289,6 +290,7 @@ export const GET_DASHBOARD_BY_ID = gql`
             }
           }
         }
+        canUpdate
       }
     }
   }
@@ -531,6 +533,12 @@ export const GET_STEP_BY_ID = gql`
       workflow {
         id
         name
+        page {
+          id
+          application {
+            id
+          }
+        }
       }
       permissions {
         canSee {
@@ -550,6 +558,9 @@ export const GET_STEP_BY_ID = gql`
           title
         }
       }
+      canSee
+      canUpdate
+      canDelete
     }
   }
 `;

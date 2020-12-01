@@ -357,8 +357,8 @@ export interface EditFormMutationResponse {
 
 // === EDIT DASHBOARD ===
 export const EDIT_DASHBOARD = gql`
-mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: JSON) {
-  editDashboard(id: $id, structure: $structure, name: $name, permissions: $permissions) {
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
     id
     name
     structure
@@ -542,8 +542,8 @@ export interface EditPageMutationResponse {
 
 // === EDIT WORKFLOW ===
 export const EDIT_WORKFLOW = gql`
-mutation editWorkflow($id: ID!, $name: String, $steps: [ID], $permissions: JSON) {
-  editWorkflow(id: $id, name: $name, steps: $steps, permissions: $permissions){
+mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
+  editWorkflow(id: $id, name: $name, steps: $steps){
     id
     name
   }
