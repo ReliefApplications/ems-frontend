@@ -4,6 +4,7 @@ import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
 import { Notification } from '../../models/notification.model';
@@ -24,6 +25,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() applications: Application[];
 
+  @Input() route: ActivatedRoute;
+
   @Input() toolbar: TemplateRef<any>;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
@@ -41,6 +44,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public largeDevice: boolean;
 
   constructor(
+    private router: Router,
     private authService: WhoAuthService,
     private apollo: Apollo
   ) {
@@ -108,6 +112,12 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.notificationsSubscription.unsubscribe();
+  }
+
+  /*  Go back to previous view
+  */
+  goBack(): void {
+    this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
   /*  Change the display depending on windows size.
