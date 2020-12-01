@@ -94,10 +94,10 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
             return prev;
           }
           const newRecord = subscriptionData.data.recordAdded;
-          newRecord.data.id = newRecord.id;
           return {
             ...prev,
             resource: {
+              ...prev.resource,
               records: [newRecord, ...prev.resource.records]
             }
           };

@@ -119,9 +119,10 @@ export class WhoGridComponent implements OnInit, OnChanges {
         this.getResourceDropdown();
         const gridData = [];
         for (const record of res.data.resource.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
+          let data = { ...record.data };
+          data.id = record.id;
+          data = this.setDataType(data);
+          gridData.push(data);
         }
         this.items = gridData;
         this.skip = 0;
@@ -148,9 +149,10 @@ export class WhoGridComponent implements OnInit, OnChanges {
         this.getResourceDropdown();
         const gridData = [];
         for (const record of res.data.form.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
+          let data = record.data;
+          data.id = record.id;
+          data = this.setDataType(data);
+          gridData.push(data);
         }
         this.items = gridData;
         this.skip = 0;
