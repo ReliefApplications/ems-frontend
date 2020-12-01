@@ -27,7 +27,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationService: ApplicationService,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private dialog: MatDialog
   ) { }
 

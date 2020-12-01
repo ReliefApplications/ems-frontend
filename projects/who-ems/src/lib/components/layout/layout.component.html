@@ -2,6 +2,9 @@
   <button mat-icon-button (click)="nav.toggle()" *ngIf="!largeDevice">
     <mat-icon>menu</mat-icon>
   </button>
+  <button mat-icon-button (click)="goBack()" *ngIf="largeDevice && route">
+    <mat-icon>keyboard_backspace</mat-icon>
+  </button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1>{{title}}</h1>
   </ng-container>
@@ -84,8 +87,10 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content class="sidenav-content">
-    <router-outlet></router-outlet>
+  <mat-sidenav-content>
+    <div class="sidenav-content">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 
 </mat-sidenav-container>
