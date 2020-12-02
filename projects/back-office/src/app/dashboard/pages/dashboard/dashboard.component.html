@@ -3,8 +3,9 @@
     <app-floating-menu (add)="onAdd($event)" *ngIf="dashboard.canUpdate"></app-floating-menu>
     <div *ngIf="!formActive" class="dashboard-name-container">
         <h1 class="dashboard-name" (click)="toggleFormActive()">{{dashboard.name}}</h1>
-        <who-access [access]="dashboard.permissions" [application]="dashboard.page ? dashboard.page.application.id : dashboard.step ? dashboard.step.workflow.page.application.id : null" (save)="saveAccess($event)" *ngIf="dashboard.canUpdate">
-        </who-access>
+        <who-access [access]="dashboard.permissions" 
+        [application]="dashboard.page ? dashboard.page.application.id : dashboard.step ? dashboard.step.workflow.page.application.id : null" 
+        (save)="saveAccess($event)" *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false"></who-access>
         <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
     </div>
     <ng-container *ngIf="formActive">
