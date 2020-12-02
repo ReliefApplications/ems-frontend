@@ -3,7 +3,7 @@
     flex-direction: row;
     padding: 8px 16px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
 
     .toolbar-buttons {
         button:first-child {

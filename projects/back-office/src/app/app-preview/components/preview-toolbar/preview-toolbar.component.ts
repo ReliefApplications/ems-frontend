@@ -9,8 +9,6 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class PreviewToolbarComponent implements OnInit {
 
-  @Input() title: string;
-
   constructor(
     private router: Router,
     private applicationService: ApplicationService
@@ -21,6 +19,6 @@ export class PreviewToolbarComponent implements OnInit {
 
   onClose(): void {
     this.applicationService.setRole(null);
-    this.router.navigate(['/applications']);
+    this.router.navigate(['/']);
   }
 }

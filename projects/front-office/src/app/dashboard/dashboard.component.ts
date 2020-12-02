@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               return {
                 name: x.name,
                 path: `/${x.type}/${x.content}`,
-                icon: 'dashboard'
+                icon: this.getNavIcon(x.type)
               };
             })
           },
@@ -78,6 +78,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onOpenApplication(application: Application): void {
     this.applicationService.loadApplication(application.id);
+  }
+
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 
   ngOnDestroy(): void {

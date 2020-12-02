@@ -27,7 +27,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationService: ApplicationService,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private dialog: MatDialog
   ) { }
 
@@ -43,19 +43,13 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           {
             name: 'Display',
             callback: (event) => this.onReorder(event),
-            navItems: [
-              {
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add'
-              }
-            ].concat(application.pages.filter(x => x.content).map(x => {
+            navItems: []
+            .concat(application.pages.filter(x => x.content).map(x => {
               return {
                 id: x.id,
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: 'dashboard',
+                icon: this.getNavIcon(x.type),
                 class: null,
                 orderable: true,
                 action: {
@@ -64,10 +58,25 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 }
               };
             }))
+            .concat(
+              {
+                name: 'Add a page',
+                path: './add-page',
+                icon: 'add_circle',
+                class: 'nav-item-add',
+                isAddPage: true
+              }
+            )
           },
           {
             name: 'Administration',
             navItems: [
+              {
+                name: 'Settings',
+                path: './settings/edit',
+                icon: 'settings'
+              }
+              ,
               {
                 name: 'Users',
                 path: './settings/users',
@@ -86,6 +95,17 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 
   onDelete(item: any): void {

@@ -250,14 +250,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 40px;
   position: relative;
   z-index: 1001;
-  background-color: #0090d1;
-  color: white;
-  text-align: center;
+  background-color: white;
+  color: black;
+  text-align: left;
   line-height: 40px;
   pointer-events: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding: 0 40px;
+  border-bottom: 1px solid #d8d8d8;
 }
 
 .widget-content{

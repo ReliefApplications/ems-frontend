@@ -9,6 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [WhoLayoutComponent],
@@ -21,7 +22,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatMenuModule,
     MatSidenavModule,
     MatListModule,
-    DragDropModule
+    DragDropModule,
+    MatBadgeModule
   ],
   exports: [WhoLayoutComponent]
 })

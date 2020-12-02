@@ -9,8 +9,6 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationToolbarComponent implements OnInit {
 
-  @Input() title: string;
-
   constructor(
     private applicationService: ApplicationService,
     private router: Router

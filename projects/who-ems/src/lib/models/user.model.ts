@@ -21,6 +21,7 @@ export interface Role {
 export interface User {
     id?: string;
     username?: string;
+    isAdmin?: boolean;
     name?: string;
     roles?: Role[];
     permissions?: Permission[];
@@ -60,8 +61,8 @@ export class PermissionsManagement {
             access: Permissions.canSeeForms,
             create: Permissions.canManageForms
         },
-        users: {
-            list: {
+        settings: {
+            users: {
                 access: Permissions.canSeeUsers
             },
             roles: {

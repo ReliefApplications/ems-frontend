@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, Page, User, Role, WhoSnackBarService } from '@who-ems/builder';
+import { Application, Page, User, Role, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
@@ -16,7 +16,7 @@ export class ApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application>(null);
-
+  // tslint:disable-next-line: variable-name
   private _roleId = new BehaviorSubject<string>(null);
 
   constructor(
@@ -38,6 +38,24 @@ export class ApplicationService {
       this._application.next(res.data.application);
     });
   }
+
+  /*
+    Edit Application
+  */
+ editApplication(value: any): void{
+  const application = this._application.getValue();
+  this.apollo.mutate<EditApplicationMutationResponse>(
+    {
+      mutation: EDIT_APPLICATION,
+      variables: {
+        id: application.id,
+        name: value.name,
+        description: value.description
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Application updated');
+    });
+}
 
   /*  Return the application as an Observable.
   */
@@ -125,7 +143,8 @@ export class ApplicationService {
         const content = res.data.addPage.content;
         application.pages = application.pages.concat([res.data.addPage]);
         this._application.next(application);
-        this.router.navigate([`/applications/${application.id}/${value.type}/${content}`]);
+        this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
+        `/applications/${application.id}/${value.type}/${content}`]);
       });
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
@@ -189,7 +208,7 @@ export class ApplicationService {
       mutation: EDIT_USER,
       variables: {
         id: user.id,
-        roles: value.roles,
+        roles: [value.role],
         application: application.id
       }
     }).subscribe(res => {

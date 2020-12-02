@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import * as Survey from 'survey-angular';
@@ -7,9 +7,6 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { initCustomWidgets } from '../../survey/init';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
-
-// === CUSTOM WIDGETS / COMPONENTS ===
-initCustomWidgets(Survey);
 
 @Component({
   selector: 'who-form',
@@ -26,9 +23,16 @@ export class WhoFormComponent implements OnInit {
   private survey: Survey.Model;
 
   constructor(
+    @Inject('environment') environment,
     private apollo: Apollo,
     public dialog: MatDialog
-  ) { }
+  ) {
+    // === CUSTOM WIDGETS / COMPONENTS ===
+    initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
+
+    // === STYLE ===
+    Survey.StylesManager.applyTheme('darkblue');
+  }
 
   ngOnInit(): void {
     this.survey = new Survey.Model(this.form.structure);
