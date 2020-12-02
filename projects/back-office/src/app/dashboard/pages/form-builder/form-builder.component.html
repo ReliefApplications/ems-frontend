@@ -5,7 +5,7 @@
         </ng-container>
         
         <ng-container *ngIf="formActive">
-            <form [formGroup]="nameForm" (ngSubmit)="saveName()" class="page-title">
+            <form [formGroup]="nameForm" (ngSubmit)="saveName()">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
                     <input matInput formControlName="formName" type="string">
