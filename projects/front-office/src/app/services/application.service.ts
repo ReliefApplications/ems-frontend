@@ -62,7 +62,7 @@ inviteUser(value: any): void {
   this.apollo.mutate<AddRoleToUserMutationResponse>({
     mutation: ADD_ROLE_TO_USER,
     variables: {
-      id: value.user,
+      id: value.user.id,
       role: value.role
     }
   }).subscribe(res => {

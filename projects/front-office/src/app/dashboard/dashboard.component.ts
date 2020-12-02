@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (user) {
         if (user.applications.length > 0) {
           this.applications = user.applications;
-          this.applicationService.loadApplication(user.applications[1].id);
+          this.applicationService.loadApplication(user.applications[0].id);
         } else {
           this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
         }
