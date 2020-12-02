@@ -12,6 +12,7 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ApplicationService } from '../../../services/application.service';
+import { PreviewService } from '../../../services/preview.service';
 
 @Component({
   selector: 'app-applications',
@@ -38,7 +39,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: WhoSnackBarService,
     private authService: WhoAuthService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private previewService: PreviewService
   ) { }
 
   ngOnInit(): void {
@@ -139,7 +141,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.applicationService.setRole(value.role);
+        this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
       }
     });

@@ -15,8 +15,6 @@ export class ApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application>(null);
-  // tslint:disable-next-line: variable-name
-  private _roleId = new BehaviorSubject<string>(null);
 
   constructor(
     private apollo: Apollo,
@@ -26,12 +24,12 @@ export class ApplicationService {
 
   /*  Get the application from the database, using GraphQL.
   */
-  loadApplication(id: string, asRole: boolean = false): void {
+  loadApplication(id: string, asRole: string = null): void {
     this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
-        asRole: asRole ? this._roleId.getValue() : null
+        asRole: asRole
       }
     }).valueChanges.subscribe(res => {
       this._application.next(res.data.application);
@@ -233,17 +231,5 @@ export class ApplicationService {
       application.users[index] = res.data.editUser;
       this._application.next(application);
     });
-  }
-
-  /* Set role which will be used to load the application preview
-  */
-  setRole(id: string): void {
-    this._roleId.next(id);
-  }
-
-  /*  Return the roleId as an Observable.
-  */
-  get roleId(): Observable<string> {
-    return this._roleId.asObservable();
   }
 }

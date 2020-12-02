@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Application, WhoAuthService } from '@who-ems/builder';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin, Observable } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-app-preview',
@@ -18,20 +19,22 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   public navGroups = [];
 
   // === APPLICATION ===
-  public application: Application;
   private applicationSubscription: Subscription;
 
-  // === ROUTE ===
-  private routeSubscription: Subscription;
+  // === PREVIEWED ROLE ID ===
+  public role: string;
 
   constructor(
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
+    private previewService: PreviewService
   ) { }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
-      this.applicationService.loadApplication(params.id, true);
+    this.route.params.subscribe((params) => {
+      this.previewService.roleId.subscribe((role: string) => {
+        this.applicationService.loadApplication(params.id, role);
+      });
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
@@ -82,7 +85,6 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.routeSubscription.unsubscribe();
     this.applicationSubscription.unsubscribe();
   }
 
