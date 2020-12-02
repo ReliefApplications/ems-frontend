@@ -1,10 +1,7 @@
 <ng-container *ngIf="form">
     <div class="page-header">
         <ng-container *ngIf="!formActive">
-            <h1 class="page-title">{{form.name}} {{ activeVersion ? activeVersion.id : '' }}</h1>
-            <button mat-icon-button color="accent" *ngIf="form.canUpdate">
-                <mat-icon (click)="toggleFormActive()">create</mat-icon>
-            </button>
+            <h1 class="page-title" (click)="toggleFormActive()">{{form.name}} {{ activeVersion ? activeVersion.id : '' }}</h1>
         </ng-container>
         
         <ng-container *ngIf="formActive">
