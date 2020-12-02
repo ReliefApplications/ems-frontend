@@ -10,7 +10,7 @@
       <th mat-header-cell *matHeaderCellDef>Users</th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
     </ng-container>
-    
+
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
@@ -34,6 +34,6 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </ng-container>
-<button mat-fab class="action-button" (click)="onAdd()">
-  <mat-icon matTooltip="Create role">add</mat-icon>
+<button mat-raised-button class="action-button" (click)="onAdd()">
+  Create a role
 </button>
