@@ -25,17 +25,17 @@
             <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x"
             (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()"
             [class.selected]="step === selectedStep" cdkDrag>
-               <div class="step-handle" cdkDragHandle>
+               <button mat-icon-button class="step-handle" cdkDragHandle>
                   <mat-icon>drag_indicator</mat-icon>
-               </div>
+               </button>
                <div class="step-placeholder" *cdkDragPlaceholder></div>
                   {{step.name}}
                 <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
-            <button mat-button-stroked class="add-step-button" (click)="addStep()">
-              <mat-icon class="add-icon">add</mat-icon>
+            <button mat-stroked-button class="add-step-button" (click)="addStep()">
+              <mat-icon>add</mat-icon>
               Add a step
             </button>
         </div>

@@ -18,20 +18,9 @@
 
 .add-step-button {
   align-self: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 15px;
   border-color: #13AD38;
   color: #13AD38;
   background-color: white;
-  &:hover {
-    background: #dddddd54;
-    border-radius: 0%;
-  }
-  .add-icon {
-    color: #13AD38;
-  }
 }
 
 .step-list-container {
@@ -64,15 +53,15 @@
   .step-handle {
     color: transparent;
     cursor: move;
-    width: 24px;
-    height: 24px;
-    margin-right: 20px;
+    position: absolute;
+    left: -4px;
   }
 
   .delete-button {
     color: transparent;
     cursor: pointer;
-    margin-left: 20px;
+    position: absolute;
+    right: -4px;
   }
 
   &:hover {
