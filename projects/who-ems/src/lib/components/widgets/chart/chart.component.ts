@@ -151,6 +151,8 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.recordsSubscription) this.recordsSubscription.unsubscribe();
+    if (this.recordsSubscription) {
+      this.recordsSubscription.unsubscribe();
+    }
   }
 }
