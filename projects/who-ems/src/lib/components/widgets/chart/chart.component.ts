@@ -18,7 +18,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
   public data = [];
-  recordsSubscription: Subscription;
+  private recordsSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
@@ -151,6 +151,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.recordsSubscription.unsubscribe();
+    if (this.recordsSubscription) this.recordsSubscription.unsubscribe();
   }
 }
