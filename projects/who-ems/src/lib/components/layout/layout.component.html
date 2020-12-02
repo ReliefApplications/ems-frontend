@@ -26,14 +26,16 @@
     <mat-icon>account_circle</mat-icon>
   </button>
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
-    <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn" [matBadgeHidden]="notifications.length == 0">
+    <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn"
+      [matBadgeHidden]="notifications.length == 0">
       notifications</mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="logout()">Logout</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
-    <button mat-menu-item *ngFor="let notification of notifications">{{ notification.action }} - {{ notification.createdAt | date }}</button>
+    <button mat-menu-item *ngFor="let notification of notifications">{{ notification.action }} -
+      {{ notification.createdAt | date }}</button>
   </mat-menu>
 </mat-toolbar>
 
@@ -62,12 +64,14 @@
                     {{ item.icon }}
                   </mat-icon>
                   <div mat-line>{{ item.name }}</div>
-                  <button mat-icon-button class="nav-action" *ngIf="item.action"
-                    (click)="onClick(item.action.callback, $event)">
-                    <mat-icon>{{ item.action.icon }}</mat-icon>
-                  </button>
-                  <div cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
-                    <mat-icon>drag_indicator</mat-icon>
+                  <div class="nav-actions" *ngIf="item.action || item.orderable">
+                    <button mat-icon-button class="nav-action" *ngIf="item.action"
+                      (click)="onClick(item.action.callback, $event)">
+                      <mat-icon>{{ item.action.icon }}</mat-icon>
+                    </button>
+                    <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
+                      <mat-icon>drag_indicator</mat-icon>
+                    </button>
                   </div>
                 </ng-container>
               </a>

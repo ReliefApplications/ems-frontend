@@ -60,6 +60,7 @@ export class InviteUserComponent implements OnInit, OnDestroy {
     });
     this.filteredUsers = this.inviteForm.controls.user.valueChanges.pipe(
       startWith(''),
+      map(value => typeof value === 'string' ? value : value.username),
       map(x => this.filter(x))
     );
   }
@@ -67,6 +68,12 @@ export class InviteUserComponent implements OnInit, OnDestroy {
   private filter(value: string): User[] {
     const filterValue = value.toLowerCase();
     return this.users.filter(x => x.username.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  /* Display the name of the user
+  */
+  displayUser(user: User): string {
+    return user && user.name ? user.name : '';
   }
 
   ngOnDestroy(): void {

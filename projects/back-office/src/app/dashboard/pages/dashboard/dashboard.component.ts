@@ -148,19 +148,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Edit the permissions layer.
   */
   saveAccess(e: any): void {
-    this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: this.id,
-        permissions: e
-      }
-    }).subscribe(res => {
-      this.dashboard = res.data.editDashboard;
-    });
+    if (this.router.url.includes('/workflow/')) {
+      this.apollo.mutate<EditStepMutationResponse>({
+        mutation: EDIT_STEP,
+        variables: {
+          id: this.dashboard.step.id,
+          permissions: e
+        }
+      }).subscribe(res => {
+        this.dashboard.permissions = res.data.editStep.permissions;
+      });
+    } else {
+      this.apollo.mutate<EditPageMutationResponse>({
+        mutation: EDIT_PAGE,
+        variables: {
+          id: this.dashboard.page.id,
+          permissions: e
+        }
+      }).subscribe(res => {
+        this.dashboard.permissions = res.data.editPage.permissions;
+      });
+    }
   }
 
   toggleFormActive(): void {
-    if (this.dashboard.canUpdate) { this.formActive = !this.formActive; }
+    if (this.dashboard.page ? this.dashboard.page.canUpdate : this.dashboard.step.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the dashboard and the step or page linked to it.

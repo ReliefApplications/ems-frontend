@@ -40,8 +40,15 @@
 }
 
 .nav-item {
+    .nav-actions {
+        margin-left: auto;
+    }
+
     .nav-action, .nav-item-handle {
         color: transparent;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
     }
     &:hover {
         .nav-action, .nav-item-handle {
