@@ -1,9 +1,7 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import * as SurveyKo from 'survey-knockout';
-import { initCreatorSettings } from '../../survey/creator';
-import { initCustomWidgets } from '../../survey/init';
+import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 
 @Component({
@@ -21,18 +19,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   public json: any;
 
   constructor(
-    @Inject('environment') environment,
-    public dialog: MatDialog
-  ) {
-    // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`);
-
-    // === STYLE ===
-    SurveyCreator.StylesManager.applyTheme('darkblue');
-
-    // === CREATOR SETTINGS ===
-    initCreatorSettings(SurveyKo);
-  }
+    public dialog: MatDialog,
+    private formService: FormService
+  ) {}
 
   ngOnInit(): void {
     const options = {
