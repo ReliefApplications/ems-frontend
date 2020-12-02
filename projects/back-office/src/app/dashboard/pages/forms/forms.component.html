@@ -1,5 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="onAdd()" *ngIf="canAdd">
+      <mat-icon>add</mat-icon>
+      Create a form
+    </button>
+  </div>
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -77,7 +83,3 @@
       [routerLink]="( row.canCreate && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
   </table>
 </ng-container>
-
-<button mat-raised-button matTooltip="Create form" class="action-button" (click)="onAdd()" *ngIf="canAdd">
-  Create a form
-</button>

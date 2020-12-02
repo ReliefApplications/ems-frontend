@@ -1,5 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="onAdd()">
+      <mat-icon>add</mat-icon>
+      Create a role
+    </button>
+  </div>
   <table mat-table [dataSource]="roles">
     <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Title</th>
@@ -34,6 +40,3 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </ng-container>
-<button mat-raised-button class="action-button" (click)="onAdd()">
-  Create a role
-</button>
