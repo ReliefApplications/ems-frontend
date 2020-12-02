@@ -91,7 +91,9 @@ export class FormBuilderComponent implements OnInit {
   }
 
   toggleFormActive(): void {
-    if (this.form.canUpdate) this.formActive = !this.formActive;
+    if (this.form.canUpdate) {
+      this.formActive = !this.formActive;
+    }
   }
 
   /* Save the form
