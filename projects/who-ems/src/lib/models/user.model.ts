@@ -5,6 +5,7 @@ import { Application } from './application.model';
 export interface Permission {
     id?: string;
     type?: string;
+    global?: boolean;
 }
 
 /*  Model for Role object.

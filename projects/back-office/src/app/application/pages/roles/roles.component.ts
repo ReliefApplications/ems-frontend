@@ -51,7 +51,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   /*  Display the EditRole modal, passing a role as a parameter.
     Edit the role when closed, if there is a result.
   */
-  onEdit(role: Role): void { 
+  onEdit(role: Role): void {
     const dialogRef = this.dialog.open(EditRoleComponent, {
       data: {
         role

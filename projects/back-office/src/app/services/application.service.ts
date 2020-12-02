@@ -29,7 +29,7 @@ export class ApplicationService {
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
-        asRole: asRole
+        asRole
       }
     }).valueChanges.subscribe(res => {
       this._application.next(res.data.application);
@@ -168,7 +168,6 @@ export class ApplicationService {
   /* Edit an existing role.
   */
   editRole(role: Role, value: any): void {
-    const application = this._application.getValue();
     this.apollo.mutate<EditRoleMutationResponse>({
       mutation: EDIT_ROLE,
       variables: {
