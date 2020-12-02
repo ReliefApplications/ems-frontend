@@ -2,7 +2,7 @@
 <ng-container *ngIf="!loading && workflow">
     <div *ngIf="!formActive" class="workflow-name-container">
         <h1 class="workflow-name" (click)="toggleFormActive()">{{workflow.name}}</h1>
-        <who-access [access]="workflow.permissions" [application]="workflow.page ? workflow.page.application.id : null" 
+        <who-access [access]="workflow.permissions" [application]="workflow.page ? workflow.page.application.id : null"
         (save)="saveAccess($event)" *ngIf="workflow.page.canUpdate"></who-access>
     </div>
     <ng-container *ngIf="formActive">
@@ -22,22 +22,22 @@
     <div class="step-list-container">
         <mat-divider></mat-divider>
         <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
-            <button mat-button class="add-step-button" color="primary" (click)="addStep()">
-                <mat-icon class="add-icon">add_circle</mat-icon>
-                Step
-            </button>
-            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" 
-            (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()" 
+            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x"
+            (click)="onStepClick(step)" (cdkDragStarted)="onDragStart()"
             [class.selected]="step === selectedStep" cdkDrag>
-                <div class="step-placeholder" *cdkDragPlaceholder></div>
-                {{step.name}}
-                <div class="step-handle" cdkDragHandle>
-                    <mat-icon>drag_indicator</mat-icon>
-                </div>
+               <button mat-icon-button class="step-handle" cdkDragHandle>
+                  <mat-icon>drag_indicator</mat-icon>
+               </button>
+               <div class="step-placeholder" *cdkDragPlaceholder></div>
+                  {{step.name}}
                 <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
+            <button mat-stroked-button class="add-step-button" (click)="addStep()">
+              <mat-icon>add</mat-icon>
+              Add a step
+            </button>
         </div>
         <mat-divider></mat-divider>
     </div>
