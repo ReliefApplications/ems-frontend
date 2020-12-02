@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Application, Role, WhoConfirmModalComponent } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from '../../../services/application.service';
 import { AddRoleComponent } from './components/add-role/add-role.component';
+import { EditRoleComponent } from './components/edit-role/edit-role.component';
 
 @Component({
   selector: 'app-roles',
@@ -48,7 +48,21 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEdit(role: Role): void { }
+  /*  Display the EditRole modal, passing a role as a parameter.
+    Edit the role when closed, if there is a result.
+  */
+  onEdit(role: Role): void { 
+    const dialogRef = this.dialog.open(EditRoleComponent, {
+      data: {
+        role
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.editRole(role, value);
+      }
+    });
+  }
 
   /* Display a modal to confirm the deletion of the role.
     If confirmed, the role is removed from the system.

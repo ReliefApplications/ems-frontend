@@ -4,9 +4,8 @@ import { Application, Page, User, Role, WhoSnackBarService, ContentType } from '
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
-  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DeleteRoleMutationResponse, DELETE_PAGE,
-  DELETE_ROLE,
-  EditApplicationMutationResponse, EditUserMutationResponse, EDIT_APPLICATION, EDIT_USER } from '../graphql/mutations';
+  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DeleteRoleMutationResponse, DELETE_PAGE, DELETE_ROLE,
+  EditApplicationMutationResponse, EditUserMutationResponse, EditRoleMutationResponse, EDIT_APPLICATION, EDIT_USER, EDIT_ROLE } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -165,6 +164,23 @@ export class ApplicationService {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.roles = application.roles.concat([res.data.addRole]);
       this._application.next(application);
+    });
+  }
+
+  /* Edit an existing role.
+  */
+  editRole(role: Role, value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditRoleMutationResponse>({
+      mutation: EDIT_ROLE,
+      variables: {
+        id: role.id,
+        permissions: value.permissions
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${role.title} role updated.`);
+      const application = this._application.getValue();
+      this.loadApplication(application.id);
     });
   }
 
