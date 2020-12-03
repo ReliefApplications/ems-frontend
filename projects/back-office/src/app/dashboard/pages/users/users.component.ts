@@ -64,6 +64,7 @@ export class UsersComponent implements OnInit {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar(`${user.username} roles updated.`);
+          this.loading = false;
           this.getUsers();
         });
       }
