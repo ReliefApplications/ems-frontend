@@ -15,9 +15,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddRoleComponent } from './components/add-role/add-role.component';
 import { WhoConfirmModalModule } from '@who-ems/builder';
+import { EditRoleComponent } from './components/edit-role/edit-role.component';
 
 @NgModule({
-  declarations: [RolesComponent, AddRoleComponent],
+  declarations: [RolesComponent, AddRoleComponent, EditRoleComponent],
   imports: [
     CommonModule,
     RolesRoutingModule,
