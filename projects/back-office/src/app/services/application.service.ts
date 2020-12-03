@@ -177,7 +177,7 @@ export class ApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role updated.`);
       const application = this._application.getValue();
-      this.loadApplication(application.id);
+      this.loadApplication(application.id, res.data.editRole.id);
     });
   }
 

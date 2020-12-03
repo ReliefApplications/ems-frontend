@@ -14,10 +14,16 @@ export const GET_PROFILE = gql`
     isAdmin
     name
     roles {
+      id
       title
+      application {
+        id
+      }
     }
     permissions {
+      id
       type
+      global
     }
     applications {
       id

@@ -15,6 +15,7 @@ export interface Role {
     title?: string;
     usersCount?: number;
     permissions?: Permission[];
+    application: Application;
 }
 
 /*  Model for User object.
