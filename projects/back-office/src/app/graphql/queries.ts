@@ -46,10 +46,11 @@ export interface GetRolesQueryResponse {
 
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
-{
-  permissions {
+query GetPermissions($application: Boolean) {
+  permissions(application: $application) {
     id
     type
+    global
   }
 }`;
 

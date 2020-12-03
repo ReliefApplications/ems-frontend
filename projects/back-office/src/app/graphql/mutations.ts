@@ -59,7 +59,7 @@ export interface AddRoleToUserMutationResponse {
   addRoleToUser: User;
 }
 
-// === ADD ROLE ===
+// === EDIT ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
