@@ -41,7 +41,6 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
       if (application) {
         this.title = application.name + ' (Preview)';
         const role = application.roles.find(x => this.role ? x.id === this.role : true);
-        console.log(JSON.stringify(role.permissions));
         const adminNavItems = [];
         if (role.permissions.some(x => x.type === Permissions.canSeeUsers && !x.global)) {
           adminNavItems.push({
