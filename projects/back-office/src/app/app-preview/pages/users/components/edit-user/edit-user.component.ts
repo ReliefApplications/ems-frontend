@@ -24,7 +24,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      roles: Role[]
+      role: Role
     },
     private applicationService: ApplicationService
   ) { }
@@ -40,7 +40,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
       }
     });
     this.userForm = this.formBuilder.group({
-      roles: [this.data.roles ? this.data.roles.map(x => x.id) : null]
+      role: this.data.role.id
     });
   }
 
