@@ -57,6 +57,7 @@
     "graphql-tag": "^2.10.3",
     "hammerjs": "^2.0.0",
     "leaflet": "^1.7.1",
+    "leaflet.markercluster": "^1.4.1",
     "msal": "^1.4.3",
     "rxjs": "~6.6.0",
     "subscriptions-transport-ws": "^0.9.18",
