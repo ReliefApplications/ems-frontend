@@ -9,30 +9,32 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field>
-            <mat-label>Can create</mat-label>
-            <mat-select formControlName="canCreate" multiple>
-                <mat-option *ngFor="let role of roles" [value]="role.id">
-                    {{role.title}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Can update</mat-label>
-            <mat-select formControlName="canUpdate" multiple>
-                <mat-option *ngFor="let role of roles" [value]="role.id">
-                    {{role.title}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Can delete</mat-label>
-            <mat-select formControlName="canDelete" multiple>
-                <mat-option *ngFor="let role of roles" [value]="role.id">
-                    {{role.title}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+        <ng-container *ngIf="!data.application">
+            <mat-form-field>
+                <mat-label>Can create</mat-label>
+                <mat-select formControlName="canCreate" multiple>
+                    <mat-option *ngFor="let role of roles" [value]="role.id">
+                        {{role.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Can update</mat-label>
+                <mat-select formControlName="canUpdate" multiple>
+                    <mat-option *ngFor="let role of roles" [value]="role.id">
+                        {{role.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Can delete</mat-label>
+                <mat-select formControlName="canDelete" multiple>
+                    <mat-option *ngFor="let role of roles" [value]="role.id">
+                        {{role.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
     </form>
 </div>
 <div mat-dialog-actions align="end">
