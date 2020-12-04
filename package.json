@@ -75,6 +75,8 @@
     "@angular/compiler-cli": "~10.2.0",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/leaflet": "^1.5.19",
+    "@types/leaflet.markercluster": "^1.4.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
     "husky": "^4.3.0",

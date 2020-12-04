@@ -5,6 +5,15 @@ import { Apollo } from 'apollo-angular';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { Record } from '../../../models/record.model';
 
+const markerOptions = {
+  color: '#0090d1',
+  opacity: 0.25,
+  weight: 12,
+  fillColor: '#0090d1',
+  fillOpacity: 1,
+  radius: 6
+};
+
 @Component({
   selector: 'who-map',
   templateUrl: './map.component.html',
@@ -89,7 +98,7 @@ export class WhoMapComponent implements AfterViewInit {
 
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', event => {
-      this.selectedRecord = this.records.find(x => x.id === event.layer.options.recordId);
+      this.selectedRecord = this.records.find(x => x.id === event.layer.options.id);
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
         .setContent(JSON.stringify(this.selectedRecord.data))
@@ -142,15 +151,14 @@ export class WhoMapComponent implements AfterViewInit {
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         this.records.push(record);
-        const marker = L.marker(
+        const options = markerOptions;
+        Object.assign(options, { id: record.id });
+        const marker = L.circleMarker(
           [
             latitude,
             longitude
           ],
-          {
-            icon,
-            recordId: record.id
-          });
+          options);
         this.markersLayer.addLayer(marker);
       }
     }
