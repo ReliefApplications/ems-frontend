@@ -25,7 +25,6 @@ import { AddFormModule } from '../../../components/add-form/add-form.module';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    MatSlideToggleModule,
     WhoConfirmModalModule,
     AddFormModule
   ],

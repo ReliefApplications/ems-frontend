@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [AddFormComponent],
@@ -20,7 +21,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
     MatDialogModule,
     MatButtonModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSlideToggleModule,
   ],
   exports: [AddFormComponent]
 })
