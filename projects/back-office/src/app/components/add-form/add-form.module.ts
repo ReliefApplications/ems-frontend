@@ -1,30 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddPageRoutingModule } from './add-page-routing.module';
-import { AddPageComponent } from './add-page.component';
+import { AddFormComponent } from './add-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [AddPageComponent],
+  declarations: [AddFormComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRadioModule,
     MatDialogModule,
-    AddPageRoutingModule
-  ]
+    MatButtonModule,
+    MatRadioModule
+  ],
+  exports: [AddFormComponent]
 })
-export class AddPageModule { }
+export class AddFormModule { }

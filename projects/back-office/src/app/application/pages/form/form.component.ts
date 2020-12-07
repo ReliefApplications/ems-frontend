@@ -1,16 +1,18 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Form, Page, Step, WhoFormComponent } from '@who-ems/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
-  GetStepByIdQueryResponse, GET_STEP_BY_ID } from '../../../graphql/queries';
+  GetStepByIdQueryResponse, GET_STEP_BY_ID
+} from '../../../graphql/queries';
 import {
   EditStepMutationResponse, EDIT_STEP,
-  EditPageMutationResponse, EDIT_PAGE } from '../../../graphql/mutations';
+  EditPageMutationResponse, EDIT_PAGE
+} from '../../../graphql/mutations';
 import { WorkflowService } from '../../../services/workflow.service';
 import { ApplicationService } from '../../../services/application.service';
 
@@ -99,7 +101,7 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   toggleFormActive(): void {
-    if (this.form.canUpdate) { this.formActive = !this.formActive; }
+    if (this.form.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the tab.
@@ -167,7 +169,11 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   editForm(): void {
-    this.router.navigate(['./forms/builder/', this.form.id]);
+    if (this.router.url.includes('/workflow/')) {
+      this.router.navigate([`./builder/${this.step.content}`], { relativeTo: this.route });
+    } else {
+      this.router.navigate([`./builder/${this.page.content}`], { relativeTo: this.route });
+    }
   }
 
   ngOnDestroy(): void {

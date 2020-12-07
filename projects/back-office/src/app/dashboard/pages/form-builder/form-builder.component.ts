@@ -55,6 +55,7 @@ export class FormBuilderComponent implements OnInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
     const template = this.route.snapshot.paramMap.get('template');
+    console.log(this.id);
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,

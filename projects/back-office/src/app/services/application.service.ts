@@ -93,6 +93,7 @@ export class ApplicationService {
       const application = this._application.getValue();
       application.pages = application.pages.filter(x => x.id !== res.data.deletePage.id);
       this._application.next(application);
+      this.router.navigate([`./applications/${application.id}`]);
     });
   }
 
