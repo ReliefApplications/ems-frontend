@@ -167,7 +167,7 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   editForm(): void {
-    this.router.navigate(['./forms/builder/', this.id]);
+    this.router.navigate(['./forms/builder/', this.form.id]);
   }
 
   ngOnDestroy(): void {
