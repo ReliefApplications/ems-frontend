@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { Form } from '../models/form.model';
 import { Record } from '../models/record.model';
+import { User } from '../models/user.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -73,4 +74,27 @@ mutation editForm($id: ID!, $structure: JSON!) {
 export interface EditFormMutationResponse {
   loading: boolean;
   editForm: Form;
+}
+
+// === EDIT USER ===
+export const EDIT_USER = gql`
+mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+  editUser(id: $id, roles: $roles, application: $application) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+  }
+}`;
+
+export interface EditUserMutationResponse {
+  loading: boolean;
+  editUser: User;
 }

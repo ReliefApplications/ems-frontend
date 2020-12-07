@@ -233,6 +233,29 @@ export interface GetRolesQueryResponse {
   roles: Role[];
 }
 
+// === GET USERS ===
+export const GET_USERS = gql`
+{
+  users {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+  }
+}`;
+
+export interface GetUsersQueryResponse {
+  loading: boolean;
+  users: User[];
+}
+
 // === GET NOTIFICATIONS ===
 export const GET_NOTIFICATIONS = gql`
 query GetNotifications {

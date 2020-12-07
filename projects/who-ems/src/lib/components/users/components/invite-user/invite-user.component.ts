@@ -1,28 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { Application, Role, User } from '@who-ems/builder';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { ApplicationService } from '../../../../../services/application.service';
-import { GetUsersQueryResponse, GET_USERS } from '../../../../../graphql/queries';
-import { Observable, Subscription } from 'rxjs';
+import { Role, User } from '../../../../models/user.model';
+import { GetUsersQueryResponse, GET_USERS } from '../../../../graphql/queries';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-invite-user',
+  selector: 'who-invite-user',
   templateUrl: './invite-user.component.html',
   styleUrls: ['./invite-user.component.scss']
 })
-export class InviteUserComponent implements OnInit, OnDestroy {
+export class WhoInviteUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
   inviteForm: FormGroup;
 
   // === DATA ===
-  public roles: Role[] = [];
-  private users: User[] = [];
+  private users: User[];
   public filteredUsers: Observable<User[]>;
-  private applicationSubscription: Subscription;
 
   get user(): string {
     return this.inviteForm.value.user;
@@ -34,9 +31,11 @@ export class InviteUserComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<InviteUserComponent>,
-    private applicationService: ApplicationService,
-    private apollo: Apollo
+    public dialogRef: MatDialogRef<WhoInviteUserComponent>,
+    private apollo: Apollo,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      roles: Role[];
+    }
   ) { }
 
   /*  Build the form.
@@ -45,13 +44,6 @@ export class InviteUserComponent implements OnInit, OnDestroy {
     this.inviteForm = this.formBuilder.group({
       user: ['', Validators.required],
       role: ['', Validators.required]
-    });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
-      if (application) {
-        this.roles = application.roles;
-      } else {
-        this.roles = [];
-      }
     });
     this.apollo.watchQuery<GetUsersQueryResponse>({
       query: GET_USERS
@@ -67,17 +59,13 @@ export class InviteUserComponent implements OnInit, OnDestroy {
 
   private filter(value: string): User[] {
     const filterValue = value.toLowerCase();
-    return this.users.filter(x => x.username.toLowerCase().indexOf(filterValue) === 0);
+    return this.users ? this.users.filter(x => x.username.toLowerCase().indexOf(filterValue) === 0) : this.users ;
   }
 
   /* Display the name of the user
   */
   displayUser(user: User): string {
     return user && user.name ? user.name : '';
-  }
-
-  ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
   }
 
   /*  Close the modal without sending data.
