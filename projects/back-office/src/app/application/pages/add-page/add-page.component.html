@@ -22,7 +22,7 @@
                 </mat-select>
             </mat-form-field>
             <label class="add-page-label">Or create a new one</label>
-            <button mat-raised-button color="primary" (click)="onAdd()">
+            <button mat-raised-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 <mat-icon>add</mat-icon>
                 Create a form
             </button>
