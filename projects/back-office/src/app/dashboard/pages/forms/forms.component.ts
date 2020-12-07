@@ -5,8 +5,8 @@ import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType, WhoConfirmModalComponent } from '@who-ems/builder';
-import { AddFormComponent } from './components/add-form/add-form.component';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
+import { AddFormComponent } from '../../../components/add-form/add-form.component';
 
 @Component({
   selector: 'app-forms',
