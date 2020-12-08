@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Role } from '@who-ems/builder';
+import { Application, Role, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from '../../../services/application.service';
 import { AddRoleComponent } from './components/add-role/add-role.component';
 import { EditRoleComponent } from './components/edit-role/edit-role.component';
 
@@ -21,7 +20,7 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    private applicationService: ApplicationService
+    private applicationService: WhoApplicationService
   ) { }
 
   ngOnInit(): void {

@@ -6,6 +6,7 @@
 export * from './lib/services/auth.service';
 export * from './lib/services/snackbar.service';
 export * from './lib/services/grid.service';
+export * from './lib/services/application.service';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';

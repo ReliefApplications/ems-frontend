@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ContentType, Form } from '@who-ems/builder';
+import { ContentType, Form, WhoApplicationService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
-import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-add-page',
@@ -24,7 +23,7 @@ export class AddPageComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private applicationService: ApplicationService
+    private applicationService: WhoApplicationService
   ) { }
 
   ngOnInit(): void {

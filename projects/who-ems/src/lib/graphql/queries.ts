@@ -4,6 +4,7 @@ import { Resource } from '../models/resource.model';
 import { Role, User } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
+import { Application } from '../models/application.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -269,4 +270,71 @@ query GetNotifications {
 export interface GetNotificationsQueryResponse {
   loading: boolean;
   notifications: Notification[];
+}
+
+// === GET APPLICATION BY ID ===
+export const GET_APPLICATION_BY_ID = gql`
+  query GetApplicationById($id: ID!, $asRole: ID){
+    application(id: $id, asRole: $asRole){
+      id
+      name
+      description
+      createdAt
+      status
+      pages {
+        id
+        name
+        type
+        content
+        createdAt
+        canSee
+        canUpdate
+        canDelete
+      }
+      roles {
+        id
+        title
+        permissions {
+          id
+          type
+        }
+        usersCount
+      }
+      users {
+        id
+        username
+        name
+        roles {
+          id
+          title
+        }
+        oid
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+    }
+  }
+`;
+
+export interface GetApplicationByIdQueryResponse {
+  loading: boolean;
+  application: Application;
 }

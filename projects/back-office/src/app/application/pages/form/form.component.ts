@@ -3,7 +3,7 @@ import { ActivatedRoute, Router} from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Subscription, Observable } from 'rxjs';
-import { Form, Page, Step, WhoFormComponent } from '@who-ems/builder';
+import { Form, Page, Step, WhoFormComponent, WhoApplicationService } from '@who-ems/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -12,7 +12,6 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE } from '../../../graphql/mutations';
 import { WorkflowService } from '../../../services/workflow.service';
-import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-form',
@@ -40,7 +39,7 @@ export class FormComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,

@@ -3,7 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { Application, PermissionsManagement, PermissionType, WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
+import { Application, PermissionsManagement, PermissionType, 
+  WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
@@ -11,7 +12,6 @@ import { AddApplicationComponent } from './components/add-application/add-applic
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { ApplicationService } from '../../../services/application.service';
 import { PreviewService } from '../../../services/preview.service';
 
 @Component({
@@ -39,7 +39,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: WhoSnackBarService,
     private authService: WhoAuthService,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private previewService: PreviewService
   ) { }
 

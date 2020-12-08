@@ -1,17 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, Page, User, Role, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AddPageMutationResponse, AddRoleMutationResponse, AddRoleToUserMutationResponse,
-  ADD_PAGE, ADD_ROLE, ADD_ROLE_TO_USER, DeletePageMutationResponse, DeleteRoleMutationResponse, DELETE_PAGE, DELETE_ROLE,
-  EditApplicationMutationResponse, EditUserMutationResponse, EditRoleMutationResponse, EDIT_APPLICATION, EDIT_USER, EDIT_ROLE } from '../graphql/mutations';
+import { User, Role } from '../models/user.model';
+import { Page, ContentType } from '../models/page.model';
+import { Application } from '../models/application.model';
+import { WhoSnackBarService } from './snackbar.service';
+import {
+  AddPageMutationResponse, ADD_PAGE,
+  AddRoleMutationResponse, ADD_ROLE,
+  AddRoleToUserMutationResponse, ADD_ROLE_TO_USER,
+  DeletePageMutationResponse, DELETE_PAGE,
+  DeleteRoleMutationResponse, DELETE_ROLE,
+  EditApplicationMutationResponse, EDIT_APPLICATION,
+  EditUserMutationResponse, EDIT_USER,
+  EditRoleMutationResponse, EDIT_ROLE } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationService {
+export class WhoApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application>(null);
