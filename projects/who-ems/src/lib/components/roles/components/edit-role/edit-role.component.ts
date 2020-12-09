@@ -2,17 +2,17 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { GetPermissionsQueryResponse, GET_PERMISSIONS } from '../../../../../graphql/queries';
-import { Permission, Role } from '@who-ems/builder';
+import { GetPermissionsQueryResponse, GET_PERMISSIONS } from '../../../../graphql/queries';
+import { Permission, Role } from '../../../../models/user.model';
 
 @Component({
-  selector: 'app-edit-role',
+  selector: 'who-edit-role',
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss']
 })
 /*  Modal to add a role.
 */
-export class EditRoleComponent implements OnInit {
+export class WhoEditRoleComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
@@ -23,9 +23,10 @@ export class EditRoleComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<EditRoleComponent>,
+    public dialogRef: MatDialogRef<WhoEditRoleComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      role: Role
+      role: Role,
+      application: boolean
     },
     private apollo: Apollo
   ) { }
@@ -36,7 +37,7 @@ export class EditRoleComponent implements OnInit {
     this.apollo.watchQuery<GetPermissionsQueryResponse>({
       query: GET_PERMISSIONS,
       variables: {
-        application: true
+        application: this.data.application
       }
     }).valueChanges.subscribe(res => {
       this.permissions = res.data.permissions;

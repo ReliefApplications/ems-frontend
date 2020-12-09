@@ -3,20 +3,18 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-add-role',
+  selector: 'who-add-role',
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss']
 })
-/*  Modal to add a role.
-*/
-export class AddRoleComponent implements OnInit {
+export class WhoAddRoleComponent implements OnInit {
 
   // === REACTIVE FORM ===
   roleForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddRoleComponent>
+    public dialogRef: MatDialogRef<WhoAddRoleComponent>
   ) { }
 
   /*  Build the form.
@@ -33,3 +31,4 @@ export class AddRoleComponent implements OnInit {
     this.dialogRef.close();
   }
 }
+

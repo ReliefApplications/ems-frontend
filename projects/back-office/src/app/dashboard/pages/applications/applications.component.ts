@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { Application, PermissionsManagement, PermissionType, 
+import { Application, PermissionsManagement, PermissionType,
   WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,

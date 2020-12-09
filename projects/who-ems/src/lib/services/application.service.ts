@@ -177,6 +177,7 @@ export class WhoApplicationService {
   /* Edit an existing role.
   */
   editRole(role: Role, value: any): void {
+    const application = this._application.getValue();
     this.apollo.mutate<EditRoleMutationResponse>({
       mutation: EDIT_ROLE,
       variables: {
@@ -185,14 +186,18 @@ export class WhoApplicationService {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role updated.`);
-      const application = this._application.getValue();
-      this.loadApplication(application.id, res.data.editRole.id);
+      application.roles = application.roles.map(x => {
+        if (x.id === role.id) { x.permissions = res.data.editRole.permissions; }
+        return x;
+      });
+      this._application.next(application);
     });
   }
 
   /* Delete an existing role.
   */
   deleteRole(role: Role): void {
+    const application = this._application.getValue();
     this.apollo.mutate<DeleteRoleMutationResponse>({
       mutation: DELETE_ROLE,
       variables: {
@@ -200,8 +205,8 @@ export class WhoApplicationService {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role deleted.`);
-      const application = this._application.getValue();
-      this.loadApplication(application.id);
+      application.roles = application.roles.filter(x => x.id !== role.id);
+      this._application.next(application);
     });
   }
 

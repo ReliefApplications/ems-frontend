@@ -165,6 +165,10 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
     id
     title
+    permissions {
+      id
+      type
+    }
     usersCount
   }
 }`;

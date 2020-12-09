@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { Role, User } from '../models/user.model';
+import { Role, User, Permission } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
@@ -338,3 +338,19 @@ export interface GetApplicationByIdQueryResponse {
   loading: boolean;
   application: Application;
 }
+
+// === GET PERMISSIONS ===
+export const GET_PERMISSIONS = gql`
+query GetPermissions($application: Boolean) {
+  permissions(application: $application) {
+    id
+    type
+    global
+  }
+}`;
+
+export interface GetPermissionsQueryResponse {
+  loading: boolean;
+  permissions: Permission[];
+}
+
