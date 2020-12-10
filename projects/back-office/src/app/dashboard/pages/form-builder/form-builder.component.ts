@@ -54,7 +54,6 @@ export class FormBuilderComponent implements OnInit {
     this.formActive = false;
 
     this.id = this.route.snapshot.paramMap.get('id');
-    const template = this.route.snapshot.paramMap.get('template');
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -68,11 +67,7 @@ export class FormBuilderComponent implements OnInit {
           this.nameForm = new FormGroup({
             formName: new FormControl(this.form.name, Validators.required)
           });
-          if ( template && !this.form.structure ) {
-            this.setTemplate(template);
-          } else {
-            this.structure = this.form.structure;
-          }
+          this.structure = this.form.structure;
         } else {
           this.snackBar.openSnackBar('No access provided to this form.', { error: true });
           // redirect to default screen if error

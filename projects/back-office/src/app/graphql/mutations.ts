@@ -119,8 +119,8 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-mutation addForm($name: String!, $newResource: Boolean, $resource: ID) {
-  addForm(name: $name, newResource: $newResource, resource: $resource) {
+mutation addForm($name: String!, $newResource: Boolean, $resource: ID, $template: ID) {
+  addForm(name: $name, newResource: $newResource, resource: $resource, template: $template) {
     id
     name
     createdAt
