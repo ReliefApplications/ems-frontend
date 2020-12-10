@@ -25,8 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     MatButtonModule,
     MatRadioModule,
-    MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSlideToggleModule
   ],
   exports: [AddFormComponent]
 })

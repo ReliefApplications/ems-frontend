@@ -93,18 +93,15 @@ export class FormsComponent implements OnInit, OnDestroy {
         const data = { name: value.name };
         Object.assign(data,
           value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource }
+          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
+          (value.binding === 'fromResource' && value.template) && { template: value.template }
         );
         this.apollo.mutate<AddFormMutationResponse>({
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
           const { id } = res.data.addForm;
-          if (value.binding === 'fromResource' && value.template) {
-            this.router.navigate(['/forms/builder', { id, template: value.template }]);
-          } else {
-            this.router.navigate(['/forms/builder', id]);
-          }
+          this.router.navigate(['/forms/builder', id]);
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         });

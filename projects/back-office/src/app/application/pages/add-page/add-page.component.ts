@@ -123,7 +123,8 @@ export class AddPageComponent implements OnInit {
         const data = { name: value.name };
         Object.assign(data,
           value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource }
+          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
+          (value.binding === 'fromResource' && value.template) && { template: value.template }
         );
         this.apollo.mutate<AddFormMutationResponse>({
           mutation: ADD_FORM,
