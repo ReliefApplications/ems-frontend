@@ -1,7 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
     <table mat-table [dataSource]="dataSource">
-        <who-previous-button route="./resources"> </who-previous-button>
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>

@@ -4,17 +4,17 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'who-previous-button',
   templateUrl: './previous-button.component.html',
-  styleUrls: ['./previous-button.component.css']
+  styleUrls: ['./previous-button.component.scss']
 })
 export class WhoPreviousButtonComponent implements OnInit {
+
   @Input() path: string;
+
   constructor(private router: Router) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  navigatePrevious(): void {
-    this.router.navigateByUrl(this.path);
+  onPrevious(): void {
+    this.router.navigate([this.path]);
   }
-
 }

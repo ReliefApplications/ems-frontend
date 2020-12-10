@@ -16,7 +16,7 @@ import { WhoSchedulerSettingsModule } from './components/widgets/scheduler-setti
 import { WhoWidgetModule } from './components/widget/widget.module';
 import { WhoWidgetGridModule } from './components/widget-grid/widget-grid.module';
 import { WhoConfirmModalModule } from './components/confirm-modal/confirm-modal.module';
-import { WhoPreviousButtonComponent } from './components/previous-button/public-api';
+import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
 
 @NgModule({
   declarations: [],
@@ -39,7 +39,7 @@ import { WhoPreviousButtonComponent } from './components/previous-button/public-
     WhoWidgetModule,
     WhoWidgetGridModule,
     WhoConfirmModalModule,
-    WhoPreviousButtonComponent
+    WhoPreviousButtonModule
   ]
 })
 export class WhoEmsModule { }
