@@ -5,6 +5,7 @@ import { Application } from './application.model';
 export interface Permission {
     id?: string;
     type?: string;
+    global?: boolean;
 }
 
 /*  Model for Role object.
@@ -14,6 +15,7 @@ export interface Role {
     title?: string;
     usersCount?: number;
     permissions?: Permission[];
+    application: Application;
 }
 
 /*  Model for User object.
@@ -34,10 +36,10 @@ export interface User {
 export enum Permissions {
     canSeeResources = 'can_see_resources',
     canSeeForms = 'can_see_forms',
-    canManageForms = 'can_manage_forms',
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
-    canManageDashboards = 'can_manage_dashboards',
+    canManageForms = 'can_manage_forms',
+    canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications'
 }
 
@@ -55,7 +57,8 @@ export enum PermissionType {
 export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
-            access: Permissions.canSeeResources
+            access: Permissions.canSeeResources,
+            create: Permissions.canManageResources
         },
         forms: {
             access: Permissions.canSeeForms,
@@ -68,9 +71,6 @@ export class PermissionsManagement {
             roles: {
                 access: Permissions.canSeeRoles
             }
-        },
-        dashboards: {
-            create: Permissions.canManageDashboards
         },
         applications: {
             create: Permissions.canManageApplications

@@ -24,8 +24,20 @@ const routes: Routes = [
       },
       {
         path: 'form/:id',
-        loadChildren: () => import('../form/form.module')
-          .then(m => m.FormModule),
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../form/form.module')
+              .then(m => m.FormModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+          {
+            path: 'builder/:id',
+            loadChildren: () => import('../../../dashboard/pages/form-builder/form-builder.module')
+              .then(m => m.FormBuilderModule),
+            // canActivate: [WhoPermissionGuard]
+          }
+        ]
       }
     ]
   }

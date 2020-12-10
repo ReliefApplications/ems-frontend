@@ -10,8 +10,8 @@
                        matInput
                        formControlName="user"
                        [matAutocomplete]="auto">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user.id">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayUser">
+                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
                     {{user.username}}
                   </mat-option>
                 </mat-autocomplete>
@@ -31,5 +31,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="inviteForm.value" cdkFocusInitial color="primary" [disabled]="!inviteForm.valid">Invite</button>
+    <button mat-button [mat-dialog-close]="inviteForm.value" color="primary" [disabled]="!inviteForm.valid">Invite</button>
 </div>

@@ -50,7 +50,7 @@ export class WhoFormComponent implements OnInit {
       this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
-          id: this.form.id,
+          id: this.record.id,
           data: this.survey.data
         }
       }).subscribe(() => {
