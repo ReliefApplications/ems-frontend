@@ -223,7 +223,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -257,7 +257,7 @@ mutation editForm($id: ID!, $status: String!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -291,7 +291,7 @@ mutation editForm($id: ID!, $name: String!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -325,7 +325,7 @@ mutation editForm($id: ID!, $permissions: JSON!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {

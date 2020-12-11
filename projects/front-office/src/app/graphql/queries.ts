@@ -112,7 +112,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     records(filters: $filters) {
       id
