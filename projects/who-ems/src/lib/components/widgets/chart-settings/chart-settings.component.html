@@ -15,9 +15,12 @@
     </div>
     <div class="form-group">
         <div class="form-group-title">Data</div>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Query</mat-label>
-            <input matInput formControlName="query" type="string" />
+            <textarea matInput
+                cdkTextareaAutosize
+                formControlName="query"
+                cdkAutosizeMinRows="3"></textarea>
         </mat-form-field>
         <mat-form-field>
             <mat-label>X-Axis</mat-label>
