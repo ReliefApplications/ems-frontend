@@ -4,8 +4,10 @@ import 'leaflet.markercluster';
 import { Apollo } from 'apollo-angular';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { Record } from '../../../models/record.model';
+import { Subscription } from 'rxjs';
+import gql from 'graphql-tag';
 
-const markerOptions = {
+const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
   weight: 12,
@@ -36,8 +38,9 @@ export class WhoMapComponent implements AfterViewInit {
   private popupMarker;
 
   // === RECORDS ===
-  private selectedRecord: Record;
-  private records: Record[];
+  private selectedItem: Record;
+  private data: any[];
+  private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
@@ -68,8 +71,8 @@ export class WhoMapComponent implements AfterViewInit {
 
     this.drawMap();
 
-    if (this.settings && this.settings.source && this.settings.latitude && this.settings.longitude) {
-      this.getRecords();
+    if (this.settings && this.settings.query && this.settings.latitude && this.settings.longitude) {
+      this.getData();
     }
 
     this.map.setMaxBounds(this.bounds);
@@ -98,10 +101,10 @@ export class WhoMapComponent implements AfterViewInit {
 
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', event => {
-      this.selectedRecord = this.records.find(x => x.id === event.layer.options.id);
+      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
-        .setContent(JSON.stringify(this.selectedRecord.data))
+        .setContent(JSON.stringify(this.selectedItem))
         .addTo(this.map);
 
     });
@@ -112,47 +115,41 @@ export class WhoMapComponent implements AfterViewInit {
 
   /*  Load the data, using widget parameters.
   */
-  private getRecords(): void {
+  private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
-    this.records = [];
     this.markersLayer.clearLayers();
-    this.selectedRecord = null;
     const myIcon = L.icon({
       iconUrl:
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
-    if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.settings.source
+
+    const dataQuery = this.apollo.watchQuery<any>({
+      query: gql`${this.settings.query}`,
+      variables: {}
+    });
+
+    this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
+      this.data = [];
+      this.selectedItem = null;
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          res.data[field].map(x => this.drawMarkers(myIcon, x));
         }
-      }).valueChanges.subscribe(res => {
-        res.data.resource.records.map(x => this.drawMarkers(myIcon, x));
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.source
-        }
-      }).valueChanges.subscribe(res => {
-        res.data.form.records.map(x => this.drawMarkers(myIcon, x));
-      });
-    }
+      }
+    });
   }
 
   /*  Draw markers on the map if the record has coordinates
   */
-  private drawMarkers(icon: any, record: Record): void {
-    const latitude = Number(record.data[this.settings.latitude]);
-    const longitude = Number(record.data[this.settings.longitude]);
+  private drawMarkers(icon: any, item: any): void {
+    const latitude = Number(item[this.settings.latitude]);
+    const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-        this.records.push(record);
-        const options = markerOptions;
-        Object.assign(options, { id: record.id });
+        this.data.push(item);
+        const options = MARKER_OPTIONS;
+        Object.assign(options, { id: item.id });
         const marker = L.circleMarker(
           [
             latitude,
