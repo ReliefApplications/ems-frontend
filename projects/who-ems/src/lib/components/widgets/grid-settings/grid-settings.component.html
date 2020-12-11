@@ -6,33 +6,30 @@
             <input matInput formControlName="title" type="string"/>
         </mat-form-field>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <div class="form-group-title">Utils</div>
         <mat-checkbox formControlName="sortable">Sort</mat-checkbox>
         <mat-checkbox formControlName="pageable">Pagination</mat-checkbox>
         <mat-checkbox formControlName="editable">Editable</mat-checkbox>
         <mat-checkbox formControlName="filterable">Filterable</mat-checkbox>
-    </div>
+    </div> -->
     <div class="form-group">
         <div class="form-group-title">Data</div>
-        <mat-radio-group formControlName="from" class="form-radio-group" (change)="getSources($event)">
-            <mat-radio-button value="resource">Use resource records</mat-radio-button>
-            <mat-radio-button value="form">Use form records</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field>
-            <mat-label>Data Source</mat-label>
-            <mat-select formControlName="source" (selectionChange)="getSource($event)">
-                <mat-option *ngFor="let source of sources" [value]="source.id"> {{source.name}}</mat-option>
-            </mat-select>
+        <mat-form-field appearance="outline">
+            <mat-label>Query</mat-label>
+            <textarea matInput
+                cdkTextareaAutosize
+                formControlName="query"
+                cdkAutosizeMinRows="3"></textarea>
         </mat-form-field>
-        <mat-form-field>
+        <!-- <mat-form-field>
             <mat-label>Displayed fields</mat-label>
             <mat-select formControlName="fields" multiple [disabled]="!(fields.length > 0)">
                 <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
             </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <div class="form-group-title">Toolbar</div>
         <mat-checkbox formControlName="toolbar">Display toolbar</mat-checkbox>
         <div class="nested-form-group" *ngIf="tileForm.controls.toolbar.value">
@@ -47,8 +44,8 @@
                 </mat-form-field>
             </div>
         </div>
-    </div>
-    <div class="form-group">
+    </div> -->
+    <!-- <div class="form-group">
         <div class="form-group-title">Child grid</div>
         <mat-checkbox formControlName="canExpand">Can be expanded</mat-checkbox>
         <div formGroupName="childGrid" *ngIf="tileForm.controls.canExpand.value" class="nested-form-group">
@@ -101,5 +98,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </form>

@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @NgModule({
   declarations: [WhoGridSettingsComponent],
@@ -18,7 +19,8 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatSelectModule
+    MatSelectModule,
+    TextFieldModule
   ],
   exports: [WhoGridSettingsComponent]
 })

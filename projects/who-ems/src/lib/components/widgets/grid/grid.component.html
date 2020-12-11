@@ -9,18 +9,18 @@
     [loading]="loading"
     [columnMenu]="true"
     [reorderable]="true"
-    [sortable]="(settings && settings.sortable) ? true : false"
-    [pageable]="(settings && settings.pageable) ? true : false"
+    [sortable]="true"
+    [pageable]="true"
     [sort]="sort"
     (sortChange)="sortChange($event)"
     (pageChange)="pageChange($event)"
-    [filterable]="(settings && settings.filterable) ? 'menu' : false"
-    [filter] = "filter"
+    filterable="menu"
+    [filter]="filter"
     (filterChange)="filterChange($event)"
     (cellClick)="cellClickHandler($event)"
     >
     <ng-template kendoGridToolbarTemplate position="top">
-        <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button>
+        <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
         <button type="button" kendoGridExcelCommand class="k-button">Export</button>
     </ng-template>
     <ng-container *ngIf="fields.length > 0">

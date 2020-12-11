@@ -1,17 +1,18 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
-import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
-import { RecordAddedSubscriptionResponse, RECORD_ADDED_SUBSCRIPTION } from '../../../graphql/subscriptions';
+import gql from 'graphql-tag';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
+
+const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 @Component({
   selector: 'who-grid',
@@ -20,7 +21,7 @@ const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, 
 })
 /*  Grid widget using KendoUI.
 */
-export class WhoGridComponent implements OnInit, OnChanges {
+export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -39,7 +40,7 @@ export class WhoGridComponent implements OnInit, OnChanges {
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
-  recordsSubscription: Subscription;
+  private dataSubscription: Subscription;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -67,7 +68,8 @@ export class WhoGridComponent implements OnInit, OnChanges {
   /*  Load the records.
   */
   ngOnInit(): void {
-    if (this.settings.source) {
+    this.excelFileName = this.settings.name ? `${this.settings.name}.xlsx` : DEFAULT_FILE_NAME;
+    if (this.settings.query) {
       this.getRecords();
       this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     } else {
@@ -78,7 +80,8 @@ export class WhoGridComponent implements OnInit, OnChanges {
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
-    if (this.settings.source) {
+    this.excelFileName = this.settings.name ? `${this.settings.name}.xlsx` : DEFAULT_FILE_NAME;
+    if (this.settings.query) {
       this.getRecords();
     } else {
       this.loading = false;
@@ -101,111 +104,42 @@ export class WhoGridComponent implements OnInit, OnChanges {
   */
   private getRecords(): void {
     this.loading = true;
-    if (!this.settings.from || this.settings.from === 'resource') {
-      const recordsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.settings.source,
-          display: true
-        }
-      });
+    const dataQuery = this.apollo.watchQuery<any>({
+      query: gql`${this.settings.query}`,
+      variables: {}
+    });
 
-      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
-        this.loading = false;
-        this.canEdit = res.data.resource.canCreate;
-        this.excelFileName = `${res.data.resource.name}.xlsx`;
-        const fields = [];
-        for (const field of res.data.resource.fields) {
-          if (this.settings.fields.indexOf(field.name) > -1) {
-            fields.push(field);
-          }
-        }
-        this.fields = fields;
-        this.getResourceDropdown();
-        const gridData = [];
-        for (const record of res.data.resource.records) {
-          let data = { ...record.data };
-          data.id = record.id;
-          data = this.setDataType(data);
-          gridData.push(data);
-        }
-        this.items = gridData;
-        this.skip = 0;
-        this.loadItems();
-      });
-
-      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
-        document: RECORD_ADDED_SUBSCRIPTION,
-        variables: {
-          resource: this.settings.source
-        },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
-            return prev;
-          }
-          const newRecord = subscriptionData.data.recordAdded;
-          return {
-            ...prev,
-            resource: {
-              ...prev.resource,
-              records: [newRecord, ...prev.resource.records]
-            }
+    this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
+      this.loading = res.loading;
+      // this.canEdit = res.data.resource.canCreate;
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.items = res.data[field];
+          this.gridData = {
+            data: this.items,
+            total: res.data[field].length
           };
+          // const fields = [];
+          // for (const field of res.data.resource.fields) {
+          //   if (this.settings.fields.indexOf(field.name) > -1) {
+          //     fields.push(field);
+          //   }
+          // }
+          // this.fields = fields;
+          // this.getResourceDropdown();
+          // const gridData = [];
+          // for (const record of res.data.resource.records) {
+          //   let data = { ...record.data };
+          //   data.id = record.id;
+          //   data = this.setDataType(data);
+          //   gridData.push(data);
+          // }
+          // this.items = gridData;
+          // this.skip = 0;
+          // this.loadItems();
         }
-      });
-    } else {
-      const recordsQuery = this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.source,
-          display: true
-        }
-      });
-
-      this.recordsSubscription = recordsQuery.valueChanges.subscribe(res => {
-        this.loading = false;
-        this.canEdit = res.data.form.canCreate;
-        this.excelFileName = `${res.data.form.name}.xlsx`;
-        const fields = [];
-        for (const field of res.data.form.fields) {
-          if (this.settings.fields.indexOf(field.name) > -1) {
-            fields.push(field);
-          }
-        }
-        this.fields = fields;
-        this.getResourceDropdown();
-        const gridData = [];
-        for (const record of res.data.form.records) {
-          let data = { ...record.data };
-          data.id = record.id;
-          data = this.setDataType(data);
-          gridData.push(data);
-        }
-        this.items = gridData;
-        this.skip = 0;
-        this.loadItems();
-      });
-
-      recordsQuery.subscribeToMore<RecordAddedSubscriptionResponse>({
-        document: RECORD_ADDED_SUBSCRIPTION,
-        variables: {
-          form: this.settings.source
-        },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
-            return prev;
-          }
-          const newRecord = subscriptionData.data.recordAdded;
-          return {
-            ...prev,
-            form: {
-              ...prev.form,
-              records: [newRecord, ...prev.form.records]
-            }
-          };
-        }
-      });
-    }
+      }
+    });
   }
 
   /*  Set the list of items to display.
@@ -389,4 +323,10 @@ export class WhoGridComponent implements OnInit, OnChanges {
   //     }
   //   });
   // }
+
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
 }
