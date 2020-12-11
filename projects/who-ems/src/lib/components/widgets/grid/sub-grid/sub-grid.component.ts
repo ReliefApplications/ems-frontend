@@ -61,22 +61,29 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
   /*  Load the records.
   */
   ngOnInit(): void {
-    if (this.settings.source) {
-      this.getRecords();
-      this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    } else {
-      this.loading = false;
-    }
+    this.items = this.parent[this.settings.field];
+    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    this.loading = false;
+    this.loadItems();
+    // if (this.settings.source) {
+    //   this.getRecords();
+    //   this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    // } else {
+    //   this.loading = false;
+    // }
   }
 
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
-    if (this.settings.source) {
-      this.getRecords();
-    } else {
-      this.loading = false;
-    }
+    this.items = this.parent[this.settings.field];
+    this.loading = false;
+    this.loadItems();
+    // if (this.settings.source) {
+    //   this.getRecords();
+    // } else {
+    //   this.loading = false;
+    // }
   }
 
   /*  Set the data types.
@@ -102,89 +109,18 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
         equals: this.parent.id
       });
     }
-    if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.settings.source,
-          filters,
-          display: true
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = false;
-        if (!loaded) {
-          this.canEdit = res.data.resource.canCreate;
-          const fields = [];
-          for (const field of res.data.resource.fields) {
-            if (this.settings.fields.indexOf(field.name) > -1) {
-              fields.push(field);
-            }
-          }
-          this.fields = fields;
-          this.getResourceDropdown();
-          this.skip = 0;
-        }
-        const gridData = [];
-        for (const record of res.data.resource.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
-        }
-        this.items = gridData;
-        this.loadItems();
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.source,
-          filters,
-          display: true
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = false;
-        if (!loaded) {
-          this.canEdit = res.data.form.canCreate;
-          const fields = [];
-          for (const field of res.data.form.fields) {
-            if (this.settings.fields.indexOf(field.name) > -1) {
-              fields.push(field);
-            }
-          }
-          this.fields = fields;
-          this.getResourceDropdown();
-          this.skip = 0;
-        }
-        const gridData = [];
-        for (const record of res.data.form.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
-        }
-        this.items = gridData;
-        this.loadItems();
-      });
-    }
   }
 
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    if ( this.settings.pageable ) {
-      this.gridData = {
-        // tslint:disable-next-line: max-line-length
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items))
-          .slice(this.skip, this.skip + this.pageSize),
-        total: this.items.length
-      };
-    } else {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)),
-        total: this.items.length
-      };
-    }
+    this.gridData = {
+      // tslint:disable-next-line: max-line-length
+      data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+        (this.filter ? filterBy(this.items, this.filter) : this.items))
+        .slice(this.skip, this.skip + this.pageSize),
+      total: this.items.length
+    };
   }
 
   /*  Detect sort events and update the items loaded.

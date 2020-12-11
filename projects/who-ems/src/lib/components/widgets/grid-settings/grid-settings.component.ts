@@ -45,7 +45,10 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-      query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required]
+      query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
+      details: this.formBuilder.group({
+        field: [(tileSettings && tileSettings.details && tileSettings.details.field) ? tileSettings.details.field : '', Validators.required]
+      })
       // sortable: [(tileSettings && tileSettings.sortable) ? true : false, Validators.required],
       // pageable: [(tileSettings && tileSettings.pageable) ? true : false, Validators.required],
       // filterable: [(tileSettings && tileSettings.filterable) ? true : false, Validators.required],

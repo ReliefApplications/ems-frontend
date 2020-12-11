@@ -48,9 +48,14 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <ng-container *ngIf="(settings && settings.canExpand && settings.childGrid)">
+    <!-- <ng-container *ngIf="(settings && settings.canExpand && settings.childGrid)">
         <div *kendoGridDetailTemplate="let dataItem">
             <app-sub-grid [settings]="settings.childGrid" [parent]="dataItem"></app-sub-grid>
+        </div>
+    </ng-container> -->
+    <ng-container *ngIf="settings.details && settings.details.field">
+        <div *kendoGridDetailTemplate="let dataItem">
+            <who-sub-grid [settings]="settings.details" [parent]="dataItem"></who-sub-grid>
         </div>
     </ng-container>
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
