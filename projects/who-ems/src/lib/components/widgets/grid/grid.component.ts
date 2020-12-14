@@ -5,7 +5,7 @@ import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } 
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
+import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';
@@ -115,6 +115,16 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.items = res.data[field];
+          if (this.items.length > 0) {
+            this.apollo.watchQuery<GetType>({
+              query: GET_TYPE,
+              variables: {
+                name: this.items[0].__typename
+              }
+            }).valueChanges.subscribe(res2 => {
+              this.fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
+            });
+          }
           this.gridData = {
             data: this.items,
             total: res.data[field].length

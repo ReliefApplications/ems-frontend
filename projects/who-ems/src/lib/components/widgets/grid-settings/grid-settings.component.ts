@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { GetResourcesQueryResponse, GET_RESOURCES, GetFormsQueryResponse,
-  GET_FORMS, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { GetQueryTypes, GET_QUERY_TYPES, GetType, GET_TYPE } from '../../../graphql/queries';
 
 @Component({
   selector: 'who-grid-settings',
@@ -22,6 +21,10 @@ export class WhoGridSettingsComponent implements OnInit {
   // === EMIT THE CHANGES APPLIED ===
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+
+  // === QUERY BUILDER ===
+  private availableQueries: any[];
+  private queryType: any;
 
   // === PARENT ===
   // public sources: any[] = [];
@@ -82,6 +85,28 @@ export class WhoGridSettingsComponent implements OnInit {
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
+    });
+    this.tileForm.controls.query.valueChanges.subscribe((res: string) => {
+      const substrings = res.split('{');
+      this.queryType = null;
+      if (substrings.length > 0) {
+        this.queryType = this.availableQueries.find(x => x.name === substrings[1].trim());
+        this.apollo.watchQuery<GetType>({
+          query: GET_TYPE,
+          variables: {
+            name: this.queryType.type.ofType.name
+          }
+        }).valueChanges.subscribe(res2 => {
+          console.log(res2);
+        });
+      }
+    });
+
+    this.apollo.watchQuery<GetQueryTypes>({
+      query: GET_QUERY_TYPES,
+    }).valueChanges.subscribe((res) => {
+      this.availableQueries = res.data.__schema.queryType.fields.filter(x => x.name.startsWith('all'));
+      console.log(this.availableQueries);
     });
 
     // this.getSources({ value: this.tileForm.get('from').value }, true);

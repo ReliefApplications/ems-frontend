@@ -247,3 +247,52 @@ export interface GetNotificationsQueryResponse {
   loading: boolean;
   notifications: Notification[];
 }
+
+// === GET QUERY TYPES ===
+export const GET_QUERY_TYPES = gql`
+query GetQueryTypes {
+  __schema {
+    queryType {
+      name
+      kind
+      fields {
+        name
+        type {
+          name
+          kind
+          ofType {
+            name
+          }
+        }
+      }
+    }
+  }
+}`;
+
+// TODO: check type of __schema
+export interface GetQueryTypes {
+  loading: boolean;
+  __schema: any;
+}
+
+// === GET TYPE ===
+export const GET_TYPE = gql`
+query GetType($name: String!) {
+  __type(name: $name) {
+    fields {
+      name
+      type {
+        name
+        kind
+        ofType {
+          name
+        }
+      }
+    }
+  }
+}`;
+
+export interface GetType {
+  loading: boolean;
+  __type: any;
+}
