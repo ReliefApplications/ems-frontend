@@ -86,28 +86,26 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
-    this.tileForm.controls.query.valueChanges.subscribe((res: string) => {
-      const substrings = res.split('{');
-      this.queryType = null;
-      if (substrings.length > 0) {
-        this.queryType = this.availableQueries.find(x => x.name === substrings[1].trim());
-        this.apollo.watchQuery<GetType>({
-          query: GET_TYPE,
-          variables: {
-            name: this.queryType.type.ofType.name
-          }
-        }).valueChanges.subscribe(res2 => {
-          console.log(res2);
-        });
-      }
-    });
+    // this.tileForm.controls.query.valueChanges.subscribe((res: string) => {
+    //   const substrings = res.split('{');
+    //   this.queryType = null;
+    //   if (substrings.length > 0) {
+    //     this.queryType = this.availableQueries.find(x => x.name === substrings[1].trim());
+    //     this.apollo.watchQuery<GetType>({
+    //       query: GET_TYPE,
+    //       variables: {
+    //         name: this.queryType.type.ofType.name
+    //       }
+    //     }).valueChanges.subscribe(res2 => {});
+    //   }
+    // });
 
-    this.apollo.watchQuery<GetQueryTypes>({
-      query: GET_QUERY_TYPES,
-    }).valueChanges.subscribe((res) => {
-      this.availableQueries = res.data.__schema.queryType.fields.filter(x => x.name.startsWith('all'));
-      console.log(this.availableQueries);
-    });
+    // this.apollo.watchQuery<GetQueryTypes>({
+    //   query: GET_QUERY_TYPES,
+    // }).valueChanges.subscribe((res) => {
+    //   this.availableQueries = res.data.__schema.queryType.fields.filter(x => x.name.startsWith('all'));
+    //   console.log(this.availableQueries);
+    // });
 
     // this.getSources({ value: this.tileForm.get('from').value }, true);
     // this.getSubSources({ value: this.tileForm.get('childGrid.from').value }, true);

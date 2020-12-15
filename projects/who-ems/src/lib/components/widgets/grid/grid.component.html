@@ -22,6 +22,8 @@
     <ng-template kendoGridToolbarTemplate position="top">
         <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
         <button type="button" kendoGridExcelCommand class="k-button">Export</button>
+        <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
+        <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
         <ng-container *ngFor="let field of fields">

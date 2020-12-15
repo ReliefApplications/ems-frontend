@@ -15,6 +15,8 @@ const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, 
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
+const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+
 @Component({
   selector: 'who-grid',
   templateUrl: './grid.component.html',
@@ -34,14 +36,17 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   // === DATA ===
   public gridData: GridDataResult;
   private items: any[];
+  private originalItems: any[] = [];
+  private updatedItems: any[] = [];
   private editedRowIndex: number;
-  private editedRecordId: number;
+  private editedRecordId: string;
   public formGroup: FormGroup;
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
   private dataSubscription: Subscription;
+  public detailsField: string;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -58,6 +63,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === EXCEL ===
   public excelFileName: string;
+
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
 
   constructor(
     private apollo: Apollo,
@@ -93,6 +102,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private getRecords(): void {
     this.loading = true;
+    this.updatedItems = [];
+
     const dataQuery = this.apollo.watchQuery<any>({
       query: gql`${this.settings.query}`,
       variables: {}
@@ -103,6 +114,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.items = res.data[field];
+          this.originalItems = cloneData(this.items);
+          console.log(this.originalItems);
           if (this.items.length > 0) {
             this.apollo.watchQuery<GetType>({
               query: GET_TYPE,
@@ -111,8 +124,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               }
             }).valueChanges.subscribe(res2 => {
               const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
-              this.fields = fields.map(x => ({...x, editor: this.getEditor(x.type)}));
+              this.fields = fields.map(x => ({ ...x, editor: this.getEditor(x.type) }));
             });
+          } else {
+            this.detailsField = null;
           }
           this.gridData = {
             data: this.items,
@@ -121,7 +136,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     },
-    (err) => this.loading = false);
+      (err) => this.loading = false);
   }
 
   /*  Set the list of items to display.
@@ -160,14 +175,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
     if (isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
-  }
+    }
 
     if (this.isNew) {
       rowIndex += 1;
     }
 
     if (this.editedRecordId) {
-      this.saveCurrent();
+      this.updateCurrent();
     }
 
     this.formGroup = this.createFormGroup(dataItem);
@@ -198,46 +213,75 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   //   }
   // }
 
-  /*  Get values of the form for inline edition.
-  */
-  // private getDirtyValues(): object {
-  //   const dirtyValues = {};
-  //   for (const control of Object.keys(this.formGroup.controls)) {
-  //     if (this.formGroup.controls[control].dirty) {
-  //       dirtyValues[control] = this.formGroup.controls[control].value;
-  //     }
-  //   }
-  //   return dirtyValues;
-  // }
-
   /*  Update a record when inline edition completed.
   */
-  public saveCurrent(): void {
+  public updateCurrent(): void {
     if (this.isNew) {
     } else {
-      this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: this.editedRecordId,
-          data: this.formGroup.value,
-          display: true
-        }
-      }).subscribe(res => {
-        this.getRecords();
-      });
+      if (this.formGroup.dirty) {
+        // this.apollo.mutate<EditRecordMutationResponse>({
+        //   mutation: EDIT_RECORD,
+        //   variables: {
+        //     id: this.editedRecordId,
+        //     data: this.formGroup.value,
+        //     display: true
+        //   }
+        // }).subscribe(res => {
+        //   this.getRecords();
+        // });
+        this.update(this.editedRecordId, this.formGroup.value);
+      }
     }
     this.closeEditor();
+  }
+
+  private update(id: string, value: any): void {
+    const item = this.updatedItems.find(x => x.id === id);
+    if (item) {
+      Object.assign(item, value);
+    } else {
+      this.updatedItems.push(value);
+    }
+    Object.assign(this.items.find(x => x.id === id), value);
   }
 
   /*  Close the inline edition.
   */
   private closeEditor(): void {
     this.grid.closeRow(this.editedRowIndex);
-
+    this.grid.cancelCell();
     this.isNew = false;
     this.editedRowIndex = undefined;
     this.editedRecordId = undefined;
     this.formGroup = undefined;
+  }
+
+  public onSaveChanges(): void {
+    this.closeEditor();
+    if (this.hasChanges) {
+      const promises = [];
+      for (const item of this.updatedItems) {
+        const data = Object.assign({}, item);
+        delete data.id;
+        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: item.id,
+            data
+          }
+        }).toPromise());
+      }
+      Promise.all(promises).then(() => this.getRecords());
+    }
+    // this.getRecords();
+  }
+
+  public onCancelChanges(): void {
+    this.closeEditor();
+    this.updatedItems = [];
+    this.items = this.originalItems;
+    this.originalItems = cloneData(this.originalItems);
+    this.loadItems();
   }
 
   /*  Detect document click to save record if outside the inline edition form.
@@ -245,28 +289,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private onDocumentClick(e: any): void {
     if (this.formGroup && this.formGroup.valid &&
       !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
-      this.saveCurrent();
+      this.updateCurrent();
     }
   }
-
-  // === EDITION ===
-  /*  For previous version of record edition, a button was displayed at the right of each row.
-    This method opens a modal to display the SurveyJS form for the record.
-  */
-  // public editHandler(event: any): void {
-  //   const dialogRef = this.dialog.open(EmbeddedFormComponent, {
-  //     data: {
-  //       template: this.settings.addTemplate,
-  //       locale: 'en',
-  //       recordId: event.dataItem.id
-  //     }
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.getRecords();
-  //     }
-  //   });
-  // }
 
   private getEditor(type: any): string {
     switch (type.name) {
@@ -303,28 +328,28 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /*  Detect sort events and update the items loaded.
   */
- public sortChange(sort: SortDescriptor[]): void {
-  this.sort = sort;
-  this.skip = 0;
-  this.loadItems();
-}
+  public sortChange(sort: SortDescriptor[]): void {
+    this.sort = sort;
+    this.skip = 0;
+    this.loadItems();
+  }
 
-/*  Detect pagination events and update the items loaded.
-*/
-public pageChange(event: PageChangeEvent): void {
-  this.skip = event.skip;
-  this.loadItems();
-}
+  /*  Detect pagination events and update the items loaded.
+  */
+  public pageChange(event: PageChangeEvent): void {
+    this.skip = event.skip;
+    this.loadItems();
+  }
 
-/*  Detect filtering events and update the items loaded.
-*/
-public filterChange(filter: CompositeFilterDescriptor): void {
-  this.filter = filter;
-  this.loadItems();
-}
+  /*  Detect filtering events and update the items loaded.
+  */
+  public filterChange(filter: CompositeFilterDescriptor): void {
+    this.filter = filter;
+    this.loadItems();
+  }
 
   ngOnDestroy(): void {
-    if (this.dataSubscription) {
+    if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
   }
