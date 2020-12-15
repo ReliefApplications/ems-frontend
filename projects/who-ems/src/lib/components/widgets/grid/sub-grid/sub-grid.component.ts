@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { GridDataResult, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -6,9 +6,16 @@ import { MatDialog } from '@angular/material/dialog';
 // import { WhoEmbeddedFormComponent } from '../../../embedded-form/embedded-form.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../../graphql/queries';
+import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID, GetType, GET_TYPE } from '../../../../graphql/queries';
+import { Subscription } from 'rxjs';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
+
+const DEFAULT_FILE_NAME = 'grid.xlsx';
+
+const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+
+const DISABLED_FIELDS = ['id', 'createdAt'];
 
 @Component({
   selector: 'who-sub-grid',
@@ -17,7 +24,7 @@ const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, 
 })
 /*  Child grid of grid widget using KendoUI.
 */
-export class WhoSubGridComponent implements OnInit, OnChanges {
+export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(GridComponent)
@@ -29,13 +36,16 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
   // === DATA ===
   public gridData: GridDataResult;
   private items: any[];
+  private originalItems: any[] = [];
+  private updatedItems: any[] = [];
   private editedRowIndex: number;
+  private editedRecordId: string;
   public formGroup: FormGroup;
   private isNew = false;
-  private editedRowId: string;
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
+  private dataSubscription: Subscription;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -51,6 +61,13 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
   @Input() settings: any = null;
   @Input() parent: any;
 
+  // === EXCEL ===
+  public excelFileName: string;
+
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -58,56 +75,43 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
     private renderer: Renderer2
   ) { }
 
-  /*  Load the records.
-  */
-  ngOnInit(): void {
-    this.items = this.parent[this.settings.field];
-    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    this.loading = false;
-    this.loadItems();
-    // if (this.settings.source) {
-    //   this.getRecords();
-    //   this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    // } else {
-    //   this.loading = false;
-    // }
-  }
+  ngOnInit(): void { }
 
-  /*  Detect changes of the settings to reload the data.
+  /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
+    this.excelFileName = DEFAULT_FILE_NAME;
     this.items = this.parent[this.settings.field];
-    this.loading = false;
-    this.loadItems();
-    // if (this.settings.source) {
-    //   this.getRecords();
-    // } else {
-    //   this.loading = false;
-    // }
-  }
-
-  /*  Set the data types.
-  */
-  private setDataType(data): any {
-    for (const column of Object.keys(data)) {
-      const field = this.settings.fields.find((el) => el.name === column);
-      if (field && field.type === 'date') {
-        data[column] = new Date(data[column]);
-      }
-    }
-    return data;
+    this.getRecords();
+    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   /*  Load the data, using widget parameters.
   */
-  private getRecords(loaded?: boolean): void {
+  private getRecords(): void {
     this.loading = true;
-    const filters = [];
-    if (this.settings.filter) {
-      filters.push({
-        name: this.settings.filter,
-        equals: this.parent.id
-      });
+    this.updatedItems = [];
+    if (this.items.length > 0) {
+      if (this.items.length > 0) {
+        this.apollo.watchQuery<GetType>({
+          query: GET_TYPE,
+          variables: {
+            name: this.items[0].__typename
+          }
+        }).valueChanges.subscribe(res => {
+          this.loading = res.loading;
+          const fields = res.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
+          this.fields = fields.map(x => ({ ...x, editor: this.getEditor(x.type) }));
+        });
+      } else {
+        this.loading = false;
+      }
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
+    } else {
+      this.loading = false;
     }
   }
 
@@ -115,10 +119,8 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
   */
   private loadItems(): void {
     this.gridData = {
-      // tslint:disable-next-line: max-line-length
       data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-        (this.filter ? filterBy(this.items, this.filter) : this.items))
-        .slice(this.skip, this.skip + this.pageSize),
+        (this.filter ? filterBy(this.items, this.filter) : this.items)),
       total: this.items.length
     };
   }
@@ -166,7 +168,7 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
   /*  Inline edition of the data.
   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
-    if ((!this.canEdit || !this.settings || !this.settings.editable) || isEdited || (this.formGroup && !this.formGroup.valid)) {
+    if (isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
 
@@ -174,114 +176,127 @@ export class WhoSubGridComponent implements OnInit, OnChanges {
       rowIndex += 1;
     }
 
-    if (this.formGroup && this.editedRowId) {
-      this.saveCurrent();
+    if (this.editedRecordId) {
+      this.updateCurrent();
     }
 
-    this.editedRowId = dataItem.id;
-    this.formGroup = this.formBuilder.group(this.createFormGroup(dataItem));
+    this.formGroup = this.createFormGroup(dataItem);
+    this.editedRecordId = dataItem.id;
     this.editedRowIndex = rowIndex;
 
     this.grid.editRow(rowIndex, this.formGroup);
   }
 
-  /*  Set the available options for resource fields, and attach them to the field.
-  */
-  getResourceDropdown(): void {
-    for (const field of this.fields) {
-      if (field.resource) {
-        this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-          query: GET_RESOURCE_BY_ID,
-          variables: {
-            id: field.resource
-          }
-        }).valueChanges.subscribe((res) => {
-          field.dropdown = res.data.resource.records.map((el) => el = { id: el.id, data: el.data[field.displayField] });
-        });
-      }
-    }
-  }
-
-  /*  Create the form for inline edition.
-  */
-  createFormGroup(dataItems): object {
-    const formGroup = {};
-    for (const column of Object.keys(dataItems)) {
-      if (column !== 'id') {
-        formGroup[column] = [dataItems[column]];
-        const field = this.settings.fields.find((x) => x.name === column);
-        if (field && field.isRequired) { formGroup[column].push(Validators.required); }
-      }
-    }
-    return formGroup;
-  }
-
-  /*  Get values of the form for inline edition.
-  */
-  private getDirtyValues(): object {
-    const dirtyValues = {};
-    for (const control of Object.keys(this.formGroup.controls)) {
-      if (this.formGroup.controls[control].dirty) {
-        dirtyValues[control] = this.formGroup.controls[control].value;
-      }
-    }
-    return dirtyValues;
+  public cancelHandler(): void {
+    this.closeEditor();
   }
 
   /*  Update a record when inline edition completed.
   */
-  public saveCurrent(): void {
+  public updateCurrent(): void {
     if (this.isNew) {
     } else {
-      const data = this.getDirtyValues();
-      this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: this.editedRowId,
-          data,
-          display: true
-        }
-      }).subscribe(res => {
-        this.getRecords(true);
-      });
+      if (this.formGroup.dirty) {
+        this.update(this.editedRecordId, this.formGroup.value);
+      }
     }
     this.closeEditor();
+  }
+
+  private update(id: string, value: any): void {
+    const item = this.updatedItems.find(x => x.id === id);
+    if (item) {
+      Object.assign(item, {...value, id});
+    } else {
+      this.updatedItems.push({...value, id});
+    }
+    Object.assign(this.items.find(x => x.id === id), value);
   }
 
   /*  Close the inline edition.
   */
   private closeEditor(): void {
     this.grid.closeRow(this.editedRowIndex);
-    this.editedRowId = undefined;
+    this.grid.cancelCell();
+    this.isNew = false;
     this.editedRowIndex = undefined;
+    this.editedRecordId = undefined;
     this.formGroup = undefined;
+  }
+
+  public onSaveChanges(): void {
+    this.closeEditor();
+    if (this.hasChanges) {
+      const promises = [];
+      for (const item of this.updatedItems) {
+        const data = Object.assign({}, item);
+        delete data.id;
+        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: item.id,
+            data
+          }
+        }).toPromise());
+      }
+      Promise.all(promises).then(() => this.getRecords());
+    }
+    // this.getRecords();
+  }
+
+  public onCancelChanges(): void {
+    this.closeEditor();
+    this.updatedItems = [];
+    this.items = this.originalItems;
+    this.originalItems = cloneData(this.originalItems);
+    this.loadItems();
   }
 
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid && this.editedRowId &&
+    if (this.formGroup && this.formGroup.valid &&
       !matches(e.target, '#subCustomGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
-      this.saveCurrent();
+        this.updateCurrent();
     }
   }
 
-  // === EDITION ===
-  /*  For previous version of record edition, a button was displayed at the right of each row.
-    This method opens a modal to display the SurveyJS form for the record.
-  */
-  // public editHandler(event: any): void {
-  //   const dialogRef = this.dialog.open(WhoEmbeddedFormComponent, {
-  //     data: {
-  //       template: this.settings.addTemplate,
-  //       locale: 'en',
-  //       recordId: event.dataItem.id
-  //     }
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.getRecords();
-  //     }
-  //   });
-  // }
+  private getEditor(type: any): string {
+    switch (type.name) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+
+  public createFormGroup(dataItem: any): FormGroup {
+    const formGroup = {};
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name))) {
+      formGroup[field.name] = [(field.type.name === 'Date' || field.type.name === 'DateTime') ?
+        new Date(dataItem[field.name]) : dataItem[field.name]];
+    }
+    return this.formBuilder.group(formGroup);
+  }
+
+  // TODO: check how to implement something like that.
+  private isReadOnly(field: string): boolean {
+    // const readOnlyColumns = ['UnitPrice', 'UnitsInStock'];
+    // return readOnlyColumns.indexOf(field) > -1;
+    return false;
+  }
+
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
 }

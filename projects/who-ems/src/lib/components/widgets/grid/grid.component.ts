@@ -3,19 +3,20 @@ import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetType, GET_TYPE } from '../../../graphql/queries';
+import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';
-import { GridWidgetService } from '../../../services/grid-widget.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+
+const DISABLED_FIELDS = ['id', 'createdAt'];
 
 @Component({
   selector: 'who-grid',
@@ -46,7 +47,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public fields: any[] = [];
   public canEdit = false;
   private dataSubscription: Subscription;
-  public detailsField: string;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -101,12 +101,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
-      this.loading = res.loading;
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.items = res.data[field];
           this.originalItems = cloneData(this.items);
-          console.log(this.originalItems);
           if (this.items.length > 0) {
             this.apollo.watchQuery<GetType>({
               query: GET_TYPE,
@@ -114,11 +112,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                 name: this.items[0].__typename
               }
             }).valueChanges.subscribe(res2 => {
+              this.loading = res2.loading;
               const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
               this.fields = fields.map(x => ({ ...x, editor: this.getEditor(x.type) }));
             });
           } else {
-            this.detailsField = null;
+            this.loading = false;
           }
           this.gridData = {
             data: this.items,
@@ -210,16 +209,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.isNew) {
     } else {
       if (this.formGroup.dirty) {
-        // this.apollo.mutate<EditRecordMutationResponse>({
-        //   mutation: EDIT_RECORD,
-        //   variables: {
-        //     id: this.editedRecordId,
-        //     data: this.formGroup.value,
-        //     display: true
-        //   }
-        // }).subscribe(res => {
-        //   this.getRecords();
-        // });
         this.update(this.editedRecordId, this.formGroup.value);
       }
     }
@@ -229,9 +218,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(id: string, value: any): void {
     const item = this.updatedItems.find(x => x.id === id);
     if (item) {
-      Object.assign(item, value);
+      Object.assign(item, {...value, id});
     } else {
-      this.updatedItems.push(value);
+      this.updatedItems.push({...value, id});
     }
     Object.assign(this.items.find(x => x.id === id), value);
   }
@@ -303,7 +292,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields) {
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name))) {
       formGroup[field.name] = [(field.type.name === 'Date' || field.type.name === 'DateTime') ?
         new Date(dataItem[field.name]) : dataItem[field.name]];
     }
