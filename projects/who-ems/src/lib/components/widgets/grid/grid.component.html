@@ -43,7 +43,7 @@
                   </kendo-grid-column>
             </ng-container> -->
             <ng-container>
-                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
+                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
                 </kendo-grid-column>
             </ng-container>
         </ng-container>
@@ -58,6 +58,9 @@
             <who-sub-grid [settings]="settings.details" [parent]="dataItem"></who-sub-grid>
         </div>
     </ng-container>
+    <ng-template kendoGridNoRecordsTemplate>
+        No record detected.
+    </ng-template>
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
 </kendo-grid>
 </div>
