@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { User, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { Observable } from 'rxjs';
-import { map, skip } from 'rxjs/operators';
+import { map, skip, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +19,11 @@ export class AccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       return this.authService.user.pipe(
         skip(1), // this is important as first value of behaviorSubject is null
+        // filter(x => x !== null),
         map((user: User) => {
           if (user) {
             if (user.isAdmin) {
+              console.log(user)
               return true;
             }
             this.snackBar.openSnackBar('No access provided to this platform.', { error: true });
