@@ -18,12 +18,11 @@ export class AccessGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       return this.authService.user.pipe(
-        skip(1), // this is important as first value of behaviorSubject is null
-        // filter(x => x !== null),
+        // skip(1), // this is important as first value of behaviorSubject is null
+        filter(x => x !== null),
         map((user: User) => {
           if (user) {
             if (user.isAdmin) {
-              console.log(user)
               return true;
             }
             this.snackBar.openSnackBar('No access provided to this platform.', { error: true });
