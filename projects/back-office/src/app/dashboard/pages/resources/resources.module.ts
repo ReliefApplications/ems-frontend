@@ -4,7 +4,8 @@ import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [ResourcesComponent],
@@ -12,7 +13,9 @@ import { MatTableModule } from '@angular/material/table';
     CommonModule,
     ResourcesRoutingModule,
     MatProgressSpinnerModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule,
+    MatDialogModule
   ],
   exports: [ResourcesComponent]
 })

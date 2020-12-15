@@ -13,11 +13,18 @@
 
         <ng-container matColumnDef="recordsCount">
             <th mat-header-cell *matHeaderCellDef> Records </th>
-            <td mat-cell *matCellDef="let element"> {{element.recordsCount}} </td>
+          <div class = "records-cell">
+            <td mat-cell *matCellDef="let element"> {{element.recordsCount}}
+              <mat-icon (click) = "this.handleDelete(element.id, $event)">
+                delete
+              </mat-icon>
+            </td>
+          </div>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns;"
-            [routerLink]="['/resources', row.id]"></tr>
+            [routerLink]="['/resources', row.id]">
+          </tr>
     </table>
 </ng-container>
