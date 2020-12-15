@@ -118,7 +118,6 @@ export class WhoMapComponent implements AfterViewInit {
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
-    this.markersLayer.clearLayers();
     const myIcon = L.icon({
       iconUrl:
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
@@ -132,6 +131,7 @@ export class WhoMapComponent implements AfterViewInit {
     this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
       this.data = [];
       this.selectedItem = null;
+      this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           res.data[field].map(x => this.drawMarkers(myIcon, x));
