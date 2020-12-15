@@ -75,24 +75,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private renderer: Renderer2
   ) { }
 
-  /*  Load the records.
+  ngOnInit(): void {}
+
+  /*  Detect changes of the settings to (re)load the data.
   */
-  ngOnInit(): void {
-    this.excelFileName = this.settings.name ? `${this.settings.name}.xlsx` : DEFAULT_FILE_NAME;
+  ngOnChanges(): void {
+    this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     if (this.settings.query) {
       this.getRecords();
       this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    } else {
-      this.loading = false;
-    }
-  }
-
-  /*  Detect changes of the settings to reload the data.
-  */
-  ngOnChanges(): void {
-    this.excelFileName = this.settings.name ? `${this.settings.name}.xlsx` : DEFAULT_FILE_NAME;
-    if (this.settings.query) {
-      this.getRecords();
     } else {
       this.loading = false;
     }
