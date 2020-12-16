@@ -7,24 +7,9 @@
         </mat-form-field>
     </div>
     <div class="form-group">
-        <div class="form-group-title">Data</div>
-        <mat-form-field appearance="outline">
-            <mat-label>Query</mat-label>
-            <textarea matInput cdkTextareaAutosize formControlName="query" cdkAutosizeMinRows="3"></textarea>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Latitude</mat-label>
-            <input matInput formControlName="latitude" type="string" />
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Longitude</mat-label>
-            <input matInput formControlName="longitude" type="string" />
-        </mat-form-field>
-    </div>
-    <div class="form-group">
         <div class="form-group-title">Query builder</div>
         <mat-form-field appearance="outline">
-            <mat-label>Data type</mat-label>
+            <mat-label>Query name</mat-label>
             <mat-select formControlName="queryType">
                 <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
                     {{type.name}}
@@ -53,6 +38,22 @@
                 <mat-select formControlName="fields" multiple>
                     <mat-option *ngFor="let field of availableFields" [value]="field.name">
                         {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Latitude</mat-label>
+                <mat-select formControlName="latitude">
+                    <mat-option *ngFor="let field of selectedFields" [value]="field">
+                        {{field}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Longitude</mat-label>
+                <mat-select formControlName="longitude">
+                    <mat-option *ngFor="let field of selectedFields" [value]="field">
+                        {{field}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

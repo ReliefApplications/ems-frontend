@@ -5,6 +5,7 @@ import { Apollo } from 'apollo-angular';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const MARKER_OPTIONS = {
   color: '#0090d1',
@@ -43,9 +44,11 @@ export class WhoMapComponent implements AfterViewInit {
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
+  private query: any;
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) {
     this.mapId = this.generateUniqueId();
   }
@@ -70,7 +73,9 @@ export class WhoMapComponent implements AfterViewInit {
 
     this.drawMap();
 
-    if (this.settings && this.settings.query && this.settings.latitude && this.settings.longitude) {
+    this.query = this.queryBuilder.buildQuery(this.settings);
+
+    if (this.query) {
       this.getData();
     }
 
@@ -123,7 +128,7 @@ export class WhoMapComponent implements AfterViewInit {
     });
 
     const dataQuery = this.apollo.watchQuery<any>({
-      query: gql`${this.settings.query}`,
+      query: this.query,
       variables: {}
     });
 

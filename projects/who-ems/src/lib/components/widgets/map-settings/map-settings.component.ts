@@ -30,6 +30,10 @@ export class WhoMapSettingsComponent implements OnInit {
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
 
+  get selectedFields(): string[] {
+    return this.tileForm.value.fields;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -43,14 +47,14 @@ export class WhoMapSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
-      query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
-      latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null],
-      longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null],
+      // query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
+      latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
+      longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
       centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
       centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]],
-      queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : ''],
-      fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null],
+      queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
+      fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
       sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
       sortOrder: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
     });

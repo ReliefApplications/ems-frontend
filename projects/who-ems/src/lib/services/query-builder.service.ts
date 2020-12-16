@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
+import gql from 'graphql-tag';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +26,25 @@ export class QueryBuilderService {
     });
   }
 
+
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
     console.log(query);
     return query ? query.type.ofType.fields : [];
+  }
+
+  public buildQuery(settings: any): any {
+    if (settings.queryType && settings.fields) {
+      const fields = settings.fields.join('\n');
+      return gql`
+        query {
+          ${settings.queryType} {
+            ${fields}
+          }
+        }
+      `;
+    } else {
+      return null;
+    }
   }
 }
