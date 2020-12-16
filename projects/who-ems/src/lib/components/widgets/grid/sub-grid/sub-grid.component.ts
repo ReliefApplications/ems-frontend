@@ -81,7 +81,7 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     this.excelFileName = DEFAULT_FILE_NAME;
-    this.items = this.parent[this.settings.field];
+    this.items = this.parent[this.settings.type];
     this.getRecords();
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
@@ -100,8 +100,10 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).valueChanges.subscribe(res => {
           this.loading = res.loading;
-          const fields = res.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
-          this.fields = fields.map(x => ({ ...x, editor: this.getEditor(x.type) }));
+          const settingsFields = this.settings.fields;
+          const fields = res.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
+            .map(x => ({ ...x, editor: this.getEditor(x.type) }));
+          this.fields = settingsFields.map(x => fields.find(f => f.name === x));
         });
       } else {
         this.loading = false;

@@ -55,7 +55,7 @@
             <app-sub-grid [settings]="settings.childGrid" [parent]="dataItem"></app-sub-grid>
         </div>
     </ng-container> -->
-    <ng-container *ngIf="settings.details && settings.details.field">
+    <ng-container *ngIf="settings.details && settings.details.type">
         <div *kendoGridDetailTemplate="let dataItem">
             <who-sub-grid [settings]="settings.details" [parent]="dataItem"></who-sub-grid>
         </div>

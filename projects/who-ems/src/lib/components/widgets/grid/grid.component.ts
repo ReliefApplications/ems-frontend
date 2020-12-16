@@ -8,7 +8,6 @@ import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutati
 import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
-import gql from 'graphql-tag';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
