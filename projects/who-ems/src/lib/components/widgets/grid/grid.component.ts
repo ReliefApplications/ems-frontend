@@ -117,14 +117,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
                 .map(x => ({ ...x, editor: this.getEditor(x.type) }));
               this.fields = settingsFields.map(x => fields.find(f => f.name === x));
+              this.gridData = {
+                data: this.items,
+                total: res.data[field].length
+              };
             });
           } else {
             this.loading = false;
           }
-          this.gridData = {
-            data: this.items,
-            total: res.data[field].length
-          };
         }
       }
     },

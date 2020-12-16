@@ -60,7 +60,6 @@ export class QueryBuilderService {
         const detailsFields = ['id\n'].concat(settings.details.fields.join('\n'));
         fields.push(`${settings.details.type} { ${detailsFields} }`);
       }
-      console.log(`${fields}`);
       const query = gql`
         query GetCustomQuery($sortField: String, $sortOrder: String) {
           ${settings.queryType}(
