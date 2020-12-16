@@ -280,6 +280,9 @@ query GetQueryTypes {
               name
               type {
                 kind
+                ofType {
+                  name
+                }
               }
             }
           }

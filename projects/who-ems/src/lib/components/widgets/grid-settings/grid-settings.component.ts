@@ -25,23 +25,17 @@ export class WhoGridSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === PARENT ===
-  // public sources: any[] = [];
-  // public fields: any[] = [];
   // public forms: any[] = [];
 
   // === CHILD ===
-  // public subSources: any[] = [];
-  // public subFields: any[] = [];
   // public subForms: any[] = [];
 
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
   public availableFilter: any[];
-
-  get selectedFields(): string[] {
-    return this.tileForm.value.fields;
-  }
+  public availableDetailsType: any[];
+  public availableDetailsFields: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,40 +54,12 @@ export class WhoGridSettingsComponent implements OnInit {
       fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
       sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
       sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
-      filter: this.formBuilder.group({})
-      // query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
-      // details: this.formBuilder.group({
-      //   field: [(tileSettings && tileSettings.details && tileSettings.details.field) ? tileSettings.details.field : '']
-      // })
-      // sortable: [(tileSettings && tileSettings.sortable) ? true : false, Validators.required],
-      // pageable: [(tileSettings && tileSettings.pageable) ? true : false, Validators.required],
-      // filterable: [(tileSettings && tileSettings.filterable) ? true : false, Validators.required],
-      // from: [(tileSettings && tileSettings.from) ? tileSettings.from : 'resource', Validators.required],
-      // editable: [(tileSettings && tileSettings.editable) ? true : false, Validators.required],
-      // source: [(tileSettings && tileSettings.source) ? tileSettings.source : null, Validators.required],
-      // fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
-      // toolbar: [(tileSettings && tileSettings.toolbar) ? true : false],
-      // canAdd: [(tileSettings && tileSettings.canAdd) ? true : false],
-      // addTemplate: [(tileSettings && tileSettings.addTemplate) ? tileSettings.addTemplate : null],
-      // canExpand: [(tileSettings && tileSettings.canExpand) ? true : false],
-      // childGrid: this.formBuilder.group({
-      //   sortable: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.sortable) ? true : false],
-      //   pageable: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.pageable) ? true : false],
-      //   filterable: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.filterable) ? true : false],
-      //   from: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.from) ?
-      //     tileSettings.childGrid.from : 'resource'],
-      //   editable: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.editable) ? true : false],
-      //   source: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.source) ?
-      //     tileSettings.childGrid.source : null],
-      //   fields: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.fields) ?
-      //     tileSettings.childGrid.fields : null],
-      //   filter: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.filter) ?
-      //     tileSettings.childGrid.filter : null],
-      //   toolbar: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.toolbar) ? true : false],
-      //   canAdd: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.canAdd) ? true : false],
-      //   addTemplate: [(tileSettings && tileSettings.childGrid && tileSettings.childGrid.addTemplate) ?
-      //     tileSettings.childGrid.addTemplate : null],
-      // })
+      filter: this.formBuilder.group({}),
+      details: this.formBuilder.group({
+        type: [(tileSettings && tileSettings.details && tileSettings.details.list) ? tileSettings.details.list : null],
+        fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
+      })
+
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
@@ -104,44 +70,24 @@ export class WhoGridSettingsComponent implements OnInit {
       if (res) {
         this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
         this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
+        this.availableDetailsType = this.queryBuilder.getListFields(this.tileForm.value.queryType);
         this.tileForm.setControl('filter', this.createFilterGroup());
       }
     });
     this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
       this.availableFields = this.queryBuilder.getFields(res);
       this.availableFilter = this.queryBuilder.getFilter(res);
+      this.availableDetailsType = this.queryBuilder.getListFields(res);
       this.tileForm.setControl('filter', this.createFilterGroup());
     });
-    // this.tileForm.controls.query.valueChanges.subscribe((res: string) => {
-    //   const substrings = res.split('{');
-    //   this.queryType = null;
-    //   if (substrings.length > 0) {
-    //     this.queryType = this.availableQueries.find(x => x.name === substrings[1].trim());
-    //     this.apollo.watchQuery<GetType>({
-    //       query: GET_TYPE,
-    //       variables: {
-    //         name: this.queryType.type.ofType.name
-    //       }
-    //     }).valueChanges.subscribe(res2 => {});
-    //   }
-    // });
-
-    // this.apollo.watchQuery<GetQueryTypes>({
-    //   query: GET_QUERY_TYPES,
-    // }).valueChanges.subscribe((res) => {
-    //   this.availableQueries = res.data.__schema.queryType.fields.filter(x => x.name.startsWith('all'));
-    //   console.log(this.availableQueries);
-    // });
-
-    // this.getSources({ value: this.tileForm.get('from').value }, true);
-    // this.getSubSources({ value: this.tileForm.get('childGrid.from').value }, true);
-
-    // if (tileSettings.source) {
-    //   this.getSource({ value: tileSettings.source });
-    // }
-    // if (tileSettings.childGrid && tileSettings.childGrid.source) {
-    //   this.getSubSource({ value: tileSettings.childGrid.source });
-    // }
+    this.tileForm.get('details.type').valueChanges.subscribe((res) => {
+      if (res) {
+        const type = this.availableDetailsType.find(x => x.name === res).type.ofType.name;
+        this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
+      } else {
+        this.availableDetailsFields = [];
+      }
+    });
   }
 
   private createFilterGroup(): FormGroup {
@@ -155,119 +101,4 @@ export class WhoGridSettingsComponent implements OnInit {
   public toggleFilter(): void {
     this.showFilter = !this.showFilter;
   }
-
-  /*  Load the list of resources or forms.
-  */
-  // getSources(e: any, init?: boolean): void {
-  //   if (e.value === 'resource') {
-  //     this.apollo.query<GetResourcesQueryResponse>({
-  //       query: GET_RESOURCES
-  //     }).subscribe(res => {
-  //       this.sources = res.data.resources.map(source => source = { id: source.id, name: source.name });
-  //       if (!init) {
-  //         this.tileForm.get('source').setValue(null);
-  //         this.tileForm.get('fields').setValue(null);
-  //         this.tileForm.get('addTemplate').setValue(null);
-  //       }
-  //       this.fields = [];
-  //     });
-  //   } else {
-  //     this.apollo.query<GetFormsQueryResponse>({
-  //       query: GET_FORMS
-  //     }).subscribe(res => {
-  //       this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
-  //       if (!init) {
-  //         this.tileForm.get('source').setValue(null);
-  //         this.tileForm.get('fields').setValue(null);
-  //         this.tileForm.get('addTemplate').setValue(null);
-  //       }
-  //       this.fields = [];
-  //     });
-  //   }
-  // }
-
-  /*  Load the list of resources or forms for child grid.
-  */
-  // getSubSources(e: any, init?: boolean): void {
-  //   if (e.value === 'resource') {
-  //     this.apollo.query<GetResourcesQueryResponse>({
-  //       query: GET_RESOURCES
-  //     }).subscribe(res => {
-  //       this.subSources = res.data.resources.map(source => source = { id: source.id, name: source.name });
-  //       if (!init) {
-  //         this.tileForm.get('childGrid.source').setValue(null);
-  //         this.tileForm.get('childGrid.fields').setValue(null);
-  //         this.tileForm.get('childGrid.filter').setValue(null);
-  //         this.tileForm.get('childGrid.addTemplate').setValue(null);
-  //       }
-  //       this.subFields = [];
-  //     });
-  //   } else {
-  //     this.apollo.query<GetFormsQueryResponse>({
-  //       query: GET_FORMS
-  //     }).subscribe(res => {
-  //       this.subSources = res.data.forms.map(source => source = { id: source.id, name: source.name });
-  //       if (!init) {
-  //         this.tileForm.get('childGrid.source').setValue(null);
-  //         this.tileForm.get('childGrid.fields').setValue(null);
-  //         this.tileForm.get('childGrid.filter').setValue(null);
-  //         this.tileForm.get('childGrid.addTemplate').setValue(null);
-  //       }
-  //       this.subFields = [];
-  //     });
-  //   }
-  // }
-
-  /*  Load a resource or a form.
-  */
-  // getSource(e: any): void {
-  //   if (this.tileForm.controls.from.value === 'resource') {
-  //     this.apollo.query<GetResourceByIdQueryResponse>({
-  //       query: GET_RESOURCE_BY_ID,
-  //       variables: {
-  //         id: e.value
-  //       }
-  //     }).subscribe(res => {
-  //       this.fields = res.data.resource.fields;
-  //       this.forms = res.data.resource.forms;
-  //     });
-  //   } else {
-  //     this.apollo.query<GetFormByIdQueryResponse>({
-  //       query: GET_FORM_BY_ID,
-  //       variables: {
-  //         id: e.value
-  //       }
-  //     }).subscribe(res => {
-  //       this.fields = res.data.form.fields;
-  //       this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
-  //     });
-  //   }
-  // }
-
-  /*  Load a resource or a form for child grid.
-  */
-  // getSubSource(e: any): void {
-  //   const childGrid = this.tileForm.controls.childGrid as FormGroup;
-  //   if (childGrid.controls.from.value === 'resource') {
-  //     this.apollo.query<GetResourceByIdQueryResponse>({
-  //       query: GET_RESOURCE_BY_ID,
-  //       variables: {
-  //         id: e.value
-  //       }
-  //     }).subscribe(res => {
-  //       this.subFields = res.data.resource.fields;
-  //       this.subForms = res.data.resource.forms;
-  //     });
-  //   } else {
-  //     this.apollo.query<GetFormByIdQueryResponse>({
-  //       query: GET_FORM_BY_ID,
-  //       variables: {
-  //         id: e.value
-  //       }
-  //     }).subscribe(res => {
-  //       this.subFields = res.data.form.fields;
-  //       this.subForms = [{ id: res.data.form.id, name: res.data.form.name }];
-  //     });
-  //   }
-  // }
 }

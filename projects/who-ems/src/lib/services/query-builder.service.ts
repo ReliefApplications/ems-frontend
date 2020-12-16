@@ -29,7 +29,17 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields : [];
+    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'SCALAR') : [];
+  }
+
+  public getFieldsFromType(typeName: string): any[] {
+    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
+    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'SCALAR') : [];
+  }
+
+  public getListFields(queryName: string): any[] {
+    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
+    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'LIST') : [];
   }
 
   public getFilter(queryName: string): any[] {
@@ -46,6 +56,11 @@ export class QueryBuilderService {
     }, {}) : null;
     if (settings.queryType && settings.fields) {
       const fields = ['id\n'].concat(settings.fields.join('\n'));
+      if (settings.details && settings.details.type && settings.details.fields.length > 0) {
+        const detailsFields = ['id\n'].concat(settings.details.fields.join('\n'));
+        fields.push(`${settings.details.type} { ${detailsFields} }`);
+      }
+      console.log(`${fields}`);
       const query = gql`
         query GetCustomQuery($sortField: String, $sortOrder: String) {
           ${settings.queryType}(
