@@ -15,6 +15,7 @@ export class WhoMapSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup;
+  showFilter = false;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -76,6 +77,8 @@ export class WhoMapSettingsComponent implements OnInit {
       this.availableFields = this.queryBuilder.getFields(res);
       this.availableFilter = this.queryBuilder.getFilter(res);
       this.tileForm.setControl('filter', this.createFilterGroup());
+      this.tileForm.controls.latitude.setValue('');
+      this.tileForm.controls.longitude.setValue('');
     });
   }
 
@@ -85,5 +88,9 @@ export class WhoMapSettingsComponent implements OnInit {
       return ({...o, [key.name]: [(filter && filter[key.name] ? filter[key.name] : null )]});
     }, {});
     return this.formBuilder.group(group);
+  }
+
+  public toggleFilter(): void {
+    this.showFilter = !this.showFilter;
   }
 }

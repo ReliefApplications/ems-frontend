@@ -40,22 +40,29 @@ export class QueryBuilderService {
   public buildQuery(settings: any): any {
     const filter = settings.filter ? Object.keys(settings.filter).reduce((o, key) => {
       if (settings.filter[key]) {
-        return {...o, [key]: settings.filter[key]};
+        return { ...o, [key]: settings.filter[key] };
       }
-      return {...o};
+      return { ...o };
     }, {}) : null;
     if (settings.queryType && settings.fields) {
       const fields = settings.fields.join('\n');
       const query = gql`
-        query {
-          ${settings.queryType}(filter: ${this.objToString(filter)}) {
+        query GetCustomQuery($sortField: String, $sortOrder: String) {
+          ${settings.queryType}(
+            sortField: $sortField,
+            sortOrder: $sortOrder,
+            filter: ${this.objToString(filter)}
+          ) {
             ${fields}
           }
         }
       `;
       return this.apollo.watchQuery<any>({
         query,
-        variables: {}
+        variables: {
+          sortField: settings.sortField,
+          sortOrder: settings.sortOrder
+        }
       });
     } else {
       return null;
@@ -65,10 +72,10 @@ export class QueryBuilderService {
   private objToString(obj): string {
     let str = '{';
     for (const p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            str += p + ': ' + (typeof obj[p] === 'string' ? `"${obj[p]}"` : obj[p]) + ',\n';
-        }
+      if (obj.hasOwnProperty(p)) {
+        str += p + ': ' + (typeof obj[p] === 'string' ? `"${obj[p]}"` : obj[p]) + ',\n';
+      }
     }
     return str + '}';
-}
+  }
 }
