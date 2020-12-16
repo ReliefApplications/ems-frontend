@@ -276,9 +276,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getEditor(type: any): string {
+    console.log(type.name);
     switch (type.name) {
       case 'Int': {
         return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
       }
       case 'Date': {
         return 'date';

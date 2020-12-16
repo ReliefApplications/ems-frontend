@@ -47,7 +47,14 @@
                             <ng-container *ngIf="filter.type.name === 'Int'">
                                 <input matInput [formControlName]="filter.name" type="number" />
                             </ng-container>
-                            <ng-container *ngIf="filter.type.name !== 'Int'">
+                            <ng-container *ngIf="filter.type.name === 'Boolean'">
+                                <mat-select [formControlName]="filter.name">
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option [value]="true">True</mat-option>
+                                    <mat-option [value]="false">False</mat-option>
+                                </mat-select>
+                            </ng-container>
+                            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean'">
                                 <input matInput [formControlName]="filter.name" type="string" />
                             </ng-container>
                         </mat-form-field>
