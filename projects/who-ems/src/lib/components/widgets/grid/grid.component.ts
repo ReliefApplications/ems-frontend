@@ -9,6 +9,7 @@ import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -46,6 +47,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
+  private dataQuery: any;
   private dataSubscription: Subscription;
 
   // === SORTING ===
@@ -72,7 +74,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private apollo: Apollo,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private queryBuilder: QueryBuilderService
   ) { }
 
   ngOnInit(): void {}
@@ -81,7 +84,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-    if (this.settings.query) {
+
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+
+    if (this.dataQuery) {
       this.getRecords();
       this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     } else {
@@ -95,12 +101,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
 
-    const dataQuery = this.apollo.watchQuery<any>({
-      query: gql`${this.settings.query}`,
-      variables: {}
-    });
-
-    this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.items = res.data[field];
@@ -113,8 +114,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               }
             }).valueChanges.subscribe(res2 => {
               this.loading = res2.loading;
-              const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR');
-              this.fields = fields.map(x => ({ ...x, editor: this.getEditor(x.type) }));
+              const settingsFields = this.settings.fields;
+              const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
+                .map(x => ({ ...x, editor: this.getEditor(x.type) }));
+              this.fields = settingsFields.map(x => fields.find(f => f.name === x));
             });
           } else {
             this.loading = false;

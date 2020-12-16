@@ -45,7 +45,7 @@ export class QueryBuilderService {
       return { ...o };
     }, {}) : null;
     if (settings.queryType && settings.fields) {
-      const fields = settings.fields.join('\n');
+      const fields = ['id\n'].concat(settings.fields.join('\n'));
       const query = gql`
         query GetCustomQuery($sortField: String, $sortOrder: String) {
           ${settings.queryType}(

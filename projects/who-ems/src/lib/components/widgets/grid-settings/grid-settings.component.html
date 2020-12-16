@@ -6,28 +6,63 @@
             <input matInput formControlName="title" type="string"/>
         </mat-form-field>
     </div>
-    <!-- <div class="form-group">
-        <div class="form-group-title">Utils</div>
-        <mat-checkbox formControlName="sortable">Sort</mat-checkbox>
-        <mat-checkbox formControlName="pageable">Pagination</mat-checkbox>
-        <mat-checkbox formControlName="editable">Editable</mat-checkbox>
-        <mat-checkbox formControlName="filterable">Filterable</mat-checkbox>
-    </div> -->
     <div class="form-group">
-        <div class="form-group-title">Data</div>
+        <div class="form-group-title">Query builder</div>
         <mat-form-field appearance="outline">
-            <mat-label>Query</mat-label>
-            <textarea matInput
-                cdkTextareaAutosize
-                formControlName="query"
-                cdkAutosizeMinRows="3"></textarea>
-        </mat-form-field>
-        <!-- <mat-form-field>
-            <mat-label>Displayed fields</mat-label>
-            <mat-select formControlName="fields" multiple [disabled]="!(fields.length > 0)">
-                <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
+            <mat-label>Query name</mat-label>
+            <mat-select formControlName="queryType">
+                <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
+                    {{type.name}}
+                </mat-option>
             </mat-select>
-        </mat-form-field> -->
+        </mat-form-field>
+        <ng-container *ngIf="tileForm.value.queryType">
+            <mat-form-field appearance="outline">
+                <mat-label>Sort field</mat-label>
+                <mat-select formControlName="sortField">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="tileForm.value.sortField">
+                <mat-label>Sort order</mat-label>
+                <mat-select formControlName="sortOrder">
+                    <mat-option value="asc">ascending</mat-option>
+                    <mat-option value="desc">descending</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div formGroupName="filter">
+                <div class="advanced-filtering">
+                    Advanced filtering
+                    <button mat-icon-button color="primary" (click)="toggleFilter()">
+                        <mat-icon>expand_more</mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="showFilter">
+                    <ng-container *ngFor="let filter of availableFilter">
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{filter.name}}</mat-label>
+                            <ng-container *ngIf="filter.type.name === 'Int'">
+                                <input matInput [formControlName]="filter.name" type="number" />
+                            </ng-container>
+                            <ng-container *ngIf="filter.type.name !== 'Int'">
+                                <input matInput [formControlName]="filter.name" type="string" />
+                            </ng-container>
+                        </mat-form-field>
+                    </ng-container>
+                </div>
+            </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Fields</mat-label>
+                <mat-select formControlName="fields" multiple>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
     </div>
     <!-- <div class="form-group">
         <div class="form-group-title">Toolbar</div>
@@ -45,13 +80,13 @@
             </div>
         </div>
     </div> -->
-    <div class="form-group" formGroupName="details">
+    <!-- <div class="form-group" formGroupName="details">
         <div class="form-group-title">Row details</div>
         <mat-form-field>
             <mat-label>Field</mat-label>
             <input matInput formControlName="field" type="string"/>
         </mat-form-field>
-    </div>
+    </div> -->
     <!-- <div class="form-group">
         <div class="form-group-title">Child grid</div>
         <mat-checkbox formControlName="canExpand">Can be expanded</mat-checkbox>

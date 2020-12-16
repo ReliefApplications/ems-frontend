@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { Observable } from 'rxjs';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
   selector: 'who-grid-settings',
@@ -13,6 +15,7 @@ export class WhoGridSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup;
+  showFilter = false;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -31,9 +34,19 @@ export class WhoGridSettingsComponent implements OnInit {
   // public subFields: any[] = [];
   // public subForms: any[] = [];
 
+  // === QUERY BUILDER ===
+  public availableQueries: Observable<any[]>;
+  public availableFields: any[];
+  public availableFilter: any[];
+
+  get selectedFields(): string[] {
+    return this.tileForm.value.fields;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
@@ -43,10 +56,15 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-      query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
-      details: this.formBuilder.group({
-        field: [(tileSettings && tileSettings.details && tileSettings.details.field) ? tileSettings.details.field : '']
-      })
+      queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
+      fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
+      sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
+      sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
+      filter: this.formBuilder.group({})
+      // query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
+      // details: this.formBuilder.group({
+      //   field: [(tileSettings && tileSettings.details && tileSettings.details.field) ? tileSettings.details.field : '']
+      // })
       // sortable: [(tileSettings && tileSettings.sortable) ? true : false, Validators.required],
       // pageable: [(tileSettings && tileSettings.pageable) ? true : false, Validators.required],
       // filterable: [(tileSettings && tileSettings.filterable) ? true : false, Validators.required],
@@ -81,6 +99,19 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+    this.availableQueries = this.queryBuilder.availableQueries;
+    this.availableQueries.subscribe((res) => {
+      if (res) {
+        this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
+        this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
+        this.tileForm.setControl('filter', this.createFilterGroup());
+      }
+    });
+    this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
+      this.availableFields = this.queryBuilder.getFields(res);
+      this.availableFilter = this.queryBuilder.getFilter(res);
+      this.tileForm.setControl('filter', this.createFilterGroup());
+    });
     // this.tileForm.controls.query.valueChanges.subscribe((res: string) => {
     //   const substrings = res.split('{');
     //   this.queryType = null;
@@ -111,6 +142,18 @@ export class WhoGridSettingsComponent implements OnInit {
     // if (tileSettings.childGrid && tileSettings.childGrid.source) {
     //   this.getSubSource({ value: tileSettings.childGrid.source });
     // }
+  }
+
+  private createFilterGroup(): FormGroup {
+    const filter = this.tile.settings.filter;
+    const group = this.availableFilter.reduce((o, key) => {
+      return ({...o, [key.name]: [(filter && filter[key.name] ? filter[key.name] : null )]});
+    }, {});
+    return this.formBuilder.group(group);
+  }
+
+  public toggleFilter(): void {
+    this.showFilter = !this.showFilter;
   }
 
   /*  Load the list of resources or forms.
