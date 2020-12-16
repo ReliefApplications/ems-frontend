@@ -4,6 +4,7 @@ import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -19,6 +20,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
   public data = [];
+  private dataQuery: any;
   private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
@@ -28,13 +30,17 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   @ViewChild('chart')
   private chart: ChartComponent;
 
-  constructor( private apollo: Apollo ) {
-  }
+  constructor(
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
+  ) {}
 
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
-    if (this.settings.query) {
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+
+    if (this.dataQuery) {
       this.getData();
     } else {
       this.loading = false;
@@ -53,12 +59,12 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
   */
   private getData(): void {
-    const dataQuery = this.apollo.watchQuery<any>({
-      query: gql`${this.settings.query}`,
-      variables: {}
-    });
+    // const dataQuery = this.apollo.watchQuery<any>({
+    //   query: gql`${this.settings.query}`,
+    //   variables: {}
+    // });
 
-    this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       this.data = [];
       const dataToAggregate = [];
       for (const field in res.data) {

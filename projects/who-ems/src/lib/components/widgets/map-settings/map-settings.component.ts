@@ -24,9 +24,6 @@ export class WhoMapSettingsComponent implements OnInit {
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  // === DATA ===
-  public forms: any[] = [];
-
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
@@ -38,7 +35,6 @@ export class WhoMapSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) { }
 
@@ -57,7 +53,7 @@ export class WhoMapSettingsComponent implements OnInit {
       queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
       fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
       sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
-      sortOrder: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
+      sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
       filter: this.formBuilder.group({})
     });
     this.change.emit(this.tileForm);
