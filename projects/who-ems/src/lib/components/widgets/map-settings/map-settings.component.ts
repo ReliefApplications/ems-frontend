@@ -29,6 +29,7 @@ export class WhoMapSettingsComponent implements OnInit {
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
+  public availableFilter: any[];
 
   get selectedFields(): string[] {
     return this.tileForm.value.fields;
@@ -47,7 +48,6 @@ export class WhoMapSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
-      // query: [(tileSettings && tileSettings.query) ? tileSettings.query : '', Validators.required],
       latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
       longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
@@ -57,6 +57,7 @@ export class WhoMapSettingsComponent implements OnInit {
       fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
       sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
       sortOrder: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
+      filter: this.formBuilder.group({})
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
@@ -65,10 +66,24 @@ export class WhoMapSettingsComponent implements OnInit {
 
     this.availableQueries = this.queryBuilder.availableQueries;
     this.availableQueries.subscribe((res) => {
-      if (res) { this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType); }
+      if (res) {
+        this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
+        this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
+        this.tileForm.setControl('filter', this.createFilterGroup());
+      }
     });
     this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
       this.availableFields = this.queryBuilder.getFields(res);
+      this.availableFilter = this.queryBuilder.getFilter(res);
+      this.tileForm.setControl('filter', this.createFilterGroup());
     });
+  }
+
+  private createFilterGroup(): FormGroup {
+    const filter = this.tile.settings.filter;
+    const group = this.availableFilter.reduce((o, key) => {
+      return ({...o, [key.name]: [(filter && filter[key.name] ? filter[key.name] : null )]});
+    }, {});
+    return this.formBuilder.group(group);
   }
 }

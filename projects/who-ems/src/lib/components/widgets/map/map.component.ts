@@ -1,10 +1,9 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Apollo } from 'apollo-angular';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
-import gql from 'graphql-tag';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const MARKER_OPTIONS = {
@@ -23,7 +22,7 @@ const MARKER_OPTIONS = {
 })
 /*  Map widget using Leaflet.
 */
-export class WhoMapComponent implements AfterViewInit {
+export class WhoMapComponent implements AfterViewInit, OnDestroy {
 
   // === MAP ===
   public mapId: string;
@@ -40,11 +39,11 @@ export class WhoMapComponent implements AfterViewInit {
   // === RECORDS ===
   private selectedItem: Record;
   private data: any[];
+  private dataQuery: any;
   private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
-  private query: any;
 
   constructor(
     private apollo: Apollo,
@@ -73,9 +72,9 @@ export class WhoMapComponent implements AfterViewInit {
 
     this.drawMap();
 
-    this.query = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
 
-    if (this.query) {
+    if (this.dataQuery) {
       this.getData();
     }
 
@@ -127,12 +126,7 @@ export class WhoMapComponent implements AfterViewInit {
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
 
-    const dataQuery = this.apollo.watchQuery<any>({
-      query: this.query,
-      variables: {}
-    });
-
-    this.dataSubscription = dataQuery.valueChanges.subscribe(res => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       this.data = [];
       this.selectedItem = null;
       this.markersLayer.clearLayers();
@@ -163,5 +157,9 @@ export class WhoMapComponent implements AfterViewInit {
         this.markersLayer.addLayer(marker);
       }
     }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.dataSubscription) { this.dataSubscription.unsubscribe(); }
   }
 }

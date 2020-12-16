@@ -29,22 +29,46 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    console.log(query);
     return query ? query.type.ofType.fields : [];
   }
 
+  public getFilter(queryName: string): any[] {
+    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
+    return query ? query.args.find(x => x.name === 'filter').type.inputFields : [];
+  }
+
   public buildQuery(settings: any): any {
+    const filter = settings.filter ? Object.keys(settings.filter).reduce((o, key) => {
+      if (settings.filter[key]) {
+        return {...o, [key]: settings.filter[key]};
+      }
+      return {...o};
+    }, {}) : null;
     if (settings.queryType && settings.fields) {
       const fields = settings.fields.join('\n');
-      return gql`
+      const query = gql`
         query {
-          ${settings.queryType} {
+          ${settings.queryType}(filter: ${this.objToString(filter)}) {
             ${fields}
           }
         }
       `;
+      return this.apollo.watchQuery<any>({
+        query,
+        variables: {}
+      });
     } else {
       return null;
     }
   }
+
+  private objToString(obj): string {
+    let str = '{';
+    for (const p in obj) {
+        if (obj.hasOwnProperty(p)) {
+            str += p + ': ' + (typeof obj[p] === 'string' ? `"${obj[p]}"` : obj[p]) + ',\n';
+        }
+    }
+    return str + '}';
+}
 }
