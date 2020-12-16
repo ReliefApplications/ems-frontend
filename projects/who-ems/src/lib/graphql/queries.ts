@@ -257,11 +257,31 @@ query GetQueryTypes {
       kind
       fields {
         name
+        args {
+          name
+          type {
+            name
+            kind
+            inputFields {
+              name
+              type {
+                name
+                kind
+              }
+            }
+          }
+        }
         type {
           name
           kind
           ofType {
             name
+            fields {
+              name
+              type {
+                kind
+              }
+            }
           }
         }
       }
@@ -286,6 +306,12 @@ query GetType($name: String!) {
         kind
         ofType {
           name
+          fields {
+            name
+            type {
+              kind
+            }
+          }
         }
       }
     }

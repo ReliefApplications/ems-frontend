@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { GetQueryTypes, GET_QUERY_TYPES, GetType, GET_TYPE } from '../../../graphql/queries';
 
 @Component({
   selector: 'who-grid-settings',
@@ -21,10 +20,6 @@ export class WhoGridSettingsComponent implements OnInit {
   // === EMIT THE CHANGES APPLIED ===
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
-  // === QUERY BUILDER ===
-  private availableQueries: any[];
-  private queryType: any;
 
   // === PARENT ===
   // public sources: any[] = [];

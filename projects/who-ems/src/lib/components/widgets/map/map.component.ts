@@ -2,7 +2,6 @@ import { Component, AfterViewInit, Input } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Apollo } from 'apollo-angular';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import gql from 'graphql-tag';

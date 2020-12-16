@@ -10,10 +10,7 @@
         <div class="form-group-title">Data</div>
         <mat-form-field appearance="outline">
             <mat-label>Query</mat-label>
-            <textarea matInput
-                cdkTextareaAutosize
-                formControlName="query"
-                cdkAutosizeMinRows="3"></textarea>
+            <textarea matInput cdkTextareaAutosize formControlName="query" cdkAutosizeMinRows="3"></textarea>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Latitude</mat-label>
@@ -23,6 +20,43 @@
             <mat-label>Longitude</mat-label>
             <input matInput formControlName="longitude" type="string" />
         </mat-form-field>
+    </div>
+    <div class="form-group">
+        <div class="form-group-title">Query builder</div>
+        <mat-form-field appearance="outline">
+            <mat-label>Data type</mat-label>
+            <mat-select formControlName="queryType">
+                <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
+                    {{type.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <ng-container *ngIf="tileForm.value.queryType">
+            <mat-form-field appearance="outline">
+                <mat-label>Sort field</mat-label>
+                <mat-select formControlName="sortField">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="tileForm.value.sortField">
+                <mat-label>Sort field</mat-label>
+                <mat-select formControlName="sortOrder">
+                    <mat-option value="asc">ascending</mat-option>
+                    <mat-option value="desc">descending</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Fields</mat-label>
+                <mat-select formControlName="fields" multiple>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
     </div>
     <div class="form-group">
         <div class="form-group-title">Default display</div>
