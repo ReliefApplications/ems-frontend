@@ -16,6 +16,7 @@ export class WhoGridSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup;
   showFilter = false;
+  showDetailsFilter = false;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -36,6 +37,7 @@ export class WhoGridSettingsComponent implements OnInit {
   public availableFilter: any[];
   public availableDetailsType: any[];
   public availableDetailsFields: any[];
+  public availableDetailsFilter: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -56,8 +58,9 @@ export class WhoGridSettingsComponent implements OnInit {
       sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
       filter: this.formBuilder.group({}),
       details: this.formBuilder.group({
-        type: [(tileSettings && tileSettings.details && tileSettings.details.list) ? tileSettings.details.list : null],
+        type: [(tileSettings && tileSettings.details && tileSettings.details.type) ? tileSettings.details.type : null],
         fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
+        filter: this.formBuilder.group({}),
       })
 
     });
@@ -71,28 +74,39 @@ export class WhoGridSettingsComponent implements OnInit {
         this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
         this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
         this.availableDetailsType = this.queryBuilder.getListFields(this.tileForm.value.queryType);
-        this.tileForm.setControl('filter', this.createFilterGroup());
+        this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
+        const typeName = this.tileForm.get('details.type').value;
+        if (typeName) {
+          const type = this.availableDetailsType.find(x => x.name === typeName).type.ofType.name;
+          this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
+          this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
+          this.tileForm.setControl('details.filter',
+            this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
+        }
       }
     });
     this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
       this.availableFields = this.queryBuilder.getFields(res);
       this.availableFilter = this.queryBuilder.getFilter(res);
       this.availableDetailsType = this.queryBuilder.getListFields(res);
-      this.tileForm.setControl('filter', this.createFilterGroup());
+      this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
     });
     this.tileForm.get('details.type').valueChanges.subscribe((res) => {
       if (res) {
         const type = this.availableDetailsType.find(x => x.name === res).type.ofType.name;
         this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
+        this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
+        console.log(this.availableDetailsFilter);
+        this.tileForm.setControl('details.filter', this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
       } else {
         this.availableDetailsFields = [];
+        this.availableDetailsFilter = [];
       }
     });
   }
 
-  private createFilterGroup(): FormGroup {
-    const filter = this.tile.settings.filter;
-    const group = this.availableFilter.reduce((o, key) => {
+  private createFilterGroup(filter: any, availableFilter: any): FormGroup {
+    const group = availableFilter.reduce((o, key) => {
       return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
     }, {});
     return this.formBuilder.group(group);
@@ -100,5 +114,9 @@ export class WhoGridSettingsComponent implements OnInit {
 
   public toggleFilter(): void {
     this.showFilter = !this.showFilter;
+  }
+
+  public toggleDetailsFilter(): void {
+    this.showDetailsFilter = !this.showDetailsFilter;
   }
 }

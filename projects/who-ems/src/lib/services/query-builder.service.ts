@@ -47,6 +47,11 @@ export class QueryBuilderService {
     return query ? query.args.find(x => x.name === 'filter').type.inputFields : [];
   }
 
+  public getFilterFromType(typeName: string): any[] {
+    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
+    return query ? query.args.find(x => x.name === 'filter').type.inputFields : [];
+  }
+
   public buildQuery(settings: any): any {
     const filter = settings.filter ? Object.keys(settings.filter).reduce((o, key) => {
       if (settings.filter[key] || settings.filter[key] === false) {
