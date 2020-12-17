@@ -63,7 +63,13 @@ export class QueryBuilderService {
       const fields = ['id\n'].concat(settings.fields.join('\n'));
       if (settings.details && settings.details.type && settings.details.fields.length > 0) {
         const detailsFields = ['id\n'].concat(settings.details.fields.join('\n'));
-        fields.push(`${settings.details.type} { ${detailsFields} }`);
+        const detailsFilter = settings.details.filter ? Object.keys(settings.details.filter).reduce((o, key) => {
+          if (settings.details.filter[key] || settings.details.filter[key] === false) {
+            return { ...o, [key]: settings.details.filter[key] };
+          }
+          return { ...o };
+        }, {}) : null;
+        fields.push(`${settings.details.type}(filter: ${this.objToString(detailsFilter)}) { ${detailsFields} }`);
       }
       const query = gql`
         query GetCustomQuery($sortField: String, $sortOrder: String) {

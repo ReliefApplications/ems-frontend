@@ -80,7 +80,7 @@ export class WhoGridSettingsComponent implements OnInit {
           const type = this.availableDetailsType.find(x => x.name === typeName).type.ofType.name;
           this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
           this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
-          this.tileForm.setControl('details.filter',
+          (this.tileForm.get('details') as FormGroup).setControl('filter',
             this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
         }
       }
@@ -96,8 +96,9 @@ export class WhoGridSettingsComponent implements OnInit {
         const type = this.availableDetailsType.find(x => x.name === res).type.ofType.name;
         this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
         this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
-        console.log(this.availableDetailsFilter);
-        this.tileForm.setControl('details.filter', this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
+        this.tileForm.get('details.fields').setValue(null);
+        (this.tileForm.get('details') as FormGroup).setControl('filter',
+          this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
       } else {
         this.availableDetailsFields = [];
         this.availableDetailsFilter = [];

@@ -84,8 +84,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
-    console.log(this.settings);
-
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
 
     if (this.dataQuery) {
