@@ -49,7 +49,7 @@ export class QueryBuilderService {
 
   public buildQuery(settings: any): any {
     const filter = settings.filter ? Object.keys(settings.filter).reduce((o, key) => {
-      if (settings.filter[key]) {
+      if (settings.filter[key] || settings.filter[key] === false) {
         return { ...o, [key]: settings.filter[key] };
       }
       return { ...o };

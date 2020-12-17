@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -81,7 +80,7 @@ export class WhoMapSettingsComponent implements OnInit {
   private createFilterGroup(): FormGroup {
     const filter = this.tile.settings.filter;
     const group = this.availableFilter.reduce((o, key) => {
-      return ({...o, [key.name]: [(filter && filter[key.name] ? filter[key.name] : null )]});
+      return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
     }, {});
     return this.formBuilder.group(group);
   }
