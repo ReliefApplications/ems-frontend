@@ -207,6 +207,11 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 .form-group {
   display: flex;
   flex-direction: column;
+
+  &:not(:first-child) {
+    margin-top: 32px;
+  }
+  
   .form-group-title {
     font-weight: bold;
     font-size: 16px;
