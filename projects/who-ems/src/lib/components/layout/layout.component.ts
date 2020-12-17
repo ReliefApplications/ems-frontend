@@ -75,19 +75,19 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationsSubscription = notificationsQuery.valueChanges.subscribe((res) => {
       this.notifications = res.data.notifications;
     });
-    // notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
-    //   document: NOTIFICATION_SUBSCRIPTION,
-    //   updateQuery: (prev, { subscriptionData }) => {
-    //     if (!subscriptionData.data) {
-    //       return prev;
-    //     }
-    //     const newNotification = subscriptionData.data.notification;
-    //     return {
-    //       ...prev,
-    //       notifications: [newNotification, ...prev.notifications]
-    //     };
-    //   }
-    // });
+    notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
+      document: NOTIFICATION_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newNotification = subscriptionData.data.notification;
+        return {
+          ...prev,
+          notifications: [newNotification, ...prev.notifications]
+        };
+      }
+    });
   }
 
   ngOnChanges(): void {
