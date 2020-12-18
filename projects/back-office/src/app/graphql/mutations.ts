@@ -207,8 +207,7 @@ mutation deleteResource($id: ID!){
   deleteResource(id: $id){
     id
   }
-}
-`
+}`;
 
 export interface DeleteResourceMutationResponse{
   loading: boolean;
