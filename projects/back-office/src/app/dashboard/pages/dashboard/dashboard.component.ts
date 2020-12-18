@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
+import { Dashboard, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -12,7 +12,6 @@ import {
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
-import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,7 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,

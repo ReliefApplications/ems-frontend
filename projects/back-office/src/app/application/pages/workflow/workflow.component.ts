@@ -4,10 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
-import { ApplicationService } from '../../../services/application.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
@@ -43,7 +42,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private workflowService: WorkflowService,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,

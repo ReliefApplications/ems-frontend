@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Application, WhoConfirmModalComponent, ContentType } from '@who-ems/builder';
+import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from '../services/application.service';
 
 @Component({
   selector: 'app-application',
@@ -26,7 +25,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     public route: ActivatedRoute,
     private dialog: MatDialog
   ) { }
