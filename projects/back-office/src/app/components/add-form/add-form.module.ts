@@ -1,29 +1,33 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WhoMapSettingsComponent } from './map-settings.component';
+import { AddFormComponent } from './add-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [WhoMapSettingsComponent],
+  declarations: [AddFormComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatButtonModule,
     MatIconModule,
-    TextFieldModule
+    MatSelectModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatTooltipModule,
+    MatSlideToggleModule
   ],
-  exports: [WhoMapSettingsComponent]
+  exports: [AddFormComponent]
 })
-export class WhoMapSettingsModule { }
+export class AddFormModule { }

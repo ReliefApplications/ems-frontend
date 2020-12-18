@@ -119,8 +119,8 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-mutation addForm($name: String!, $newResource: Boolean, $resource: ID) {
-  addForm(name: $name, newResource: $newResource, resource: $resource) {
+mutation addForm($name: String!, $newResource: Boolean, $resource: ID, $template: ID) {
+  addForm(name: $name, newResource: $newResource, resource: $resource, template: $template) {
     id
     name
     createdAt
@@ -223,7 +223,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -257,7 +257,7 @@ mutation editForm($id: ID!, $status: String!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -291,7 +291,7 @@ mutation editForm($id: ID!, $name: String!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -325,7 +325,7 @@ mutation editForm($id: ID!, $permissions: JSON!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {

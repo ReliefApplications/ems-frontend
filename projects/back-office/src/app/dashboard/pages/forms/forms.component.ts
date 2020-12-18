@@ -5,8 +5,8 @@ import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType, WhoConfirmModalComponent } from '@who-ems/builder';
-import { AddFormComponent } from './components/add-form/add-form.component';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
+import { AddFormComponent } from '../../../components/add-form/add-form.component';
 
 @Component({
   selector: 'app-forms',
@@ -93,18 +93,15 @@ export class FormsComponent implements OnInit, OnDestroy {
         const data = { name: value.name };
         Object.assign(data,
           value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource }
+          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
+          (value.binding === 'fromResource' && value.template) && { template: value.template }
         );
         this.apollo.mutate<AddFormMutationResponse>({
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
           const { id } = res.data.addForm;
-          if (value.binding === 'fromResource' && value.template) {
-            this.router.navigate(['/forms/builder', { id, template: value.template }]);
-          } else {
-            this.router.navigate(['/forms/builder', id]);
-          }
+          this.router.navigate(['/forms/builder', id]);
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         });

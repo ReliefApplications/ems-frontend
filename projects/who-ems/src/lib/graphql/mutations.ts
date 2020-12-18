@@ -49,7 +49,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {

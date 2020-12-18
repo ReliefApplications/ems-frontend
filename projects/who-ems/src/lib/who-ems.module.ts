@@ -18,6 +18,7 @@ import { WhoWidgetGridModule } from './components/widget-grid/widget-grid.module
 import { WhoConfirmModalModule } from './components/confirm-modal/confirm-modal.module';
 import { WhoUsersModule } from './components/users/users.module';
 import { WhoRolesModule } from './components/roles/roles.module';
+import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
 
 @NgModule({
   declarations: [],
@@ -41,7 +42,8 @@ import { WhoRolesModule } from './components/roles/roles.module';
     WhoWidgetGridModule,
     WhoConfirmModalModule,
     WhoUsersModule,
-    WhoRolesModule
+    WhoRolesModule,
+    WhoPreviousButtonModule
   ]
 })
 export class WhoEmsModule { }

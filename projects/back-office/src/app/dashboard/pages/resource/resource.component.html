@@ -1,6 +1,7 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && resource">
     <div class="page-header">
+        <who-previous-button path="/resources"></who-previous-button>
         <h1 class="page-title">
             {{resource.name}}
         </h1>

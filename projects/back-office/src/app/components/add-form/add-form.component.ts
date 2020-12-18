@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../../../graphql/queries';
+import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../graphql/queries';
 
 @Component({
   selector: 'app-add-form',
