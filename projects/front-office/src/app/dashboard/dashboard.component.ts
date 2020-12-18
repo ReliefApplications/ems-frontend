@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, Role, User, WhoAuthService, WhoSnackBarService, Permission, Permissions } from '@who-ems/builder';
+import { Application, User, WhoAuthService, WhoSnackBarService, WhoApplicationService, Permission, Permissions } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from '../services/application.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +24,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: WhoAuthService,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private snackBar: WhoSnackBarService,
     private router: Router
   ) { }

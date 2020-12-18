@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { ContentType, Form, Permissions, WhoApplicationService, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
-import { ApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'app-add-page',
@@ -32,7 +31,7 @@ export class AddPageComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     public dialog: MatDialog,
     private snackBar: WhoSnackBarService,
     private authService: WhoAuthService

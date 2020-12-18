@@ -1,12 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { Role, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
-import { AddRoleMutationResponse, ADD_ROLE, DeleteRoleMutationResponse, DELETE_ROLE, EditRoleMutationResponse, EDIT_ROLE } from '../../../graphql/mutations';
-import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
-import { AddRoleComponent } from './components/add-role/add-role.component';
-import { EditRoleComponent } from './components/edit-role/edit-role.component';
 
 @Component({
   selector: 'app-roles',
@@ -15,105 +7,7 @@ import { EditRoleComponent } from './components/edit-role/edit-role.component';
 })
 export class RolesComponent implements OnInit {
 
-  // === DATA ===
-  public loading = true;
-  public roles = [];
-  public displayedColumns = ['title', 'usersCount', 'actions'];
+  constructor() { }
 
-  constructor(
-    private apollo: Apollo,
-    public dialog: MatDialog,
-    private router: Router,
-    private snackBar: WhoSnackBarService
-  ) { }
-
-  /*  Load the roles.
-  */
-  ngOnInit(): void {
-    this.getRoles();
-  }
-
-  /*  Load the roles.
-  */
-  private getRoles(): void {
-    this.apollo.watchQuery<GetRolesQueryResponse>({
-      query: GET_ROLES
-    }).valueChanges.subscribe(res => {
-      this.roles = res.data.roles;
-      this.loading = res.loading;
-    });
-  }
-
-  /*  Display the AddRole modal, and create a role when closed, if there is a result.
-  */
-  onAdd(): void {
-    const dialogRef = this.dialog.open(AddRoleComponent);
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<AddRoleMutationResponse>({
-          mutation: ADD_ROLE,
-          variables: {
-            title: value.title
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.title} role created`);
-          this.getRoles();
-        }, (err) => {
-          console.log(err);
-        });
-      }
-    });
-  }
-
-  /*  Display the EditRole modal, passing a role as a parameter.
-    Edit the role when closed, if there is a result.
-  */
-  onEdit(role: Role): void {
-    const dialogRef = this.dialog.open(EditRoleComponent, {
-      data: {
-        role
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<EditRoleMutationResponse>({
-          mutation: EDIT_ROLE,
-          variables: {
-            id: role.id,
-            permissions: value.permissions
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar(`${role.title} role updated.`);
-          this.getRoles();
-        });
-      }
-    });
-  }
-
-  /* Display a modal to confirm the deletion of the role.
-    If confirmed, the role is removed from the system.
-  */
-  onDelete(item: any): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
-      data: {
-        title: 'Delete role',
-        content: `Do you confirm the deletion of the role ${item.title} ?`,
-        confirmText: 'Delete',
-        confirmColor: 'warn'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<DeleteRoleMutationResponse>({
-          mutation: DELETE_ROLE,
-          variables: {
-            id: item.id
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar(`${item.title} role deleted.`);
-          this.getRoles();
-        });
-      }
-    });
-  }
+  ngOnInit(): void {}
 }

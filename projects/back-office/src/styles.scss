@@ -208,6 +208,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   display: flex;
   flex-direction: column;
 
+  &:not(:first-child) {
+    margin-top: 32px;
+  }
+
   .form-group-row {
     display: flex;
   }

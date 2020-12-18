@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { Role, User } from '../models/user.model';
+import { Role, User, Permission } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
+import { Application } from '../models/application.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -233,6 +234,29 @@ export interface GetRolesQueryResponse {
   roles: Role[];
 }
 
+// === GET USERS ===
+export const GET_USERS = gql`
+{
+  users {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+  }
+}`;
+
+export interface GetUsersQueryResponse {
+  loading: boolean;
+  users: User[];
+}
+
 // === GET NOTIFICATIONS ===
 export const GET_NOTIFICATIONS = gql`
 query GetNotifications {
@@ -246,4 +270,164 @@ query GetNotifications {
 export interface GetNotificationsQueryResponse {
   loading: boolean;
   notifications: Notification[];
+}
+
+// === GET APPLICATION BY ID ===
+export const GET_APPLICATION_BY_ID = gql`
+  query GetApplicationById($id: ID!, $asRole: ID){
+    application(id: $id, asRole: $asRole){
+      id
+      name
+      description
+      createdAt
+      status
+      pages {
+        id
+        name
+        type
+        content
+        createdAt
+        canSee
+        canUpdate
+        canDelete
+      }
+      roles {
+        id
+        title
+        permissions {
+          id
+          type
+        }
+        usersCount
+      }
+      users {
+        id
+        username
+        name
+        roles {
+          id
+          title
+        }
+        oid
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+    }
+  }
+`;
+
+export interface GetApplicationByIdQueryResponse {
+  loading: boolean;
+  application: Application;
+}
+
+// === GET PERMISSIONS ===
+export const GET_PERMISSIONS = gql`
+query GetPermissions($application: Boolean) {
+  permissions(application: $application) {
+    id
+    type
+    global
+  }
+}`;
+
+export interface GetPermissionsQueryResponse {
+  loading: boolean;
+  permissions: Permission[];
+}
+
+// === GET QUERY TYPES ===
+export const GET_QUERY_TYPES = gql`
+query GetQueryTypes {
+  __schema {
+    queryType {
+      name
+      kind
+      fields {
+        name
+        args {
+          name
+          type {
+            name
+            kind
+            inputFields {
+              name
+              type {
+                name
+                kind
+              }
+            }
+          }
+        }
+        type {
+          name
+          kind
+          ofType {
+            name
+            fields {
+              name
+              type {
+                kind
+                ofType {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
+// TODO: check type of __schema
+export interface GetQueryTypes {
+  loading: boolean;
+  __schema: any;
+}
+
+// === GET TYPE ===
+export const GET_TYPE = gql`
+query GetType($name: String!) {
+  __type(name: $name) {
+    fields {
+      name
+      type {
+        name
+        kind
+        ofType {
+          name
+          fields {
+            name
+            type {
+              kind
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
+export interface GetType {
+  loading: boolean;
+  __type: any;
 }
