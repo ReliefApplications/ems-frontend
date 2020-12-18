@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
-import { WhoConfirmModalComponent } from "@who-ems/builder";
+import { Resource, WhoConfirmModalComponent } from '@who-ems/builder';
 import { MatDialog } from '@angular/material/dialog';
 
 
@@ -16,7 +16,7 @@ export class ResourcesComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public resources: any;
-  displayedColumns: string[] = ['name', 'createdAt', 'recordsCount'];
+  displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   dataSource = [];
 
   constructor(
@@ -34,10 +34,8 @@ export class ResourcesComponent implements OnInit {
       this.loading = res.loading;
     });
   }
-;
-  handleDelete(id, e) {
-    e.stopPropagation()
 
+  onDelete(resource: Resource): void {
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: 'Delete Resource',
@@ -48,15 +46,15 @@ export class ResourcesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(value => {
-      if(value){
+      if (value) {
         this.apollo.mutate<DeleteResourceMutationResponse>({
           mutation: DELETE_RESOURCE,
           variables: {
-            id
+            id: resource.id
           }
         }).subscribe(res => {
-          this.dataSource = this.dataSource.filter(x => x.id !== id);
-        })
+          this.dataSource = this.dataSource.filter(x => x.id !== resource.id);
+        });
       }
     });
   }

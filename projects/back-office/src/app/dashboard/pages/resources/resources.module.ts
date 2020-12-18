@@ -6,6 +6,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [ResourcesComponent],
@@ -15,7 +17,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressSpinnerModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule,
+    MatMenuModule,
   ],
   exports: [ResourcesComponent]
 })
