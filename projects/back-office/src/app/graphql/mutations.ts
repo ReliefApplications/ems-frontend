@@ -199,6 +199,22 @@ export interface EditResourceMutationResponse {
   editResource: Resource;
 }
 
+
+// == DELETE RESOURCE ==
+
+export const DELETE_RESOURCE = gql`
+mutation deleteResource($id: ID!){
+  deleteResource(id: $id){
+    id
+  }
+}`;
+
+export interface DeleteResourceMutationResponse{
+  loading: boolean;
+  deletedResource: Resource;
+}
+
+
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
