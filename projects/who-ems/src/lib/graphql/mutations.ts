@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { Form } from '../models/form.model';
+import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
 import { User, Role } from '../models/user.model';
 import { Page } from '../models/page.model';
@@ -244,4 +245,29 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
 export interface EditApplicationMutationResponse {
   loading: boolean;
   editApplication: Application;
+}
+
+// === SEE NOTIFICATION ===
+export const SEE_NOTIFICATION = gql`
+mutation seeNotification($id: ID!) {
+  seeNotification(id: $id) {
+    id
+    action
+    content
+    createdAt
+    channel {
+      id
+      title
+      global
+    }
+    seenBy {
+      id
+      name
+    }
+  }
+}`;
+
+export interface SeeNotificationMutationResponse {
+  loading: boolean;
+  seeNotification: Notification;
 }
