@@ -261,9 +261,19 @@ export interface GetUsersQueryResponse {
 export const GET_NOTIFICATIONS = gql`
 query GetNotifications {
   notifications {
+    id
     action
     content
     createdAt
+    channel {
+      id
+      title
+      global
+    }
+    seenBy {
+      id
+      name
+    }
   }
 }`;
 
