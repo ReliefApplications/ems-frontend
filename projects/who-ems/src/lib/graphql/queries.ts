@@ -268,7 +268,9 @@ query GetNotifications {
     channel {
       id
       title
-      global
+      application {
+        id
+      }
     }
     seenBy {
       id
@@ -433,6 +435,24 @@ query GetType($name: String!) {
           }
         }
       }
+    }
+  }
+}`;
+
+export interface GetType {
+  loading: boolean;
+  __type: any;
+}
+
+// === GET CHANNELS ===
+export const GET_CHANNELS = gql`
+{
+  channels {
+    id
+    title
+    application {
+      id
+      name
     }
   }
 }`;

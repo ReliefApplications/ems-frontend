@@ -258,7 +258,9 @@ mutation seeNotification($id: ID!) {
     channel {
       id
       title
-      global
+      application {
+        id
+      }
     }
     seenBy {
       id

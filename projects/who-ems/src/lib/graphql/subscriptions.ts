@@ -12,7 +12,9 @@ subscription NotificationSubscription {
         channel {
             id
             title
-            global
+            application {
+                id
+            }
         }
         seenBy {
             id
