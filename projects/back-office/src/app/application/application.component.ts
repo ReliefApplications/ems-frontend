@@ -85,6 +85,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Roles',
                 path: './settings/roles',
                 icon: 'admin_panel_settings'
+              },
+              {
+                name: 'Channels',
+                path: './settings/channels',
+                icon: 'edit_notifications'
               }
             ]
           }

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -635,4 +635,41 @@ mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
+}
+
+// === ADD CHANNEL ===
+export const ADD_CHANNEL = gql`
+mutation addChannel($title: String!, $application: ID) {
+  addChannel(title: $title, application: $application){
+    id
+    title
+    application {
+      id
+      name
+    }
+    subscribedRoles {
+      id
+      title
+      usersCount
+    }
+  }
+}`;
+
+export interface AddChannelMutationResponse {
+  loading: boolean;
+  addChannel: Channel;
+}
+
+// === DELETE CHANNEL ===
+export const DELETE_CHANNEL = gql`
+mutation deleteChannel($id: ID!) {
+  deleteChannel(id: $id){
+    id
+    title
+  }
+}`;
+
+export interface DeleteChannelMutationResponse {
+  loading: boolean;
+  deleteChannel: Channel;
 }

@@ -357,6 +357,19 @@ export const GET_APPLICATION_BY_ID = gql`
           title
         }
       }
+      channels {
+        id
+        title
+        subscribedRoles {
+          id
+          title
+          application {
+            id
+            name
+          }
+          usersCount
+        }
+      }
       canSee
       canUpdate
     }

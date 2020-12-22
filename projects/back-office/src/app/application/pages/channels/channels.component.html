@@ -1,0 +1,47 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading">
+    <div class="actions">
+        <button mat-raised-button color="primary" (click)="onAdd()">
+            <mat-icon>add</mat-icon>
+            Create a channel
+        </button>
+    </div>
+    <table mat-table [dataSource]="channels">
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+        </ng-container>
+        <ng-container matColumnDef="subscribedRoles">
+            <th mat-header-cell *matHeaderCellDef>Roles subscribed</th>
+            <td mat-cell *matCellDef="let element">
+                <span *ngFor="let role of element.subscribedRoles">
+                    {{role.title}}<span *ngIf="role.application"> [{{role.application.name}}]</span>,
+                </span>
+            </td>
+        </ng-container>
+  
+  
+        <ng-container matColumnDef="recordsCount">
+            <th mat-header-cell *matHeaderCellDef>Records</th>
+            <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onDelete(element, $event)">
+                    <mat-icon>delete</mat-icon>
+                    Delete
+                </button>
+            </mat-menu>
+            </td>
+        </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+    </table>
+</ng-container>
