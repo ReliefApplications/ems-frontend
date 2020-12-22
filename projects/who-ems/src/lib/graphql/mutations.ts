@@ -162,8 +162,8 @@ export interface AddRoleToUserMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-mutation editRole($id: ID!, $permissions: [ID]!) {
-  editRole(id: $id, permissions: $permissions) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
+  editRole(id: $id, permissions: $permissions, channels: $channels) {
     id
     title
     permissions {
@@ -171,6 +171,14 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
       type
     }
     usersCount
+    channels {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
   }
 }`;
 

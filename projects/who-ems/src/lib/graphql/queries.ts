@@ -5,6 +5,7 @@ import { Role, User, Permission } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
+import { Channel } from '../models/channel.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -226,6 +227,14 @@ query GetRoles($application: ID) {
       type
     }
     usersCount
+    channels {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
   }
 }`;
 
@@ -311,6 +320,14 @@ export const GET_APPLICATION_BY_ID = gql`
           type
         }
         usersCount
+        channels {
+          id
+          title
+          application {
+            id
+            name
+          }
+        }
       }
       users {
         id
@@ -457,7 +474,7 @@ export const GET_CHANNELS = gql`
   }
 }`;
 
-export interface GetType {
+export interface GetChannelsQueryResponse {
   loading: boolean;
-  __type: any;
+  channels: Channel[];
 }

@@ -2,7 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { GetPermissionsQueryResponse, GET_PERMISSIONS } from '../../../../graphql/queries';
+import { Channel } from '../../../../models/channel.model';
+import { 
+  GetPermissionsQueryResponse, GET_PERMISSIONS,
+  GetChannelsQueryResponse, GET_CHANNELS } from '../../../../graphql/queries';
 import { Permission, Role } from '../../../../models/user.model';
 
 @Component({
@@ -15,8 +18,8 @@ import { Permission, Role } from '../../../../models/user.model';
 export class WhoEditRoleComponent implements OnInit {
 
   // === DATA ===
-  public loading = true;
   public permissions: Permission[] = [];
+  public channels: Channel[] = [];
 
   // === REACTIVE FORM ===
   roleForm: FormGroup;
@@ -41,10 +44,15 @@ export class WhoEditRoleComponent implements OnInit {
       }
     }).valueChanges.subscribe(res => {
       this.permissions = res.data.permissions;
-      this.loading = res.loading;
+    });
+    this.apollo.watchQuery<GetChannelsQueryResponse>({
+      query: GET_CHANNELS,
+    }).valueChanges.subscribe(res => {
+      this.channels = res.data.channels;
     });
     this.roleForm = this.formBuilder.group({
-      permissions: [this.data.role ? this.data.role.permissions.map(x => x.id) : null]
+      permissions: [this.data.role.permissions ? this.data.role.permissions.map(x => x.id) : null],
+      channels: [this.data.role.channels ? this.data.role.channels.map(x => x.id): null]
     });
   }
 

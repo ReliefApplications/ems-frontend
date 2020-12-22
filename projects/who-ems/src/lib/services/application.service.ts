@@ -183,12 +183,16 @@ export class WhoApplicationService {
       mutation: EDIT_ROLE,
       variables: {
         id: role.id,
-        permissions: value.permissions
+        permissions: value.permissions,
+        channels: value.channels
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role updated.`);
       application.roles = application.roles.map(x => {
-        if (x.id === role.id) { x.permissions = res.data.editRole.permissions; }
+        if (x.id === role.id) { 
+          x.permissions = res.data.editRole.permissions;
+          x.channels = res.data.editRole.channels;
+        }
         return x;
       });
       this._application.next(application);

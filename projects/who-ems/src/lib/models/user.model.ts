@@ -1,4 +1,5 @@
 import { Application } from './application.model';
+import { Channel } from './channel.model';
 
 /*  Model for Permission object.
 */
@@ -16,6 +17,7 @@ export interface Role {
     usersCount?: number;
     permissions?: Permission[];
     application?: Application;
+    channels?: Channel[];
 }
 
 /*  Model for User object.
