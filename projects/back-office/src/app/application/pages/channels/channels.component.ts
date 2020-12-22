@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, WhoApplicationService, WhoConfirmModalComponent, WhoSnackBarService} from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+import { Application, Channel, WhoApplicationService, WhoConfirmModalComponent} from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { AddChannelMutationResponse, ADD_CHANNEL, DeleteChannelMutationResponse, DELETE_CHANNEL  } from '../../../graphql/mutations';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 
 @Component({
@@ -14,7 +12,6 @@ import { AddChannelComponent } from './components/add-channel/add-channel.compon
 export class ChannelsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  private application: string;
   public channels: Channel[];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
@@ -25,8 +22,6 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: WhoApplicationService,
     public dialog: MatDialog,
-    private apollo: Apollo,
-    private snackBar: WhoSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -34,7 +29,6 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.channels = application.channels;
-        this.application = application.id;
       } else {
         this.channels = [];
       }
@@ -52,18 +46,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((value: {title: string}) => {
       if (value) {
-        this.loading = true;
-        this.apollo.mutate<AddChannelMutationResponse>({
-          mutation: ADD_CHANNEL,
-          variables: {
-            title: value.title,
-            application: this.application
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.title} channel created`);
-          this.channels.push(res.data.addChannel);
-          this.loading = res.data.loading;
-        })
+        this.applicationService.addChannel(value);
       }
     });
   }
@@ -82,17 +65,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.loading = true;
-        this.apollo.mutate<DeleteChannelMutationResponse>({
-          mutation: DELETE_CHANNEL,
-          variables: {
-            id: channel.id
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar(`${channel.title} channel deleted.`);
-          this.channels = this.channels.filter(x => x.id !== res.data.deleteChannel.id);
-          this.loading = res.data.loading;
-        });
+        this.applicationService.deleteChannel(channel);
       }
     });
   }

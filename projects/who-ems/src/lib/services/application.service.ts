@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
+import { Channel } from '../models/channel.model';
 import { WhoSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse, ADD_PAGE,
@@ -14,7 +15,9 @@ import {
   DeleteRoleMutationResponse, DELETE_ROLE,
   EditApplicationMutationResponse, EDIT_APPLICATION,
   EditUserMutationResponse, EDIT_USER,
-  EditRoleMutationResponse, EDIT_ROLE } from '../graphql/mutations';
+  EditRoleMutationResponse, EDIT_ROLE,
+  AddChannelMutationResponse, ADD_CHANNEL,
+  DeleteChannelMutationResponse, DELETE_CHANNEL } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -195,6 +198,14 @@ export class WhoApplicationService {
         }
         return x;
       });
+      application.channels = application.channels.map(x => {
+        if (value.channels.includes(x.id)) {
+          x.subscribedRoles = x.subscribedRoles.concat([role]);
+        } else if (x.subscribedRoles.some(subRole => subRole.id === role.id)) {
+          x.subscribedRoles = x.subscribedRoles.filter(subRole => subRole.id !== role.id);
+        }
+        return x
+      })
       this._application.next(application);
     });
   }
@@ -249,5 +260,38 @@ export class WhoApplicationService {
       application.users[index] = res.data.editUser;
       this._application.next(application);
     });
+  }
+
+  /* Add a new channel to the application.
+  */
+  addChannel(value: {title: string}): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddChannelMutationResponse>({
+      mutation: ADD_CHANNEL,
+      variables: {
+        title: value.title,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} channel created.`);
+      application.channels = application.channels.concat([res.data.addChannel]);
+      this._application.next(application);
+    })
+  }
+
+  /* Remove a channel from the system with all notifications linked to it
+  */
+  deleteChannel(channel: Channel): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeleteChannelMutationResponse>({
+      mutation: DELETE_CHANNEL,
+      variables: {
+        id: channel.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${channel.title} channel deleted.`);
+      application.channels = application.channels.filter(x => x.id !== res.data.deleteChannel.id);
+      this._application.next(application);
+    })
   }
 }
