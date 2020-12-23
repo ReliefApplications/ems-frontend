@@ -1,5 +1,5 @@
-import { Application } from "./application.model";
-import { Role } from "./user.model";
+import { Application } from './application.model';
+import { Role } from './user.model';
 
 export interface Channel {
     id?: string;

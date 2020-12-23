@@ -16,7 +16,7 @@ export class AddChannelComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddChannelComponent>,
   ) { }
-  
+
   ngOnInit(): void {
     this.channelForm = this.formBuilder.group({
       title: ['', Validators.required]

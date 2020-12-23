@@ -192,7 +192,7 @@ export class WhoApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role updated.`);
       application.roles = application.roles.map(x => {
-        if (x.id === role.id) { 
+        if (x.id === role.id) {
           x.permissions = res.data.editRole.permissions;
           x.channels = res.data.editRole.channels;
         }
@@ -204,8 +204,8 @@ export class WhoApplicationService {
         } else if (x.subscribedRoles.some(subRole => subRole.id === role.id)) {
           x.subscribedRoles = x.subscribedRoles.filter(subRole => subRole.id !== role.id);
         }
-        return x
-      })
+        return x;
+      });
       this._application.next(application);
     });
   }
@@ -276,7 +276,7 @@ export class WhoApplicationService {
       this.snackBar.openSnackBar(`${value.title} channel created.`);
       application.channels = application.channels.concat([res.data.addChannel]);
       this._application.next(application);
-    })
+    });
   }
 
   /* Remove a channel from the system with all notifications linked to it
@@ -292,6 +292,6 @@ export class WhoApplicationService {
       this.snackBar.openSnackBar(`${channel.title} channel deleted.`);
       application.channels = application.channels.filter(x => x.id !== res.data.deleteChannel.id);
       this._application.next(application);
-    })
+    });
   }
 }

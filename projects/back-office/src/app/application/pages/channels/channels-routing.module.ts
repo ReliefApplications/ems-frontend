@@ -4,7 +4,7 @@ import { ChannelsComponent } from './channels.component';
 
 const routes: Routes = [
   {
-    path:'',
+    path: '',
     component: ChannelsComponent
   }
 ];
