@@ -51,20 +51,20 @@ export class WhoApplicationService {
   /*
     Edit Application
   */
- editApplication(value: any): void{
-  const application = this._application.getValue();
-  this.apollo.mutate<EditApplicationMutationResponse>(
-    {
-      mutation: EDIT_APPLICATION,
-      variables: {
-        id: application.id,
-        name: value.name,
-        description: value.description
-      }
-    }).subscribe(res => {
-      this.snackBar.openSnackBar('Application updated');
-    });
-}
+  editApplication(value: any): void{
+    const application = this._application.getValue();
+    this.apollo.mutate<EditApplicationMutationResponse>(
+      {
+        mutation: EDIT_APPLICATION,
+        variables: {
+          id: application.id,
+          name: value.name,
+          description: value.description
+        }
+      }).subscribe(res => {
+        this.snackBar.openSnackBar('Application updated');
+      });
+  }
 
   /*  Return the application as an Observable.
   */
