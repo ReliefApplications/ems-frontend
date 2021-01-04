@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Update role permissions</h1>
+<h1 mat-dialog-title>Update role permissions and channels</h1>
 <div mat-dialog-content>
     <form [formGroup]="roleForm">
         <mat-form-field>
@@ -6,6 +6,15 @@
             <mat-select formControlName="permissions" multiple>
                 <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                     {{permission.type}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Channels</mat-label>
+            <mat-select formControlName="channels" multiple>
+                <mat-option *ngFor="let channel of channels" [value]="channel.id">
+                    <span>{{channel.title}}</span>
+                    <span *ngIf="channel.application"> [{{channel.application.name}}]</span>
                 </mat-option>
             </mat-select>
         </mat-form-field>

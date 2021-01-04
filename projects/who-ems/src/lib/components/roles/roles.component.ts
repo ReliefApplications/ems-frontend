@@ -110,7 +110,8 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
             mutation: EDIT_ROLE,
             variables: {
               id: role.id,
-              permissions: value.permissions
+              permissions: value.permissions,
+              channels: value.channels
             }
           }).subscribe(res => {
             this.snackBar.openSnackBar(`${role.title} role updated.`);

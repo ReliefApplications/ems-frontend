@@ -5,6 +5,7 @@ import { Role, User, Permission } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
+import { Channel } from '../models/channel.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -226,6 +227,14 @@ query GetRoles($application: ID) {
       type
     }
     usersCount
+    channels {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
   }
 }`;
 
@@ -268,7 +277,9 @@ query GetNotifications {
     channel {
       id
       title
-      global
+      application {
+        id
+      }
     }
     seenBy {
       id
@@ -309,6 +320,18 @@ export const GET_APPLICATION_BY_ID = gql`
           type
         }
         usersCount
+        channels {
+          id
+          title
+          application {
+            id
+            name
+          }
+        }
+        application {
+          id
+          name
+        }
       }
       users {
         id
@@ -336,6 +359,19 @@ export const GET_APPLICATION_BY_ID = gql`
         canDelete {
           id
           title
+        }
+      }
+      channels {
+        id
+        title
+        subscribedRoles {
+          id
+          title
+          application {
+            id
+            name
+          }
+          usersCount
         }
       }
       canSee
@@ -440,4 +476,22 @@ query GetType($name: String!) {
 export interface GetType {
   loading: boolean;
   __type: any;
+}
+
+// === GET CHANNELS ===
+export const GET_CHANNELS = gql`
+{
+  channels {
+    id
+    title
+    application {
+      id
+      name
+    }
+  }
+}`;
+
+export interface GetChannelsQueryResponse {
+  loading: boolean;
+  channels: Channel[];
 }

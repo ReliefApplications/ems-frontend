@@ -5,6 +5,7 @@ import { Record } from '../models/record.model';
 import { User, Role } from '../models/user.model';
 import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
+import { Channel } from '../models/channel.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -162,8 +163,8 @@ export interface AddRoleToUserMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-mutation editRole($id: ID!, $permissions: [ID]!) {
-  editRole(id: $id, permissions: $permissions) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
+  editRole(id: $id, permissions: $permissions, channels: $channels) {
     id
     title
     permissions {
@@ -171,6 +172,14 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
       type
     }
     usersCount
+    channels {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
   }
 }`;
 
@@ -258,7 +267,9 @@ mutation seeNotification($id: ID!) {
     channel {
       id
       title
-      global
+      application {
+        id
+      }
     }
     seenBy {
       id
@@ -270,4 +281,41 @@ mutation seeNotification($id: ID!) {
 export interface SeeNotificationMutationResponse {
   loading: boolean;
   seeNotification: Notification;
+}
+
+// === ADD CHANNEL ===
+export const ADD_CHANNEL = gql`
+mutation addChannel($title: String!, $application: ID) {
+  addChannel(title: $title, application: $application){
+    id
+    title
+    application {
+      id
+      name
+    }
+    subscribedRoles {
+      id
+      title
+      usersCount
+    }
+  }
+}`;
+
+export interface AddChannelMutationResponse {
+  loading: boolean;
+  addChannel: Channel;
+}
+
+// === DELETE CHANNEL ===
+export const DELETE_CHANNEL = gql`
+mutation deleteChannel($id: ID!) {
+  deleteChannel(id: $id){
+    id
+    title
+  }
+}`;
+
+export interface DeleteChannelMutationResponse {
+  loading: boolean;
+  deleteChannel: Channel;
 }

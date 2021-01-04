@@ -1,5 +1,9 @@
+import { Application } from './application.model';
+import { Role } from './user.model';
+
 export interface Channel {
     id?: string;
     title?: string;
-    global?: boolean;
+    application?: Application;
+    subscribedRoles?: Role[];
 }
