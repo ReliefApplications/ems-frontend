@@ -13,22 +13,7 @@ export class DashboardComponent implements OnInit {
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   public navGroups = [
     {
-      name: 'Data management',
-      navItems: [
-        {
-          name: 'Forms',
-          path: '/forms',
-          icon: 'poll',
-        },
-        {
-          name: 'Resources',
-          path: '/resources',
-          icon: 'storage',
-        }
-      ]
-    },
-    {
-      name: 'UI builder',
+      name: 'Site builder',
       navItems: [
         // Commented in order to prevent confusion about dashboards
         // {
@@ -40,6 +25,21 @@ export class DashboardComponent implements OnInit {
           name: 'My applications',
           path: '/applications',
           icon: 'apps',
+        }
+      ]
+    },
+    {
+      name: 'Advanced settings',
+      navItems: [
+        {
+          name: 'Forms',
+          path: '/forms',
+          icon: 'poll',
+        },
+        {
+          name: 'Resources',
+          path: '/resources',
+          icon: 'storage',
         }
       ]
     },

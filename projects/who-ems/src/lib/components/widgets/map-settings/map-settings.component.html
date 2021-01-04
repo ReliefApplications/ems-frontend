@@ -7,47 +7,96 @@
         </mat-form-field>
     </div>
     <div class="form-group">
-        <div class="form-group-title">Data</div>
-        <mat-radio-group formControlName="from" class="form-radio-group" (change)="getSources($event)">
-            <mat-radio-button value="resource">Use resource records</mat-radio-button>
-            <mat-radio-button value="form">Use form records</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field>
-            <mat-label>Data Source</mat-label>
-            <mat-select formControlName="source" (selectionChange)="getSource($event)">
-                <mat-option *ngFor="let source of sources" [value]="source.id"> {{source.name}}</mat-option>
+        <div class="form-group-title">Query builder</div>
+        <mat-form-field appearance="outline">
+            <mat-label>Query name</mat-label>
+            <mat-select formControlName="queryType">
+                <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
+                    {{type.name}}
+                </mat-option>
             </mat-select>
         </mat-form-field>
+        <ng-container *ngIf="tileForm.value.queryType">
+            <mat-form-field appearance="outline">
+                <mat-label>Sort field</mat-label>
+                <mat-select formControlName="sortField">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="tileForm.value.sortField">
+                <mat-label>Sort order</mat-label>
+                <mat-select formControlName="sortOrder">
+                    <mat-option value="asc">ascending</mat-option>
+                    <mat-option value="desc">descending</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div formGroupName="filter">
+                <div class="advanced-filtering">
+                    Advanced filtering
+                    <button mat-icon-button color="primary" (click)="toggleFilter()">
+                        <mat-icon>expand_more</mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="showFilter">
+                    <ng-container *ngFor="let filter of availableFilter">
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{filter.name}}</mat-label>
+                            <ng-container *ngIf="filter.type.name === 'Int'">
+                                <input matInput [formControlName]="filter.name" type="number" />
+                            </ng-container>
+                            <ng-container *ngIf="filter.type.name !== 'Int'">
+                                <input matInput [formControlName]="filter.name" type="string" />
+                            </ng-container>
+                        </mat-form-field>
+                    </ng-container>
+                </div>
+            </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Fields</mat-label>
+                <mat-select formControlName="fields" multiple>
+                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
+                        {{field.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Latitude</mat-label>
+                <mat-select formControlName="latitude">
+                    <mat-option *ngFor="let field of selectedFields" [value]="field">
+                        {{field}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Longitude</mat-label>
+                <mat-select formControlName="longitude">
+                    <mat-option *ngFor="let field of selectedFields" [value]="field">
+                        {{field}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+    </div>
+    <div class="form-group">
+        <div class="form-group-title">Default display</div>
         <mat-form-field>
-            <mat-label>Latitude</mat-label>
-            <mat-select formControlName="latitude" [disabled]="!(fields.length > 0)">
-                <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-            </mat-select>
+            <mat-label>Zoom</mat-label>
+            <input type="number" matInput formControlName="zoom">
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Longitude</mat-label>
-            <mat-select formControlName="longitude" [disabled]="!(fields.length > 0)">
-                <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-            </mat-select>
+            <mat-label>
+                Latitude
+            </mat-label>
+            <input type="string" matInput formControlName="centerLat">
         </mat-form-field>
-        <div class="form-group">
-            <div class="form-group-title">Default display</div>
-            <mat-form-field>
-                <mat-label>Zoom</mat-label>
-                <input type="number" matInput formControlName="zoom">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>
-                    Latitude
-                </mat-label>
-                <input type="string" matInput formControlName="centerLat">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>
-                    Longitude
-                </mat-label>
-                <input type="string" matInput formControlName="centerLong">
-            </mat-form-field>
-        </div>
+        <mat-form-field>
+            <mat-label>
+                Longitude
+            </mat-label>
+            <input type="string" matInput formControlName="centerLong">
+        </mat-form-field>
     </div>
 </form>

@@ -33,7 +33,7 @@ export class FormRecordsComponent implements OnInit {
         query: GET_FORM_BY_ID,
         variables: {
           id: this.id,
-          display: true
+          display: false
         }
       }).valueChanges.subscribe(res => {
         this.form = res.data.form;
@@ -55,6 +55,7 @@ export class FormRecordsComponent implements OnInit {
       }
     }
     columns.push('actions');
+    columns.push('versions');
     this.displayedColumns = columns;
   }
 

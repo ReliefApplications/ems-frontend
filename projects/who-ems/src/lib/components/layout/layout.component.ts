@@ -7,6 +7,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
+import { SeeNotificationMutationResponse, SEE_NOTIFICATION } from '../../graphql/mutations';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
@@ -75,19 +76,19 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationsSubscription = notificationsQuery.valueChanges.subscribe((res) => {
       this.notifications = res.data.notifications;
     });
-    // notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
-    //   document: NOTIFICATION_SUBSCRIPTION,
-    //   updateQuery: (prev, { subscriptionData }) => {
-    //     if (!subscriptionData.data) {
-    //       return prev;
-    //     }
-    //     const newNotification = subscriptionData.data.notification;
-    //     return {
-    //       ...prev,
-    //       notifications: [newNotification, ...prev.notifications]
-    //     };
-    //   }
-    // });
+    notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
+      document: NOTIFICATION_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newNotification = subscriptionData.data.notification;
+        return {
+          ...prev,
+          notifications: [newNotification, ...prev.notifications]
+        };
+      }
+    });
   }
 
   ngOnChanges(): void {
@@ -150,4 +151,16 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.authService.logout();
   }
 
+  onNotificationClick(notification: Notification): void {
+    this.apollo.mutate<SeeNotificationMutationResponse>({
+      mutation: SEE_NOTIFICATION,
+      variables: {
+        id: notification.id
+      }
+    }).subscribe(res => {
+      if (res.data.seeNotification) {
+        this.notifications = this.notifications.filter(x => x.id !== res.data.seeNotification.id);
+      }
+    });
+  }
 }

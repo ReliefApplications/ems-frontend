@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -199,6 +199,22 @@ export interface EditResourceMutationResponse {
   editResource: Resource;
 }
 
+
+// == DELETE RESOURCE ==
+
+export const DELETE_RESOURCE = gql`
+mutation deleteResource($id: ID!){
+  deleteResource(id: $id){
+    id
+  }
+}`;
+
+export interface DeleteResourceMutationResponse{
+  loading: boolean;
+  deletedResource: Resource;
+}
+
+
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
@@ -223,7 +239,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -257,7 +273,7 @@ mutation editForm($id: ID!, $status: String!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -291,7 +307,7 @@ mutation editForm($id: ID!, $name: String!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -325,7 +341,7 @@ mutation editForm($id: ID!, $permissions: JSON!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {

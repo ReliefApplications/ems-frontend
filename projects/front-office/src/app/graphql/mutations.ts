@@ -64,6 +64,9 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
     roles {
       id
       title
+      application {
+        id
+      }
     }
     oid
   }

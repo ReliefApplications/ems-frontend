@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>New channel</h1>
+<div mat-dialog-content>
+    <form [formGroup]="channelForm">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" type="text" placeholder="Enter a title"/>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-button [mat-dialog-close]="channelForm.value" cdkFocusInitial color="primary" [disabled]="!channelForm.valid">Create</button>
+</div>
