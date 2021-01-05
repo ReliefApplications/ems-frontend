@@ -11,6 +11,9 @@ export const GET_USERS = gql`
     roles {
       id
       title
+      application {
+        id
+      }
     }
     oid
   }
@@ -43,10 +46,11 @@ export interface GetRolesQueryResponse {
 
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
-{
-  permissions {
+query GetPermissions($application: Boolean) {
+  permissions(application: $application) {
     id
     type
+    global
   }
 }`;
 
@@ -189,11 +193,16 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     records(filters: $filters) {
       id
       data(display: $display)
+      versions {
+        id
+        createdAt
+        data
+      }
     }
     resource{
       id
@@ -277,6 +286,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         application {
           id
         }
+        canUpdate
       }
       step {
         id
@@ -289,6 +299,7 @@ export const GET_DASHBOARD_BY_ID = gql`
             }
           }
         }
+        canUpdate
       }
     }
   }
@@ -557,6 +568,9 @@ export const GET_STEP_BY_ID = gql`
           title
         }
       }
+      canSee
+      canUpdate
+      canDelete
     }
   }
 `;

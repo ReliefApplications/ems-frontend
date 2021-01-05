@@ -36,7 +36,7 @@ export class WhoGridService {
     {
       name: 'line chart',
       icon: 'show_chart',
-      settings: {title: 'Line chart', type: 'line', source: '', xAxis: '', yAxis: ''},
+      settings: {title: 'Line chart', type: 'line', query: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
       defaultRows: 2,
       component: 'chart',

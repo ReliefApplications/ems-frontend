@@ -57,15 +57,15 @@ export function provideApollo(httpLink: HttpLink): any {
     operation?: string;
   }
 
-  const link = ApolloLink.from([basic, auth, http]);
-  // split(
-  //   ({ query }) => {
-  //     const { kind, operation }: Definition = getMainDefinition(query);
-  //     return kind === 'OperationDefinition' && operation === 'subscription';
-  //   },
-  //   ws,
-  //   http,
-  // )]);
+  const link = ApolloLink.from([basic, auth, split(
+    ({ query }) => {
+      const { kind, operation }: Definition = getMainDefinition(query);
+      return kind === 'OperationDefinition' && operation === 'subscription';
+    },
+    ws,
+    http,
+  )]);
+
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
 
@@ -74,11 +74,16 @@ export function provideApollo(httpLink: HttpLink): any {
     cache,
     defaultOptions: {
       watchQuery: {
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
+        // fetchPolicy: 'cache-and-network',
         errorPolicy: 'ignore',
       },
       query: {
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
+        // fetchPolicy: 'cache-and-network',
+        errorPolicy: 'all',
+      },
+      mutate: {
         errorPolicy: 'all',
       }
     }
@@ -124,6 +129,10 @@ export function provideApollo(httpLink: HttpLink): any {
     })
   ],
   providers: [
+    {
+      provide: 'environment',
+      useValue: environment
+    },
     {
       // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
       provide: APOLLO_OPTIONS,

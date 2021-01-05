@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Application, Form, User, Workflow } from '@who-ems/builder';
+import { Dashboard, Application, Form, User, Workflow, Permission} from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -112,7 +112,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     records(filters: $filters) {
       id
@@ -194,4 +194,19 @@ export const GET_WORKFLOW_BY_ID = gql`
 export interface GetWorkflowByIdQueryResponse {
   loading: boolean;
   workflow: Workflow;
+}
+
+// === GET PERMISSIONS ===
+export const GET_PERMISSIONS = gql`
+query GetPermissions($application: Boolean) {
+  permissions(application: $application) {
+    id
+    type
+    global
+  }
+}`;
+
+export interface GetPermissionsQueryResponse {
+  loading: boolean;
+  permissions: Permission[];
 }

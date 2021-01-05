@@ -1,19 +1,8 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import * as SurveyKo from 'survey-knockout';
-import { initCreatorSettings } from '../../survey/creator';
-import { initCustomWidgets } from '../../survey/init';
+import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
-
-// === CUSTOM WIDGETS / COMPONENTS ===
-initCustomWidgets(SurveyKo);
-
-// === STYLE ===
-SurveyCreator.StylesManager.applyTheme('darkblue');
-
-// === CREATOR SETTINGS ===
-initCreatorSettings(SurveyKo);
 
 @Component({
   selector: 'who-form-builder',
@@ -30,8 +19,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   public json: any;
 
   constructor(
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private formService: FormService
+  ) {}
 
   ngOnInit(): void {
     const options = {

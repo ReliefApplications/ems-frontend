@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ApplicationService } from '../../../services/application.service';
 import { Subscription } from 'rxjs';
-import { Application } from '@who-ems/builder';
+import { Application, WhoApplicationService } from '@who-ems/builder';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +15,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private applicationService: ApplicationService
+    private applicationService: WhoApplicationService
   ) { }
 
   ngOnInit(): void {

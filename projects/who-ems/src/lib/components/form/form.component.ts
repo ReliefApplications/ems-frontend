@@ -5,11 +5,8 @@ import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { initCustomWidgets } from '../../survey/init';
+import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
-
-// === CUSTOM WIDGETS / COMPONENTS ===
-initCustomWidgets(Survey);
 
 @Component({
   selector: 'who-form',
@@ -27,8 +24,9 @@ export class WhoFormComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private formService: FormService
+  ) {}
 
   ngOnInit(): void {
     this.survey = new Survey.Model(this.form.structure);
@@ -52,7 +50,7 @@ export class WhoFormComponent implements OnInit {
       this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
-          id: this.form.id,
+          id: this.record.id,
           data: this.survey.data
         }
       }).subscribe(() => {

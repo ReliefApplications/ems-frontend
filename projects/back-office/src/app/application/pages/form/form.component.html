@@ -1,29 +1,33 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && form">
-    <div *ngIf="!formActive" class="tab-name-container">
-        <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
-        <who-access [access]="form.permissions" [application]="step ? step.workflow.page.application.id : page ? page.application.id : null" 
-        (save)="saveAccess($event)" *ngIf="form.canUpdate"></who-access>
+    <div class="tab-name-container">
+        <ng-container *ngIf="!formActive">
+            <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
+            <who-access [access]="page ? page.permissions : step ? step.permissions : null"
+                [application]="page ? page.application.id : step ? step.workflow.page.application.id : null"
+                (save)="saveAccess($event)" *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></who-access>
+        </ng-container>
+        <ng-container *ngIf="formActive">
+            <form [formGroup]="tabNameForm" (ngSubmit)="saveName()">
+                <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="tabName" type="string">
+                </mat-form-field>
+                <button type="submit" mat-icon-button color="primary" [disabled]="!tabNameForm.valid">
+                    <mat-icon>save</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </form>
+        </ng-container>
+        <button mat-raised-button color="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
+            <mat-icon>edit</mat-icon>
+            Edit form
+        </button>
     </div>
-    <ng-container *ngIf="formActive">
-        <form [formGroup]="tabNameForm" (ngSubmit)="saveName()" class="tab-name-container">
-            <mat-form-field>
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="tabName" type="string">
-            </mat-form-field>
-            <button type="submit" mat-icon-button color="primary" [disabled]="!tabNameForm.valid">
-                <mat-icon>save</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="toggleFormActive()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </form>
-    </ng-container>
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
 <ng-container *ngIf="completed">
     <button mat-raised-button (click)="clearForm()">New record</button>
 </ng-container>
-<button mat-fab color="accent" (click)="editForm()">
-    <mat-icon>edit</mat-icon>
-</button>

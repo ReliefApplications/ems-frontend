@@ -39,6 +39,12 @@ const routes: Routes = [
               .then(m => m.UsersModule),
             // canActivate: [WhoPermissionGuard]
           },
+          {
+            path: 'channels',
+            loadChildren: () => import('./pages/channels/channels.module')
+              .then(m => m.ChannelsModule),
+            // canActivate: [WhoPermissionGuard]
+          },
         ]
       },
       {
@@ -55,9 +61,20 @@ const routes: Routes = [
       },
       {
         path: 'form/:id',
-        loadChildren: () => import('./pages/form/form.module')
-          .then(m => m.FormModule),
-        // canActivate: [WhoPermissionGuard]
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('./pages/form/form.module')
+              .then(m => m.FormModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+          {
+            path: 'builder/:id',
+            loadChildren: () => import('../dashboard/pages/form-builder/form-builder.module')
+              .then(m => m.FormBuilderModule),
+            // canActivate: [WhoPermissionGuard]
+          }
+        ]
       }
     ]
   }

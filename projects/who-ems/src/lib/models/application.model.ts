@@ -1,4 +1,5 @@
 import { Page } from './page.model';
+import { Channel } from './channel.model';
 import { Role, User } from './user.model';
 
 /*  Model for Application object.
@@ -15,6 +16,7 @@ export interface Application {
     usersCount?: number;
     settings?: any;
     permissions?: any;
+    channels?: Channel[];
     canSee?: boolean;
     canCreate?: boolean;
     canUpdate?: boolean;

@@ -1,7 +1,19 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { Apollo } from 'apollo-angular';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { Record } from '../../../models/record.model';
+import { Subscription } from 'rxjs';
+import { QueryBuilderService } from '../../../services/query-builder.service';
+
+const MARKER_OPTIONS = {
+  color: '#0090d1',
+  opacity: 0.25,
+  weight: 12,
+  fillColor: '#0090d1',
+  fillOpacity: 1,
+  radius: 6
+};
 
 @Component({
   selector: 'who-map',
@@ -10,7 +22,7 @@ import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryRespo
 })
 /*  Map widget using Leaflet.
 */
-export class WhoMapComponent implements AfterViewInit {
+export class WhoMapComponent implements AfterViewInit, OnDestroy {
 
   // === MAP ===
   public mapId: string;
@@ -19,18 +31,62 @@ export class WhoMapComponent implements AfterViewInit {
   private northEast = L.latLng(89.99346179538875, 180);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
+  // === MARKERS ===
+  private markersLayer;
+  private markersLayerGroup;
+  private popupMarker;
+
+  // === RECORDS ===
+  private selectedItem: Record;
+  private data: any[];
+  private dataQuery: any;
+  private dataSubscription: Subscription;
+
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) {
     this.mapId = this.generateUniqueId();
+  }
+
+  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  */
+  private generateUniqueId(parts: number = 4): string {
+    const stringArr = [];
+    for (let i = 0; i < parts; i++) {
+      // tslint:disable-next-line:no-bitwise
+      const S4 = (((1 + Math.random()) * 0x10000) | 0)
+        .toString(16)
+        .substring(1);
+      stringArr.push(S4);
+    }
+    return stringArr.join('-');
   }
 
   /*  Once template is ready, build the map.
   */
   ngAfterViewInit(): void {
+
+    this.drawMap();
+
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+
+    if (this.dataQuery) {
+      this.getData();
+    }
+
+    this.map.setMaxBounds(this.bounds);
+    this.map.setZoom(this.settings.zoom);
+
+    setTimeout(() => this.map.invalidateSize(), 100);
+  }
+
+  /*  Create the map with all useful parameters
+  */
+  private drawMap(): void {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
@@ -46,84 +102,64 @@ export class WhoMapComponent implements AfterViewInit {
       minZoom: 1,
     }).addTo(this.map);
 
-    if (this.settings && this.settings.source && this.settings.latitude && this.settings.longitude) {
-      this.getRecords();
-    }
+    this.markersLayerGroup = L.featureGroup().addTo(this.map);
+    this.markersLayerGroup.on('click', event => {
+      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+      this.popupMarker = L.popup({})
+        .setLatLng([event.latlng.lat, event.latlng.lng])
+        .setContent(JSON.stringify(this.selectedItem))
+        .addTo(this.map);
 
-    this.map.setMaxBounds(this.bounds);
-    this.map.setZoom(this.settings.zoom);
+    });
 
-    setTimeout(() => this.map.invalidateSize(), 100);
+    this.markersLayer = L.markerClusterGroup({
+    }).addTo(this.markersLayerGroup);
   }
 
   /*  Load the data, using widget parameters.
   */
-  private getRecords(): void {
+  private getData(): void {
+    this.map.closePopup(this.popupMarker);
+    this.popupMarker = null;
     const myIcon = L.icon({
       iconUrl:
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
 
-    if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.settings.source
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+      this.data = [];
+      this.selectedItem = null;
+      this.markersLayer.clearLayers();
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          res.data[field].map(x => this.drawMarkers(myIcon, x));
         }
-      }).valueChanges.subscribe(res => {
-        res.data.resource.records.map(x => {
-          const latitude = Number(x.data[this.settings.latitude]);
-          const longitude = Number(x.data[this.settings.longitude]);
-          if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
-            if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-              L.marker(
-                [
-                  latitude,
-                  longitude
-                ],
-                { icon: myIcon }
-              ).addTo(this.map);
-            }
-          }
-        });
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.source
-        }
-      }).valueChanges.subscribe(res => {
-        res.data.form.records.map(x => {
-          const latitude = Number(x.data[this.settings.latitude]);
-          const longitude = Number(x.data[this.settings.longitude]);
-          if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
-            if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-              L.marker(
-                [
-                  latitude,
-                  longitude
-                ],
-                { icon: myIcon }
-              ).addTo(this.map);
-            }
-          }
-        });
-      });
+      }
+    });
+  }
+
+  /*  Draw markers on the map if the record has coordinates
+  */
+  private drawMarkers(icon: any, item: any): void {
+    const latitude = Number(item[this.settings.latitude]);
+    const longitude = Number(item[this.settings.longitude]);
+    if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
+      if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
+        this.data.push(item);
+        const options = MARKER_OPTIONS;
+        Object.assign(options, { id: item.id });
+        const marker = L.circleMarker(
+          [
+            latitude,
+            longitude
+          ],
+          options);
+        this.markersLayer.addLayer(marker);
+      }
     }
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
-  */
-  private generateUniqueId(parts: number = 4): string {
-    const stringArr = [];
-    for (let i = 0; i < parts; i++) {
-      // tslint:disable-next-line:no-bitwise
-      const S4 = (((1 + Math.random()) * 0x10000) | 0)
-        .toString(16)
-        .substring(1);
-      stringArr.push(S4);
-    }
-    return stringArr.join('-');
+  public ngOnDestroy(): void {
+    if (this.dataSubscription) { this.dataSubscription.unsubscribe(); }
   }
 }

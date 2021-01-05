@@ -1,4 +1,4 @@
-export function init(Survey: any): void {
+export function init(Survey: any, API_URL: string): void {
   const widget = {
     name: 'inputwithresource',
     isFit: (question) => {
@@ -39,7 +39,6 @@ export function init(Survey: any): void {
           return obj.inputType === 'resource';
         },
         choices: (obj, choicesCallback) => {
-          const url = 'http://localhost:3000/graphql';
           const xhr = new XMLHttpRequest();
           const query = {
             query: `{
@@ -50,7 +49,7 @@ export function init(Survey: any): void {
                     }`
           };
           xhr.responseType = 'json';
-          xhr.open('POST', url);
+          xhr.open('POST', API_URL);
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.onload = () => {
             const serverRes = xhr.response.data.resources;
@@ -76,7 +75,6 @@ export function init(Survey: any): void {
         },
         choices: (obj, choicesCallback) => {
           if (obj.resources) {
-            const url = 'http://localhost:3000/graphql';
             const xhr = new XMLHttpRequest();
             const query = {
               query: `
@@ -92,7 +90,7 @@ export function init(Survey: any): void {
               }
             };
             xhr.responseType = 'json';
-            xhr.open('POST', url);
+            xhr.open('POST', API_URL);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.fields;

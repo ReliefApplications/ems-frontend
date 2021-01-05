@@ -13,4 +13,7 @@ export interface Step{
     settings?: any;
     permissions?: any;
     workflow?: Workflow;
+    canSee?: boolean;
+    canUpdate?: boolean;
+    canDelete?: boolean;
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationService } from '../../../services/application.service';
+import { PreviewService } from '../../../services/preview.service';
 
 @Component({
   selector: 'app-preview-toolbar',
@@ -9,18 +9,16 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class PreviewToolbarComponent implements OnInit {
 
-  @Input() title: string;
-
   constructor(
     private router: Router,
-    private applicationService: ApplicationService
+    private previewService: PreviewService
   ) { }
 
   ngOnInit(): void {
   }
 
   onClose(): void {
-    this.applicationService.setRole(null);
+    this.previewService.setRole(null);
     this.router.navigate(['/']);
   }
 }

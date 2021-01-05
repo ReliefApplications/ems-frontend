@@ -1,14 +1,22 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
+import { Subscription } from 'rxjs';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
+
+const DEFAULT_FILE_NAME = 'grid.xlsx';
+
+const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+
+const DISABLED_FIELDS = ['id', 'createdAt'];
 
 @Component({
   selector: 'who-grid',
@@ -17,7 +25,7 @@ const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, 
 })
 /*  Grid widget using KendoUI.
 */
-export class WhoGridComponent implements OnInit, OnChanges {
+export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -29,13 +37,17 @@ export class WhoGridComponent implements OnInit, OnChanges {
   // === DATA ===
   public gridData: GridDataResult;
   private items: any[];
+  private originalItems: any[] = [];
+  private updatedItems: any[] = [];
   private editedRowIndex: number;
+  private editedRecordId: string;
   public formGroup: FormGroup;
   private isNew = false;
-  private editedRowId: string;
   public loading = true;
   public fields: any[] = [];
   public canEdit = false;
+  private dataQuery: any;
+  private dataSubscription: Subscription;
 
   // === SORTING ===
   public sort: SortDescriptor[];
@@ -53,17 +65,28 @@ export class WhoGridComponent implements OnInit, OnChanges {
   // === EXCEL ===
   public excelFileName: string;
 
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private queryBuilder: QueryBuilderService
   ) { }
 
-  /*  Load the records.
+  ngOnInit(): void {}
+
+  /*  Detect changes of the settings to (re)load the data.
   */
-  ngOnInit(): void {
-    if (this.settings.source) {
+  ngOnChanges(): void {
+    this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
+
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+
+    if (this.dataQuery) {
       this.getRecords();
       this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     } else {
@@ -71,91 +94,41 @@ export class WhoGridComponent implements OnInit, OnChanges {
     }
   }
 
-  /*  Detect changes of the settings to reload the data.
-  */
-  ngOnChanges(): void {
-    if (this.settings.source) {
-      this.getRecords();
-    } else {
-      this.loading = false;
-    }
-  }
-
-  /*  Set the data types.
-  */
-  private setDataType(data): any {
-    for (const column of Object.keys(data)) {
-      const field = this.settings.fields.find((el) => el.name === column);
-      if (field && field.type === 'date') {
-        data[column] = new Date(data[column]);
-      }
-    }
-    return data;
-  }
-
   /*  Load the data, using widget parameters.
   */
   private getRecords(): void {
     this.loading = true;
-    if (!this.settings.from || this.settings.from === 'resource') {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.settings.source,
-          display: true
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = false;
-        this.canEdit = res.data.resource.canCreate;
-        this.excelFileName = `${res.data.resource.name}.xlsx`;
-        const fields = [];
-        for (const field of res.data.resource.fields) {
-          if (this.settings.fields.indexOf(field.name) > -1) {
-            fields.push(field);
+    this.updatedItems = [];
+
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.items = res.data[field];
+          this.originalItems = cloneData(this.items);
+          if (this.items.length > 0) {
+            this.apollo.watchQuery<GetType>({
+              query: GET_TYPE,
+              variables: {
+                name: this.items[0].__typename
+              }
+            }).valueChanges.subscribe(res2 => {
+              this.loading = res2.loading;
+              const settingsFields = this.settings.fields;
+              const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
+                .map(x => ({ ...x, editor: this.getEditor(x.type) }));
+              this.fields = settingsFields.map(x => fields.find(f => f.name === x));
+              this.gridData = {
+                data: this.items,
+                total: res.data[field].length
+              };
+            });
+          } else {
+            this.loading = false;
           }
         }
-        this.fields = fields;
-        this.getResourceDropdown();
-        const gridData = [];
-        for (const record of res.data.resource.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
-        }
-        this.items = gridData;
-        this.skip = 0;
-        this.loadItems();
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.source,
-          display: true
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = false;
-        this.canEdit = res.data.form.canCreate;
-        this.excelFileName = `${res.data.form.name}.xlsx`;
-        const fields = [];
-        for (const field of res.data.form.fields) {
-          if (this.settings.fields.indexOf(field.name) > -1) {
-            fields.push(field);
-          }
-        }
-        this.fields = fields;
-        this.getResourceDropdown();
-        const gridData = [];
-        for (const record of res.data.form.records) {
-          record.data.id = record.id;
-          record.data = this.setDataType(record.data);
-          gridData.push(record.data);
-        }
-        this.items = gridData;
-        this.skip = 0;
-        this.loadItems();
-      });
-    }
+      }
+    },
+      (err) => this.loading = false);
   }
 
   /*  Set the list of items to display.
@@ -163,7 +136,6 @@ export class WhoGridComponent implements OnInit, OnChanges {
   private loadItems(): void {
     if (this.settings.pageable) {
       this.gridData = {
-        // tslint:disable-next-line: max-line-length
         data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
           (this.filter ? filterBy(this.items, this.filter) : this.items))
           .slice(this.skip, this.skip + this.pageSize),
@@ -176,6 +148,167 @@ export class WhoGridComponent implements OnInit, OnChanges {
         total: this.items.length
       };
     }
+  }
+
+  /*  Display an embedded form in a modal to add new record.
+    Create a record if result not empty.
+  */
+  public onAdd(): void {
+    const dialogRef = this.dialog.open(WhoFormModalComponent, {
+      data: {
+        template: this.settings.addTemplate,
+        locale: 'en'
+      }
+    });
+  }
+
+  /*  Inline edition of the data.
+  */
+  public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
+    if (isEdited || (this.formGroup && !this.formGroup.valid)) {
+      return;
+    }
+
+    if (this.isNew) {
+      rowIndex += 1;
+    }
+
+    if (this.editedRecordId) {
+      this.updateCurrent();
+    }
+
+    this.formGroup = this.createFormGroup(dataItem);
+    this.editedRecordId = dataItem.id;
+    this.editedRowIndex = rowIndex;
+
+    this.grid.editRow(rowIndex, this.formGroup);
+  }
+
+  public cancelHandler(): void {
+    this.closeEditor();
+  }
+
+  /*  Set the available options for resource fields, and attach them to the field.
+  */
+  // getResourceDropdown(): void {
+  //   for (const field of this.fields) {
+  //     if (field.resource) {
+  //       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+  //         query: GET_RESOURCE_BY_ID,
+  //         variables: {
+  //           id: field.resource
+  //         }
+  //       }).valueChanges.subscribe((res) => {
+  //         field.dropdown = res.data.resource.records.map((el) => el = { id: el.id, data: el.data[field.displayField] });
+  //       });
+  //     }
+  //   }
+  // }
+
+  /*  Update a record when inline edition completed.
+  */
+  public updateCurrent(): void {
+    if (this.isNew) {
+    } else {
+      if (this.formGroup.dirty) {
+        this.update(this.editedRecordId, this.formGroup.value);
+      }
+    }
+    this.closeEditor();
+  }
+
+  private update(id: string, value: any): void {
+    const item = this.updatedItems.find(x => x.id === id);
+    if (item) {
+      Object.assign(item, {...value, id});
+    } else {
+      this.updatedItems.push({...value, id});
+    }
+    Object.assign(this.items.find(x => x.id === id), value);
+  }
+
+  /*  Close the inline edition.
+  */
+  private closeEditor(): void {
+    this.grid.closeRow(this.editedRowIndex);
+    this.grid.cancelCell();
+    this.isNew = false;
+    this.editedRowIndex = undefined;
+    this.editedRecordId = undefined;
+    this.formGroup = undefined;
+  }
+
+  public onSaveChanges(): void {
+    this.closeEditor();
+    if (this.hasChanges) {
+      const promises = [];
+      for (const item of this.updatedItems) {
+        const data = Object.assign({}, item);
+        delete data.id;
+        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: item.id,
+            data
+          }
+        }).toPromise());
+      }
+      Promise.all(promises).then(() => this.getRecords());
+    }
+    // this.getRecords();
+  }
+
+  public onCancelChanges(): void {
+    this.closeEditor();
+    this.updatedItems = [];
+    this.items = this.originalItems;
+    this.originalItems = cloneData(this.originalItems);
+    this.loadItems();
+  }
+
+  /*  Detect document click to save record if outside the inline edition form.
+  */
+  private onDocumentClick(e: any): void {
+    if (this.formGroup && this.formGroup.valid &&
+      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
+      this.updateCurrent();
+    }
+  }
+
+  private getEditor(type: any): string {
+    switch (type.name) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+
+  public createFormGroup(dataItem: any): FormGroup {
+    const formGroup = {};
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name))) {
+      formGroup[field.name] = [(field.type.name === 'Date' || field.type.name === 'DateTime') ?
+        new Date(dataItem[field.name]) : dataItem[field.name]];
+    }
+    return this.formBuilder.group(formGroup);
+  }
+
+  // TODO: check how to implement something like that.
+  private isReadOnly(field: string): boolean {
+    // const readOnlyColumns = ['UnitPrice', 'UnitsInStock'];
+    // return readOnlyColumns.indexOf(field) > -1;
+    return false;
   }
 
   /*  Detect sort events and update the items loaded.
@@ -200,149 +333,9 @@ export class WhoGridComponent implements OnInit, OnChanges {
     this.loadItems();
   }
 
-  /*  Display an embedded form in a modal to add new record.
-    Create a record if result not empty.
-  */
-  public onAdd(): void {
-    const dialogRef = this.dialog.open(WhoFormModalComponent, {
-      data: {
-        template: this.settings.addTemplate,
-        locale: 'en'
-      }
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.items.push(res.data.data);
-        this.loadItems();
-      }
-    });
-  }
-
-  /*  Inline edition of the data.
-  */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
-    if ((!this.canEdit || !this.settings || !this.settings.editable) || isEdited || (this.formGroup && !this.formGroup.valid)) {
-      return;
-    }
-
-    if (this.isNew) {
-      rowIndex += 1;
-    }
-
-    if (this.formGroup && this.editedRowId) {
-      this.saveCurrent();
-    }
-
-    this.editedRowId = dataItem.id;
-    this.formGroup = this.formBuilder.group(this.createFormGroup(dataItem));
-    this.editedRowIndex = rowIndex;
-
-    this.grid.editRow(rowIndex, this.formGroup);
-  }
-
-  /*  Set the available options for resource fields, and attach them to the field.
-  */
-  getResourceDropdown(): void {
-    for (const field of this.fields) {
-      if (field.resource) {
-        this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-          query: GET_RESOURCE_BY_ID,
-          variables: {
-            id: field.resource
-          }
-        }).valueChanges.subscribe((res) => {
-          field.dropdown = res.data.resource.records.map((el) => el = { id: el.id, data: el.data[field.displayField] });
-        });
-      }
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
     }
   }
-
-  /*  Create the form for inline edition.
-  */
-  createFormGroup(dataItems): object {
-    const formGroup = {};
-    for (const column of Object.keys(dataItems)) {
-      if (column !== 'id') {
-        formGroup[column] = [dataItems[column]];
-        const field = this.settings.fields.find((x) => x.name === column);
-        if (field && field.isRequired) { formGroup[column].push(Validators.required); }
-      }
-    }
-    return formGroup;
-  }
-
-  /*  Get values of the form for inline edition.
-  */
-  private getDirtyValues(): object {
-    const dirtyValues = {};
-    for (const control of Object.keys(this.formGroup.controls)) {
-      if (this.formGroup.controls[control].dirty) {
-        dirtyValues[control] = this.formGroup.controls[control].value;
-      }
-    }
-    return dirtyValues;
-  }
-
-  /*  Update a record when inline edition completed.
-  */
-  public saveCurrent(): void {
-    if (this.isNew) {
-    } else {
-      const data = this.getDirtyValues();
-      this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: this.editedRowId,
-          data,
-          display: true
-        }
-      }).subscribe(res => {
-        const record = res.data.editRecord;
-        record.data.id = record.id;
-        record.data = this.setDataType(record.data);
-        this.items = this.items.map( x => x.id === record.id ? record.data : x );
-        this.loadItems();
-      });
-    }
-    this.closeEditor();
-  }
-
-  /*  Close the inline edition.
-  */
-  private closeEditor(): void {
-    this.grid.closeRow(this.editedRowIndex);
-
-    // this.isNew = false;
-    this.editedRowId = undefined;
-    this.editedRowIndex = undefined;
-    this.formGroup = undefined;
-  }
-
-  /*  Detect document click to save record if outside the inline edition form.
-  */
-  private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid && this.editedRowId &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
-      this.saveCurrent();
-    }
-  }
-
-  // === EDITION ===
-  /*  For previous version of record edition, a button was displayed at the right of each row.
-    This method opens a modal to display the SurveyJS form for the record.
-  */
-  // public editHandler(event: any): void {
-  //   const dialogRef = this.dialog.open(EmbeddedFormComponent, {
-  //     data: {
-  //       template: this.settings.addTemplate,
-  //       locale: 'en',
-  //       recordId: event.dataItem.id
-  //     }
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.getRecords();
-  //     }
-  //   });
-  // }
 }

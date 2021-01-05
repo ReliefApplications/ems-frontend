@@ -4,13 +4,12 @@ import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Apollo } from 'apollo-angular';
-import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
-import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicationModalComponent } from './application-modal/application-modal.component';
+import { WhoNotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'who-layout',
@@ -25,6 +24,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @Input() navGroups: any[];
 
   @Input() applications: Application[];
+
+  @Input() route: ActivatedRoute;
 
   @Input() toolbar: TemplateRef<any>;
 
@@ -42,9 +43,10 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public largeDevice: boolean;
 
   constructor(
+    private router: Router,
     private authService: WhoAuthService,
-    private apollo: Apollo,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private notificationService: WhoNotificationService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -67,25 +69,14 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-    const notificationsQuery = this.apollo.watchQuery<GetNotificationsQueryResponse>({
-      query: GET_NOTIFICATIONS
+    this.notificationService.initNotifications();
+    this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
+      if (notifications) {
+        this.notifications = notifications;
+      } else {
+        this.notifications = [];
+      }
     });
-    this.notificationsSubscription = notificationsQuery.valueChanges.subscribe((res) => {
-      this.notifications = res.data.notifications;
-    });
-    // notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
-    //   document: NOTIFICATION_SUBSCRIPTION,
-    //   updateQuery: (prev, { subscriptionData }) => {
-    //     if (!subscriptionData.data) {
-    //       return prev;
-    //     }
-    //     const newNotification = subscriptionData.data.notification;
-    //     return {
-    //       ...prev,
-    //       notifications: [newNotification, ...prev.notifications]
-    //     };
-    //   }
-    // });
   }
 
   ngOnChanges(): void {
@@ -110,6 +101,12 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.notificationsSubscription.unsubscribe();
+  }
+
+  /*  Go back to previous view
+  */
+  goBack(): void {
+    this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
   /*  Change the display depending on windows size.
@@ -142,4 +139,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  onNotificationClick(notification: Notification): void {
+    this.notificationService.markAsSeen(notification);
+  }
 }

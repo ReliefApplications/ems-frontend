@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Application, WhoConfirmModalComponent, ContentType } from '@who-ems/builder';
+import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from '../services/application.service';
 
 @Component({
   selector: 'app-application',
@@ -26,8 +25,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    private applicationService: ApplicationService,
-    private route: ActivatedRoute,
+    private applicationService: WhoApplicationService,
+    public route: ActivatedRoute,
     private dialog: MatDialog
   ) { }
 
@@ -43,19 +42,13 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           {
             name: 'Display',
             callback: (event) => this.onReorder(event),
-            navItems: [
-              {
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add'
-              }
-            ].concat(application.pages.filter(x => x.content).map(x => {
+            navItems: []
+            .concat(application.pages.filter(x => x.content).map(x => {
               return {
                 id: x.id,
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: 'dashboard',
+                icon: this.getNavIcon(x.type),
                 class: null,
                 orderable: true,
                 action: {
@@ -64,6 +57,15 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 }
               };
             }))
+            .concat(
+              {
+                name: 'Add a page',
+                path: './add-page',
+                icon: 'add_circle',
+                class: 'nav-item-add',
+                isAddPage: true
+              }
+            )
           },
           {
             name: 'Administration',
@@ -83,6 +85,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Roles',
                 path: './settings/roles',
                 icon: 'admin_panel_settings'
+              },
+              {
+                name: 'Channels',
+                path: './settings/channels',
+                icon: 'edit_notifications'
               }
             ]
           }
@@ -92,6 +99,17 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.navGroups = [];
       }
     });
+  }
+
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 
   onDelete(item: any): void {

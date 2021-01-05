@@ -34,6 +34,21 @@ mutation addRoleToUser($id: ID!, $role: ID!) {
   }
 }`;
 
+// === EDIT ROLE ===
+export const EDIT_ROLE = gql`
+mutation editRole($id: ID!, $permissions: [ID]!) {
+  editRole(id: $id, permissions: $permissions) {
+    id
+    title
+    usersCount
+  }
+}`;
+
+export interface EditRoleMutationResponse {
+  loading: boolean;
+  editRole: Role;
+}
+
 export interface AddRoleToUserMutationResponse {
   loading: boolean;
   addRoleToUser: User;
@@ -49,6 +64,9 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
     roles {
       id
       title
+      application {
+        id
+      }
     }
     oid
   }

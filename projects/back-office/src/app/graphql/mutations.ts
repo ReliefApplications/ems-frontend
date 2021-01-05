@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -59,7 +59,7 @@ export interface AddRoleToUserMutationResponse {
   addRoleToUser: User;
 }
 
-// === ADD ROLE ===
+// === EDIT ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
@@ -119,8 +119,8 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-mutation addForm($name: String!, $newResource: Boolean, $resource: ID) {
-  addForm(name: $name, newResource: $newResource, resource: $resource) {
+mutation addForm($name: String!, $newResource: Boolean, $resource: ID, $template: ID) {
+  addForm(name: $name, newResource: $newResource, resource: $resource, template: $template) {
     id
     name
     createdAt
@@ -199,6 +199,22 @@ export interface EditResourceMutationResponse {
   editResource: Resource;
 }
 
+
+// == DELETE RESOURCE ==
+
+export const DELETE_RESOURCE = gql`
+mutation deleteResource($id: ID!){
+  deleteResource(id: $id){
+    id
+  }
+}`;
+
+export interface DeleteResourceMutationResponse{
+  loading: boolean;
+  deletedResource: Resource;
+}
+
+
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
@@ -223,7 +239,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -257,7 +273,7 @@ mutation editForm($id: ID!, $status: String!) {
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -291,7 +307,7 @@ mutation editForm($id: ID!, $name: String!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -325,7 +341,7 @@ mutation editForm($id: ID!, $permissions: JSON!){
     versions {
       id
       createdAt
-      structure
+      data
     }
     permissions {
       canSee {
@@ -357,8 +373,8 @@ export interface EditFormMutationResponse {
 
 // === EDIT DASHBOARD ===
 export const EDIT_DASHBOARD = gql`
-mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: JSON) {
-  editDashboard(id: $id, structure: $structure, name: $name, permissions: $permissions) {
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
     id
     name
     structure
@@ -384,6 +400,7 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String, $permissions: 
     canSee
     canUpdate
     page {
+      id
       name
       application {
         id
@@ -543,8 +560,8 @@ export interface EditPageMutationResponse {
 
 // === EDIT WORKFLOW ===
 export const EDIT_WORKFLOW = gql`
-mutation editWorkflow($id: ID!, $name: String, $steps: [ID], $permissions: JSON) {
-  editWorkflow(id: $id, name: $name, steps: $steps, permissions: $permissions){
+mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
+  editWorkflow(id: $id, name: $name, steps: $steps){
     id
     name
   }
@@ -577,6 +594,24 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
     name
     type
     content
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
   }
 }`;
 

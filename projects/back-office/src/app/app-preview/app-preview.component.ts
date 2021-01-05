@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Application, WhoAuthService } from '@who-ems/builder';
+import { Application, Permissions, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from '../services/application.service';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-app-preview',
@@ -18,24 +18,43 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   public navGroups = [];
 
   // === APPLICATION ===
-  public application: Application;
   private applicationSubscription: Subscription;
 
-  // === ROUTE ===
-  private routeSubscription: Subscription;
+  // === PREVIEWED ROLE ID ===
+  public role: string;
 
   constructor(
     private route: ActivatedRoute,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
+    private previewService: PreviewService
   ) { }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
-      this.applicationService.loadApplication(params.id, true);
+    this.route.params.subscribe((params) => {
+      this.previewService.roleId.subscribe((role: string) => {
+        this.applicationService.loadApplication(params.id, role);
+        this.role = role;
+      });
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.title = application.name + ' (Preview)';
+        const role = application.roles.find(x => this.role ? x.id === this.role : true);
+        const adminNavItems = [];
+        if (role.permissions.some(x => x.type === Permissions.canSeeUsers && !x.global)) {
+          adminNavItems.push({
+            name: 'Users',
+            path: './settings/users',
+            icon: 'supervisor_account'
+          });
+        }
+        if (role.permissions.some(x => x.type === Permissions.canSeeRoles && !x.global)) {
+          adminNavItems.push({
+            name: 'Roles',
+            path: './settings/roles',
+            icon: 'admin_panel_settings'
+          });
+        }
         this.navGroups = [
           {
             name: 'Pages',
@@ -43,25 +62,13 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
               return {
                 name: x.name,
                 path: `./${x.type}/${x.content}`,
-                icon: 'dashboard'
+                icon: this.getNavIcon(x.type)
               };
             })
           },
-          // To change depending on roles selected
           {
             name: 'Administration',
-            navItems: [
-              {
-                name: 'Users',
-                path: './settings/users',
-                icon: 'supervisor_account'
-              },
-              {
-                name: 'Roles',
-                path: './settings/roles',
-                icon: 'admin_panel_settings'
-              }
-            ]
+            navItems: adminNavItems
           }
         ];
       } else {
@@ -70,8 +77,18 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
+  }
+
   ngOnDestroy(): void {
-    this.routeSubscription.unsubscribe();
     this.applicationSubscription.unsubscribe();
   }
 

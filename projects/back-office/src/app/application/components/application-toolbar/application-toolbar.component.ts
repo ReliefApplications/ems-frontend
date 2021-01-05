@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationService } from '../../../services/application.service';
+import { WhoApplicationService } from '@who-ems/builder';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -9,10 +9,8 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationToolbarComponent implements OnInit {
 
-  @Input() title: string;
-
   constructor(
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private router: Router
   ) { }
 
