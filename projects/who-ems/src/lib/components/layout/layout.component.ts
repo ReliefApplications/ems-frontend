@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ApplicationModalComponent } from './application-modal/application-modal.component';
 import { WhoNotificationService } from '../../services/notification.service';
 
+
 @Component({
   selector: 'who-layout',
   templateUrl: './layout.component.html',
@@ -31,6 +32,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
 
   filteredNavGroups = [];
+  public searchText: string = "";
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
@@ -41,6 +43,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DISPLAY ===
   public largeDevice: boolean;
+
 
   constructor(
     private router: Router,
@@ -141,5 +144,9 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+  }
+
+  openApplication() {
+    console.log(this.searchText)
   }
 }

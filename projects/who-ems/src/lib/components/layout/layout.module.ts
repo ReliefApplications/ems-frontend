@@ -13,9 +13,10 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { ApplicationModalComponent } from './application-modal/application-modal.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
-  declarations: [WhoLayoutComponent, ApplicationModalComponent],
+  declarations: [WhoLayoutComponent, ApplicationModalComponent, FilterPipe],
   imports: [
     CommonModule,
     RouterModule,
