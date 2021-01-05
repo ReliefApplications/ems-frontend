@@ -146,8 +146,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationService.markAsSeen(notification);
   }
 
-  openApplication():void {
-    console.log(this.searchText)
+  openApplication(): void {
+    console.log(this.searchText);
   }
 }
 
