@@ -30,6 +30,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
+  @Output() openApplication: EventEmitter<Application> = new EventEmitter();
+
 
   filteredNavGroups = [];
   public searchText = '';
@@ -146,8 +148,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationService.markAsSeen(notification);
   }
 
-  openApplication(): void {
-    console.log(this.searchText);
+  openApplicationEvent(application: Application): void {
+    this.openApplication.emit(application);
   }
 }
 

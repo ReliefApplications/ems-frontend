@@ -9,13 +9,10 @@
     <h1>{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <!-- <button mat-raised-button (click)="openApplicationModal()">
-      Applications
-    </button> -->
-    <button mat-icon-button [matMenuTriggerFor]="applicationsList">Applications</button>
+    <button class="application-button" mat-button [matMenuTriggerFor]="applicationsList" >Applications</button>
     <mat-menu #applicationsList="matMenu">
-      <input type="text" [(ngModel)]="searchText" mat-menu-item mat-input placeholder="Type here to search for an application...">
-      <button *ngFor="let app of applications | appFilter: searchText" (click)="openApplication()" mat-menu-item>{{app.name}}</button>
+      <input class="application-search" type="text" [(ngModel)]="searchText" mat-menu-item mat-input placeholder="Type to search...">
+      <button *ngFor="let app of applications | appFilter: searchText" (click)="openApplicationEvent(app)" mat-menu-item>{{app.name}}</button>
     </mat-menu>
   </ng-container>
   <div class="account-container">
