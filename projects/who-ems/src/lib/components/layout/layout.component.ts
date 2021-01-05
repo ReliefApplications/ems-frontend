@@ -7,9 +7,11 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
+import { SeeNotificationMutationResponse, SEE_NOTIFICATION } from '../../graphql/mutations';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
+import { WhoNotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'who-layout',
@@ -46,7 +48,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private router: Router,
     private authService: WhoAuthService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private notificationService: WhoNotificationService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -69,25 +72,14 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-    const notificationsQuery = this.apollo.watchQuery<GetNotificationsQueryResponse>({
-      query: GET_NOTIFICATIONS
+    this.notificationService.initNotifications();
+    this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
+      if (notifications) {
+        this.notifications = notifications;
+      } else {
+        this.notifications = [];
+      }
     });
-    this.notificationsSubscription = notificationsQuery.valueChanges.subscribe((res) => {
-      this.notifications = res.data.notifications;
-    });
-    // notificationsQuery.subscribeToMore<NotificationSubscriptionResponse>({
-    //   document: NOTIFICATION_SUBSCRIPTION,
-    //   updateQuery: (prev, { subscriptionData }) => {
-    //     if (!subscriptionData.data) {
-    //       return prev;
-    //     }
-    //     const newNotification = subscriptionData.data.notification;
-    //     return {
-    //       ...prev,
-    //       notifications: [newNotification, ...prev.notifications]
-    //     };
-    //   }
-    // });
   }
 
   ngOnChanges(): void {
@@ -150,4 +142,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.authService.logout();
   }
 
+  onNotificationClick(notification: Notification): void {
+    this.notificationService.markAsSeen(notification);
+  }
 }

@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Application, Permissions, WhoAuthService } from '@who-ems/builder';
-import { Subscription, forkJoin, Observable } from 'rxjs';
-import { ApplicationService } from '../services/application.service';
+import { Application, Permissions, WhoApplicationService } from '@who-ems/builder';
+import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 
 @Component({
@@ -26,7 +25,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private applicationService: ApplicationService,
+    private applicationService: WhoApplicationService,
     private previewService: PreviewService
   ) { }
 

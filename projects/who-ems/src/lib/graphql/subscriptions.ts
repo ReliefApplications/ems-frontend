@@ -5,9 +5,21 @@ import { Record } from '../models/record.model';
 export const NOTIFICATION_SUBSCRIPTION = gql`
 subscription NotificationSubscription {
     notification {
+        id
         action
         content
         createdAt
+        channel {
+            id
+            title
+            application {
+                id
+            }
+        }
+        seenBy {
+            id
+            name
+        }
     }
 }`;
 

@@ -6,6 +6,7 @@
 export * from './lib/services/auth.service';
 export * from './lib/services/snackbar.service';
 export * from './lib/services/grid.service';
+export * from './lib/services/application.service';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
@@ -20,6 +21,8 @@ export * from './lib/models/application.model';
 export * from './lib/models/page.model';
 export * from './lib/models/workflow.model';
 export * from './lib/models/step.model';
+export * from './lib/models/notification.model';
+export * from './lib/models/channel.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -39,5 +42,8 @@ export * from './lib/components/widgets/scheduler-settings/public-api';
 export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
+export * from './lib/components/users/public-api';
+export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
+
 export * from './lib/who-ems.module';

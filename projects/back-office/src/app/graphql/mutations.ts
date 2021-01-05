@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -198,6 +198,22 @@ export interface EditResourceMutationResponse {
   loading: boolean;
   editResource: Resource;
 }
+
+
+// == DELETE RESOURCE ==
+
+export const DELETE_RESOURCE = gql`
+mutation deleteResource($id: ID!){
+  deleteResource(id: $id){
+    id
+  }
+}`;
+
+export interface DeleteResourceMutationResponse{
+  loading: boolean;
+  deletedResource: Resource;
+}
+
 
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
