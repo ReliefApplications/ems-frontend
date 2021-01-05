@@ -32,7 +32,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
 
   filteredNavGroups = [];
-  public searchText: string = "";
+  public searchText = '';
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
@@ -146,7 +146,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationService.markAsSeen(notification);
   }
 
-  openApplication() {
+  openApplication():void {
     console.log(this.searchText)
   }
 }
+
