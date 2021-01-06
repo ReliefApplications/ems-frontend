@@ -480,8 +480,8 @@ export interface GetType {
 
 // === GET CHANNELS ===
 export const GET_CHANNELS = gql`
-{
-  channels {
+query getChannels($application: ID) {
+  channels(application: $application) {
     id
     title
     application {
