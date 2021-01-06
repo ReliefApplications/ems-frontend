@@ -3,7 +3,7 @@
 # Remove files
 REMOTE_PATH=/var/www/html/ems-back-office
 OUT=dist/back-office
-CONNECTION=newton@92.243.16.149
+CONNECTION=reliefapps@92.243.25.191
 
 echo -e "Cleaning destination ..."
 CMD="mkdir -p ${REMOTE_PATH} && cd ${REMOTE_PATH} && rm -rf *"

@@ -233,7 +233,7 @@ export class WhoApplicationService {
     this.apollo.mutate<AddRoleToUserMutationResponse>({
       mutation: ADD_ROLE_TO_USER,
       variables: {
-        id: value.user.id,
+        username: value.email,
         role: value.role
       }
     }).subscribe(res => {
