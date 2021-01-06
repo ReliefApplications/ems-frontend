@@ -17,6 +17,7 @@ export const routes = [
             },
             {
                 path: 'login',
+                redirectTo: 'applications',
                 canActivate: [MsalGuard, AccessGuard],
             },
             ]

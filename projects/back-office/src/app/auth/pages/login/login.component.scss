@@ -13,12 +13,14 @@
 }
 
 .login-button {
-    border: 1px solid darkgray;
-    background-color: rgb(255, 255, 255);
+    font-size: large;
+    font-weight: 300;
+    background-color: #398FCC;
+    color: white;
 }
 
 .login-icon {
-    width: 24px;
+    width: 100px;
     margin-right: 16px;
 }
 
@@ -31,7 +33,17 @@
     color: rgb(245, 245, 245);
 }
 
-.auth-form {
-    text-align:center;
-    background-color: #f3f3f3;
+.login-wrapper {
+    text-align: center;
+}
+
+h1 {
+    font-size: xxx-large;
+    color:rgb(95, 95, 95)
+}
+
+.test {
+    position: absolute;
+    left: 5px;
+    top: 5px;
 }
