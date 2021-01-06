@@ -253,14 +253,16 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-        mutation: PUBLISH_NOTIFICATION,
-        variables: {
-          action: 'Records update',
-          content: this.updatedItems,
-          channel: this.settings.channel
-        }
-      }).toPromise());
+      if (this.settings.channel) {
+        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: 'Records update',
+            content: this.updatedItems,
+            channel: this.settings.channel
+          }
+        }).toPromise());
+      }
       Promise.all(promises).then(() => this.getRecords());
     }
     // this.getRecords();
