@@ -1,13 +1,21 @@
-<div class="auth-form">
-    <div class="form-group">
-        <div class="form-group-title">
-            Back-office
+<div class="dividor">
+<mat-grid-list cols="2">
+    <mat-grid-tile>
+        <div class="auth-form">
+            <div class="form-group">
+                <div class="form-group-title">
+                    <h1>Back-office</h1>
+                </div>
+            </div>
+            <div class="buttons-row">
+                <button mat-button type="button" (click)="onLogin()" class="login-button">
+                    Login with Microsoft
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="buttons-row">
-        <button mat-button type="button" (click)="onLogin()" class="login-button">
-            <img src="/assets/microsoft-icon.jpg" class="login-icon">
-            Login with Microsoft
-        </button>
-    </div>
+    </mat-grid-tile>
+    <mat-grid-tile class="picture">
+        picture
+    </mat-grid-tile>
+</mat-grid-list> 
 </div>

@@ -8,10 +8,6 @@ import { AccessGuard } from '../guards/access.guard';
 */
 export const routes = [
     {
-        path: 'login',
-        canActivate: [MsalGuard, AccessGuard],
-    },
-    {
         path: '',
         children: [
             {

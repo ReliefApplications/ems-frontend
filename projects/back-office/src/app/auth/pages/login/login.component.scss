@@ -14,9 +14,24 @@
 
 .login-button {
     border: 1px solid darkgray;
+    background-color: rgb(255, 255, 255);
 }
 
 .login-icon {
     width: 24px;
     margin-right: 16px;
+}
+
+.dividor {
+    width: 100%;
+}
+
+.picture {
+    background-color: #398FCC;
+    color: rgb(245, 245, 245);
+}
+
+.auth-form {
+    text-align:center;
+    background-color: #f3f3f3;
 }
