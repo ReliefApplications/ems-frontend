@@ -11,7 +11,12 @@
   <ng-container *ngIf="applications && applications.length > 0">
     <button class="application-button" mat-button [matMenuTriggerFor]="applicationsList" >Applications</button>
     <mat-menu #applicationsList="matMenu">
-      <input class="application-search" type="text" [(ngModel)]="searchText" mat-menu-item mat-input placeholder="Type to search...">
+      <div>
+      <mat-form-field appearance="outline">
+        <mat-icon matPrefix>search</mat-icon>
+        <input class="application-search" type="text" [(ngModel)]="searchText" matInput mat-menu-item  placeholder="Type to search..." autocomplete="off" />
+      </mat-form-field>
+      </div>
       <button *ngFor="let app of applications | appFilter: searchText" (click)="openApplicationEvent(app)" mat-menu-item>{{app.name}}</button>
     </mat-menu>
   </ng-container>

@@ -15,6 +15,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FormsModule } from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [WhoLayoutComponent, ApplicationModalComponent, FilterPipe],
@@ -31,7 +33,9 @@ import { FormsModule } from '@angular/forms';
     MatBadgeModule,
     MatCardModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   exports: [WhoLayoutComponent]
 })
