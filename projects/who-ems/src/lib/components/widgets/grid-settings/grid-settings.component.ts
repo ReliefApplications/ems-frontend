@@ -2,6 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
+import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
+import { Application } from '../../../models/application.model';
+import { Channel } from '../../../models/channel.model';
+import { WhoApplicationService } from '../../../services/application.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
@@ -39,9 +43,13 @@ export class WhoGridSettingsComponent implements OnInit {
   public availableDetailsFields: any[];
   public availableDetailsFilter: any[];
 
+  // === NOTIFICATIONS ===
+  public channels: Channel[];
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
+    private applicationService: WhoApplicationService,
     private queryBuilder: QueryBuilderService
   ) { }
 
@@ -61,8 +69,8 @@ export class WhoGridSettingsComponent implements OnInit {
         type: [(tileSettings && tileSettings.details && tileSettings.details.type) ? tileSettings.details.type : null],
         fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
         filter: this.formBuilder.group({}),
-      })
-
+      }),
+      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
@@ -102,6 +110,24 @@ export class WhoGridSettingsComponent implements OnInit {
       } else {
         this.availableDetailsFields = [];
         this.availableDetailsFilter = [];
+      }
+    });
+    this.applicationService.application.subscribe((application: Application) => {
+      if (application) {
+        this.apollo.watchQuery<GetChannelsQueryResponse>({
+          query: GET_CHANNELS,
+          variables: {
+            application: application.id
+          }
+        }).valueChanges.subscribe(res => {
+          this.channels = res.data.channels;
+        });
+      } else {
+        this.apollo.watchQuery<GetChannelsQueryResponse>({
+          query: GET_CHANNELS,
+        }).valueChanges.subscribe(res => {
+          this.channels = res.data.channels;
+        });
       }
     });
   }

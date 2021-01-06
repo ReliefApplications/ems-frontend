@@ -4,7 +4,7 @@ import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@p
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
+import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
 import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -250,6 +250,16 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           variables: {
             id: item.id,
             data
+          }
+        }).toPromise());
+      }
+      if (this.settings.channel) {
+        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: 'Records update',
+            content: this.updatedItems,
+            channel: this.settings.channel
           }
         }).toPromise());
       }

@@ -319,3 +319,31 @@ export interface DeleteChannelMutationResponse {
   loading: boolean;
   deleteChannel: Channel;
 }
+
+// === PUBLISH NOTIFICATION ===
+export const PUBLISH_NOTIFICATION = gql`
+mutation publishNotification($action: String!, $content: JSON!, $channel: ID!) {
+  publishNotification(action: $action, content: $content, channel: $channel){
+    id
+    action
+    content
+    createdAt
+    channel {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
+    seenBy {
+      id
+      username
+    }
+  }
+}`;
+
+export interface PublishNotificationMutationResponse {
+  loading: boolean;
+  publishNotification: Notification;
+}
