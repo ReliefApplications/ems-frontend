@@ -143,8 +143,8 @@ export interface AddRoleMutationResponse {
 }
 
 export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($id: ID!, $role: ID!) {
-  addRoleToUser(id: $id, role: $role) {
+mutation addRoleToUser($username: String!, $role: ID!) {
+  addRoleToUser(username: $username, role: $role) {
     id
     username
     name

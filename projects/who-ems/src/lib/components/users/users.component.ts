@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
-import { EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
+import { AddRoleToUserMutationResponse, ADD_ROLE_TO_USER, EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
 
@@ -40,7 +40,20 @@ export class WhoUsersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.applicationService.inviteUser(value);
+        if (this.applicationService) {
+          this.applicationService.inviteUser(value);
+        } else {
+          this.apollo.mutate<AddRoleToUserMutationResponse>({
+            mutation: ADD_ROLE_TO_USER,
+            variables: {
+              username: value.email,
+              role: value.role
+            }
+          }).subscribe(res => {
+            this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
+            this.users.data = this.users.data.concat([res.data.addRoleToUser]);
+          });
+        }
       }
     });
   }

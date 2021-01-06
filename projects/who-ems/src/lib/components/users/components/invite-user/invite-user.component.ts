@@ -21,12 +21,12 @@ export class WhoInviteUserComponent implements OnInit {
   private users: User[];
   public filteredUsers: Observable<User[]>;
 
-  get user(): string {
-    return this.inviteForm.value.user;
+  get email(): string {
+    return this.inviteForm.value.email;
   }
 
-  set user(value: string) {
-    this.inviteForm.controls.user.setValue(value);
+  set email(value: string) {
+    this.inviteForm.controls.email.setValue(value);
   }
 
   constructor(
@@ -42,7 +42,7 @@ export class WhoInviteUserComponent implements OnInit {
   */
   ngOnInit(): void {
     this.inviteForm = this.formBuilder.group({
-      user: ['', Validators.required],
+      email: ['', Validators.required],
       role: ['', Validators.required]
     });
     this.apollo.watchQuery<GetUsersQueryResponse>({
@@ -50,7 +50,7 @@ export class WhoInviteUserComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       this.users = res.data.users;
     });
-    this.filteredUsers = this.inviteForm.controls.user.valueChanges.pipe(
+    this.filteredUsers = this.inviteForm.controls.email.valueChanges.pipe(
       startWith(''),
       map(value => typeof value === 'string' ? value : value.username),
       map(x => this.filter(x))
@@ -60,12 +60,6 @@ export class WhoInviteUserComponent implements OnInit {
   private filter(value: string): User[] {
     const filterValue = value.toLowerCase();
     return this.users ? this.users.filter(x => x.username.toLowerCase().indexOf(filterValue) === 0) : this.users ;
-  }
-
-  /* Display the name of the user
-  */
-  displayUser(user: User): string {
-    return user && user.name ? user.name : '';
   }
 
   /*  Close the modal without sending data.
