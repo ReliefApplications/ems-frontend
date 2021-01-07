@@ -26,6 +26,7 @@
 
 .dividor {
     width: 100%;
+    height: inherit;
 }
 
 .picture {
@@ -42,8 +43,18 @@ h1 {
     color:rgb(95, 95, 95)
 }
 
+.form-group-title {
+    color:rgb(153, 153, 153)
+}
+
 .test {
     position: absolute;
     left: 5px;
     top: 5px;
+}
+
+.side-bar-picture {
+    height: 100%;
+    width: auto;
+    background-size: cover;
 }

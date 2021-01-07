@@ -47,7 +47,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'applications',
     pathMatch: 'full'
   }
 ];

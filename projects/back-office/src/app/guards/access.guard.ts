@@ -27,7 +27,7 @@ export class AccessGuard implements CanActivate {
             }
             this.snackBar.openSnackBar('No access provided to this platform.', { error: true });
             this.authService.logout();
-            this.router.navigate(['/auth']);
+            this.router.navigate(['/applications']);
             return false;
           }
         })
