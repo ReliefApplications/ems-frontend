@@ -10,7 +10,6 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
-import { ApplicationModalComponent } from './application-modal/application-modal.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FilterPipe } from './pipes/filter.pipe';
@@ -19,7 +18,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
-  declarations: [WhoLayoutComponent, ApplicationModalComponent, FilterPipe],
+  declarations: [WhoLayoutComponent, FilterPipe],
   imports: [
     CommonModule,
     RouterModule,

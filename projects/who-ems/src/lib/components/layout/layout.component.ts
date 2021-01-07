@@ -8,7 +8,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { ApplicationModalComponent } from './application-modal/application-modal.component';
 import { WhoNotificationService } from '../../services/notification.service';
 
 
@@ -136,12 +135,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     */
   logout(): void {
     this.authService.logout();
-  }
-
-  openApplicationModal(): void {
-    this.dialog.open(ApplicationModalComponent, {
-      data: this.applications
-    });
   }
 
   onNotificationClick(notification: Notification): void {
