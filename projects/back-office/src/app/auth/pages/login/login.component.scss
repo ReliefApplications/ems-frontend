@@ -1,6 +1,6 @@
 :host {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -19,45 +19,30 @@
     color: white;
 }
 
-.login-icon {
-    width: 100px;
-    margin-right: 16px;
-}
-
-.dividor {
-    width: 50%;
-    height: inherit;
-    float: left;
-    text-align: center;
-    display: flex;    
-}
-
-.picture {
-    background-color: #398FCC;
-    color: rgb(245, 245, 245);
-}
-
 .login-wrapper {
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+    h1 {
+        font-size: xxx-large;
+        color:rgb(95, 95, 95)
+    }
+
+    .form-group-title {
+        color:rgb(153, 153, 153)
+    }
 }
 
-h1 {
-    font-size: xxx-large;
-    color:rgb(95, 95, 95)
-}
-
-.form-group-title {
-    color:rgb(153, 153, 153)
-}
-
-.test {
+.login-logo {
     position: absolute;
     left: 5px;
     top: 5px;
+
+    img {
+        width: 100px;
+        margin-right: 16px;
+    }
 }
 
 .side-bar-picture {
@@ -66,35 +51,33 @@ h1 {
     background-size: cover;
 }
 
-.full {
-    display: flex;
-}
-
-.split {
+.login-panel {
+    flex: 1;
     height: 100%;
     width: 50%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    overflow-x: hidden;
-}
-  
-.left {
-    left: 0;
-}
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 
-.right {
-    right: 0;
+    &.left {
+        min-width: 400px;
+    }
+    
+    &.right {
+        background-image: url('/assets/who_image2_cropped.jpg');
+        background-size: cover;
+    }
 }
 
 @media only screen and (max-width: 600px) {
     .right {
         display: none;
     }
-    .left {
-        left: 25%;
+    .login-panel {
+        width: 100%;
     }
-    .test {
-        display: none;
-    }
+    // .login-logo {
+    //     display: none;
+    // }
 }
