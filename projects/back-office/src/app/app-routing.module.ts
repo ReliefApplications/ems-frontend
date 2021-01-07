@@ -6,11 +6,6 @@ import { AccessGuard } from './guards/access.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth',
-    pathMatch: 'full',
-  },
-  {
-    path: '',
     children: [
       {
         path: '',

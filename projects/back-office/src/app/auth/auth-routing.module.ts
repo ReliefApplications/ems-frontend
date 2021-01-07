@@ -17,15 +17,9 @@ export const routes = [
             },
             {
                 path: 'login',
-                redirectTo: 'applications',
-                canActivate: [MsalGuard, AccessGuard],
+                redirectTo: ''
             },
-            ]
-    },
-    {
-        path: '**',
-        redirectTo: '',
-        pathMatch: 'full'
+        ]
     }
 ];
 @NgModule({

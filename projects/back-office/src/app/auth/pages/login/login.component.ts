@@ -18,6 +18,6 @@ export class LoginComponent implements OnInit {
   /* Redirect to Azure authentication page.
   */
   onLogin(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 }
