@@ -12,6 +12,9 @@
                     <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
                         <mat-icon>drag_indicator</mat-icon>
                     </button>
+                    <button class="widget-expand" mat-icon-button *ngIf="!canUpdate" (click)="onExpandWidget(widget)">
+                        <mat-icon>open_in_full</mat-icon>
+                    </button>
                 </div>
             </cdk-drop-list>
         </mat-grid-tile>
