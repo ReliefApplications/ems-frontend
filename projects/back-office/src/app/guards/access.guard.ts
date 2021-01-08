@@ -20,16 +20,12 @@ export class AccessGuard implements CanActivate {
       return this.authService.user.pipe(
         skip(1), // this is important as first value of behaviorSubject is null
         map((user: User) => {
-          console.log(user);
           if (user) {
             if (user.isAdmin) {
               return true;
             }
             this.snackBar.openSnackBar('No access provided to this platform.', { error: true });
             this.authService.logout();
-            this.router.navigate(['/auth']);
-            return false;
-          } else {
             this.router.navigate(['/auth']);
             return false;
           }
