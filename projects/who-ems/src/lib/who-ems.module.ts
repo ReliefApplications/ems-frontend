@@ -19,6 +19,7 @@ import { WhoConfirmModalModule } from './components/confirm-modal/confirm-modal.
 import { WhoUsersModule } from './components/users/users.module';
 import { WhoRolesModule } from './components/roles/roles.module';
 import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
+import { WhoConvertModalModule } from './components/convert-modal/convert-modal.module';
 
 @NgModule({
   declarations: [],
@@ -43,7 +44,8 @@ import { WhoPreviousButtonModule } from './components/previous-button/previous-b
     WhoConfirmModalModule,
     WhoUsersModule,
     WhoRolesModule,
-    WhoPreviousButtonModule
+    WhoPreviousButtonModule,
+    WhoConvertModalModule
   ]
 })
 export class WhoEmsModule { }

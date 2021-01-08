@@ -12,6 +12,7 @@ import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -367,9 +368,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-        this.getRecords();
-        this.selectedRow = null;
+        this.reloadData();
       }
     });
   }
@@ -377,6 +376,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a dialog component which provide tools to convert the selected record
   */
   public onConvertRecord(): void {
+    const dialogRef = this.dialog.open(WhoConvertModalComponent, {
+      data: {
+        record: this.selectedRow.dataItem.id
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      console.log(JSON.stringify(value));
+    });
   }
 
   /* Open a component which display record's history
@@ -404,12 +411,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-          this.getRecords();
-          this.selectedRow = null;
+          this.reloadData();
         });
       }
     });
+  }
+
+  /* Reload data and unselect all rows
+  */
+  private reloadData(): void {
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.getRecords();
+    this.selectedRow = null;
   }
 
   ngOnDestroy(): void {
