@@ -1,5 +1,5 @@
 <div class="widget-container">
-<div class="widget-header">{{settings.title}}</div>
+<div class="widget-header" *ngIf="header">{{settings.title}}</div>
 <kendo-grid id="customGrid"
     class="widget-content"
     [autoSize]="true"

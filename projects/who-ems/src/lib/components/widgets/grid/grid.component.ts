@@ -63,6 +63,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public filter: CompositeFilterDescriptor;
 
   // === SETTINGS ===
+  @Input() header = true;
   @Input() settings: any = null;
 
   // === EXCEL ===
