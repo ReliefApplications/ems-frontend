@@ -19,6 +19,7 @@ import {
   AddChannelMutationResponse, ADD_CHANNEL,
   DeleteChannelMutationResponse, DELETE_CHANNEL } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,9 @@ export class WhoApplicationService {
       }
     }).valueChanges.subscribe(res => {
       this._application.next(res.data.application);
+      const { pages } = res.data.application;
+      const [ firstPage, ...rest ] = pages;
+      this.router.navigateByUrl(`/dashboard/${firstPage.content}`);
     });
   }
 
