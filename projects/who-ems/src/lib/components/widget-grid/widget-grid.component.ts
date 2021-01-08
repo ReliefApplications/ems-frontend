@@ -1,5 +1,7 @@
 import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 @Component({
   selector: 'who-widget-grid',
@@ -21,7 +23,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -76,5 +78,20 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
   onDeleteWidget(e: any): void {
     this.delete.emit(e);
+  }
+
+  onExpandWidget(e: any): void {
+    const widget = this.widgets.find(x => x.id === e.id);
+    const dialogRef = this.dialog.open(WhoExpandedWidgetComponent, {
+      data: {
+        widget
+      },
+      // hasBackdrop: false,
+      position: {
+        bottom: '0',
+        right: '0'
+      },
+      panelClass: 'tile-settings-dialog'
+    });
   }
 }
