@@ -368,6 +368,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       if (value) {
         this.dataQuery = this.queryBuilder.buildQuery(this.settings);
         this.getRecords();
+        this.selectedRow = null;
       }
     })
   }
@@ -406,6 +407,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         }).subscribe(res => {
           this.dataQuery = this.queryBuilder.buildQuery(this.settings);
           this.getRecords();
+          this.selectedRow = null;
         });
       }
     });
