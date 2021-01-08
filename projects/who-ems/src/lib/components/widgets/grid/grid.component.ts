@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
-import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
+import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent, SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
@@ -64,6 +64,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === EXCEL ===
   public excelFileName: string;
+
+  // === ACTIONS ON SELECTION
+  public selectedRow: RowArgs;
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -341,6 +344,48 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.loadItems();
+  }
+
+  /* Detect selection event and display actions available on rows.
+  */
+  public selectionChange(selection: SelectionEvent): void {
+    this.selectedRow = selection.selectedRows[0];
+
+  }
+
+  /* Open the form corresponding to selected row in order to update it
+  */
+  public onUpdateRow(): void {
+    const dialogRef = this.dialog.open(WhoFormModalComponent, {
+      data: {
+        recordId: this.selectedRow.dataItem.id,
+        locale: 'en'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+        this.getRecords();
+      }
+    })
+  }
+
+  /* Open a dialog component which provide tools to convert the selected record
+  */
+  public onConvertRecord(): void {
+      
+  }
+
+  /* Open a component which display record's history
+  */
+  public onViewHistory(): void {
+      
+  }
+
+  /* Open a confirmation modal and then delete the selected record
+  */
+  public onDeleteRow(): void {
+      
   }
 
   ngOnDestroy(): void {
