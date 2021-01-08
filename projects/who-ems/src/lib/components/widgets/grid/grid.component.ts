@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
-import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent, SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
+import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
+  SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
@@ -370,19 +371,17 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         this.getRecords();
         this.selectedRow = null;
       }
-    })
+    });
   }
 
   /* Open a dialog component which provide tools to convert the selected record
   */
   public onConvertRecord(): void {
-      
   }
 
   /* Open a component which display record's history
   */
   public onViewHistory(): void {
-      
   }
 
   /* Open a confirmation modal and then delete the selected record
