@@ -46,8 +46,7 @@ export class WhoApplicationService {
       }
     }).valueChanges.subscribe(res => {
       this._application.next(res.data.application);
-      const { pages } = res.data.application;
-      const [ firstPage, ...rest ] = pages;
+      const { pages: [firstPage, ...rest]} = res.data.application;
       this.router.navigateByUrl(`/dashboard/${firstPage.content}`);
     });
   }
