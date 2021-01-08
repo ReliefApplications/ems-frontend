@@ -6,9 +6,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
 import { GetType, GET_TYPE } from '../../../graphql/queries';
+import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -385,7 +387,28 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a confirmation modal and then delete the selected record
   */
   public onDeleteRow(): void {
-      
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete row',
+        content: `Do you confirm the deletion of this row ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const id = this.selectedRow.dataItem.id;
+        this.apollo.mutate<DeleteRecordMutationResponse>({
+          mutation: DELETE_RECORD,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+          this.getRecords();
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {
