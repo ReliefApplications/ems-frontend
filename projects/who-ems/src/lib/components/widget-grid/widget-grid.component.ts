@@ -82,16 +82,17 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
   onExpandWidget(e: any): void {
     const widget = this.widgets.find(x => x.id === e.id);
-    const dialogRef = this.dialog.open(WhoExpandedWidgetComponent, {
+    this.dialog.open(WhoExpandedWidgetComponent, {
       data: {
         widget
       },
+      autoFocus: false,
       // hasBackdrop: false,
       position: {
         bottom: '0',
         right: '0'
       },
-      panelClass: 'tile-settings-dialog'
+      panelClass: 'expanded-widget-dialog'
     });
   }
 }

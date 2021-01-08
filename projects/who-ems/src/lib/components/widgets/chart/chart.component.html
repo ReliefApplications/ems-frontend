@@ -1,5 +1,5 @@
 <div class="widget-container">
-    <div class="widget-header">{{settings.title}}</div>
+    <div class="widget-header" *ngIf="header">{{settings.title}}</div>
     <button mat-icon-button class="export-button" (click)="onExport()">
         <mat-icon>get_app</mat-icon>
       </button>

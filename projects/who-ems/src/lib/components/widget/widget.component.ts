@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class WhoWidgetComponent implements OnInit {
 
   @Input() widget: any;
+  @Input() header = true;
 
   constructor() { }
 
