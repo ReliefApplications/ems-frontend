@@ -250,13 +250,6 @@ export const GET_USERS = gql`
     id
     username
     name
-    roles {
-      id
-      title
-      application {
-        id
-      }
-    }
     oid
   }
 }`;
