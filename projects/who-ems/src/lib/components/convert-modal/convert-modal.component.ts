@@ -43,11 +43,12 @@ export class WhoConvertModalComponent implements OnInit {
     });
     this.convertForm = this.formBuilder.group({
       targetForm: [null, Validators.required],
-      deleteSource: [false, Validators.required]
+      copyRecord: [true, Validators.required]
     });
     this.convertForm.get('targetForm').valueChanges.subscribe((targetForm: Form) => {
       if (targetForm) {
-        this.ignoredFields = this.form.fields.filter(x => !targetForm.fields.some(y => x.name === y.name));
+        this.ignoredFields = this.form.fields.filter(sourceField => !targetForm.fields.some(
+          targetField => sourceField.name === targetField.name));
       }
     });
   }

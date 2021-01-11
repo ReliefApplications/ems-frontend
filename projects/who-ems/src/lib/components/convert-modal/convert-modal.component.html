@@ -10,16 +10,16 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-radio-group formControlName="deleteSource" class="form-radio-group">
-                <mat-radio-button [value]="false">Copy source record</mat-radio-button>
-                <mat-radio-button [value]="true">Delete source record</mat-radio-button>
+            <mat-radio-group formControlName="copyRecord" class="form-radio-group">
+                <mat-radio-button [value]="true">Copy source record</mat-radio-button>
+                <mat-radio-button [value]="false">Overwrite source record</mat-radio-button>
             </mat-radio-group>
         </div>
     </form>
 </div>
 <div *ngIf="convertForm.controls.targetForm.value">
     <ng-container *ngIf="ignoredFields.length > 0">
-        <a>Following fields will be ignored: </a>
+        <a>Following fields will be ignored:</a> <br/> 
         <span *ngFor="let field of ignoredFields">{{field.name}}, </span>
     </ng-container>
     <ng-container *ngIf="ignoredFields.length == 0">
