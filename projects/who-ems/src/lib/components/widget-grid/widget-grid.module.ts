@@ -16,13 +16,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { WhoFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { WhoTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { WhoTileDisplayComponent } from './floating-options/menu/tile-display/tile-display.component';
+import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 @NgModule({
   declarations: [
     WhoWidgetGridComponent,
     WhoFloatingOptionsComponent,
     WhoTileDataComponent,
-    WhoTileDisplayComponent
+    WhoTileDisplayComponent,
+    WhoExpandedWidgetComponent
   ],
   imports: [
     CommonModule,

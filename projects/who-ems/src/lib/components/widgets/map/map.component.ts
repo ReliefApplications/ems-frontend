@@ -43,6 +43,7 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
+  @Input() header = true;
   @Input() settings: any = null;
 
   constructor(

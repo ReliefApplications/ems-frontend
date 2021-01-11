@@ -347,3 +347,16 @@ export interface PublishNotificationMutationResponse {
   loading: boolean;
   publishNotification: Notification;
 }
+
+// === DELETE RECORD ===
+export const DELETE_RECORD = gql`
+mutation deleteRecord($id: ID!) {
+  deleteRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRecordMutationResponse {
+  loading: boolean;
+  deleteRecord: Record;
+}

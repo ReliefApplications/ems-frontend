@@ -1,14 +1,17 @@
 import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
-import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
+import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
+  SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
 import { GetType, GET_TYPE } from '../../../graphql/queries';
+import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -60,10 +63,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public filter: CompositeFilterDescriptor;
 
   // === SETTINGS ===
+  @Input() header = true;
   @Input() settings: any = null;
 
   // === EXCEL ===
   public excelFileName: string;
+
+  // === ACTIONS ON SELECTION
+  public selectedRow: RowArgs;
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -341,6 +348,69 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.loadItems();
+  }
+
+  /* Detect selection event and display actions available on rows.
+  */
+  public selectionChange(selection: SelectionEvent): void {
+    this.selectedRow = selection.selectedRows[0];
+
+  }
+
+  /* Open the form corresponding to selected row in order to update it
+  */
+  public onUpdateRow(): void {
+    const dialogRef = this.dialog.open(WhoFormModalComponent, {
+      data: {
+        recordId: this.selectedRow.dataItem.id,
+        locale: 'en'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+        this.getRecords();
+        this.selectedRow = null;
+      }
+    });
+  }
+
+  /* Open a dialog component which provide tools to convert the selected record
+  */
+  public onConvertRecord(): void {
+  }
+
+  /* Open a component which display record's history
+  */
+  public onViewHistory(): void {
+  }
+
+  /* Open a confirmation modal and then delete the selected record
+  */
+  public onDeleteRow(): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete row',
+        content: `Do you confirm the deletion of this row ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const id = this.selectedRow.dataItem.id;
+        this.apollo.mutate<DeleteRecordMutationResponse>({
+          mutation: DELETE_RECORD,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+          this.getRecords();
+          this.selectedRow = null;
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {
