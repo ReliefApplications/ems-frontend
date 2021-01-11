@@ -19,6 +19,7 @@ export class WhoFloatingOptionsComponent implements OnInit {
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
+  @Output() expand: EventEmitter<any> = new EventEmitter();
 
   // === AVAILABLE ACTIONS ===
   public items: any[];
@@ -40,6 +41,10 @@ export class WhoFloatingOptionsComponent implements OnInit {
         name: 'Settings',
         icon: 'insert_chart',
         disabled: !this.widget || !this.widget.settings
+      },
+      {
+        name: 'Expand',
+        icon: 'open_in_full'
       },
       {
         name: 'Delete',
@@ -77,6 +82,9 @@ export class WhoFloatingOptionsComponent implements OnInit {
       dialogRef.afterClosed().subscribe(res => {
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       });
+    }
+    if (item.name === 'Expand') {
+      this.expand.emit({id: this.widget.id});
     }
     if (item.name === 'Delete') {
       this.delete.emit({id: this.widget.id});

@@ -24,6 +24,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
+  @Input() header = true;
   @Input() settings: any = null;
 
   // === CHART ===

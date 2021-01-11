@@ -11,6 +11,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class WhoEditorComponent implements OnInit {
 
   // === WIDGET CONFIGURATION ===
+  @Input() header = true;
   @Input() public title: string;
   @Input() public text: string;
 

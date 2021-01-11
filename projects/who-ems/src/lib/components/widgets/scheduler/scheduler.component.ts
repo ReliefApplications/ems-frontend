@@ -22,6 +22,7 @@ export class WhoSchedulerComponent implements OnInit {
   public loading = true;
 
   // === WIDGET CONFIGURATION ===
+  @Input() header = true;
   @Input() settings: any = null;
 
   constructor(
