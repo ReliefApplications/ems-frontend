@@ -45,5 +45,6 @@ export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
+export * from './lib/components/convert-modal/public-api';
 
 export * from './lib/who-ems.module';

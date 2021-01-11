@@ -5,13 +5,18 @@ import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
   SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { EditRecordMutationResponse, EDIT_RECORD, PublishNotificationMutationResponse, PUBLISH_NOTIFICATION } from '../../../graphql/mutations';
+import {
+  EditRecordMutationResponse, EDIT_RECORD,
+  ConvertRecordMutationResponse, CONVERT_RECORD,
+  PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
+  DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { GetType, GET_TYPE } from '../../../graphql/queries';
-import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
+import { Form } from '../../../models/form.model';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -69,7 +74,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   // === EXCEL ===
   public excelFileName: string;
 
-  // === ACTIONS ON SELECTION
+  // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
 
   get hasChanges(): boolean {
@@ -130,6 +135,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               };
             });
           } else {
+            this.gridData = null;
             this.loading = false;
           }
         }
@@ -354,7 +360,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public selectionChange(selection: SelectionEvent): void {
     this.selectedRow = selection.selectedRows[0];
-
   }
 
   /* Open the form corresponding to selected row in order to update it
@@ -368,9 +373,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-        this.getRecords();
-        this.selectedRow = null;
+        this.reloadData();
       }
     });
   }
@@ -378,6 +381,26 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a dialog component which provide tools to convert the selected record
   */
   public onConvertRecord(): void {
+    const record: string = this.selectedRow.dataItem.id;
+    const dialogRef = this.dialog.open(WhoConvertModalComponent, {
+      data: {
+        record
+      }
+    });
+    dialogRef.afterClosed().subscribe((value: {targetForm: Form, copyRecord: boolean}) => {
+      if (value) {
+        this.apollo.mutate<ConvertRecordMutationResponse>({
+          mutation: CONVERT_RECORD,
+          variables: {
+            id: record,
+            form: value.targetForm.id,
+            copyRecord: value.copyRecord
+          }
+        }).subscribe(res => {
+          this.reloadData();
+        });
+      }
+    });
   }
 
   /* Open a component which display record's history
@@ -405,12 +428,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-          this.getRecords();
-          this.selectedRow = null;
+          this.reloadData();
         });
       }
     });
+  }
+
+  /* Reload data and unselect all rows
+  */
+  private reloadData(): void {
+    this.dataSubscription.unsubscribe();
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.getRecords();
+    this.selectedRow = null;
   }
 
   ngOnDestroy(): void {

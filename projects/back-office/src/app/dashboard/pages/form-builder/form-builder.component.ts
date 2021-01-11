@@ -145,7 +145,7 @@ export class FormBuilderComponent implements OnInit {
 */
   public onOpenVersion(e: any): void {
     this.activeVersion = e;
-    this.structure = this.activeVersion.structure;
+    this.structure = this.activeVersion.data;
     // this.surveyCreator.makeNewViewActive('test');
     // this.surveyCreator.saveSurveyFunc = null;
   }
