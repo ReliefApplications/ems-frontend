@@ -45,12 +45,12 @@ export class RecordHistoryComponent implements OnInit {
           if (!current[key]) {
               changes.push('Remove field <i>' + key + '</i> with value <b>' + after[key] + '</b>');
           }
-      })
+      });
       return changes;
   }
 
   async transformVersion(data): Promise<any[]> {
-      let res = [];
+      const res = [];
       const versions = data.versions;
       if (versions.length === 0) {
         return res;
@@ -58,7 +58,8 @@ export class RecordHistoryComponent implements OnInit {
       for (let i = 1; i < versions.length; i++) {
           res.push({created : versions[i - 1].createdAt, changes : this.getDifference(versions[i - 1].data, versions[i].data)});
       }
-      res.push({created : versions[versions.length - 1].createdAt, changes : this.getDifference(data.data, versions[versions.length - 1].data)});
+      res.push({created : versions[versions.length - 1].createdAt,
+        changes : this.getDifference(data.data, versions[versions.length - 1].data)});
       return res.reverse();
   }
 
