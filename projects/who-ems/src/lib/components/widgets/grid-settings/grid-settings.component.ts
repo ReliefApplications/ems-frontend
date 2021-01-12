@@ -49,8 +49,7 @@ export class WhoGridSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private applicationService: WhoApplicationService,
-    private queryBuilder: QueryBuilderService
+    private applicationService: WhoApplicationService
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
@@ -60,58 +59,67 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-      queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
-      fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
-      sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
-      sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
-      filter: this.formBuilder.group({}),
-      details: this.formBuilder.group({
-        type: [(tileSettings && tileSettings.details && tileSettings.details.type) ? tileSettings.details.type : null],
-        fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
-        filter: this.formBuilder.group({}),
+      query: this.formBuilder.group({
+        name: ['', Validators.required],
+        fields: [null, Validators.required],
+        sort: this.formBuilder.group({
+          field: [''],
+          order: ['asc']
+        }),
+        filter: this.formBuilder.group({})
       }),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
+      // queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
+      // fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
+      // sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
+      // sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
+      // filter: this.formBuilder.group({}),
+      // details: this.formBuilder.group({
+      //   type: [(tileSettings && tileSettings.details && tileSettings.details.type) ? tileSettings.details.type : null],
+      //   fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
+      //   filter: this.formBuilder.group({}),
+      // })
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
-    this.availableQueries = this.queryBuilder.availableQueries;
-    this.availableQueries.subscribe((res) => {
-      if (res) {
-        this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
-        this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
-        this.availableDetailsType = this.queryBuilder.getListFields(this.tileForm.value.queryType);
-        this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
-        const typeName = this.tileForm.get('details.type').value;
-        if (typeName) {
-          const type = this.availableDetailsType.find(x => x.name === typeName).type.ofType.name;
-          this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
-          this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
-          (this.tileForm.get('details') as FormGroup).setControl('filter',
-            this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
-        }
-      }
-    });
-    this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
-      this.availableFields = this.queryBuilder.getFields(res);
-      this.availableFilter = this.queryBuilder.getFilter(res);
-      this.availableDetailsType = this.queryBuilder.getListFields(res);
-      this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
-    });
-    this.tileForm.get('details.type').valueChanges.subscribe((res) => {
-      if (res) {
-        const type = this.availableDetailsType.find(x => x.name === res).type.ofType.name;
-        this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
-        this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
-        this.tileForm.get('details.fields').setValue(null);
-        (this.tileForm.get('details') as FormGroup).setControl('filter',
-          this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
-      } else {
-        this.availableDetailsFields = [];
-        this.availableDetailsFilter = [];
-      }
-    });
+    // this.availableQueries = this.queryBuilder.availableQueries;
+    // this.availableQueries.subscribe((res) => {
+    //   if (res) {
+    //     this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
+    //     this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
+    //     this.availableDetailsType = this.queryBuilder.getListFields(this.tileForm.value.queryType);
+    //     this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
+    //     const typeName = this.tileForm.get('details.type').value;
+    //     if (typeName) {
+    //       const type = this.availableDetailsType.find(x => x.name === typeName).type.ofType.name;
+    //       this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
+    //       this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
+    //       (this.tileForm.get('details') as FormGroup).setControl('filter',
+    //         this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
+    //     }
+    //   }
+    // });
+    // this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
+    //   this.availableFields = this.queryBuilder.getFields(res);
+    //   this.availableFilter = this.queryBuilder.getFilter(res);
+    //   this.availableDetailsType = this.queryBuilder.getListFields(res);
+    //   this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
+    // });
+    // this.tileForm.get('details.type').valueChanges.subscribe((res) => {
+    //   if (res) {
+    //     const type = this.availableDetailsType.find(x => x.name === res).type.ofType.name;
+    //     this.availableDetailsFields = this.queryBuilder.getFieldsFromType(type);
+    //     this.availableDetailsFilter = this.queryBuilder.getFilterFromType(type);
+    //     this.tileForm.get('details.fields').setValue(null);
+    //     (this.tileForm.get('details') as FormGroup).setControl('filter',
+    //       this.createFilterGroup(this.tile.settings.details.filter, this.availableDetailsFilter));
+    //   } else {
+    //     this.availableDetailsFields = [];
+    //     this.availableDetailsFilter = [];
+    //   }
+    // });
     this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
@@ -132,18 +140,18 @@ export class WhoGridSettingsComponent implements OnInit {
     });
   }
 
-  private createFilterGroup(filter: any, availableFilter: any): FormGroup {
-    const group = availableFilter.reduce((o, key) => {
-      return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
-    }, {});
-    return this.formBuilder.group(group);
-  }
+  // private createFilterGroup(filter: any, availableFilter: any): FormGroup {
+  //   const group = availableFilter.reduce((o, key) => {
+  //     return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
+  //   }, {});
+  //   return this.formBuilder.group(group);
+  // }
 
-  public toggleFilter(): void {
-    this.showFilter = !this.showFilter;
-  }
+  // public toggleFilter(): void {
+  //   this.showFilter = !this.showFilter;
+  // }
 
-  public toggleDetailsFilter(): void {
-    this.showDetailsFilter = !this.showDetailsFilter;
-  }
+  // public toggleDetailsFilter(): void {
+  //   this.showDetailsFilter = !this.showDetailsFilter;
+  // }
 }

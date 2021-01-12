@@ -6,17 +6,9 @@
             <input matInput formControlName="title" type="string"/>
         </mat-form-field>
     </div>
-    <div class="form-group">
+    <div class="form-group" *ngIf="tileForm">
         <div class="form-group-title">Query builder</div>
-        <mat-form-field appearance="outline">
-            <mat-label>Query name</mat-label>
-            <mat-select formControlName="queryType">
-                <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
-                    {{type.name}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <who-query-builder *ngIf="tileForm.value.queryType"></who-query-builder>
+        <who-query-builder [form]="tileForm.controls.query"></who-query-builder>
     </div>
         <!-- <ng-container *ngIf="tileForm.value.queryType">
             <mat-form-field appearance="outline">
