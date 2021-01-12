@@ -12,7 +12,7 @@ import {
   DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { GetType, GET_TYPE, GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -407,7 +407,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a component which display record's history
   */
 
-  public async getRecordsHistory() {
+  public async getRecordsHistory(): Promise<any> {
     return await this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
@@ -415,7 +415,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
-  
+
   public onViewHistory(): void {
     this.getRecordsHistory().then(res => res.subscribe( x => {
       const dialogRef = this.dialog.open(RecordHistoryComponent, {
