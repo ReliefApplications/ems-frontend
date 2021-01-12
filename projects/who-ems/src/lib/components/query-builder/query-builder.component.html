@@ -7,10 +7,10 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
+    <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.value.name">
         <mat-tab label="Fields">
             <ng-template matTabContent>
-                <who-tab-fields></who-tab-fields>
+                <who-tab-fields [form]="form.controls.sort" [fields]="availableFields"></who-tab-fields>
             </ng-template>
         </mat-tab>
         <mat-tab label="Sort">
@@ -20,7 +20,7 @@
         </mat-tab>
         <mat-tab label="Filter">
             <ng-template matTabContent>
-                <who-tab-filter></who-tab-filter>
+                <who-tab-filter [form]="form.controls.filter" [filters]="availableFilters"></who-tab-filter>
             </ng-template>
         </mat-tab>
     </mat-tab-group>

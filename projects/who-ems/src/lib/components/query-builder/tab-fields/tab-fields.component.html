@@ -2,16 +2,16 @@
     <div class="example-container">
         <h2>Available fields</h2>
 
-        <div cdkDropList [cdkDropListData]="todo" class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+        <div cdkDropList [cdkDropListData]="availableFields" class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}</div>
         </div>
     </div>
 
     <div class="example-container">
         <h2>Selected fields</h2>
 
-        <div cdkDropList [cdkDropListData]="done" class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+        <div cdkDropList [cdkDropListData]="selectedFields" class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let field of selectedFields" cdkDrag>{{ field.name }}</div>
         </div>
     </div>
 </div>

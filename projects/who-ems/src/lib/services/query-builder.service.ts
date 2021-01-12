@@ -29,12 +29,12 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'SCALAR') : [];
+    return query ? query.type.ofType.fields : [];
   }
 
   public getFieldsFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'SCALAR') : [];
+    return query ? query.type.ofType.fields : [];
   }
 
   public getListFields(queryName: string): any[] {

@@ -8,7 +8,7 @@
     </div>
     <div class="form-group" *ngIf="tileForm">
         <div class="form-group-title">Query builder</div>
-        <who-query-builder [form]="tileForm.controls.query"></who-query-builder>
+        <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
     </div>
         <!-- <ng-container *ngIf="tileForm.value.queryType">
             <mat-form-field appearance="outline">
@@ -27,34 +27,6 @@
                     <mat-option value="desc">descending</mat-option>
                 </mat-select>
             </mat-form-field>
-            <div formGroupName="filter">
-                <div class="advanced-filtering">
-                    Advanced filtering
-                    <button mat-icon-button color="primary" (click)="toggleFilter()">
-                        <mat-icon>expand_more</mat-icon>
-                    </button>
-                </div>
-                <div *ngIf="showFilter">
-                    <ng-container *ngFor="let filter of availableFilter">
-                        <mat-form-field appearance="outline">
-                            <mat-label>{{filter.name}}</mat-label>
-                            <ng-container *ngIf="filter.type.name === 'Int'">
-                                <input matInput [formControlName]="filter.name" type="number" />
-                            </ng-container>
-                            <ng-container *ngIf="filter.type.name === 'Boolean'">
-                                <mat-select [formControlName]="filter.name">
-                                    <mat-option>-- None --</mat-option>
-                                    <mat-option [value]="true">True</mat-option>
-                                    <mat-option [value]="false">False</mat-option>
-                                </mat-select>
-                            </ng-container>
-                            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean'">
-                                <input matInput [formControlName]="filter.name" type="string" />
-                            </ng-container>
-                        </mat-form-field>
-                    </ng-container>
-                </div>
-            </div>
             <mat-form-field appearance="outline">
                 <mat-label>Fields</mat-label>
                 <mat-select formControlName="fields" multiple>
@@ -91,26 +63,6 @@
                     <button mat-icon-button color="primary" (click)="toggleDetailsFilter()">
                         <mat-icon>expand_more</mat-icon>
                     </button>
-                </div>
-                <div *ngIf="showDetailsFilter">
-                    <ng-container *ngFor="let filter of availableDetailsFilter">
-                        <mat-form-field appearance="outline">
-                            <mat-label>{{filter.name}}</mat-label>
-                            <ng-container *ngIf="filter.type.name === 'Int'">
-                                <input matInput [formControlName]="filter.name" type="number" />
-                            </ng-container>
-                            <ng-container *ngIf="filter.type.name === 'Boolean'">
-                                <mat-select [formControlName]="filter.name">
-                                    <mat-option>-- None --</mat-option>
-                                    <mat-option [value]="true">True</mat-option>
-                                    <mat-option [value]="false">False</mat-option>
-                                </mat-select>
-                            </ng-container>
-                            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean'">
-                                <input matInput [formControlName]="filter.name" type="string" />
-                            </ng-container>
-                        </mat-form-field>
-                    </ng-container>
                 </div>
             </div>
         </ng-container>

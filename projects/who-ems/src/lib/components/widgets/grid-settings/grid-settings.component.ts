@@ -29,12 +29,6 @@ export class WhoGridSettingsComponent implements OnInit {
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  // === PARENT ===
-  // public forms: any[] = [];
-
-  // === CHILD ===
-  // public subForms: any[] = [];
-
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
@@ -69,28 +63,14 @@ export class WhoGridSettingsComponent implements OnInit {
         filter: this.formBuilder.group({})
       }),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
-      // queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
-      // fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
-      // sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
-      // sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
-      // filter: this.formBuilder.group({}),
-      // details: this.formBuilder.group({
-      //   type: [(tileSettings && tileSettings.details && tileSettings.details.type) ? tileSettings.details.type : null],
-      //   fields: [(tileSettings && tileSettings.details && tileSettings.details.fields) ? tileSettings.details.fields : null],
-      //   filter: this.formBuilder.group({}),
-      // })
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
-    // this.availableQueries = this.queryBuilder.availableQueries;
     // this.availableQueries.subscribe((res) => {
     //   if (res) {
-    //     this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
-    //     this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
     //     this.availableDetailsType = this.queryBuilder.getListFields(this.tileForm.value.queryType);
-    //     this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
     //     const typeName = this.tileForm.get('details.type').value;
     //     if (typeName) {
     //       const type = this.availableDetailsType.find(x => x.name === typeName).type.ofType.name;
@@ -102,10 +82,7 @@ export class WhoGridSettingsComponent implements OnInit {
     //   }
     // });
     // this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
-    //   this.availableFields = this.queryBuilder.getFields(res);
-    //   this.availableFilter = this.queryBuilder.getFilter(res);
     //   this.availableDetailsType = this.queryBuilder.getListFields(res);
-    //   this.tileForm.setControl('filter', this.createFilterGroup(this.tile.settings.filter, this.availableFilter));
     // });
     // this.tileForm.get('details.type').valueChanges.subscribe((res) => {
     //   if (res) {
@@ -139,19 +116,4 @@ export class WhoGridSettingsComponent implements OnInit {
       }
     });
   }
-
-  // private createFilterGroup(filter: any, availableFilter: any): FormGroup {
-  //   const group = availableFilter.reduce((o, key) => {
-  //     return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
-  //   }, {});
-  //   return this.formBuilder.group(group);
-  // }
-
-  // public toggleFilter(): void {
-  //   this.showFilter = !this.showFilter;
-  // }
-
-  // public toggleDetailsFilter(): void {
-  //   this.showDetailsFilter = !this.showDetailsFilter;
-  // }
 }
