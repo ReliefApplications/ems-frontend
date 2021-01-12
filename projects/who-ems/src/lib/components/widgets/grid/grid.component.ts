@@ -84,9 +84,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService
   ) { }
 
-  ngOnInit(): void {
-    console.log(this.settings)
-  }
+  ngOnInit(): void {}
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -421,8 +419,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     determines the format of the grid cells in case it is a date-like format
   */
 
-  gridCellFormat(name: String, format: boolean) {
-    switch(name){
+  gridCellFormat(name: string, format: boolean): string {
+    switch(name) {
       case 'date':
         return format ? '{0:d}' : 'date';
       case 'date_time':
@@ -432,7 +430,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'time':
         return format ? '{0:HH:mm}' : '';
       default:
-        return ''
+        return '';
     }
   }
 
