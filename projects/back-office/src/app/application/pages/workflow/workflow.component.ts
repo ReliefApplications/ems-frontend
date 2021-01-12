@@ -63,6 +63,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           workflowName: new FormControl(this.workflow.name, Validators.required)
         });
         this.loading = false;
+        const{steps: [firstStep, ..._]} = workflow;
+        if (firstStep) {
+          if (firstStep.type === ContentType.form) {
+            this.router.navigate(['./' + firstStep.type + '/' + firstStep.id ], { relativeTo: this.route });
+          } else {
+            this.router.navigate(['./' + firstStep.type + '/' + firstStep.content ], { relativeTo: this.route });
+          }
+        }
       }
     });
   }
