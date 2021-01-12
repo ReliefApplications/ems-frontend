@@ -17,7 +17,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { RecordHistoryModal } from './components/record-history-modal.component';
+import { RecordHistoryComponent } from './components/record-history/record-history.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -418,7 +418,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   
   public onViewHistory(): void {
     this.getRecordsHistory().then(res => res.subscribe( x => {
-      const dialogRef = this.dialog.open(RecordHistoryModal, {
+      const dialogRef = this.dialog.open(RecordHistoryComponent, {
         data: x.data.record
       });
     }));
