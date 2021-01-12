@@ -2,8 +2,9 @@
     <div class="example-container">
         <h2>Available fields</h2>
 
-        <div cdkDropList [cdkDropListData]="availableFields" class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="example-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}</div>
+        <div cdkDropList [cdkDropListData]="availableFields" class="example-list" cdkDropListSortingDisabled (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span
+                    class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
         </div>
     </div>
 
@@ -11,7 +12,8 @@
         <h2>Selected fields</h2>
 
         <div cdkDropList [cdkDropListData]="selectedFields" class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="example-box" *ngFor="let field of selectedFields" cdkDrag>{{ field.name }}</div>
+            <div class="example-box" *ngFor="let field of selectedFields" cdkDrag>{{ field.name }}<span
+                    class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
         </div>
     </div>
 </div>

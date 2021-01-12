@@ -15,6 +15,10 @@ export class WhoQueryBuilderComponent implements OnInit {
   public availableFields: any[];
   public availableFilters: any[];
 
+  get availableScalarFields(): any[] {
+    return this.availableFields.filter(x => x.type.kind === 'SCALAR');
+  }
+
   @Input() form: FormGroup;
   @Input() settings: any;
 

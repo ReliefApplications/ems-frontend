@@ -10,12 +10,12 @@
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.value.name">
         <mat-tab label="Fields">
             <ng-template matTabContent>
-                <who-tab-fields [form]="form.controls.sort" [fields]="availableFields"></who-tab-fields>
+                <who-tab-fields [form]="form.controls.fields" [fields]="availableFields"></who-tab-fields>
             </ng-template>
         </mat-tab>
         <mat-tab label="Sort">
             <ng-template matTabContent>
-                <who-tab-sort [form]="form.controls.sort" [fields]="availableFields"></who-tab-sort>
+                <who-tab-sort [form]="form.controls.sort" [fields]="availableScalarFields"></who-tab-sort>
             </ng-template>
         </mat-tab>
         <mat-tab label="Filter">
