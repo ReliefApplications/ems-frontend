@@ -84,7 +84,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.settings)
+  }
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -119,6 +121,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                 name: this.items[0].__typename
               }
             }).valueChanges.subscribe(res2 => {
+              console.log(res2);
               this.loading = res2.loading;
               const settingsFields = this.settings.fields;
               const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
@@ -383,6 +386,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a component which display record's history
   */
   public onViewHistory(): void {
+
   }
 
   /* Open a confirmation modal and then delete the selected record
@@ -411,6 +415,25 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     });
+  }
+
+  /*
+    determines the format of the grid cells in case it is a date-like format
+  */
+
+  gridCellFormat(name: String, format: boolean) {
+    switch(name){
+      case 'date':
+        return format ? '{0:d}' : 'date';
+      case 'date_time':
+        return format ? '{0:yyyy-MM-dd HH:mm tt}' : 'date';
+      case 'date_time_local':
+        return format ? '{0:yyyy-MM-dd HH:mm tt}' : 'date';
+      case 'time':
+        return format ? '{0:HH:mm}' : '';
+      default:
+        return ''
+    }
   }
 
   ngOnDestroy(): void {
