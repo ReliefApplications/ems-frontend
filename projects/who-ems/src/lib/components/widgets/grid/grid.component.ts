@@ -10,13 +10,14 @@ import {
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
-import { GetType, GET_TYPE } from '../../../graphql/queries';
+import { GetType, GET_TYPE, GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
+import { RecordHistoryModal } from './components/record-history-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -405,7 +406,22 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open a component which display record's history
   */
+
+  public async getRecordsHistory() {
+    return await this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id: this.selectedRow.dataItem.id
+      }
+    });
+  }
+  
   public onViewHistory(): void {
+    this.getRecordsHistory().then(res => res.subscribe( x => {
+      const dialogRef = this.dialog.open(RecordHistoryModal, {
+        data: x.data.record
+      });
+    }));
   }
 
   /* Open a confirmation modal and then delete the selected record

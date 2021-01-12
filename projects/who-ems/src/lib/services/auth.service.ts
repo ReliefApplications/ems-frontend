@@ -67,7 +67,6 @@ export class WhoAuthService {
   */
   checkAccount(): void {
     this.account = this.msalService.getAccount();
-    console.log(this.account);
   }
 
   /*  Get the profile from the database, using GraphQL.
