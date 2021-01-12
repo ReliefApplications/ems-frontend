@@ -420,7 +420,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
 
   gridCellFormat(name: string, format: boolean): string {
-    switch(name) {
+    switch (name) {
       case 'date':
         return format ? '{0:d}' : 'date';
       case 'date_time':
