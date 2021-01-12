@@ -16,7 +16,9 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <ng-container *ngIf="tileForm.value.queryType">
+        <who-query-builder *ngIf="tileForm.value.queryType"></who-query-builder>
+    </div>
+        <!-- <ng-container *ngIf="tileForm.value.queryType">
             <mat-form-field appearance="outline">
                 <mat-label>Sort field</mat-label>
                 <mat-select formControlName="sortField">
@@ -69,8 +71,8 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-        </ng-container>
-    </div>
+        </ng-container> -->
+    <!-- </div>
     <div class="form-group" formGroupName="details" *ngIf="availableDetailsType.length > 0">
         <div class="form-group-title">Item details</div>
         <mat-form-field appearance="outline">
@@ -120,7 +122,7 @@
                 </div>
             </div>
         </ng-container>
-    </div>
+    </div> -->
     <div class="form-group">
         <div class="form-group-title">Notifications channel</div>
         <mat-form-field appearance="outline">
