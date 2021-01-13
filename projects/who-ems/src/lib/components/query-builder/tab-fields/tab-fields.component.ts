@@ -56,7 +56,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
           name: [{value: field.name, disabled: true }],
           type: [field.type.ofType.name],
           kind: field.type.kind,
-          fields: this.formBuilder.array([]),
+          fields: this.formBuilder.array([], Validators.required),
           sort: this.formBuilder.group({
             field: [''],
             order: ['asc']
@@ -69,7 +69,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
           name: [{value: field.name, disabled: true }],
           type: [field.name],
           kind: field.type.kind,
-          fields: this.formBuilder.array([])
+          fields: this.formBuilder.array([], Validators.required)
         });
       }
       default: {
@@ -77,7 +77,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
           name: [{value: field.name, disabled: true }],
           type: [{value: field.type.name, disabled: true }],
           kind: field.type.kind,
-          label: field.name
+          label: [field.name, Validators.required]
         });
       }
     }

@@ -43,7 +43,7 @@ export class WhoGridSettingsComponent implements OnInit {
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.formBuilder.group({
         name: ['', Validators.required],
-        fields: this.formBuilder.array([]),
+        fields: this.formBuilder.array([], Validators.required),
         sort: this.formBuilder.group({
           field: [''],
           order: ['asc']

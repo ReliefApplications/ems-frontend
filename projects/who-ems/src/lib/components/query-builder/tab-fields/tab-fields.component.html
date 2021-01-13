@@ -13,7 +13,13 @@
         <h2>Selected fields</h2>
 
         <div cdkDropList [cdkDropListData]="selectedFields" class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="example-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>{{ field.name }}
+            <div class="example-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
+                <div>
+                    <span>{{ field.name }}</span>
+                    <button class="field-error" mat-icon-button (click)="onEdit(index)" *ngIf="form.at(index).invalid">
+                        <mat-icon>error</mat-icon>
+                    </button>
+                </div>
                 <div>
                     <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
                     <button mat-icon-button (click)="onEdit(index)">
