@@ -131,7 +131,7 @@ export class QueryBuilderService {
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
       }),
-      filter: this.createFilterGroup(value.filter, null)
+      filter: this.createFilterGroup(value ? value.filter : {} , null)
     });
   }
 
