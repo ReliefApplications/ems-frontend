@@ -14,6 +14,9 @@
         <mat-label>Field name</mat-label>
         <input matInput formControlName="name" type="text"/>
     </mat-form-field>
+    <button class="form-error" mat-icon-button *ngIf="form.invalid">
+        <mat-icon>error</mat-icon>
+    </button>
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
         <mat-tab label="Fields">
             <ng-template matTabContent>

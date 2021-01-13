@@ -5,22 +5,28 @@
 
 .field-container {
   min-width: 400px;
-  // max-width: 100%;
   margin-right: 25px;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   vertical-align: top;
+  flex: 1;
+
   &:last-child {
     margin-right: 0;
+  }
+  &:only-child {
+    width: 100%;
   }
 }
   
 .field-list {
   border: solid 1px #ccc;
   min-height: 60px;
-  background: white;
+  background: #ccc;
   border-radius: 4px;
   overflow: hidden;
   display: block;
+  flex: 1;
 }
   
 .field-box {
@@ -67,4 +73,10 @@
 
 .field-error {
   color: red;
+}
+
+.field-form {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #dfe1e5;
 }
