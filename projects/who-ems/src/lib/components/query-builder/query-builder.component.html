@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" *ngIf="!isField">
         <mat-label>Query name</mat-label>
         <mat-select formControlName="name">
             <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
@@ -7,18 +7,22 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.value.name">
+    <mat-form-field appearance="outline" *ngIf="isField">
+        <mat-label>Field name</mat-label>
+        <input matInput formControlName="name" type="text"/>
+    </mat-form-field>
+    <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
         <mat-tab label="Fields">
             <ng-template matTabContent>
                 <who-tab-fields [form]="form.controls.fields" [fields]="availableFields"></who-tab-fields>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Sort">
+        <mat-tab label="Sort" *ngIf="form.get('sort')">
             <ng-template matTabContent>
                 <who-tab-sort [form]="form.controls.sort" [fields]="availableScalarFields"></who-tab-sort>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Filter">
+        <mat-tab label="Filter" *ngIf="form.get('filter')">
             <ng-template matTabContent>
                 <who-tab-filter [form]="form.controls.filter" [filters]="availableFilters"></who-tab-filter>
             </ng-template>

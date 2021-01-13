@@ -13,6 +13,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   @Input() fields: any[] = [];
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
+  public fieldForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -35,6 +36,9 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
         event.previousIndex,
         event.currentIndex);
       if (this.selectedFields === event.previousContainer.data) {
+        if (this.fieldForm === this.form.at(event.previousIndex) as FormGroup) {
+          this.fieldForm = null;
+        }
         this.form.removeAt(event.previousIndex);
       } else {
         this.form.insert(event.currentIndex, this.newField(this.selectedFields[event.currentIndex]));
@@ -42,24 +46,40 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  public onEdit(index: number): void {
+    this.fieldForm = this.form.at(index) as FormGroup;
+  }
+
   private newField(field: any): FormGroup {
-    if (field.type.kind === 'SCALAR') {
-      return this.formBuilder.group({
-        name: field.name,
-        type: field.type.kind,
-        label: field.name
-      });
-    } else {
-      return this.formBuilder.group({
-        name: ['', Validators.required],
-        type: field.type.kind,
-        fields: this.formBuilder.array([]),
-        sort: this.formBuilder.group({
-          field: [''],
-          order: ['asc']
-        }),
-        filter: this.formBuilder.group({})
-      });
+    switch (field.type.kind) {
+      case 'LIST': {
+        return this.formBuilder.group({
+          name: [{value: field.name, disabled: true }],
+          type: [field.type.ofType.name],
+          kind: field.type.kind,
+          fields: this.formBuilder.array([]),
+          sort: this.formBuilder.group({
+            field: [''],
+            order: ['asc']
+          }),
+          filter: this.formBuilder.group({})
+        });
+      }
+      case 'OBJECT': {
+        return this.formBuilder.group({
+          name: [{value: field.name, disabled: true }],
+          type: [field.name],
+          kind: field.type.kind,
+          fields: this.formBuilder.array([])
+        });
+      }
+      default: {
+        return this.formBuilder.group({
+          name: [{value: field.name, disabled: true }],
+          kind: field.type.kind,
+          label: field.name
+        });
+      }
     }
   }
 }
