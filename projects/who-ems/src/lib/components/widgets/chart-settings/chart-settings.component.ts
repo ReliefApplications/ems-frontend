@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { chartTypes } from './constants';
 
@@ -25,7 +25,7 @@ export class WhoChartSettingsComponent implements OnInit {
   // === DATA ===
   public types = chartTypes;
 
-  public selectedFields: any[];
+  public selectedFields: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,11 +55,16 @@ export class WhoChartSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(this.tileForm.value.query.fields);
     }
 
-    this.tileForm.controls.query.valueChanges.subscribe(() => {
-      this.selectedFields = this.getFields(this.tileForm.value.query.fields);
+    const queryForm = this.tileForm.get('query') as FormGroup;
+
+    queryForm.controls.name.valueChanges.subscribe(() => {
+      console.log('change');
+      this.tileForm.controls.xAxis.setValue('');
+      this.tileForm.controls.yAxis.setValue('');
+    });
+    queryForm.valueChanges.subscribe((res) => {
+      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
       console.log(this.selectedFields);
-      // this.tileForm.controls.xAxis.setValue('');
-      // this.tileForm.controls.yAxis.setValue('');
     });
   }
 
@@ -69,15 +74,13 @@ export class WhoChartSettingsComponent implements OnInit {
 
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      console.log(f);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, f.name);
         }
         default: {
-          return {
-            name: prefix ? `${prefix}.${f.name}` : f.name,
-            title: f.label ? f.label : f.name
-          };
+          return prefix ? `${prefix}.${f.name}` : f.name;
         }
       }
     }));
