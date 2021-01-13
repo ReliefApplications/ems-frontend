@@ -40,14 +40,12 @@ export class WhoGridSettingsComponent implements OnInit {
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    console.log(tileSettings.query);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
     });
-    console.log(this.tileForm.get('query').value);
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);

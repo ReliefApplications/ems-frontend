@@ -33,6 +33,11 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   drop(event: CdkDragDrop<string[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      if (this.selectedFields === event.container.data) {
+        const fieldTomove = this.form.at(event.previousIndex);
+        this.form.removeAt(event.previousIndex);
+        this.form.insert(event.currentIndex, fieldTomove);
+      }
     } else {
       transferArrayItem(event.previousContainer.data,
         event.container.data,
