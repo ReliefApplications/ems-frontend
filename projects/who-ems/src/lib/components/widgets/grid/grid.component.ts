@@ -13,7 +13,6 @@ import {
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse, DELETE_RECORD
 } from '../../../graphql/mutations';
-import { GetType, GET_TYPE } from '../../../graphql/queries';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -56,7 +55,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
-  private editorFields: any;
+  public detailsField: string;
   public canEdit = false;
   private dataQuery: any;
   private dataSubscription: Subscription;
@@ -146,20 +145,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           this.items = res.data[field];
           this.originalItems = cloneData(this.items);
           this.fields = this.getFields(this.settings.query.fields);
+          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
           this.gridData = {
             data: this.items,
             total: res.data[field].length
           };
-          // if (this.items.length > 0) {
-          //   this.apollo.watchQuery<GetType>({
-          //     query: GET_TYPE,
-          //     variables: {
-          //       name: this.items[0].__typename
-          //     }
-          //   }).valueChanges.subscribe(res2 => {
-          //     console.log(res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR'));
-          //   });
-          // }
         }
       }
     },
