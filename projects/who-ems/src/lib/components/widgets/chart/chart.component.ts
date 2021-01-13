@@ -3,7 +3,6 @@ import { Apollo } from 'apollo-angular';
 import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
-import gql from 'graphql-tag';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const DEFAULT_FILE_NAME = 'chart.png';
@@ -32,7 +31,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   private chart: ChartComponent;
 
   constructor(
-    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -66,8 +64,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           for (const record of res.data[field]) {
             const existingField = dataToAggregate.find(x => {
-              console.log(record);
-              console.log(x);
               return x[this.settings.xAxis] === record[this.settings.xAxis];
             });
             if (existingField) {

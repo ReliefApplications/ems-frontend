@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { chartTypes } from './constants';
 
@@ -72,7 +72,6 @@ export class WhoChartSettingsComponent implements OnInit {
 
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      console.log(f);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, f.name);
