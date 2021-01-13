@@ -3,6 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class QueryBuilderService {
   }
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private formBuilder: FormBuilder
   ) {
     this.apollo.watchQuery<GetQueryTypes>({
       query: GET_QUERY_TYPES,
@@ -119,5 +121,67 @@ export class QueryBuilderService {
       }
     }
     return str + '}';
+  }
+
+  public createQueryForm(value: any): FormGroup {
+    return this.formBuilder.group({
+      name: [value ? value.name : '', Validators.required],
+      fields: this.formBuilder.array((value && value.fields) ? value.fields.map(x => this.addNewField(x)) : [], Validators.required),
+      sort: this.formBuilder.group({
+        field: [(value && value.sort) ? value.sort.field : ''],
+        order: [(value && value.sort) ? value.sort.order : 'asc']
+      }),
+      filter: this.createFilterGroup(value.filter, null)
+    });
+  }
+
+  public createFilterGroup(filter: any, availableFilter: any): FormGroup {
+    if (availableFilter) {
+      const group = availableFilter.reduce((o, key) => {
+        return ({ ...o, [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)] });
+      }, {});
+      return this.formBuilder.group(group);
+    } else {
+      const group = Object.keys(filter).reduce((o, key) => {
+        return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
+      }, {});
+      return this.formBuilder.group(group);
+    }
+  }
+
+  public addNewField(field: any, newField?: boolean): FormGroup {
+    switch (newField ? field.type.kind : field.kind) {
+      case 'LIST': {
+        return this.formBuilder.group({
+          name: [{ value: field.name, disabled: true }],
+          type: [newField ? field.type.ofType.name : field.type],
+          kind: [newField ? field.type.kind : field.kind],
+          fields: this.formBuilder.array((!newField && field.fields) ?
+            field.fields.map(x => this.addNewField(x)) : [], Validators.required),
+          sort: this.formBuilder.group({
+            field: [field.sort ? field.sort.field : ''],
+            order: [(field.sort && field.sort.order) ? field.sort.order : 'asc']
+          }),
+          filter: newField ? this.formBuilder.group({}) : this.createFilterGroup(field.filter, null)
+        });
+      }
+      case 'OBJECT': {
+        return this.formBuilder.group({
+          name: [{ value: field.name, disabled: true }],
+          type: [field.name],
+          kind: [newField ? field.type.kind : field.kind],
+          fields: this.formBuilder.array((!newField && field.fields) ?
+            field.fields.map(x => this.addNewField(x)) : [], Validators.required),
+        });
+      }
+      default: {
+        return this.formBuilder.group({
+          name: [{ value: field.name, disabled: true }],
+          type: [{ value: newField ? field.type.name : field.type, disabled: true }],
+          kind: [newField ? field.type.kind : field.kind],
+          label: [field.label ? field.label : field.name, Validators.required]
+        });
+      }
+    }
   }
 }

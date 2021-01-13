@@ -10,63 +10,6 @@
         <div class="form-group-title">Query builder</div>
         <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
     </div>
-        <!-- <ng-container *ngIf="tileForm.value.queryType">
-            <mat-form-field appearance="outline">
-                <mat-label>Sort field</mat-label>
-                <mat-select formControlName="sortField">
-                    <mat-option>-- None --</mat-option>
-                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
-                        {{field.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="tileForm.value.sortField">
-                <mat-label>Sort order</mat-label>
-                <mat-select formControlName="sortOrder">
-                    <mat-option value="asc">ascending</mat-option>
-                    <mat-option value="desc">descending</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Fields</mat-label>
-                <mat-select formControlName="fields" multiple>
-                    <mat-option *ngFor="let field of availableFields" [value]="field.name">
-                        {{field.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </ng-container> -->
-    <!-- </div>
-    <div class="form-group" formGroupName="details" *ngIf="availableDetailsType.length > 0">
-        <div class="form-group-title">Item details</div>
-        <mat-form-field appearance="outline">
-            <mat-label>List</mat-label>
-            <mat-select formControlName="type">
-                <mat-option>-- None --</mat-option>
-                <mat-option *ngFor="let field of availableDetailsType" [value]="field.name">
-                    {{field.name}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <ng-container *ngIf="tileForm.value.details.type">
-            <mat-form-field appearance="outline">
-                <mat-label>Fields</mat-label>
-                <mat-select formControlName="fields" multiple>
-                    <mat-option *ngFor="let field of availableDetailsFields" [value]="field.name">
-                        {{field.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div formGroupName="filter">
-                <div class="advanced-filtering">
-                    Advanced filtering
-                    <button mat-icon-button color="primary" (click)="toggleDetailsFilter()">
-                        <mat-icon>expand_more</mat-icon>
-                    </button>
-                </div>
-            </div>
-        </ng-container>
-    </div> -->
     <div class="form-group">
         <div class="form-group-title">Notifications channel</div>
         <mat-form-field appearance="outline">

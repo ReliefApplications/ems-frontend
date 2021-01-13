@@ -1,6 +1,7 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
   selector: 'who-tab-fields',
@@ -15,15 +16,18 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   public selectedFields: any[] = [];
   public fieldForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private queryBuilder: QueryBuilderService) { }
 
   ngOnInit(): void {
-    this.availableFields = this.fields.slice();
+    const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
+    this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
   }
 
   ngOnChanges(): void {
-    this.availableFields = this.fields.slice();
-    this.selectedFields = [];
+    const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
+    this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
   }
 
   drop(event: CdkDragDrop<string[]>): void {
@@ -40,7 +44,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
         }
         this.form.removeAt(event.previousIndex);
       } else {
-        this.form.insert(event.currentIndex, this.newField(this.selectedFields[event.currentIndex]));
+        this.form.insert(event.currentIndex, this.queryBuilder.addNewField(this.selectedFields[event.currentIndex], true));
       }
     }
   }
@@ -51,39 +55,5 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
 
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
-  }
-
-  private newField(field: any): FormGroup {
-    switch (field.type.kind) {
-      case 'LIST': {
-        return this.formBuilder.group({
-          name: [{value: field.name, disabled: true }],
-          type: [field.type.ofType.name],
-          kind: field.type.kind,
-          fields: this.formBuilder.array([], Validators.required),
-          sort: this.formBuilder.group({
-            field: [''],
-            order: ['asc']
-          }),
-          filter: this.formBuilder.group({})
-        });
-      }
-      case 'OBJECT': {
-        return this.formBuilder.group({
-          name: [{value: field.name, disabled: true }],
-          type: [field.name],
-          kind: field.type.kind,
-          fields: this.formBuilder.array([], Validators.required)
-        });
-      }
-      default: {
-        return this.formBuilder.group({
-          name: [{value: field.name, disabled: true }],
-          type: [{value: field.type.name, disabled: true }],
-          kind: field.type.kind,
-          label: [field.name, Validators.required]
-        });
-      }
-    }
   }
 }

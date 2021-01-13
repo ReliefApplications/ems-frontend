@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
@@ -31,27 +32,22 @@ export class WhoGridSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private applicationService: WhoApplicationService
+    private applicationService: WhoApplicationService,
+    private queryBuilder: QueryBuilderService
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
+    console.log(tileSettings.query);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-      query: this.formBuilder.group({
-        name: ['', Validators.required],
-        fields: this.formBuilder.array([], Validators.required),
-        sort: this.formBuilder.group({
-          field: [''],
-          order: ['asc']
-        }),
-        filter: this.formBuilder.group({})
-      }),
+      query: this.queryBuilder.createQueryForm(tileSettings.query),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
     });
+    console.log(this.tileForm.get('query').value);
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
