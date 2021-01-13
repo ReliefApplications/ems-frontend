@@ -27,7 +27,6 @@ export class WhoQueryBuilderComponent implements OnInit {
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
-    private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) { }
 
@@ -37,7 +36,8 @@ export class WhoQueryBuilderComponent implements OnInit {
       this.availableFields = this.queryBuilder.getFieldsFromType(this.form.value.type);
       if (this.form.get('filter')) {
         this.availableFilters = this.queryBuilder.getFilterFromType(this.form.value.type);
-        this.form.setControl('filter', this.createFilterGroup(this.settings ? this.settings.filter : null, this.availableFilters));
+        this.form.setControl('filter',
+          this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
       }
     } else {
       this.availableQueries = this.queryBuilder.availableQueries;
@@ -45,22 +45,15 @@ export class WhoQueryBuilderComponent implements OnInit {
         if (res) {
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);
           this.availableFilters = this.queryBuilder.getFilter(this.form.value.name);
-          this.form.setControl('filter', this.createFilterGroup(this.settings ? this.settings.filter : null, this.availableFilters));
+          this.form.setControl('filter', this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
         }
       });
       this.form.controls.name.valueChanges.subscribe((res) => {
         this.availableFields = this.queryBuilder.getFields(res);
         this.availableFilters = this.queryBuilder.getFilter(res);
-        this.form.setControl('filter', this.createFilterGroup(null, this.availableFilters));
+        this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
       });
     }
-  }
-
-  private createFilterGroup(filter: any, availableFilter: any): FormGroup {
-    const group = availableFilter.reduce((o, key) => {
-      return ({ ...o, [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)] });
-    }, {});
-    return this.formBuilder.group(group);
   }
 
   onCloseField(): void {
