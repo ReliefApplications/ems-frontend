@@ -58,13 +58,11 @@ export class WhoChartSettingsComponent implements OnInit {
     const queryForm = this.tileForm.get('query') as FormGroup;
 
     queryForm.controls.name.valueChanges.subscribe(() => {
-      console.log('change');
       this.tileForm.controls.xAxis.setValue('');
       this.tileForm.controls.yAxis.setValue('');
     });
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-      console.log(this.selectedFields);
     });
   }
 

@@ -40,7 +40,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
     if (this.dataQuery) {
       this.getData();
     } else {
@@ -60,18 +59,17 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
   */
   private getData(): void {
-    // const dataQuery = this.apollo.watchQuery<any>({
-    //   query: gql`${this.settings.query}`,
-    //   variables: {}
-    // });
-
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       this.data = [];
       const dataToAggregate = [];
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           for (const record of res.data[field]) {
-            const existingField = dataToAggregate.find(x => x[this.settings.xAxis] === record[this.settings.xAxis]);
+            const existingField = dataToAggregate.find(x => {
+              console.log(record);
+              console.log(x);
+              return x[this.settings.xAxis] === record[this.settings.xAxis];
+            });
             if (existingField) {
               existingField[this.settings.yAxis] += record[this.settings.yAxis];
             } else {
