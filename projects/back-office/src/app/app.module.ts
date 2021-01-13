@@ -20,6 +20,7 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import * as Msal from 'msal';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -32,13 +33,16 @@ export function provideApollo(httpLink: HttpLink): any {
     }
   }));
 
-  // Get the authentication token from local storage if it exists
-  const token = localStorage.getItem('msal.idtoken');
-  const auth = setContext((operation, context) => ({
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-  }));
+
+  const auth = setContext((operation, context) => {
+    // Get the authentication token from local storage if it exists
+    const token = localStorage.getItem('msal.idtoken');
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
 
   const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
 
@@ -114,6 +118,18 @@ export function provideApollo(httpLink: HttpLink): any {
         cacheLocation: 'localStorage',
         storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
       },
+      framework: {
+        isAngular: true
+      },
+      system: {
+        logger: new Msal.Logger(
+          (logLevel, message, containsPii) => console.log(message) , {
+            level: Msal.LogLevel.Verbose,
+            piiLoggingEnabled: false,
+            correlationId: '1234'
+          }
+        )
+      }
     }, {
       popUp: false,
       consentScopes: [

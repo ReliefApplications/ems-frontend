@@ -20,6 +20,7 @@ export class AccessGuard implements CanActivate {
       return this.authService.user.pipe(
         skip(1), // this is important as first value of behaviorSubject is null
         map((user: User) => {
+          console.log(JSON.stringify(user));
           if (user) {
             if (user.isAdmin) {
               return true;
@@ -29,6 +30,8 @@ export class AccessGuard implements CanActivate {
             this.router.navigate(['/auth']);
             return false;
           }
+          console.log('Do something if user is null.');
+          skip(1); // This is super important when the token expire
         })
       );
   }
