@@ -27,7 +27,6 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   }
 
   drop(event: CdkDragDrop<string[]>): void {
-    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -76,6 +75,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
       default: {
         return this.formBuilder.group({
           name: [{value: field.name, disabled: true }],
+          type: [{value: field.type.name, disabled: true }],
           kind: field.type.kind,
           label: field.name
         });

@@ -465,6 +465,7 @@ query GetQueryTypes {
             fields {
               name
               type {
+                name
                 kind
                 ofType {
                   name
