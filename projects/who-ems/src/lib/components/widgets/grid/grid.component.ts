@@ -401,16 +401,16 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
 
 
-  private convertDate(entry) {
-    let tempItems = entry.map( item => {
-      if(item.date) { //here we should also add item.date_time, but currently it is the wrong format from BE
+  private convertDate(entry): any[] {
+    const tempItems = entry.map( item => {
+      if (item.date) { // here we should also add item.date_time, but currently it is the wrong format from BE
         item.date = new Date(item.date);
       }
-      if(item.date_time_local) { //here we should also add item.date_time, but currently it is the wrong format from BE
+      if (item.date_time_local) { // here we should also add item.date_time, but currently it is the wrong format from BE
         item.date_time_local = new Date(item.date_time_local);
       }
       return item;
-    })
+    });
     return tempItems;
   }
 
@@ -441,7 +441,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'date_time':
         return format ? '{0:dd/MM/yy HH:mm}' : '';
       case 'date_time_local':
-        return format ? '{0:dd/MM/yy HH:mm}' : '';
+        return format ? '{0:dd/MM/yy HH:mm}' : 'date';
       case 'time':
         return format ? '{0:HH:mm}' : '';
       default:
