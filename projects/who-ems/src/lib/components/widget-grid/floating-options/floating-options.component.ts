@@ -80,7 +80,6 @@ export class WhoFloatingOptionsComponent implements OnInit {
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
-        console.log(res);
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       });
     }

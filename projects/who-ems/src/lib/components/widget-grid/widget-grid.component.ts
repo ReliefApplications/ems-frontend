@@ -73,7 +73,6 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   onEditWidget(e: any): void {
-    console.log(e);
     this.edit.emit(e);
   }
 
