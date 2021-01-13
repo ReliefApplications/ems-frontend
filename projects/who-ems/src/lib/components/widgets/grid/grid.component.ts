@@ -111,6 +111,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.items = res.data[field];
+          this.items = this.convertDate(this.items);
           this.originalItems = cloneData(this.items);
           if (this.items.length > 0) {
             this.apollo.watchQuery<GetType>({
@@ -119,7 +120,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                 name: this.items[0].__typename
               }
             }).valueChanges.subscribe(res2 => {
-              console.log(res2);
               this.loading = res2.loading;
               const settingsFields = this.settings.fields;
               const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
@@ -293,25 +293,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private getEditor(type: any): string {
-    switch (type.name) {
-      case 'Int': {
-        return 'numeric';
-      }
-      case 'Boolean': {
-        return 'boolean';
-      }
-      case 'Date': {
-        return 'date';
-      }
-      case 'DateTime': {
-        return 'date';
-      }
-      default: {
-        return null;
-      }
-    }
-  }
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
@@ -419,14 +400,48 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     determines the format of the grid cells in case it is a date-like format
   */
 
+
+  private convertDate(entry) {
+    let tempItems = entry.map( item => {
+      if(item.date) { //here we should also add item.date_time, but currently it is the wrong format from BE
+        item.date = new Date(item.date);
+      }
+      if(item.date_time_local) { //here we should also add item.date_time, but currently it is the wrong format from BE
+        item.date_time_local = new Date(item.date_time_local);
+      }
+      return item;
+    })
+    return tempItems;
+  }
+
+  private getEditor(type: any): string {
+    switch (type.name) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+
   gridCellFormat(name: string, format: boolean): string {
     switch (name) {
       case 'date':
         return format ? '{0:dd/MM/yy}' : 'date';
       case 'date_time':
-        return format ? '{0:dd/MM/yy HH:mm}' : 'date';
+        return format ? '{0:dd/MM/yy HH:mm}' : '';
       case 'date_time_local':
-        return format ? '{0:dd/MM/yy HH:mm}' : 'date';
+        return format ? '{0:dd/MM/yy HH:mm}' : '';
       case 'time':
         return format ? '{0:HH:mm}' : '';
       default:
