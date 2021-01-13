@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -22,7 +22,9 @@ export class WhoQueryBuilderComponent implements OnInit {
   @Input() form: FormGroup;
   @Input() settings: any;
 
+  // === FIELD EDITION ===
   public isField: boolean;
+  @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -59,6 +61,10 @@ export class WhoQueryBuilderComponent implements OnInit {
       return ({ ...o, [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)] });
     }, {});
     return this.formBuilder.group(group);
+  }
+
+  onCloseField(): void {
+    this.closeField.emit(true);
   }
 
 }

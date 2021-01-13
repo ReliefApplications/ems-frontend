@@ -1,9 +1,17 @@
+.field-wrapper {
+  display: flex;
+  margin-top: 16px;
+}
+
 .field-container {
-  width: 400px;
-  max-width: 100%;
-  margin: 0 25px 25px 0;
+  min-width: 400px;
+  // max-width: 100%;
+  margin-right: 25px;
   display: inline-block;
   vertical-align: top;
+  &:last-child {
+    margin-right: 0;
+  }
 }
   
 .field-list {

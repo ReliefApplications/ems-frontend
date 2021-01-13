@@ -1,4 +1,7 @@
-<form [formGroup]="form">
+<form [formGroup]="form" [ngClass]="{'field-form': isField}">
+    <button mat-icon-button (click)="onCloseField()" *ngIf="isField">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
     <mat-form-field appearance="outline" *ngIf="!isField">
         <mat-label>Query name</mat-label>
         <mat-select formControlName="name">

@@ -45,6 +45,10 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  public onCloseField(): void {
+    this.fieldForm = null;
+  }
+
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
   }
