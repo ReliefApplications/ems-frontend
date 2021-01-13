@@ -422,11 +422,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   gridCellFormat(name: string, format: boolean): string {
     switch (name) {
       case 'date':
-        return format ? '{0:d}' : 'date';
+        return format ? '{0:dd/MM/yy}' : 'date';
       case 'date_time':
-        return format ? '{0:yyyy-MM-dd HH:mm tt}' : 'date';
+        return format ? '{0:dd/MM/yy HH:mm}' : 'date';
       case 'date_time_local':
-        return format ? '{0:yyyy-MM-dd HH:mm tt}' : 'date';
+        return format ? '{0:dd/MM/yy HH:mm}' : 'date';
       case 'time':
         return format ? '{0:HH:mm}' : '';
       default:
