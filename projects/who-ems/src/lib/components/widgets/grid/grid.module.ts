@@ -5,7 +5,7 @@ import { WhoSubGridComponent } from './sub-grid/sub-grid.component';
 import { ExcelModule, GridModule } from '@progress/kendo-angular-grid';
 import { WhoFormModalModule } from '../../form-modal/form-modal.module';
 import { RecordHistoryComponent } from './components/record-history/record-history.component';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [

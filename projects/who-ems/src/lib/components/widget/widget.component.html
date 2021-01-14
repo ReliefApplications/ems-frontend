@@ -5,7 +5,7 @@
     <who-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></who-scheduler>
 </ng-container>
 <ng-container *ngIf="widget.component === 'grid'">
-    <who-grid class="widget-content" [header]="header" (toggleHistory)="toggleHistory($event)" [settings]="widget.settings"></who-grid>
+    <who-grid class="widget-content" [header]="header" (toggleHistory)="toggleHistoryEvent($event)" [settings]="widget.settings"></who-grid>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
     <who-map class="widget-content" [header]="header" [settings]="widget.settings"></who-map>

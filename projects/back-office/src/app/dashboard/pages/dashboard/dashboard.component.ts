@@ -13,6 +13,7 @@ import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../gra
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -35,6 +36,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+
+  public showHistory = false;
+  public versions = [];
+
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -214,5 +219,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe();
   }
+
+/*  Display sidenav from history of records from who grid widget
+  */
+  toggleHistoryEvent(event) {
+    this.showHistory = true;
+    this.versions = event;
+  }
+
+  onHistoryClose():void {
+    this.showHistory = false;
+  }
+
 
 }

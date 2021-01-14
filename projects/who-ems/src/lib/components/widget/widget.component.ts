@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'who-widget',
@@ -10,13 +10,15 @@ export class WhoWidgetComponent implements OnInit {
   @Input() widget: any;
   @Input() header = true;
 
+  @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  toggleHistory(event) {
-    console.log("in Widget", event.value)
+  toggleHistoryEvent(event) {
+    this.toggleHistory.emit(event);
   }
 
 }

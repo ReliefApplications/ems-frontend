@@ -18,6 +18,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { RecordHistoryModule } from './components/record-history/record-history/record-history.module';
+
 
 @NgModule({
   declarations: [
@@ -43,6 +45,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatMenuModule,
     ClipboardModule,
     MatSidenavModule,
+    RecordHistoryModule
   ],
   exports: [DashboardComponent]
 })

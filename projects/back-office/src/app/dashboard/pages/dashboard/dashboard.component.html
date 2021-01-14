@@ -22,18 +22,11 @@
             </button>
         </form>
     </ng-container>
+
     <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
-        (delete)="onDeleteTile($event)"></who-widget-grid>
-
-    <mat-drawer #drawer class="history-sidenav" mode="side" position="end">
-        <p>Auto-resizing sidenav</p>
+        (delete)="onDeleteTile($event)" (toggleHistory)="toggleHistoryEvent($event)"></who-widget-grid>
+    <mat-drawer [(opened)]="showHistory" class="history-sidenav" mode="side" position="end">
+        <button mat-raised-button color="primary" (click)="onHistoryClose()">close</button>
+        <who-record-history *ngIf="showHistory" [data]=versions></who-record-history>
     </mat-drawer>
-    
-    <div class="history-sidenav-content">
-        <button type="button" mat-button (click)="drawer.toggle()">
-        Toggle sidenav
-        </button>
-    </div>
-          
-
 </ng-container>

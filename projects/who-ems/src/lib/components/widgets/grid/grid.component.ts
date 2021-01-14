@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy, Output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
@@ -18,7 +18,7 @@ import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.comp
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { RecordHistoryComponent } from './components/record-history/record-history.component';
-import { EventEmitter } from 'events';
+
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -422,12 +422,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public onViewHistory(): void {
-    this.showHistory = this.toggleHistory ? false : true; 
     this.getRecordsHistory().then(res => res.subscribe( x => {
-      this.toggleHistory.emit(x);
-      const dialogRef = this.dialog.open(RecordHistoryComponent, {
-        data: x.data.record
-      });
+      this.toggleHistory.emit(x.data.record);
+      // const dialogRef = this.dialog.open(RecordHistoryComponent, {
+      //   data: x.data.record
+      // });
     }));
   }
 

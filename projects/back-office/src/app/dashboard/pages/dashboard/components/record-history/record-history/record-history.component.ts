@@ -1,5 +1,4 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'who-record-history',
@@ -8,8 +7,9 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class RecordHistoryComponent implements OnInit {
 
-    @Input() versions;
-  //versions = [];
+    @Input() data;
+    //versions = [];
+    versions = [];
   loading = true;
   displayedColumns: string[] = ['position'];
 
@@ -25,7 +25,10 @@ export class RecordHistoryComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-      console.log('init');
+      this.transformVersion(this.data).then( res => {
+               this.versions = res;
+               this.loading = false;
+          });
   }
 
 //   onNoClick(): void {

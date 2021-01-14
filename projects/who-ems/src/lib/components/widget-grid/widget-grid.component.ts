@@ -22,6 +22,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
 
 
   constructor(public dialog: MatDialog) { }
@@ -97,8 +98,8 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
     });
   }
 
-  toggleHistory(event) {
-    console.log("in Grid", event.value)
+  toggleHistoryEvent(event) {
+    this.toggleHistory.emit(event);
   }
 
 }
