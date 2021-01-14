@@ -65,18 +65,7 @@ export class WhoAuthService {
   /*  Get the Azure AD profile.
   */
   checkAccount(): void {
-    console.log('before getaccount');
     this.account = this.msalService.getAccount();
-    console.log('after getaccount');
-    this.msalService.acquireTokenSilent({
-      scopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      account: this.account
-    });
-    console.log('after acquiresilent');
     console.log(this.account);
     this.msalService.acquireTokenSilent({
       scopes: [
