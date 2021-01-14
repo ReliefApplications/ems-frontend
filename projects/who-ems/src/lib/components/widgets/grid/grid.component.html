@@ -53,7 +53,7 @@
                   </kendo-grid-column>
             </ng-container> -->
             <ng-container>
-                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
+                <kendo-grid-column [field]="field.name" [title]="field.title" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
                 </kendo-grid-column>
             </ng-container>
         </ng-container>
@@ -61,14 +61,9 @@
             <kendo-grid-checkbox-column [columnMenu]="false" [width]="41"></kendo-grid-checkbox-column>
         </ng-container>
     </ng-container>
-    <!-- <ng-container *ngIf="(settings && settings.canExpand && settings.childGrid)">
+    <ng-container *ngIf="detailsField">
         <div *kendoGridDetailTemplate="let dataItem">
-            <app-sub-grid [settings]="settings.childGrid" [parent]="dataItem"></app-sub-grid>
-        </div>
-    </ng-container> -->
-    <ng-container *ngIf="settings.details && settings.details.type">
-        <div *kendoGridDetailTemplate="let dataItem">
-            <who-sub-grid [settings]="settings.details" [parent]="dataItem"></who-sub-grid>
+            <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
         </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>

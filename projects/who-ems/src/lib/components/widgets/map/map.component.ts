@@ -47,7 +47,6 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   constructor(
-    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
     this.mapId = this.generateUniqueId();

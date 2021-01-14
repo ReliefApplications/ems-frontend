@@ -1,16 +1,18 @@
 import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
-import { GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
-  SelectionEvent, RowArgs } from '@progress/kendo-angular-grid';
+import {
+  GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
+  SelectionEvent, RowArgs
+} from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import {
   EditRecordMutationResponse, EDIT_RECORD,
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
-  DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
-import { GetType, GET_TYPE } from '../../../graphql/queries';
+  DeleteRecordMutationResponse, DELETE_RECORD
+} from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -53,6 +55,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
+  public detailsField: string;
   public canEdit = false;
   private dataQuery: any;
   private dataSubscription: Subscription;
@@ -89,7 +92,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -106,6 +109,29 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private flatDeep(arr: any[]): any[] {
+    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+  }
+
+  private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
+    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      switch (f.kind) {
+        case 'OBJECT': {
+          return this.getFields(f.fields, f.name, true);
+        }
+        default: {
+          return {
+            name: prefix ? `${prefix}.${f.name}` : f.name,
+            title: f.label ? f.label : f.name,
+            type: f.type,
+            editor: this.getEditor(f.type),
+            disabled
+          };
+        }
+      }
+    }));
+  }
+
   /*  Load the data, using widget parameters.
   */
   private getRecords(): void {
@@ -115,29 +141,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.loading = false;
           this.items = res.data[field];
           this.originalItems = cloneData(this.items);
-          if (this.items.length > 0) {
-            this.apollo.watchQuery<GetType>({
-              query: GET_TYPE,
-              variables: {
-                name: this.items[0].__typename
-              }
-            }).valueChanges.subscribe(res2 => {
-              this.loading = res2.loading;
-              const settingsFields = this.settings.fields;
-              const fields = res2.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
-                .map(x => ({ ...x, editor: this.getEditor(x.type) }));
-              this.fields = settingsFields.map(x => fields.find(f => f.name === x));
-              this.gridData = {
-                data: this.items,
-                total: res.data[field].length
-              };
-            });
-          } else {
-            this.gridData = null;
-            this.loading = false;
-          }
+          this.fields = this.getFields(this.settings.query.fields);
+          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
+          this.gridData = {
+            data: this.items,
+            total: res.data[field].length
+          };
         }
       }
     },
@@ -233,9 +245,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(id: string, value: any): void {
     const item = this.updatedItems.find(x => x.id === id);
     if (item) {
-      Object.assign(item, {...value, id});
+      Object.assign(item, { ...value, id });
     } else {
-      this.updatedItems.push({...value, id});
+      this.updatedItems.push({ ...value, id });
     }
     Object.assign(this.items.find(x => x.id === id), value);
   }
@@ -278,7 +290,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       Promise.all(promises).then(() => this.getRecords());
     }
-    // this.getRecords();
   }
 
   public onCancelChanges(): void {
@@ -299,7 +310,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getEditor(type: any): string {
-    switch (type.name) {
+    switch (type) {
       case 'Int': {
         return 'numeric';
       }
@@ -320,8 +331,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name))) {
-      formGroup[field.name] = [(field.type.name === 'Date' || field.type.name === 'DateTime') ?
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
+      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
         new Date(dataItem[field.name]) : dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
@@ -387,7 +398,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         record
       }
     });
-    dialogRef.afterClosed().subscribe((value: {targetForm: Form, copyRecord: boolean}) => {
+    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
       if (value) {
         this.apollo.mutate<ConvertRecordMutationResponse>({
           mutation: CONVERT_RECORD,
