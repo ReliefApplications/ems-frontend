@@ -23,6 +23,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
+
   constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -95,4 +96,9 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
       panelClass: 'expanded-widget-dialog'
     });
   }
+
+  toggleHistory(event) {
+    console.log("in Grid", event.value)
+  }
+
 }
