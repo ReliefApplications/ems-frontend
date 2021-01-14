@@ -27,7 +27,7 @@ export class WhoGridSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === NOTIFICATIONS ===
-  public channels: Channel[];
+  public channels: Channel[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
