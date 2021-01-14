@@ -78,7 +78,15 @@ export class WhoAuthService {
     });
     console.log('after acquiresilent');
     console.log(this.account);
-    this.getProfile();
+    this.msalService.acquireTokenSilent({
+      scopes: [
+        'user.read',
+        'openid',
+        'profile',
+      ],
+      account: this.account
+    }).then(() => this.getProfile())
+      .catch((err) => console.log(`acquireTokenSilent error: ${err}`));
   }
 
   /*  Get the profile from the database, using GraphQL.
@@ -86,10 +94,28 @@ export class WhoAuthService {
   private getProfile(): void {
     this.apollo.watchQuery<GetProfileQueryResponse>({
       query: GET_PROFILE,
-      fetchPolicy: 'network-only'
-    }).valueChanges.subscribe(res => {
-      this._user.next(res.data.me);
-    });
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
+    }).valueChanges.subscribe(
+      res => this._user.next(res.data.me),
+      err => {
+        // Just a security but it should never be executed
+        this.msalService.acquireTokenSilent({
+          scopes: [
+            'user.read',
+            'openid',
+            'profile',
+          ],
+          account: this.account
+        }).then(() => {
+          this.apollo.watchQuery<GetProfileQueryResponse>({
+            query: GET_PROFILE,
+            fetchPolicy: 'network-only',
+            errorPolicy: 'all'
+          }).valueChanges.subscribe(res => this._user.next(res.data.me));
+        });
+      }
+    );
   }
 
   /*  Return the user as an Observable.
