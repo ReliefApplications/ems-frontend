@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-record-history',
@@ -12,15 +12,7 @@ export class RecordHistoryComponent implements OnInit {
     versions = [];
     loading = true;
     displayedColumns: string[] = ['position'];
-
-//   constructor(
-//       public dialogRef: MatDialogRef<RecordHistoryComponent>,
-//       @Inject(MAT_DIALOG_DATA) public data: any) {
-//         this.transformVersion(data).then( res => {
-//             this.versions = res;
-//             this.loading = false;
-//         });
-//   }
+    @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
@@ -31,9 +23,8 @@ export class RecordHistoryComponent implements OnInit {
           });
   }
 
-//   onNoClick(): void {
-//       this.dialogRef.close();
-//   }
+  /*  Get current and next record to see difference and put it in a string
+  */
 
   getDifference(current, after): any[] {
       const changes = [];
@@ -52,7 +43,7 @@ export class RecordHistoryComponent implements OnInit {
       const keysAfter = Object.keys(after);
       keysAfter.forEach( key => {
           if (!current[key]) {
-              changes.push('Remove field <i>' + key + '</i> with value <b>' + after[key] + '</b>');
+              changes.push('Add field <i>' + key + '</i> with value <b>' + after[key] + '</b>');
           }
       });
       return changes;
@@ -75,7 +66,7 @@ export class RecordHistoryComponent implements OnInit {
   }
 
   onHistoryClose(): void {
-    console.log('clicked');
+    this.toggleHistory.emit(false);
   }
 
 }

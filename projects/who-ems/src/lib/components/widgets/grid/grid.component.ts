@@ -17,7 +17,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { RecordHistoryComponent } from './components/record-history/record-history.component';
+
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -409,7 +409,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Open a component which display record's history
+  /* Send Record History to parent to open a sidebar
   */
 
   public async getRecordsHistory(): Promise<any> {
@@ -424,9 +424,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public onViewHistory(): void {
     this.getRecordsHistory().then(res => res.subscribe( x => {
       this.toggleHistory.emit(x.data.record);
-      // const dialogRef = this.dialog.open(RecordHistoryComponent, {
-      //   data: x.data.record
-      // });
     }));
   }
 

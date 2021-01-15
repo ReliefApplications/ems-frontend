@@ -227,8 +227,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.versions = event;
   }
 
-  onHistoryClose(): void {
-    this.showHistory = false;
+  onHistoryClose(input): void {
+    this.showHistory = input;
   }
 
 

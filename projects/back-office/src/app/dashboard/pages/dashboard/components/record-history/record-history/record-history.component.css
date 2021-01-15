@@ -1,10 +1,10 @@
 ul {
     list-style-type: none;
-    padding: 0px;
+    padding: 70px 10px 0px 10px;
 }
 
 li {
-    padding-top: 2px;
+    padding-top: 4px;
 }
 
 .mat-row .mat-cell:first-child  {
@@ -12,15 +12,29 @@ li {
 }
 
 .fixed {
-    text-align: center;
-
-    background-color: white;
-    opacity: 100%;
+    position: fixed;
+    background-color: #f5f5f5;
+    z-index: 1;
+    fill: #f5f5f5;
+    display: flex;
+    width: 100%;
+    filter: drop-shadow(1px 1px 3px #b1b1b1);
 }
 
 .user {
     background-color: #B0D2EA;
     border-radius: 10px;
     padding: 5px;
-    margin: 10px;
+    margin-right: 10px;
+}
+
+h3 {
+    margin: 25px;
+    font-size: larger;
+    text-transform: uppercase;
+    color: rgb(65, 65, 65);
+}
+
+.close-history {
+    margin: 20px;
 }
