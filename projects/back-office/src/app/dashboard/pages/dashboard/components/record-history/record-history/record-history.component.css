@@ -7,10 +7,20 @@ li {
     padding-top: 2px;
 }
 
-.records > h2{
-    text-align: center;
-}
-
 .mat-row .mat-cell:first-child  {
     font-weight: 300;
+}
+
+.fixed {
+    text-align: center;
+
+    background-color: white;
+    opacity: 100%;
+}
+
+.user {
+    background-color: #B0D2EA;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 10px;
 }

@@ -10,8 +10,8 @@ export class RecordHistoryComponent implements OnInit {
     @Input() data;
     //versions = [];
     versions = [];
-  loading = true;
-  displayedColumns: string[] = ['position'];
+    loading = true;
+    displayedColumns: string[] = ['position'];
 
 //   constructor(
 //       public dialogRef: MatDialogRef<RecordHistoryComponent>,
@@ -64,11 +64,16 @@ export class RecordHistoryComponent implements OnInit {
         return res;
       }
       for (let i = 1; i < versions.length; i++) {
-          res.push({created : versions[i - 1].createdAt, changes : this.getDifference(versions[i - 1].data, versions[i].data)});
+          res.push({created : versions[i - 1].createdAt, createdBy :  versions[i - 1].createdBy?.name , changes : this.getDifference(versions[i - 1].data, versions[i].data)});
       }
       res.push({created : versions[versions.length - 1].createdAt,
+        createdBy : versions[versions.length - 1].createdBy?.name,
         changes : this.getDifference(data.data, versions[versions.length - 1].data)});
       return res.reverse();
+  }
+
+  onHistoryClose() {
+    console.log("clicked");
   }
 
 }

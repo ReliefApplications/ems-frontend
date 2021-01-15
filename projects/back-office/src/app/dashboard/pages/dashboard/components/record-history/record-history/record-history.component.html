@@ -1,11 +1,15 @@
+
+    <span class="fixed">
+        <button mat-raised-button color="secondary" (click)="onHistoryClose()">close</button>
+        <h3>{{versions.length > 0 ? 'Latest changes of record' : 'No changes on this record so far'}}</h3>
+    </span>
 <div class="records">
-    <h3>{{versions.length > 0 ? 'Latest changes of record' : 'No changes on this record so far'}}</h3>
     <ul>
         <li *ngFor="let item of versions">
             <table mat-table [dataSource]="item.changes" class="mat-elevation-z8">
                 <ng-container matColumnDef="position">
-                    <th mat-header-cell *matHeaderCellDef> {{item.created | date:'dd/MM/yyyy HH:mm'}} </th>
-                    <td mat-cell *matCellDef="let element" [innerHTML]="element"> </td>
+                    <th mat-header-cell *matHeaderCellDef> {{item.created | date:'dd/MM/yyyy HH:mm'}} <span class="user">{{item.createdBy}}</span> </th>
+                    <td mat-cell *matCellDef="let element" [innerHTML]="element"></td>
                   </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

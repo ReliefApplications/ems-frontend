@@ -9,4 +9,5 @@ export interface Record {
     data?: any;
     form?: Form;
     versions?: Version;
+    createdBy?: any;
 }

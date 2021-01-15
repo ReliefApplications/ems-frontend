@@ -423,6 +423,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public onViewHistory(): void {
     this.getRecordsHistory().then(res => res.subscribe( x => {
+      console.log("history test", x.data.record.versions)
       this.toggleHistory.emit(x.data.record);
       // const dialogRef = this.dialog.open(RecordHistoryComponent, {
       //   data: x.data.record
