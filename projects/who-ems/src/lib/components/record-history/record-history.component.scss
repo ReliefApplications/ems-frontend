@@ -1,0 +1,30 @@
+:host {
+    display: block;
+    position: relative;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+
+    li:not(:first-child) {
+        padding-top: 8px;
+    }
+}
+
+.mat-row .mat-cell:first-child  {
+    font-weight: 300;
+}
+
+.user {
+    background-color: #B0D2EA;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.close-history {
+    position: absolute;
+    top: -24px;
+    right: -24px;
+}

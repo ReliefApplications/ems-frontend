@@ -13,6 +13,7 @@ import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../gra
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -214,5 +215,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe();
   }
-
 }
