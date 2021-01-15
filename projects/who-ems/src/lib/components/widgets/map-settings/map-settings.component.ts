@@ -14,7 +14,6 @@ export class WhoMapSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup;
-  showFilter = false;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -23,14 +22,7 @@ export class WhoMapSettingsComponent implements OnInit {
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  // === QUERY BUILDER ===
-  public availableQueries: Observable<any[]>;
-  public availableFields: any[];
-  public availableFilter: any[];
-
-  get selectedFields(): string[] {
-    return this.tileForm.value.fields;
-  }
+  public selectedFields: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,48 +36,47 @@ export class WhoMapSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
+      query: this.queryBuilder.createQueryForm(tileSettings.query),
       latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
       longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
       centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
-      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]],
-      queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
-      fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
-      sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
-      sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
-      filter: this.formBuilder.group({})
+      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]]
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
 
-    this.availableQueries = this.queryBuilder.availableQueries;
-    this.availableQueries.subscribe((res) => {
-      if (res) {
-        this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
-        this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
-        this.tileForm.setControl('filter', this.createFilterGroup());
-      }
-    });
-    this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
-      this.availableFields = this.queryBuilder.getFields(res);
-      this.availableFilter = this.queryBuilder.getFilter(res);
-      this.tileForm.setControl('filter', this.createFilterGroup());
+    if (this.tileForm.value.query.name) {
+      this.selectedFields = this.getFields(this.tileForm.value.query.fields);
+    }
+
+    const queryForm = this.tileForm.get('query') as FormGroup;
+
+    queryForm.controls.name.valueChanges.subscribe(() => {
       this.tileForm.controls.latitude.setValue('');
       this.tileForm.controls.longitude.setValue('');
     });
+    queryForm.valueChanges.subscribe((res) => {
+      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+    });
   }
 
-  private createFilterGroup(): FormGroup {
-    const filter = this.tile.settings.filter;
-    const group = this.availableFilter.reduce((o, key) => {
-      return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
-    }, {});
-    return this.formBuilder.group(group);
+  private flatDeep(arr: any[]): any[] {
+    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
-  public toggleFilter(): void {
-    this.showFilter = !this.showFilter;
+  private getFields(fields: any[], prefix?: string): any[] {
+    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      switch (f.kind) {
+        case 'OBJECT': {
+          return this.getFields(f.fields, f.name);
+        }
+        default: {
+          return prefix ? `${prefix}.${f.name}` : f.name;
+        }
+      }
+    }));
   }
 }

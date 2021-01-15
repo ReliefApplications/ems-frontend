@@ -44,6 +44,7 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
+  public detailsField: string;
   public canEdit = false;
   private dataSubscription: Subscription;
 
@@ -80,10 +81,33 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
-    this.excelFileName = DEFAULT_FILE_NAME;
-    this.items = this.parent[this.settings.type];
+    this.excelFileName = this.settings.name ? `${this.settings.name}.xlsx` : DEFAULT_FILE_NAME;
+    // this.items = this.parent[this.settings.type];
     this.getRecords();
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+  }
+
+  private flatDeep(arr: any[]): any[] {
+    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+  }
+
+  private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
+    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      switch (f.kind) {
+        case 'OBJECT': {
+          return this.getFields(f.fields, f.name, true);
+        }
+        default: {
+          return {
+            name: prefix ? `${prefix}.${f.name}` : f.name,
+            title: f.label ? f.label : f.name,
+            type: f.type,
+            editor: this.getEditor(f.type),
+            disabled
+          };
+        }
+      }
+    }));
   }
 
   /*  Load the data, using widget parameters.
@@ -91,28 +115,26 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
   private getRecords(): void {
     this.loading = true;
     this.updatedItems = [];
+
+    this.items = this.parent[this.settings.name];
+
     if (this.items.length > 0) {
-      if (this.items.length > 0) {
-        this.apollo.watchQuery<GetType>({
-          query: GET_TYPE,
-          variables: {
-            name: this.items[0].__typename
-          }
-        }).valueChanges.subscribe(res => {
-          this.loading = res.loading;
-          const settingsFields = this.settings.fields;
-          const fields = res.data.__type.fields.filter(x => x.type.kind === 'SCALAR')
-            .map(x => ({ ...x, editor: this.getEditor(x.type) }));
-          this.fields = settingsFields.map(x => fields.find(f => f.name === x));
-          this.gridData = {
-            data: this.items,
-            total: this.items.length
-          };
-        });
-      } else {
-        this.loading = false;
-      }
+      this.originalItems = cloneData(this.items);
+      this.fields = this.getFields(this.settings.fields);
+      this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
+      this.loading = false;
     } else {
+      this.originalItems = [];
+      this.fields = [];
+      this.detailsField = null;
+      this.gridData = {
+        data: this.items,
+        total: 0
+      };
       this.loading = false;
     }
   }
@@ -268,6 +290,9 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'Int': {
         return 'numeric';
       }
+      case 'Boolean': {
+        return 'boolean';
+      }
       case 'Date': {
         return 'date';
       }
@@ -282,8 +307,8 @@ export class WhoSubGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name))) {
-      formGroup[field.name] = [(field.type.name === 'Date' || field.type.name === 'DateTime') ?
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
+      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
         new Date(dataItem[field.name]) : dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
