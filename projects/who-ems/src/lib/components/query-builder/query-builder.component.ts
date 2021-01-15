@@ -69,6 +69,7 @@ export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
   }
 
   onCloseField(): void {
+    console.log('trying to close')
     this.closeField.emit(true);
   }
 
@@ -78,7 +79,6 @@ export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
       const componentRef = this.childTemplate.createComponent(factory);
       componentRef.instance.form = form;
       componentRef.instance.canExpand = form.value.kind === 'LIST';
-      // componentRef.instance.closeField.subscribe(() => e.callback);
     } else {
       this.childTemplate.clear();
     }
