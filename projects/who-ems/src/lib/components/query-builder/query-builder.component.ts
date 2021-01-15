@@ -47,7 +47,6 @@ export class WhoQueryBuilderComponent implements OnInit {
       this.availableQueries.subscribe((res) => {
         if (res) {
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);
-          console.log(this.availableFields);
           this.availableFilters = this.queryBuilder.getFilter(this.form.value.name);
           this.form.setControl('filter', this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
         }
