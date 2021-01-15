@@ -21,7 +21,6 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import * as Msal from 'msal';
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
