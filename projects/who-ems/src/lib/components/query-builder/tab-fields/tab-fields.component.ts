@@ -1,6 +1,7 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+// import { WhoQueryBuilderComponent } from '../query-builder.component';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
@@ -12,6 +13,9 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
 
   @Input() form: FormArray;
   @Input() fields: any[] = [];
+  @Input() childTemplate: TemplateRef<any>;
+  @Output() expand: EventEmitter<any> = new EventEmitter();
+
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
   public fieldForm: FormGroup = null;
@@ -55,10 +59,14 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   }
 
   public onCloseField(): void {
+    this.expand.emit(null);
     this.fieldForm = null;
   }
 
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
+    if (this.fieldForm.value.kind !== 'SCALAR') {
+      this.expand.emit(this.fieldForm);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -8,7 +8,7 @@ import { QueryBuilderService } from '../../services/query-builder.service';
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class WhoQueryBuilderComponent implements OnInit {
+export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
 
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
@@ -27,7 +27,11 @@ export class WhoQueryBuilderComponent implements OnInit {
   public isField: boolean;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
+  // === TEMPLATE REFERENCE ===
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
+
   constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) { }
@@ -66,6 +70,22 @@ export class WhoQueryBuilderComponent implements OnInit {
 
   onCloseField(): void {
     this.closeField.emit(true);
+  }
+
+  onExpand(form: FormGroup): void {
+    if (form) {
+      const factory = this.componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
+      const componentRef = this.childTemplate.createComponent(factory);
+      componentRef.instance.form = form;
+      componentRef.instance.canExpand = form.value.kind === 'LIST';
+      // componentRef.instance.closeField.subscribe(() => e.callback);
+    } else {
+      this.childTemplate.clear();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.childTemplate.clear();
   }
 
 }
