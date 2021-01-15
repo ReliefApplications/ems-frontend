@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -8,12 +8,13 @@ import { QueryBuilderService } from '../../services/query-builder.service';
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
+export class WhoQueryBuilderComponent implements OnInit {
 
   // === QUERY BUILDER ===
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
   public availableFilters: any[];
+  public factory: ComponentFactory<any>;
 
   get availableScalarFields(): any[] {
     return this.availableFields.filter(x => x.type.kind === 'SCALAR');
@@ -27,9 +28,6 @@ export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
   public isField: boolean;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
-  // === TEMPLATE REFERENCE ===
-  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
-
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
@@ -37,6 +35,7 @@ export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.factory = this.componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
     if (this.form.value.type) {
       this.isField = true;
       this.availableFields = this.queryBuilder.getFieldsFromType(this.form.value.type)
@@ -72,20 +71,4 @@ export class WhoQueryBuilderComponent implements OnInit, OnDestroy {
     console.log('trying to close')
     this.closeField.emit(true);
   }
-
-  onExpand(form: FormGroup): void {
-    if (form) {
-      const factory = this.componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
-      const componentRef = this.childTemplate.createComponent(factory);
-      componentRef.instance.form = form;
-      componentRef.instance.canExpand = form.value.kind === 'LIST';
-    } else {
-      this.childTemplate.clear();
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.childTemplate.clear();
-  }
-
 }

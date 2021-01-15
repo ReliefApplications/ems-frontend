@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, ComponentFactory, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-// import { WhoQueryBuilderComponent } from '../query-builder.component';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
@@ -13,8 +12,9 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
 
   @Input() form: FormArray;
   @Input() fields: any[] = [];
-  @Input() childTemplate: TemplateRef<any>;
-  @Output() expand: EventEmitter<any> = new EventEmitter();
+  // === TEMPLATE REFERENCE ===
+  @Input() factory: ComponentFactory<any>;
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
@@ -59,14 +59,19 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   }
 
   public onCloseField(): void {
-    this.expand.emit(null);
     this.fieldForm = null;
   }
 
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
-      this.expand.emit(this.fieldForm);
+      const componentRef = this.childTemplate.createComponent(this.factory);
+      componentRef.instance.form = this.fieldForm;
+      componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
+      componentRef.instance.closeField.subscribe(() => {
+        this.onCloseField();
+        componentRef.destroy();
+      })
     }
   }
 }
