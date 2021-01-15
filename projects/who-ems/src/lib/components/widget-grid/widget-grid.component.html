@@ -8,7 +8,7 @@
                     cdkDragBoundary=".grid-container">
                     <who-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
                         (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></who-floating-options>
-                    <who-widget [widget]="widget" (toggleHistory)="toggleHistoryEvent($event)"></who-widget>
+                    <who-widget [widget]="widget"></who-widget>
                     <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
                         <mat-icon>drag_indicator</mat-icon>
                     </button>

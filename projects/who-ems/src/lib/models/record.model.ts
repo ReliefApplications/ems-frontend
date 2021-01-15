@@ -1,4 +1,13 @@
-import { Form, Version } from './form.model';
+import { Form } from './form.model';
+import { User } from './user.model';
+
+interface Version {
+    id?: string;
+    createdAt?: Date;
+    data?: string;
+    createdBy?: User;
+}
+
 /*  Model for Record object.
 */
 export interface Record {
@@ -8,6 +17,6 @@ export interface Record {
     deleted?: boolean;
     data?: any;
     form?: Form;
-    versions?: Version;
-    createdBy?: any;
+    versions?: Version[];
+    createdBy?: User;
 }

@@ -24,8 +24,5 @@
     </ng-container>
 
     <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
-        (delete)="onDeleteTile($event)" (toggleHistory)="toggleHistoryEvent($event)"></who-widget-grid>
-    <mat-drawer [(opened)]="showHistory" class="history-sidenav" mode="side" position="end">
-        <app-record-history *ngIf="showHistory" [data]=versions (toggleHistory)="onHistoryClose($event)"></app-record-history>
-    </mat-drawer>
+        (delete)="onDeleteTile($event)"></who-widget-grid>
 </ng-container>

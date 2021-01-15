@@ -22,7 +22,6 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
 
 
   constructor(public dialog: MatDialog) { }
@@ -97,9 +96,4 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
       panelClass: 'expanded-widget-dialog'
     });
   }
-
-  toggleHistoryEvent(event): void {
-    this.toggleHistory.emit(event);
-  }
-
 }

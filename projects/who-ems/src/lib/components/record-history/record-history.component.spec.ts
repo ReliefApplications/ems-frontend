@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecordHistoryComponent } from './record-history.component';
+import { WhoRecordHistoryComponent } from './record-history.component';
 
-describe('RecordHistoryComponent', () => {
-  let component: RecordHistoryComponent;
-  let fixture: ComponentFixture<RecordHistoryComponent>;
+describe('WhoRecordHistoryComponent', () => {
+  let component: WhoRecordHistoryComponent;
+  let fixture: ComponentFixture<WhoRecordHistoryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecordHistoryComponent ]
+      declarations: [ WhoRecordHistoryComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RecordHistoryComponent);
+    fixture = TestBed.createComponent(WhoRecordHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

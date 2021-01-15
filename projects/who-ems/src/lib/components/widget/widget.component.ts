@@ -10,15 +10,8 @@ export class WhoWidgetComponent implements OnInit {
   @Input() widget: any;
   @Input() header = true;
 
-  @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
-
   constructor() { }
 
   ngOnInit(): void {
   }
-
-  toggleHistoryEvent(event): void {
-    this.toggleHistory.emit(event);
-  }
-
 }

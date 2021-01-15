@@ -20,6 +20,7 @@ import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.comp
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
+import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 
 
 
@@ -82,10 +83,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
-
-  // === ACTION TO OPEN HISTORY SIDENAV IN PARENT ===
-  @Output() toggleHistory: EventEmitter<any> = new EventEmitter();
-  showHistory = false;
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -434,9 +431,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public onViewHistory(): void {
-    this.getRecordsHistory().then(res => res.subscribe( x => {
-      this.toggleHistory.emit(x.data.record);
-    }));
+    this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id: this.selectedRow.dataItem.id
+      }
+    }).subscribe(res => {
+      this.dialog.open(WhoRecordHistoryComponent, {
+        data: {
+          record: res.data.record
+        }
+      });
+    });
   }
 
   /* Open a confirmation modal and then delete the selected record

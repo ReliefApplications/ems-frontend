@@ -219,17 +219,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe();
   }
-
-/*  Display sidenav from history of records from who grid widget
-  */
-  toggleHistoryEvent(event): void {
-    this.showHistory = true;
-    this.versions = event;
-  }
-
-  onHistoryClose(input): void {
-    this.showHistory = input;
-  }
-
-
 }
