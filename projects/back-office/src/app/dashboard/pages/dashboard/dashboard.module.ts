@@ -17,7 +17,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -42,7 +41,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatTooltipModule,
     MatMenuModule,
     ClipboardModule,
-    MatSidenavModule,
     WhoRecordHistoryModule
   ],
   exports: [DashboardComponent]

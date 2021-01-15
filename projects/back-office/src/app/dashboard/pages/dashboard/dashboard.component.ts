@@ -37,10 +37,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === ROUTE ===
   private routeSubscription: Subscription;
 
-  public showHistory = false;
-  public versions = [];
-
-
   constructor(
     private applicationService: WhoApplicationService,
     private workflowService: WorkflowService,
