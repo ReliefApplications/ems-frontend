@@ -58,7 +58,11 @@
             </ng-container>
         </ng-container>
         <ng-container>
-            <kendo-grid-checkbox-column [columnMenu]="false" [width]="41"></kendo-grid-checkbox-column>
+            <kendo-grid-column [columnMenu]="false" [width]="41">
+              <kendo-buttongroup>
+                <button kendoButton [icon] = "more-vertical"></button>
+              </kendo-buttongroup>
+            </kendo-grid-column>
         </ng-container>
     </ng-container>
     <!-- <ng-container *ngIf="(settings && settings.canExpand && settings.childGrid)">
