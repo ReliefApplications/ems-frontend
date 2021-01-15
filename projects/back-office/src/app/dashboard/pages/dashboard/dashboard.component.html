@@ -26,6 +26,6 @@
     <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
         (delete)="onDeleteTile($event)" (toggleHistory)="toggleHistoryEvent($event)"></who-widget-grid>
     <mat-drawer [(opened)]="showHistory" class="history-sidenav" mode="side" position="end">
-        <who-record-history *ngIf="showHistory" [data]=versions></who-record-history>
+        <app-record-history *ngIf="showHistory" [data]=versions></app-record-history>
     </mat-drawer>
 </ng-container>

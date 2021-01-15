@@ -17,7 +17,7 @@ export class WhoWidgetComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  toggleHistoryEvent(event) {
+  toggleHistoryEvent(event): void {
     this.toggleHistory.emit(event);
   }
 

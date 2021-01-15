@@ -222,12 +222,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 /*  Display sidenav from history of records from who grid widget
   */
-  toggleHistoryEvent(event) {
+  toggleHistoryEvent(event): void {
     this.showHistory = true;
     this.versions = event;
   }
 
-  onHistoryClose():void {
+  onHistoryClose(): void {
     this.showHistory = false;
   }
 

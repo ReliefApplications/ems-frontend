@@ -98,7 +98,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
     });
   }
 
-  toggleHistoryEvent(event) {
+  toggleHistoryEvent(event): void {
     this.toggleHistory.emit(event);
   }
 

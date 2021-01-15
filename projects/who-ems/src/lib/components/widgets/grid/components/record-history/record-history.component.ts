@@ -9,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 export class RecordHistoryComponent implements OnInit {
 
     @Input() versions;
-  //versions = [];
+  // versions = [];
   loading = true;
   displayedColumns: string[] = ['position'];
 

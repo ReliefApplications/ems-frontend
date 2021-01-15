@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'who-record-history',
+  selector: 'app-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.css']
 })
 export class RecordHistoryComponent implements OnInit {
 
     @Input() data;
-    //versions = [];
+    // versions = [];
     versions = [];
     loading = true;
     displayedColumns: string[] = ['position'];
@@ -41,7 +41,8 @@ export class RecordHistoryComponent implements OnInit {
       keysCurrent.forEach( key => {
           if (after[key]) {
               if (after[key] !== current[key]) {
-                  changes.push('Change value of field <i>' + key + '</i> from <b>' + after[key] + '</b> to <b>' + current[key] + '</b>');
+                  changes.push('Change value of field <i>' + key + '</i> from <b>' + after[key] +
+                  '</b> to <b>' + current[key] + '</b>');
               }
           } else {
               changes.push('Add field <i>' + key + '</i> with value <b>' + current[key] + '</b>');
@@ -72,8 +73,8 @@ export class RecordHistoryComponent implements OnInit {
       return res.reverse();
   }
 
-  onHistoryClose() {
-    console.log("clicked");
+  onHistoryClose(): void {
+    console.log('clicked');
   }
 
 }
