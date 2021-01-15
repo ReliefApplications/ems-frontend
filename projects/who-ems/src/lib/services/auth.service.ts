@@ -87,7 +87,7 @@ export class WhoAuthService {
       errorPolicy: 'all'
     }).valueChanges.subscribe(
       res => this._user.next(res.data.me),
-      err => {
+      () => {
         // Just a security but it should never be executed
         this.msalService.acquireTokenSilent({
           scopes: [
