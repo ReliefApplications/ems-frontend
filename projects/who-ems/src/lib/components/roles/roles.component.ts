@@ -81,12 +81,8 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
               title: value.title
             }
           }).subscribe(res => {
-            if (res.errors) {
-              this.snackBar.openSnackBar('The Role was not created. ' + res.errors[0].message + ' Please choose a different name.');
-            } else {
-              this.snackBar.openSnackBar(`${value.title} role created`);
-              this.getRoles();
-            }
+            this.snackBar.openSnackBar(`${value.title} role created`);
+            this.getRoles();
           }, (err) => {
             console.log(err);
           });

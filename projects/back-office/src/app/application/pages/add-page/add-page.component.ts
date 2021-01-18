@@ -129,13 +129,9 @@ export class AddPageComponent implements OnInit {
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
-          if (res.errors) {
-            this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message + ' Please choose a different name.');
-          } else {
-            const { id } = res.data.addForm;
-            this.pageForm.controls.content.setValue(id);
-            this.onSubmit();
-          }
+          const { id } = res.data.addForm;
+          this.pageForm.controls.content.setValue(id);
+          this.onSubmit();
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         });

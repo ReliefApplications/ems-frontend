@@ -117,7 +117,6 @@ export class FormComponent implements OnInit, OnDestroy {
           name: tabName
         }
       }).subscribe(res => {
-        console.log(res)
         if (res.errors) {
           this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message + ' Please choose a different name.');
         } else {

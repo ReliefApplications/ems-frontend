@@ -107,7 +107,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar('The App was not saved. ' + res.errors[0].message + ' Please choose a different name.');
+            this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message + ' Please choose a different name.');
           } else {
             this.snackBar.openSnackBar(`${value.name} application created`);
             const id = res.data.addApplication.id;

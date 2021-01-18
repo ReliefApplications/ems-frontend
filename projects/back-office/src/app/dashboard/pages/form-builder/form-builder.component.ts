@@ -173,12 +173,12 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Form was not updated. ' + res.errors[0].message + ' Please choose a different name.');
+          this.snackBar.openSnackBar('The Form was not changed. ' + res.errors[0].message + ' Please choose a different name.');
         } else {
           this.snackBar.openSnackBar('Name updated', { duration: 1000 });
           this.form.name = res.data.editForm.name;
-      }
-      });
+        }
+    });
   }
 
   /*  Edit the permissions layer.

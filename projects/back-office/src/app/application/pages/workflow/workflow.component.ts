@@ -83,12 +83,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         name: workflowName
       }
     }).subscribe(res => {
-      if (res.errors) {
-        this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message + ' Please choose a different name.');
-      } else {
-        this.workflow.name = res.data.editPage.name;
-        this.applicationService.updatePageName(res.data.editPage);
-      }
+      this.workflow.name = res.data.editPage.name;
+      this.applicationService.updatePageName(res.data.editPage);
     });
   }
 

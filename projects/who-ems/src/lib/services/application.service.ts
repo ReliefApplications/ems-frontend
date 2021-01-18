@@ -153,16 +153,12 @@ export class WhoApplicationService {
           application: application.id
         }
       }).subscribe(res => {
-        if (res.errors) {
-          this.snackBar.openSnackBar('The Page was not saved. ' + res.errors[0].message + ' Please choose a different name.');
-        } else {
-          this.snackBar.openSnackBar(`${value.name} page created`);
-          const content = res.data.addPage.content;
-          application.pages = application.pages.concat([res.data.addPage]);
-          this._application.next(application);
-          this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
-          `/applications/${application.id}/${value.type}/${content}`]);
-        }
+        this.snackBar.openSnackBar(`${value.name} page created`);
+        const content = res.data.addPage.content;
+        application.pages = application.pages.concat([res.data.addPage]);
+        this._application.next(application);
+        this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
+        `/applications/${application.id}/${value.type}/${content}`]);
       });
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
@@ -181,12 +177,9 @@ export class WhoApplicationService {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('The Role was not created. ' + res.errors[0].message + ' Please choose a different name.');
-      } else {
-        this.snackBar.openSnackBar(`${value.title} role created`);
-        application.roles = application.roles.concat([res.data.addRole]);
-        this._application.next(application);
-      }
+      this.snackBar.openSnackBar(`${value.title} role created`);
+      application.roles = application.roles.concat([res.data.addRole]);
+      this._application.next(application);
     });
   }
 
