@@ -282,5 +282,5 @@ export function init(Survey: any, API_URL: string): void {
       }
     },
   };
-  Survey.ComponentCollection.Instance.add(component);  
+  Survey.ComponentCollection.Instance.add(component);
 }

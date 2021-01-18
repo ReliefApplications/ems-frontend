@@ -176,7 +176,6 @@ export class WhoApplicationService {
         application: application.id
       }
     }).subscribe(res => {
-      if (res.errors) {
       this.snackBar.openSnackBar(`${value.title} role created`);
       application.roles = application.roles.concat([res.data.addRole]);
       this._application.next(application);
