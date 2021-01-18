@@ -80,9 +80,13 @@ export class DashboardsComponent implements OnInit, OnDestroy {
             name: value.name
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} dashboard created`);
-          const id = res.data.addDashboard.id;
-          this.router.navigate(['/dashboards', id]);
+          if (res.errors) {
+            this.snackBar.openSnackBar('The Dashboard was not saved. ' + res.errors[0].message + ' Please choose a different name.');
+          } else {
+            this.snackBar.openSnackBar(`${value.name} dashboard created`);
+            const id = res.data.addDashboard.id;
+            this.router.navigate(['/dashboards', id]);
+          }
         });
       }
     });

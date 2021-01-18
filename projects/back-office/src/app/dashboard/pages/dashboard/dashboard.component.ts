@@ -141,7 +141,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         structure: this.tiles
       }
     }).subscribe(res => {
-      this.tiles = res.data.editDashboard.structure;
+      if (res.errors) {
+        this.snackBar.openSnackBar('The App was not saved. ' + res.errors[0].message + ' Please choose a different name.');
+      } else {
+        this.tiles = res.data.editDashboard.structure;
+      }
     });
   }
 
@@ -188,8 +192,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard.name = res.data.editStep.name;
-        this.workflowService.updateStepName(res.data.editStep);
+        if (res.errors) {
+          this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message + ' Please choose a different name.');
+        } else {
+          this.dashboard.name = res.data.editStep.name;
+          this.workflowService.updateStepName(res.data.editStep);
+        }
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -199,8 +207,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard.name = res.data.editPage.name;
-        this.applicationService.updatePageName(res.data.editPage);
+        if (res.errors) {
+          this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message + ' Please choose a different name.');
+        } else {
+          this.dashboard.name = res.data.editPage.name;
+          this.applicationService.updatePageName(res.data.editPage);
+        }
       });
     }
   }

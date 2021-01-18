@@ -53,12 +53,16 @@ export class WorkflowService {
           workflow: workflow.id
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(`${value.name} step created`);
-        this.loadWorkflow(workflow.id);
-        if (value.type === ContentType.form) {
-          this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
+        if (res.errors) {
+          this.snackBar.openSnackBar('The Step was not created. ' + res.errors[0].message + ' Please choose a different name.');
         } else {
-          this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
+          this.snackBar.openSnackBar(`${value.name} step created`);
+          this.loadWorkflow(workflow.id);
+          if (value.type === ContentType.form) {
+            this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
+          } else {
+            this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
+          }
         }
       });
     } else {
