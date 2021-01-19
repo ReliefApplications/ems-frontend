@@ -156,7 +156,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
           this.gridData = {
             data: this.items,
-            total: res.data[field].length
+            total: this.items.length
           };
         }
       }
@@ -297,7 +297,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      Promise.all(promises).then(() => this.getRecords());
+      Promise.all(promises).then(() => this.reloadData());
     }
   }
 
