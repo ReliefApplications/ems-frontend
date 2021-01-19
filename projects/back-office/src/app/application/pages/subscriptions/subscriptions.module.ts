@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { WhoConfirmModalModule } from '@who-ems/builder';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { WhoConfirmModalModule } from '@who-ems/builder';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSelectModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,

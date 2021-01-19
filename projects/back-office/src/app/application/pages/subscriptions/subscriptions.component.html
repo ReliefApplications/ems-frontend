@@ -1,11 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-    <!-- <div class="actions">
+    <div class="actions">
         <button mat-raised-button color="primary" (click)="onAdd()">
             <mat-icon>add</mat-icon>
             Create a subscription
         </button>
-    </div> -->
+    </div>
     <table mat-table [dataSource]="subscriptions">
         <ng-container matColumnDef="routingKey">
             <th mat-header-cell *matHeaderCellDef>Listener</th>
