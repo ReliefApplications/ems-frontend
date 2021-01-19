@@ -283,4 +283,30 @@ export function init(Survey: any, API_URL: string): void {
     },
   };
   Survey.ComponentCollection.Instance.add(component);
+  const widget = {
+    name: 'addResource',
+    isFit: (question) => {
+      if (question.getType() === 'resource') {
+        return question.canAddNew && question.addTemplate;
+      } else {
+        return false;
+      }
+    },
+    isDefaultRender: true,
+    afterRender: (question, el) => {
+      const mainDiv = document.createElement('div');
+      const btnEl = document.createElement('button');
+      btnEl.innerText = 'Add';
+      btnEl.style.width = '120px';
+      btnEl.onclick = () => {
+        const event = new CustomEvent('openForm', {
+          detail: { template: question.addTemplate },
+        });
+        document.dispatchEvent(event);
+      };
+      mainDiv.appendChild(btnEl);
+      el.parentElement.insertBefore(mainDiv, el);
+    },
+  };
+  Survey.CustomWidgetCollection.Instance.add(widget);
 }
