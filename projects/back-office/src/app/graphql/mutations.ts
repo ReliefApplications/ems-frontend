@@ -636,3 +636,19 @@ export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
 }
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
+  editRecord(id: $id, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
+}

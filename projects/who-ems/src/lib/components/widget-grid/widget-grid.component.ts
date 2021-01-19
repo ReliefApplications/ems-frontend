@@ -22,6 +22,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() dataChanges: EventEmitter<any> = new EventEmitter();
 
   constructor(public dialog: MatDialog) { }
 

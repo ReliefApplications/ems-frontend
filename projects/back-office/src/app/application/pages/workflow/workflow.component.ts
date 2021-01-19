@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,7 +10,8 @@ import { WorkflowService } from '../../../services/workflow.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
-  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../graphql/mutations';
+  EditWorkflowMutationResponse, EDIT_WORKFLOW,
+  EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -35,9 +36,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === SELECTED STEP ===
   public dragging: boolean;
   public selectedStep: Step;
+  public selectedStepIndex: number;
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+
+  // === NEXT BUTTON ===
+  private nextData: any[] = null;
+  public showSettings = false;
+  public settingsForm: FormGroup;
 
   constructor(
     private apollo: Apollo,
@@ -127,6 +134,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             return x.id !== res.data.deleteStep.id;
           });
           this.selectedStep = null;
+          this.selectedStepIndex = null;
           this.router.navigate(['./'], { relativeTo: this.route });
         });
       }
@@ -169,6 +177,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;
+      this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
       if (this.selectedStep.type === ContentType.form) {
         this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
       } else {
@@ -180,5 +189,63 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.routeSubscription.unsubscribe();
     this.workflowSubscription.unsubscribe();
+  }
+
+  /* Get data from within selected step
+  */
+  onActivate(elementRef: any): void {
+    if (elementRef.dataChanges) {
+      elementRef.dataChanges.subscribe(event => {
+        this.nextData = event;
+      });
+    }
+  }
+
+  /* Start action on next click
+  */
+  onNextClick(): void {
+    const promises = [];
+    for (const item of this.nextData) {
+      const data = Object.assign({}, item);
+      delete data.id;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+          data
+        }
+      }).toPromise());
+    }
+    Promise.all(promises).then(() => {
+      this.selectedStepIndex += 1;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      if (this.selectedStep.type === ContentType.form) {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+      }
+    });
+  }
+
+  /* Display settings in the place of the step view
+  */
+  onSettingsClick(): void {
+    this.settingsForm = new FormGroup({
+      buttonName: new FormControl(this.selectedStep.settings ? this.selectedStep.settings.autoSave : null),
+      autoSave: new FormControl(this.selectedStep.settings ? this.selectedStep.settings.autoSave : null, Validators.required)
+    });
+    this.showSettings = true;
+  }
+
+  /* Close settings without doing anything
+  */
+  onCloseSettings(): void {
+    this.showSettings = false;
+  }
+
+  /* Close settings and save changes for the selected step
+  */
+  onSaveSettings(): void {
+    this.showSettings = false;
   }
 }

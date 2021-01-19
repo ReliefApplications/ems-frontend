@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'who-widget',
@@ -9,6 +9,8 @@ export class WhoWidgetComponent implements OnInit {
 
   @Input() widget: any;
   @Input() header = true;
+
+  @Output() dataChanges: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 
