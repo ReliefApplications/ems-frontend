@@ -71,7 +71,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
       componentRef.instance.closeField.subscribe(() => {
         this.onCloseField();
         componentRef.destroy();
-      })
+      });
     }
   }
 }

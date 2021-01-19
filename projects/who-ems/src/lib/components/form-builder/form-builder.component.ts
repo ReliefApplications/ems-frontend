@@ -54,13 +54,12 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   */
   saveMySurvey = () => {
     this.validateValueNames().then(res => {
-      if(res === '') {
-        this.save.emit(this.surveyCreator.text)
-      }else {
+      if (res === '') {
+        this.save.emit(this.surveyCreator.text);
+      } else {
         this.snackBar.openSnackBar(res, {error: true});
       }});
   }
-  
 
   /*  Event listener to trigger embedded forms.
   */
@@ -75,24 +74,26 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe(() => {});
   }
 
-  async validateValueNames() {
+  /*  Making sure that value names are existent and snake case, to not cause backend problems.
+  */
+  async validateValueNames(): Promise<string> {
    let message = '';
-   let object = JSON.parse(this.surveyCreator.text);
+   const object = JSON.parse(this.surveyCreator.text);
    await object.pages.forEach( page => {
      page.elements.forEach(element => {
        if (!element.valueName) {
         if (element.title) {
-          element.valueName = element.title.replace(/\W+/g, " ").split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
+          element.valueName = element.title.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
           return element;
          } else {
-          message = 'Missing value name for an element on page '+ page.name +'. Please provide a valid value name (snake_case) to save the form.';
+          message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid value name (snake_case) to save the form.';
          }
        } else {
-        if(!(element.valueName.match(/^[a-z0-9_]+$/))) {
-          message = 'The value name ' + element.valueName + ' on page '+ page.name +' is invalid. Please conform to snake_case.';
+        if (!(element.valueName.match(/^[a-z0-9_]+$/))) {
+          message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
         }
        }
-     })
+     });
    });
    this.surveyCreator.text = JSON.stringify(object);
    return message;
