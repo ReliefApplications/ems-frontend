@@ -1,24 +1,26 @@
-<form [formGroup]="tileForm">
-    <div class="form-group">
-        <div class="form-group-title">General</div>
-        <mat-form-field appearance="outline" >
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="title" type="string"/>
-        </mat-form-field>
-    </div>
-    <div class="form-group" *ngIf="tileForm">
-        <div class="form-group-title">Query builder</div>
-        <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
-    </div>
-    <div class="form-group">
-        <div class="form-group-title">Notifications channel</div>
-        <mat-form-field appearance="outline">
-            <mat-select formControlName="channel">
-                <mat-option>-- None --</mat-option>
-                <mat-option *ngFor="let channel of channels" [value]="channel.id">
-                    {{channel.title}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
-</form>
+<ng-container *ngIf="tileForm">
+    <form [formGroup]="tileForm">
+        <div class="form-group">
+            <div class="form-group-title">General</div>
+            <mat-form-field appearance="outline" >
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title" type="string"/>
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <div class="form-group-title">Query builder</div>
+            <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
+        </div>
+        <div class="form-group">
+            <div class="form-group-title">Notifications channel</div>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="channel">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let channel of channels" [value]="channel.id">
+                        {{channel.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</ng-container>

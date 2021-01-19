@@ -33,14 +33,15 @@ export function provideApollo(httpLink: HttpLink): any {
     }
   }));
 
-  // Get the authentication token from local storage if it exists
-  const token = localStorage.getItem('msal.idtoken');
-  const auth = setContext((operation, context) => ({
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-  }));
-
+  const auth = setContext((operation, context) => {
+    // Get the authentication token from local storage if it exists
+    const token = localStorage.getItem('msal.idtoken');
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
   const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
 
   const ws = new WebSocketLink({
@@ -117,6 +118,9 @@ export function provideApollo(httpLink: HttpLink): any {
         cacheLocation: 'localStorage',
         storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
       },
+      framework: {
+        isAngular: true
+      }
     }, {
       popUp: false,
       consentScopes: [

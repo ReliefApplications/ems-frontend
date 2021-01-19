@@ -11,14 +11,18 @@ import {
   EditRecordMutationResponse, EDIT_RECORD,
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
-  DeleteRecordMutationResponse, DELETE_RECORD
-} from '../../../graphql/mutations';
+  DeleteRecordMutationResponse,
+  DELETE_RECORD } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
+import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
+import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
+
+
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -420,9 +424,31 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Open a component which display record's history
+  /* Send Record History to parent to open a sidebar
   */
+
+  public async getRecordsHistory(): Promise<any> {
+    return await this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id: this.selectedRow.dataItem.id
+      }
+    });
+  }
+
   public onViewHistory(): void {
+    this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id: this.selectedRow.dataItem.id
+      }
+    }).subscribe(res => {
+      this.dialog.open(WhoRecordHistoryComponent, {
+        data: {
+          record: res.data.record
+        }
+      });
+    });
   }
 
   /* Open a confirmation modal and then delete the selected record

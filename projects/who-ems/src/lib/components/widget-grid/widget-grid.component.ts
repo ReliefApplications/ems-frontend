@@ -24,6 +24,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() dataChanges: EventEmitter<any> = new EventEmitter();
 
+
   constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {

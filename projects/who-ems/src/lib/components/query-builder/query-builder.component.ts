@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -14,6 +14,7 @@ export class WhoQueryBuilderComponent implements OnInit {
   public availableQueries: Observable<any[]>;
   public availableFields: any[];
   public availableFilters: any[];
+  public factory: ComponentFactory<any>;
 
   get availableScalarFields(): any[] {
     return this.availableFields.filter(x => x.type.kind === 'SCALAR');
@@ -28,11 +29,13 @@ export class WhoQueryBuilderComponent implements OnInit {
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) { }
 
   ngOnInit(): void {
+    this.factory = this.componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
     if (this.form.value.type) {
       this.isField = true;
       this.availableFields = this.queryBuilder.getFieldsFromType(this.form.value.type)
@@ -47,7 +50,6 @@ export class WhoQueryBuilderComponent implements OnInit {
       this.availableQueries.subscribe((res) => {
         if (res) {
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);
-          console.log(this.availableFields);
           this.availableFilters = this.queryBuilder.getFilter(this.form.value.name);
           this.form.setControl('filter', this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
         }
@@ -66,7 +68,7 @@ export class WhoQueryBuilderComponent implements OnInit {
   }
 
   onCloseField(): void {
+    console.log('trying to close')
     this.closeField.emit(true);
   }
-
 }

@@ -248,6 +248,9 @@ query GetRecordDetails($id: ID!) {
       id
       createdAt
       data
+      createdBy {
+        name
+      }
     }
   }
 }`;
