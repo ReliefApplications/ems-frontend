@@ -118,7 +118,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message + ' Please choose a different name.');
+          this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message);
         } else {
           this.step.name = res.data.editStep.name;
           this.workflowService.updateStepName(res.data.editStep);
@@ -133,7 +133,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message + ' Please choose a different name.');
+          this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message);
         } else {
           this.page.name = res.data.editPage.name;
           this.applicationService.updatePageName(res.data.editPage);

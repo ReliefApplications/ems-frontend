@@ -101,7 +101,7 @@ export class FormsComponent implements OnInit, OnDestroy {
           variables: data
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message + ' Please choose a different name.');
+            this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message);
           } else {
             const { id } = res.data.addForm;
             this.router.navigate(['/forms/builder', id]);

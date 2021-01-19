@@ -63,7 +63,7 @@ export class WhoApplicationService {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message + ' Please choose a different name.');
+          this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message);
         } else {
           this.snackBar.openSnackBar('Application updated');
         }
