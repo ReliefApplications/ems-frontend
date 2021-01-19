@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTableModule,
     MatStepperModule,
     MatDividerModule,
-    DragDropModule
+    DragDropModule,
+    MatCheckboxModule
   ],
   exports: [WorkflowComponent]
 })
