@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
+import { WhoSnackBarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'who-form-builder',
@@ -20,7 +21,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
-    private formService: FormService
+    private formService: FormService,
+    private snackBar: WhoSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -51,8 +53,14 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   /*  Custom SurveyJS method, save the form when edited.
   */
   saveMySurvey = () => {
-    this.save.emit(this.surveyCreator.text);
+    this.validateValueNames().then(res => {
+      if(res === '') {
+        this.save.emit(this.surveyCreator.text)
+      }else {
+        this.snackBar.openSnackBar(res, {error: true});
+      }});
   }
+  
 
   /*  Event listener to trigger embedded forms.
   */
@@ -67,4 +75,26 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe(() => {});
   }
 
+  async validateValueNames() {
+   let message = '';
+   let object = JSON.parse(this.surveyCreator.text);
+   await object.pages.forEach( page => {
+     page.elements.forEach(element => {
+       if (!element.valueName) {
+        if (element.title) {
+          element.valueName = element.title.replace(/\W+/g, " ").split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
+          return element;
+         } else {
+          message = 'Missing value name for an element on page '+ page.name +'. Please provide a valid value name (snake_case) to save the form.';
+         }
+       } else {
+        if(!(element.valueName.match(/^[a-z0-9_]+$/))) {
+          message = 'The value name ' + element.valueName + ' on page '+ page.name +' is invalid. Please conform to snake_case.';
+        }
+       }
+     })
+   });
+   this.surveyCreator.text = JSON.stringify(object);
+   return message;
+  }
 }
