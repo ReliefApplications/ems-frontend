@@ -588,12 +588,14 @@ export interface DeleteStepMutationResponse {
 
 // === EDIT STEP ===
 export const EDIT_STEP = gql`
-mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
-  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
+mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON, $settings: JSON) {
+  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions, settings: $settings) {
     id
     name
     type
     content
+    settings
+    createdAt
     permissions {
       canSee {
         id
@@ -635,4 +637,20 @@ mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
+}
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
+  editRecord(id: $id, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
 }
