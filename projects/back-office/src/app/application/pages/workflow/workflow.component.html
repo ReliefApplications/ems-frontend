@@ -58,11 +58,12 @@
 <ng-container *ngIf="showSettings">
     <div>
         <h1>Next button settings</h1>
-        <form [formGroup]="settingsForm" (ngSubmit)="onSaveSettings()">
-            <mat-form-field class="name-input">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSaveSettings()" class="settings-form">
+            <mat-form-field>
                 <mat-label>Button name</mat-label>
                 <input matInput formControlName="buttonName" type="string">
             </mat-form-field>
+            <mat-checkbox [disabled]="true" [checked]="true">Go to next step</mat-checkbox>
             <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
             <div class="end-buttons">
                 <button mat-flat-button (click)="onCloseSettings()">Close</button>

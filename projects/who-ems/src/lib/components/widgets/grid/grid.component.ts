@@ -150,7 +150,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.loading = false;
-          this.items = res.data[field];
+          this.items = cloneData(res.data[field]);
           this.originalItems = cloneData(this.items);
           this.fields = this.getFields(this.settings.query.fields);
           this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');

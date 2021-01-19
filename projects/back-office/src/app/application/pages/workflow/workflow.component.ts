@@ -178,11 +178,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.selectedStep !== step) {
       this.selectedStep = step;
       this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
-      } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
-      }
+      this.navigateToSelectedStep();
     }
   }
 
@@ -204,27 +200,43 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Start action on next click
   */
   onNextClick(): void {
-    const promises = [];
-    for (const item of this.nextData) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: item.id,
-          data
-        }
-      }).toPromise());
-    }
-    Promise.all(promises).then(() => {
-      this.selectedStepIndex += 1;
-      this.selectedStep = this.steps[this.selectedStepIndex];
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
-      } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    if (this.selectedStep.settings.autoSave) {
+      const promises = [];
+      for (const item of this.nextData) {
+        const data = Object.assign({}, item);
+        delete data.id;
+        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: item.id,
+            data
+          }
+        }).toPromise());
       }
-    });
+      Promise.all(promises).then(() => {
+        this.goToNextStep();
+      });
+    } else {
+      this.goToNextStep();
+    }
+  }
+
+  /* Navigate to the next step if possible and change selected step / index consequently
+  */
+  private goToNextStep(): void {
+    this.selectedStepIndex += 1;
+    this.selectedStep = this.steps[this.selectedStepIndex];
+    this.navigateToSelectedStep();
+  }
+
+  /* Navigate to selected step
+  */
+  private navigateToSelectedStep(): void {
+    if (this.selectedStep.type === ContentType.form) {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    }
   }
 
   /* Display settings in the place of the step view
