@@ -6,7 +6,9 @@
         <who-access [access]="dashboard.permissions" 
         [application]="dashboard.page ? dashboard.page.application.id : dashboard.step ? dashboard.step.workflow.page.application.id : null" 
         (save)="saveAccess($event)" *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false"></who-access>
-        <button mat-raised-button color="primary" class="share-button" (click)="onShare()">Share</button>
+        <button mat-icon-button class="share-button" (click)="onShare()">
+            <mat-icon>share</mat-icon>
+        </button>
     </div>
     <ng-container *ngIf="formActive">
         <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">

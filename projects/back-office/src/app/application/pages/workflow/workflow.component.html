@@ -45,11 +45,12 @@
 </ng-container>
 <ng-container *ngIf="!showSettings && selectedStep && (selectedStepIndex + 1 < steps.length)">
     <div class="next-button">
-        <button mat-icon-button (click)="onSettingsClick()">
+        <button mat-icon-button class="settings-button" (click)="onSettingsClick()">
             <mat-icon>settings</mat-icon>
         </button>
-        <button mat-raised-button (click)="onNextClick()">
-            Next
+        <button mat-raised-button color="primary" (click)="onNextClick()">
+            {{selectedStep.settings && selectedStep.settings.buttonName ? selectedStep.settings.buttonName : 'Next'}}
+            <mat-icon>send</mat-icon>
         </button>
     </div>
 </ng-container>
@@ -58,10 +59,10 @@
     <div>
         <h1>Next button settings</h1>
         <form [formGroup]="settingsForm" (ngSubmit)="onSaveSettings()">
-            <!--mat-form-field>
+            <mat-form-field class="name-input">
                 <mat-label>Button name</mat-label>
                 <input matInput formControlName="buttonName" type="string">
-            </mat-form-field-->
+            </mat-form-field>
             <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
             <div class="end-buttons">
                 <button mat-flat-button (click)="onCloseSettings()">Close</button>

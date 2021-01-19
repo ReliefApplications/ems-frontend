@@ -588,12 +588,14 @@ export interface DeleteStepMutationResponse {
 
 // === EDIT STEP ===
 export const EDIT_STEP = gql`
-mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
-  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
+mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON, $settings: JSON) {
+  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions, settings: $settings) {
     id
     name
     type
     content
+    settings
+    createdAt
     permissions {
       canSee {
         id

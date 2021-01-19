@@ -11,7 +11,7 @@ import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
   EditWorkflowMutationResponse, EDIT_WORKFLOW,
-  EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
+  EditRecordMutationResponse, EDIT_RECORD, EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -231,8 +231,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onSettingsClick(): void {
     this.settingsForm = new FormGroup({
-      buttonName: new FormControl(this.selectedStep.settings ? this.selectedStep.settings.autoSave : null),
-      autoSave: new FormControl(this.selectedStep.settings ? this.selectedStep.settings.autoSave : null, Validators.required)
+      buttonName: new FormControl(this.selectedStep.settings && this.selectedStep.settings.buttonName ?
+        this.selectedStep.settings.buttonName : 'Next'),
+      autoSave: new FormControl(this.selectedStep.settings && this.selectedStep.settings.autoSave ?
+        this.selectedStep.settings.autoSave : null)
     });
     this.showSettings = true;
   }
@@ -247,5 +249,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onSaveSettings(): void {
     this.showSettings = false;
+    this.apollo.mutate<EditStepMutationResponse>({
+      mutation: EDIT_STEP,
+      variables: {
+        id: this.selectedStep.id,
+        settings: this.settingsForm.value
+      }
+    }).subscribe(res => {
+      this.selectedStep = res.data.editStep;
+      this.steps[this.selectedStepIndex] = res.data.editStep;
+    });
   }
 }
