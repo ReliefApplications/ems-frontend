@@ -14,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { WhoConfirmModalModule } from '@who-ems/builder';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    WhoConfirmModalModule
+    WhoConfirmModalModule,
+    MatAutocompleteModule
   ]
 })
 export class SubscriptionsModule { }

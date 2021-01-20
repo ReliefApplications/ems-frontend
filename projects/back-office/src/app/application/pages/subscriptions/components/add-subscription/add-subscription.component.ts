@@ -2,9 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { Channel, Form } from '@who-ems/builder';
+import { Application, Channel, Form } from '@who-ems/builder';
 import { Observable } from 'rxjs';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
+import { GetFormsQueryResponse, GetRoutingKeysQueryResponse, GET_FORMS, GET_ROUTING_KEYS } from '../../../../../graphql/queries';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-subscription',
@@ -18,7 +19,17 @@ export class AddSubscriptionComponent implements OnInit {
 
   // === DATA ===
   public forms: Form[];
-  public filteredForms: Observable<Form[]>;
+  // === DATA ===
+  private applications: Application[];
+  public filteredApplications: Observable<Application[]>;
+
+  get routingKey(): string {
+    return this.subscriptionForm.value.routingKey;
+  }
+
+  set routingKey(value: string) {
+    this.subscriptionForm.controls.routingKey.setValue(value);
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,6 +51,22 @@ export class AddSubscriptionComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       this.forms = res.data.forms;
     });
+    this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      query: GET_ROUTING_KEYS
+    }).valueChanges.subscribe(res => {
+      this.applications = res.data.applications.filter(x => x.channels.length > 0);
+    });
+    this.filteredApplications = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+      startWith(''),
+      map(value => typeof value === 'string' ? value : value.name),
+      map(x => this.filter(x))
+    );
+  }
+
+  private filter(value: string): Application[] {
+    console.log('filtering');
+    const filterValue = value.toLowerCase();
+    return this.applications ? this.applications.filter(x => x.name.toLowerCase().indexOf(filterValue) === 0) : this.applications;
   }
 
   /*  Close the modal without sending any data.

@@ -580,3 +580,22 @@ export interface GetStepByIdQueryResponse {
   loading: boolean;
   step: Step;
 }
+
+// === GET ROUTING KEYS ===
+export const GET_ROUTING_KEYS = gql`
+query GetRoutingKeys {
+  applications {
+    id
+    name
+    channels {
+      id
+      title
+      routingKey
+    }
+  }
+}`;
+
+export interface GetRoutingKeysQueryResponse{
+  loading: boolean;
+  applications: Application[];
+}
