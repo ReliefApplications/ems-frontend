@@ -22,7 +22,8 @@ import {
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD
+  DELETE_RECORD,
+  PublishMutationResponse, PUBLISH
 } from '../../../graphql/mutations';
 import {WhoFormModalComponent} from '../../form-modal/form-modal.component';
 import {Subscription} from 'rxjs';
@@ -314,7 +315,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      Promise.all(promises).then(() => this.reloadData());
+      Promise.all(promises).then(() => {
+        if (this.settings.publication) {
+          this.apollo.mutate<PublishMutationResponse>({
+            mutation: PUBLISH,
+            variables: {
+              ids: this.updatedItems.map(x => x.id),
+              channel: this.settings.publication
+            }
+          }).subscribe(res => console.log(res));
+        }
+        this.reloadData();
+      });
     }
   }
 

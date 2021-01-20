@@ -65,6 +65,7 @@ export class WhoAuthService {
   /*  Get the Azure AD profile.
   */
   checkAccount(): void {
+    console.log('checking account');
     this.account = this.msalService.getAccount();
     this.msalService.acquireTokenSilent({
       scopes: [
@@ -91,7 +92,10 @@ export class WhoAuthService {
       fetchPolicy: 'network-only',
       errorPolicy: 'all'
     }).valueChanges.subscribe(
-      res => this._user.next(res.data.me)
+      res => {
+        console.log('changing user');
+        this._user.next(res.data.me);
+      }
     );
   }
 
