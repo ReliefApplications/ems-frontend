@@ -62,7 +62,11 @@ export class WhoApplicationService {
           description: value.description
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar('Application updated');
+        if (res.errors) {
+          this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message);
+        } else {
+          this.snackBar.openSnackBar('Application updated');
+        }
       });
   }
 

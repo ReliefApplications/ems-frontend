@@ -106,9 +106,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             name: value.name
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} application created`);
-          const id = res.data.addApplication.id;
-          this.router.navigate(['/applications', id]);
+          if (res.errors) {
+            if (res.errors[0].message.includes('duplicate key error')) {
+              this.snackBar.openSnackBar('An App with this name already exists, please choose a different name.');
+            } else {
+              this.snackBar.openSnackBar('The App was not created. ' + res.errors[0].message);
+            }
+          } else {
+            this.snackBar.openSnackBar(`${value.name} application created`);
+            const id = res.data.addApplication.id;
+            this.router.navigate(['/applications', id]);
+          }
         });
       }
     });
