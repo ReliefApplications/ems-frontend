@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
-import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
-import { Application } from '../../../models/application.model';
-import { Channel } from '../../../models/channel.model';
-import { WhoApplicationService } from '../../../services/application.service';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {Apollo} from 'apollo-angular';
+import {QueryBuilderService} from '../../../services/query-builder.service';
+import {GetChannelsQueryResponse, GET_CHANNELS} from '../../../graphql/queries';
+import {Application} from '../../../models/application.model';
+import {Channel} from '../../../models/channel.model';
+import {WhoApplicationService} from '../../../services/application.service';
 
 @Component({
   selector: 'who-grid-settings',
@@ -34,18 +34,28 @@ export class WhoGridSettingsComponent implements OnInit {
     private apollo: Apollo,
     private applicationService: WhoApplicationService,
     private queryBuilder: QueryBuilderService
-  ) { }
+  ) {
+  }
 
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
+    const hasActions = !!tileSettings && !!tileSettings.actions;
+
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
-      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
+      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null],
+      actions: this.formBuilder.group({
+        delete: new FormControl(hasActions ? tileSettings.actions.delete : true),
+        history: new FormControl(hasActions ? tileSettings.actions.history : true),
+        convert: new FormControl(hasActions ? tileSettings.actions.convert : true),
+        update: new FormControl(hasActions ? tileSettings.actions.update  : true)
+      })
     });
+
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);

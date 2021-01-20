@@ -22,5 +22,23 @@
                 </mat-select>
             </mat-form-field>
         </div>
+
+        <div formGroupName="actions" class="form-group">
+          <div class="form-group-title">Actions</div>
+          <mat-checkbox formControlName="delete">
+            Delete
+          </mat-checkbox>
+          <mat-checkbox formControlName="history">
+            History
+          </mat-checkbox>
+          <mat-checkbox formControlName="convert">
+            Convert
+          </mat-checkbox>
+          <mat-checkbox formControlName="update">
+            Update
+          </mat-checkbox>
+        </div>
+
+
     </form>
 </ng-container>

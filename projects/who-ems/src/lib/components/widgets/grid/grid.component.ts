@@ -1,27 +1,37 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  ViewChild,
+  Renderer2,
+  OnDestroy,
+  Output,
+  EventEmitter
+} from '@angular/core';
+import {Apollo} from 'apollo-angular';
+import {SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy} from '@progress/kendo-data-query';
 import {
   GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
   SelectionEvent, RowArgs
 } from '@progress/kendo-angular-grid';
-import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {FormGroup, FormBuilder} from '@angular/forms';
 import {
   EditRecordMutationResponse, EDIT_RECORD,
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD } from '../../../graphql/mutations';
-import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../../services/query-builder.service';
-import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
-import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
-import { Form } from '../../../models/form.model';
-import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
-import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
-
+  DELETE_RECORD
+} from '../../../graphql/mutations';
+import {WhoFormModalComponent} from '../../form-modal/form-modal.component';
+import {Subscription} from 'rxjs';
+import {QueryBuilderService} from '../../../services/query-builder.service';
+import {WhoConfirmModalComponent} from '../../confirm-modal/confirm-modal.component';
+import {WhoConvertModalComponent} from '../../convert-modal/convert-modal.component';
+import {Form} from '../../../models/form.model';
+import {GetRecordDetailsQueryResponse, GET_RECORD_DETAILS} from '../../../graphql/queries';
+import {WhoRecordHistoryComponent} from '../../record-history/record-history.component';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -83,6 +93,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
+  public hasEnabledActions: boolean;
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -94,9 +105,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService
-  ) { }
+  ) {
+  }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.hasEnabledActions = !this.settings.actions ||
+      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
+  }
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -143,20 +158,20 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.loading = false;
-          this.items = res.data[field];
-          this.originalItems = cloneData(this.items);
-          this.fields = this.getFields(this.settings.query.fields);
-          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
-          this.gridData = {
-            data: this.items,
-            total: res.data[field].length
-          };
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.loading = false;
+            this.items = res.data[field];
+            this.originalItems = cloneData(this.items);
+            this.fields = this.getFields(this.settings.query.fields);
+            this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
+            this.gridData = {
+              data: this.items,
+              total: res.data[field].length
+            };
+          }
         }
-      }
-    },
+      },
       (err) => this.loading = false);
   }
 
@@ -193,7 +208,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /*  Inline edition of the data.
   */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
+  public cellClickHandler({isEdited, dataItem, rowIndex}): void {
     if (isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
@@ -249,9 +264,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(id: string, value: any): void {
     const item = this.updatedItems.find(x => x.id === id);
     if (item) {
-      Object.assign(item, { ...value, id });
+      Object.assign(item, {...value, id});
     } else {
-      this.updatedItems.push({ ...value, id });
+      this.updatedItems.push({...value, id});
     }
     Object.assign(this.items.find(x => x.id === id), value);
   }
@@ -484,5 +499,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  setSelectedRow(index): void {
+    this.selectedRow = {
+      dataItem: this.gridData.data[index],
+      index
+    };
   }
 }
