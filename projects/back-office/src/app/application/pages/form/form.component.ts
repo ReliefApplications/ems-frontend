@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Subscription, Observable } from 'rxjs';
-import { Form, Page, Step, WhoFormComponent, WhoApplicationService } from '@who-ems/builder';
+import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService } from '@who-ems/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -45,7 +45,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: WhoSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -116,8 +117,12 @@ export class FormComponent implements OnInit, OnDestroy {
           name: tabName
         }
       }).subscribe(res => {
-        this.step.name = res.data.editStep.name;
-        this.workflowService.updateStepName(res.data.editStep);
+        if (res.errors) {
+          this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message);
+        } else {
+          this.step.name = res.data.editStep.name;
+          this.workflowService.updateStepName(res.data.editStep);
+        }
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -127,8 +132,12 @@ export class FormComponent implements OnInit, OnDestroy {
           name: tabName
         }
       }).subscribe(res => {
-        this.page.name = res.data.editPage.name;
-        this.applicationService.updatePageName(res.data.editPage);
+        if (res.errors) {
+          this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message);
+        } else {
+          this.page.name = res.data.editPage.name;
+          this.applicationService.updatePageName(res.data.editPage);
+        }
       });
     }
   }

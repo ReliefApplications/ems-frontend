@@ -95,6 +95,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRow: RowArgs;
   public hasEnabledActions: boolean;
 
+  // === EMIT DATA CHANGES ===
+  @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
+
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -156,6 +159,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private getRecords(): void {
     this.loading = true;
     this.updatedItems = [];
+    this.dataChanges.emit(this.updatedItems);
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
         for (const field in res.data) {
@@ -269,6 +273,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.updatedItems.push({...value, id});
     }
     Object.assign(this.items.find(x => x.id === id), value);
+    this.dataChanges.emit(this.updatedItems);
   }
 
   /*  Close the inline edition.
@@ -314,6 +319,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public onCancelChanges(): void {
     this.closeEditor();
     this.updatedItems = [];
+    this.dataChanges.emit(this.updatedItems);
     this.items = this.originalItems;
     this.originalItems = cloneData(this.originalItems);
     this.loadItems();
