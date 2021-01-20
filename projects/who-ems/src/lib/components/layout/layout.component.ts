@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
+import { LayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
@@ -12,6 +13,7 @@ import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { WhoNotificationService } from '../../services/notification.service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'who-layout',
@@ -45,11 +47,16 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === DISPLAY ===
   public largeDevice: boolean;
 
+
+  public fieldForm: FormGroup = null;
+  public testContainer;
+
   constructor(
     private router: Router,
     private authService: WhoAuthService,
     private apollo: Apollo,
-    private notificationService: WhoNotificationService
+    private notificationService: WhoNotificationService,
+    private layoutService: LayoutService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -79,6 +86,11 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         this.notifications = [];
       }
+    });
+
+    this.layoutService.currentComponent.subscribe(com => {
+      console.log(com);
+      this.testContainer = com;
     });
   }
 

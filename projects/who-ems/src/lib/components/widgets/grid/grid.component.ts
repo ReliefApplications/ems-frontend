@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
+      OnDestroy, Output, EventEmitter, ViewContainerRef,
+      ComponentFactoryResolver, ComponentFactory, ComponentRef } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import {
@@ -21,6 +23,7 @@ import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.comp
 import { Form } from '../../../models/form.model';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
+import { LayoutService } from '../../../services/layout.service';
 
 
 
@@ -91,15 +94,23 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory: ComponentFactory<any>;
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private layoutService: LayoutService,
+    private resolver: ComponentFactoryResolver
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.factory = this.resolver.resolveComponentFactory(WhoRecordHistoryComponent);
+   }
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -437,7 +448,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public onViewHistory(): void {
-    this.apollo.query<GetRecordDetailsQueryResponse>({
+/*     this.apollo.query<GetRecordDetailsQueryResponse>({********************************
       query: GET_RECORD_DETAILS,
       variables: {
         id: this.selectedRow.dataItem.id
@@ -448,7 +459,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           record: res.data.record
         }
       });
-    });
+    }); */
+
+
+    const componentRef = this.childTemplate.createComponent(this.factory);
+    this.layoutService.newComponent(componentRef);
   }
 
   /* Open a confirmation modal and then delete the selected record
