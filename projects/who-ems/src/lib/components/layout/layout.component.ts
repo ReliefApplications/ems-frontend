@@ -122,7 +122,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   /* Emit the application to open
   */
   onOpenApplication(application: Application): void {
-    console.log('open');
     this.openApplication.emit(application);
   }
 

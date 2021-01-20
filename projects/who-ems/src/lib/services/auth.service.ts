@@ -65,7 +65,6 @@ export class WhoAuthService {
   /*  Get the Azure AD profile.
   */
   checkAccount(): void {
-    console.log('checking account');
     this.account = this.msalService.getAccount();
     this.msalService.acquireTokenSilent({
       scopes: [
@@ -87,13 +86,12 @@ export class WhoAuthService {
   /*  Get the profile from the database, using GraphQL.
   */
   private getProfile(): void {
-    this.apollo.watchQuery<GetProfileQueryResponse>({
+    this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all'
-    }).valueChanges.subscribe(
+    }).subscribe(
       res => {
-        console.log('changing user');
         this._user.next(res.data.me);
       }
     );
