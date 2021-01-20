@@ -108,7 +108,7 @@
 .end-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  align-self: flex-end;
   margin-top: 64px;
   
   button {

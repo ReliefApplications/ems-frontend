@@ -43,32 +43,18 @@
         <mat-divider></mat-divider>
     </div>
 </ng-container>
-<ng-container *ngIf="!showSettings && selectedStep && (selectedStepIndex + 1 < steps.length)">
+<ng-container *ngIf="!showSettings && selectedStep">
     <div class="next-button">
         <button mat-icon-button class="settings-button" (click)="onSettingsClick()">
             <mat-icon>settings</mat-icon>
         </button>
         <button mat-raised-button color="primary" (click)="onNextClick()">
-            {{selectedStep.settings && selectedStep.settings.buttonName ? selectedStep.settings.buttonName : 'Next'}}
+            {{selectedStep.settings && selectedStep.settings.buttonName ? selectedStep.settings.buttonName : 
+                (selectedStepIndex + 1 < steps.length) ? 'Next' : 'Publish'}}
             <mat-icon>send</mat-icon>
         </button>
     </div>
 </ng-container>
-<router-outlet (activate)="onActivate($event)" *ngIf="!showSettings"></router-outlet>
-<ng-container *ngIf="showSettings">
-    <div>
-        <h1>Next button settings</h1>
-        <form [formGroup]="settingsForm" (ngSubmit)="onSaveSettings()" class="settings-form">
-            <mat-form-field>
-                <mat-label>Button name</mat-label>
-                <input matInput formControlName="buttonName" type="string">
-            </mat-form-field>
-            <mat-checkbox [disabled]="true" [checked]="true">Go to next step</mat-checkbox>
-            <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
-            <div class="end-buttons">
-                <button mat-flat-button (click)="onCloseSettings()">Close</button>
-                <button mat-flat-button type="submit" color="primary" [disabled]="!settingsForm.valid">Save</button>
-            </div>
-        </form>
-    </div>
-</ng-container>
+<router-outlet *ngIf="!showSettings" (activate)="onActivate($event)"></router-outlet>
+<app-settings *ngIf="showSettings" [selectedStep]="selectedStep" [isLastStep]="selectedStepIndex + 1 == steps.length"
+    [fields]="fields" (formValue)="onCloseSettings($event)"></app-settings>

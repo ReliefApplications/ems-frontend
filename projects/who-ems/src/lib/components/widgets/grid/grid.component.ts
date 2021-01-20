@@ -86,6 +86,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === EMIT DATA CHANGES ===
   @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -153,6 +154,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           this.items = cloneData(res.data[field]);
           this.originalItems = cloneData(this.items);
           this.fields = this.getFields(this.settings.query.fields);
+          this.fieldsTypes.emit(this.fields);
           this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
           this.gridData = {
             data: this.items,

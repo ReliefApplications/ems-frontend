@@ -1,0 +1,20 @@
+<h1>Next button settings</h1>
+<form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="settings-form">
+    <mat-form-field>
+        <mat-label>Button name</mat-label>
+        <input matInput formControlName="buttonName" type="string">
+    </mat-form-field>
+    <mat-checkbox [disabled]="true" [checked]="!isLastStep">Go to next step</mat-checkbox>
+    <mat-checkbox formControlName="autoSave">Auto-save records on click</mat-checkbox>
+    <mat-checkbox formControlName="modifySelectedRows">Modify selected rows</mat-checkbox>
+    <mat-form-field *ngIf="settingsForm.value.modifySelectedRows">
+        <mat-label>Modified field</mat-label>
+        <mat-select formControlName="modifiedField">
+            <mat-option *ngFor="let field of fields" [value]="field">{{ field.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="end-buttons">
+        <button mat-flat-button (click)="onClose()">Close</button>
+        <button mat-flat-button type="submit" color="primary" [disabled]="!settingsForm.valid">Save</button>
+    </div>
+</form>
