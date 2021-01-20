@@ -15,6 +15,14 @@
     align-items: flex-start;
 }
 
+.settings-form > * {
+    margin: 10px 0;
+}
+
 .settings-button {
     color: #A9A9A9 !important;
+}
+
+.auto-modify-box > * {
+    margin-right: 20px;
 }

@@ -206,12 +206,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Start action on next click
   */
   onNextClick(): void {
-
     if (this.selectedStep.settings.autoSave) {
       const promises = [];
       for (const item of this.nextData) {
         const data = Object.assign({}, item);
         delete data.id;
+        console.log(data);
+        if (this.selectedStep.settings.modifySelectedRows && data.keep_it) {
+          data[this.selectedStep.settings.modifiedField.name] = this.selectedStep.settings.modifiedInputValue;
+        }
         promises.push(this.apollo.mutate<EditRecordMutationResponse>({
           mutation: EDIT_RECORD,
           variables: {

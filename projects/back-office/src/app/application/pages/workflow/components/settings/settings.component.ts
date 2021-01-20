@@ -27,13 +27,14 @@ export class SettingsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(): void {
+    console.log(this.selectedStep.settings);
     this.settingsForm = this.formBuilder.group({
       buttonName: [this.selectedStep.settings && this.selectedStep.settings.buttonName ? this.selectedStep.settings.buttonName :
         (!this.isLastStep) ? 'Next' : 'Publish'],
       autoSave: [this.selectedStep.settings && this.selectedStep.settings.autoSave ?
         this.selectedStep.settings.autoSave : null],
-      modifySelectedRows: [this.selectedStep.settings && this.selectedStep.settings.autoDelete ?
-          this.selectedStep.settings.autoDelete : null],
+      modifySelectedRows: [this.selectedStep.settings && this.selectedStep.settings.modifySelectedRows ?
+          this.selectedStep.settings.modifySelectedRows : null],
       modifiedField: [this.selectedStep.settings && this.selectedStep.settings.modifiedField ?
         this.selectedStep.settings.modifiedField : null],
       modifiedInputValue: [this.selectedStep.settings && this.selectedStep.settings.modifiedInputValue ?
@@ -47,6 +48,10 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   onClose(): void {
     this.formValue.emit(false);
+  }
+
+  compareFields(field1: any, field2: any): boolean {
+    return field1.name === field2.name;
   }
 
 }
