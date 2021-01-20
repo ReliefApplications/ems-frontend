@@ -68,7 +68,6 @@ export class WhoQueryBuilderComponent implements OnInit {
   }
 
   onCloseField(): void {
-    console.log('trying to close')
     this.closeField.emit(true);
   }
 }

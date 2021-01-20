@@ -64,7 +64,6 @@ export class AddSubscriptionComponent implements OnInit {
   }
 
   private filter(value: string): Application[] {
-    console.log('filtering');
     const filterValue = value.toLowerCase();
     return this.applications ? this.applications.filter(x => x.name.toLowerCase().indexOf(filterValue) === 0) : this.applications;
   }
