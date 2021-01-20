@@ -49,10 +49,10 @@ export class WhoGridSettingsComponent implements OnInit {
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null],
       actions: this.formBuilder.group({
-        delete: new FormControl(hasActions ? tileSettings.actions.delete : true),
-        history: new FormControl(hasActions ? tileSettings.actions.history : true),
-        convert: new FormControl(hasActions ? tileSettings.actions.convert : true),
-        update: new FormControl(hasActions ? tileSettings.actions.update  : true)
+        delete: [hasActions ? tileSettings.actions.delete : true],
+        history: [hasActions ? tileSettings.actions.history : true],
+        convert: [hasActions ? tileSettings.actions.convert : true],
+        update: [hasActions ? tileSettings.actions.update  : true]
       })
     });
 
