@@ -23,6 +23,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() dataChanges: EventEmitter<any> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
 
   constructor(public dialog: MatDialog) { }

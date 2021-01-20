@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
@@ -45,6 +45,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private nextData: any[] = null;
   public showSettings = false;
   public settingsForm: FormGroup;
+  public fields: any[];
 
   constructor(
     private apollo: Apollo,
@@ -178,11 +179,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.selectedStep !== step) {
       this.selectedStep = step;
       this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
-      } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
-      }
+      this.navigateToSelectedStep();
     }
   }
 
@@ -199,65 +196,80 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.nextData = event;
       });
     }
+    if (elementRef.fieldsTypes) {
+      elementRef.fieldsTypes.subscribe(event => {
+        this.fields = event;
+      });
+    }
   }
 
   /* Start action on next click
   */
   onNextClick(): void {
-    const promises = [];
-    for (const item of this.nextData) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: item.id,
-          data
+    if (this.selectedStep.settings.autoSave) {
+      const promises = [];
+      for (const item of this.nextData) {
+        const data = Object.assign({}, item);
+        delete data.id;
+        console.log(data);
+        if (this.selectedStep.settings.modifySelectedRows && data.keep_it) {
+          data[this.selectedStep.settings.modifiedField.name] = this.selectedStep.settings.modifiedInputValue;
         }
-      }).toPromise());
-    }
-    Promise.all(promises).then(() => {
-      this.selectedStepIndex += 1;
-      this.selectedStep = this.steps[this.selectedStepIndex];
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
-      } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: item.id,
+            data
+          }
+        }).toPromise());
       }
-    });
+      Promise.all(promises).then(() => {
+        this.goToNextStep();
+      });
+    } else {
+      this.goToNextStep();
+    }
+  }
+
+  /* Navigate to the next step if possible and change selected step / index consequently
+  */
+  private goToNextStep(): void {
+    this.selectedStepIndex += 1;
+    this.selectedStep = this.steps[this.selectedStepIndex];
+    this.navigateToSelectedStep();
+  }
+
+  /* Navigate to selected step
+  */
+  private navigateToSelectedStep(): void {
+    if (this.selectedStep.type === ContentType.form) {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    }
   }
 
   /* Display settings in the place of the step view
   */
   onSettingsClick(): void {
-    this.settingsForm = new FormGroup({
-      buttonName: new FormControl(this.selectedStep.settings && this.selectedStep.settings.buttonName ?
-        this.selectedStep.settings.buttonName : 'Next'),
-      autoSave: new FormControl(this.selectedStep.settings && this.selectedStep.settings.autoSave ?
-        this.selectedStep.settings.autoSave : null)
-    });
     this.showSettings = true;
   }
 
-  /* Close settings without doing anything
+  /* Close settings and update it's value if needed
   */
-  onCloseSettings(): void {
+  onCloseSettings(value: any): void {
     this.showSettings = false;
-  }
-
-  /* Close settings and save changes for the selected step
-  */
-  onSaveSettings(): void {
-    this.showSettings = false;
-    this.apollo.mutate<EditStepMutationResponse>({
-      mutation: EDIT_STEP,
-      variables: {
-        id: this.selectedStep.id,
-        settings: this.settingsForm.value
-      }
-    }).subscribe(res => {
-      this.selectedStep = res.data.editStep;
-      this.steps[this.selectedStepIndex] = res.data.editStep;
-    });
+    if (value) {
+      this.apollo.mutate<EditStepMutationResponse>({
+        mutation: EDIT_STEP,
+        variables: {
+          id: this.selectedStep.id,
+          settings: value
+        }
+      }).subscribe(res => {
+        this.selectedStep = res.data.editStep;
+        this.steps[this.selectedStepIndex] = res.data.editStep;
+      });
+    }
   }
 }

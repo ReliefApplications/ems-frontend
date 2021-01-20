@@ -26,5 +26,5 @@
     </ng-container>
 
     <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
-        (delete)="onDeleteTile($event)" (dataChanges)="onDataChanges($event)"></who-widget-grid>
+        (delete)="onDeleteTile($event)" (dataChanges)="onDataChanges($event)" (fieldsTypes)="fieldsTypes.emit($event)"></who-widget-grid>
 </ng-container>

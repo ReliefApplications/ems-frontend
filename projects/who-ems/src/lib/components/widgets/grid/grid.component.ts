@@ -22,7 +22,8 @@ import {
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD
+  DELETE_RECORD,
+  PublishMutationResponse, PUBLISH
 } from '../../../graphql/mutations';
 import {WhoFormModalComponent} from '../../form-modal/form-modal.component';
 import {Subscription} from 'rxjs';
@@ -97,6 +98,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === EMIT DATA CHANGES ===
   @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -162,21 +164,22 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataChanges.emit(this.updatedItems);
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.loading = false;
-            this.items = res.data[field];
-            this.originalItems = cloneData(this.items);
-            this.fields = this.getFields(this.settings.query.fields);
-            this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
-            this.gridData = {
-              data: this.items,
-              total: res.data[field].length
-            };
-          }
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.loading = false;
+          this.items = cloneData(res.data[field]);
+          this.originalItems = cloneData(this.items);
+          this.fields = this.getFields(this.settings.query.fields);
+          this.fieldsTypes.emit(this.fields);
+          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
+          this.gridData = {
+            data: this.items,
+            total: this.items.length
+          };
         }
-      },
-      (err) => this.loading = false);
+      }
+    },
+    () => this.loading = false);
   }
 
   /*  Set the list of items to display.
@@ -312,7 +315,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      Promise.all(promises).then(() => this.getRecords());
+      Promise.all(promises).then(() => {
+        if (this.settings.publication) {
+          this.apollo.mutate<PublishMutationResponse>({
+            mutation: PUBLISH,
+            variables: {
+              ids: this.updatedItems.map(x => x.id),
+              channel: this.settings.publication
+            }
+          }).subscribe(res => console.log(res));
+        }
+        this.reloadData();
+      });
     }
   }
 
