@@ -411,6 +411,17 @@ export const GET_APPLICATION_BY_ID = gql`
           usersCount
         }
       }
+      subscriptions {
+        routingKey
+        channel {
+          id
+          title
+        }
+        convertTo {
+          id
+          name
+        }
+      }
       canSee
       canUpdate
     }
