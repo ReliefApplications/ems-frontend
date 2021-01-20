@@ -91,6 +91,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Channels',
                 path: './settings/channels',
                 icon: 'edit_notifications'
+              },
+              {
+                name: 'Subscriptions',
+                path: './settings/subscriptions',
+                icon: 'move_to_inbox'
               }
             ]
           }

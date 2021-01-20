@@ -66,7 +66,6 @@ export class WhoAuthService {
   */
   checkAccount(): void {
     this.account = this.msalService.getAccount();
-    console.log(this.account);
     this.msalService.acquireTokenSilent({
       scopes: [
         'user.read',

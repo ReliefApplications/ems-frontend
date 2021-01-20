@@ -283,7 +283,6 @@ export function init(Survey: any, API_URL: string): void {
     },
   };
   Survey.ComponentCollection.Instance.add(component);
-
   const widget = {
     name: 'addResource',
     isFit: (question) => {

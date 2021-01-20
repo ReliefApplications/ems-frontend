@@ -6,6 +6,7 @@ import { User, Role } from '../models/user.model';
 import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
+import { Subscription } from '../models/subscription.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -374,4 +375,25 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === ADD SUBSCRIPTION ===
+export const ADD_SUBSCRIPTION = gql`
+mutation addSubscription($application: ID!, $routingKey: String!, $convertTo: ID, $channel: ID) {
+  addSubscription(application: $application, routingKey: $routingKey, convertTo: $convertTo, channel: $channel) {
+    routingKey
+    convertTo {
+      id
+      name
+    }
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface AddSubscriptionMutationResponse {
+  loading: boolean;
+  addSubscription: Subscription;
 }
