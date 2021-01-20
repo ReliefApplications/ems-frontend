@@ -23,6 +23,7 @@ export * from './lib/models/workflow.model';
 export * from './lib/models/step.model';
 export * from './lib/models/notification.model';
 export * from './lib/models/channel.model';
+export * from './lib/models/subscription.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
