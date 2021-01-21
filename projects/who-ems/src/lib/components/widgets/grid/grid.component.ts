@@ -454,7 +454,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      console.log(res);
       this.layoutService.addData(res.data.record);
       const componentRef = this.childTemplate.createComponent(this.factory);
       this.layoutService.newComponent(componentRef);

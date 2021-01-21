@@ -94,7 +94,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.layoutService.currentComponent.subscribe(com => {
       this.testContainer = com;
       if (com.length !== 0 && this.showComponent !== com) {
-        if (this.testContainer.instance.data) {
+        if (this.testContainer.instance) {
           this.testContainer.instance.data = this.layoutService.data;
         }
         this.showComponent = true;
