@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === SUBSCRIPTIONS ===
   private authSubscription: Subscription;
+  public application: Application;
   private applicationSubscription: Subscription;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
@@ -77,12 +78,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             navItems: adminNavItems
           }
         ];
-        const { pages: [firstPage, ..._]} = application;
-        if (firstPage) {
-          this.router.navigate([`/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
-        } else {
-          this.router.navigate([`/`]);
+        if (!this.application || application.id !== this.application.id) {
+          const { pages: [firstPage, ..._]} = application;
+          if (firstPage) {
+            this.router.navigate([`/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          } else {
+            this.router.navigate([`/`]);
+          }
         }
+        this.application = application;
       } else {
         this.navGroups = [];
       }

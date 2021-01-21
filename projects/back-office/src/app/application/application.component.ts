@@ -36,8 +36,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
       this.applicationService.loadApplication(params.id);
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      console.log('changes');
       if (application) {
-        this.application = application;
         this.title = application.name;
         this.navGroups = [
           {
@@ -100,13 +100,16 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             ]
           }
         ];
-        const { pages: [firstPage, ..._]} = this.application;
-        if (firstPage) {
-          this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
-            { relativeTo: this.route });
-        } else {
-          this.router.navigate([`./`], { relativeTo: this.route });
+        if (!this.application || application.id !== this.application.id) {
+          const { pages: [firstPage, ..._]} = application;
+          if (firstPage) {
+            this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+              { relativeTo: this.route });
+          } else {
+            this.router.navigate([`./`], { relativeTo: this.route });
+          }
         }
+        this.application = application;
       } else {
         this.title = '';
         this.navGroups = [];
