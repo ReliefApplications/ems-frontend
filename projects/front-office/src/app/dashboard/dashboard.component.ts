@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, User, WhoAuthService, WhoSnackBarService, WhoApplicationService, Permission, Permissions } from '@who-ems/builder';
+import { Application, User, WhoAuthService, WhoSnackBarService, WhoApplicationService, Permission, Permissions, ContentType } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -77,7 +77,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             navItems: adminNavItems
           }
         ];
-        // this.router.navigate([this.navGroups[0].navItems[0].path]);
+        const { pages: [firstPage, ..._]} = application;
+        if (firstPage) {
+          this.router.navigate([`/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+        } else {
+          this.router.navigate([`/`]);
+        }
       } else {
         this.navGroups = [];
       }

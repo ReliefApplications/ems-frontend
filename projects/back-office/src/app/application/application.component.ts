@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 
@@ -27,6 +27,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: WhoApplicationService,
     public route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog
   ) { }
 
@@ -90,10 +91,22 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Channels',
                 path: './settings/channels',
                 icon: 'edit_notifications'
+              },
+              {
+                name: 'Subscriptions',
+                path: './settings/subscriptions',
+                icon: 'move_to_inbox'
               }
             ]
           }
         ];
+        const { pages: [firstPage, ..._]} = this.application;
+        if (firstPage) {
+          this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+            { relativeTo: this.route });
+        } else {
+          this.router.navigate([`./`], { relativeTo: this.route });
+        }
       } else {
         this.title = '';
         this.navGroups = [];

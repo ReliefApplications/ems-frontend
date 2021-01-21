@@ -25,10 +25,15 @@
     <ng-container *ngIf="fields.length > 0">
         <ng-container *ngFor="let field of fields">
             <ng-container>
-                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
+                <kendo-grid-column [field]="field.name" [title]="field.title" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
                 </kendo-grid-column>
             </ng-container>
         </ng-container>
+    </ng-container>
+    <ng-container *ngIf="detailsField">
+        <div *kendoGridDetailTemplate="let dataItem">
+            <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
+        </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>
         No record detected.

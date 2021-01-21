@@ -23,6 +23,7 @@ export * from './lib/models/workflow.model';
 export * from './lib/models/step.model';
 export * from './lib/models/notification.model';
 export * from './lib/models/channel.model';
+export * from './lib/models/subscription.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -45,5 +46,8 @@ export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
+export * from './lib/components/convert-modal/public-api';
+export * from './lib/components/record-history/public-api';
 
+// === MODULE ===
 export * from './lib/who-ems.module';

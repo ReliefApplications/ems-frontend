@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,7 @@ import {
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +36,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+
+  // === DATA CHANGES FOR WORKFLOW ===
+  @Output() dataChanges: EventEmitter<any> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -215,4 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe();
   }
 
+  onDataChanges(event: any): void {
+    this.dataChanges.emit(event);
+  }
 }

@@ -216,6 +216,50 @@ export interface GetRecordByIdQueryResponse {
   record: Record;
 }
 
+// === GET RECORD DETAILS ===
+
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+      resource {
+        id
+        name
+        forms {
+          id
+          name
+          structure
+          fields
+          core
+        }
+      }
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
 // === GET ROLES ===
 export const GET_ROLES = gql`
 query GetRoles($application: ID) {
@@ -367,6 +411,17 @@ export const GET_APPLICATION_BY_ID = gql`
           usersCount
         }
       }
+      subscriptions {
+        routingKey
+        channel {
+          id
+          title
+        }
+        convertTo {
+          id
+          name
+        }
+      }
       canSee
       canUpdate
     }
@@ -424,6 +479,7 @@ query GetQueryTypes {
             fields {
               name
               type {
+                name
                 kind
                 ofType {
                   name

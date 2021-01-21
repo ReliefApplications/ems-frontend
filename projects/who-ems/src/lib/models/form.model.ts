@@ -1,11 +1,12 @@
 import { Record } from './record.model';
+import { Resource } from './resource.model';
 
 /* Model for FormVersion object.
 */
-interface Version {
+export interface Version {
     id?: string;
     createdAt?: Date;
-    structure?: string;
+    data?: string;
 }
 
 /* Model for Form object.
@@ -22,6 +23,7 @@ export interface Form {
     records?: Record[];
     fields?: any;
     permissions?: any;
+    resource?: Resource;
     canSee?: boolean;
     canCreate?: boolean;
     canUpdate?: boolean;
