@@ -20,6 +20,10 @@ export class WhoConvertModalComponent implements OnInit {
   public form: Form;
   public availableForms: Form[];
   public ignoredFields: string[] = [];
+  public formName = '';
+
+  // === LOAD DATA ===
+  public loading = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,6 +43,8 @@ export class WhoConvertModalComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       const record = res.data.record;
       this.form = record.form;
+      this.formName = record.data.name;
+      this.loading = false;
       this.availableForms = this.form.resource.forms.filter(x => x.id !== this.form.id);
     });
     this.convertForm = this.formBuilder.group({

@@ -93,6 +93,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
+  public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
 
   get hasChanges(): boolean {
@@ -389,7 +390,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Detect selection event and display actions available on rows.
   */
   public selectionChange(selection: SelectionEvent): void {
-    this.selectedRow = selection.selectedRows[0];
+    if (selection.deselectedRows.length > 0) {
+      const deselectIndex = selection.deselectedRows.map((item => item.index));
+      this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
+    }
+    if (selection.selectedRows.length > 0) {
+      const selectedItems = selection.selectedRows.map((item) => item.index);
+      this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
+    }
   }
 
   /* Open the form corresponding to selected row in order to update it
@@ -410,27 +418,30 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open a dialog component which provide tools to convert the selected record
   */
-  public onConvertRecord(): void {
-    const record: string = this.selectedRow.dataItem.id;
-    const dialogRef = this.dialog.open(WhoConvertModalComponent, {
-      data: {
-        record
-      }
-    });
-    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
-      if (value) {
-        this.apollo.mutate<ConvertRecordMutationResponse>({
-          mutation: CONVERT_RECORD,
-          variables: {
-            id: record,
-            form: value.targetForm.id,
-            copyRecord: value.copyRecord
-          }
-        }).subscribe(res => {
-          this.reloadData();
-        });
-      }
-    });
+  public onConvertRecord(items: number[]): void {
+    for (const index of items) {
+      const record: string = this.gridData.data[index].id;
+      const dialogRef = this.dialog.open(WhoConvertModalComponent, {
+        data: {
+          record
+        },
+        backdropClass: 'backdropBackground'
+      });
+      dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
+        if (value) {
+          this.apollo.mutate<ConvertRecordMutationResponse>({
+            mutation: CONVERT_RECORD,
+            variables: {
+              id: record,
+              form: value.targetForm.id,
+              copyRecord: value.copyRecord
+            }
+          }).subscribe(() => {
+            this.reloadData();
+          });
+        }
+      });
+    }
   }
 
   /* Send Record History to parent to open a sidebar
@@ -462,24 +473,27 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open a confirmation modal and then delete the selected record
   */
-  public onDeleteRow(): void {
+  public onDeleteRow(items: number []): void {
+    const rowsSelected = items.length;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: 'Delete row',
-        content: `Do you confirm the deletion of this row ?`,
+        content: `Do you confirm the deletion of this ${rowsSelected > 1 ? rowsSelected : ''} row${rowsSelected > 1 ? 's' : ''} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = this.selectedRow.dataItem.id;
-        this.apollo.mutate<DeleteRecordMutationResponse>({
-          mutation: DELETE_RECORD,
-          variables: {
-            id
-          }
-        }).subscribe(res => {
+        const promises = [];
+        for (const index of items) {
+          const id = this.gridData.data[index].id;
+          promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
+            mutation: DELETE_RECORD,
+            variables: {id}
+          }).toPromise());
+        }
+        Promise.all(promises).then(() => {
           this.reloadData();
         });
       }
@@ -493,6 +507,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.getRecords();
     this.selectedRow = null;
+    this.selectedRowsIndex = [];
   }
 
   ngOnDestroy(): void {
