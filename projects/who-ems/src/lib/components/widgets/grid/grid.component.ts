@@ -448,22 +448,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public onViewHistory(): void {
-/*     this.apollo.query<GetRecordDetailsQueryResponse>({********************************
+    this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      this.dialog.open(WhoRecordHistoryComponent, {
-        data: {
-          record: res.data.record
-        }
-      });
-    }); */
+      console.log(res);
+      this.layoutService.addData(res.data.record);
+      const componentRef = this.childTemplate.createComponent(this.factory);
+      this.layoutService.newComponent(componentRef);
+    });
 
 
-    const componentRef = this.childTemplate.createComponent(this.factory);
-    this.layoutService.newComponent(componentRef);
   }
 
   /* Open a confirmation modal and then delete the selected record

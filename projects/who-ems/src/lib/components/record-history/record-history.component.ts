@@ -13,15 +13,18 @@ interface DialogData {
 })
 export class WhoRecordHistoryComponent implements OnInit {
 
+  public data;
   public history: any[] = [];
   public loading = true;
   public displayedColumns: string[] = ['position'];
 
-/*   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.history = this.getHistory(data.record);
-  } */
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('h', this.data);
+    if (this.data) {
+      this.getHistory(this.data);
+    }
+  }
 
   /*  Get current and next record to see difference and put it in a string
   */

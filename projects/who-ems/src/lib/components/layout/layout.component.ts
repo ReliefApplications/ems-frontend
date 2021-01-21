@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
 import { LayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
@@ -35,6 +35,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
+
   filteredNavGroups = [];
 
   // === NOTIFICATIONS ===
@@ -50,6 +51,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public fieldForm: FormGroup = null;
   public testContainer;
+  doc;
+  public showComponent = false;
 
   constructor(
     private router: Router,
@@ -89,9 +92,23 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.layoutService.currentComponent.subscribe(com => {
-      console.log(com);
       this.testContainer = com;
+      if (com.length !== 0 && this.showComponent !== com) {
+        if (this.testContainer.instance.data) {
+          this.testContainer.instance.data = this.layoutService.data;
+        }
+        this.showComponent = true;
+      }
     });
+  }
+
+  closeComponentDrawer(): void {
+    this.showComponent = false;
+  }
+
+  onLoad(iframe): void {
+    this.doc = iframe.contentDocument || iframe.contentWindow;
+    this.doc.body.appendChild(this.testContainer.location?.nativeElement);
   }
 
   ngOnChanges(): void {

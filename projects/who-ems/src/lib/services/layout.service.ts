@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class LayoutService {
 
   public layoutComponent = new BehaviorSubject<any[]>([]);
+  public data: any;
 
   constructor() {}
 
@@ -17,6 +18,10 @@ export class LayoutService {
 
   newComponent(comp): void {
     this.layoutComponent.next(comp);
+  }
+
+  addData(data): void {
+    this.data = data;
   }
 
 
