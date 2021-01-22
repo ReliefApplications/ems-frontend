@@ -45,7 +45,8 @@ const DISABLED_FIELDS = ['id', 'createdAt'];
 
 const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
-  mode: 'multiple'
+  mode: 'multiple',
+  drag: false
 };
 
 @Component({
