@@ -9,14 +9,15 @@ import {
   GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
   SelectionEvent, RowArgs
 } from '@progress/kendo-angular-grid';
-import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {FormGroup, FormBuilder} from '@angular/forms';
 import {
   EditRecordMutationResponse, EDIT_RECORD,
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD
+  DELETE_RECORD,
+  PublishMutationResponse, PUBLISH
 } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -27,7 +28,6 @@ import { Form } from '../../../models/form.model';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
-
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -89,9 +89,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
+  public hasEnabledActions: boolean;
 
   // === EMIT DATA CHANGES ===
   @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -164,18 +166,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           this.loading = false;
-          this.items = res.data[field];
+          this.items = cloneData(res.data[field]);
           this.originalItems = cloneData(this.items);
           this.fields = this.getFields(this.settings.query.fields);
+          this.fieldsTypes.emit(this.fields);
           this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
           this.gridData = {
             data: this.items,
-            total: res.data[field].length
+            total: this.items.length
           };
         }
       }
     },
-      (err) => this.loading = false);
+    () => this.loading = false);
   }
 
   /*  Set the list of items to display.
@@ -211,7 +214,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /*  Inline edition of the data.
   */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
+  public cellClickHandler({isEdited, dataItem, rowIndex}): void {
     if (isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
@@ -267,9 +270,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(id: string, value: any): void {
     const item = this.updatedItems.find(x => x.id === id);
     if (item) {
-      Object.assign(item, { ...value, id });
+      Object.assign(item, {...value, id});
     } else {
-      this.updatedItems.push({ ...value, id });
+      this.updatedItems.push({...value, id});
     }
     Object.assign(this.items.find(x => x.id === id), value);
     this.dataChanges.emit(this.updatedItems);
@@ -311,7 +314,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      Promise.all(promises).then(() => this.getRecords());
+      Promise.all(promises).then(() => {
+        if (this.settings.publication) {
+          this.apollo.mutate<PublishMutationResponse>({
+            mutation: PUBLISH,
+            variables: {
+              ids: this.updatedItems.map(x => x.id),
+              channel: this.settings.publication
+            }
+          }).subscribe(res => console.log(res));
+        }
+        this.reloadData();
+      });
     }
   }
 
@@ -508,5 +522,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  setSelectedRow(index): void {
+    this.selectedRow = {
+      dataItem: this.gridData.data[index],
+      index
+    };
   }
 }

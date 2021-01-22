@@ -56,6 +56,7 @@ export class WhoQueryBuilderComponent implements OnInit {
       });
       this.form.controls.name.valueChanges.subscribe((res) => {
         this.availableFields = this.queryBuilder.getFields(res);
+        console.log(this.availableFields);
         this.availableFilters = this.queryBuilder.getFilter(res);
         this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
         this.form.setControl('fields', this.formBuilder.array([]));
@@ -68,7 +69,6 @@ export class WhoQueryBuilderComponent implements OnInit {
   }
 
   onCloseField(): void {
-    console.log('trying to close');
     this.closeField.emit(true);
   }
 }
