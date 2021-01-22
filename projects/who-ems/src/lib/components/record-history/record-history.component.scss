@@ -3,6 +3,12 @@
     position: relative;
 }
 
+.history-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 ul {
     list-style-type: none;
     padding-left: 0;
@@ -21,10 +27,4 @@ ul {
     border-radius: 10px;
     padding: 5px;
     margin-right: 10px;
-}
-
-.close-history {
-    position: absolute;
-    top: -24px;
-    right: -24px;
 }

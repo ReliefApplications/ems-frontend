@@ -94,11 +94,11 @@
   <mat-sidenav-content>
     <div class="sidenav-content">
       <router-outlet></router-outlet>
-        <mat-drawer mode="side" position="end" [(opened)]="showComponent">
-          <button (click)="closeComponentDrawer()">close</button>
-          <iframe *ngIf="testContainer.length !== 0" #iframe (load)='onLoad(iframe)'></iframe>
-        </mat-drawer>
     </div>
   </mat-sidenav-content>
 
+  <mat-sidenav mode="over" position="end" [opened]="rightSidenav">
+    <!-- <ng-container *ngTemplateOutlet="rightSidenav"></ng-container> -->
+    <ng-template #rightSidenav></ng-template>
+  </mat-sidenav>
 </mat-sidenav-container>

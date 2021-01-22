@@ -6,14 +6,9 @@ import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
-import { SeeNotificationMutationResponse, SEE_NOTIFICATION } from '../../graphql/mutations';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
-import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { WhoNotificationService } from '../../services/notification.service';
-import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'who-layout',
@@ -33,6 +28,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
+  @ViewChild('childTemplate', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
+
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
 
@@ -48,8 +45,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === DISPLAY ===
   public largeDevice: boolean;
 
-
-  public fieldForm: FormGroup = null;
   public testContainer;
   doc;
   public showComponent = false;
@@ -57,7 +52,6 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private router: Router,
     private authService: WhoAuthService,
-    private apollo: Apollo,
     private notificationService: WhoNotificationService,
     private layoutService: LayoutService
   ) {
@@ -91,25 +85,23 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.layoutService.currentComponent.subscribe(com => {
-      this.testContainer = com;
-      if (com.length !== 0 && this.showComponent !== com) {
-        if (this.testContainer.instance) {
-          this.testContainer.instance.data = this.layoutService.data;
-        }
-        this.showComponent = true;
-      }
+    this.layoutService.rightSidenav.subscribe(view => {
+      // this.rightSidenav.insert(container);
+      this.rightSidenav.insert(view);
+      // if (com) {
+      //   this.testContainer = com;
+      //   this.showComponent = true;
+      // } else {
+      //   this.showComponent = false;
+      //   this.testContainer = null;
+      // }
     });
   }
 
-  closeComponentDrawer(): void {
-    this.showComponent = false;
-  }
-
-  onLoad(iframe): void {
-    this.doc = iframe.contentDocument || iframe.contentWindow;
-    this.doc.body.appendChild(this.testContainer.location?.nativeElement);
-  }
+  // onLoad(iframe): void {
+  //   this.doc = iframe.contentDocument || iframe.contentWindow;
+  //   this.doc.body.appendChild(this.testContainer.location?.nativeElement);
+  // }
 
   ngOnChanges(): void {
     this.authService.user.subscribe(() => {

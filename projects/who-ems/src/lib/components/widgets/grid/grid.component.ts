@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
-      OnDestroy, Output, EventEmitter, ViewContainerRef,
-      ComponentFactoryResolver, ComponentFactory, ComponentRef } from '@angular/core';
+import {
+  Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
+  OnDestroy, Output, EventEmitter, ViewContainerRef,
+  ComponentFactoryResolver, ComponentFactory, ComponentRef, TemplateRef
+} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import {
@@ -14,7 +16,8 @@ import {
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD } from '../../../graphql/mutations';
+  DELETE_RECORD
+} from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -96,7 +99,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory: ComponentFactory<any>;
-  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
+  @ViewChild('childTemplate', { read: TemplateRef }) childTemplate: TemplateRef<any>;
 
   constructor(
     private apollo: Apollo,
@@ -110,7 +113,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(WhoRecordHistoryComponent);
-   }
+  }
 
   /*  Detect changes of the settings to (re)load the data.
   */
@@ -454,9 +457,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      this.layoutService.addData(res.data.record);
-      const componentRef = this.childTemplate.createComponent(this.factory);
-      this.layoutService.newComponent(componentRef);
+      const componentRef = this.childTemplate.createEmbeddedView(this.factory);
+      // componentRef.context.record = res.data.record;
+      // componentRef.context.cancel.subscribe(() => {
+      //   this.layoutService.setRightSidenav(null);
+      //   componentRef.destroy();
+      // });
+      this.layoutService.setRightSidenav(componentRef);
     });
 
 

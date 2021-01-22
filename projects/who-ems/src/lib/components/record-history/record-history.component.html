@@ -1,4 +1,9 @@
-<h2>new awesome history</h2>
+<div class="history-header">
+    <h2>History</h2>
+    <button mat-icon-button (click)="onCancel()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 <ul>
     <li *ngFor="let item of history">
         <table mat-table [dataSource]="item.changes" class="mat-elevation-z1">
@@ -13,5 +18,3 @@
         </table>
     </li>
 </ul>
-
-

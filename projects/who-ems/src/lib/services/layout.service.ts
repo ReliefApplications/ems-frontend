@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EmbeddedViewRef, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 
@@ -7,23 +7,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class LayoutService {
 
-  public layoutComponent = new BehaviorSubject<any[]>([]);
-  public data: any;
+  // tslint:disable-next-line: variable-name
+  private _rightSidenav = new BehaviorSubject<EmbeddedViewRef<any>>(null);
 
   constructor() {}
 
-  get currentComponent(): Observable<any> {
-    return this.layoutComponent.asObservable();
+  setRightSidenav(container: EmbeddedViewRef<any>): void {
+    this._rightSidenav.next(container);
   }
 
-  newComponent(comp): void {
-    this.layoutComponent.next(comp);
+  get rightSidenav(): Observable<EmbeddedViewRef<any>> {
+    return this._rightSidenav.asObservable();
   }
-
-  addData(data): void {
-    this.data = data;
-  }
-
-
-
 }
