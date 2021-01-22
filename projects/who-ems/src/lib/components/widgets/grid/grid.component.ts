@@ -109,8 +109,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory: ComponentFactory<any>;
-  // @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
-  // @ViewChild('childTemplate', { static: false }) childTemplateRef: TemplateRef<any>;
 
   constructor(
     private apollo: Apollo,
@@ -464,16 +462,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      // const componentRef = this.childTemplate.createComponent(this.factory);
-      // componentRef.instance.record = res.data.record;
-      // componentRef.instance.cancel.subscribe(() => {
-      //   this.layoutService.setRightSidenav(null);
-      //   componentRef.destroy();
-      // });
-      // console.log(this.childTemplateRef);
       this.layoutService.setRightSidenav({
         factory: this.factory,
-        input: {
+        inputs: {
           record: res.data.record
         }
       });

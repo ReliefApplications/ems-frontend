@@ -29,7 +29,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
-  @ViewChild('rightSidenavTemplate', { read: ViewContainerRef }) rightSidenavTemplate: ViewContainerRef;
+  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
@@ -86,32 +86,23 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     this.layoutService.rightSidenav.subscribe(view => {
       if (view) {
-        const componentRef: ComponentRef<any> = this.rightSidenavTemplate.createComponent(view.factory);
+        this.showSidenav = true;
+        const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
+        for (const [key, value] of Object.entries(view.inputs)) {
+          componentRef.instance[key] = value;
+        }
         componentRef.instance.cancel.subscribe(() => {
           componentRef.destroy();
           this.layoutService.setRightSidenav(null);
         });
-        this.showSidenav = true;
       } else {
         this.showSidenav = false;
-        this.rightSidenavTemplate.clear();
+        if (this.rightSidenav) {
+          this.rightSidenav.clear();
+        }
       }
-      // view.data.f
-      // this.rightSidenav.insert(view);
-      // if (com) {
-      //   this.testContainer = com;
-      //   this.showComponent = true;
-      // } else {
-      //   this.showComponent = false;
-      //   this.testContainer = null;
-      // }
     });
   }
-
-  // onLoad(iframe): void {
-  //   this.doc = iframe.contentDocument || iframe.contentWindow;
-  //   this.doc.body.appendChild(this.testContainer.location?.nativeElement);
-  // }
 
   ngOnChanges(): void {
     this.authService.user.subscribe(() => {

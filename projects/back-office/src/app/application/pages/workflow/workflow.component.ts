@@ -211,7 +211,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       for (const item of this.nextData) {
         const data = Object.assign({}, item);
         delete data.id;
-        console.log(data);
         if (this.selectedStep.settings.modifySelectedRows && data.keep_it) {
           data[this.selectedStep.settings.modifiedField.name] = this.selectedStep.settings.modifiedInputValue;
         }
