@@ -54,8 +54,8 @@
             </kendo-grid-column>
       </ng-container> -->
       <kendo-grid-checkbox-column
-        *ngIf="settings.actions.delete || settings.actions.convert"
-        [width]="45"
+        *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert"
+        [width]="41"
         [headerClass]="{'text-center': true}"
         [class]="{'text-center': true}"
         [resizable]="false"
