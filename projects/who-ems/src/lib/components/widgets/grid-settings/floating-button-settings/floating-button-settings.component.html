@@ -1,0 +1,44 @@
+<ng-container *ngIf="buttonForm">
+  <form [formGroup]="buttonForm">
+      <div class="form-group">
+          <mat-slide-toggle formControlName="show">Show</mat-slide-toggle>
+          <ng-container *ngIf="buttonForm.value.show">
+              <mat-form-field appearance="outline">
+                  <mat-label>Button name</mat-label>
+                  <input matInput formControlName="name" type="string">
+              </mat-form-field>
+              <mat-slide-toggle formControlName="goToNextStep">Go to next step</mat-slide-toggle>
+              <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
+              <div class="modify-form">
+                <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
+                <form [formGroup]="buttonForm.controls.modifications" 
+                  *ngIf="buttonForm.value.modifySelectedRows">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Field to modify</mat-label>
+                    <mat-select formControlName="field" [compareWith]="compareFields">
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let field of fields" [value]="field">{{field.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" *ngIf="buttonForm.controls.modifications.value.field">
+                    <mat-label>Value to attribute</mat-label>
+                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name === 'Int'">
+                        <input matInput formControlName="value" type="number" />
+                    </ng-container>
+                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name === 'Boolean'">
+                        <mat-select formControlName="value">
+                            <mat-option>-- None --</mat-option>
+                            <mat-option [value]="true">True</mat-option>
+                            <mat-option [value]="false">False</mat-option>
+                        </mat-select>
+                    </ng-container>
+                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name !== 'Int' && buttonForm.controls.modifications.value.field.type.name !== 'Boolean'">
+                        <input matInput formControlName="value" type="string" />
+                    </ng-container>
+                  </mat-form-field>
+                </form>
+              </div>
+          </ng-container>
+      </div>
+  </form>
+</ng-container>

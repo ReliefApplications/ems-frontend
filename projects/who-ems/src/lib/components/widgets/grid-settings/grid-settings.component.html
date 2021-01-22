@@ -35,34 +35,22 @@
     </div>
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">Enabled actions</div>
-      <mat-checkbox formControlName="delete">
+      <mat-slide-toggle formControlName="delete">
         Delete records
-      </mat-checkbox>
-      <mat-checkbox formControlName="history">
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="history">
         Show history
-      </mat-checkbox>
-      <mat-checkbox formControlName="convert">
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="convert">
         Convert records
-      </mat-checkbox>
-      <mat-checkbox formControlName="update">
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="update">
         Update records
-      </mat-checkbox>
+      </mat-slide-toggle>
     </div>
     <div class="form-group">
       <div class="form-group-title">Floating button</div>
-      <form [formGroup]="tileForm.controls.floatingButton">
-          <div class="form-group">
-              <mat-checkbox formControlName="show">Show</mat-checkbox>
-              <ng-container *ngIf="tileForm.controls.floatingButton.value.show">
-                  <mat-form-field appearance="outline">
-                      <mat-label>Button name</mat-label>
-                      <input matInput formControlName="name" type="string">
-                  </mat-form-field>
-                  <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
-                  <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
-              </ng-container>
-          </div>
-      </form>
+      <who-floating-button-settings [buttonForm]="tileForm.controls.floatingButton" [fields]="fields"></who-floating-button-settings>
     </div>
   </form>
 </ng-container>

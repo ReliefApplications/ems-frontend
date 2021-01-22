@@ -6,6 +6,7 @@ import {GetChannelsQueryResponse, GET_CHANNELS} from '../../../graphql/queries';
 import {Application} from '../../../models/application.model';
 import {Channel} from '../../../models/channel.model';
 import {WhoApplicationService} from '../../../services/application.service';
+import { query } from '@angular/animations';
 
 @Component({
   selector: 'who-grid-settings',
@@ -28,6 +29,9 @@ export class WhoGridSettingsComponent implements OnInit {
 
   // === NOTIFICATIONS ===
   public channels: Channel[] = [];
+
+  // === FLOATING BUTTON ===
+  public fields: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,6 +66,7 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+
     this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
@@ -80,6 +85,14 @@ export class WhoGridSettingsComponent implements OnInit {
         });
       }
     });
+
+    this.tileForm.get('query').valueChanges.subscribe(res => {
+      if (res.name) {
+        this.fields = this.queryBuilder.getFields(res.name);
+      } else {
+        this.fields = [];
+      }
+    });
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
@@ -89,7 +102,10 @@ export class WhoGridSettingsComponent implements OnInit {
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value && value.modifySelectedRows ? value.modifySelectedRows : false],
-      modifications: this.formBuilder.array(value && value.modifications ? value.modifications.map(x => x) : [])
+      modifications: this.formBuilder.group({
+        field: [value && value.modifications ? value.modifications.field : '', Validators.required],
+        value: [value && value.modifications ? value.modifications.value : null, Validators.required],
+      })
     });
   }
 }

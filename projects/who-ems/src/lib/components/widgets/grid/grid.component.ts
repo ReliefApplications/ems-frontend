@@ -541,9 +541,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Execute action enabled by settings for the floating button
   */
   onFloatingButtonClick(): void {
-    console.log(this.settings);
     if (this.settings.floatingButton && this.settings.floatingButton.autoSave) {
       this.onSaveChanges();
+    }
+    if (this.settings.floatingButton && this.settings.floatingButton.modifySelectedRows) {
+      this.modifyRows(this.selectedRowsIndex);
     }
     if (this.settings.floatingButton && this.settings.floatingButton.goToNextStep) {
       this.goToNextStep.emit(true);
@@ -556,6 +558,28 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private modifyRows(items: number[]): void {
+    const promises = [];
+    for (const index of items) {
+      const record = this.gridData.data[index];
+      const data = Object.assign({}, record);
+      data[this.settings.floatingButton.modifications.field.name] = this.settings.floatingButton.modifications.value;
+      delete data.id;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            data
+          }
+      }).toPromise());
+    }
+    Promise.all(promises).then(() => {
+      this.reloadData();
+    });
+  }
+
+  /* Set selected row on three dots menu button click
+  */
   setSelectedRow(index): void {
     this.selectedRow = {
       dataItem: this.gridData.data[index],

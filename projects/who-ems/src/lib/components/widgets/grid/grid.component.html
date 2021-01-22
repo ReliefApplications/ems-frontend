@@ -45,7 +45,7 @@
               </ng-template>
             </kendo-grid-column>
       </ng-container> -->
-      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert"
+      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
         [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
         [columnMenu]="false" showSelectAll="true">
       </kendo-grid-checkbox-column>
