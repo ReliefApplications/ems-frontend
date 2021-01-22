@@ -89,6 +89,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === TASKS DATA FOR CHILDREN-GRID ===
+  @Input() tasks;
+
   // === EXCEL ===
   public excelFileName: string;
 
@@ -114,6 +117,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log(this.settings);
+    if (!!this.tasks) {
+      this.getTasksRecords();
+    }
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
   }
@@ -122,6 +129,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
+    //
+    // console.log(this.queryBuilder);
+    // console.log(this.settings);
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
 
@@ -164,23 +174,57 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataChanges.emit(this.updatedItems);
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.loading = false;
-          this.items = cloneData(res.data[field]);
-          this.originalItems = cloneData(this.items);
-          this.fields = this.getFields(this.settings.query.fields);
-          this.fieldsTypes.emit(this.fields);
-          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
-          this.gridData = {
-            data: this.items,
-            total: this.items.length
-          };
+        const fields = !!this.tasks ? this.tasks : this.settings.query.fields;
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.loading = false;
+            this.items = cloneData(res.data[field]);
+            this.originalItems = cloneData(this.items);
+            this.fields = this.getFields(fields);
+            this.fieldsTypes.emit(this.fields);
+            this.detailsField = fields.find(x => x.kind === 'LIST');
+            Object.assign(this.detailsField, {actions: this.settings.actions});
+            console.log(this.detailsField);
+            this.gridData = {
+              data: this.items,
+              total: this.items.length
+            };
+          }
         }
-      }
-    },
-    () => this.loading = false);
+      },
+      () => this.loading = false);
   }
+
+  /*
+    Load tasks data
+   */
+  private getTasksRecords(): void {
+    this.loading = true;
+    this.updatedItems = [];
+
+    this.items = this.tasks[this.settings.name];
+
+    if (this.items.length > 0) {
+      this.originalItems = cloneData(this.items);
+      this.fields = this.getFields(this.settings.fields);
+      this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
+      this.loading = false;
+    } else {
+      this.originalItems = [];
+      this.fields = [];
+      this.detailsField = null;
+      this.gridData = {
+        data: this.items,
+        total: 0
+      };
+      this.loading = false;
+    }
+  }
+
 
   /*  Set the list of items to display.
   */

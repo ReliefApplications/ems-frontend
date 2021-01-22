@@ -1,5 +1,5 @@
 <div class="widget-container">
-  <div class="widget-header" *ngIf="header">{{settings.title}}</div>
+  <div class="widget-header" *ngIf="header && !tasks">{{settings.title}}</div>
   <kendo-grid id="customGrid" class="widget-content" [autoSize]="true" [data]="gridData" [pageSize]="pageSize"
     [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
     [sort]="sort" [selectable]="{checkboxOnly: true, mode: 'single'}" (selectionChange)="selectionChange($event)"
@@ -72,7 +72,8 @@
     </ng-container>
     <ng-container *ngIf="detailsField">
       <div *kendoGridDetailTemplate="let dataItem">
-        <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
+        <who-grid [settings]="detailsField" [tasks]="dataItem"></who-grid>
+<!--        <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>-->
       </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>
