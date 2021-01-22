@@ -27,7 +27,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(): void {
-    console.log(this.selectedStep.settings);
     this.settingsForm = this.formBuilder.group({
       buttonName: [this.selectedStep.settings && this.selectedStep.settings.buttonName ? this.selectedStep.settings.buttonName :
         (!this.isLastStep) ? 'Next' : 'Publish'],
