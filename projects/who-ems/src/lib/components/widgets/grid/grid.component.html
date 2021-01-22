@@ -57,7 +57,7 @@
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-              (click)="onViewHistory()">
+              (click)="onViewHistory(childTemplate)">
               History
             </button>
             <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
