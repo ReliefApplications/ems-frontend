@@ -1,16 +1,14 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, ComponentRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy,
+  OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
+import { LayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../../graphql/queries';
-import { SeeNotificationMutationResponse, SEE_NOTIFICATION } from '../../graphql/mutations';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
-import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { WhoNotificationService } from '../../services/notification.service';
 
 @Component({
@@ -31,7 +29,10 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
+  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
+
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
+
 
   filteredNavGroups = [];
 
@@ -45,11 +46,13 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === DISPLAY ===
   public largeDevice: boolean;
 
+  public showSidenav = false;
+
   constructor(
     private router: Router,
     private authService: WhoAuthService,
-    private apollo: Apollo,
-    private notificationService: WhoNotificationService
+    private notificationService: WhoNotificationService,
+    private layoutService: LayoutService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -78,6 +81,25 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.notifications = notifications;
       } else {
         this.notifications = [];
+      }
+    });
+
+    this.layoutService.rightSidenav.subscribe(view => {
+      if (view) {
+        this.showSidenav = true;
+        const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
+        for (const [key, value] of Object.entries(view.inputs)) {
+          componentRef.instance[key] = value;
+        }
+        componentRef.instance.cancel.subscribe(() => {
+          componentRef.destroy();
+          this.layoutService.setRightSidenav(null);
+        });
+      } else {
+        this.showSidenav = false;
+        if (this.rightSidenav) {
+          this.rightSidenav.clear();
+        }
       }
     });
   }

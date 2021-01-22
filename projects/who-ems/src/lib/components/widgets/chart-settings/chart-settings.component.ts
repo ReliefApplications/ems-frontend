@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { chartTypes } from './constants';
 
@@ -15,7 +14,6 @@ export class WhoChartSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup;
-  showFilter = false;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -27,14 +25,7 @@ export class WhoChartSettingsComponent implements OnInit {
   // === DATA ===
   public types = chartTypes;
 
-  // === QUERY BUILDER ===
-  public availableQueries: Observable<any[]>;
-  public availableFields: any[];
-  public availableFilter: any[];
-
-  get selectedFields(): string[] {
-    return this.tileForm.value.fields;
-  }
+  public selectedFields: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,13 +41,9 @@ export class WhoChartSettingsComponent implements OnInit {
         id: this.tile.id,
         title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
         type: [(tileSettings && tileSettings.type) ? tileSettings.type : '', Validators.required],
+        query: this.queryBuilder.createQueryForm(tileSettings.query),
         xAxis: [(tileSettings && tileSettings.xAxis) ? tileSettings.xAxis : '', Validators.required],
-        yAxis: [(tileSettings && tileSettings.yAxis) ? tileSettings.yAxis : '', Validators.required],
-        queryType: [(tileSettings && tileSettings.queryType) ? tileSettings.queryType : '', Validators.required],
-        fields: [(tileSettings && tileSettings.fields) ? tileSettings.fields : null, Validators.required],
-        sortField: [(tileSettings && tileSettings.sortField) ? tileSettings.sortField : null],
-        sortOrder: [(tileSettings && tileSettings.sortOrder) ? tileSettings.sortOrder : null],
-        filter: this.formBuilder.group({})
+        yAxis: [(tileSettings && tileSettings.yAxis) ? tileSettings.yAxis : '', Validators.required]
       }
     );
     this.change.emit(this.tileForm);
@@ -64,32 +51,35 @@ export class WhoChartSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    this.availableQueries = this.queryBuilder.availableQueries;
-    this.availableQueries.subscribe((res) => {
-      if (res) {
-        this.availableFields = this.queryBuilder.getFields(this.tileForm.value.queryType);
-        this.availableFilter = this.queryBuilder.getFilter(this.tileForm.value.queryType);
-        this.tileForm.setControl('filter', this.createFilterGroup());
-      }
-    });
-    this.tileForm.controls.queryType.valueChanges.subscribe((res) => {
-      this.availableFields = this.queryBuilder.getFields(res);
-      this.availableFilter = this.queryBuilder.getFilter(res);
-      this.tileForm.setControl('filter', this.createFilterGroup());
+    if (this.tileForm.value.query.name) {
+      this.selectedFields = this.getFields(this.tileForm.value.query.fields);
+    }
+
+    const queryForm = this.tileForm.get('query') as FormGroup;
+
+    queryForm.controls.name.valueChanges.subscribe(() => {
       this.tileForm.controls.xAxis.setValue('');
       this.tileForm.controls.yAxis.setValue('');
     });
+    queryForm.valueChanges.subscribe((res) => {
+      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+    });
   }
 
-  private createFilterGroup(): FormGroup {
-    const filter = this.tile.settings.filter;
-    const group = this.availableFilter.reduce((o, key) => {
-      return ({...o, [key.name]: [(filter && ( filter[key.name] || filter[key.name] === false ) ? filter[key.name] : null )]});
-    }, {});
-    return this.formBuilder.group(group);
+  private flatDeep(arr: any[]): any[] {
+    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
-  public toggleFilter(): void {
-    this.showFilter = !this.showFilter;
+  private getFields(fields: any[], prefix?: string): any[] {
+    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      switch (f.kind) {
+        case 'OBJECT': {
+          return this.getFields(f.fields, f.name);
+        }
+        default: {
+          return prefix ? `${prefix}.${f.name}` : f.name;
+        }
+      }
+    }));
   }
 }

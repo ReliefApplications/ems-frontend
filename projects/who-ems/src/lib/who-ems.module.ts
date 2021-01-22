@@ -20,6 +20,7 @@ import { WhoUsersModule } from './components/users/users.module';
 import { WhoRolesModule } from './components/roles/roles.module';
 import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
 import { WhoConvertModalModule } from './components/convert-modal/convert-modal.module';
+import { WhoRecordHistoryModule } from './components/record-history/record-history.module';
 
 @NgModule({
   declarations: [],
@@ -45,7 +46,8 @@ import { WhoConvertModalModule } from './components/convert-modal/convert-modal.
     WhoUsersModule,
     WhoRolesModule,
     WhoPreviousButtonModule,
-    WhoConvertModalModule
+    WhoConvertModalModule,
+    WhoRecordHistoryModule
   ]
 })
 export class WhoEmsModule { }

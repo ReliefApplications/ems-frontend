@@ -248,6 +248,9 @@ query GetRecordDetails($id: ID!) {
       id
       createdAt
       data
+      createdBy {
+        name
+      }
     }
   }
 }`;
@@ -408,6 +411,17 @@ export const GET_APPLICATION_BY_ID = gql`
           usersCount
         }
       }
+      subscriptions {
+        routingKey
+        channel {
+          id
+          title
+        }
+        convertTo {
+          id
+          name
+        }
+      }
       canSee
       canUpdate
     }
@@ -465,6 +479,7 @@ query GetQueryTypes {
             fields {
               name
               type {
+                name
                 kind
                 ofType {
                   name

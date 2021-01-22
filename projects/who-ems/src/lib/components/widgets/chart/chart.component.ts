@@ -3,7 +3,6 @@ import { Apollo } from 'apollo-angular';
 import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
-import gql from 'graphql-tag';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const DEFAULT_FILE_NAME = 'chart.png';
@@ -32,7 +31,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   private chart: ChartComponent;
 
   constructor(
-    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -40,7 +38,6 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
     if (this.dataQuery) {
       this.getData();
     } else {
@@ -60,18 +57,15 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
   */
   private getData(): void {
-    // const dataQuery = this.apollo.watchQuery<any>({
-    //   query: gql`${this.settings.query}`,
-    //   variables: {}
-    // });
-
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       this.data = [];
       const dataToAggregate = [];
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           for (const record of res.data[field]) {
-            const existingField = dataToAggregate.find(x => x[this.settings.xAxis] === record[this.settings.xAxis]);
+            const existingField = dataToAggregate.find(x => {
+              return x[this.settings.xAxis] === record[this.settings.xAxis];
+            });
             if (existingField) {
               existingField[this.settings.yAxis] += record[this.settings.yAxis];
             } else {

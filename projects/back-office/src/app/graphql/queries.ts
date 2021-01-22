@@ -494,6 +494,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         name
         type
         content
+        settings
         createdAt
       }
       page {
@@ -578,4 +579,23 @@ export const GET_STEP_BY_ID = gql`
 export interface GetStepByIdQueryResponse {
   loading: boolean;
   step: Step;
+}
+
+// === GET ROUTING KEYS ===
+export const GET_ROUTING_KEYS = gql`
+query GetRoutingKeys {
+  applications {
+    id
+    name
+    channels {
+      id
+      title
+      routingKey
+    }
+  }
+}`;
+
+export interface GetRoutingKeysQueryResponse{
+  loading: boolean;
+  applications: Application[];
 }

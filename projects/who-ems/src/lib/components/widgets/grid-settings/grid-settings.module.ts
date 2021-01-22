@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
 
 @NgModule({
   declarations: [WhoGridSettingsComponent],
@@ -24,7 +25,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    TextFieldModule
+    TextFieldModule,
+    WhoQueryBuilderModule
   ],
   exports: [WhoGridSettingsComponent]
 })
