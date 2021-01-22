@@ -220,28 +220,4 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
     }
   }
-
-  /* Display settings in the place of the step view
-  */
-  onSettingsClick(): void {
-    this.showSettings = true;
-  }
-
-  /* Close settings and update it's value if needed
-  */
-  onCloseSettings(value: any): void {
-    this.showSettings = false;
-    /* if (value) {
-      this.apollo.mutate<EditStepMutationResponse>({
-        mutation: EDIT_STEP,
-        variables: {
-          id: this.selectedStep.id,
-          settings: value
-        }
-      }).subscribe(res => {
-        this.selectedStep = res.data.editStep;
-        this.steps[this.selectedStepIndex] = res.data.editStep;
-      });
-    } */
-  }
 }
