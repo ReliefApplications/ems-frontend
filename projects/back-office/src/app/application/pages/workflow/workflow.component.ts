@@ -11,7 +11,8 @@ import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
   EditWorkflowMutationResponse, EDIT_WORKFLOW,
-  EditRecordMutationResponse, EDIT_RECORD, EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
+  EditRecordMutationResponse, EDIT_RECORD, EditStepMutationResponse, EDIT_STEP
+} from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -65,26 +66,31 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
     this.workflowSubscription = this.workflowService.workflow.subscribe((workflow: Workflow) => {
       if (workflow) {
-        this.workflow = workflow;
         this.steps = workflow.steps;
         this.workflowNameForm = new FormGroup({
-          workflowName: new FormControl(this.workflow.name, Validators.required)
+          workflowName: new FormControl(workflow.name, Validators.required)
         });
         this.loading = false;
-        const{steps: [firstStep, ..._]} = workflow;
-        if (firstStep) {
-          if (firstStep.type === ContentType.form) {
-            this.router.navigate(['./' + firstStep.type + '/' + firstStep.id ], { relativeTo: this.route });
-          } else {
-            this.router.navigate(['./' + firstStep.type + '/' + firstStep.content ], { relativeTo: this.route });
+        if (!this.workflow || workflow.id !== this.workflow.id) {
+          const { steps: [firstStep, ..._] } = workflow;
+          if (firstStep) {
+            if (firstStep.type === ContentType.form) {
+              this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
+            } else {
+              this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
+              console.log('routing');
+            }
           }
         }
+        this.workflow = workflow;
+      } else {
+        this.steps = [];
       }
     });
   }
 
   toggleFormActive(): void {
-    if (this.workflow.page.canUpdate) { this.formActive = !this.formActive; }
+    if (this.workflow.page.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the workflow and his linked page.
@@ -158,7 +164,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Drop a step dragged into the list
   */
-  dropStep(event: CdkDragDrop<string[]>): void{
+  dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
     moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
     if (event.previousIndex !== event.currentIndex) {
@@ -168,7 +174,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           id: this.id,
           steps: this.steps.map(step => step.id)
         }
-      }).subscribe( () => {
+      }).subscribe(() => {
         this.snackBar.openSnackBar('Steps reordered');
       });
     }
@@ -250,9 +256,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   private navigateToSelectedStep(): void {
     if (this.selectedStep.type === ContentType.form) {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
     } else {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
     }
   }
 
