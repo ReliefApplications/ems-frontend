@@ -1,32 +1,35 @@
-<h1 mat-dialog-title>Convert record</h1>
-<div mat-dialog-content>
-    <form [formGroup]="convertForm">
-        <div class="form-group">
-            <mat-form-field>
-                <mat-label>Target</mat-label>
-                <mat-select formControlName="targetForm">
-                    <mat-option *ngFor="let form of availableForms" [value]="form">
-                        {{form.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-radio-group formControlName="copyRecord" class="form-radio-group">
-                <mat-radio-button [value]="true">Copy source record</mat-radio-button>
-                <mat-radio-button [value]="false">Overwrite source record</mat-radio-button>
-            </mat-radio-group>
-        </div>
-    </form>
-</div>
-<div *ngIf="convertForm.controls.targetForm.value">
-    <ng-container *ngIf="ignoredFields.length > 0">
-        <a>Following fields will be ignored:</a> <br/> 
-        <span *ngFor="let field of ignoredFields">{{field.name}}, </span>
-    </ng-container>
-    <ng-container *ngIf="ignoredFields.length == 0">
-        <a>Conversion OK</a>
-    </ng-container>
-</div>
-<div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="convertForm.value" color="primary" [disabled]="!convertForm.valid">Convert record</button>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<div style="width: 320px" *ngIf="!loading">
+  <h1 mat-dialog-title>{{ data.title }}</h1>
+  <div mat-dialog-content>
+      <form [formGroup]="convertForm">
+          <div class="form-group">
+              <mat-form-field>
+                  <mat-label>Target</mat-label>
+                  <mat-select formControlName="targetForm">
+                      <mat-option *ngFor="let form of availableForms" [value]="form">
+                          {{form.name}}
+                      </mat-option>
+                  </mat-select>
+              </mat-form-field>
+              <mat-radio-group formControlName="copyRecord" class="form-radio-group">
+                  <mat-radio-button [value]="true">Copy source record</mat-radio-button>
+                  <mat-radio-button [value]="false">Overwrite source record</mat-radio-button>
+              </mat-radio-group>
+          </div>
+      </form>
+  </div>
+  <div *ngIf="convertForm.controls.targetForm.value">
+      <ng-container *ngIf="ignoredFields.length > 0">
+          <a>Following fields will be ignored:</a> <br/>
+          <span *ngFor="let field of ignoredFields">{{field.name}}, </span>
+      </ng-container>
+      <ng-container *ngIf="ignoredFields.length == 0">
+          <a>Conversion OK</a>
+      </ng-container>
+  </div>
+  <div mat-dialog-actions align="end">
+      <button mat-button (click)="onClose()">Close</button>
+      <button mat-button [mat-dialog-close]="convertForm.value" color="primary" [disabled]="!convertForm.valid">Convert record</button>
+  </div>
 </div>
