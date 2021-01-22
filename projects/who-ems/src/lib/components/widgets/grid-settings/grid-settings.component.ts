@@ -90,6 +90,6 @@ export class WhoGridSettingsComponent implements OnInit {
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value && value.modifySelectedRows ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications ? value.modifications.map(x => x) : [])
-    })
+    });
   }
 }

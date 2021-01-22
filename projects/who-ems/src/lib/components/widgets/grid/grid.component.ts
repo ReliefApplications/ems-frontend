@@ -541,9 +541,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Execute action enabled by settings for the floating button
   */
   onFloatingButtonClick(): void {
+    console.log(this.settings);
+    if (this.settings.floatingButton && this.settings.floatingButton.autoSave) {
+      this.onSaveChanges();
+    }
     if (this.settings.floatingButton && this.settings.floatingButton.goToNextStep) {
       this.goToNextStep.emit(true);
-    } 
+    }
   }
 
   ngOnDestroy(): void {

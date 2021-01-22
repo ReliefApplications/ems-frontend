@@ -22,7 +22,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  
+
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
