@@ -8,15 +8,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class LayoutService {
 
   // tslint:disable-next-line: variable-name
-  private _rightSidenav = new BehaviorSubject<EmbeddedViewRef<any>>(null);
+  private _rightSidenav = new BehaviorSubject<any>(null);
 
   constructor() {}
 
-  setRightSidenav(container: EmbeddedViewRef<any>): void {
+  setRightSidenav(container: any): void {
     this._rightSidenav.next(container);
   }
 
-  get rightSidenav(): Observable<EmbeddedViewRef<any>> {
+  get rightSidenav(): Observable<any> {
     return this._rightSidenav.asObservable();
   }
 }

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy,
+  OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { WhoAuthService } from '../../services/auth.service';
 import { LayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
@@ -28,7 +29,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar: TemplateRef<any>;
 
-  @ViewChild('childTemplate', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
+  @ViewChild('rightSidenavTemplate', { read: ViewContainerRef }) rightSidenavTemplate: ViewContainerRef;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
@@ -45,9 +46,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === DISPLAY ===
   public largeDevice: boolean;
 
-  public testContainer;
-  doc;
-  public showComponent = false;
+  public showSidenav = false;
 
   constructor(
     private router: Router,
@@ -86,8 +85,19 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.layoutService.rightSidenav.subscribe(view => {
-      // this.rightSidenav.insert(container);
-      this.rightSidenav.insert(view);
+      if (view) {
+        const componentRef: ComponentRef<any> = this.rightSidenavTemplate.createComponent(view.factory);
+        componentRef.instance.cancel.subscribe(() => {
+          componentRef.destroy();
+          this.layoutService.setRightSidenav(null);
+        });
+        this.showSidenav = true;
+      } else {
+        this.showSidenav = false;
+        this.rightSidenavTemplate.clear();
+      }
+      // view.data.f
+      // this.rightSidenav.insert(view);
       // if (com) {
       //   this.testContainer = com;
       //   this.showComponent = true;

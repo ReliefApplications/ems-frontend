@@ -57,7 +57,7 @@
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-              (click)="onViewHistory()">
+              (click)="onViewHistory(childTemplate)">
               History
             </button>
             <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
@@ -84,4 +84,3 @@
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
   </kendo-grid>
 </div>
-<ng-template #childTemplate></ng-template>

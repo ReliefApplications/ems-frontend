@@ -1,7 +1,7 @@
 import {
   Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
-  OnDestroy, Output, EventEmitter, ViewContainerRef,
-  ComponentFactoryResolver, ComponentFactory, ComponentRef, TemplateRef
+  OnDestroy, Output, EventEmitter,
+  ComponentFactoryResolver, ComponentFactory, TemplateRef, ViewContainerRef
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
@@ -109,7 +109,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory: ComponentFactory<any>;
-  @ViewChild('childTemplate', { read: TemplateRef }) childTemplate: TemplateRef<any>;
+  // @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
+  // @ViewChild('childTemplate', { static: false }) childTemplateRef: TemplateRef<any>;
 
   constructor(
     private apollo: Apollo,
@@ -128,6 +129,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
+    this.hasEnabledActions = !this.settings.actions ||
+      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
@@ -461,13 +464,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      const componentRef = this.childTemplate.createEmbeddedView(this.factory);
-      // componentRef.context.record = res.data.record;
-      // componentRef.context.cancel.subscribe(() => {
+      // const componentRef = this.childTemplate.createComponent(this.factory);
+      // componentRef.instance.record = res.data.record;
+      // componentRef.instance.cancel.subscribe(() => {
       //   this.layoutService.setRightSidenav(null);
       //   componentRef.destroy();
       // });
-      this.layoutService.setRightSidenav(componentRef);
+      // console.log(this.childTemplateRef);
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        input: {
+          record: res.data.record
+        }
+      });
     });
 
 

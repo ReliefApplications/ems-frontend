@@ -97,8 +97,8 @@
     </div>
   </mat-sidenav-content>
 
-  <mat-sidenav mode="over" position="end" [opened]="rightSidenav">
-    <!-- <ng-container *ngTemplateOutlet="rightSidenav"></ng-container> -->
-    <ng-template #rightSidenav></ng-template>
+  <mat-sidenav mode="over" position="end" [(opened)]="showSidenav">
+    <ng-container [ngTemplateOutlet]="rightSidenavTemplate"></ng-container>
   </mat-sidenav>
 </mat-sidenav-container>
+<ng-template #rightSidenavTemplate></ng-template>
