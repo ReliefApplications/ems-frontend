@@ -1,0 +1,313 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$who-palette: (
+  50: #e0f2f9,
+  100: #b3def1,
+  200: #80c8e8,
+  300: #4db1df,
+  400: #26a1d8,
+  500: #0090d1,
+  600: #0088cc,
+  700: #007dc6,
+  800: #0073c0,
+  900: #0061b5,
+  A100: #deeeff,
+  A200: #abd3ff,
+  A400: #78b8ff,
+  A700: #5eaaff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$who-palette-accent: (
+  main: #ff9c00,
+  lighter: #ffc947,
+  darker: #c66900,
+  200: #ffcc80,
+  // For slide toggle,
+    contrast:
+    (
+      main: $light-primary-text,
+      lighter: $dark-primary-text,
+      darker: $light-primary-text,
+    ),
+);
+
+$who-palette-warn: (
+  main: #ff0000,
+  lighter: #ffb3b3,
+  darker: #ff0000,
+  200: #ff0000,
+  // For slide toggle,
+  contrast:
+  (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $light-primary-text,
+  ),
+);
+
+$who-primary: mat-palette($who-palette);
+$who-accent: mat-palette($who-palette-accent, main, lighter, darker);
+$who-warn: mat-palette($who-palette-warn, main, lighter, darker);
+$who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
+
+// === CUSTOM THEME ===
+@mixin custom-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .snack-error {
+    background-color: mat-color($warn);
+    color: white;
+
+    .mat-simple-snackbar-action {
+      color: white;
+    }
+  }
+
+  .active-link {
+    .nav-icon {
+      color: mat-color($primary);
+    }
+  }
+
+  .mat-list-item:not(.active-link) {
+    color: mat-color($mat-grey, 500);
+  }
+}
+
+@mixin chip($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .warn-chip{
+    background-color: mat-color($warn, lighter) !important;
+    color: mat-color($warn) !important;
+  }
+
+
+  .primary-chip{
+    background-color: #e9fae1 !important;
+    color: #67dd2d !important;
+  }
+
+  .accent-chip{
+    background-color: rgba(255, 159, 0, 0.14) !important;
+    color: #ff9f00 !important;
+  }
+
+  .core-chip{
+    background-color: mat-color($primary, lighter) !important;
+    color: mat-color($primary) !important;
+    padding: 15px;
+  }
+}
+
+// === GLOBAL STYLES ==
+.mat-table{
+  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
+  font-size: 14px;
+  opacity: 0.87;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.mat-header-cell{
+  border-bottom: 1px solid #d8d8d8 !important;
+  color: #767373;
+}
+
+.mat-row{
+  .mat-cell {
+    border-bottom: 1px solid #f2f3f5 !important;
+    color: #3f3c3c;
+  }
+  .mat-cell:first-child{
+    color: #000000;
+    font-weight: 500;
+  }
+}
+
+.mat-spinner {
+  margin: auto;
+}
+
+.action-button {
+  position: fixed !important;
+  bottom: 32px;
+  right: 32px;
+  z-index: 2000;
+}
+
+*:focus,
+*:active:focus,
+*.active:focus {
+  outline: none !important;
+  outline-style: none !important;
+}
+
+.page-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .page-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+}
+
+.clickable{
+  &:hover {
+    cursor:pointer;
+  }
+}
+
+.mat-column-actions {
+  width: 64px;
+}
+
+.mat-chip{
+  border-radius: 0px !important;
+  min-width: 75px;
+  max-width: 1px; //This works??
+  justify-content: center;
+  font-weight: 500 !important;
+}
+
+// === FORMS ===
+.auth-form {
+  padding: 32px 24px;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  margin: 32px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  &:not(:first-child) {
+    margin-top: 32px;
+  }
+
+  .form-group-row {
+    display: flex;
+  }
+
+  .form-group-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid darkgray;
+    padding-bottom: 4px;
+  }
+  .nested-form-group {
+    padding: 16px;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .form-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25em;
+  }
+  .form-slide-toggle {
+    margin-bottom: 1.25em;
+  }
+}
+
+@include angular-material-theme($who-theme);
+@include chip($who-theme);
+@include custom-theme($who-theme);
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.widget-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-header{
+  height: 40px;
+  position: relative;
+  z-index: 1001;
+  background-color: white;
+  color: black;
+  text-align: left;
+  line-height: 40px;
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 40px;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.widget-content{
+  flex: 1;
+  height: auto;
+}
+
+// === DIALOGS ===
+.add-dialog {
+  mat-dialog-container {
+    width: 700px;
+  }
+}
+
+.tile-settings-dialog, .expanded-widget-dialog {
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
+
+  mat-dialog-container {
+    position: relative;
+    border-radius: 4px 4px 0 0;
+    width: 100%;
+  }
+
+  .mat-dialog-content {
+    max-height: calc(100% - 68px - 32px);
+  }
+}
+
+.expanded-widget-dialog {
+  .mat-dialog-content {
+    max-height: unset;
+    height: 100%;
+  }
+}
+
+// === UTIS ===
+.help-icon {
+  color: #aeaeaf;
+  cursor: pointer;
+}

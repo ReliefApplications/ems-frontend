@@ -1,0 +1,45 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { ApplicationsRoutingModule } from './applications-routing.module';
+import { ApplicationsComponent } from './applications.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { AddApplicationComponent } from './components/add-application/add-application.component';
+import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
+import { MatSortModule } from '@angular/material/sort';
+import { MatChipsModule } from '@angular/material/chips';
+import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
+
+@NgModule({
+  declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
+  imports: [
+    CommonModule,
+    ApplicationsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatChipsModule,
+    WhoConfirmModalModule,
+    WhoAccessModule
+  ],
+  exports: [ApplicationsComponent]
+})
+export class ApplicationsModule { }

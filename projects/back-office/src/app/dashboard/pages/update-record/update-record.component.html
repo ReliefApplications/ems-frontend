@@ -1,0 +1,12 @@
+<h1>Update record</h1>
+<!-- <mat-form-field>
+    <mat-label>Locale</mat-label>
+    <mat-select (selectionChange)="changeLocale($event)">
+        <mat-option *ngFor="let locale of locales" [value]="locale">
+            {{locale}}
+        </mat-option>
+    </mat-select>
+</mat-form-field> -->
+<ng-container *ngIf="!loading">
+    <who-form [form]="record.form" [record]="record"></who-form>
+</ng-container>

@@ -1,0 +1,88 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-container {
+    flex: 1;
+}
+
+.sidenav-content {
+    min-height: calc(100% - 64px);
+    padding: 32px 24px;
+}
+
+.account-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    align-content: center;
+    font-size: 12px;
+    margin-left: auto;
+
+    .account-property {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: normal;
+    }
+}
+
+.nav-items-list {
+    overflow: hidden;
+}
+
+.nav-item-add {
+    .nav-icon {
+        color: #13AD38;
+    }
+}
+
+.nav-item {
+    .nav-actions {
+        margin-left: auto;
+    }
+
+    .nav-action, .nav-item-handle {
+        color: transparent;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+    }
+    &:hover {
+        .nav-action, .nav-item-handle {
+            color: #aeaeaf;
+        }
+    }
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.nav-items-list.cdk-drop-list-dragging .nav-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.nav-item-handle {
+    cursor: move;
+}
+
+.add-page-button {
+  color: #13AD38;
+  margin: 0 auto;
+  border-color: #13AD38;
+}

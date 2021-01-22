@@ -1,0 +1,60 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && workflow">
+    <div *ngIf="!formActive" class="workflow-name-container">
+        <h1 class="workflow-name" (click)="toggleFormActive()">{{workflow.name}}</h1>
+        <who-access [access]="workflow.permissions" [application]="workflow.page ? workflow.page.application.id : null"
+            (save)="saveAccess($event)" *ngIf="workflow.page.canUpdate"></who-access>
+    </div>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()" class="workflow-name-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="workflowName" type="string">
+            </mat-form-field>
+            <button type="submit" mat-icon-button color="primary" [disabled]="!workflowNameForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFormActive()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </form>
+    </ng-container>
+    <div class="step-list-container">
+        <mat-divider></mat-divider>
+        <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
+            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" (click)="onStepClick(step)"
+                (cdkDragStarted)="onDragStart()" [class.selected]="step === selectedStep" cdkDrag>
+                <button mat-icon-button class="step-handle" cdkDragHandle>
+                    <mat-icon>drag_indicator</mat-icon>
+                </button>
+                <div class="step-placeholder" *cdkDragPlaceholder></div>
+                {{step.name}}
+                <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <div class="step-box">
+                <button mat-stroked-button class="add-step-button" (click)="addStep()">
+                    <mat-icon>add</mat-icon>
+                    Add a step
+                </button>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+</ng-container>
+<ng-container *ngIf="!showSettings && selectedStep">
+    <div class="next-button">
+        <button mat-icon-button class="settings-button" (click)="onSettingsClick()">
+            <mat-icon>settings</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" (click)="onNextClick()">
+            {{selectedStep.settings && selectedStep.settings.buttonName ? selectedStep.settings.buttonName : 
+                (selectedStepIndex + 1 < steps.length) ? 'Next' : 'Publish'}}
+            <mat-icon>send</mat-icon>
+        </button>
+    </div>
+</ng-container>
+<router-outlet *ngIf="!showSettings" (activate)="onActivate($event)"></router-outlet>
+<app-settings *ngIf="showSettings" [selectedStep]="selectedStep" [isLastStep]="selectedStepIndex + 1 == steps.length"
+    [fields]="fields" (formValue)="onCloseSettings($event)"></app-settings>

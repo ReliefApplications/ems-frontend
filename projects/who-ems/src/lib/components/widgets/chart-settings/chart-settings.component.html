@@ -1,0 +1,40 @@
+<ng-container *ngIf="tileForm">
+    <form [formGroup]="tileForm">
+        <div class="form-group">
+            <div class="form-group-title">General</div>
+            <mat-form-field appearance="outline" >
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title" type="string" />
+            </mat-form-field>
+    
+            <mat-form-field>
+                <mat-label>Chart Type</mat-label>
+                <mat-select formControlName="type">
+                    <mat-option *ngFor="let type of types" [value]="type"> {{type}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-group" *ngIf="tileForm">
+            <div class="form-group-title">Query builder</div>
+            <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings" [canExpand]="false"></who-query-builder>
+            <ng-container *ngIf="selectedFields.length > 0">
+                <mat-form-field appearance="outline">
+                    <mat-label>X-Axis</mat-label>
+                    <mat-select formControlName="xAxis">
+                        <mat-option *ngFor="let field of selectedFields" [value]="field">
+                            {{field}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Y-Axis</mat-label>
+                    <mat-select formControlName="yAxis">
+                        <mat-option *ngFor="let field of selectedFields" [value]="field">
+                            {{field}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
+        </div>
+    </form>
+</ng-container>

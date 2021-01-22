@@ -1,0 +1,27 @@
+.add-step-stepper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 64px;
+    
+    button {
+        margin: 0 4px;
+    }
+}
+
+.add-step-label {
+    margin-bottom: 32px;
+}
+
+.content-choice {
+    display: flex;
+    flex-direction: column;
+
+    .mat-radio-button {
+        margin-bottom: 24px;
+    }
+}
+
+.form-group {
+    max-width: 400px;
+}
