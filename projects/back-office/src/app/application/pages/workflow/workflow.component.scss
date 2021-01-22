@@ -24,7 +24,7 @@
 }
 
 .step-list-container {
-  margin: 0 -24px 16px;
+  margin: 0 -24px 24px;
 }
 
 .step-list {
@@ -97,31 +97,4 @@
 
 .step-list.cdk-drop-list-dragging .step-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.next-button {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
-.end-buttons {
-  display: flex;
-  flex-direction: row;
-  align-self: flex-end;
-  margin-top: 64px;
-  
-  button {
-      margin: 0 8px;
-  }
-}
-
-.settings-form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.settings-button {
-  color: #A9A9A9 !important;
 }

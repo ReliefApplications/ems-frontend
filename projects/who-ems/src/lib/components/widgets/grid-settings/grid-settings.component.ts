@@ -44,7 +44,8 @@ export class WhoGridSettingsComponent implements OnInit {
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
-      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null]
+      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null],
+      floatingButton: this.createFloatingButtonForm(tileSettings.floatingButton),
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
@@ -68,5 +69,16 @@ export class WhoGridSettingsComponent implements OnInit {
         });
       }
     });
+  }
+
+  private createFloatingButtonForm(value: any): FormGroup {
+    return this.formBuilder.group({
+      show: [value && value.show ? value.show : false, Validators.required],
+      name: [value && value.name ? value.name : 'Next'],
+      goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
+      autoSave: [value && value.autoSave ? value.autoSave : false],
+      modifySelectedRows: [value && value.modifySelectedRows ? value.modifySelectedRows : false],
+      modifications: this.formBuilder.array(value && value.modifications ? value.modifications.map(x => x) : [])
+    })
   }
 }

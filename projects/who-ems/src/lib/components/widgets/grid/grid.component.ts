@@ -84,9 +84,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
 
-  // === EMIT DATA CHANGES ===
-  @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
-  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
+  // === EMIT STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -145,7 +144,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private getRecords(): void {
     this.loading = true;
     this.updatedItems = [];
-    this.dataChanges.emit(this.updatedItems);
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
       for (const field in res.data) {
@@ -154,7 +152,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           this.items = cloneData(res.data[field]);
           this.originalItems = cloneData(this.items);
           this.fields = this.getFields(this.settings.query.fields);
-          this.fieldsTypes.emit(this.fields);
           this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
           this.gridData = {
             data: this.items,
@@ -260,7 +257,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.updatedItems.push({ ...value, id });
     }
     Object.assign(this.items.find(x => x.id === id), value);
-    this.dataChanges.emit(this.updatedItems);
   }
 
   /*  Close the inline edition.
@@ -306,7 +302,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public onCancelChanges(): void {
     this.closeEditor();
     this.updatedItems = [];
-    this.dataChanges.emit(this.updatedItems);
     this.items = this.originalItems;
     this.originalItems = cloneData(this.originalItems);
     this.loadItems();
@@ -486,6 +481,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.getRecords();
     this.selectedRow = null;
+  }
+
+  /* Execute action enabled by settings for the floating button
+  */
+  onFloatingButtonClick(): void {
+    if (this.settings.floatingButton && this.settings.floatingButton.goToNextStep) {
+      this.goToNextStep.emit(true);
+    } 
   }
 
   ngOnDestroy(): void {
