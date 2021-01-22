@@ -13,7 +13,7 @@ import {Apollo} from 'apollo-angular';
 import {SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy} from '@progress/kendo-data-query';
 import {
   GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
-  SelectionEvent, RowArgs
+  SelectionEvent, RowArgs, SelectableSettings
 } from '@progress/kendo-angular-grid';
 import {MatDialog} from '@angular/material/dialog';
 import {FormGroup, FormBuilder} from '@angular/forms';
@@ -42,6 +42,12 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
 const DISABLED_FIELDS = ['id', 'createdAt'];
+
+const SELECTABLE_SETTINGS: SelectableSettings = {
+  checkboxOnly: false,
+  mode: 'multiple',
+  drag: true
+};
 
 @Component({
   selector: 'who-grid',
@@ -96,6 +102,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRow: RowArgs;
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
+  public selectableSettings = SELECTABLE_SETTINGS;
 
   // === EMIT DATA CHANGES ===
   @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
@@ -497,8 +504,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
-        title: 'Delete row',
-        content: `Do you confirm the deletion of this ${rowsSelected > 1 ? rowsSelected : ''} row${rowsSelected > 1 ? 's' : ''} ?`,
+        title: `Delete row${rowsSelected > 1 ? 's' : ''}`,
+        content: `Do you confirm the deletion of ${rowsSelected > 1 ?
+          'these ' + rowsSelected : 'this'} row${rowsSelected > 1 ? 's' : ''} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }

@@ -2,7 +2,7 @@
   <div class="widget-header" *ngIf="header">{{settings.title}}</div>
   <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
     [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
-    [sort]="sort" [selectable]="{checkboxOnly: true, mode: 'multiple'}" (selectionChange)="selectionChange($event)"
+    [sort]="sort" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)"
     (sortChange)="sortChange($event)" (pageChange)="pageChange($event)" filterable="menu" [filter]="filter"
     (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)">
     <ng-template kendoGridToolbarTemplate position="top">
@@ -69,7 +69,7 @@
               Update
             </button>
           </mat-menu>
-          
+
         </ng-template>
       </kendo-grid-column>
     </ng-container>
