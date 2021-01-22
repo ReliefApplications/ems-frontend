@@ -1,26 +1,10 @@
 <div class="widget-container">
   <div class="widget-header" *ngIf="header">{{settings.title}}</div>
-  <kendo-grid id="customGrid"
-              class="widget-content"
-              [autoSize]="false"
-              [data]="gridData"
-              [pageSize]="pageSize"
-              [skip]="skip"
-              [loading]="loading"
-              [columnMenu]="true"
-              [reorderable]="true"
-              [sortable]="true"
-              [pageable]="true"
-              [sort]="sort"
-              [selectable]="{checkboxOnly: true, mode: 'multiple'}"
-              (selectionChange)="selectionChange($event)"
-              (sortChange)="sortChange($event)"
-              (pageChange)="pageChange($event)"
-              filterable="menu"
-              [filter]="filter"
-              (filterChange)="filterChange($event)"
-              (cellClick)="cellClickHandler($event)"
-  >
+  <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
+    [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
+    [sort]="sort" [selectable]="{checkboxOnly: true, mode: 'multiple'}" (selectionChange)="selectionChange($event)"
+    (sortChange)="sortChange($event)" (pageChange)="pageChange($event)" filterable="menu" [filter]="filter"
+    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)">
     <ng-template kendoGridToolbarTemplate position="top">
       <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
       <button type="button" kendoGridExcelCommand class="k-button">Export</button>
@@ -28,10 +12,10 @@
       <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
       <ng-container *ngIf="selectedRowsIndex.length > 0">
         <button *ngIf="!settings.actions || settings.actions.delete" class='k-button'
-                (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
+          (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
         </button>
         <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
-                (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
+          (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
         </button>
       </ng-container>
     </ng-template>
@@ -53,26 +37,19 @@
               </ng-template>
             </kendo-grid-column>
       </ng-container> -->
-      <kendo-grid-checkbox-column
-        *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert"
-        [width]="41"
-        [headerClass]="{'text-center': true}"
-        [class]="{'text-center': true}"
-        [resizable]="false"
-        [columnMenu]="false"
-        showSelectAll="true"
-      >
+      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert"
+        [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
+        [columnMenu]="false" showSelectAll="true">
       </kendo-grid-checkbox-column>
 
       <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
-                         [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
+        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
       </kendo-grid-column>
 
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
           <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
-                  [matMenuTriggerFor]="menu"
-                  (click)="setSelectedRow(idx)">
+            [matMenuTriggerFor]="menu" (click)="setSelectedRow(idx)">
           </button>
 
           <mat-menu #menu="matMenu">
@@ -80,19 +57,19 @@
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-                    (click)="onViewHistory()">
+              (click)="onViewHistory()">
               History
             </button>
             <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
-                    (click)="onConvertRecord([idx])">
+              (click)="onConvertRecord([idx])">
               Convert
             </button>
             <button *ngIf="!settings.actions || settings.actions.update" mat-menu-item color="warn"
-                    (click)="onUpdateRow()">
+              (click)="onUpdateRow()">
               Update
             </button>
           </mat-menu>
-
+          
         </ng-template>
       </kendo-grid-column>
     </ng-container>
