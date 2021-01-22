@@ -1,41 +1,67 @@
 <ng-container *ngIf="tileForm">
-    <form [formGroup]="tileForm">
-        <div class="form-group">
-            <div class="form-group-title">General</div>
-            <mat-form-field appearance="outline" >
-                <mat-label>Title</mat-label>
-                <input matInput formControlName="title" type="string"/>
-            </mat-form-field>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">Query builder</div>
-            <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">Notifications channel</div>
-            <mat-form-field appearance="outline">
-                <mat-select formControlName="channel">
-                    <mat-option>-- None --</mat-option>
-                    <mat-option *ngFor="let channel of channels" [value]="channel.id">
-                        {{channel.title}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">Floating button</div>
-            <form [formGroup]="tileForm.controls.floatingButton">
-                <div class="form-group">
-                    <mat-checkbox formControlName="show">Show</mat-checkbox>
-                    <ng-container *ngIf="tileForm.controls.floatingButton.value.show">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Button name</mat-label>
-                            <input matInput formControlName="name" type="string">
-                        </mat-form-field>
-                        <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
-                    </ng-container>
-                </div>
-            </form>
-        </div>
-    </form>
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <div class="form-group-title">General</div>
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Query builder</div>
+      <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings"></who-query-builder>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Notifications channel</div>
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="channel">
+          <mat-option>-- None --</mat-option>
+          <mat-option *ngFor="let channel of channels" [value]="channel.id">
+            {{channel.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Publication channel</div>
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="publication">
+          <mat-option>-- None --</mat-option>
+          <mat-option *ngFor="let channel of channels" [value]="channel.id">
+            {{channel.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div formGroupName="actions" class="form-group">
+      <div class="form-group-title">Enabled actions</div>
+      <mat-checkbox formControlName="delete">
+        Delete records
+      </mat-checkbox>
+      <mat-checkbox formControlName="history">
+        Show history
+      </mat-checkbox>
+      <mat-checkbox formControlName="convert">
+        Convert records
+      </mat-checkbox>
+      <mat-checkbox formControlName="update">
+        Update records
+      </mat-checkbox>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Floating button</div>
+      <form [formGroup]="tileForm.controls.floatingButton">
+          <div class="form-group">
+              <mat-checkbox formControlName="show">Show</mat-checkbox>
+              <ng-container *ngIf="tileForm.controls.floatingButton.value.show">
+                  <mat-form-field appearance="outline">
+                      <mat-label>Button name</mat-label>
+                      <input matInput formControlName="name" type="string">
+                  </mat-form-field>
+                  <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
+              </ng-container>
+          </div>
+      </form>
+    </div>
+  </form>
 </ng-container>

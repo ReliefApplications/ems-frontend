@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogContainerDirective } from '@progress/kendo-angular-dialog';
 import { Apollo } from 'apollo-angular';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
@@ -21,11 +20,15 @@ export class WhoConvertModalComponent implements OnInit {
   public availableForms: Form[];
   public ignoredFields: string[] = [];
 
+  // === LOAD DATA ===
+  public loading = true;
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<WhoConvertModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
+      title: string,
       record: string
     }
   ) { }
@@ -39,6 +42,7 @@ export class WhoConvertModalComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       const record = res.data.record;
       this.form = record.form;
+      this.loading = false;
       this.availableForms = this.form.resource.forms.filter(x => x.id !== this.form.id);
     });
     this.convertForm = this.formBuilder.group({

@@ -45,6 +45,12 @@ const routes: Routes = [
               .then(m => m.ChannelsModule),
             // canActivate: [WhoPermissionGuard]
           },
+          {
+            path: 'subscriptions',
+            loadChildren: () => import('./pages/subscriptions/subscriptions.module')
+              .then(m => m.SubscriptionsModule),
+            // canActivate: [WhoPermissionGuard]
+          }
         ]
       },
       {

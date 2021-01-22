@@ -66,7 +66,6 @@ export class WhoAuthService {
   */
   checkAccount(): void {
     this.account = this.msalService.getAccount();
-    console.log(this.account);
     this.msalService.acquireTokenSilent({
       scopes: [
         'user.read',
@@ -87,12 +86,14 @@ export class WhoAuthService {
   /*  Get the profile from the database, using GraphQL.
   */
   private getProfile(): void {
-    this.apollo.watchQuery<GetProfileQueryResponse>({
+    this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all'
-    }).valueChanges.subscribe(
-      res => this._user.next(res.data.me)
+    }).subscribe(
+      res => {
+        this._user.next(res.data.me);
+      }
     );
   }
 

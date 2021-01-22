@@ -168,7 +168,7 @@ export class QueryBuilderService {
       case 'OBJECT': {
         return this.formBuilder.group({
           name: [{ value: field.name, disabled: true }],
-          type: [field.name],
+          type: [newField ? field.type.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
             field.fields.map(x => this.addNewField(x)) : [], Validators.required),
