@@ -22,6 +22,17 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <div class="form-group">
+      <div class="form-group-title">Publication channel</div>
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="publication">
+          <mat-option>-- None --</mat-option>
+          <mat-option *ngFor="let channel of channels" [value]="channel.id">
+            {{channel.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">Enabled actions</div>
       <mat-checkbox formControlName="delete">

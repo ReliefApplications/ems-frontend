@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA CHANGES FOR WORKFLOW ===
   @Output() dataChanges: EventEmitter<any> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   constructor(
     private applicationService: WhoApplicationService,

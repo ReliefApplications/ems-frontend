@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Apollo} from 'apollo-angular';
 import {QueryBuilderService} from '../../../services/query-builder.service';
 import {GetChannelsQueryResponse, GET_CHANNELS} from '../../../graphql/queries';
@@ -48,6 +48,7 @@ export class WhoGridSettingsComponent implements OnInit {
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null],
+      publication: [(tileSettings && tileSettings.publication) ? tileSettings.publication : null],
       actions: this.formBuilder.group({
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],

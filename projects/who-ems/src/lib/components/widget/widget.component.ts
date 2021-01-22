@@ -11,6 +11,7 @@ export class WhoWidgetComponent implements OnInit {
   @Input() header = true;
 
   @Output() dataChanges: EventEmitter<any> = new EventEmitter();
+  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
   constructor() { }
 

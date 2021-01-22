@@ -364,6 +364,17 @@ export interface PublishNotificationMutationResponse {
   publishNotification: Notification;
 }
 
+// === PUBLISH RECORDS ===
+export const PUBLISH = gql`
+mutation publish($ids: [ID]!, $channel: ID!) {
+  publish(ids: $ids, channel: $channel)
+}`;
+
+export interface PublishMutationResponse {
+  loading: boolean;
+  publish: boolean;
+}
+
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
