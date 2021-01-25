@@ -27,10 +27,13 @@ export class FloatingButtonSettingsComponent implements OnInit {
     this.buttonForm.get('notify').valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm.get('notificationChannel').setValidators(Validators.required);
+        this.buttonForm.get('notificationMessage').setValidators(Validators.required);
       } else {
         this.buttonForm.get('notificationChannel').clearValidators();
+        this.buttonForm.get('notificationMessage').clearValidators();
       }
       this.buttonForm.get('notificationChannel').updateValueAndValidity();
+      this.buttonForm.get('notificationMessage').updateValueAndValidity();
     });
     this.buttonForm.get('publish').valueChanges.subscribe(value => {
       if (value) {

@@ -563,8 +563,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.settings.floatingButton.goToNextStep) {
       this.goToNextStep.emit(true);
+    } else {
+      this.reloadData();
     }
-    this.reloadData();
   }
 
   /* Return a list of promises containing all the mutations in order to modify selected records accordingly to settings
