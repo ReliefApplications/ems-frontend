@@ -10,8 +10,7 @@ import { WorkflowService } from '../../../services/workflow.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
-  EditWorkflowMutationResponse, EDIT_WORKFLOW,
-  EditRecordMutationResponse, EDIT_RECORD, EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
+  EditWorkflowMutationResponse, EDIT_WORKFLOW } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -191,51 +190,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
-    if (elementRef.dataChanges) {
-      elementRef.dataChanges.subscribe(event => {
-        this.nextData = event;
-      });
-    }
-    if (elementRef.fieldsTypes) {
-      elementRef.fieldsTypes.subscribe(event => {
-        this.fields = event;
-      });
-    }
-  }
-
-  /* Start action on next click
-  */
-  onNextClick(): void {
-    if (this.selectedStep.settings.autoSave) {
-      const promises = [];
-      for (const item of this.nextData) {
-        const data = Object.assign({}, item);
-        delete data.id;
-        if (this.selectedStep.settings.modifySelectedRows && data.keep_it) {
-          data[this.selectedStep.settings.modifiedField.name] = this.selectedStep.settings.modifiedInputValue;
+    if (elementRef.goToNextStep) {
+      elementRef.goToNextStep.subscribe(event => {
+        if (event) {
+          this.goToNextStep();
         }
-        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: item.id,
-            data
-          }
-        }).toPromise());
-      }
-      Promise.all(promises).then(() => {
-        this.goToNextStep();
       });
-    } else {
-      this.goToNextStep();
     }
   }
 
   /* Navigate to the next step if possible and change selected step / index consequently
   */
   private goToNextStep(): void {
-    this.selectedStepIndex += 1;
-    this.selectedStep = this.steps[this.selectedStepIndex];
-    this.navigateToSelectedStep();
+    if (this.selectedStepIndex + 1 < this.steps.length) {
+      this.selectedStepIndex += 1;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      this.navigateToSelectedStep();
+    } else {
+      this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
+    }
   }
 
   /* Navigate to selected step
@@ -245,30 +218,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
     } else {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
-    }
-  }
-
-  /* Display settings in the place of the step view
-  */
-  onSettingsClick(): void {
-    this.showSettings = true;
-  }
-
-  /* Close settings and update it's value if needed
-  */
-  onCloseSettings(value: any): void {
-    this.showSettings = false;
-    if (value) {
-      this.apollo.mutate<EditStepMutationResponse>({
-        mutation: EDIT_STEP,
-        variables: {
-          id: this.selectedStep.id,
-          settings: value
-        }
-      }).subscribe(res => {
-        this.selectedStep = res.data.editStep;
-        this.steps[this.selectedStepIndex] = res.data.editStep;
-      });
     }
   }
 }
