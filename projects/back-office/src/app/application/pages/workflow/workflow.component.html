@@ -43,18 +43,4 @@
         <mat-divider></mat-divider>
     </div>
 </ng-container>
-<ng-container *ngIf="!showSettings && selectedStep">
-    <div class="next-button">
-        <button mat-icon-button class="settings-button" (click)="onSettingsClick()">
-            <mat-icon>settings</mat-icon>
-        </button>
-        <button mat-raised-button color="primary" (click)="onNextClick()">
-            {{selectedStep.settings && selectedStep.settings.buttonName ? selectedStep.settings.buttonName : 
-                (selectedStepIndex + 1 < steps.length) ? 'Next' : 'Publish'}}
-            <mat-icon>send</mat-icon>
-        </button>
-    </div>
-</ng-container>
-<router-outlet *ngIf="!showSettings" (activate)="onActivate($event)"></router-outlet>
-<app-settings *ngIf="showSettings" [selectedStep]="selectedStep" [isLastStep]="selectedStepIndex + 1 == steps.length"
-    [fields]="fields" (formValue)="onCloseSettings($event)"></app-settings>
+<router-outlet (activate)="onActivate($event)"></router-outlet>
