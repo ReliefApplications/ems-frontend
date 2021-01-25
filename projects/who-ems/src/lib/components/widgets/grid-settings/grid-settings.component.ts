@@ -100,8 +100,8 @@ export class WhoGridSettingsComponent implements OnInit {
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       autoSave: [value && value.autoSave ? value.autoSave : false],
-      modifySelectedRows: [value && value.modifySelectedRows ? value.modifySelectedRows : false],
-      modifications: this.formBuilder.array(value && value.modifications
+      modifySelectedRows: [value ? value.modifySelectedRows : false],
+      modifications: this.formBuilder.array(value && value.modifications.length
         ? value.modifications.map(x => this.formBuilder.group({
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
