@@ -135,13 +135,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
-    if (this.dataQuery) {
-      this.getRecords();
-      this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    } else {
-      this.loading = false;
-    }
+    this.getRecords();
+    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -172,61 +167,53 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private getRecords(): void {
     this.loading = true;
     this.updatedItems = [];
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      if (!!this.parent) {
-        this.getParentRecords();
+
+    // Child grid
+    if (!!this.parent) {
+      this.items = this.parent[this.settings.name];
+      if (this.items.length > 0) {
+        this.originalItems = cloneData(this.items);
+        this.fields = this.getFields(this.settings.fields);
+        this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
       } else {
-        const fields = this.settings.query.fields;
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.loading = false;
-            this.items = cloneData(res.data[field]);
-            this.originalItems = cloneData(this.items);
-            this.fields = this.getFields(fields);
-            this.detailsField = fields.find(x => x.kind === 'LIST');
-            if (!this.parent) {
-              Object.assign(this.detailsField, { actions: this.settings.actions, query: this.settings.query });
-            }
-            this.gridData = {
-              data: this.items,
-              total: this.items.length
-            };
-          }
-        }
+        this.originalItems = [];
+        this.fields = [];
+        this.detailsField = null;
       }
-    },
-      () => this.loading = false);
-  }
-
-  /*
-    Load tasks data
-   */
-  private getParentRecords(): void {
-    this.loading = true;
-
-    this.items = this.parent[this.settings.name];
-
-    if (this.items.length > 0) {
-      this.originalItems = cloneData(this.items);
-      this.fields = this.getFields(this.settings.fields);
-      this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
       this.gridData = {
         data: this.items,
         total: this.items.length
       };
       this.loading = false;
+
+    // Parent grid
     } else {
-      this.originalItems = [];
-      this.fields = [];
-      this.detailsField = null;
-      this.gridData = {
-        data: this.items,
-        total: 0
-      };
-      this.loading = false;
+      if (this.dataQuery) {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+          const fields = this.settings.query.fields;
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.loading = false;
+              this.items = cloneData(res.data[field]);
+              this.originalItems = cloneData(this.items);
+              this.fields = this.getFields(fields);
+              this.detailsField = fields.find(x => x.kind === 'LIST');
+              if (!this.parent) {
+                Object.assign(this.detailsField, { actions: this.settings.actions });
+              }
+              this.gridData = {
+                data: this.items,
+                total: this.items.length
+              };
+            }
+          }
+        },
+          () => this.loading = false);
+      } else {
+        this.loading = false;
+      }
     }
   }
-
 
   /*  Set the list of items to display.
   */
@@ -560,8 +547,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Reload data and unselect all rows
   */
   private reloadData(): void {
-    this.dataSubscription.unsubscribe();
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    if (!this.parent) {
+      this.dataSubscription.unsubscribe();
+      this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    }
     this.getRecords();
     this.selectedRow = null;
     this.selectedRowsIndex = [];
