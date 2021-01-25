@@ -1,51 +1,81 @@
 <ng-container *ngIf="buttonForm">
-  <form [formGroup]="buttonForm">
-      <div class="form-group">
-          <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
-          <ng-container *ngIf="buttonForm.value.show">
+  <form [formGroup]="buttonForm" class="form-container">
+    <div class="form-group">
+      <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
+      <ng-container *ngIf="buttonForm.value.show">
+        <mat-form-field appearance="outline">
+          <mat-label>Button name</mat-label>
+          <input matInput formControlName="name" type="string">
+        </mat-form-field>
+        <mat-slide-toggle formControlName="goToNextStep">Go to next step</mat-slide-toggle>
+        <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
+        <div class="update-form">
+          <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
+          <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
+            <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="update-row">
               <mat-form-field appearance="outline">
-                  <mat-label>Button name</mat-label>
-                  <input matInput formControlName="name" type="string">
+                <mat-label>Field to update</mat-label>
+                <mat-select formControlName="field" [compareWith]="compareFields">
+                  <mat-option>-- None --</mat-option>
+                  <mat-option *ngFor="let field of scalarFields" [value]="field">{{field.name}}</mat-option>
+                </mat-select>
               </mat-form-field>
-              <mat-slide-toggle formControlName="goToNextStep">Go to next step</mat-slide-toggle>
-              <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
-              <div class="update-form">
-                <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
-                <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
-                  <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="update-row">
-                    <mat-form-field appearance="outline">
-                      <mat-label>Field to update</mat-label>
-                      <mat-select formControlName="field" [compareWith]="compareFields">
-                        <mat-option>-- None --</mat-option>
-                        <mat-option *ngFor="let field of scalarFields" [value]="field">{{field.name}}</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" *ngIf="modification.value.field">
-                      <mat-label>Value to attribute</mat-label>
-                      <ng-container *ngIf="modification.value.field.type.name === 'Int'">
-                          <input matInput formControlName="value" type="number" />
-                      </ng-container>
-                      <ng-container *ngIf="modification.value.field.type.name === 'Boolean'">
-                          <mat-select formControlName="value">
-                              <mat-option>-- None --</mat-option>
-                              <mat-option [value]="true">True</mat-option>
-                              <mat-option [value]="false">False</mat-option>
-                          </mat-select>
-                      </ng-container>
-                      <ng-container *ngIf="modification.value.field.type.name !== 'Int' && modification.value.field.type.name !== 'Boolean'">
-                          <input matInput formControlName="value" type="string" />
-                      </ng-container>
-                    </mat-form-field>
-                    <button mat-icon-button color="warn" (click)="onDeleteModification(i)">
-                      <mat-icon>remove_circle_outline</mat-icon>
-                    </button>
-                  </form>
-                  <button mat-icon-button color="primary" (click)="onAddModification()">
-                    <mat-icon>add_circle_outline</mat-icon>
-                  </button>
-                </div>
-              </div>
-          </ng-container>
-      </div>
+              <mat-form-field appearance="outline" *ngIf="modification.value.field">
+                <mat-label>Value to attribute</mat-label>
+                <ng-container *ngIf="modification.value.field.type.name === 'Int'">
+                  <input matInput formControlName="value" type="number" />
+                </ng-container>
+                <ng-container *ngIf="modification.value.field.type.name === 'Boolean'">
+                  <mat-select formControlName="value">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option [value]="true">True</mat-option>
+                    <mat-option [value]="false">False</mat-option>
+                  </mat-select>
+                </ng-container>
+                <ng-container *ngIf="modification.value.field.type.name !== 'Int' && modification.value.field.type.name !== 'Boolean'">
+                  <input matInput formControlName="value" type="string" />
+                </ng-container>
+              </mat-form-field>
+              <button mat-icon-button color="warn" (click)="onDeleteModification(i)">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </form>
+            <button mat-icon-button color="primary" (click)="onAddModification()">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="form-group">
+      <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle>
+      <ng-container *ngIf="buttonForm.value.notify">
+        <mat-form-field appearance="outline">
+          <mat-label>Channel</mat-label>
+          <mat-select formControlName="notificationChannel">
+            <mat-option>-- None --</mat-option>
+            <mat-option *ngFor="let channel of channels" [value]="channel.id">
+              {{channel.title}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Message</mat-label>
+          <input matInput formControlName="notificationMessage" type="string">
+        </mat-form-field>
+      </ng-container>
+      <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
+      <ng-container *ngIf="buttonForm.value.publish">
+        <mat-form-field appearance="outline">
+          <mat-label>Channel</mat-label>
+          <mat-select formControlName="publicationChannel">
+            <mat-option>-- None --</mat-option>
+            <mat-option *ngFor="let channel of channels" [value]="channel.id">
+              {{channel.title}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
   </form>
 </ng-container>

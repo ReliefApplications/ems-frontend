@@ -294,44 +294,29 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.formGroup = undefined;
   }
 
+  /* Save all in-line changes and then reload data
+  */
   public onSaveChanges(): void {
     this.closeEditor();
     if (this.hasChanges) {
-      const promises = [];
-      for (const item of this.updatedItems) {
-        const data = Object.assign({}, item);
-        delete data.id;
-        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: item.id,
-            data
-          }
-        }).toPromise());
-      }
-      if (this.settings.channel) {
-        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-          mutation: PUBLISH_NOTIFICATION,
-          variables: {
-            action: 'Records update',
-            content: this.updatedItems,
-            channel: this.settings.channel
-          }
-        }).toPromise());
-      }
-      Promise.all(promises).then(() => {
-        if (this.settings.publication) {
-          this.apollo.mutate<PublishMutationResponse>({
-            mutation: PUBLISH,
-            variables: {
-              ids: this.updatedItems.map(x => x.id),
-              channel: this.settings.publication
-            }
-          }).subscribe(res => console.log(res));
-        }
-        this.reloadData();
-      });
+      Promise.all(this.promisedChanges()).then(() => this.reloadData());
     }
+  }
+
+  private promisedChanges(): Promise<any>[] {
+    const promises = [];
+    for (const item of this.updatedItems) {
+      const data = Object.assign({}, item);
+      delete data.id;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+          data
+        }
+      }).toPromise());
+    }
+    return promises;
   }
 
   public onCancelChanges(): void {
@@ -543,27 +528,50 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Execute action enabled by settings for the floating button
   */
-  onFloatingButtonClick(): void {
-    if (this.settings.floatingButton && this.settings.floatingButton.autoSave) {
-      this.onSaveChanges();
+  public async onFloatingButtonClick(): Promise<void> {
+    if (this.settings.floatingButton.autoSave) {
+      await Promise.all(this.promisedChanges());
     }
-    if (this.settings.floatingButton && this.settings.floatingButton.modifySelectedRows) {
-      this.modifyRows(this.selectedRowsIndex);
+    if (this.settings.floatingButton.modifySelectedRows) {
+      await Promise.all(this.promisedRowsModifications());
     }
-    if (this.settings.floatingButton && this.settings.floatingButton.goToNextStep) {
+    if (this.selectedRowsIndex.length > 0) {
+      const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
+      const promises = [];
+      if (this.settings.floatingButton.notify) {
+        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: this.settings.floatingButton.notificationMessage ? this.settings.floatingButton.notificationMessage : 'Records update',
+            content: selectedRecords,
+            channel: this.settings.floatingButton.notificationChannel
+          }
+        }).toPromise());
+      }
+      if (this.settings.floatingButton.publish) {
+        promises.push(this.apollo.mutate<PublishMutationResponse>({
+          mutation: PUBLISH,
+          variables: {
+            ids: selectedRecords.map(x => x.id),
+            channel: this.settings.floatingButton.publicationChannel
+          }
+        }).toPromise());
+      }
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
+    }
+    if (this.settings.floatingButton.goToNextStep) {
       this.goToNextStep.emit(true);
     }
+    this.reloadData();
   }
 
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
-  }
-
-  private modifyRows(items: number[]): void {
+  /* Return a list of promises containing all the mutations in order to modify selected records accordingly to settings
+  */
+  private promisedRowsModifications(): Promise<any>[] {
     const promises = [];
-    for (const index of items) {
+    for (const index of this.selectedRowsIndex) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of this.settings.floatingButton.modifications) {
@@ -578,9 +586,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
       }).toPromise());
     }
-    Promise.all(promises).then(() => {
-      this.reloadData();
-    });
+    return promises;
   }
 
   /* Set selected row on three dots menu button click
@@ -590,5 +596,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       dataItem: this.gridData.data[index],
       index
     };
+  }
+
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   }
 }

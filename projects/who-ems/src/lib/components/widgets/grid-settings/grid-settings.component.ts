@@ -50,8 +50,6 @@ export class WhoGridSettingsComponent implements OnInit {
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
-      channel: [(tileSettings && tileSettings.channel) ? tileSettings.channel : null],
-      publication: [(tileSettings && tileSettings.publication) ? tileSettings.publication : null],
       actions: this.formBuilder.group({
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
@@ -106,7 +104,14 @@ export class WhoGridSettingsComponent implements OnInit {
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
         }))
-        : [])
+        : []),
+      notify: [value && value.notify ? value.notify : false],
+      notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
+        value && value.notify ? Validators.required : null],
+      notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
+      publish: [value && value.publish ? value.publish : false],
+      publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
+        value && value.publish ? Validators.required : null]
     });
     buttonForm.get('show').valueChanges.subscribe(res => {
       if (!res) {

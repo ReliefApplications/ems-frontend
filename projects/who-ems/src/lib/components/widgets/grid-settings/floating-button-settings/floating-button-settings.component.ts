@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
 
 const DISABLED_FIELDS = ['id', 'createdAt'];
 
@@ -12,6 +13,7 @@ export class FloatingButtonSettingsComponent implements OnInit {
 
   @Input() buttonForm: FormGroup;
   @Input() fields: any[];
+  @Input() channels: Channel[];
 
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
@@ -22,6 +24,22 @@ export class FloatingButtonSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.buttonForm.get('notify').valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('notificationChannel').setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('notificationChannel').clearValidators();
+      }
+      this.buttonForm.get('notificationChannel').updateValueAndValidity();
+    });
+    this.buttonForm.get('publish').valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('publicationChannel').setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('publicationChannel').clearValidators();
+      }
+      this.buttonForm.get('publicationChannel').updateValueAndValidity();
+    });
   }
 
   compareFields(field1: any, field2: any): boolean {

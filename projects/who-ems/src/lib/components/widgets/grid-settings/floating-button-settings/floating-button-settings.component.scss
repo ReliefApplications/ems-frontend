@@ -20,3 +20,13 @@
         margin-left: 16px;
     }
 }
+
+.form-container {
+    display: flex;
+}
+
+.form-group {
+    flex: 50%;
+    margin-top: 0;
+    margin-right: 64px;
+}
