@@ -1,13 +1,7 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  ViewChild,
-  Renderer2,
-  OnDestroy,
-  Output,
-  EventEmitter
+  Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
+  OnDestroy, Output, EventEmitter,
+  ComponentFactoryResolver, ComponentFactory, TemplateRef, ViewContainerRef
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
@@ -33,6 +27,7 @@ import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.comp
 import { Form } from '../../../models/form.model';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
+import { LayoutService } from '../../../services/layout.service';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -111,23 +106,28 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory: ComponentFactory<any>;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
-    private queryBuilder: QueryBuilderService
-  ) {
-  }
+    private queryBuilder: QueryBuilderService,
+    private layoutService: LayoutService,
+    private resolver: ComponentFactoryResolver
+  ) { }
 
   ngOnInit(): void {
-    this.hasEnabledActions = !this.settings.actions ||
-      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
+    this.factory = this.resolver.resolveComponentFactory(WhoRecordHistoryComponent);
   }
 
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
+    this.hasEnabledActions = !this.settings.actions ||
+      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
@@ -457,12 +457,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      this.dialog.open(WhoRecordHistoryComponent, {
-        data: {
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
           record: res.data.record
         }
       });
     });
+
+
   }
 
   /* Open a confirmation modal and then delete the selected record

@@ -1,10 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Record } from '../../models/record.model';
-
-interface DialogData {
-  record: Record;
-}
 
 @Component({
   selector: 'who-record-history',
@@ -13,15 +8,20 @@ interface DialogData {
 })
 export class WhoRecordHistoryComponent implements OnInit {
 
+  @Input() record: Record;
+  @Output() cancel = new EventEmitter();
+
   public history: any[] = [];
   public loading = true;
   public displayedColumns: string[] = ['position'];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.history = this.getHistory(data.record);
+  ngOnInit(): void {
+    this.history = this.getHistory(this.record);
   }
 
-  ngOnInit(): void {}
+  onCancel(): void {
+    this.cancel.emit(true);
+  }
 
   /*  Get current and next record to see difference and put it in a string
   */
