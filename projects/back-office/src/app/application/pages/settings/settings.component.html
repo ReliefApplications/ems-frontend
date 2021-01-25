@@ -27,3 +27,11 @@
   </div>
   <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="settingsForm.invalid || !settingsForm.dirty">Save changes</button>
 </form>
+
+<div class="action-list">
+  <h1 class="header">Actions</h1>
+  <button mat-flat-button (click)="onDuplicate()" color="primary">
+    <mat-icon class="button-icon">file_copy</mat-icon>
+    Duplicate Application
+  </button>
+</div>

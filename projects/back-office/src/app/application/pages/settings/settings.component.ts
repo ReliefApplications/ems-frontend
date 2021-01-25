@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Application, WhoApplicationService } from '@who-ems/builder';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 @Component({
   selector: 'app-settings',
@@ -15,7 +17,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private applicationService: WhoApplicationService
+    private applicationService: WhoApplicationService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -39,5 +42,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm.value);
     this.settingsForm.markAsPristine();
+  }
+
+  onDuplicate(): void {
+    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
+      width: '250px',
+      data: {name: 'eeeee'}
+    });
   }
 }
