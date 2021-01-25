@@ -5,7 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:ci": "ng build --prod --sourceMap=false",
     "test": "ng test",
+    "test:ci": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -79,9 +81,10 @@
     "@types/leaflet.markercluster": "^1.4.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
-    "husky": "^4.3.0",
+    "husky": "^4.3.8",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
+    "jira-prepare-commit-msg": "^1.4.3",
     "karma": "~5.0.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
@@ -95,7 +98,15 @@
   },
   "husky": {
     "hooks": {
+      "prepare-commit-msg": "jira-prepare-commit-msg",
       "pre-push": "ng lint"
     }
+  },
+  "jira-prepare-commit-msg": {
+    "messagePattern": "[$J]\n$M",
+    "jiraTicketPattern": "([A-Z]+-\\d+)",
+    "commentChar": "#",
+    "isConventionalCommit": false,
+    "allowEmptyCommitMessage": false
   }
 }

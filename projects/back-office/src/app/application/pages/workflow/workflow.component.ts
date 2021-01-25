@@ -169,6 +169,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.dragging = true;
   }
 
+
   /* Display selected step on click*/
   onStepClick(step: Step): void {
     if (this.dragging) {
