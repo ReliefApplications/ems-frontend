@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:ci": "ng build --prod --sourceMap=false",
     "test": "ng test",
-    "test:ci": "ng test --watch=false --code-coverage --source-map true",
+    "test:ci": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
