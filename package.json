@@ -98,7 +98,15 @@
   },
   "husky": {
     "hooks": {
+      "prepare-commit-msg": "jira-prepare-commit-msg",
       "pre-push": "ng lint"
     }
+  },
+  "jira-prepare-commit-msg": {
+    "messagePattern": "[$J]\n$M",
+    "jiraTicketPattern": "([A-Z]+-\\d+)",
+    "commentChar": "#",
+    "isConventionalCommit": false,
+    "allowEmptyCommitMessage": false
   }
 }
