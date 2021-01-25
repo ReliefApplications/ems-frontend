@@ -27,6 +27,9 @@
 
 .form-group {
     flex: 50%;
-    margin-top: 0;
-    margin-right: 64px;
+    
+    &:not(:first-child) {
+        margin-top: 0px;
+        margin-left: 64px;
+      }
 }
