@@ -494,7 +494,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         name
         type
         content
-        settings
         createdAt
       }
       page {
