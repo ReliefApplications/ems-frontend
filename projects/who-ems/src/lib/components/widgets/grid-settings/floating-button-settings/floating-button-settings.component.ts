@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+const DISABLED_FIELDS = ['id', 'createdAt'];
+
 @Component({
   selector: 'who-floating-button-settings',
   templateUrl: './floating-button-settings.component.html',
@@ -10,6 +12,10 @@ export class FloatingButtonSettingsComponent implements OnInit {
 
   @Input() buttonForm: FormGroup;
   @Input() fields: any[];
+
+  get scalarFields(): any[] {
+    return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
+  }
 
   constructor(
     private formBuilder: FormBuilder

@@ -1,7 +1,7 @@
 <ng-container *ngIf="buttonForm">
   <form [formGroup]="buttonForm">
       <div class="form-group">
-          <mat-slide-toggle formControlName="show">Show</mat-slide-toggle>
+          <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
           <ng-container *ngIf="buttonForm.value.show">
               <mat-form-field appearance="outline">
                   <mat-label>Button name</mat-label>
@@ -9,15 +9,15 @@
               </mat-form-field>
               <mat-slide-toggle formControlName="goToNextStep">Go to next step</mat-slide-toggle>
               <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
-              <div class="modify-form">
+              <div class="update-form">
                 <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
-                <div *ngIf="buttonForm.value.modifySelectedRows">
-                  <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="modification">
+                <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
+                  <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="update-row">
                     <mat-form-field appearance="outline">
-                      <mat-label>Field to modify</mat-label>
+                      <mat-label>Field to update</mat-label>
                       <mat-select formControlName="field" [compareWith]="compareFields">
                         <mat-option>-- None --</mat-option>
-                        <mat-option *ngFor="let field of fields" [value]="field">{{field.name}}</mat-option>
+                        <mat-option *ngFor="let field of scalarFields" [value]="field">{{field.name}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                     <mat-form-field appearance="outline" *ngIf="modification.value.field">

@@ -3,10 +3,20 @@
     margin-right: 10px;
 }
 
-.modify-form {
-    display: flex
+.update-form {
+    display: flex;
+    flex-direction: column;
 }
 
-.modification {
+.update-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.update-row {
     align-items: center;
+    margin-top: 24px;
+    .mat-form-field {
+        margin-left: 16px;
+    }
 }

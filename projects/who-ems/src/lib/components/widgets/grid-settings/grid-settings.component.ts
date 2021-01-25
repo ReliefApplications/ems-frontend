@@ -6,7 +6,6 @@ import {GetChannelsQueryResponse, GET_CHANNELS} from '../../../graphql/queries';
 import {Application} from '../../../models/application.model';
 import {Channel} from '../../../models/channel.model';
 import {WhoApplicationService} from '../../../services/application.service';
-import { query } from '@angular/animations';
 
 @Component({
   selector: 'who-grid-settings',
@@ -96,7 +95,7 @@ export class WhoGridSettingsComponent implements OnInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
-    return this.formBuilder.group({
+    const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
@@ -107,10 +106,18 @@ export class WhoGridSettingsComponent implements OnInit {
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
         }))
-        : [this.formBuilder.group({
-          field: ['', Validators.required],
-          value: ['', Validators.required]
-        })])
+        : [])
     });
+    buttonForm.get('show').valueChanges.subscribe(res => {
+      if (!res) {
+        buttonForm.setControl('modifications', this.formBuilder.array([]));
+      }
+    });
+    buttonForm.get('modifySelectedRows').valueChanges.subscribe(res => {
+      if (!res) {
+        buttonForm.setControl('modifications', this.formBuilder.array([]));
+      }
+    });
+    return buttonForm;
   }
 }
