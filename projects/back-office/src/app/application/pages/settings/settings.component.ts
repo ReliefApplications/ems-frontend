@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Application, WhoApplicationService } from '@who-ems/builder';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 @Component({
@@ -45,9 +45,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDuplicate(): void {
-    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
-      width: '250px',
-      data: {name: 'eeeee'}
+    this.dialog.open(DuplicateApplicationComponent, {
+      data: {appID: this.settingsForm.controls.id.value, name: this.settingsForm.value.name}
     });
   }
 }
