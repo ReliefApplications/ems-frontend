@@ -90,6 +90,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === PARENT DATA FOR CHILDREN-GRID ===
+  @Input() parent;
+
   // === EXCEL ===
   public excelFileName: string;
 
@@ -117,7 +120,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(WhoRecordHistoryComponent);
@@ -131,13 +135,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
-    if (this.dataQuery) {
-      this.getRecords();
-      this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    } else {
-      this.loading = false;
-    }
+    this.getRecords();
+    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -169,22 +168,51 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.loading = false;
-          this.items = cloneData(res.data[field]);
-          this.originalItems = cloneData(this.items);
-          this.fields = this.getFields(this.settings.query.fields);
-          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
-          this.gridData = {
-            data: this.items,
-            total: this.items.length
-          };
-        }
+    // Child grid
+    if (!!this.parent) {
+      this.items = this.parent[this.settings.name];
+      if (this.items.length > 0) {
+        this.originalItems = cloneData(this.items);
+        this.fields = this.getFields(this.settings.fields);
+        this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
+      } else {
+        this.originalItems = [];
+        this.fields = [];
+        this.detailsField = null;
       }
-    },
-      () => this.loading = false);
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
+      this.loading = false;
+
+    // Parent grid
+    } else {
+      if (this.dataQuery) {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+          const fields = this.settings.query.fields;
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.loading = false;
+              this.items = cloneData(res.data[field]);
+              this.originalItems = cloneData(this.items);
+              this.fields = this.getFields(fields);
+              this.detailsField = fields.find(x => x.kind === 'LIST');
+              if (!this.parent) {
+                Object.assign(this.detailsField, { actions: this.settings.actions });
+              }
+              this.gridData = {
+                data: this.items,
+                total: this.items.length
+              };
+            }
+          }
+        },
+          () => this.loading = false);
+      } else {
+        this.loading = false;
+      }
+    }
   }
 
   /*  Set the list of items to display.
@@ -438,18 +466,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Send Record History to parent to open a sidebar
-  */
-
-  public async getRecordsHistory(): Promise<any> {
-    return await this.apollo.query<GetRecordDetailsQueryResponse>({
-      query: GET_RECORD_DETAILS,
-      variables: {
-        id: this.selectedRow.dataItem.id
-      }
-    });
-  }
-
   public onViewHistory(): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
@@ -464,8 +480,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
     });
-
-
   }
 
   /* Open a confirmation modal and then delete the selected record
@@ -508,7 +522,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         title: `Convert record${rowsSelected > 1 ? 's' : ''}`,
         record
       },
-      // backdropClass: 'backdropBackground'
     });
     dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
       if (value) {
@@ -534,8 +547,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Reload data and unselect all rows
   */
   private reloadData(): void {
-    this.dataSubscription.unsubscribe();
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    if (!this.parent) {
+      this.dataSubscription.unsubscribe();
+      this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    }
     this.getRecords();
     this.selectedRow = null;
     this.selectedRowsIndex = [];
@@ -572,10 +587,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       delete data.id;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
-          variables: {
-            id: record.id,
-            data
-          }
+        variables: {
+          id: record.id,
+          data
+        }
       }).toPromise());
     }
     Promise.all(promises).then(() => {
