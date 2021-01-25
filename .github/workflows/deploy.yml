@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [14.x]
 
     steps:
     - name: Checkout
@@ -24,6 +24,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name:
       run: npm ci
+    - name: Build Shared Library
+      run: npm run build:ci --project=who-ems
     - name: Build
       run: npm run build:ci
     - name: Test
