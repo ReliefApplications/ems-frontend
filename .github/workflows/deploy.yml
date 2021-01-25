@@ -24,12 +24,12 @@ jobs:
       run: npm ci
     - name: Build Shared Library
       run: npm run build who-ems
-    - name: Build
+    - name: Build Back-office
       run: npm run build:ci
-    - name: Build
+    - name: Build Front-office
       run: npm run build:ci front-office
-    - name: Test
-      run: npm run test:ci
+    # - name: Test
+    #   run: npm run test:ci
     - name: Archive build Back-office
       if: success()
       uses: actions/upload-artifact@v1
