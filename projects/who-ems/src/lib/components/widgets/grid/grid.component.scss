@@ -6,3 +6,11 @@
 .widget-header {
     display: flex;
 }
+
+:host ::ng-deep .k-grid-content, .k-grid-content-locked, .k-pager-wrap {
+    white-space: nowrap !important;
+}
+
+textarea {
+    width: 100% !important;
+}

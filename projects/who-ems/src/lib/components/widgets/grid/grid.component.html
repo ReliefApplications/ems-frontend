@@ -40,6 +40,14 @@
           <kendo-grid-column [field]="field.name" [title]="field.title" [filter]="field.editor"
             [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
           </kendo-grid-column>
+
+<!--           <kendo-grid-column [field]="field.name" [title]="field.title" [editor]="field.editor" [filter]="field.editor">
+              <ng-template kendoGridEditTemplate let-column="column" let-formGroup="formGroup">
+                <textarea *ngIf="field.editor === 'textarea'" rows="5" [formControl]="formGroup.get(column.field)">
+                </textarea>
+                <kendo-grid-cell *ngIf="field.editor !== 'textarea'" [editor]="date"></kendo-grid-cell>
+              </ng-template>
+          </kendo-grid-column> -->
         </ng-container>
       </ng-container>
       <ng-container *ngIf="hasEnabledActions">

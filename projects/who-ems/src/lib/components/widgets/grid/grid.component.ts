@@ -100,6 +100,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   @Output() dataChanges: EventEmitter<any[]> = new EventEmitter();
   @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
 
+  public isEditionMode = false;
+
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -216,6 +218,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Inline edition of the data.
   */
   public cellClickHandler({isEdited, dataItem, rowIndex}): void {
+    this.isEditionMode = isEdited;
     if (isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
@@ -363,10 +366,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       default: {
-        return null;
+        return 'textarea';
       }
     }
   }
+
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
