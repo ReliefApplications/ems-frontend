@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
@@ -74,6 +75,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.selectedStep = this.steps[e.selectedIndex];
     this.selectedIndex = e.selectedIndex;
     this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+  }
+
+  /* Trigger step changes from grid widgets
+  */
+  onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
+    if (elementRef.goToNextStep) {
+      elementRef.goToNextStep.subscribe(event => {
+        if (event) {
+          stepper.next();
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

@@ -18,7 +18,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SettingsModule } from './components/settings/settings.module';
 
 @NgModule({
   declarations: [
@@ -43,7 +42,6 @@ import { SettingsModule } from './components/settings/settings.module';
     MatStepperModule,
     MatDividerModule,
     DragDropModule,
-    SettingsModule
   ],
   exports: [WorkflowComponent]
 })

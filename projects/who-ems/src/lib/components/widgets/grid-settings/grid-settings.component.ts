@@ -29,6 +29,9 @@ export class WhoGridSettingsComponent implements OnInit {
   // === NOTIFICATIONS ===
   public channels: Channel[] = [];
 
+  // === FLOATING BUTTON ===
+  public fields: any[];
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -54,13 +57,15 @@ export class WhoGridSettingsComponent implements OnInit {
         history: [hasActions ? tileSettings.actions.history : true],
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update  : true]
-      })
+      }),
+      floatingButton: this.createFloatingButtonForm(tileSettings.floatingButton)
     });
 
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+
     this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
@@ -79,5 +84,40 @@ export class WhoGridSettingsComponent implements OnInit {
         });
       }
     });
+
+    this.tileForm.get('query').valueChanges.subscribe(res => {
+      if (res.name) {
+        this.fields = this.queryBuilder.getFields(res.name);
+      } else {
+        this.fields = [];
+      }
+    });
+  }
+
+  private createFloatingButtonForm(value: any): FormGroup {
+    const buttonForm = this.formBuilder.group({
+      show: [value && value.show ? value.show : false, Validators.required],
+      name: [value && value.name ? value.name : 'Next'],
+      goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
+      autoSave: [value && value.autoSave ? value.autoSave : false],
+      modifySelectedRows: [value ? value.modifySelectedRows : false],
+      modifications: this.formBuilder.array(value && value.modifications.length
+        ? value.modifications.map(x => this.formBuilder.group({
+          field: [x.field, Validators.required],
+          value: [x.value, Validators.required],
+        }))
+        : [])
+    });
+    buttonForm.get('show').valueChanges.subscribe(res => {
+      if (!res) {
+        buttonForm.setControl('modifications', this.formBuilder.array([]));
+      }
+    });
+    buttonForm.get('modifySelectedRows').valueChanges.subscribe(res => {
+      if (!res) {
+        buttonForm.setControl('modifications', this.formBuilder.array([]));
+      }
+    });
+    return buttonForm;
   }
 }
