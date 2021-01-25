@@ -563,7 +563,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const index of items) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
-      data[this.settings.floatingButton.modifications.field.name] = this.settings.floatingButton.modifications.value;
+      for (const modification of this.settings.floatingButton.modifications) {
+        data[modification.field.name] = modification.value;
+      }
       delete data.id;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,

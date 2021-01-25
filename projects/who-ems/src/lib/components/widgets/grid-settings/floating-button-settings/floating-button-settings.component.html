@@ -11,32 +11,39 @@
               <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
               <div class="modify-form">
                 <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
-                <form [formGroup]="buttonForm.controls.modifications" 
-                  *ngIf="buttonForm.value.modifySelectedRows">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Field to modify</mat-label>
-                    <mat-select formControlName="field" [compareWith]="compareFields">
-                      <mat-option>-- None --</mat-option>
-                      <mat-option *ngFor="let field of fields" [value]="field">{{field.name}}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field appearance="outline" *ngIf="buttonForm.controls.modifications.value.field">
-                    <mat-label>Value to attribute</mat-label>
-                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name === 'Int'">
-                        <input matInput formControlName="value" type="number" />
-                    </ng-container>
-                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name === 'Boolean'">
-                        <mat-select formControlName="value">
-                            <mat-option>-- None --</mat-option>
-                            <mat-option [value]="true">True</mat-option>
-                            <mat-option [value]="false">False</mat-option>
-                        </mat-select>
-                    </ng-container>
-                    <ng-container *ngIf="buttonForm.controls.modifications.value.field.type.name !== 'Int' && buttonForm.controls.modifications.value.field.type.name !== 'Boolean'">
-                        <input matInput formControlName="value" type="string" />
-                    </ng-container>
-                  </mat-form-field>
-                </form>
+                <div *ngIf="buttonForm.value.modifySelectedRows">
+                  <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="modification">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Field to modify</mat-label>
+                      <mat-select formControlName="field" [compareWith]="compareFields">
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let field of fields" [value]="field">{{field.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="modification.value.field">
+                      <mat-label>Value to attribute</mat-label>
+                      <ng-container *ngIf="modification.value.field.type.name === 'Int'">
+                          <input matInput formControlName="value" type="number" />
+                      </ng-container>
+                      <ng-container *ngIf="modification.value.field.type.name === 'Boolean'">
+                          <mat-select formControlName="value">
+                              <mat-option>-- None --</mat-option>
+                              <mat-option [value]="true">True</mat-option>
+                              <mat-option [value]="false">False</mat-option>
+                          </mat-select>
+                      </ng-container>
+                      <ng-container *ngIf="modification.value.field.type.name !== 'Int' && modification.value.field.type.name !== 'Boolean'">
+                          <input matInput formControlName="value" type="string" />
+                      </ng-container>
+                    </mat-form-field>
+                    <button mat-icon-button color="warn" (click)="onDeleteModification(i)">
+                      <mat-icon>remove_circle_outline</mat-icon>
+                    </button>
+                  </form>
+                  <button mat-icon-button color="primary" (click)="onAddModification()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                  </button>
+                </div>
               </div>
           </ng-container>
       </div>

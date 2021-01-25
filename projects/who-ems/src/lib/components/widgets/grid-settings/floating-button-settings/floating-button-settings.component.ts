@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'who-floating-button-settings',
@@ -11,13 +11,33 @@ export class FloatingButtonSettingsComponent implements OnInit {
   @Input() buttonForm: FormGroup;
   @Input() fields: any[];
 
-  constructor() { }
+  constructor(
+    private formBuilder: FormBuilder
+  ) { }
 
   ngOnInit(): void {
   }
 
   compareFields(field1: any, field2: any): boolean {
-    return field1.name === field2.name;
+    if (field2) {
+      return field1.name === field2.name;
+    } else {
+      return false;
+    }
   }
 
+  get modificationsArray(): FormArray {
+    return this.buttonForm.get('modifications') as FormArray;
+  }
+
+  onDeleteModification(index: number): void {
+    this.modificationsArray.removeAt(index);
+  }
+
+  onAddModification(): void {
+    this.modificationsArray.push(this.formBuilder.group({
+      field: ['', Validators.required],
+      value: ['', Validators.required]
+    }));
+  }
 }
