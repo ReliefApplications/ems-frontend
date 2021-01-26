@@ -26,8 +26,8 @@ jobs:
       run: npm run build who-ems
     - name: Build Back-office
       run: npm run build:ci
-    - name: Build Front-office
-      run: npm run build:ci front-office
+    # - name: Build Front-office
+    #   run: npm run build:ci front-office
     # - name: Test
     #   run: npm run test:ci
     - name: Archive build Back-office
@@ -36,12 +36,12 @@ jobs:
       with:
         name: deploy_dist_back_office
         path: dist/back-office
-    - name: Archive build Front-office
-      if: success()
-      uses: actions/upload-artifact@v2
-      with:
-        name: deploy_dist_front_office
-        path: dist/front-office
+    # - name: Archive build Front-office
+    #   if: success()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: deploy_dist_front_office
+    #     path: dist/front-office
     # - name: Archive code coverage result
     #   if: success()
     #   uses: actions/upload-artifact@v2
@@ -64,16 +64,10 @@ jobs:
         name: deploy_dist_back_office
         path: dist/back-office
     - name: Setup SSH Keys and known_hosts
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-    - name: Some task that fetches dependencies
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      uses: webfactory/ssh-agent@v0.4.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Clean remote path and deploy
       run: ./CI/deploy-back-office.sh
 
 
