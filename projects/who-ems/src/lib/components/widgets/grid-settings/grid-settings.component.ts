@@ -1,11 +1,11 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {Apollo} from 'apollo-angular';
-import {QueryBuilderService} from '../../../services/query-builder.service';
-import {GetChannelsQueryResponse, GET_CHANNELS} from '../../../graphql/queries';
-import {Application} from '../../../models/application.model';
-import {Channel} from '../../../models/channel.model';
-import {WhoApplicationService} from '../../../services/application.service';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import { QueryBuilderService } from '../../../services/query-builder.service';
+import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
+import { Application } from '../../../models/application.model';
+import { Channel } from '../../../models/channel.model';
+import { WhoApplicationService } from '../../../services/application.service';
 
 @Component({
   selector: 'who-grid-settings',
@@ -54,7 +54,7 @@ export class WhoGridSettingsComponent implements OnInit {
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
         convert: [hasActions ? tileSettings.actions.convert : true],
-        update: [hasActions ? tileSettings.actions.update  : true]
+        update: [hasActions ? tileSettings.actions.update : true]
       }),
       floatingButton: this.createFloatingButtonForm(tileSettings.floatingButton)
     });
@@ -85,6 +85,11 @@ export class WhoGridSettingsComponent implements OnInit {
 
     this.tileForm.get('query').valueChanges.subscribe(res => {
       if (res.name) {
+        if (this.fields) {
+          const modifications = this.tileForm.get('floatingButton.modifications') as FormArray;
+          modifications.clear();
+          this.tileForm.get('floatingButton.modifySelectedRows').setValue(false);
+        }
         this.fields = this.queryBuilder.getFields(res.name);
       } else {
         this.fields = [];
@@ -107,21 +112,11 @@ export class WhoGridSettingsComponent implements OnInit {
         : []),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-        value && value.notify ? Validators.required : null],
+      value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-        value && value.publish ? Validators.required : null]
-    });
-    buttonForm.get('show').valueChanges.subscribe(res => {
-      if (!res) {
-        buttonForm.setControl('modifications', this.formBuilder.array([]));
-      }
-    });
-    buttonForm.get('modifySelectedRows').valueChanges.subscribe(res => {
-      if (!res) {
-        buttonForm.setControl('modifications', this.formBuilder.array([]));
-      }
+      value && value.publish ? Validators.required : null]
     });
     return buttonForm;
   }
