@@ -1,4 +1,4 @@
-name: Node.js CD
+name: Front-end CD
 
 on:
   push:
@@ -69,6 +69,8 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Clean remote path and deploy
       run: ./CI/deploy-back-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_PASS }}
 
 
   # deploy_front_office:

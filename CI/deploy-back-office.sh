@@ -6,10 +6,10 @@ OUT=dist/back-office
 CONNECTION=reliefapps@92.243.25.191
 
 echo -e "Cleaning destination ..."
-CMD="mkdir -p ${REMOTE_PATH} && cd ${REMOTE_PATH} && rm -rf *"
+CMD="echo '$SSH_PASS' | mkdir -p ${REMOTE_PATH} && cd ${REMOTE_PATH} && echo '$SSH_PASS' | rm -rf *"
 ssh -o strictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "$CMD"
 
 echo -e "Synchronizing files ..."
-scp -o stricthostkeychecking=no -o PubkeyAuthentication=yes -r $OUT/* $CONNECTION:$REMOTE_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes" -avzr --delete $OUT/* $CONNECTION:$REMOTE_PATH
 
 echo -e "Deployed !!"
