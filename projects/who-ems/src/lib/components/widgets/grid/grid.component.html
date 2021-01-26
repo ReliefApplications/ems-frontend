@@ -1,5 +1,5 @@
 <div class="widget-container">
-  <div class="widget-header" *ngIf="header">
+  <div class="widget-header" *ngIf="header && !parent">
     {{settings.title}}
     <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
       <button mat-stroked-button color="primary" (click)="onFloatingButtonClick()">
@@ -83,7 +83,7 @@
     </ng-container>
     <ng-container *ngIf="detailsField">
       <div *kendoGridDetailTemplate="let dataItem">
-        <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
+        <who-grid [settings]="detailsField" [parent]="dataItem"></who-grid>
       </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>
