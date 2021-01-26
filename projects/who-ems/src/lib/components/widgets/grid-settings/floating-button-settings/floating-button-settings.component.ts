@@ -48,6 +48,8 @@ export class FloatingButtonSettingsComponent implements OnInit {
     this.buttonForm.get('show').valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
+        this.buttonForm.controls.notify.setValue(false);
+        this.buttonForm.controls.publish.setValue(false);
       }
     });
     this.buttonForm.get('modifySelectedRows').valueChanges.subscribe(value => {
