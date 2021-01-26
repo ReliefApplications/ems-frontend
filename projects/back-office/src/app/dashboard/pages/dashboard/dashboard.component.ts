@@ -37,9 +37,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === ROUTE ===
   private routeSubscription: Subscription;
 
-  // === DATA CHANGES FOR WORKFLOW ===
-  @Output() dataChanges: EventEmitter<any> = new EventEmitter();
-  @Output() fieldsTypes: EventEmitter<any[]> = new EventEmitter();
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -218,9 +217,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe();
-  }
-
-  onDataChanges(event: any): void {
-    this.dataChanges.emit(event);
   }
 }

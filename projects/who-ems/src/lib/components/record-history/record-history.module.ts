@@ -12,8 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    MatIconModule,
-    MatDialogModule
+    MatIconModule
   ],
   exports: [WhoRecordHistoryComponent]
 })
