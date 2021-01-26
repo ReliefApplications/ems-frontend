@@ -1,7 +1,7 @@
 import {
   Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
   OnDestroy, Output, EventEmitter,
-  ComponentFactoryResolver, ComponentFactory, TemplateRef, ViewContainerRef
+  ComponentFactoryResolver, ComponentFactory
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
@@ -186,7 +186,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       };
       this.loading = false;
 
-    // Parent grid
+      // Parent grid
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
@@ -379,17 +379,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       default: {
-        return null;
+        return 'textarea';
       }
     }
   }
+
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
       formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
-        new Date(dataItem[field.name]) : dataItem[field.name]];
+        ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
     }
+    console.log(formGroup);
     return this.formBuilder.group(formGroup);
   }
 
