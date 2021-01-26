@@ -20,3 +20,16 @@
         margin-left: 16px;
     }
 }
+
+.form-container {
+    display: flex;
+}
+
+.form-group {
+    flex: 50%;
+    
+    &:not(:first-child) {
+        margin-top: 0px;
+        margin-left: 64px;
+      }
+}
