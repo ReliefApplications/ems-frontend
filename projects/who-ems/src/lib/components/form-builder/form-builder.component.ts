@@ -1,8 +1,7 @@
-import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import {FormService} from '../../services/form.service';
-import {WhoFormModalComponent} from '../form-modal/form-modal.component';
+import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 
 @Component({
   selector: 'who-form-builder',
@@ -19,8 +18,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   public json: any;
 
   constructor(
-    public dialog: MatDialog,
-    private formService: FormService
+    public dialog: MatDialog
   ) {
   }
 
@@ -41,15 +39,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-
-    if (!this.structure) {
-      this.surveyCreator.survey.showQuestionNumbers = 'off';
-    }
+    if (!this.structure) this.surveyCreator.survey.showQuestionNumbers = 'off';
   }
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
       this.surveyCreator.text = this.structure;
+      if (!this.structure) this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
   }
 
