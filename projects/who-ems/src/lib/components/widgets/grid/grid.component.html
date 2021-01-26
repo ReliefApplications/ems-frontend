@@ -22,6 +22,9 @@
         <button *ngIf="!settings.actions || settings.actions.delete" class='k-button'
           (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
         </button>
+        <button *ngIf="!settings.actions || settings.actions.update" class='k-button'
+                (click)="onUpdateRow(selectedRowsIndex)" style="float: right">Update
+        </button>
         <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
           (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
         </button>
@@ -56,8 +59,7 @@
 
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
-          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
-            [matMenuTriggerFor]="menu" (click)="setSelectedRow(idx)">
+          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'" [matMenuTriggerFor]="menu">
           </button>
 
           <mat-menu #menu="matMenu">
@@ -65,7 +67,7 @@
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-              (click)="onViewHistory(childTemplate)">
+              (click)="onViewHistory(gridData.data[idx].id)">
               History
             </button>
             <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
@@ -73,7 +75,7 @@
               Convert
             </button>
             <button *ngIf="!settings.actions || settings.actions.update" mat-menu-item color="warn"
-              (click)="onUpdateRow()">
+              (click)="onUpdateRow(gridData.data[idx].id)">
               Update
             </button>
           </mat-menu>
@@ -83,7 +85,7 @@
     </ng-container>
     <ng-container *ngIf="detailsField">
       <div *kendoGridDetailTemplate="let dataItem">
-        <who-grid [settings]="detailsField" [parent]="dataItem"></who-grid>
+        <who-grid [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></who-grid>
       </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>
