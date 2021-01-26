@@ -31,6 +31,7 @@ export class WhoGridSettingsComponent implements OnInit {
 
   // === FLOATING BUTTON ===
   public fields: any[];
+  public queryName: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -85,12 +86,13 @@ export class WhoGridSettingsComponent implements OnInit {
 
     this.tileForm.get('query').valueChanges.subscribe(res => {
       if (res.name) {
-        if (this.fields) {
+        if (this.fields && (res.name !== this.queryName)) {
           const modifications = this.tileForm.get('floatingButton.modifications') as FormArray;
           modifications.clear();
           this.tileForm.get('floatingButton.modifySelectedRows').setValue(false);
         }
         this.fields = this.queryBuilder.getFields(res.name);
+        this.queryName = res.name;
       } else {
         this.fields = [];
       }
