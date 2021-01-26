@@ -67,7 +67,7 @@ jobs:
       uses: webfactory/ssh-agent@v0.4.1
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Clean remote path and deploy
+    - name: Deploy
       run: ./CI/deploy-back-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}

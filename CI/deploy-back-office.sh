@@ -7,8 +7,7 @@ CONNECTION=reliefapps@92.243.25.191
 set -e
 
 echo -e "Cleaning destination ..."
-# echo '$SSH_PASS' | mkdir -p ${REMOTE_PATH} && 
-CMD="'""cd ${REMOTE_PATH} && echo '$SSH_PASS' | rm -rf *""'"
+CMD="'""echo '$SSH_PASS' | sudo mkdir -p $REMOTE_PATH && cd $REMOTE_PATH && echo '$SSH_PASS' | sudo rm -rf *""'"
 ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Synchronizing files ..."
