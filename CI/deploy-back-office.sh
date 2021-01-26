@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Remove files
 REMOTE_PATH=/var/www/html/ems-back-office
 OUT=dist/back-office
 CONNECTION=reliefapps@92.243.25.191
@@ -8,7 +7,8 @@ CONNECTION=reliefapps@92.243.25.191
 set -e
 
 echo -e "Cleaning destination ..."
-CMD="'""echo '$SSH_PASS' | mkdir -p ${REMOTE_PATH} && cd ${REMOTE_PATH} && echo '$SSH_PASS' | rm -rf *""'"
+# echo '$SSH_PASS' | mkdir -p ${REMOTE_PATH} && 
+CMD="'""cd ${REMOTE_PATH} && echo '$SSH_PASS' | rm -rf *""'"
 ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Synchronizing files ..."
