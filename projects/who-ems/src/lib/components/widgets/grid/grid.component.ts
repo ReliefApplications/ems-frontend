@@ -541,34 +541,46 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedRowsIndex = [];
   }
 
-  /* Execute action enabled by settings for the floating button
+  /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(): Promise<void> {
-    if (this.settings.floatingButton.autoSave) {
+    const options = this.settings.floatingButton;
+    let rowsIndexToModify = [...this.selectedRowsIndex];
+
+    if (options.autoSave && options.modifySelectedRows) {
+      const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
+      if (unionRows.length > 0) {
+        await Promise.all(this.promisedRowsModifications(options.modifications, unionRows));
+        this.updatedItems = this.updatedItems.filter(x => !unionRows.some(y => x.id === this.gridData.data[y].id));
+        rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
+      }
+    }
+
+    if (options.autoSave) {
       await Promise.all(this.promisedChanges());
     }
-    if (this.settings.floatingButton.modifySelectedRows) {
-      await Promise.all(this.promisedRowsModifications());
+    if (options.modifySelectedRows) {
+      await Promise.all(this.promisedRowsModifications(options.modifications, rowsIndexToModify));
     }
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
       const promises = [];
-      if (this.settings.floatingButton.notify) {
+      if (options.notify) {
         promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
           mutation: PUBLISH_NOTIFICATION,
           variables: {
-            action: this.settings.floatingButton.notificationMessage ? this.settings.floatingButton.notificationMessage : 'Records update',
+            action: options.notificationMessage ? options.notificationMessage : 'Records update',
             content: selectedRecords,
-            channel: this.settings.floatingButton.notificationChannel
+            channel: options.notificationChannel
           }
         }).toPromise());
       }
-      if (this.settings.floatingButton.publish) {
+      if (options.publish) {
         promises.push(this.apollo.mutate<PublishMutationResponse>({
           mutation: PUBLISH,
           variables: {
             ids: selectedRecords.map(x => x.id),
-            channel: this.settings.floatingButton.publicationChannel
+            channel: options.publicationChannel
           }
         }).toPromise());
       }
@@ -576,20 +588,22 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         await Promise.all(promises);
       }
     }
-    if (this.settings.floatingButton.goToNextStep) {
+    if (options.goToNextStep) {
       this.goToNextStep.emit(true);
+    } else {
+      this.reloadData();
     }
-    this.reloadData();
   }
 
-  /* Return a list of promises containing all the mutations in order to modify selected records accordingly to settings
+  /*  Return a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+      Apply inline edition before applying modifications.
   */
-  private promisedRowsModifications(): Promise<any>[] {
+  private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises = [];
-    for (const index of this.selectedRowsIndex) {
+    for (const index of rows) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
-      for (const modification of this.settings.floatingButton.modifications) {
+      for (const modification of modifications) {
         data[modification.field.name] = modification.value;
       }
       delete data.id;
