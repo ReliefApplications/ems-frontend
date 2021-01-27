@@ -493,6 +493,21 @@ export interface EditApplicationMutationResponse {
   editApplication: Application;
 }
 
+// === DUPLICATE APPLICATION ===
+export const DUPLICATE_APPLICATION = gql`
+mutation duplicateApplication($name: String!, $previousId: String! ) {
+  duplicateApplication(name: $name, previousId: $previousId){
+    id
+    name
+  }
+}`;
+// in () input parameters, in {} return values
+
+export interface DuplicateApplicationMutationResponse {
+  loading: boolean;
+  duplicateApplication: Application;
+}
+
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {

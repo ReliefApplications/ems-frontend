@@ -13,6 +13,7 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
+import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 @Component({
   selector: 'app-applications',
@@ -152,6 +153,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
       }
+    });
+  }
+
+  /*  Open a dialog to give a name for the duplicated application
+  */
+  onDuplicate(application: Application): void {
+    this.dialog.open(DuplicateApplicationComponent, {
+      data: {appID: application.id, name: application.name}
     });
   }
 }

@@ -21,7 +21,7 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { DuplicateApplicationComponent } from './components/duplicate-application/duplicate-application.component';
+
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
@@ -98,8 +98,7 @@ export function provideApollo(httpLink: HttpLink): any {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    DuplicateApplicationComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
