@@ -377,7 +377,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'DateTime': {
-        return 'date';
+        return 'dateTime';
+      }
+      case 'Time': {
+        return 'time';
       }
       default: {
         return 'textarea';
@@ -387,13 +390,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   private getFormat(type: any): string {
     switch (type) {
-      case 'date':
+      case 'Date':
         return '{0:dd/MM/yy}';
-      case 'date_time':
+      case 'DateTime':
         return '{0:dd/MM/yy HH:mm}';
-      case 'date_time_local':
-        return '{0:dd/MM/yy HH:mm}';
-      case 'time':
+      case 'Time':
         return '{0:HH:mm}';
       default:
         return '';
@@ -406,7 +407,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
         ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
     }
-    console.log(formGroup);
     return this.formBuilder.group(formGroup);
   }
 
