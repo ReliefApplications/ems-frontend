@@ -77,7 +77,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
   */
-  async validateValueNames(): Promise<string> {
+  private async validateValueNames(): Promise<string> {
    let message = '';
    const object = JSON.parse(this.surveyCreator.text);
    await object.pages.forEach( page => {
@@ -85,12 +85,15 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
        if (!element.valueName) {
         if (element.title) {
           element.valueName = element.title.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
+          if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
+            message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+          }
           return element;
          } else {
-          message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid value name (snake_case) to save the form.';
+          message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
          }
        } else {
-        if (!(element.valueName.match(/^[a-z0-9_]+$/))) {
+        if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
           message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
         }
        }
