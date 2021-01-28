@@ -51,6 +51,10 @@
             Preview
           </button>
           <who-access menuItem="true" [access]="element.permissions" (save)="saveAccess($event, element)" *ngIf="element.canUpdate"></who-access>
+          <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
+            <mat-icon>file_copy</mat-icon>
+            Duplicate
+          </button>
           <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
             <mat-icon>delete</mat-icon>
             Delete
