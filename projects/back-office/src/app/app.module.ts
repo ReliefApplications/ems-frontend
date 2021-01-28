@@ -23,6 +23,7 @@ import { environment } from '../environments/environment';
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 
 
+
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 /*  Configuration of the Apollo client.
@@ -123,6 +124,9 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       framework: {
         isAngular: true
+      },
+      system: {
+        tokenRenewalOffsetSeconds: 1200
       }
     }, {
       popUp: false,

@@ -43,4 +43,4 @@
         <mat-divider></mat-divider>
     </div>
 </ng-container>
-<router-outlet></router-outlet>
+<router-outlet (activate)="onActivate($event)"></router-outlet>

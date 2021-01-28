@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,6 +36,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private applicationService: WhoApplicationService,

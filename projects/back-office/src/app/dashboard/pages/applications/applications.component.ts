@@ -13,6 +13,7 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
+import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 @Component({
   selector: 'app-applications',
@@ -106,9 +107,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             name: value.name
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(`${value.name} application created`);
-          const id = res.data.addApplication.id;
-          this.router.navigate(['/applications', id]);
+          if (res.errors) {
+            if (res.errors[0].message.includes('duplicate key error')) {
+              this.snackBar.openSnackBar('An App with this name already exists, please choose a different name.');
+            } else {
+              this.snackBar.openSnackBar('The App was not created. ' + res.errors[0].message);
+            }
+          } else {
+            this.snackBar.openSnackBar(`${value.name} application created`);
+            const id = res.data.addApplication.id;
+            this.router.navigate(['/applications', id]);
+          }
         });
       }
     });
@@ -143,6 +152,23 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (value) {
         this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
+      }
+    });
+  }
+
+  /*  Open a dialog to give a name for the duplicated application
+  */
+  onDuplicate(application: Application): void {
+    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
+      data: {
+        id: application.id,
+        name: application.name
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applications.data.push(value);
+        this.applications.data = this.applications.data;
       }
     });
   }

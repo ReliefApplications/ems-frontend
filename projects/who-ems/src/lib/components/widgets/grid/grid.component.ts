@@ -1,9 +1,13 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, Renderer2, OnDestroy, Output, EventEmitter } from '@angular/core';
+import {
+  Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
+  OnDestroy, Output, EventEmitter,
+  ComponentFactoryResolver, ComponentFactory
+} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import {
   GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
-  SelectionEvent, RowArgs
+  SelectionEvent, RowArgs, SelectableSettings
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -12,7 +16,9 @@ import {
   ConvertRecordMutationResponse, CONVERT_RECORD,
   PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
   DeleteRecordMutationResponse,
-  DELETE_RECORD } from '../../../graphql/mutations';
+  DELETE_RECORD,
+  PublishMutationResponse, PUBLISH
+} from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -21,7 +27,7 @@ import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.comp
 import { Form } from '../../../models/form.model';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
-
+import { LayoutService } from '../../../services/layout.service';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -31,6 +37,12 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
 const DISABLED_FIELDS = ['id', 'createdAt'];
+
+const SELECTABLE_SETTINGS: SelectableSettings = {
+  checkboxOnly: true,
+  mode: 'multiple',
+  drag: false
+};
 
 @Component({
   selector: 'who-grid',
@@ -78,39 +90,53 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === PARENT DATA FOR CHILDREN-GRID ===
+  @Input() parent;
+
   // === EXCEL ===
   public excelFileName: string;
 
   // === ACTIONS ON SELECTION ===
   public selectedRow: RowArgs;
+  public selectedRowsIndex = [];
+  public hasEnabledActions: boolean;
+  public selectableSettings = SELECTABLE_SETTINGS;
+
+  // === EMIT STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
+
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory: ComponentFactory<any>;
 
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
-    private queryBuilder: QueryBuilderService
-  ) { }
+    private queryBuilder: QueryBuilderService,
+    private layoutService: LayoutService,
+    private resolver: ComponentFactoryResolver
+  ) {
+  }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.factory = this.resolver.resolveComponentFactory(WhoRecordHistoryComponent);
+  }
 
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
+    this.hasEnabledActions = !this.settings.actions ||
+      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
-    if (this.dataQuery) {
-      this.getRecords();
-      this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-    } else {
-      this.loading = false;
-    }
+    this.getRecords();
+    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -142,22 +168,51 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.loading = false;
-          this.items = res.data[field];
-          this.originalItems = cloneData(this.items);
-          this.fields = this.getFields(this.settings.query.fields);
-          this.detailsField = this.settings.query.fields.find(x => x.kind === 'LIST');
-          this.gridData = {
-            data: this.items,
-            total: res.data[field].length
-          };
-        }
+    // Child grid
+    if (!!this.parent) {
+      this.items = this.parent[this.settings.name];
+      if (this.items.length > 0) {
+        this.originalItems = cloneData(this.items);
+        this.fields = this.getFields(this.settings.fields);
+        this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
+      } else {
+        this.originalItems = [];
+        this.fields = [];
+        this.detailsField = null;
       }
-    },
-      (err) => this.loading = false);
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
+      this.loading = false;
+
+      // Parent grid
+    } else {
+      if (this.dataQuery) {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+          const fields = this.settings.query.fields;
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.loading = false;
+              this.items = cloneData(res.data[field]);
+              this.originalItems = cloneData(this.items);
+              this.fields = this.getFields(fields);
+              this.detailsField = fields.find(x => x.kind === 'LIST');
+              if (this.detailsField) {
+                Object.assign(this.detailsField, { actions: this.settings.actions });
+              }
+              this.gridData = {
+                data: this.items,
+                total: this.items.length
+              };
+            }
+          }
+        },
+          () => this.loading = false);
+      } else {
+        this.loading = false;
+      }
+    }
   }
 
   /*  Set the list of items to display.
@@ -267,33 +322,29 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.formGroup = undefined;
   }
 
+  /* Save all in-line changes and then reload data
+  */
   public onSaveChanges(): void {
     this.closeEditor();
     if (this.hasChanges) {
-      const promises = [];
-      for (const item of this.updatedItems) {
-        const data = Object.assign({}, item);
-        delete data.id;
-        promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: item.id,
-            data
-          }
-        }).toPromise());
-      }
-      if (this.settings.channel) {
-        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-          mutation: PUBLISH_NOTIFICATION,
-          variables: {
-            action: 'Records update',
-            content: this.updatedItems,
-            channel: this.settings.channel
-          }
-        }).toPromise());
-      }
-      Promise.all(promises).then(() => this.getRecords());
+      Promise.all(this.promisedChanges()).then(() => this.reloadData());
     }
+  }
+
+  private promisedChanges(): Promise<any>[] {
+    const promises = [];
+    for (const item of this.updatedItems) {
+      const data = Object.assign({}, item);
+      delete data.id;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+          data
+        }
+      }).toPromise());
+    }
+    return promises;
   }
 
   public onCancelChanges(): void {
@@ -328,17 +379,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       default: {
-        return null;
+        return 'textarea';
       }
     }
   }
+
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
       formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
-        new Date(dataItem[field.name]) : dataItem[field.name]];
+        ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
     }
+    console.log(formGroup);
     return this.formBuilder.group(formGroup);
   }
 
@@ -374,7 +427,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Detect selection event and display actions available on rows.
   */
   public selectionChange(selection: SelectionEvent): void {
-    this.selectedRow = selection.selectedRows[0];
+    if (selection.deselectedRows.length > 0) {
+      const deselectIndex = selection.deselectedRows.map((item => item.index));
+      this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
+    }
+    if (selection.selectedRows.length > 0) {
+      const selectedItems = selection.selectedRows.map((item) => item.index);
+      this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
+    }
   }
 
   /* Open the form corresponding to selected row in order to update it
@@ -393,43 +453,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Open a dialog component which provide tools to convert the selected record
-  */
-  public onConvertRecord(): void {
-    const record: string = this.selectedRow.dataItem.id;
-    const dialogRef = this.dialog.open(WhoConvertModalComponent, {
-      data: {
-        record
-      }
-    });
-    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
-      if (value) {
-        this.apollo.mutate<ConvertRecordMutationResponse>({
-          mutation: CONVERT_RECORD,
-          variables: {
-            id: record,
-            form: value.targetForm.id,
-            copyRecord: value.copyRecord
-          }
-        }).subscribe(res => {
-          this.reloadData();
-        });
-      }
-    });
-  }
-
-  /* Send Record History to parent to open a sidebar
-  */
-
-  public async getRecordsHistory(): Promise<any> {
-    return await this.apollo.query<GetRecordDetailsQueryResponse>({
-      query: GET_RECORD_DETAILS,
-      variables: {
-        id: this.selectedRow.dataItem.id
-      }
-    });
-  }
-
   public onViewHistory(): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
@@ -437,8 +460,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         id: this.selectedRow.dataItem.id
       }
     }).subscribe(res => {
-      this.dialog.open(WhoRecordHistoryComponent, {
-        data: {
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
           record: res.data.record
         }
       });
@@ -447,24 +471,60 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open a confirmation modal and then delete the selected record
   */
-  public onDeleteRow(): void {
+  public onDeleteRow(items: number[]): void {
+    const rowsSelected = items.length;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
-        title: 'Delete row',
-        content: `Do you confirm the deletion of this row ?`,
+        title: `Delete row${rowsSelected > 1 ? 's' : ''}`,
+        content: `Do you confirm the deletion of ${rowsSelected > 1 ?
+          'these ' + rowsSelected : 'this'} row${rowsSelected > 1 ? 's' : ''} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = this.selectedRow.dataItem.id;
-        this.apollo.mutate<DeleteRecordMutationResponse>({
-          mutation: DELETE_RECORD,
-          variables: {
-            id
-          }
-        }).subscribe(res => {
+        const promises = [];
+        for (const index of items) {
+          const id = this.gridData.data[index].id;
+          promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
+            mutation: DELETE_RECORD,
+            variables: { id }
+          }).toPromise());
+        }
+        Promise.all(promises).then(() => {
+          this.reloadData();
+        });
+      }
+    });
+  }
+
+  /* Open a dialog component which provide tools to convert the selected record
+  */
+  public onConvertRecord(items: number[]): void {
+    const rowsSelected = items.length;
+    const record: string = this.gridData.data[items[0]].id;
+    const dialogRef = this.dialog.open(WhoConvertModalComponent, {
+      data: {
+        title: `Convert record${rowsSelected > 1 ? 's' : ''}`,
+        record
+      },
+    });
+    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
+      if (value) {
+        const promises = [];
+        for (const index of items) {
+          const id = this.gridData.data[index].id;
+          promises.push(this.apollo.mutate<ConvertRecordMutationResponse>({
+            mutation: CONVERT_RECORD,
+            variables: {
+              id,
+              form: value.targetForm.id,
+              copyRecord: value.copyRecord
+            }
+          }).toPromise());
+        }
+        Promise.all(promises).then(() => {
           this.reloadData();
         });
       }
@@ -474,10 +534,99 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Reload data and unselect all rows
   */
   private reloadData(): void {
-    this.dataSubscription.unsubscribe();
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    if (!this.parent) {
+      this.dataSubscription.unsubscribe();
+      this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    }
     this.getRecords();
     this.selectedRow = null;
+    this.selectedRowsIndex = [];
+  }
+
+  /* Execute sequentially actions enabled by settings for the floating button
+  */
+  public async onFloatingButtonClick(): Promise<void> {
+    const options = this.settings.floatingButton;
+    let rowsIndexToModify = [...this.selectedRowsIndex];
+
+    if (options.autoSave && options.modifySelectedRows) {
+      const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
+      if (unionRows.length > 0) {
+        await Promise.all(this.promisedRowsModifications(options.modifications, unionRows));
+        this.updatedItems = this.updatedItems.filter(x => !unionRows.some(y => x.id === this.gridData.data[y].id));
+        rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
+      }
+    }
+
+    if (options.autoSave) {
+      await Promise.all(this.promisedChanges());
+    }
+    if (options.modifySelectedRows) {
+      await Promise.all(this.promisedRowsModifications(options.modifications, rowsIndexToModify));
+    }
+    if (this.selectedRowsIndex.length > 0) {
+      const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
+      const promises = [];
+      if (options.notify) {
+        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: options.notificationMessage ? options.notificationMessage : 'Records update',
+            content: selectedRecords,
+            channel: options.notificationChannel
+          }
+        }).toPromise());
+      }
+      if (options.publish) {
+        promises.push(this.apollo.mutate<PublishMutationResponse>({
+          mutation: PUBLISH,
+          variables: {
+            ids: selectedRecords.map(x => x.id),
+            channel: options.publicationChannel
+          }
+        }).toPromise());
+      }
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
+    }
+    if (options.goToNextStep) {
+      this.goToNextStep.emit(true);
+    } else {
+      this.reloadData();
+    }
+  }
+
+  /*  Return a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+      Apply inline edition before applying modifications.
+  */
+  private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
+    const promises = [];
+    for (const index of rows) {
+      const record = this.gridData.data[index];
+      const data = Object.assign({}, record);
+      for (const modification of modifications) {
+        data[modification.field.name] = modification.value;
+      }
+      delete data.id;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: record.id,
+          data
+        }
+      }).toPromise());
+    }
+    return promises;
+  }
+
+  /* Set selected row on three dots menu button click
+  */
+  setSelectedRow(index): void {
+    this.selectedRow = {
+      dataItem: this.gridData.data[index],
+      index
+    };
   }
 
   ngOnDestroy(): void {

@@ -41,7 +41,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTableModule,
     MatStepperModule,
     MatDividerModule,
-    DragDropModule
+    DragDropModule,
   ],
   exports: [WorkflowComponent]
 })

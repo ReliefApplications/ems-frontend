@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'who-widget',
@@ -9,6 +9,9 @@ export class WhoWidgetComponent implements OnInit {
 
   @Input() widget: any;
   @Input() header = true;
+
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 

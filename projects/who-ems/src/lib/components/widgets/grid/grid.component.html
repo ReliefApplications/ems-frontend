@@ -1,74 +1,98 @@
 <div class="widget-container">
-<div class="widget-header" *ngIf="header">{{settings.title}}</div>
-<kendo-grid id="customGrid"
-    class="widget-content"
-    [autoSize]="true"
-    [data]="gridData"
-    [pageSize]="pageSize"
-    [skip]="skip"
-    [loading]="loading"
-    [columnMenu]="true"
-    [reorderable]="true"
-    [sortable]="true"
-    [pageable]="true"
-    [sort]="sort"
-    [selectable]="{checkboxOnly: true, mode: 'single'}"
-    (selectionChange)="selectionChange($event)"
-    (sortChange)="sortChange($event)"
-    (pageChange)="pageChange($event)"
-    filterable="menu"
-    [filter]="filter"
-    (filterChange)="filterChange($event)"
-    (cellClick)="cellClickHandler($event)"
-    >
+  <div class="widget-header" *ngIf="header && !parent">
+    {{settings.title}}
+    <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
+      <button mat-stroked-button color="primary" (click)="onFloatingButtonClick()">
+        {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+  <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
+    [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
+    [sort]="sort" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)"
+    (sortChange)="sortChange($event)" (pageChange)="pageChange($event)" filterable="menu" [filter]="filter"
+    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)">
     <ng-template kendoGridToolbarTemplate position="top">
-        <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
-        <button type="button" kendoGridExcelCommand class="k-button">Export</button>
-        <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
-        <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
-        <ng-container *ngIf="selectedRow">
-            <button class='k-button' (click)="onDeleteRow()" style="float: right">Delete</button>
-            <button class='k-button' (click)="onViewHistory()" style="float: right">History</button>
-            <button class='k-button' (click)="onConvertRecord()" style="float: right">Convert</button>
-            <button class='k-button' (click)="onUpdateRow()" style="float: right">Update</button>
-        </ng-container>
+      <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
+      <button type="button" kendoGridExcelCommand class="k-button">Export</button>
+      <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
+      <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
+      <ng-container *ngIf="selectedRowsIndex.length > 0">
+        <button *ngIf="!settings.actions || settings.actions.delete" class='k-button'
+          (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
+        </button>
+        <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
+          (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
+        </button>
+      </ng-container>
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
-        <ng-container *ngFor="let field of fields">
-            <!-- <ng-container *ngIf="field.resource">
-                <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
-                    <ng-template kendoGridEditTemplate
-                      let-dataItem
-                      let-formGroup="formGroup">
-                      <kendo-dropdownlist
-                        [data]="field.dropdown"
-                        textField="data"
-                        valueField="id"
-                        [valuePrimitive]="true"
-                        [defaultItem]="{id: null, data:'Select item...'}"
-                        [formControl]="formGroup.get(field.name)"
-                      >
-                      </kendo-dropdownlist>
-                    </ng-template>
-                  </kendo-grid-column>
-            </ng-container> -->
-            <ng-container>
-                <kendo-grid-column [field]="field.name" [title]="field.title" [filter]="field.editor" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
-                </kendo-grid-column>
-            </ng-container>
-        </ng-container>
-        <ng-container>
-            <kendo-grid-checkbox-column [columnMenu]="false" [width]="41"></kendo-grid-checkbox-column>
-        </ng-container>
+      <!-- <ng-container *ngIf="field.resource">
+          <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
+              <ng-template kendoGridEditTemplate
+                let-dataItem
+                let-formGroup="formGroup">
+                <kendo-dropdownlist
+                  [data]="field.dropdown"
+                  textField="data"
+                  valueField="id"
+                  [valuePrimitive]="true"
+                  [defaultItem]="{id: null, data:'Select item...'}"
+                  [formControl]="formGroup.get(field.name)"
+                >
+                </kendo-dropdownlist>
+              </ng-template>
+            </kendo-grid-column>
+      </ng-container> -->
+      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
+        [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
+        [columnMenu]="false" showSelectAll="true">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
+        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor !== 'textarea' ? field.editor : ''">
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
+          <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
+          </textarea>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
+        <ng-template kendoGridCellTemplate let-idx="rowIndex">
+          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
+            [matMenuTriggerFor]="menu" (click)="setSelectedRow(idx)">
+          </button>
+
+          <mat-menu #menu="matMenu">
+            <button *ngIf="!settings.actions || settings.actions.delete" mat-menu-item (click)="onDeleteRow([idx])">
+              Delete
+            </button>
+            <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
+              (click)="onViewHistory(childTemplate)">
+              History
+            </button>
+            <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
+              (click)="onConvertRecord([idx])">
+              Convert
+            </button>
+            <button *ngIf="!settings.actions || settings.actions.update" mat-menu-item color="warn"
+              (click)="onUpdateRow()">
+              Update
+            </button>
+          </mat-menu>
+
+        </ng-template>
+      </kendo-grid-column>
     </ng-container>
     <ng-container *ngIf="detailsField">
-        <div *kendoGridDetailTemplate="let dataItem">
-            <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
-        </div>
+      <div *kendoGridDetailTemplate="let dataItem">
+        <who-grid [settings]="detailsField" [parent]="dataItem"></who-grid>
+      </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>
-        No record detected.
+      No record detected.
     </ng-template>
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
-</kendo-grid>
+  </kendo-grid>
 </div>

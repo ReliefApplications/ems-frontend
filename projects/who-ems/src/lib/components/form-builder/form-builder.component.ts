@@ -1,7 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 
@@ -21,7 +20,6 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
-    private formService: FormService,
     private snackBar: WhoSnackBarService
   ) {}
 
@@ -42,11 +40,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
+    if (!this.structure) { this.surveyCreator.survey.showQuestionNumbers = 'off'; }
   }
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
       this.surveyCreator.text = this.structure;
+      if (!this.structure) { this.surveyCreator.survey.showQuestionNumbers = 'off'; }
     }
   }
 
@@ -71,7 +71,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
         locale: event.locale
       }
     });
-    dialogRef.afterClosed().subscribe(() => {});
+    dialogRef.afterClosed().subscribe(() => {
+    });
   }
 
   /*  Making sure that value names are existent and snake case, to not cause backend problems.

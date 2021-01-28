@@ -10,6 +10,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     border-radius: 6px;
+    margin: unset;
   }
   .workflow-name:hover {
     background-color: #dddddd54;
@@ -24,7 +25,7 @@
 }
 
 .step-list-container {
-  margin: 0 -24px 32px;
+  margin: 0 -24px 24px;
 }
 
 .step-list {
