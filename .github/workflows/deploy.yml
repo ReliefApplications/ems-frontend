@@ -28,8 +28,8 @@ jobs:
       run: npm run build:ci
     - name: Build Front-office
       run: npm run build:ci front-office
-    - name: Test
-      run: npm run test:ci
+    # - name: Test
+    #   run: npm run test:ci
     - name: Archive build Back-office
       if: success()
       uses: actions/upload-artifact@v2
