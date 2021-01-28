@@ -14,6 +14,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public settingsForm: FormGroup;
   private applicationSubscription: Subscription;
+  private application: Application;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,6 +25,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       if (application){
+        this.application = application;
         this.settingsForm = this.formBuilder.group(
           {
             id: [{ value: application.id, disabled: true }],
@@ -47,8 +49,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     this.dialog.open(DuplicateApplicationComponent, {
       data: {
-        id: this.settingsForm.value.id,
-        name: this.settingsForm.value.name
+        id: this.application.id,
+        name: this.application.name
       }
     });
   }

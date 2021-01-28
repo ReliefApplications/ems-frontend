@@ -43,7 +43,7 @@ export class DuplicateApplicationComponent implements OnInit {
       if (res.errors) {
         this.snackBar.openSnackBar('App not duplicated: ' + res.errors[0].message);
       } else {
-        this.snackBar.openSnackBar('Succesfully duplicated ' + this.currentApp.name);
+        this.snackBar.openSnackBar('Successfully duplicated ' + this.currentApp.name);
         this.dialogRef.close(res.data.duplicateApplication);
       }
     });
