@@ -264,7 +264,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: black;
   text-align: left;
   line-height: 40px;
-  pointer-events: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding: 0 40px;
@@ -283,7 +282,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-.tile-settings-dialog {
+.tile-settings-dialog, .expanded-widget-dialog {
   max-width: unset !important;
   width: 100%;
   height: calc(100% - 72px);
@@ -296,6 +295,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
   .mat-dialog-content {
     max-height: calc(100% - 68px - 32px);
+  }
+}
+
+.expanded-widget-dialog {
+  .mat-dialog-content {
+    max-height: unset;
+    height: 100%;
   }
 }
 

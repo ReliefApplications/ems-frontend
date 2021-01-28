@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { WorkflowService } from '../../../services/workflow.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
-  EditWorkflowMutationResponse, EDIT_WORKFLOW} from '../../../graphql/mutations';
+  EditWorkflowMutationResponse, EDIT_WORKFLOW } from '../../../graphql/mutations';
 
 @Component({
   selector: 'app-workflow',
@@ -35,9 +35,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === SELECTED STEP ===
   public dragging: boolean;
   public selectedStep: Step;
+  public selectedStepIndex: number;
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+
+  // === NEXT BUTTON ===
+  private nextData: any[] = null;
+  public showSettings = false;
+  public settingsForm: FormGroup;
+  public fields: any[];
 
   constructor(
     private apollo: Apollo,
@@ -127,6 +134,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             return x.id !== res.data.deleteStep.id;
           });
           this.selectedStep = null;
+          this.selectedStepIndex = null;
           this.router.navigate(['./'], { relativeTo: this.route });
         });
       }
@@ -161,6 +169,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.dragging = true;
   }
 
+
   /* Display selected step on click*/
   onStepClick(step: Step): void {
     if (this.dragging) {
@@ -169,16 +178,47 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.selectedStep !== step) {
       this.selectedStep = step;
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
-      } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
-      }
+      this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
+      this.navigateToSelectedStep();
     }
   }
 
   ngOnDestroy(): void {
     this.routeSubscription.unsubscribe();
     this.workflowSubscription.unsubscribe();
+  }
+
+  /* Get data from within selected step
+  */
+  onActivate(elementRef: any): void {
+    if (elementRef.goToNextStep) {
+      elementRef.goToNextStep.subscribe(event => {
+        if (event) {
+          this.goToNextStep();
+        }
+      });
+    }
+  }
+
+  /* Navigate to the next step if possible and change selected step / index consequently
+  */
+  private goToNextStep(): void {
+    if (this.selectedStepIndex + 1 < this.steps.length) {
+      this.selectedStepIndex += 1;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      this.navigateToSelectedStep();
+    } else {
+      this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
+    }
+  }
+
+  /* Navigate to selected step
+  */
+  private navigateToSelectedStep(): void {
+    if (this.selectedStep.type === ContentType.form) {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id ], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    }
   }
 }

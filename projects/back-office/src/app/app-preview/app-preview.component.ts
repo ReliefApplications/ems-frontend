@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Application, Permissions, WhoApplicationService } from '@who-ems/builder';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Application, ContentType, Permissions, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 
@@ -18,6 +18,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   public navGroups = [];
 
   // === APPLICATION ===
+  public application: Application;
   private applicationSubscription: Subscription;
 
   // === PREVIEWED ROLE ID ===
@@ -26,7 +27,8 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private applicationService: WhoApplicationService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -71,6 +73,13 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
             navItems: adminNavItems
           }
         ];
+        if (!this.application || application.id !== this.application.id) {
+          const { pages: [firstPage, ..._]} = application;
+          if (firstPage) {
+            this.router.navigate([`app-preview/${application.id}/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          }
+        }
+        this.application = application;
       } else {
         this.navGroups = [];
       }

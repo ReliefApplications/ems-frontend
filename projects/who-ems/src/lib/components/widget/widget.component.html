@@ -1,15 +1,15 @@
 <ng-container *ngIf="widget.component === 'chart'">
-    <who-chart class="widget-content" [settings]="widget.settings"></who-chart>
+    <who-chart class="widget-content" [header]="header" [settings]="widget.settings"></who-chart>
 </ng-container>
 <ng-container *ngIf="widget.component === 'scheduler'">
-    <who-scheduler class="widget-content" [settings]="widget.settings"></who-scheduler>
+    <who-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></who-scheduler>
 </ng-container>
 <ng-container *ngIf="widget.component === 'grid'">
-    <who-grid class="widget-content" [settings]="widget.settings"></who-grid>
+    <who-grid class="widget-content" [header]="header" [settings]="widget.settings" (goToNextStep)="goToNextStep.emit($event)"></who-grid>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
-    <who-map class="widget-content" [settings]="widget.settings"></who-map>
+    <who-map class="widget-content" [header]="header" [settings]="widget.settings"></who-map>
 </ng-container>
 <ng-container *ngIf="widget.component === 'editor'">
-    <who-editor class="widget-content" [title]="widget.settings.title" [text]="widget.settings.text"></who-editor>
+    <who-editor class="widget-content" [header]="header" [title]="widget.settings.title" [text]="widget.settings.text"></who-editor>
 </ng-container>

@@ -17,7 +17,7 @@ import {
   EditUserMutationResponse, EDIT_USER,
   EditRoleMutationResponse, EDIT_ROLE,
   AddChannelMutationResponse, ADD_CHANNEL,
-  DeleteChannelMutationResponse, DELETE_CHANNEL } from '../graphql/mutations';
+  DeleteChannelMutationResponse, DELETE_CHANNEL, ADD_SUBSCRIPTION, AddSubscriptionMutationResponse } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -62,7 +62,11 @@ export class WhoApplicationService {
           description: value.description
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar('Application updated');
+        if (res.errors) {
+          this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message);
+        } else {
+          this.snackBar.openSnackBar('Application updated');
+        }
       });
   }
 
@@ -233,7 +237,7 @@ export class WhoApplicationService {
     this.apollo.mutate<AddRoleToUserMutationResponse>({
       mutation: ADD_ROLE_TO_USER,
       variables: {
-        id: value.user.id,
+        username: value.email,
         role: value.role
       }
     }).subscribe(res => {
@@ -294,4 +298,23 @@ export class WhoApplicationService {
       this._application.next(application);
     });
   }
+
+  /* Add a new subscription to the application.
+  */
+ addSubscription(value: {routingKey: string, convertTo: string, channel: string}): void {
+  const application = this._application.getValue();
+  this.apollo.mutate<AddSubscriptionMutationResponse>({
+    mutation: ADD_SUBSCRIPTION,
+    variables: {
+      application: application.id,
+      routingKey: value.routingKey,
+      convertTo: value.convertTo,
+      channel: value.channel
+    }
+  }).subscribe(res => {
+    this.snackBar.openSnackBar('New subscription created.');
+    application.subscriptions = application.subscriptions.concat([res.data.addSubscription]);
+    this._application.next(application);
+  });
+}
 }

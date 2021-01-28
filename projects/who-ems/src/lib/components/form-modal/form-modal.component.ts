@@ -6,6 +6,7 @@ import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'who-form-modal',
@@ -23,11 +24,12 @@ export class WhoFormModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<WhoFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      template: string,
-      locale: string,
-      recordId?: string
+      template?: string,
+      recordId?: string,
+      locale?: string
     },
-    private apollo: Apollo
+    private apollo: Apollo,
+    private formService: FormService
   ) {
     this.containerId = uuidv4();
   }
@@ -77,7 +79,7 @@ export class WhoFormModalComponent implements OnInit {
           data: survey.data
         }
       }).subscribe(res => {
-        this.dialogRef.close({ template: this.data.template, data: res.data.editRecord });
+        this.dialogRef.close({ template: this.form.id, data: res.data.editRecord });
       });
     } else {
       this.apollo.mutate<AddRecordMutationResponse>({

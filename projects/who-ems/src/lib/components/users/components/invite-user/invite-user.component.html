@@ -2,23 +2,23 @@
 <div mat-dialog-content>
     <form [formGroup]="inviteForm">
         <div class="form-group">
-            <label class="invite-label">Search for an existing user</label>
+            <label class="invite-label">Select an existing one, or invite a new one</label>
             <mat-form-field>
                 <input type="text"
-                       placeholder="Type to find an user"
-                       aria-label="User"
+                       placeholder="Email"
+                       aria-label="Email"
                        matInput
-                       formControlName="user"
+                       formControlName="email"
                        [matAutocomplete]="auto">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayUser">
-                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
                     {{user.username}}
                   </mat-option>
                 </mat-autocomplete>
-                <button mat-button *ngIf="user" matSuffix mat-icon-button aria-label="Clear" (click)="user=''">
+                <button mat-button *ngIf="email" matSuffix mat-icon-button aria-label="Clear" (click)="email=''">
                     <mat-icon>close</mat-icon>
                 </button>
-              </mat-form-field>
+            </mat-form-field>
             <label class="invite-label">Select the role to assign</label>
             <mat-form-field appearance="outline">
                 <mat-label>Role</mat-label>

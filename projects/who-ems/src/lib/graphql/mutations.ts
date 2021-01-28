@@ -6,6 +6,7 @@ import { User, Role } from '../models/user.model';
 import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
+import { Subscription } from '../models/subscription.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -21,6 +22,21 @@ mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
 export interface EditRecordMutationResponse {
   loading: boolean;
   editRecord: Record;
+}
+
+// === CONVERT RECORD ===
+export const CONVERT_RECORD = gql`
+mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
+  convertRecord(id: $id, form: $form, copyRecord: $copyRecord) {
+    id
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface ConvertRecordMutationResponse {
+  loading: boolean;
+  convertRecord: Record;
 }
 
 // === ADD RECORD ===
@@ -143,8 +159,8 @@ export interface AddRoleMutationResponse {
 }
 
 export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($id: ID!, $role: ID!) {
-  addRoleToUser(id: $id, role: $role) {
+mutation addRoleToUser($username: String!, $role: ID!) {
+  addRoleToUser(username: $username, role: $role) {
     id
     username
     name
@@ -318,4 +334,77 @@ mutation deleteChannel($id: ID!) {
 export interface DeleteChannelMutationResponse {
   loading: boolean;
   deleteChannel: Channel;
+}
+
+// === PUBLISH NOTIFICATION ===
+export const PUBLISH_NOTIFICATION = gql`
+mutation publishNotification($action: String!, $content: JSON!, $channel: ID!) {
+  publishNotification(action: $action, content: $content, channel: $channel){
+    id
+    action
+    content
+    createdAt
+    channel {
+      id
+      title
+      application {
+        id
+        name
+      }
+    }
+    seenBy {
+      id
+      username
+    }
+  }
+}`;
+
+export interface PublishNotificationMutationResponse {
+  loading: boolean;
+  publishNotification: Notification;
+}
+
+// === PUBLISH RECORDS ===
+export const PUBLISH = gql`
+mutation publish($ids: [ID]!, $channel: ID!) {
+  publish(ids: $ids, channel: $channel)
+}`;
+
+export interface PublishMutationResponse {
+  loading: boolean;
+  publish: boolean;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORD = gql`
+mutation deleteRecord($id: ID!) {
+  deleteRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRecordMutationResponse {
+  loading: boolean;
+  deleteRecord: Record;
+}
+
+// === ADD SUBSCRIPTION ===
+export const ADD_SUBSCRIPTION = gql`
+mutation addSubscription($application: ID!, $routingKey: String!, $convertTo: ID, $channel: ID) {
+  addSubscription(application: $application, routingKey: $routingKey, convertTo: $convertTo, channel: $channel) {
+    routingKey
+    convertTo {
+      id
+      name
+    }
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface AddSubscriptionMutationResponse {
+  loading: boolean;
+  addSubscription: Subscription;
 }

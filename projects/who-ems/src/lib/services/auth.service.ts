@@ -24,7 +24,6 @@ export class WhoAuthService {
     private apollo: Apollo
   ) {
     this.checkAccount();
-    this.getProfile();
   }
 
   /*  Check if user has permission.
@@ -67,17 +66,35 @@ export class WhoAuthService {
   */
   checkAccount(): void {
     this.account = this.msalService.getAccount();
+    this.msalService.acquireTokenSilent({
+      scopes: [
+        'user.read',
+        'openid',
+        'profile',
+      ],
+      account: this.account
+    }).then(() => this.getProfile())
+      .catch(() => {
+        if (this.account) {
+          this.getProfile();
+        } else {
+          this._user.next(null);
+        }
+      });
   }
 
   /*  Get the profile from the database, using GraphQL.
   */
   private getProfile(): void {
-    this.apollo.watchQuery<GetProfileQueryResponse>({
+    this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
-      fetchPolicy: 'network-only'
-    }).valueChanges.subscribe(res => {
-      this._user.next(res.data.me);
-    });
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
+    }).subscribe(
+      res => {
+        this._user.next(res.data.me);
+      }
+    );
   }
 
   /*  Return the user as an Observable.

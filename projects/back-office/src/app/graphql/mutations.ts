@@ -493,6 +493,41 @@ export interface EditApplicationMutationResponse {
   editApplication: Application;
 }
 
+// === DUPLICATE APPLICATION ===
+export const DUPLICATE_APPLICATION = gql`
+mutation duplicateApplication($name: String!, $application: ID! ) {
+  duplicateApplication(name: $name, application: $application){
+    id
+    name
+    createdAt
+    status
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+    usersCount
+  }
+}`;
+// in () input parameters, in {} return values
+
+export interface DuplicateApplicationMutationResponse {
+  loading: boolean;
+  duplicateApplication: Application;
+}
+
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {
@@ -594,6 +629,7 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
     name
     type
     content
+    createdAt
     permissions {
       canSee {
         id
@@ -636,3 +672,4 @@ export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
 }
+

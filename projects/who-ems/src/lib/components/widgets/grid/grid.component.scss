@@ -2,3 +2,16 @@
     flex-grow: 2;
     max-height: calc(100% - 41px);
 }
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .k-grid-content, .k-grid-content-locked, .k-pager-wrap {
+    white-space: nowrap !important;
+}
+
+textarea {
+    width: 100% !important;
+}
