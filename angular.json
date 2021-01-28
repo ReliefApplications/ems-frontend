@@ -69,7 +69,8 @@
             ],
             "styles": [
               {
-                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
               },
               "projects/back-office/src/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
@@ -95,7 +96,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -145,7 +145,8 @@
             ],
             "styles": [
               {
-                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
               },
               "projects/back-office/src/styles.scss",
               "node_modules/survey-angular/survey.css",
@@ -207,7 +208,8 @@
             ],
             "styles": [
               {
-                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
               },
               "projects/front-office/src/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
@@ -229,7 +231,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
