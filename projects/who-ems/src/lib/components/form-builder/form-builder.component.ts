@@ -39,13 +39,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-    if (!this.structure) this.surveyCreator.survey.showQuestionNumbers = 'off';
+    if (!this.structure) { this.surveyCreator.survey.showQuestionNumbers = 'off'; }
   }
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
       this.surveyCreator.text = this.structure;
-      if (!this.structure) this.surveyCreator.survey.showQuestionNumbers = 'off';
+      if (!this.structure) { this.surveyCreator.survey.showQuestionNumbers = 'off'; }
     }
   }
 

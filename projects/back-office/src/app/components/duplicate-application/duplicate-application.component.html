@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Duplicating <i>{{currentApp.name}}</i></h2>
+<div mat-dialog-content>
+  <form [formGroup]="duplicateForm">
+    <div class="form-group">
+      <h3>Please enter a name for the new application</h3>
+      <mat-form-field appearance="outline" style="flex: 2;">
+        <mat-label>
+          New Application Name
+        </mat-label>
+        <input matInput type='text' formControlName="name" placeholder="Enter a name for the application" />
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Close</button>
+  <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="!duplicateForm.valid">Duplicate</button>
+</div>
