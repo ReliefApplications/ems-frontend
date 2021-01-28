@@ -6,8 +6,12 @@ CONNECTION=reliefapps@92.243.25.191
 
 set -e
 
+echo -e "Creating destination ..."
+CMD="'""echo '$SSH_PASS' | sudo -S mkdir -p $REMOTE_PATH""'"
+ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
+
 echo -e "Cleaning destination ..."
-CMD="'""echo '$SSH_PASS' | sudo mkdir -p $REMOTE_PATH && cd $REMOTE_PATH && echo '$SSH_PASS' | sudo rm -rf *""'"
+CMD="'""cd $REMOTE_PATH && echo '$SSH_PASS' | sudo -S rm -rf *""'"
 ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Synchronizing files ..."
