@@ -159,10 +159,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   /*  Open a dialog to give a name for the duplicated application
   */
   onDuplicate(application: Application): void {
-    this.dialog.open(DuplicateApplicationComponent, {
+    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {
         id: application.id,
         name: application.name
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applications.data.push(value);
+        this.applications.data = this.applications.data;
       }
     });
   }

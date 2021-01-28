@@ -1,21 +1,18 @@
- <form *ngIf="duplicateForm" [formGroup]="duplicateForm">
- <h2>Duplicating <i>{{currentApp.name}}</i></h2>
+<h2 mat-dialog-title>Duplicating <i>{{currentApp.name}}</i></h2>
+<div mat-dialog-content>
+  <form [formGroup]="duplicateForm">
     <div class="form-group">
-        <h3>Please enter a name for the new application</h3>
-        <mat-form-field appearance="outline" style="flex: 2;">
-            <mat-label>
-              New Application Name
-            </mat-label>
-            <input matInput type='text' formControlName="name" placeholder="Enter a name for the application" />
-          </mat-form-field>
+      <h3>Please enter a name for the new application</h3>
+      <mat-form-field appearance="outline" style="flex: 2;">
+        <mat-label>
+          New Application Name
+        </mat-label>
+        <input matInput type='text' formControlName="name" placeholder="Enter a name for the application" />
+      </mat-form-field>
     </div>
-    <button mat-flat-button (click)="onSubmit()" color="primary"  [disabled]="duplicateForm.invalid">Save</button> 
-    <button mat-flat-button (click)="onCancel()" color="primary">Cancel</button> 
-</form>
- 
-
-
-
-
-
-
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Close</button>
+  <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="!duplicateForm.valid">Create</button>
+</div>
