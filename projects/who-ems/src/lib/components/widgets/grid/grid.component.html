@@ -1,5 +1,13 @@
 <div class="widget-container">
-  <div class="widget-header" *ngIf="header">{{settings.title}}</div>
+  <div class="widget-header" *ngIf="header && !parent">
+    {{settings.title}}
+    <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
+      <button mat-stroked-button color="primary" (click)="onFloatingButtonClick()">
+        {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
   <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
     [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
     [sort]="sort" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)"
@@ -37,13 +45,17 @@
               </ng-template>
             </kendo-grid-column>
       </ng-container> -->
-      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert"
+      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
         [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
         [columnMenu]="false" showSelectAll="true">
       </kendo-grid-checkbox-column>
 
       <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
-        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor">
+        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor !== 'textarea' ? field.editor : ''">
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
+          <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
+          </textarea>
+        </ng-template>
       </kendo-grid-column>
 
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
@@ -75,7 +87,7 @@
     </ng-container>
     <ng-container *ngIf="detailsField">
       <div *kendoGridDetailTemplate="let dataItem">
-        <who-sub-grid [settings]="detailsField" [parent]="dataItem"></who-sub-grid>
+        <who-grid [settings]="detailsField" [parent]="dataItem"></who-grid>
       </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>

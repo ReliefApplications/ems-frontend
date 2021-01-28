@@ -1,25 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SettingsComponent } from './settings.component';
+import { DuplicateApplicationComponent } from './duplicate-application.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [SettingsComponent],
+  declarations: [DuplicateApplicationComponent],
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    ReactiveFormsModule,
     MatButtonModule,
-    MatCheckboxModule,
-    MatSelectModule
+    MatDialogModule
   ],
-  exports: [SettingsComponent]
+  exports: [DuplicateApplicationComponent]
 })
-export class SettingsModule { }
+export class DuplicateApplicationModule { }

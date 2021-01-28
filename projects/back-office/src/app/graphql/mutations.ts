@@ -493,6 +493,41 @@ export interface EditApplicationMutationResponse {
   editApplication: Application;
 }
 
+// === DUPLICATE APPLICATION ===
+export const DUPLICATE_APPLICATION = gql`
+mutation duplicateApplication($name: String!, $application: ID! ) {
+  duplicateApplication(name: $name, application: $application){
+    id
+    name
+    createdAt
+    status
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+    usersCount
+  }
+}`;
+// in () input parameters, in {} return values
+
+export interface DuplicateApplicationMutationResponse {
+  loading: boolean;
+  duplicateApplication: Application;
+}
+
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {
@@ -588,13 +623,12 @@ export interface DeleteStepMutationResponse {
 
 // === EDIT STEP ===
 export const EDIT_STEP = gql`
-mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON, $settings: JSON) {
-  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions, settings: $settings) {
+mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
+  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
     id
     name
     type
     content
-    settings
     createdAt
     permissions {
       canSee {
@@ -639,18 +673,3 @@ export interface AddStepMutationResponse {
   addStep: Step;
 }
 
-// === EDIT RECORD ===
-export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
-  editRecord(id: $id, data: $data) {
-    id
-    data(display: $display)
-    createdAt
-    modifiedAt
-  }
-}`;
-
-export interface EditRecordMutationResponse {
-  loading: boolean;
-  editRecord: Record;
-}
