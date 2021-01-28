@@ -46,7 +46,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onDuplicate(): void {
     this.dialog.open(DuplicateApplicationComponent, {
-      data: {appID: this.settingsForm.controls.id.value, name: this.settingsForm.value.name}
+      data: {
+        id: this.settingsForm.value.id,
+        name: this.settingsForm.value.name
+      }
     });
   }
 }

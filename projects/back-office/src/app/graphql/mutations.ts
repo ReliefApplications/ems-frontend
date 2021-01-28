@@ -495,8 +495,8 @@ export interface EditApplicationMutationResponse {
 
 // === DUPLICATE APPLICATION ===
 export const DUPLICATE_APPLICATION = gql`
-mutation duplicateApplication($name: String!, $previousId: String! ) {
-  duplicateApplication(name: $name, previousId: $previousId){
+mutation duplicateApplication($name: String!, $application: ID! ) {
+  duplicateApplication(name: $name, application: $application){
     id
     name
   }

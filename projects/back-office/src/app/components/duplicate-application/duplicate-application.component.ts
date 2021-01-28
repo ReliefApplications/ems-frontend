@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DuplicateApplicationMutationResponse, DUPLICATE_APPLICATION} from '../../graphql/mutations';
-import { WhoSnackBarService } from '@who-ems/builder';
+import { Application, WhoSnackBarService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 
 @Component({
@@ -12,7 +12,7 @@ import { Apollo } from 'apollo-angular';
 })
 export class DuplicateApplicationComponent implements OnInit {
 
-  public currentApp;
+  public currentApp: Application;
   public duplicateForm: FormGroup;
 
   constructor(
@@ -37,12 +37,13 @@ export class DuplicateApplicationComponent implements OnInit {
       mutation: DUPLICATE_APPLICATION,
       variables: {
         name: this.duplicateForm.value.name,
-        previousId:  this.currentApp.appID,
+        application:  this.currentApp.id,
       }
     }).subscribe(res => {
       if (res.errors) {
         this.snackBar.openSnackBar('App not duplicated: ' + res.errors[0].message);
       } else {
+        console.log(res);
         this.snackBar.openSnackBar('Succesfully duplicated ' + this.currentApp.name);
         this.dialogRef.close();
       }
