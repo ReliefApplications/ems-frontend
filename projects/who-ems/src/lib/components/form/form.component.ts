@@ -30,7 +30,6 @@ export class WhoFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.survey = new Survey.Model(this.form.structure);
-    this.survey.completedHtml = '<h3>This form has successfully been submitted. Thank you.</h3>';
     if (this.record && this.record.data) {
       this.survey.data = this.record.data;
     }
