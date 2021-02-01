@@ -26,6 +26,8 @@ import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
+localStorage.setItem('loaded', 'false');
+
 /*  Configuration of the Apollo client.
 */
 export function provideApollo(httpLink: HttpLink): any {
@@ -54,6 +56,12 @@ export function provideApollo(httpLink: HttpLink): any {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
+      },
+      connectionCallback: (error) => {
+        if (localStorage.getItem('loaded') === 'true') {
+          location.reload();
+        }
+        localStorage.setItem('loaded', 'true');
       }
     }
   });
