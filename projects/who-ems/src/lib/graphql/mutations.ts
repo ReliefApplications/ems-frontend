@@ -409,6 +409,19 @@ export interface AddSubscriptionMutationResponse {
   addSubscription: Subscription;
 }
 
+// === EDIT SUBSCRIPTION ===
+export const EDIT_SUBSCRIPTION = gql`
+mutation editSubscription($applicationId: ID!, $routingKey: String!,  $convertTo: String!, $channel: String!,  $previousSubscription: String!, ) {
+  editSubscription(applicationId: $applicationId, routingKey: $routingKey, convertTo: $convertTo, channel: $channel, previousSubscription: $previousSubscription) {
+    id
+  }
+}`;
+
+export interface EditSubscriptionMutationResponse {
+  loading: boolean;
+  editSubscription: Subscription;
+}
+
 // === DELETE SUBSCRIPTION ===
 export const DELETE_SUBSCRIPTION = gql`
 mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {

@@ -19,6 +19,7 @@ import {
   AddChannelMutationResponse, ADD_CHANNEL,
   DeleteChannelMutationResponse, DELETE_CHANNEL,
   AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
+  EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
   DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -335,6 +336,26 @@ export class WhoApplicationService {
     this.snackBar.openSnackBar('Removed subscription.');
     application.subscriptions = application.subscriptions.filter(sub =>  sub.routingKey !== value);
     this._application.next(application);
+  });
+  }
+
+  /* Edit existing subscription
+  */
+ editSubscription(value, previousSubscription): void {
+  const application = this._application.getValue();
+  this.apollo.mutate<EditSubscriptionMutationResponse>({
+    mutation: EDIT_SUBSCRIPTION,
+    variables: {
+      applicationId: application.id,
+      routingKey: value.routingKey,
+      convertTo: value.convertTo,
+      channel: value.channel,
+      previousSubscription
+    }
+  }).subscribe(res => {
+    this.snackBar.openSnackBar('Edited subscription.');
+    const applicationUpdated = this._application.getValue();
+    this._application.next(applicationUpdated);
   });
   }
 }

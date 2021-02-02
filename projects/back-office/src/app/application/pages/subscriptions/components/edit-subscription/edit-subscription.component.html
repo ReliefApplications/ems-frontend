@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>Edit Subscription</h1>
+<div mat-dialog-content>
+    <form [formGroup]="subscriptionForm">
+        <div class="form-group">
+            <!-- <mat-form-field appearance="outline">
+                <mat-label>Listen to</mat-label>
+                <input matInput formControlName="routingKey" type="text" placeholder="Enter a routing key" />
+            </mat-form-field> -->
+            <mat-form-field appearance="outline">
+                <mat-label></mat-label>
+                <input type="text"
+                        placeholder="Select a routing key"
+                       matInput
+                       formControlName="routingKey"
+                       [matAutocomplete]="auto">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name">
+                        <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
+                            {{channel.title}}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-autocomplete>
+                <button mat-button *ngIf="routingKey" matSuffix mat-icon-button aria-label="Clear" (click)="routingKey=''">
+                    <mat-icon>close</mat-icon>
+                </button>
+                <mat-hint>Message broker routing key</mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>{{dataIn.convertTo.name}}</mat-label>
+                <mat-select formControlName="convertTo">
+                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>{{dataIn.channel.title}}</mat-label>
+                <mat-select formControlName="channel">
+                    <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
+        [disabled]="!subscriptionForm.valid">Submit</button>
+</div>

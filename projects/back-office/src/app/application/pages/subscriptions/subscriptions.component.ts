@@ -4,6 +4,7 @@ import { Application, Channel, Subscription as ApplicationSubscription, WhoAppli
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
+import { EditSubscriptionComponent } from './components/edit-subscription/edit-subscription.component';
 
 @Component({
   selector: 'app-subscriptions',
@@ -68,6 +69,25 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     if (element) {
       this.applicationService.deleteSubscription(element.routingKey);
     }
+  }
+
+  onEdit(element): void {
+    const dialogRef = this.dialog.open(EditSubscriptionComponent, {
+      width: '400px',
+      data: {
+        data: element,
+        channels: this.channels,
+      }
+    });
+    dialogRef.afterClosed().subscribe((value: {
+      routingKey: string,
+      convertTo: string,
+      channel: string
+    }) => {
+      if (value) {
+        this.applicationService.editSubscription(value, element.routingKey);
+      }
+    });
   }
 
 }

@@ -15,10 +15,11 @@ import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { WhoConfirmModalModule } from '@who-ems/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { EditSubscriptionComponent } from './components/edit-subscription/edit-subscription.component';
 
 
 @NgModule({
-  declarations: [SubscriptionsComponent, AddSubscriptionComponent],
+  declarations: [SubscriptionsComponent, AddSubscriptionComponent, EditSubscriptionComponent],
   imports: [
     CommonModule,
     SubscriptionsRoutingModule,
