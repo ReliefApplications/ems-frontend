@@ -16,7 +16,8 @@ import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
-import { Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2, ComponentFactoryResolver, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
+  ComponentFactoryResolver, EventEmitter } from '@angular/core';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
