@@ -64,7 +64,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDelete(element) {
+  onDelete(element): void {
     if (element) {
       this.applicationService.deleteSubscription(element.routingKey);
     }
