@@ -39,7 +39,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-    if (!this.structure) { 
+    if (!this.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }

@@ -408,3 +408,16 @@ export interface AddSubscriptionMutationResponse {
   loading: boolean;
   addSubscription: Subscription;
 }
+
+// === DELETE SUBSCRIPTION ===
+export const DELETE_SUBSCRIPTION = gql`
+mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {
+  deleteSubscription(applicationId: $applicationId, routingKey: $routingKey) {
+    id
+  }
+}`;
+
+export interface DeleteSubscriptionMutationResponse {
+  loading: boolean;
+  deleteSubscription: Subscription;
+}

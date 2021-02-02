@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Application, Channel, Subscription as ApplicationSubscription, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
+import { Apollo } from 'apollo-angular';
 import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
 
 @Component({
@@ -14,7 +15,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public subscriptions: ApplicationSubscription[];
   public loading = true;
-  public displayedColumns: string[] = ['routingKey', 'convertTo', 'channel'];
+  public displayedColumns: string[] = ['routingKey', 'convertTo', 'channel', 'actions'];
 
   // === SUBSCRIPTIONS ===
   private applicationSubscription: Subscription;
@@ -23,6 +24,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: WhoApplicationService,
     public dialog: MatDialog,
+    private apollo: Apollo,
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +62,12 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
         this.applicationService.addSubscription(value);
       }
     });
+  }
+
+  onDelete(element) {
+    if (element) {
+      this.applicationService.deleteSubscription(element.routingKey);
+    }
   }
 
 }
