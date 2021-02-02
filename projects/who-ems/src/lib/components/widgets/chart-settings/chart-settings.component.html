@@ -6,11 +6,13 @@
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" type="string" />
             </mat-form-field>
-    
             <mat-form-field>
                 <mat-label>Chart Type</mat-label>
                 <mat-select formControlName="type">
-                    <mat-option *ngFor="let type of types" [value]="type"> {{type}}</mat-option>
+                    <mat-select-trigger><mat-icon inline=true>{{type.icon}}</mat-icon>{{type.name | uppercase }}</mat-select-trigger>
+                    <mat-option *ngFor="let type of types" [value]="type.name">
+                        <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
