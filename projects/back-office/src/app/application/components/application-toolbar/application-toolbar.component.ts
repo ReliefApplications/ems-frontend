@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WhoApplicationService } from '@who-ems/builder';
+import { WhoApplicationService, WhoConfirmModalComponent } from '@who-ems/builder';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -11,7 +12,8 @@ export class ApplicationToolbarComponent implements OnInit {
 
   constructor(
     private applicationService: WhoApplicationService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -22,6 +24,19 @@ export class ApplicationToolbarComponent implements OnInit {
   }
 
   onPublish(): void {
-    this.applicationService.publish();
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: `Publish application`,
+        content: `Do you confirm publish application ?`,
+        confirmText: 'Confirm',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.publish();
+      }
+    });
+
   }
 }
