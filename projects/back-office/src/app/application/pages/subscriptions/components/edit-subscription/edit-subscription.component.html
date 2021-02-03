@@ -34,13 +34,13 @@
                        [matAutocomplete]="auto">
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{dataIn.convertTo.name}}</mat-label>
+                <mat-label>{{dataIn.convertTo?.name ? dataIn.convertTo.name : 'Select a form'}}</mat-label>
                 <mat-select formControlName="convertTo">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{dataIn.channel.title}}</mat-label>
+                <mat-label>{{dataIn.channel?.title ? dataIn.channel.title : 'Select a channel' }}</mat-label>
                 <mat-select formControlName="channel">
                     <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}</mat-option>
                 </mat-select>

@@ -22,7 +22,7 @@ export class EditSubscriptionComponent implements OnInit {
    // === DATA ===
    private applications: Application[];
    public filteredApplications: Observable<Application[]>;
-   dataIn;
+   public dataIn;
 
    get routingKey(): string {
      return this.subscriptionForm.value.routingKey;
@@ -44,8 +44,8 @@ export class EditSubscriptionComponent implements OnInit {
     this.subscriptionForm = this.formBuilder.group({
       routingKey: [this.dataIn.routingKey, Validators.required],
       title: [this.dataIn.title, Validators.required],
-      convertTo: [this.dataIn.convertTo.id],
-      channel: [this.dataIn.channel.id]
+      convertTo: [this.dataIn.convertTo?.id ? this.dataIn.convertTo.id : ''],
+      channel: [this.dataIn.channel?.id ? this.dataIn.channel.id : '']
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS
