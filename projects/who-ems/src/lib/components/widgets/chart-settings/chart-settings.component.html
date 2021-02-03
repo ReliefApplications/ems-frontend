@@ -2,15 +2,17 @@
     <form [formGroup]="tileForm">
         <div class="form-group">
             <div class="form-group-title">General</div>
-            <mat-form-field appearance="outline" >
+            <mat-form-field appearance="outline">
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" type="string" />
             </mat-form-field>
-    
-            <mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>Chart Type</mat-label>
                 <mat-select formControlName="type">
-                    <mat-option *ngFor="let type of types" [value]="type"> {{type}}</mat-option>
+                    <mat-select-trigger><mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase }}</mat-select-trigger>
+                    <mat-option *ngFor="let type of types" [value]="type.name">
+                        <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
         </div>

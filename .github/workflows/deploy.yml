@@ -74,7 +74,7 @@ jobs:
 
 
   deploy_front_office:
-    name: Deploy Back-office
+    name: Deploy Front-office
     runs-on: ubuntu-latest
     needs: build
 

@@ -1,7 +1,7 @@
 UI Builder Front-end
 =======
 
-This front-end was made using [Angluar](https://angular.io/). It uses multiple external packages, but the relevant ones are:
+This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
 *   [Material Angular](https://material.angular.io/), for the UI
 *   [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards

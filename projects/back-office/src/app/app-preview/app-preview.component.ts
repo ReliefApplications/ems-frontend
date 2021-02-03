@@ -100,5 +100,4 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.applicationSubscription.unsubscribe();
   }
-
 }
