@@ -26,6 +26,14 @@
                 <mat-hint>Message broker routing key</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
+                <mat-label>{{dataIn.title}}</mat-label>
+                <input type="text"
+                        placeholder="Change the name of your subscription"
+                       matInput
+                       formControlName="title"
+                       [matAutocomplete]="auto">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>{{dataIn.convertTo.name}}</mat-label>
                 <mat-select formControlName="convertTo">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>

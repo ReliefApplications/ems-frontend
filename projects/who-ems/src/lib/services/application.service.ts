@@ -348,6 +348,7 @@ export class WhoApplicationService {
     mutation: EDIT_SUBSCRIPTION,
     variables: {
       applicationId: application.id,
+      title: value.title,
       routingKey: value.routingKey,
       convertTo: value.convertTo,
       channel: value.channel,
@@ -358,6 +359,7 @@ export class WhoApplicationService {
     application.subscriptions = application.subscriptions.map(sub =>  {
       if (sub.routingKey === previousSubscription) {
         sub.routingKey = value.routingKey;
+        sub.title = value.title;
         sub.convertTo.name = convertToName;
         sub.channel.title = channelName;
       }

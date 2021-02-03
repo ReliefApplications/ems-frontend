@@ -39,7 +39,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
         this.subscriptions = [];
       }
     });
-    console.log(this.subscriptions)
   }
 
   ngOnDestroy(): void {
@@ -84,6 +83,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: {
       routingKey: string,
+      title: string,
       convertTo: string,
       channel: string
     }) => {
