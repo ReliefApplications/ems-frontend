@@ -341,7 +341,7 @@ export class WhoApplicationService {
 
   /* Edit existing subscription
   */
- editSubscription(value, previousSubscription): void {
+ editSubscription(value, previousSubscription, convertToName, channelName): void {
   const application = this._application.getValue();
   this.apollo.mutate<EditSubscriptionMutationResponse>({
     mutation: EDIT_SUBSCRIPTION,
@@ -350,12 +350,19 @@ export class WhoApplicationService {
       routingKey: value.routingKey,
       convertTo: value.convertTo,
       channel: value.channel,
-      previousSubscription
+      previousSubscription,
     }
   }).subscribe(res => {
     this.snackBar.openSnackBar('Edited subscription.');
-    const applicationUpdated = this._application.getValue();
-    this._application.next(applicationUpdated);
+    application.subscriptions = application.subscriptions.map(sub =>  {
+      if (sub.routingKey === previousSubscription) {
+        sub.routingKey = value.routingKey;
+        sub.convertTo.name = convertToName;
+        sub.channel.title = channelName;
+      }
+      return sub;
+    });
+    this._application.next(application);
   });
   }
 }

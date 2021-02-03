@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
 import { EditSubscriptionComponent } from './components/edit-subscription/edit-subscription.component';
+import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-subscriptions',
@@ -85,7 +86,13 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       channel: string
     }) => {
       if (value) {
-        this.applicationService.editSubscription(value, element.routingKey);
+        const newChannelName = this.channels.find( channel => value.channel === channel.id);
+        this.apollo.watchQuery<GetFormsQueryResponse>({
+          query: GET_FORMS
+        }).valueChanges.subscribe(res => {
+          const newConvertName = res.data.forms.find( form => value.convertTo === form.id);
+          this.applicationService.editSubscription(value, element.routingKey, newConvertName.name,  newChannelName.title);
+        });
       }
     });
   }
