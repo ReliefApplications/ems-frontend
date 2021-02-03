@@ -27,6 +27,10 @@ export class WhoChartSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
+  public get type(): object {
+    return this.types.find(x => x.name === this.tileForm.value.type);
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
@@ -47,6 +51,7 @@ export class WhoChartSettingsComponent implements OnInit {
       }
     );
     this.change.emit(this.tileForm);
+
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
