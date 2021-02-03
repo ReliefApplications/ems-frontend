@@ -1,9 +1,0 @@
-<a mat-fab [matMenuTriggerFor]="menu" class="action-button">
-  <mat-icon>add</mat-icon>
-</a>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item *ngFor="let item of items" (click)="onAdd(item)">
-    <mat-icon>{{ item.icon }}</mat-icon>
-    <span>{{ item.name }}</span>
-  </button>
-</mat-menu>
