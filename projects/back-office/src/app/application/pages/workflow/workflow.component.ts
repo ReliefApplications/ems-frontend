@@ -77,7 +77,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
             } else {
               this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
-              console.log('routing');
             }
           }
         }
