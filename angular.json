@@ -73,6 +73,7 @@
                 "inject": true
               },
               "projects/back-office/src/styles.scss",
+              "projects/who-ems/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css",
@@ -212,6 +213,7 @@
                 "inject": true
               },
               "projects/front-office/src/styles.scss",
+              "projects/who-ems/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css",

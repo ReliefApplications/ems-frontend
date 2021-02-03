@@ -16,7 +16,7 @@ export class WhoGridService {
   // === LIST OF DEFAULT WIDGETS AVAILABLE ===
   public availableTiles = [
     {
-      name: 'bar chart',
+      name: 'BAR CHART',
       icon: 'bar_chart',
       settings: {title: 'Bar chart', type: 'bar', source: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
@@ -25,7 +25,7 @@ export class WhoGridService {
       settingsTemplate: WhoChartSettingsComponent
     },
     {
-      name: 'donut chart',
+      name: 'DONUT CHART',
       icon: 'donut_small',
       settings: {title: 'Donut chart', type: 'donut', source: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
@@ -34,7 +34,7 @@ export class WhoGridService {
       settingsTemplate: WhoChartSettingsComponent
     },
     {
-      name: 'line chart',
+      name: 'LINE CHART',
       icon: 'show_chart',
       settings: {title: 'Line chart', type: 'line', query: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
@@ -43,7 +43,7 @@ export class WhoGridService {
       settingsTemplate: WhoChartSettingsComponent
     },
     {
-      name: 'pie chart',
+      name: 'PIE CHART',
       icon: 'pie_chart',
       settings: {title: 'Pie chart', type: 'pie', source: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
@@ -52,7 +52,7 @@ export class WhoGridService {
       settingsTemplate: WhoChartSettingsComponent
     },
     {
-      name: 'scatter plot',
+      name: 'SCATTER PLOT',
       icon: 'scatter_plot',
       settings: {title: 'Scatter chart', type: 'scatter', source: '', xAxis: '', yAxis: ''},
       defaultCols: 2,
@@ -61,7 +61,7 @@ export class WhoGridService {
       settingsTemplate: WhoChartSettingsComponent
     },
     {
-      name: 'scheduler',
+      name: 'SCHEDULER',
       icon: 'schedule',
       settings: {title: 'Scheduler'},
       defaultCols: 3,
@@ -70,7 +70,7 @@ export class WhoGridService {
       settingsTemplate: WhoSchedulerSettingsComponent
     },
     {
-      name: 'grid',
+      name: 'GRID',
       icon: 'view_column',
       settings: {
         title: 'New grid',
@@ -88,7 +88,7 @@ export class WhoGridService {
       settingsTemplate: WhoGridSettingsComponent
     },
     {
-      name: 'map',
+      name: 'MAP',
       icon: 'explore',
       settings: {},
       defaultCols: 3,
@@ -97,7 +97,7 @@ export class WhoGridService {
       settingsTemplate: WhoMapSettingsComponent
     },
     {
-      name: 'text',
+      name: 'TEXT',
       icon: 'text_fields',
       settings: {title: 'Enter a title', text: 'Enter a content'},
       defaultCols: 3,

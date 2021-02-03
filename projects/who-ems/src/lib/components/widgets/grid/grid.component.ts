@@ -382,7 +382,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
         ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
     }
-    console.log(formGroup);
     return this.formBuilder.group(formGroup);
   }
 
