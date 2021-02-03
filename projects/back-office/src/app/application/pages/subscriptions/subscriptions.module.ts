@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubscriptionsComponent } from './subscriptions.component';
-import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
+import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -18,7 +18,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 @NgModule({
-  declarations: [SubscriptionsComponent, AddSubscriptionComponent],
+  declarations: [SubscriptionsComponent, SubscriptionModalComponent],
   imports: [
     CommonModule,
     SubscriptionsRoutingModule,
