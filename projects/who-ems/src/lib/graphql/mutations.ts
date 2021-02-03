@@ -391,9 +391,10 @@ export interface DeleteRecordMutationResponse {
 
 // === ADD SUBSCRIPTION ===
 export const ADD_SUBSCRIPTION = gql`
-mutation addSubscription($application: ID!, $routingKey: String!, $convertTo: ID, $channel: ID) {
-  addSubscription(application: $application, routingKey: $routingKey, convertTo: $convertTo, channel: $channel) {
+mutation addSubscription($application: ID!, $routingKey: String!, $title: String!, $convertTo: ID, $channel: ID) {
+  addSubscription(application: $application, routingKey: $routingKey, title: $title, convertTo: $convertTo, channel: $channel) {
     routingKey
+    title
     convertTo {
       id
       name

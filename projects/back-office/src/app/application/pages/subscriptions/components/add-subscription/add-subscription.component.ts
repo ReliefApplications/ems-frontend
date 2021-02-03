@@ -43,6 +43,7 @@ export class AddSubscriptionComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptionForm = this.formBuilder.group({
       routingKey: ['', Validators.required],
+      title: ['', Validators.required],
       convertTo: [''],
       channel: ['']
     });

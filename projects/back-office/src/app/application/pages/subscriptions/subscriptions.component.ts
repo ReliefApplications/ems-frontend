@@ -17,7 +17,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public subscriptions: ApplicationSubscription[];
   public loading = true;
-  public displayedColumns: string[] = ['routingKey', 'convertTo', 'channel', 'actions'];
+  public displayedColumns: string[] = ['title', 'convertTo', 'channel', 'actions'];
 
   // === SUBSCRIPTIONS ===
   private applicationSubscription: Subscription;
@@ -39,6 +39,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
         this.subscriptions = [];
       }
     });
+    console.log(this.subscriptions)
   }
 
   ngOnDestroy(): void {
@@ -57,6 +58,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: {
       routingKey: string,
+      title: string,
       convertTo: string,
       channel: string
     }) => {

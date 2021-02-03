@@ -304,13 +304,14 @@ export class WhoApplicationService {
 
   /* Add a new subscription to the application.
   */
- addSubscription(value: {routingKey: string, convertTo: string, channel: string}): void {
+ addSubscription(value: {routingKey: string, title: string, convertTo: string, channel: string}): void {
   const application = this._application.getValue();
   this.apollo.mutate<AddSubscriptionMutationResponse>({
     mutation: ADD_SUBSCRIPTION,
     variables: {
       application: application.id,
       routingKey: value.routingKey,
+      title: value.title,
       convertTo: value.convertTo,
       channel: value.channel
     }
