@@ -3,9 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Application, Channel, Subscription as ApplicationSubscription, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
-import { EditSubscriptionComponent } from './components/edit-subscription/edit-subscription.component';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
+import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 
 @Component({
   selector: 'app-subscriptions',
@@ -49,7 +47,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     Create a new subscription linked to this application on close.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddSubscriptionComponent, {
+    const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',
       data: {
         channels: this.channels
@@ -74,19 +72,14 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   }
 
   onEdit(element): void {
-    const dialogRef = this.dialog.open(EditSubscriptionComponent, {
+    const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',
       data: {
-        data: element,
         channels: this.channels,
+        subscription: element,
       }
     });
-    dialogRef.afterClosed().subscribe((value: {
-      routingKey: string,
-      title: string,
-      convertTo: string,
-      channel: string
-    }) => {
+    dialogRef.afterClosed().subscribe((value: any) => {
       if (value) {
         this.applicationService.editSubscription(value, element.routingKey);
       }

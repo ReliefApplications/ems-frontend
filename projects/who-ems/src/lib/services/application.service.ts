@@ -334,7 +334,7 @@ export class WhoApplicationService {
       routingKey: value
     }
   }).subscribe(res => {
-    this.snackBar.openSnackBar('Removed subscription.');
+    this.snackBar.openSnackBar('Subscription removed.');
     application.subscriptions = application.subscriptions.filter(sub =>  sub.routingKey !== value);
     this._application.next(application);
   });
