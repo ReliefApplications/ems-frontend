@@ -1,9 +1,9 @@
 export const environment = {
-  production: true,
-  API_URL: 'https://safe-api.development.humanitarian.tech',
-  SUBSCRIPTION_API_URL: 'wss://safe-api.development.humanitarian.tech',
-  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
-  authority: 'https://login.microsoftonline.com/common',
-  redirectUrl: 'https://safe-backoffice.development.humanitarian.tech',
-  postLogoutRedirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth'
+  production: false,
+  API_URL: 'http://localhost:3000',
+  SUBSCRIPTION_API_URL: 'ws://localhost:3000',
+  clientId: 'd62083d8-fdc0-4a6a-8618-652380eebdb9',
+  authority: 'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f',
+  redirectUrl: 'http://localhost:4200',
+  postLogoutRedirectUri: 'http://localhost:4200/auth'
 };
