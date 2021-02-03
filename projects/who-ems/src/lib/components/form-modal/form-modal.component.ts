@@ -1,12 +1,17 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
-import { GetFormByIdQueryResponse, GetRecordByIdQueryResponse, GET_FORM_BY_ID, GET_RECORD_BY_ID } from '../../graphql/queries';
-import { Form } from '../../models/form.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Apollo} from 'apollo-angular';
+import {
+  GetFormByIdQueryResponse,
+  GetRecordByIdQueryResponse,
+  GET_FORM_BY_ID,
+  GET_RECORD_BY_ID
+} from '../../graphql/queries';
+import {Form} from '../../models/form.model';
 import * as Survey from 'survey-angular';
-import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
-import { v4 as uuidv4 } from 'uuid';
-import { FormService } from '../../services/form.service';
+import {EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD} from '../../graphql/mutations';
+import {v4 as uuidv4} from 'uuid';
+import {FormService} from '../../services/form.service';
 
 @Component({
   selector: 'who-form-modal',
@@ -21,11 +26,13 @@ export class WhoFormModalComponent implements OnInit {
 
   public containerId: string;
 
+  private isMultiEdition = false;
+
   constructor(
     public dialogRef: MatDialogRef<WhoFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       template?: string,
-      recordId?: string,
+      recordId?: string | [],
       locale?: string
     },
     private apollo: Apollo,
@@ -35,18 +42,20 @@ export class WhoFormModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
+      const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
       this.apollo.watchQuery<GetRecordByIdQueryResponse>({
         query: GET_RECORD_BY_ID,
         variables: {
-          id: this.data.recordId
+          id
         }
       }).valueChanges.subscribe(res => {
         const record = res.data.record;
         this.form = record.form;
         this.loading = res.loading;
         const survey = new Survey.Model(this.form.structure);
-        survey.data = record.data;
+        survey.data = this.isMultiEdition ? null : record.data;
         survey.locale = this.data.locale ? this.data.locale : 'en';
         survey.render(this.containerId);
         survey.onComplete.add(this.completeMySurvey);
@@ -72,15 +81,13 @@ export class WhoFormModalComponent implements OnInit {
   */
   public completeMySurvey = (survey: any) => {
     if (this.data.recordId) {
-      this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: this.data.recordId,
-          data: survey.data
+      if (this.isMultiEdition) {
+        for (const id of this.data.recordId) {
+          this.updateData(id, survey);
         }
-      }).subscribe(res => {
-        this.dialogRef.close({ template: this.form.id, data: res.data.editRecord });
-      });
+      } else {
+        this.updateData(this.data.recordId, survey);
+      }
     } else {
       this.apollo.mutate<AddRecordMutationResponse>({
         mutation: ADD_RECORD,
@@ -90,9 +97,21 @@ export class WhoFormModalComponent implements OnInit {
           display: true
         }
       }).subscribe(res => {
-        this.dialogRef.close({ template: this.data.template, data: res.data.addRecord });
+        this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
       });
     }
+  }
+
+  public updateData(id, survey: any): void {
+    this.apollo.mutate<EditRecordMutationResponse>({
+      mutation: EDIT_RECORD,
+      variables: {
+        id,
+        data: survey.data
+      }
+    }).subscribe(res => {
+      this.dialogRef.close({template: this.form.id, data: res.data.editRecord});
+    });
   }
 
 }
