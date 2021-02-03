@@ -1,17 +1,12 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {Apollo} from 'apollo-angular';
-import {
-  GetFormByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GET_FORM_BY_ID,
-  GET_RECORD_BY_ID
-} from '../../graphql/queries';
-import {Form} from '../../models/form.model';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Apollo } from 'apollo-angular';
+import { GetFormByIdQueryResponse, GetRecordByIdQueryResponse, GET_FORM_BY_ID, GET_RECORD_BY_ID } from '../../graphql/queries';
+import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
-import {EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD} from '../../graphql/mutations';
-import {v4 as uuidv4} from 'uuid';
-import {FormService} from '../../services/form.service';
+import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
+import { v4 as uuidv4 } from 'uuid';
+import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'who-form-modal',
@@ -36,7 +31,7 @@ export class WhoFormModalComponent implements OnInit {
       locale?: string
     },
     private apollo: Apollo,
-    private formService: FormService
+    public dialog: MatDialog
   ) {
     this.containerId = uuidv4();
   }
@@ -57,6 +52,7 @@ export class WhoFormModalComponent implements OnInit {
         const survey = new Survey.Model(this.form.structure);
         survey.data = this.isMultiEdition ? null : record.data;
         survey.locale = this.data.locale ? this.data.locale : 'en';
+        survey.showCompletedPage = false;
         survey.render(this.containerId);
         survey.onComplete.add(this.completeMySurvey);
       });
@@ -80,26 +76,44 @@ export class WhoFormModalComponent implements OnInit {
   /*  Create the record, or update it if provided.
   */
   public completeMySurvey = (survey: any) => {
-    if (this.data.recordId) {
-      if (this.isMultiEdition) {
-        for (const id of this.data.recordId) {
-          this.updateData(id, survey);
-        }
-      } else {
-        this.updateData(this.data.recordId, survey);
+
+    const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
+
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: `Update row${rowsSelected > 1 ? 's' : ''}`,
+        content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
       }
-    } else {
-      this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
-        variables: {
-          form: this.data.template,
-          data: survey.data,
-          display: true
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        if (this.data.recordId) {
+          if (this.isMultiEdition) {
+            for (const id of this.data.recordId) {
+              this.updateData(id, survey);
+            }
+          } else {
+            this.updateData(this.data.recordId, survey);
+          }
+        } else {
+          this.apollo.mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: this.data.template,
+              data: survey.data,
+              display: true
+            }
+          }).subscribe(res => {
+            this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
+          });
         }
-      }).subscribe(res => {
-        this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
-      });
-    }
+        survey.showCompletedPage = true;
+      } else {
+        this.dialogRef.close();
+      }
+    });
   }
 
   public updateData(id, survey: any): void {

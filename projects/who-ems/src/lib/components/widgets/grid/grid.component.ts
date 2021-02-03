@@ -16,7 +16,8 @@ import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
-import { Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2, ComponentFactoryResolver, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
+  ComponentFactoryResolver, EventEmitter } from '@angular/core';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -429,8 +430,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open the form corresponding to selected row in order to update it
   */
-  public onUpdateRow(items: string | []): void {
-    const ids = Array.isArray(items) ? items.map((i) => this.gridData.data[i].id) : items;
+  public onUpdateRow(items: string | string[]): void {
+    const ids = ( Array.isArray(items) && items.length > 1 ) ? items.map((i) => this.gridData.data[i].id) :
+      ( Array.isArray(items) ? this.gridData.data[items[0]].id : items );
     const dialogRef = this.dialog.open(WhoFormModalComponent, {
       data: {
         recordId: ids,
