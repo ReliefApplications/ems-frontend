@@ -67,7 +67,6 @@ export function provideApollo(httpLink: HttpLink): any {
     ws,
     http,
   )]);
-
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
 

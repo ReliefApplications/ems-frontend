@@ -22,6 +22,9 @@ export class WhoFormComponent implements OnInit {
   // === SURVEYJS ===
   private survey: Survey.Model;
 
+  // === SURVEY COLORS
+  primaryColor = '#008DC9';
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -29,6 +32,16 @@ export class WhoFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const defaultThemeColorsSurvey = Survey
+      .StylesManager
+      .ThemeColors.default;
+    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+
+    Survey
+      .StylesManager
+      .applyTheme();
+
     this.survey = new Survey.Model(this.form.structure);
     if (this.record && this.record.data) {
       this.survey.data = this.record.data;

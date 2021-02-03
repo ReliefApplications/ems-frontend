@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [WhoAccessComponent, WhoEditAccessComponent],
@@ -21,7 +22,8 @@ import { MatMenuModule } from '@angular/material/menu';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule
   ],
   exports: [WhoAccessComponent]
 })
