@@ -17,6 +17,12 @@
                     </button>
                 </div>
             </cdk-drop-list>
+
         </mat-grid-tile>
+
+        <mat-grid-tile>
+          <who-dashboard-menu (add)="addNewWidget.emit($event)" *ngIf="canUpdate"></who-dashboard-menu>
+        </mat-grid-tile>
+
     </mat-grid-list>
 </div>

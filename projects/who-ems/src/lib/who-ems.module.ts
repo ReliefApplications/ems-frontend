@@ -21,10 +21,14 @@ import { WhoRolesModule } from './components/roles/roles.module';
 import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
 import { WhoConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { WhoRecordHistoryModule } from './components/record-history/record-history.module';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
-  declarations: [],
-  imports: [],
+  imports: [
+    MatMenuModule,
+    MatIconModule
+  ],
   exports: [
     WhoLayoutModule,
     WhoAccessModule,
