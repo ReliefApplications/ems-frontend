@@ -48,7 +48,7 @@
       </ng-container>
     </div>
     <div class="form-group" *ngIf="buttonForm.value.show">
-      <span class="info-span">
+      <span class="info-row">
         <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle> 
         <mat-icon class="info-icon" matTooltip="When enabled, you must provide a channel and a message.
         All selected rows will be sent as a single notification on the specified channel.
@@ -70,7 +70,7 @@
           <input matInput formControlName="notificationMessage" type="string">
         </mat-form-field>
       </ng-container>
-      <span class="info-span">
+      <span class="info-row">
         <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
         <mat-icon class="info-icon"
         matTooltip="When enabled, you must provide a channel. All selected rows will be sent as a single
