@@ -306,7 +306,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 // === UTIS ===
-.help-icon {
-  color: #aeaeaf;
+.info-icon {
+  color: #939393;
+  font-size: 22px;
   cursor: pointer;
+}
+
+.info-row {
+  display: flex;
+  .info-icon {
+    margin-left: 12px;
+  }
 }
