@@ -27,7 +27,7 @@ export class WhoChartSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
-  public get type() {
+  public get type(): object {
     return this.types.find(x => x.name === this.tileForm.value.type);
   }
 
