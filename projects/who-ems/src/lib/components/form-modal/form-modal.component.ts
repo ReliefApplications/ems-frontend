@@ -6,7 +6,6 @@ import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
-import { FormService } from '../../services/form.service';
 import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
@@ -85,7 +84,7 @@ export class WhoFormModalComponent implements OnInit {
         title: `Update row${rowsSelected > 1 ? 's' : ''}`,
         content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
         confirmText: 'Confirm',
-        confirmColor: 'warn'
+        confirmColor: 'primary'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
