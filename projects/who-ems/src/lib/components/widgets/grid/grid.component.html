@@ -2,9 +2,8 @@
   <div class="widget-header" *ngIf="header && !parent">
     {{settings.title}}
     <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
-      <button mat-stroked-button color="primary" (click)="onFloatingButtonClick()">
+      <button mat-button color="primary" (click)="onFloatingButtonClick()">
         {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
-        <mat-icon>send</mat-icon>
       </button>
     </div>
   </div>

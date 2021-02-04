@@ -22,7 +22,7 @@
                 </mat-select>
             </mat-form-field>
             <label class="add-page-label">Or create a new one</label>
-            <button mat-raised-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
+            <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 <mat-icon>add</mat-icon>
                 Create a form
             </button>
@@ -30,6 +30,6 @@
     </div>
 </form>
 <div class="add-page-stepper">
-    <button mat-flat-button [disabled]="step <= 1" (click)="onBack()">Back</button>
+    <button mat-button [disabled]="step <= 1" (click)="onBack()">Back</button>
     <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</button>
 </div>

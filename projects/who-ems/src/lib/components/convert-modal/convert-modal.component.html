@@ -30,6 +30,6 @@
   </div>
   <div mat-dialog-actions align="end">
       <button mat-button (click)="onClose()">Close</button>
-      <button mat-button [mat-dialog-close]="convertForm.value" color="primary" [disabled]="!convertForm.valid">Convert record</button>
+      <button mat-flat-button [mat-dialog-close]="convertForm.value" cdkFocusInitial color="primary" [disabled]="!convertForm.valid">Convert record</button>
   </div>
 </div>

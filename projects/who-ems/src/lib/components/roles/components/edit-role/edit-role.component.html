@@ -22,5 +22,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update permissions</button>
+    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update permissions</button>
 </div>
