@@ -2,11 +2,11 @@
 @include mat-core();
 
 $who-palette: (
-  50: #e0f2f9,
-  100: #b3def1,
-  200: #80c8e8,
-  300: #4db1df,
-  400: #26a1d8,
+  50: #EAF4F8,
+  100: #D8E5EA,
+  200: #BCCDD4,
+  300: #A4B6BD,
+  400: #7694A0,
   500: #0090d1,
   600: #0088cc,
   700: #007dc6,
@@ -35,9 +35,9 @@ $who-palette: (
 );
 
 $who-palette-accent: (
-  main: #ff9c00,
-  lighter: #ffc947,
-  darker: #c66900,
+  main: #EFC530,
+  lighter: #FFFF87,
+  darker: #957600,
   200: #ffcc80,
   // For slide toggle,
     contrast:
@@ -49,9 +49,9 @@ $who-palette-accent: (
 );
 
 $who-palette-warn: (
-  main: #ff0000,
-  lighter: #ffb3b3,
-  darker: #ff0000,
+  main: #D34444,
+  lighter: #FFB4A9,
+  darker: #590000,
   200: #ff0000,
   // For slide toggle,
   contrast:
@@ -128,6 +128,14 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   opacity: 0.87;
   border-radius: 4px;
   width: 100%;
+}
+
+.success-button {
+  background-color: #63D168 !important;
+}
+
+.danger-button {
+  background: mat-color($who-warn) !important;
 }
 
 .mat-header-cell{
