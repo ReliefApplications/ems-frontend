@@ -4,6 +4,7 @@ import * as SurveyCreator from 'survey-creator';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'who-form-builder',
@@ -24,7 +25,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private formService: FormService
   ) {}
 
   ngOnInit(): void {

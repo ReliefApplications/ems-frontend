@@ -12,7 +12,8 @@
         <div class="update-form">
           <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
           <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
-            <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i" class="update-row">
+            <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i"
+              class="update-row">
               <mat-form-field appearance="outline">
                 <mat-label>Field to update</mat-label>
                 <mat-select formControlName="field" [compareWith]="compareFields">
@@ -32,7 +33,8 @@
                     <mat-option [value]="false">False</mat-option>
                   </mat-select>
                 </ng-container>
-                <ng-container *ngIf="modification.value.field.type.name !== 'Int' && modification.value.field.type.name !== 'Boolean'">
+                <ng-container
+                  *ngIf="modification.value.field.type.name !== 'Int' && modification.value.field.type.name !== 'Boolean'">
                   <input matInput formControlName="value" type="string" />
                 </ng-container>
               </mat-form-field>
@@ -45,48 +47,48 @@
             </button>
           </div>
         </div>
-      </ng-container>
-    </div>
-    <div class="form-group" *ngIf="buttonForm.value.show">
-      <span class="info-row">
-        <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle> 
-        <mat-icon class="info-icon" matTooltip="When enabled, you must provide a channel and a message.
-        All selected rows will be sent as a single notification on the specified channel.
-        The provided message is used to define the notification’s action."
-        matTooltipPosition="right">info</mat-icon>
-      </span>
-      <ng-container *ngIf="buttonForm.value.notify">
-        <mat-form-field appearance="outline">
-          <mat-label>Channel</mat-label>
-          <mat-select formControlName="notificationChannel">
-            <mat-option>-- None --</mat-option>
-            <mat-option *ngFor="let channel of channels" [value]="channel.id">
-              {{channel.title}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Message</mat-label>
-          <input matInput formControlName="notificationMessage" type="string">
-        </mat-form-field>
-      </ng-container>
-      <span class="info-row">
-        <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
-        <mat-icon class="info-icon"
-        matTooltip="When enabled, you must provide a channel. All selected rows will be sent as a single
-        publication on the specified channel. Everyone listening to this channel can receive the records."
-        matTooltipPosition="right">info</mat-icon>
-      </span>
-      <ng-container *ngIf="buttonForm.value.publish">
-        <mat-form-field appearance="outline">
-          <mat-label>Channel</mat-label>
-          <mat-select formControlName="publicationChannel">
-            <mat-option>-- None --</mat-option>
-            <mat-option *ngFor="let channel of channels" [value]="channel.id">
-              {{channel.title}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <span class="info-row">
+          <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle>
+          <mat-icon class="info-icon"
+            matTooltip="When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action."
+            matTooltipPosition="right">
+            info
+          </mat-icon>
+        </span>
+        <ng-container *ngIf="buttonForm.value.notify">
+          <mat-form-field appearance="outline">
+            <mat-label>Channel</mat-label>
+            <mat-select formControlName="notificationChannel">
+              <mat-option>-- None --</mat-option>
+              <mat-option *ngFor="let channel of channels" [value]="channel.id">
+                {{channel.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Message</mat-label>
+            <input matInput formControlName="notificationMessage" type="string">
+          </mat-form-field>
+        </ng-container>
+        <span class="info-row">
+          <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
+          <mat-icon class="info-icon"
+            matTooltip="When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records."
+            matTooltipPosition="right">
+            info
+          </mat-icon>
+        </span>
+        <ng-container *ngIf="buttonForm.value.publish">
+          <mat-form-field appearance="outline">
+            <mat-label>Channel</mat-label>
+            <mat-select formControlName="publicationChannel">
+              <mat-option>-- None --</mat-option>
+              <mat-option *ngFor="let channel of channels" [value]="channel.id">
+                {{channel.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
       </ng-container>
     </div>
   </form>
