@@ -312,6 +312,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   cursor: pointer;
 }
 
+.info-text {
+  color: #939393;
+  font-size: 22px;
+  margin-bottom: 32px;
+}
+
 .info-row {
   display: flex;
   .info-icon {
