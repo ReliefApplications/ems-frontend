@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { WhoTileDisplayComponent } from './menu/tile-display/tile-display.component';
 import { WhoTileDataComponent } from './menu/tile-data/tile-data.component';
 import { WhoGridService } from '../../../services/grid.service';
+import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'who-floating-options',
@@ -87,7 +88,19 @@ export class WhoFloatingOptionsComponent implements OnInit {
       this.expand.emit({id: this.widget.id});
     }
     if (item.name === 'Delete') {
-      this.delete.emit({id: this.widget.id});
+      const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+        data: {
+          title: 'Delete Dashboard',
+          content: `Do you confirm the deletion of the dashboard?`,
+          confirmText: 'Delete',
+          confirmColor: 'warn'
+        }
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.delete.emit({id: this.widget.id});
+        }
+      });
     }
   }
 }
