@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
 import { WorkflowService } from '../../../../../services/workflow.service';
-import { AddFormComponent } from  '../../../../../components/add-form/add-form.component';
+import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
 
 @Component({
   selector: 'app-add-step',
