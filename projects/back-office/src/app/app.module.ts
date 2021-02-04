@@ -21,7 +21,6 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { Logger, LogLevel } from 'msal';
 
 
 
@@ -125,7 +124,7 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       framework: {
         isAngular: true
-      },
+      }
     },
     {
       popUp: false,

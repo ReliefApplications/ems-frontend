@@ -22,7 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.broadcastService.subscribe('msal:acquireTokenSuccess', () => {
-      // console.log('✅ Acquire Token Success !');
       this.authService.getProfile();
     });
   }
