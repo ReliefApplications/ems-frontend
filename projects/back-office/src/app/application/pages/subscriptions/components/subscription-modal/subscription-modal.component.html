@@ -40,7 +40,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
-        [disabled]="!subscriptionForm.valid">Create</button>
+    <button mat-raised-button (click)="onClose()">Close</button>
+    <button mat-raised-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
+        [disabled]="!subscriptionForm.valid">{{data.subscription ? 'Update' : 'Create'}}</button>
 </div>
