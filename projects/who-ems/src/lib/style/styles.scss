@@ -2,20 +2,20 @@
 @include mat-core();
 
 $who-palette: (
-  50: #EAF4F8,
-  100: #D8E5EA,
-  200: #BCCDD4,
-  300: #A4B6BD,
-  400: #7694A0,
-  500: #0090d1,
-  600: #0088cc,
-  700: #007dc6,
-  800: #0073c0,
-  900: #0061b5,
-  A100: #deeeff,
-  A200: #abd3ff,
-  A400: #78b8ff,
-  A700: #5eaaff,
+  50 : #e0f1f9,
+  100 : #b3ddef,
+  200 : #80c6e4,
+  300 : #4dafd9,
+  400 : #269ed1,
+  500 : #008dc9,
+  600 : #0085c3,
+  700 : #007abc,
+  800 : #0070b5,
+  900 : #005da9,
+  A100 : #d3e8ff,
+  A200 : #a0ceff,
+  A400 : #6db4ff,
+  A700 : #53a7ff,
   contrast: (
     50: #000000,
     100: #000000,
@@ -35,10 +35,10 @@ $who-palette: (
 );
 
 $who-palette-accent: (
-  main: #EFC530,
-  lighter: #FFFF87,
-  darker: #957600,
-  200: #ffcc80,
+  main: #efc530,
+  lighter: #fff865,
+  darker: #b89500,
+  200: #f7e298,
   // For slide toggle,
     contrast:
     (
@@ -49,10 +49,10 @@ $who-palette-accent: (
 );
 
 $who-palette-warn: (
-  main: #D34444,
-  lighter: #FFB4A9,
-  darker: #590000,
-  200: #ff0000,
+  main: #d34444, // 500
+  lighter: #ff766f,
+  darker: #9b001d,
+  200: #e9a2a2, // 200
   // For slide toggle,
   contrast:
   (
@@ -102,7 +102,6 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
     background-color: mat-color($warn, lighter) !important;
     color: mat-color($warn) !important;
   }
-
 
   .primary-chip{
     background-color: #e9fae1 !important;
@@ -322,7 +321,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .info-text {
   color: #939393;
-  font-size: 22px;
   margin-bottom: 32px;
 }
 
