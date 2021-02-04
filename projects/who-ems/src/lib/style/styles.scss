@@ -137,6 +137,15 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   background: mat-color($who-warn) !important;
 }
 
+.mat-button, .mat-raised-button {
+  font-weight: 900 !important;
+}
+
+.mat-button-disabled {
+  background-color:#B8C0C4 !important;
+  color: #6F7C82 !important;
+}
+
 .mat-header-cell{
   border-bottom: 1px solid #d8d8d8 !important;
   color: #767373;
