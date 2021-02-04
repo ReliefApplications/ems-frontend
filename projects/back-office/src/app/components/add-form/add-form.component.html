@@ -21,9 +21,9 @@
                     </mat-select>
                 </mat-form-field>
                 <ng-container *ngIf="addForm.controls.resource.value != null">
-                    <div class="inheritance-row">
+                    <div class="info-row">
                         <mat-slide-toggle formControlName="inheritsTemplate" class="form-slide-toggle">Start from existing template</mat-slide-toggle>
-                        <mat-icon class="help-icon" matTooltip="If no template is selected, core structure will be loaded.">help_outline</mat-icon>
+                        <mat-icon class="info-icon" matTooltip="If no template is selected, core structure will be loaded.">info</mat-icon>
                     </div>
                     <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
                         <mat-form-field>

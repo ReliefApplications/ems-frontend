@@ -17,7 +17,7 @@
             </mat-form-field>
         </div>
         <div class="form-group" *ngIf="tileForm">
-            <div class="form-group-title">Query builder</div>
+            <div class="form-group-title">Data set selection</div>
             <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings" [canExpand]="false"></who-query-builder>
             <ng-container *ngIf="selectedFields.length > 0">
                 <mat-form-field appearance="outline">

@@ -413,6 +413,7 @@ export const GET_APPLICATION_BY_ID = gql`
       }
       subscriptions {
         routingKey
+        title
         channel {
           id
           title

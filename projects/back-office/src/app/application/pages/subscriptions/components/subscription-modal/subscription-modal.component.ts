@@ -2,17 +2,17 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { Application, Channel, Form } from '@who-ems/builder';
+import { Application, Channel, Form, Subscription } from '@who-ems/builder';
 import { Observable } from 'rxjs';
 import { GetFormsQueryResponse, GetRoutingKeysQueryResponse, GET_FORMS, GET_ROUTING_KEYS } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-add-subscription',
-  templateUrl: './add-subscription.component.html',
-  styleUrls: ['./add-subscription.component.scss']
+  selector: 'app-subscription-modal',
+  templateUrl: './subscription-modal.component.html',
+  styleUrls: ['./subscription-modal.component.scss']
 })
-export class AddSubscriptionComponent implements OnInit {
+export class SubscriptionModalComponent implements OnInit {
 
   // === REACTIVE FORM ===
   subscriptionForm: FormGroup;
@@ -33,18 +33,20 @@ export class AddSubscriptionComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddSubscriptionComponent>,
+    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA) public data: {
       channels: Channel[];
+      subscription?: Subscription
     }
   ) { }
 
   ngOnInit(): void {
     this.subscriptionForm = this.formBuilder.group({
-      routingKey: ['', Validators.required],
-      convertTo: [''],
-      channel: ['']
+      routingKey: [this.data.subscription ? this.data.subscription.routingKey : '', Validators.required],
+      title: [this.data.subscription ? this.data.subscription.title : '', Validators.required],
+      convertTo: [( this.data.subscription && this.data.subscription.convertTo ) ? this.data.subscription.convertTo.id : ''],
+      channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS

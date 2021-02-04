@@ -87,6 +87,8 @@ export interface DeleteRoleMutationResponse {
   deleteRole: Role;
 }
 
+
+
 // === ADD DASHBOARD ===
 export const ADD_DASHBOARD = gql`
 mutation addDashboard($name: String!) {

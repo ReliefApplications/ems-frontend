@@ -48,7 +48,13 @@
       </ng-container>
     </div>
     <div class="form-group" *ngIf="buttonForm.value.show">
-      <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle>
+      <span class="info-row">
+        <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle> 
+        <mat-icon class="info-icon" matTooltip="When enabled, you must provide a channel and a message.
+        All selected rows will be sent as a single notification on the specified channel.
+        The provided message is used to define the notification’s action."
+        matTooltipPosition="right">info</mat-icon>
+      </span>
       <ng-container *ngIf="buttonForm.value.notify">
         <mat-form-field appearance="outline">
           <mat-label>Channel</mat-label>
@@ -64,7 +70,13 @@
           <input matInput formControlName="notificationMessage" type="string">
         </mat-form-field>
       </ng-container>
-      <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
+      <span class="info-row">
+        <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
+        <mat-icon class="info-icon"
+        matTooltip="When enabled, you must provide a channel. All selected rows will be sent as a single
+        publication on the specified channel. Everyone listening to this channel can receive the records."
+        matTooltipPosition="right">info</mat-icon>
+      </span>
       <ng-container *ngIf="buttonForm.value.publish">
         <mat-form-field appearance="outline">
           <mat-label>Channel</mat-label>
