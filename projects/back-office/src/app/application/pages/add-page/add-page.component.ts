@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentType, Form, Permissions, WhoApplicationService, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
@@ -13,6 +13,7 @@ import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss']
 })
+@Injectable()
 export class AddPageComponent implements OnInit {
 
   // === DATA ===
