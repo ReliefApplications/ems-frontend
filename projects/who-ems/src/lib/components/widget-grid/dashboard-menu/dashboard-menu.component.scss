@@ -1,15 +1,21 @@
-.mat-mini-fab.mat-accent {
-  background: #008DC9;
-}
 
-mat-icon {
-  font-weight: bold;
-}
+.dashboard-menu {
+  display: flex;
+  align-items: center;
 
-#addText{
-  margin-left: 0.625rem;
-  font-weight: 700;
-  font-size: 14px;
-  color: #008DC9;
-  cursor: pointer;
+  .mat-mini-fab.mat-accent {
+    background: #008DC9;
+  }
+  
+  mat-icon {
+    font-weight: bold;
+  }
+  
+  span {
+    margin-left: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #008DC9;
+    cursor: pointer;
+  }
 }
