@@ -59,6 +59,7 @@ export class WhoAuthService {
   */
   logout(): void {
     this.msalService.logout();
+    this.account = null;
     this._user.next(null);
   }
 
