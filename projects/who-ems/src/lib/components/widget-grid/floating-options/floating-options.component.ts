@@ -90,8 +90,8 @@ export class WhoFloatingOptionsComponent implements OnInit {
     if (item.name === 'Delete') {
       const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
         data: {
-          title: 'Delete Dashboard',
-          content: `Do you confirm the deletion of the dashboard?`,
+          title: 'Delete Widget',
+          content: `Do you confirm the deletion of the widget?`,
           confirmText: 'Delete',
           confirmColor: 'warn'
         }
