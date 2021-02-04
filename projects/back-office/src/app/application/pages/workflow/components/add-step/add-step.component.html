@@ -25,6 +25,6 @@
     </div>
 </form>
 <div class="add-step-stepper">
-    <button mat-flat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
+    <button mat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
     <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
 </div>
