@@ -2,6 +2,7 @@ import { init as initCustomWidget } from './widgets/customwidget';
 import { init as initFullnameComponent } from './components/fullname';
 import { init as initCountryComponent } from './components/country';
 import { init as initCountriesComponent } from './components/countries';
+import { init as initDropdownFilterComponent } from './components/dropdown-filter';
 import { init as initResourceInputWidget } from './widgets/inputwithresource';
 import { init as initResourceComponent } from './components/resource';
 
@@ -12,6 +13,7 @@ export function initCustomWidgets(Survey, API_URL): void{
     initFullnameComponent(Survey);
     initCountryComponent(Survey);
     initCountriesComponent(Survey);
+    initDropdownFilterComponent(Survey);
     initResourceInputWidget(Survey, API_URL);
     initResourceComponent(Survey, API_URL);
 }

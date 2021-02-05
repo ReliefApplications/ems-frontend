@@ -54,6 +54,20 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
 
+    this.surveyCreator.toolbox.addItem({
+      name: 'dropdownFilter',
+      isCopied: true,
+      iconName: 'icon-default',
+      title: 'All countries',
+      category: 'Custom',
+      json: {
+        type: 'dropdown',
+        optionsCaption: 'Select a country...',
+        choicesByUrl: {
+          url: 'https://restcountries.eu/rest/v2/all'
+        }
+      }
+    });
 
   }
 
