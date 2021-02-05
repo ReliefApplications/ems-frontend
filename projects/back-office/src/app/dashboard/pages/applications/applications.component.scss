@@ -4,3 +4,7 @@
     flex-direction: row;
     justify-content: flex-end;
 } 
+
+.mat-chip.mat-standard-chip::after {
+    background: #0000;
+}
