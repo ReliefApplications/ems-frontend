@@ -10,7 +10,10 @@
         <ng-container *ngSwitchCase="2">
             <label class="add-step-label">Select which type of step you want to create</label>
             <mat-radio-group class="content-choice" formControlName="type">
-                <mat-radio-button *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-radio-button>
+                <div class="content-type" *ngFor="let type of contentTypes">
+                    <img src="./assets/{{type}}.svg">
+                    <mat-radio-button [value]="type"></mat-radio-button>
+                </div>
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
@@ -25,6 +28,6 @@
     </div>
 </form>
 <div class="add-step-stepper">
-    <button mat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
+    <button mat-flat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
     <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
 </div>
