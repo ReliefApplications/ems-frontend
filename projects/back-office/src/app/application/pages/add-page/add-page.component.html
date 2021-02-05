@@ -14,9 +14,9 @@
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
-            <label class="add-page-label">Select one of the forms</label>
+            <label class="add-page-label">Available forms</label>
             <mat-form-field appearance="outline">
-                <mat-label>Form</mat-label>
+                <mat-label>Select a form</mat-label>
                 <mat-select formControlName="content">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
