@@ -1,6 +1,7 @@
 <div cdkDropListGroup class="field-wrapper">
     <div class="field-container" *ngIf="!fieldForm">
         <h2>Available fields</h2>
+        <div class="info-text">Select data points below and drag them to 'selected fields' on the right</div>
 
         <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
             (cdkDropListDropped)="drop($event)">

@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
       ]
     },
     {
-      name: 'Advanced settings',
+      name: 'Advanced assets',
       navItems: [
         {
           name: 'Forms',
