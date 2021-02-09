@@ -53,7 +53,7 @@
       </kendo-grid-checkbox-column>
 
       <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title"
-        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor !== 'textarea' ? field.editor : ''">
+        [format]="field.type === 'date' ? '{0:d}': ''" [filter]="field.filter" [editor]="field.editor !== 'textarea' ? field.editor : ''">
         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
           <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
           </textarea>

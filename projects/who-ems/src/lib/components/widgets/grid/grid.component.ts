@@ -147,6 +147,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             title: f.label ? f.label : f.name,
             type: f.type,
             editor: this.getEditor(f.type),
+            filter: this.getFilter(f.type),
             disabled
           };
         }
@@ -186,7 +187,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             for (const field in res.data) {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
-                this.items = cloneData(res.data[field]);
+                this.items = cloneData(res.data[field] ? res.data[field] : []);
                 this.originalItems = cloneData(this.items);
                 this.fields = this.getFields(fields);
                 this.detailsField = fields.find(x => x.kind === 'LIST');
@@ -375,6 +376,27 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
   }
+
+  private getFilter(type: any): string {
+    switch (type) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      default: {
+        return 'text';
+      }
+    }
+  }
+
 
 
   public createFormGroup(dataItem: any): FormGroup {

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WhoGridComponent } from './grid.component';
-import { WhoSubGridComponent } from './sub-grid/sub-grid.component';
 import { ExcelModule, GridModule, GroupModule } from '@progress/kendo-angular-grid';
 import { WhoFormModalModule } from '../../form-modal/form-modal.module';
 import { MatTableModule } from '@angular/material/table';
@@ -14,8 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
-    WhoGridComponent,
-    WhoSubGridComponent
+    WhoGridComponent
   ],
   imports: [
     CommonModule,
