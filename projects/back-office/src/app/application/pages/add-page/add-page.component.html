@@ -21,7 +21,6 @@
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <h2>Or create a new one</h2>
             <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 <mat-icon>add</mat-icon>
                 Create a form
