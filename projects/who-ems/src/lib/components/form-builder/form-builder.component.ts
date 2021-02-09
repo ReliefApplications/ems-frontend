@@ -64,7 +64,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       json: {
         renderAs: 'select2',
         type: 'dropdown',
-        optionsCaption: 'Select a item...',
+        optionsCaption: 'Choose...',
         choices: ['item1', 'item2', 'item3']
       }
     }, 4);
