@@ -55,19 +55,19 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     }
 
     this.surveyCreator.toolbox.addItem({
+      id: Math.random().toString(),
       name: 'dropdownFilter',
       isCopied: true,
-      iconName: 'icon-default',
-      title: 'All countries',
-      category: 'Custom',
+      iconName: 'icon-dropdown',
+      title: 'Dropdown with filter',
+      category: 'General',
       json: {
+        renderAs: 'select2',
         type: 'dropdown',
-        optionsCaption: 'Select a country...',
-        choicesByUrl: {
-          url: 'https://restcountries.eu/rest/v2/all'
-        }
+        optionsCaption: 'Select a item...',
+        choices: ['item1', 'item2', 'item3']
       }
-    });
+    }, 4);
 
   }
 
