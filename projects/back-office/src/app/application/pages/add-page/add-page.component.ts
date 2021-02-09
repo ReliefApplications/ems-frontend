@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentType, Form, Permissions, WhoApplicationService, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
@@ -13,7 +13,7 @@ import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss']
 })
-export class AddPageComponent implements OnInit {
+export class AddPageComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public contentTypes = Object.keys(ContentType);
@@ -65,6 +65,10 @@ export class AddPageComponent implements OnInit {
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
   }
 
   isStepValid(step: number): boolean {

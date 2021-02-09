@@ -15,6 +15,8 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   public application: Application;
   private applicationSubscription: Subscription;
 
+  public canPublish = false;
+
   constructor(
     private applicationService: WhoApplicationService,
     private router: Router,
@@ -24,6 +26,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
       this.application = application;
+      this.canPublish = !!this.application && this.application.pages.length > 0;
     });
   }
 

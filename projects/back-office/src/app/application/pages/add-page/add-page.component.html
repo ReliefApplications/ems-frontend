@@ -1,28 +1,30 @@
 <form [formGroup]="pageForm">
-    <div class="form-group" [ngSwitch]="step">
+    <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 2 }">
         <ng-container *ngSwitchCase="1">
-            <label class="add-page-label">Enter a name for the page</label>
+            <h2>Enter a name for the page</h2>
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" type="text" placeholder="Enter a name for the page"/>
             </mat-form-field>
         </ng-container>
         <ng-container *ngSwitchCase="2">
-            <label class="add-page-label">Select what type of page you want to create</label>
+            <h2>Select what type of page you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
-                <mat-radio-button *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-radio-button>
+                <div class="content-type" *ngFor="let type of contentTypes">
+                    <img src="./assets/{{type}}.svg">
+                    <mat-radio-button [value]="type"></mat-radio-button>
+                </div>
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
-            <label class="add-page-label">Select one of the forms</label>
+            <h2>Available forms</h2>
             <mat-form-field appearance="outline">
-                <mat-label>Form</mat-label>
+                <mat-label>Select a form</mat-label>
                 <mat-select formControlName="content">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <label class="add-page-label">Or create a new one</label>
-            <button mat-raised-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
+            <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 <mat-icon>add</mat-icon>
                 Create a form
             </button>
@@ -30,6 +32,6 @@
     </div>
 </form>
 <div class="add-page-stepper">
-    <button mat-flat-button [disabled]="step <= 1" (click)="onBack()">Back</button>
+    <button mat-button [disabled]="step <= 1" (click)="onBack()">Back</button>
     <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</button>
 </div>

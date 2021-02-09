@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FloatingButtonSettingsComponent } from './floating-button-settings/floating-button-settings.component';
 
@@ -29,6 +30,7 @@ import { FloatingButtonSettingsComponent } from './floating-button-settings/floa
     TextFieldModule,
     WhoQueryBuilderModule,
     MatSlideToggleModule,
+    MatCheckboxModule,
     MatTooltipModule
   ],
   exports: [WhoGridSettingsComponent]
