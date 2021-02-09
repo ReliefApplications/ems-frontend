@@ -4,7 +4,7 @@ import { Account } from 'msal';
 import { MsalService } from '@azure/msal-angular';
 import { Apollo } from 'apollo-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +59,7 @@ export class WhoAuthService {
   */
   logout(): void {
     this.msalService.logout();
+    this.account = null;
     this._user.next(null);
   }
 
@@ -66,26 +67,11 @@ export class WhoAuthService {
   */
   checkAccount(): void {
     this.account = this.msalService.getAccount();
-    this.msalService.acquireTokenSilent({
-      scopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      account: this.account
-    }).then(() => this.getProfile())
-      .catch(() => {
-        if (this.account) {
-          this.getProfile();
-        } else {
-          this._user.next(null);
-        }
-      });
   }
 
   /*  Get the profile from the database, using GraphQL.
   */
-  private getProfile(): void {
+  getProfile(): void {
     this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
