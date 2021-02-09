@@ -9,7 +9,7 @@
             <mat-radio-group formControlName="binding" class="form-radio-group">
                 <mat-radio-button value="newForm">Create a blank form</mat-radio-button>
                 <mat-radio-button value="newResource">Create a new resource</mat-radio-button>
-                <mat-radio-button value="fromResource">Inherit an existing resource</mat-radio-button>
+                <mat-radio-button value="fromResource">Copy existing resource template</mat-radio-button>
             </mat-radio-group>
             <ng-container *ngIf="addForm.controls.binding.value === 'fromResource'">
                 <mat-form-field>

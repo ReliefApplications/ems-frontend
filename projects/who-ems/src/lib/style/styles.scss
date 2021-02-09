@@ -267,6 +267,12 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 }
 
+.mat-tab-group {
+  .mat-tab-header {
+      margin-bottom: 12px;
+  }
+}
+
 @include angular-material-theme($who-theme);
 @include chip($who-theme);
 @include button($who-theme);
