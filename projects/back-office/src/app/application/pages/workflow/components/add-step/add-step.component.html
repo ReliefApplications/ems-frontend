@@ -1,7 +1,7 @@
 <form [formGroup]="stepForm">
     <div class="form-group" [ngSwitch]="stage">
         <ng-container *ngSwitchCase="1">
-            <label class="add-step-label">Enter a name for the step</label>
+            <h2>Enter a name for the step</h2>
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" type="text" placeholder="Enter a name for the step"/>
@@ -14,7 +14,7 @@
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
-            <label class="add-step-label">Select one of the forms</label>
+            <h2>Select one of the forms</h2>
             <mat-form-field appearance="outline">
                 <mat-label>Form</mat-label>
                 <mat-select formControlName="content">

@@ -1,7 +1,7 @@
 <form [formGroup]="pageForm">
     <div class="form-group" [ngSwitch]="step">
         <ng-container *ngSwitchCase="1">
-            <label class="add-page-label">Enter a name for the page</label>
+            <h2>Enter a name for the page</h2>
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" type="text" placeholder="Enter a name for the page"/>
@@ -14,14 +14,14 @@
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
-            <label class="add-page-label">Select one of the forms</label>
+            <h2>Select one of the forms</h2>
             <mat-form-field appearance="outline">
                 <mat-label>Form</mat-label>
                 <mat-select formControlName="content">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <label class="add-page-label">Or create a new one</label>
+            <h2>Or create a new one</h2>
             <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 <mat-icon>add</mat-icon>
                 Create a form
