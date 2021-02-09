@@ -1,5 +1,5 @@
 <form [formGroup]="stepForm">
-    <div class="form-group" [ngSwitch]="stage">
+    <div class="form-group" [ngSwitch]="stage"  [ngClass]="{'content-choice-step': stage === 2 }">
         <ng-container *ngSwitchCase="1">
             <h2>Enter a name for the step</h2>
             <mat-form-field>
@@ -28,6 +28,6 @@
     </div>
 </form>
 <div class="add-step-stepper">
-    <button mat-flat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
+    <button mat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
     <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
 </div>

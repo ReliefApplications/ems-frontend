@@ -1,5 +1,5 @@
 <form [formGroup]="pageForm">
-    <div class="form-group" [ngSwitch]="step">
+    <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 2 }">
         <ng-container *ngSwitchCase="1">
             <h2>Enter a name for the page</h2>
             <mat-form-field>
