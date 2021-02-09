@@ -1,26 +1,33 @@
 <form [formGroup]="stepForm">
-    <div class="form-group" [ngSwitch]="stage">
+    <div class="form-group" [ngSwitch]="stage"  [ngClass]="{'content-choice-step': stage === 2 }">
         <ng-container *ngSwitchCase="1">
-            <label class="add-step-label">Enter a name for the step</label>
+            <h2>Enter a name for the step</h2>
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" type="text" placeholder="Enter a name for the step"/>
             </mat-form-field>
         </ng-container>
         <ng-container *ngSwitchCase="2">
-            <label class="add-step-label">Select which type of step you want to create</label>
+            <h2>Select which type of step you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
-                <mat-radio-button *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-radio-button>
+                <div class="content-type" *ngFor="let type of contentTypes">
+                    <img src="./assets/{{type}}.svg">
+                    <mat-radio-button [value]="type"></mat-radio-button>
+                </div>
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
-            <label class="add-step-label">Select one of the forms</label>
+            <h2>Available forms</h2>
             <mat-form-field appearance="outline">
-                <mat-label>Form</mat-label>
+                <mat-label>Select a form</mat-label>
                 <mat-select formControlName="content">
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
+                <mat-icon>add</mat-icon>
+                Create a form
+            </button>
         </ng-container>
     </div>
 </form>
