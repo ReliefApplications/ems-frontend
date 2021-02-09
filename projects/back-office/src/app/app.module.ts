@@ -132,11 +132,9 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       framework: {
         isAngular: true
-      },
-      system: {
-        tokenRenewalOffsetSeconds: 1200
       }
-    }, {
+    },
+    {
       popUp: false,
       consentScopes: [
         'user.read',

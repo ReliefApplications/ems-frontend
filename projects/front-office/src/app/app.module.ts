@@ -3,13 +3,14 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { AppRoutingModule } from './app-routing.module';
 import { getMainDefinition } from 'apollo-utilities';
 import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
@@ -20,7 +21,6 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -67,7 +67,6 @@ export function provideApollo(httpLink: HttpLink): any {
     ws,
     http,
   )]);
-
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
 
@@ -121,7 +120,8 @@ export function provideApollo(httpLink: HttpLink): any {
       framework: {
         isAngular: true
       }
-    }, {
+    },
+    {
       popUp: false,
       consentScopes: [
         'user.read',

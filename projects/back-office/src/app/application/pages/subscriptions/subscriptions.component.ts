@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Application, Channel, Subscription as ApplicationSubscription, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { AddSubscriptionComponent } from './components/add-subscription/add-subscription.component';
+import { Apollo } from 'apollo-angular';
+import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 
 @Component({
   selector: 'app-subscriptions',
@@ -14,7 +15,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public subscriptions: ApplicationSubscription[];
   public loading = true;
-  public displayedColumns: string[] = ['routingKey', 'convertTo', 'channel'];
+  public displayedColumns: string[] = ['title', 'convertTo', 'channel', 'actions'];
 
   // === SUBSCRIPTIONS ===
   private applicationSubscription: Subscription;
@@ -23,6 +24,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: WhoApplicationService,
     public dialog: MatDialog,
+    private apollo: Apollo,
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +47,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     Create a new subscription linked to this application on close.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddSubscriptionComponent, {
+    const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',
       data: {
         channels: this.channels
@@ -53,11 +55,33 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: {
       routingKey: string,
+      title: string,
       convertTo: string,
       channel: string
     }) => {
       if (value) {
         this.applicationService.addSubscription(value);
+      }
+    });
+  }
+
+  onDelete(element): void {
+    if (element) {
+      this.applicationService.deleteSubscription(element.routingKey);
+    }
+  }
+
+  onEdit(element): void {
+    const dialogRef = this.dialog.open(SubscriptionModalComponent, {
+      width: '400px',
+      data: {
+        channels: this.channels,
+        subscription: element,
+      }
+    });
+    dialogRef.afterClosed().subscribe((value: any) => {
+      if (value) {
+        this.applicationService.editSubscription(value, element.routingKey);
       }
     });
   }

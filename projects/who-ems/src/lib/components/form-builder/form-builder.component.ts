@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
+import * as Survey from 'survey-angular';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'who-form-builder',
@@ -18,9 +20,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator: SurveyCreator.SurveyCreator;
   public json: any;
 
+  // === SURVEY COLORS
+  primaryColor = '#008DC9';
+
   constructor(
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private formService: FormService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +36,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       generateValidJSON: true,
       showTranslationTab: true
     };
+
+    this.setCustomTheme();
+
     this.surveyCreator = new SurveyCreator.SurveyCreator(
       'surveyCreatorContainer',
       options
@@ -40,10 +49,12 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-    if (!this.structure) { 
+    if (!this.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
+
+
   }
 
   ngOnChanges(): void {
@@ -54,6 +65,29 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
         this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
       }
     }
+  }
+
+  setCustomTheme(): void {
+    const defaultThemeColorsSurvey = Survey
+      .StylesManager
+      .ThemeColors.default;
+    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+
+    const defaultThemeColorsEditor = SurveyCreator
+      .StylesManager
+      .ThemeColors.default;
+    defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
+
+    Survey
+      .StylesManager
+      .applyTheme();
+    SurveyCreator
+      .StylesManager
+      .applyTheme();
   }
 
   /*  Custom SurveyJS method, save the form when edited.
