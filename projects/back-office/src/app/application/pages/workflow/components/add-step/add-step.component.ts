@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
@@ -15,7 +15,7 @@ import { AddFormComponent } from '../../../../../components/add-form/add-form.co
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss']
 })
-export class AddStepComponent implements OnInit {
+export class AddStepComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public contentTypes = Object.keys(ContentType).filter((key) => key !== ContentType.workflow);
@@ -68,6 +68,10 @@ export class AddStepComponent implements OnInit {
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
   }
 
   isStageValid(stage: number): boolean {
