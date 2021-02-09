@@ -380,7 +380,6 @@ export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
   deleteRecord(id: $id) {
     id
-    subscriptions
   }
 }`;
 
