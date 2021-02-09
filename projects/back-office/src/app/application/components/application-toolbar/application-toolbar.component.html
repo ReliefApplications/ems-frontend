@@ -1,8 +1,7 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
-      <button mat-button color="warn" (click)="onClose()">Cancel</button>
-        <button *ngIf="canPublish" mat-button class="success-button" (click)="onPublish()">Publish</button>
-        <button *ngIf="!canPublish" mat-raised-button disabled>Publish</button>
+        <button mat-button color="warn" (click)="onClose()">Cancel</button>
+        <button mat-button class="success-button" (click)="onPublish()" [disabled]="!canPublish">Publish</button>
     </div>
 </div>
 <mat-divider></mat-divider>

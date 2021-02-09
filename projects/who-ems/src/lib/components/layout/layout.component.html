@@ -54,7 +54,7 @@
               <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
                 (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
                 <ng-container *ngIf="item.isAddPage">
-                  <button mat-stroked-button class="add-page-button" [class]="item.class ? item.class : ''">
+                  <button mat-stroked-button class="add-page-button" color="primary" [class]="item.class ? item.class : ''">
                     <mat-icon>add</mat-icon>
                     Add a Page
                   </button>

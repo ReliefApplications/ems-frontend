@@ -6,7 +6,7 @@
             <who-access [access]="page ? page.permissions : step ? step.permissions : null"
                 [application]="page ? page.application.id : step ? step.workflow.page.application.id : null"
                 (save)="saveAccess($event)" *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></who-access>
-            <button mat-raised-button color="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
+            <button mat-flat-button color="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
                 <mat-icon>edit</mat-icon>
                 Edit form
             </button>
@@ -29,5 +29,5 @@
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
 <ng-container *ngIf="completed">
-    <button mat-raised-button (click)="clearForm()">New record</button>
+    <button mat-flat-button (click)="clearForm()">New record</button>
 </ng-container>

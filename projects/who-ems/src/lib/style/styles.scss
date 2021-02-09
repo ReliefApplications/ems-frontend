@@ -103,20 +103,37 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
     color: mat-color($warn) !important;
   }
 
-  .primary-chip{
+  .success-chip {
     background-color: #e9fae1 !important;
     color: #67dd2d !important;
   }
 
-  .accent-chip{
+  .accent-chip {
     background-color: rgba(255, 159, 0, 0.14) !important;
     color: #ff9f00 !important;
   }
 
-  .core-chip{
+  .primary-chip {
     background-color: mat-color($primary, lighter) !important;
     color: mat-color($primary) !important;
-    padding: 15px;
+  }
+}
+
+@mixin button($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .mat-stroked-button:not(.mat-button-disabled) {
+    &.mat-primary {
+      border-color: mat-color($primary);
+    }
+    &.mat-accent {
+      border-color: mat-color($accent);
+    }
+    &.mat-warn {
+      border-color: mat-color($warn);
+    }
   }
 }
 
@@ -204,12 +221,17 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   width: 64px;
 }
 
-.mat-chip{
+.mat-chip {
   border-radius: 0px !important;
   min-width: 75px;
   max-width: 1px; //This works??
   justify-content: center;
   font-weight: 500 !important;
+
+  &.mat-chip-disabled {
+    opacity: 1 !important;
+    pointer-events: none;
+  }
 }
 
 // === FORMS ===
@@ -258,8 +280,15 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 }
 
+.mat-tab-group {
+  .mat-tab-header {
+      margin-bottom: 12px;
+  }
+}
+
 @include angular-material-theme($who-theme);
 @include chip($who-theme);
+@include button($who-theme);
 @include custom-theme($who-theme);
 
 html, body { height: 100%; }
