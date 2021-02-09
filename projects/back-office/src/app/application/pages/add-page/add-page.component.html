@@ -10,7 +10,10 @@
         <ng-container *ngSwitchCase="2">
             <h2>Select what type of page you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
-                <mat-radio-button *ngFor="let type of contentTypes" [value]="type">{{ type }}</mat-radio-button>
+                <div class="content-type" *ngFor="let type of contentTypes">
+                    <img src="./assets/{{type}}.svg">
+                    <mat-radio-button [value]="type"></mat-radio-button>
+                </div>
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="3">
