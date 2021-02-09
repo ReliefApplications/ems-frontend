@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AddStepComponent],
@@ -19,6 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
+    MatIconModule,
     MatRadioModule,
     AddStepRoutingModule
   ]

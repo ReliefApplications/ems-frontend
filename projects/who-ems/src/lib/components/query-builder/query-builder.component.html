@@ -4,7 +4,7 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
         <mat-form-field appearance="outline" *ngIf="!isField">
-            <mat-label>Query name</mat-label>
+            <mat-label>Select a data set</mat-label>
             <mat-select formControlName="name">
                 <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
                     {{type.name}}

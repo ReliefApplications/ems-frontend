@@ -9,19 +9,25 @@
     }
 }
 
-.add-page-label {
-    margin-bottom: 32px;
-}
-
 .content-choice {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 32px;
 
-    .mat-radio-button {
-        margin-bottom: 24px;
+    .content-type {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+            height: 196px;
+            width: 196px;
+        }
     }
 }
 
 .form-group {
-    max-width: 400px;
+    &:not(.content-choice-step) {
+        max-width: 400px;
+    }
 }

@@ -2,9 +2,8 @@
   <div class="widget-header" *ngIf="header && !parent">
     {{settings.title}}
     <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
-      <button mat-stroked-button color="primary" (click)="onFloatingButtonClick()">
+      <button mat-button color="primary" (click)="onFloatingButtonClick()">
         {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
-        <mat-icon>send</mat-icon>
       </button>
     </div>
   </div>
@@ -21,6 +20,9 @@
       <ng-container *ngIf="selectedRowsIndex.length > 0">
         <button *ngIf="!settings.actions || settings.actions.delete" class='k-button'
           (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
+        </button>
+        <button *ngIf="!settings.actions || settings.actions.update" class='k-button'
+                (click)="onUpdateRow(selectedRowsIndex)" style="float: right">Update
         </button>
         <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
           (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
@@ -51,20 +53,19 @@
       </kendo-grid-checkbox-column>
 
       <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
-        [format]="field.format" [editor]="field.editor">
+        [format]="field.format" [editor]="field.editor !== 'textarea' ? field.editor : ''" [filter]="field.filter">
         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
           <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
           </textarea>
         </ng-template>
-        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'time'">
+        <!-- <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'time'">
           <kendo-timepicker [formControl]="formGroup.get(field.name)" [format]="field.format"></kendo-timepicker>
-        </ng-template>
+        </ng-template> -->
       </kendo-grid-column>
 
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
-          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
-            [matMenuTriggerFor]="menu" (click)="setSelectedRow(idx)">
+          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'" [matMenuTriggerFor]="menu">
           </button>
 
           <mat-menu #menu="matMenu">
@@ -72,7 +73,7 @@
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-              (click)="onViewHistory(childTemplate)">
+              (click)="onViewHistory(gridData.data[idx].id)">
               History
             </button>
             <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
@@ -80,7 +81,7 @@
               Convert
             </button>
             <button *ngIf="!settings.actions || settings.actions.update" mat-menu-item color="warn"
-              (click)="onUpdateRow()">
+              (click)="onUpdateRow(gridData.data[idx].id)">
               Update
             </button>
           </mat-menu>
@@ -90,7 +91,7 @@
     </ng-container>
     <ng-container *ngIf="detailsField">
       <div *kendoGridDetailTemplate="let dataItem">
-        <who-grid [settings]="detailsField" [parent]="dataItem"></who-grid>
+        <who-grid [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></who-grid>
       </div>
     </ng-container>
     <ng-template kendoGridNoRecordsTemplate>

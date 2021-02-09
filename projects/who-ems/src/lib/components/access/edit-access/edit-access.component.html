@@ -39,5 +39,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="accessForm.value" cdkFocusInitial color="primary" [disabled]="!accessForm.valid">Update access</button>
+    <button mat-flat-button [mat-dialog-close]="accessForm.value" cdkFocusInitial color="primary" [disabled]="!accessForm.valid">Update access</button>
 </div>
