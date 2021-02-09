@@ -7,10 +7,10 @@
           <mat-label>Button name</mat-label>
           <input matInput formControlName="name" type="string">
         </mat-form-field>
-        <mat-slide-toggle formControlName="goToNextStep">Go to next step</mat-slide-toggle>
-        <mat-slide-toggle formControlName="autoSave">Auto-save</mat-slide-toggle>
+        <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
+        <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
         <div class="update-form">
-          <mat-slide-toggle formControlName="modifySelectedRows">Auto-modify selected rows</mat-slide-toggle>
+          <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>
           <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
             <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i"
               class="update-row">
@@ -48,7 +48,7 @@
           </div>
         </div>
         <span class="info-row">
-          <mat-slide-toggle formControlName="notify">Notify</mat-slide-toggle>
+          <mat-checkbox formControlName="notify">Notify</mat-checkbox>
           <mat-icon class="info-icon"
             matTooltip="When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action."
             matTooltipPosition="right">
@@ -71,7 +71,7 @@
           </mat-form-field>
         </ng-container>
         <span class="info-row">
-          <mat-slide-toggle formControlName="publish">Publish</mat-slide-toggle>
+          <mat-checkbox formControlName="publish">Publish</mat-checkbox>
           <mat-icon class="info-icon"
             matTooltip="When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records."
             matTooltipPosition="right">
