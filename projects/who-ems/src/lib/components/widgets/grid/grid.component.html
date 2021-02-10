@@ -52,7 +52,7 @@
         [columnMenu]="false" showSelectAll="true">
       </kendo-grid-checkbox-column>
 
-      <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
+      <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title"
         [format]="field.format" [editor]="field.editor !== 'textarea' ? field.editor : ''" [filter]="field.filter">
         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
           <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">

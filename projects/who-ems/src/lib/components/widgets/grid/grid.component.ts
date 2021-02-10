@@ -156,6 +156,18 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }));
   }
 
+  private convertDateFields(items: any[]): void {
+    console.log(this.fields);
+    const dateFields = this.fields.filter(x => ['Date', 'DateTime', 'Time'].includes(x.type)).map(x => x.name);
+    items.map(x => {
+      for (const [key, value] of Object.entries(x)) {
+        if (dateFields.includes(key)) {
+          x[key] = new Date(x[key]);
+        }
+      }
+    });
+  }
+
   /*  Load the data, using widget parameters.
   */
   private getRecords(): void {
@@ -166,8 +178,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
-        this.originalItems = cloneData(this.items);
         this.fields = this.getFields(this.settings.fields);
+        this.convertDateFields(this.items);
+        this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
       } else {
         this.originalItems = [];
@@ -188,9 +201,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             for (const field in res.data) {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
-                this.items = cloneData(res.data[field] ? res.data[field] : []);
-                this.originalItems = cloneData(this.items);
                 this.fields = this.getFields(fields);
+                this.items = cloneData(res.data[field] ? res.data[field] : []);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
                 this.detailsField = fields.find(x => x.kind === 'LIST');
                 if (this.detailsField) {
                   Object.assign(this.detailsField, {actions: this.settings.actions});
@@ -370,10 +384,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'DateTime': {
-        return 'dateTime';
+        return 'date';
       }
       case 'Time': {
-        return 'time';
+        return 'date';
       }
       default: {
         return 'textarea';
@@ -384,7 +398,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private getFormat(type: any): string {
     switch (type) {
       case 'Date':
-        return '{0:dd/MM/yy}';
+        return `{0:dd/MM/yy}`;
       case 'DateTime':
         return '{0:dd/MM/yy HH:mm}';
       case 'Time':
@@ -393,6 +407,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return '';
     }
   }
+
   private getFilter(type: any): string {
     switch (type) {
       case 'Int': {
@@ -407,6 +422,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'DateTime': {
         return 'date';
       }
+      case 'Time': {
+        return 'date';
+      }
       default: {
         return 'text';
       }
@@ -416,7 +434,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
-      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
+      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
         ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
@@ -560,22 +578,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /*
-    determines the format of the grid cells in case it is a date-like format
-  */
-  private convertDate(entry): any[] {
-    const tempItems = entry.map( item => {
-      if (item.date) { // here we should also add item.date_time, but currently it is the wrong format from BE
-        item.date = new Date(item.date);
-      }
-      if (item.date_time_local) { // here we should also add item.date_time, but currently it is the wrong format from BE
-        item.date_time_local = new Date(item.date_time_local);
-      }
-      return item;
-    });
-    return tempItems;
-  }
-
   /* Reload data and unselect all rows
   */
   private reloadData(): void {
@@ -665,15 +667,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     return promises;
   }
-
-  /* Set selected row on three dots menu button click
-  */
-  // setSelectedRow(index): void {
-  //   this.selectedRow = {
-  //     dataItem: this.gridData.data[index],
-  //     index
-  //   };
-  // }
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {
