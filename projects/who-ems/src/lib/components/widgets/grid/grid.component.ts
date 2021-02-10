@@ -398,7 +398,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private getFormat(type: any): string {
     switch (type) {
       case 'Date':
-        return `{0:dd/MM/yy}`;
+        return 'dd/MM/yy';
       case 'DateTime':
         return 'dd/MM/yy HH:mm';
       case 'Time':

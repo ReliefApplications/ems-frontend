@@ -58,6 +58,9 @@
           <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
           </textarea>
         </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'date'">
+          <kendo-datepicker [formControl]="formGroup.get(field.name)" [format]="field.format" (open)="editionActive = true" (close)="editionActive = false"></kendo-datepicker>
+        </ng-template>
         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'time'">
           <kendo-timepicker [formControl]="formGroup.get(field.name)" [format]="field.format" (open)="editionActive = true" (close)="editionActive = false"></kendo-timepicker>
         </ng-template>
