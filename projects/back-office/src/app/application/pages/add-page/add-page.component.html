@@ -11,8 +11,10 @@
             <h2>Select what type of page you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
                 <div class="content-type" *ngFor="let type of contentTypes">
-                    <img src="./assets/{{type}}.svg">
-                    <mat-radio-button [value]="type"></mat-radio-button>
+                    <label matRipple [matRippleCentered]="centered" [matRippleRadius]="radius" [matRippleColor]="color">
+                        <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
+                        <img src="./assets/{{type}}.svg">
+                    </label>
                 </div>
             </mat-radio-group>
         </ng-container>
@@ -33,5 +35,5 @@
 </form>
 <div class="add-page-stepper">
     <button mat-button [disabled]="step <= 1" (click)="onBack()">Back</button>
-    <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</button>
+    <div [hidden]="step > 1"><button  mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</button></div>
 </div>
