@@ -90,6 +90,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -146,12 +147,25 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             name: prefix ? `${prefix}.${f.name}` : f.name,
             title: f.label ? f.label : f.name,
             type: f.type,
+            format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
+            filter: this.getFilter(f.type),
             disabled
           };
         }
       }
     }));
+  }
+
+  private convertDateFields(items: any[]): void {
+    const dateFields = this.fields.filter(x => ['Date', 'DateTime', 'Time'].includes(x.type)).map(x => x.name);
+    items.map(x => {
+      for (const [key, value] of Object.entries(x)) {
+        if (dateFields.includes(key)) {
+          x[key] = new Date(x[key]);
+        }
+      }
+    });
   }
 
   /*  Load the data, using widget parameters.
@@ -164,8 +178,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
-        this.originalItems = cloneData(this.items);
         this.fields = this.getFields(this.settings.fields);
+        this.convertDateFields(this.items);
+        this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
       } else {
         this.originalItems = [];
@@ -186,9 +201,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             for (const field in res.data) {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
-                this.items = cloneData(res.data[field]);
-                this.originalItems = cloneData(this.items);
                 this.fields = this.getFields(fields);
+                this.items = cloneData(res.data[field] ? res.data[field] : []);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
                 this.detailsField = fields.find(x => x.kind === 'LIST');
                 if (this.detailsField) {
                   Object.assign(this.detailsField, {actions: this.settings.actions});
@@ -350,8 +366,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
+    if (this.formGroup && !this.editionActive && this.formGroup.valid &&
+      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
       this.updateCurrent();
     }
   }
@@ -368,7 +384,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'DateTime': {
-        return 'date';
+        return 'datetime';
+      }
+      case 'Time': {
+        return 'time';
       }
       default: {
         return 'textarea';
@@ -376,12 +395,48 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private getFormat(type: any): string {
+    switch (type) {
+      case 'Date':
+        return 'dd/MM/yy';
+      case 'DateTime':
+        return 'dd/MM/yy HH:mm';
+      case 'Time':
+        return 'HH:mm';
+      default:
+        return '';
+    }
+  }
+
+  private getFilter(type: any): string {
+    switch (type) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      case 'Time': {
+        return 'date';
+      }
+      default: {
+        return 'text';
+      }
+    }
+  }
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
-      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
-        ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
+      // formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
+      //   ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
+      formGroup[field.name] = [dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
   }
@@ -613,15 +668,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     return promises;
   }
-
-  /* Set selected row on three dots menu button click
-  */
-  // setSelectedRow(index): void {
-  //   this.selectedRow = {
-  //     dataItem: this.gridData.data[index],
-  //     index
-  //   };
-  // }
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {

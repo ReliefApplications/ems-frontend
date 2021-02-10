@@ -21,13 +21,13 @@
       <th mat-header-cell *matHeaderCellDef>Status</th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
-          <mat-chip class="primary-chip" selected color="primary" *ngIf="element.status === 'active'">
+          <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
             {{ element.status | titlecase }}
           </mat-chip>
-          <mat-chip class="accent-chip" selected color="accent" *ngIf="element.status === 'pending'">
+          <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
             {{ element.status | titlecase }}
           </mat-chip>
-          <mat-chip class="warn-chip" selected color="warn" *ngIf="element.status === 'archived'">
+          <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
             {{ element.status | titlecase }}
           </mat-chip>
         </mat-chip-list>

@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ContentType, Form } from '@who-ems/builder';
+import { MatDialog } from '@angular/material/dialog';
+import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
+import { Subscription } from 'rxjs';
+import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
 import { WorkflowService } from '../../../../../services/workflow.service';
+import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
 
 @Component({
   selector: 'app-add-step',
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss']
 })
-export class AddStepComponent implements OnInit {
+export class AddStepComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public contentTypes = Object.keys(ContentType).filter((key) => key !== ContentType.workflow);
@@ -22,10 +26,17 @@ export class AddStepComponent implements OnInit {
   public showContent = false;
   public stage = 1;
 
+  // === PERMISSIONS ===
+  canCreateForm = false;
+  private authSubscription: Subscription;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
+    public dialog: MatDialog,
+    private snackBar: WhoSnackBarService,
+    private authService: WhoAuthService,
     private apollo: Apollo,
     private workflowServive: WorkflowService,
   ) { }
@@ -54,6 +65,13 @@ export class AddStepComponent implements OnInit {
         this.showContent = false;
       }
     });
+    this.authSubscription = this.authService.user.subscribe(() => {
+      this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
   }
 
   isStageValid(stage: number): boolean {
@@ -100,6 +118,32 @@ export class AddStepComponent implements OnInit {
         break;
       }
     }
+  }
+
+  onAdd(): void {
+    const dialogRef = this.dialog.open(AddFormComponent, {
+      panelClass: 'add-dialog'
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const data = { name: value.name };
+        Object.assign(data,
+          value.binding === 'newResource' && { newResource: true },
+          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
+          (value.binding === 'fromResource' && value.template) && { template: value.template }
+        );
+        this.apollo.mutate<AddFormMutationResponse>({
+          mutation: ADD_FORM,
+          variables: data
+        }).subscribe(res => {
+          const { id } = res.data.addForm;
+          this.stepForm.controls.content.setValue(id);
+          this.onSubmit();
+        }, (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        });
+      }
+    });
   }
 
 }
