@@ -90,6 +90,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -157,7 +158,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private convertDateFields(items: any[]): void {
-    console.log(this.fields);
     const dateFields = this.fields.filter(x => ['Date', 'DateTime', 'Time'].includes(x.type)).map(x => x.name);
     items.map(x => {
       for (const [key, value] of Object.entries(x)) {
@@ -366,8 +366,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
+    if (this.formGroup && !this.editionActive && this.formGroup.valid &&
+      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
       this.updateCurrent();
     }
   }
@@ -384,10 +384,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'DateTime': {
-        return 'date';
+        return 'datetime';
       }
       case 'Time': {
-        return 'date';
+        return 'time';
       }
       default: {
         return 'textarea';
@@ -400,9 +400,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'Date':
         return `{0:dd/MM/yy}`;
       case 'DateTime':
-        return '{0:dd/MM/yy HH:mm}';
+        return 'dd/MM/yy HH:mm';
       case 'Time':
-        return '{0:HH:mm}';
+        return 'HH:mm';
       default:
         return '';
     }
@@ -434,8 +434,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
-      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
-        ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
+      // formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
+      //   ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
+      formGroup[field.name] = [dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
   }
