@@ -161,7 +161,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: this.metaFields[f.name],
-            disabled
+            disabled: disabled || DISABLED_FIELDS.includes(f.name)
           };
         }
       }
@@ -213,7 +213,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
                 this.fields = this.getFields(fields);
-                console.log(this.fields);
                 this.items = cloneData(res.data[field] ? res.data[field] : []);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -291,23 +290,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public cancelHandler(): void {
     this.closeEditor();
   }
-
-  /*  Set the available options for resource fields, and attach them to the field.
-  */
-  // getResourceDropdown(): void {
-  //   for (const field of this.fields) {
-  //     if (field.resource) {
-  //       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-  //         query: GET_RESOURCE_BY_ID,
-  //         variables: {
-  //           id: field.resource
-  //         }
-  //       }).valueChanges.subscribe((res) => {
-  //         field.dropdown = res.data.resource.records.map((el) => el = { id: el.id, data: el.data[field.displayField] });
-  //       });
-  //     }
-  //   }
-  // }
 
   /*  Update a record when inline edition completed.
   */
@@ -449,9 +431,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /* Generates the form group for in-line edition.
+  */
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
+    for (const field of this.fields.filter(x => !x.disabled)) {
       if (field.type !== 'JSON') {
         formGroup[field.name] = [dataItem[field.name]];
       } else {
@@ -459,6 +443,20 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
             fieldGroup[row.name] = [dataItem[field.name][row.name]];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+        if (field.meta.type === 'matrixdropdown') {
+          const fieldGroup = {};
+          const fieldValue = dataItem[field.name];
+          for (const row of field.meta.rows) {
+            const rowValue = fieldValue ? fieldValue[row.name] : null;
+            const rowGroup = {};
+            for (const column of field.meta.columns) {
+              const columnValue = rowValue ? rowValue[column.name] : null;
+              rowGroup[column.name] = [columnValue];
+            }
+            fieldGroup[row.name] = this.formBuilder.group(rowGroup);
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }

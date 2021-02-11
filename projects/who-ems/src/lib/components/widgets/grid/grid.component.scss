@@ -22,5 +22,8 @@ textarea {
     list-style: none;
     li {
         min-height: 20px;
+        .k-dropdown {
+            width: 100%;
+        }
     }
 }

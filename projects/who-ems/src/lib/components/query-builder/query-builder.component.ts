@@ -65,7 +65,6 @@ export class WhoQueryBuilderComponent implements OnInit {
         }));
       });
     }
-    console.log(this.availableFields);
   }
 
   onCloseField(): void {
