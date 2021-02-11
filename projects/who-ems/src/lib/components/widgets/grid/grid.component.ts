@@ -451,33 +451,20 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled && x.editor)) {
-      // formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
-      //   ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
-      formGroup[field.name] = [dataItem[field.name]];
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
+      if (field.type !== 'JSON') {
+        formGroup[field.name] = [dataItem[field.name]];
+      } else {
+        if (field.meta.type === 'matrix') {
+          const fieldGroup = {};
+          for (const row of field.meta.rows) {
+            fieldGroup[row.name] = [dataItem[field.name][row.name]];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+      }
     }
     return this.formBuilder.group(formGroup);
-  }
-
-  // id: "6024ef70ba62f400baef58f8"
-  // matrix:
-  // row_1: "column_1"
-  // row_2: "column_2"
-  // __proto__: Object
-  // matrix_2:
-  // row_1:
-  // column_1: true
-  // column_2: 3
-  // __proto__: Object
-  // row_2:
-  // column_1: false
-  // column_3: 2
-
-  // TODO: check how to implement something like that.
-  private isReadOnly(field: string): boolean {
-    // const readOnlyColumns = ['UnitPrice', 'UnitsInStock'];
-    // return readOnlyColumns.indexOf(field) > -1;
-    return false;
   }
 
   /*  Detect sort events and update the items loaded.

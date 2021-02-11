@@ -15,3 +15,12 @@
 textarea {
     width: 100% !important;
 }
+
+.matrix-cell {
+    padding: unset;
+    margin: unset;
+    list-style: none;
+    li {
+        min-height: 20px;
+    }
+}
