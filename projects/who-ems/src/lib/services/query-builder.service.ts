@@ -89,10 +89,34 @@ export class QueryBuilderService {
     }));
   }
 
+  private buildMetaFields(fields: any[]): any {
+    return [''].concat(fields.map(x => {
+      switch (x.kind) {
+        case 'SCALAR': {
+          return x.name + '\n';
+        }
+        case 'LIST': {
+          return `${x.name}() {
+            ${this.buildMetaFields(x.fields)}
+          }` + '\n';
+        }
+        case 'OBJECT': {
+          return `${x.name} {
+            ${this.buildMetaFields(x.fields)}
+          }` + '\n';
+        }
+        default: {
+          return;
+        }
+      }
+    }));
+  }
+
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = this.buildFields(builtQuery.fields);
+      const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {
           ${builtQuery.name}(
@@ -105,6 +129,26 @@ export class QueryBuilderService {
         }
       `;
       return this.apollo.watchQuery<any>({
+        query,
+        variables: {}
+      });
+    } else {
+      return null;
+    }
+  }
+
+  public buildMetaQuery(settings: any): any {
+    const builtQuery = settings.query;
+    if (builtQuery && builtQuery.fields.length > 0) {
+      const metaFields = this.buildMetaFields(builtQuery.fields);
+      const query = gql`
+        query GetCustomMetaQuery {
+          _${builtQuery.name}Meta {
+            ${metaFields}
+          }
+        }
+      `;
+      return this.apollo.query<any>({
         query,
         variables: {}
       });

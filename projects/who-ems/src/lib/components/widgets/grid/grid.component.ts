@@ -61,9 +61,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
+  private metaFields: any;
   public detailsField: string;
   public canEdit = false;
   private dataQuery: any;
+  private metaQuery: any;
   private dataSubscription: Subscription;
 
   // === SORTING ===
@@ -128,7 +130,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.getRecords();
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery.subscribe(res => {
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.metaFields = res.data[field];
+        }
+      }
+      this.getRecords();
+    });
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
@@ -150,6 +160,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
+            meta: this.metaFields[f.name],
             disabled
           };
         }
@@ -202,6 +213,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
                 this.fields = this.getFields(fields);
+                console.log(this.fields);
                 this.items = cloneData(res.data[field] ? res.data[field] : []);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -389,6 +401,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'Time': {
         return 'time';
       }
+      case 'JSON': {
+        return null;
+      }
       default: {
         return 'textarea';
       }
@@ -425,6 +440,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'Time': {
         return 'date';
       }
+      case 'JSON': {
+        return null;
+      }
       default: {
         return 'text';
       }
@@ -433,13 +451,27 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
+    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled && x.editor)) {
       // formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime' || field.type === 'Time') ?
       //   ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
       formGroup[field.name] = [dataItem[field.name]];
     }
     return this.formBuilder.group(formGroup);
   }
+
+  // id: "6024ef70ba62f400baef58f8"
+  // matrix:
+  // row_1: "column_1"
+  // row_2: "column_2"
+  // __proto__: Object
+  // matrix_2:
+  // row_1:
+  // column_1: true
+  // column_2: 3
+  // __proto__: Object
+  // row_2:
+  // column_1: false
+  // column_3: 2
 
   // TODO: check how to implement something like that.
   private isReadOnly(field: string): boolean {
