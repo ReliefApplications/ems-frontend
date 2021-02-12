@@ -6,6 +6,32 @@ import { WhoSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { FormService } from '../../services/form.service';
 
+/* Commented types are not yet implemented.
+*/
+const QUESTION_TYPES = [
+  'text',
+  'checkbox',
+  'radiogroup',
+  'dropdown',
+  'comment',
+  // 'rating',
+  // 'ranking',
+  'imagepicker',
+  'boolean',
+  'image',
+  'html',
+  // 'signaturepad',
+  'expression',
+  // 'file',
+  'matrix',
+  'matrixdropdown',
+  'matrixdynamic',
+  'multipletext',
+  'panel',
+  'paneldynamic',
+  'tagbox'
+];
+
 @Component({
   selector: 'who-form-builder',
   templateUrl: './form-builder.component.html',
@@ -27,14 +53,15 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     public dialog: MatDialog,
     private snackBar: WhoSnackBarService,
     private formService: FormService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const options = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
-      showTranslationTab: true
+      showTranslationTab: true,
+      questionTypes: QUESTION_TYPES
     };
 
     this.setCustomTheme();
@@ -53,8 +80,14 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
-
-
+    this.surveyCreator
+      .toolbox
+      .changeCategories(QUESTION_TYPES.map(x => {
+        return {
+          name: x,
+          category: 'Question Library'
+        };
+      }));
   }
 
   ngOnChanges(): void {
@@ -97,8 +130,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       if (res === '') {
         this.save.emit(this.surveyCreator.text);
       } else {
-        this.snackBar.openSnackBar(res, {error: true});
-      }});
+        this.snackBar.openSnackBar(res, { error: true });
+      }
+    });
   }
 
   /*  Event listener to trigger embedded forms.
@@ -118,28 +152,68 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
   */
   private async validateValueNames(): Promise<string> {
-   let message = '';
-   const object = JSON.parse(this.surveyCreator.text);
-   await object.pages.forEach( page => {
-     page.elements.forEach(element => {
-       if (!element.valueName) {
-        if (element.title) {
-          element.valueName = element.title.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
-          if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
-            message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+    let message = '';
+    const object = JSON.parse(this.surveyCreator.text);
+    await object.pages.forEach(page => {
+      if (page.elements) {
+        page.elements.forEach(element => {
+          if (!element.valueName) {
+            if (element.title) {
+              element.valueName = this.toSnakeCase(element.title);
+              if (!this.isSnakeCase(element.valueName)) {
+                message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+              }
+              return element;
+            } else {
+              message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
+            }
+          } else {
+            if (!this.isSnakeCase(element.valueName)) {
+              message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+            }
           }
-          return element;
-         } else {
-          message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
-         }
-       } else {
-        if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
-          message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
-        }
-       }
-     });
-   });
-   this.surveyCreator.text = JSON.stringify(object);
-   return message;
+          if (element.type === 'matrix') {
+            element.columns = element.columns.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
+            element.rows = element.rows.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
+          }
+          if (element.type === 'matrixdropdown') {
+            element.columns = element.columns.map(x => {
+              return {
+                name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
+                title: x.title ? x.title : (x.name ? x.name : x),
+                ...x.cellType && { cellType: x.cellType },
+                ...x.isRequired && { isRequired: true }
+              };
+            });
+            element.rows = element.rows.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
+          }
+        });
+      }
+    });
+    this.surveyCreator.text = JSON.stringify(object);
+    return message;
+  }
+
+  private toSnakeCase(text: string): string {
+    return text.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
+  }
+
+  private isSnakeCase(text: string): any {
+    return text.match(/^[a-z]+[a-z0-9_]+$/);
   }
 }

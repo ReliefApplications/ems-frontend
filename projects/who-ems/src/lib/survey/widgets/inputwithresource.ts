@@ -32,7 +32,7 @@ export function init(Survey: any, API_URL: string): void {
       Survey.Serializer.addProperty('text', {
         name: 'resources',
         displayName: 'Resources',
-        category: 'general',
+        category: 'Question Library',
         dependsOn: 'inputType',
         visibleIf: (obj: any) => {
           if (!obj) { return false; }
@@ -67,7 +67,7 @@ export function init(Survey: any, API_URL: string): void {
       Survey.Serializer.addProperty('text', {
         name: 'resourcefield',
         displayName: 'Resource field',
-        category: 'general',
+        category: 'Question Library',
         dependsOn: 'resources',
         visibleIf: (obj) => {
           if (!obj || !obj.resources) { return false; }

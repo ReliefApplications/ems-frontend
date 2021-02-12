@@ -22,7 +22,7 @@
           (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
         </button>
         <button *ngIf="!settings.actions || settings.actions.update" class='k-button'
-                (click)="onUpdateRow(selectedRowsIndex)" style="float: right">Update
+          (click)="onUpdateRow(selectedRowsIndex)" style="float: right">Update
         </button>
         <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
           (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
@@ -30,39 +30,111 @@
       </ng-container>
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
-      <!-- <ng-container *ngIf="field.resource">
-          <kendo-grid-column [field]="field.name" [title]="field.name" [filter]="field.type" [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.type">
-              <ng-template kendoGridEditTemplate
-                let-dataItem
-                let-formGroup="formGroup">
-                <kendo-dropdownlist
-                  [data]="field.dropdown"
-                  textField="data"
-                  valueField="id"
-                  [valuePrimitive]="true"
-                  [defaultItem]="{id: null, data:'Select item...'}"
-                  [formControl]="formGroup.get(field.name)"
-                >
-                </kendo-dropdownlist>
-              </ng-template>
-            </kendo-grid-column>
-      </ng-container> -->
-      <kendo-grid-checkbox-column *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
+      <kendo-grid-checkbox-column
+        *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
         [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
         [columnMenu]="false" showSelectAll="true">
       </kendo-grid-checkbox-column>
 
-      <kendo-grid-column *ngFor="let field of fields" [field]="field.name" [title]="field.title" [filter]="field.editor"
-        [format]="field.type === 'date' ? '{0:d}': ''" [editor]="field.editor !== 'textarea' ? field.editor : ''">
-        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf="field.editor === 'textarea'">
-          <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name" class="k-textbox">
-          </textarea>
-        </ng-template>
-      </kendo-grid-column>
+      <ng-container *ngFor="let field of fields">
+        <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"
+          [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled" [filter]="field.filter"
+          [filterable]="field.filter">
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
+            *ngIf="field.editor === 'textarea'">
+            <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name"
+              class="k-textbox"></textarea>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
+            *ngIf="field.editor === 'date'">
+            <kendo-datepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
+              (open)="editionActive = true" (close)="editionActive = false"></kendo-datepicker>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
+            *ngIf="field.editor === 'time'">
+            <kendo-timepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
+              (open)="editionActive = true" (close)="editionActive = false"></kendo-timepicker>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
+            *ngIf="field.editor === 'datetime'">
+            <kendo-datetimepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
+              (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON'">
+          <kendo-grid-column [columnMenu]="false">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <ul class="matrix-cell">
+                <li *ngFor="let row of field.meta.rows">
+                  {{ row.label }}
+                </li>
+              </ul>
+            </ng-template>
+          </kendo-grid-column>
+          <ng-container *ngFor="let column of field.meta.columns">
+            <kendo-grid-column [title]="column.label" [columnMenu]="false">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <ul class="matrix-cell">
+                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <input type="radio" kendoRadioButton [checked]="dataItem[field.name][row.name] === column.name"
+                        disabled />
+                    </li>
+                  </ng-container>
+                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <ng-container
+                        *ngIf="column.type === 'text' && dataItem[field.name] && dataItem[field.name][row.name]">
+                        {{ dataItem[field.name][row.name][column.name] }}
+                      </ng-container>
+                      <ng-container
+                        *ngIf="column.type === 'dropdown' && dataItem[field.name] && dataItem[field.name][row.name]">
+                        {{ dataItem[field.name][row.name][column.name] }}
+                      </ng-container>
+                      <ng-container *ngIf="column.type === 'radiogroup'">
+                        <input *ngFor="let choice of field.meta.choices" type="radio" kendoRadioButton
+                          [checked]="dataItem[field.name] && dataItem[field.name][row.name] && dataItem[field.name][row.name][column.name] === choice"
+                          disabled />
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                </ul>
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+                <ul class="matrix-cell">
+                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <input type="radio" kendoRadioButton [value]="column.name" [name]="field.name + row.name"
+                        [formControl]="formGroup.get([field.name, row.name])" />
+                    </li>
+                  </ng-container>
+                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <ng-container *ngIf="column.type === 'text'">
+                        <textarea rows="2" [formControl]="formGroup.get([field.name, row.name, column.name])"
+                          kendoGridFocusable [name]="row.name" class="k-textbox"></textarea>
+                      </ng-container>
+                      <ng-container *ngIf="column.type === 'dropdown'">
+                        <kendo-dropdownlist [data]="field.meta.choices"
+                          [formControl]="formGroup.get([field.name, row.name, column.name])"></kendo-dropdownlist>
+                      </ng-container>
+                      <ng-container *ngIf="column.type === 'radiogroup'">
+                        <input *ngFor="let choice of field.meta.choices" type="radio" kendoRadioButton [value]="choice"
+                          [name]="field.name + row.name" [formControl]="formGroup.get([field.name, row.name, column.name])" />
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                </ul>
+              </ng-template>
+            </kendo-grid-column>
+          </ng-container>
+        </kendo-grid-column-group>
+      </ng-container>
 
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
-          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'" [matMenuTriggerFor]="menu">
+          <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
+            [matMenuTriggerFor]="menu">
           </button>
 
           <mat-menu #menu="matMenu">
