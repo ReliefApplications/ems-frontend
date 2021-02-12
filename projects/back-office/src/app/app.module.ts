@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { Apollo, ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { getMainDefinition } from 'apollo-utilities';
@@ -21,10 +21,16 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { BehaviorSubject } from 'rxjs';
+import { WhoSnackBarService } from '@who-ems/builder';
 
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+localStorage.setItem('loaded', 'false');
+
+const REFRESH = new BehaviorSubject<boolean>(false);
 
 /*  Configuration of the Apollo client.
 */
@@ -54,6 +60,14 @@ export function provideApollo(httpLink: HttpLink): any {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
+      },
+      connectionCallback: (error) => {
+        if (localStorage.getItem('loaded') === 'true') {
+          // location.reload();
+          REFRESH.next(true);
+          localStorage.setItem('loaded', 'false');
+        }
+        localStorage.setItem('loaded', 'true');
       }
     }
   });
@@ -124,11 +138,9 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       framework: {
         isAngular: true
-      },
-      system: {
-        tokenRenewalOffsetSeconds: 1200
       }
-    }, {
+    },
+    {
       popUp: false,
       consentScopes: [
         'user.read',
@@ -161,4 +173,17 @@ export function provideApollo(httpLink: HttpLink): any {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    private apollo: Apollo,
+    private snackBar: WhoSnackBarService
+  ) {
+    REFRESH.asObservable().subscribe((res) => {
+      if (res) {
+        this.apollo.getClient().cache.reset().then(() => {
+          console.log('Schema generated.');
+        });
+      }
+    });
+  }
+}

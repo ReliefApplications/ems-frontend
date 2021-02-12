@@ -390,9 +390,10 @@ export interface DeleteRecordMutationResponse {
 
 // === ADD SUBSCRIPTION ===
 export const ADD_SUBSCRIPTION = gql`
-mutation addSubscription($application: ID!, $routingKey: String!, $convertTo: ID, $channel: ID) {
-  addSubscription(application: $application, routingKey: $routingKey, convertTo: $convertTo, channel: $channel) {
+mutation addSubscription($application: ID!, $routingKey: String!, $title: String!, $convertTo: ID, $channel: ID) {
+  addSubscription(application: $application, routingKey: $routingKey, title: $title, convertTo: $convertTo, channel: $channel) {
     routingKey
+    title
     convertTo {
       id
       name
@@ -407,4 +408,39 @@ mutation addSubscription($application: ID!, $routingKey: String!, $convertTo: ID
 export interface AddSubscriptionMutationResponse {
   loading: boolean;
   addSubscription: Subscription;
+}
+
+// === EDIT SUBSCRIPTION ===
+export const EDIT_SUBSCRIPTION = gql`
+mutation editSubscription($applicationId: ID!, $routingKey: String!, $title: String!, $convertTo: String!, $channel: String!,  $previousSubscription: String!, ) {
+  editSubscription(applicationId: $applicationId, routingKey: $routingKey, title: $title, convertTo: $convertTo, channel: $channel, previousSubscription: $previousSubscription) {
+    routingKey
+    title
+    convertTo {
+      id
+      name
+    }
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface EditSubscriptionMutationResponse {
+  loading: boolean;
+  editSubscription: Subscription;
+}
+
+// === DELETE SUBSCRIPTION ===
+export const DELETE_SUBSCRIPTION = gql`
+mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {
+  deleteSubscription(applicationId: $applicationId, routingKey: $routingKey) {
+    id
+  }
+}`;
+
+export interface DeleteSubscriptionMutationResponse {
+  loading: boolean;
+  deleteSubscription: Subscription;
 }

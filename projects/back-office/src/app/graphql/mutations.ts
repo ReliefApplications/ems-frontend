@@ -87,6 +87,8 @@ export interface DeleteRoleMutationResponse {
   deleteRole: Role;
 }
 
+
+
 // === ADD DASHBOARD ===
 export const ADD_DASHBOARD = gql`
 mutation addDashboard($name: String!) {
@@ -266,34 +268,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
 export const EDIT_FORM_STATUS = gql`
 mutation editForm($id: ID!, $status: String!) {
   editForm(id: $id, status: $status) {
-    id
-    name
-    createdAt
     status
-    versions {
-      id
-      createdAt
-      data
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
 }`;
 

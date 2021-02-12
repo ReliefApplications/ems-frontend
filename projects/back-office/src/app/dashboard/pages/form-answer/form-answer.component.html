@@ -11,5 +11,5 @@
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
 <ng-container *ngIf="completed">
-    <button mat-raised-button (click)="clearForm()">New record</button>
+    <button mat-flat-button (click)="clearForm()">New record</button>
 </ng-container>

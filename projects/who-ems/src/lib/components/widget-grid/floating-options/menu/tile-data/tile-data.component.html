@@ -7,5 +7,5 @@
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="tileForm.getRawValue()" cdkFocusInitial color="primary" [disabled]="!tileForm.valid">Save</button>
+    <button mat-flat-button [mat-dialog-close]="tileForm.getRawValue()" cdkFocusInitial color="primary" [disabled]="!tileForm.valid">Save</button>
 </div>

@@ -1,23 +1,15 @@
-import {
-  Component, OnInit, Input, OnChanges, ViewChild, Renderer2,
-  OnDestroy, Output, EventEmitter,
-  ComponentFactoryResolver, ComponentFactory
-} from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SortDescriptor, orderBy, CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
-  GridDataResult, PageChangeEvent, GridComponent as KendoGridComponent,
-  SelectionEvent, RowArgs, SelectableSettings
+  GridComponent as KendoGridComponent,
+  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {
-  EditRecordMutationResponse, EDIT_RECORD,
-  ConvertRecordMutationResponse, CONVERT_RECORD,
-  PublishNotificationMutationResponse, PUBLISH_NOTIFICATION,
-  DeleteRecordMutationResponse,
-  DELETE_RECORD,
-  PublishMutationResponse, PUBLISH
+  CONVERT_RECORD,
+  ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
+  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -25,9 +17,13 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { WhoConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { WhoConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
+import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
+import {
+  Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
+  ComponentFactoryResolver, EventEmitter
+} from '@angular/core';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -71,9 +67,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   private isNew = false;
   public loading = true;
   public fields: any[] = [];
+  private metaFields: any;
   public detailsField: string;
   public canEdit = false;
   private dataQuery: any;
+  private metaQuery: any;
   private dataSubscription: Subscription;
 
   // === SORTING ===
@@ -97,13 +95,16 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public excelFileName: string;
 
   // === ACTIONS ON SELECTION ===
-  public selectedRow: RowArgs;
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  // === NOTIFY CHANGE OF GRID CHILD ===
+  @Output() childChanged: EventEmitter<any> = new EventEmitter();
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -135,7 +136,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.getRecords();
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery.subscribe(res => {
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          this.metaFields = res.data[field];
+        }
+      }
+      this.getRecords();
+    });
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
@@ -154,12 +163,26 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             name: prefix ? `${prefix}.${f.name}` : f.name,
             title: f.label ? f.label : f.name,
             type: f.type,
+            format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
-            disabled
+            filter: this.getFilter(f.type),
+            meta: this.metaFields[f.name],
+            disabled: disabled || DISABLED_FIELDS.includes(f.name)
           };
         }
       }
     }));
+  }
+
+  private convertDateFields(items: any[]): void {
+    const dateFields = this.fields.filter(x => ['Date', 'DateTime', 'Time'].includes(x.type)).map(x => x.name);
+    items.map(x => {
+      for (const [key, value] of Object.entries(x)) {
+        if (dateFields.includes(key)) {
+          x[key] = new Date(x[key]);
+        }
+      }
+    });
   }
 
   /*  Load the data, using widget parameters.
@@ -172,8 +195,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
-        this.originalItems = cloneData(this.items);
         this.fields = this.getFields(this.settings.fields);
+        this.convertDateFields(this.items);
+        this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
       } else {
         this.originalItems = [];
@@ -194,9 +218,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
-              this.items = cloneData(res.data[field]);
-              this.originalItems = cloneData(this.items);
               this.fields = this.getFields(fields);
+              this.items = cloneData(res.data[field] ? res.data[field] : []);
+              this.convertDateFields(this.items);
+              this.originalItems = cloneData(this.items);
               this.detailsField = fields.find(x => x.kind === 'LIST');
               if (this.detailsField) {
                 Object.assign(this.detailsField, { actions: this.settings.actions });
@@ -272,23 +297,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.closeEditor();
   }
 
-  /*  Set the available options for resource fields, and attach them to the field.
-  */
-  // getResourceDropdown(): void {
-  //   for (const field of this.fields) {
-  //     if (field.resource) {
-  //       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-  //         query: GET_RESOURCE_BY_ID,
-  //         variables: {
-  //           id: field.resource
-  //         }
-  //       }).valueChanges.subscribe((res) => {
-  //         field.dropdown = res.data.resource.records.map((el) => el = { id: el.id, data: el.data[field.displayField] });
-  //       });
-  //     }
-  //   }
-  // }
-
   /*  Update a record when inline edition completed.
   */
   public updateCurrent(): void {
@@ -358,8 +366,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button')) {
+    if (this.formGroup && !this.editionActive && this.formGroup.valid &&
+      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
       this.updateCurrent();
     }
   }
@@ -376,7 +384,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'DateTime': {
-        return 'date';
+        return 'datetime';
+      }
+      case 'Time': {
+        return 'time';
+      }
+      case 'JSON': {
+        return null;
       }
       default: {
         return 'textarea';
@@ -384,21 +398,77 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-
-  public createFormGroup(dataItem: any): FormGroup {
-    const formGroup = {};
-    for (const field of this.fields.filter(x => !DISABLED_FIELDS.includes(x.name) && !x.disabled)) {
-      formGroup[field.name] = [(field.type === 'Date' || field.type === 'DateTime') ?
-        ( dataItem[field.name] ? new Date(dataItem[field.name]) : null ) : dataItem[field.name]];
+  private getFormat(type: any): string {
+    switch (type) {
+      case 'Date':
+        return 'dd/MM/yy';
+      case 'DateTime':
+        return 'dd/MM/yy HH:mm';
+      case 'Time':
+        return 'HH:mm';
+      default:
+        return '';
     }
-    return this.formBuilder.group(formGroup);
   }
 
-  // TODO: check how to implement something like that.
-  private isReadOnly(field: string): boolean {
-    // const readOnlyColumns = ['UnitPrice', 'UnitsInStock'];
-    // return readOnlyColumns.indexOf(field) > -1;
-    return false;
+  private getFilter(type: any): string {
+    switch (type) {
+      case 'Int': {
+        return 'numeric';
+      }
+      case 'Boolean': {
+        return 'boolean';
+      }
+      case 'Date': {
+        return 'date';
+      }
+      case 'DateTime': {
+        return 'date';
+      }
+      case 'Time': {
+        return 'date';
+      }
+      case 'JSON': {
+        return null;
+      }
+      default: {
+        return 'text';
+      }
+    }
+  }
+
+  /* Generates the form group for in-line edition.
+  */
+  public createFormGroup(dataItem: any): FormGroup {
+    const formGroup = {};
+    for (const field of this.fields.filter(x => !x.disabled)) {
+      if (field.type !== 'JSON') {
+        formGroup[field.name] = [dataItem[field.name]];
+      } else {
+        if (field.meta.type === 'matrix') {
+          const fieldGroup = {};
+          for (const row of field.meta.rows) {
+            fieldGroup[row.name] = [dataItem[field.name][row.name]];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+        if (field.meta.type === 'matrixdropdown') {
+          const fieldGroup = {};
+          const fieldValue = dataItem[field.name];
+          for (const row of field.meta.rows) {
+            const rowValue = fieldValue ? fieldValue[row.name] : null;
+            const rowGroup = {};
+            for (const column of field.meta.columns) {
+              const columnValue = rowValue ? rowValue[column.name] : null;
+              rowGroup[column.name] = [columnValue];
+            }
+            fieldGroup[row.name] = this.formBuilder.group(rowGroup);
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+      }
+    }
+    return this.formBuilder.group(formGroup);
   }
 
   /*  Detect sort events and update the items loaded.
@@ -438,10 +508,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open the form corresponding to selected row in order to update it
   */
-  public onUpdateRow(): void {
+  public onUpdateRow(items: string | string[]): void {
+    const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => this.gridData.data[i].id) :
+      (Array.isArray(items) ? this.gridData.data[items[0]].id : items);
     const dialogRef = this.dialog.open(WhoFormModalComponent, {
       data: {
-        recordId: this.selectedRow.dataItem.id,
+        recordId: ids,
         locale: 'en'
       }
     });
@@ -452,11 +524,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  public onViewHistory(): void {
+  public onViewHistory(id: string): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
-        id: this.selectedRow.dataItem.id
+        id
       }
     }).subscribe(res => {
       this.layoutService.setRightSidenav({
@@ -536,9 +608,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.parent) {
       this.dataSubscription.unsubscribe();
       this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+      this.getRecords();
+    } else {
+      this.childChanged.emit();
     }
-    this.getRecords();
-    this.selectedRow = null;
     this.selectedRowsIndex = [];
   }
 
@@ -617,15 +690,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
-  }
-
-  /* Set selected row on three dots menu button click
-  */
-  setSelectedRow(index): void {
-    this.selectedRow = {
-      dataItem: this.gridData.data[index],
-      index
-    };
   }
 
   ngOnDestroy(): void {
