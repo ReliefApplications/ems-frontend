@@ -62,7 +62,7 @@
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON'">
-          <kendo-grid-column [columnMenu]="false">
+          <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <ul class="matrix-cell">
                 <li *ngFor="let row of field.meta.rows">
@@ -72,7 +72,7 @@
             </ng-template>
           </kendo-grid-column>
           <ng-container *ngFor="let column of field.meta.columns">
-            <kendo-grid-column [title]="column.label" [columnMenu]="false">
+            <kendo-grid-column [title]="column.label" [columnMenu]="false" [width]="column.label.length * 7 + 50" [minResizableWidth]="50">
               <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <ul class="matrix-cell">
                   <ng-container *ngIf="field.meta.type === 'matrix'">
