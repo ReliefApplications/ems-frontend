@@ -1,7 +1,7 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
         <button mat-button color="warn" (click)="onClose()">Cancel</button>
-        <button mat-flat-button [class]="canPublish ? 'success-button' : ''" (click)="onPublish()" [disabled]="!canPublish">Publish</button>
+        <button mat-flat-button class="success-button" (click)="onPublish()" [disabled]="!canPublish">Publish</button>
     </div>
 </div>
 <mat-divider></mat-divider>

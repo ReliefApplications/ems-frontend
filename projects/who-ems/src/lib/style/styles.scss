@@ -12,12 +12,11 @@ $who-palette: (
   700 : #007abc,
   800 : #0070b5,
   900 : #005da9,
-  Blue500 : #EAF4F8,
-  Blue600 : #D8E5EA,
-  Blue700 : #BCCDD4,
-  Blue800 : #A4B6BD,
-  Blue900 : #7694A0,
-  Blue : #008dc9,
+  Blue500 : #eaf4f8,
+  Blue600 : #d8e5ea,
+  Blue700 : #bccdd4,
+  Blue800 : #a4b6bd,
+  Blue900 : #7694a0,
   A100 : #d3e8ff,
   A200 : #a0ceff,
   A400 : #6db4ff,
@@ -162,8 +161,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 }
 
 .success-button {
-  background-color: #63D168 !important;
-  color:white !important;
+  &:not(:disabled) {
+    background-color: #63D168 !important;
+    color: white !important;
+  }
 }
 
 .danger-button {
