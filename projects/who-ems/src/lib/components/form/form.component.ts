@@ -20,6 +20,9 @@ export class WhoFormComponent implements OnInit {
   @Output() save: EventEmitter<boolean> = new EventEmitter();
 
   // === SURVEYJS ===
+  private formData = JSON.parse(localStorage.getItem('data'));
+
+  // === SURVEYJS ===
   private survey: Survey.Model;
 
   // === SURVEY COLORS
@@ -48,12 +51,20 @@ export class WhoFormComponent implements OnInit {
     }
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
+    this.survey.onValueChanged.add(this.valueChange);
+    for (let i in this.formData) {
+        this.survey.setValue(i, this.formData[i]);
+      }
   }
 
   public reset(): void {
     this.survey.clear();
     this.save.emit(false);
     this.survey.render();
+  }
+
+  public valueChange = () => {
+    localStorage.setItem('data', JSON.stringify(this.survey.data));
   }
 
   /*  Custom SurveyJS method, save a new record.
@@ -67,6 +78,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe(() => {
+        localStorage.clear();
         this.save.emit(true);
       });
     } else {
@@ -77,6 +89,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe(() => {
+        localStorage.clear();
         this.save.emit(true);
       });
     }
