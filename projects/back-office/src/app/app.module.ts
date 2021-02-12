@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { Apollo, ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { getMainDefinition } from 'apollo-utilities';
@@ -21,12 +21,15 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { BehaviorSubject } from 'rxjs';
 
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 localStorage.setItem('loaded', 'false');
+
+const REFRESH = new BehaviorSubject<boolean>(false);
 
 /*  Configuration of the Apollo client.
 */
@@ -59,7 +62,9 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       connectionCallback: (error) => {
         if (localStorage.getItem('loaded') === 'true') {
-          location.reload();
+          // location.reload();
+          REFRESH.next(true);
+          localStorage.setItem('loaded', 'false');
         }
         localStorage.setItem('loaded', 'true');
       }
@@ -167,4 +172,10 @@ export function provideApollo(httpLink: HttpLink): any {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private apollo: Apollo) {
+    REFRESH.asObservable().subscribe(() => {
+      apollo.getClient().resetStore();
+    });
+  }
+}
