@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
+
   public title: string;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@angular/core';
-import * as SurveyCreator from 'survey-creator';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';

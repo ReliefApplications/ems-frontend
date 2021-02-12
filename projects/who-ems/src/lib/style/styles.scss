@@ -12,6 +12,11 @@ $who-palette: (
   700 : #007abc,
   800 : #0070b5,
   900 : #005da9,
+  Blue500 : #eaf4f8,
+  Blue600 : #d8e5ea,
+  Blue700 : #bccdd4,
+  Blue800 : #a4b6bd,
+  Blue900 : #7694a0,
   A100 : #d3e8ff,
   A200 : #a0ceff,
   A400 : #6db4ff,
@@ -135,6 +140,15 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
       border-color: mat-color($warn);
     }
   }
+
+  .mat-button:disabled, .mat-stroked-button:disabled {
+    color: #97B0BB !important;
+  }
+
+  .mat-flat-button:disabled {
+    color: #7C8487 !important;
+    background-color: mat-color($who-primary, Blue800) !important;
+  }
 }
 
 // === GLOBAL STYLES ==
@@ -147,7 +161,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 }
 
 .success-button {
-  background-color: #63D168 !important;
+  &:not(:disabled) {
+    background-color: #63D168 !important;
+    color: white !important;
+  }
 }
 
 .danger-button {
