@@ -52,9 +52,11 @@ export class WhoFormComponent implements OnInit {
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.onValueChanged.add(this.valueChange);
-    for (let i in this.formData) {
+    if (this.formData) {
+      for (const i in this.formData) {
         this.survey.setValue(i, this.formData[i]);
       }
+    }
   }
 
   public reset(): void {
