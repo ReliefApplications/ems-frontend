@@ -6,6 +6,32 @@ import { WhoSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { FormService } from '../../services/form.service';
 
+/* Commented types are not yet implemented.
+*/
+const QUESTION_TYPES = [
+  'text',
+  'checkbox',
+  'radiogroup',
+  'dropdown',
+  'comment',
+  // 'rating',
+  // 'ranking',
+  'imagepicker',
+  'boolean',
+  'image',
+  'html',
+  // 'signaturepad',
+  'expression',
+  // 'file',
+  'matrix',
+  'matrixdropdown',
+  'matrixdynamic',
+  'multipletext',
+  'panel',
+  'paneldynamic',
+  'tagbox'
+];
+
 @Component({
   selector: 'who-form-builder',
   templateUrl: './form-builder.component.html',
@@ -34,7 +60,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
-      showTranslationTab: true
+      showTranslationTab: true,
+      questionTypes: QUESTION_TYPES
     };
 
     this.setCustomTheme();
@@ -53,8 +80,14 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
-
-
+    this.surveyCreator
+      .toolbox
+      .changeCategories(QUESTION_TYPES.map(x => {
+        return {
+          name: x,
+          category: 'Question Library'
+        };
+      }));
   }
 
   ngOnChanges(): void {

@@ -128,7 +128,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
-      this.form = res.data.editForm;
+      this.form.status = res.data.editForm.status;
     });
   }
 
