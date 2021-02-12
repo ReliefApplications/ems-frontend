@@ -22,6 +22,7 @@ import { environment } from '../environments/environment';
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
+import { WhoSnackBarService } from '@who-ems/builder';
 
 
 
@@ -173,9 +174,16 @@ export function provideApollo(httpLink: HttpLink): any {
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {
-    REFRESH.asObservable().subscribe(() => {
-      apollo.getClient().resetStore();
+  constructor(
+    private apollo: Apollo,
+    private snackBar: WhoSnackBarService
+  ) {
+    REFRESH.asObservable().subscribe((res) => {
+      if (res) {
+        this.apollo.getClient().cache.reset().then(() => {
+          console.log('Schema generated.');
+        });
+      }
     });
   }
 }
