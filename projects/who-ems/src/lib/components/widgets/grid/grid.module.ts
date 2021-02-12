@@ -12,6 +12,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
     ButtonModule,
     MatCheckboxModule,
     InputsModule,
-    DateInputsModule
+    DateInputsModule,
+    DropDownsModule
   ],
   exports: [WhoGridComponent]
 })

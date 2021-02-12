@@ -126,8 +126,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
         page.elements.forEach(element => {
           if (!element.valueName) {
             if (element.title) {
-              element.valueName = element.title.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
-              if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
+              element.valueName = this.toSnakeCase(element.title);
+              if (!this.isSnakeCase(element.valueName)) {
                 message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
               }
               return element;
@@ -135,14 +135,52 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
               message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
             }
           } else {
-            if (!(element.valueName.match(/^[a-z]+[a-z0-9_]+$/))) {
+            if (!this.isSnakeCase(element.valueName)) {
               message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
             }
+          }
+          if (element.type === 'matrix') {
+            element.columns = element.columns.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
+            element.rows = element.rows.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
+          }
+          if (element.type === 'matrixdropdown') {
+            element.columns = element.columns.map(x => {
+              return {
+                name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
+                title: x.title ? x.title : (x.name ? x.name : x),
+                ...x.cellType && { cellType: x.cellType },
+                ...x.isRequired && { isRequired: true }
+              };
+            });
+            element.rows = element.rows.map(x => {
+              return {
+                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+                text: x.text ? x.text : x
+              };
+            });
           }
         });
       }
     });
     this.surveyCreator.text = JSON.stringify(object);
     return message;
+  }
+
+  private toSnakeCase(text: string): string {
+    return text.replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
+  }
+
+  private isSnakeCase(text: string): any {
+    return text.match(/^[a-z]+[a-z0-9_]+$/);
   }
 }
