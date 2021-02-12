@@ -2,7 +2,7 @@ export function init(Survey: any, API_URL: string): void {
   const component = {
     name: 'resource',
     title: 'Resource',
-    category: 'Resource',
+    category: 'Custom Questions',
     questionJSON: {
       name: 'resource',
       type: 'dropdown',
@@ -13,7 +13,7 @@ export function init(Survey: any, API_URL: string): void {
     onInit(): void {
       Survey.Serializer.addProperty('resource', {
         name: 'resource',
-        category: 'Resource',
+        category: 'Custom Questions',
         visibleIndex: 3,
         required: true,
         choices: (obj, choicesCallback) => {
@@ -46,7 +46,7 @@ export function init(Survey: any, API_URL: string): void {
       });
       Survey.Serializer.addProperty('resource', {
         name: 'displayField',
-        category: 'Resource',
+        category: 'Custom Questions',
         dependsOn: 'resource',
         required: true,
         visibleIf: (obj) => {
@@ -93,7 +93,7 @@ export function init(Survey: any, API_URL: string): void {
       });
       Survey.Serializer.addProperty('resource', {
         name: 'test service',
-        category: 'Resource',
+        category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
         visibleIf: (obj) => {
@@ -143,7 +143,7 @@ export function init(Survey: any, API_URL: string): void {
       });
       Survey.Serializer.addProperty('resource', {
         name: 'canAddNew:boolean',
-        category: 'Resource',
+        category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: (obj) => {
           if (!obj || !obj.resource) {
@@ -156,7 +156,7 @@ export function init(Survey: any, API_URL: string): void {
       });
       Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
-        category: 'Resource',
+        category: 'Custom Questions',
         dependsOn: 'canAddNew',
         visibleIf: (obj) => {
           if (!obj || !obj.canAddNew) {
