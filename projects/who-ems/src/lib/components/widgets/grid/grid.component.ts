@@ -448,7 +448,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         formGroup[field.name] = [dataItem[field.name]];
         if (field.meta.type === 'dropdown' && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
-            field.meta.choices = res;
+            field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
         }
       } else {
