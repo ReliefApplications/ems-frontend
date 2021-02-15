@@ -46,6 +46,7 @@ export class WhoFormComponent implements OnInit {
     if (this.record && this.record.data) {
       this.survey.data = this.record.data;
     }
+    this.appendTooltipIcon();
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
   }
@@ -98,6 +99,28 @@ export class WhoFormComponent implements OnInit {
         document.dispatchEvent(e);
       }
     });
+  }
+
+  private appendTooltipIcon(): void {
+    this.survey.onAfterRenderQuestion
+      .add((survey, option) => {
+        // Return if there is no description to show in tooltip
+        if (!option.question.tooltip) {
+          return;
+        }
+
+        const header = option
+          .htmlElement
+          .querySelector('h5');
+        header.title = option.question.tooltip;
+
+        const span = document.createElement('span');
+        span.innerText = 'info';
+        span.className = 'material-icons';
+        span.style.fontSize = '1.2rem';
+        span.style.cursor = 'help';
+        header.appendChild(span);
+      });
   }
 
 }
