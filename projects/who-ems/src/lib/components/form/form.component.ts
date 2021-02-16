@@ -70,7 +70,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe((res) => {
-        if(res.errors) {
+        if (res.errors) {
           this.save.emit(false);
           this.survey.clear(false, true);
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
@@ -87,7 +87,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe((res) => {
-        if(res.errors) {
+        if (res.errors) {
           this.save.emit(false);
           this.survey.clear(false, true);
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
