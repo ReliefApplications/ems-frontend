@@ -7,6 +7,7 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
+import { WhoSnackBarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'who-form',
@@ -28,7 +29,8 @@ export class WhoFormComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService
+    private formService: FormService,
+    private snackBar: WhoSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +50,7 @@ export class WhoFormComponent implements OnInit {
     }
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
+    this.survey.showCompletedPage = false;
   }
 
   public reset(): void {
@@ -66,8 +69,15 @@ export class WhoFormComponent implements OnInit {
           id: this.record.id,
           data: this.survey.data
         }
-      }).subscribe(() => {
-        this.save.emit(true);
+      }).subscribe((res) => {
+        if(res.errors) {
+          this.save.emit(false);
+          this.survey.clear(false, true);
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+        } else {
+          this.survey.showCompletedPage = true;
+          this.save.emit(true);
+        }
       });
     } else {
       this.apollo.mutate<AddRecordMutationResponse>({
@@ -76,8 +86,15 @@ export class WhoFormComponent implements OnInit {
           form: this.form.id,
           data: this.survey.data
         }
-      }).subscribe(() => {
-        this.save.emit(true);
+      }).subscribe((res) => {
+        if(res.errors) {
+          this.save.emit(false);
+          this.survey.clear(false, true);
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+        } else {
+          this.survey.showCompletedPage = true;
+          this.save.emit(true);
+        }
       });
     }
   }
