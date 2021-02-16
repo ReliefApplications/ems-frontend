@@ -24,6 +24,7 @@ import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -115,6 +116,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private apollo: Apollo,
+    private http: HttpClient,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
@@ -393,7 +395,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return null;
       }
       default: {
-        return 'textarea';
+        return 'text';
       }
     }
   }
@@ -444,6 +446,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const field of this.fields.filter(x => !x.disabled)) {
       if (field.type !== 'JSON') {
         formGroup[field.name] = [dataItem[field.name]];
+        if (field.meta.type === 'dropdown' && field.meta.choicesByUrl) {
+          this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
+            field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
+          });
+        }
       } else {
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};

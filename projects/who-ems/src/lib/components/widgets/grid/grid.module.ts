@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     GridModule,
     FormsModule,
     ReactiveFormsModule,
