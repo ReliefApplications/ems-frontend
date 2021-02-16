@@ -20,9 +20,6 @@ export class WhoFormComponent implements OnInit {
   @Output() save: EventEmitter<boolean> = new EventEmitter();
 
   // === SURVEYJS ===
-  private formData = JSON.parse(localStorage.getItem('data'));
-
-  // === SURVEYJS ===
   private survey: Survey.Model;
 
   // === SURVEY COLORS
@@ -46,17 +43,17 @@ export class WhoFormComponent implements OnInit {
       .applyTheme();
 
     this.survey = new Survey.Model(this.form.structure);
-    if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
+    const cachedData = localStorage.getItem(`record:${this.form.id}`);
+    if (cachedData) {
+      this.survey.data = JSON.parse(cachedData);
+    } else {
+      if (this.record && this.record.data) {
+        this.survey.data = this.record.data;
+      }
     }
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
-    this.survey.onValueChanged.add(this.valueChange);
-    for (const i in this.formData) {
-      if (this.formData) {
-        this.survey.setValue(i, this.formData[i]);
-      }
-    }
+    this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
   public reset(): void {
@@ -65,8 +62,8 @@ export class WhoFormComponent implements OnInit {
     this.survey.render();
   }
 
-  public valueChange = () => {
-    localStorage.setItem('data', JSON.stringify(this.survey.data));
+  public valueChange(): void {
+    localStorage.setItem(`record:${this.form.id}`, JSON.stringify(this.survey.data));
   }
 
   /*  Custom SurveyJS method, save a new record.
@@ -80,7 +77,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe(() => {
-        localStorage.clear();
+        localStorage.removeItem(`record:${this.form.id}`);
         this.save.emit(true);
       });
     } else {
@@ -91,7 +88,7 @@ export class WhoFormComponent implements OnInit {
           data: this.survey.data
         }
       }).subscribe(() => {
-        localStorage.clear();
+        localStorage.removeItem(`record:${this.form.id}`);
         this.save.emit(true);
       });
     }
