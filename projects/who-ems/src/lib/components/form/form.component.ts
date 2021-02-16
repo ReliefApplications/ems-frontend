@@ -45,18 +45,28 @@ export class WhoFormComponent implements OnInit {
       .applyTheme();
 
     this.survey = new Survey.Model(this.form.structure);
-    if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
+    const cachedData = localStorage.getItem(`record:${this.form.id}`);
+    if (cachedData) {
+      this.survey.data = JSON.parse(cachedData);
+    } else {
+      if (this.record && this.record.data) {
+        this.survey.data = this.record.data;
+      }
     }
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
+    this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
   public reset(): void {
     this.survey.clear();
     this.save.emit(false);
     this.survey.render();
+  }
+
+  public valueChange(): void {
+    localStorage.setItem(`record:${this.form.id}`, JSON.stringify(this.survey.data));
   }
 
   /*  Custom SurveyJS method, save a new record.
@@ -75,6 +85,7 @@ export class WhoFormComponent implements OnInit {
           this.survey.clear(false, true);
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
+          localStorage.removeItem(`record:${this.form.id}`);
           this.survey.showCompletedPage = true;
           this.save.emit(true);
         }
@@ -92,6 +103,7 @@ export class WhoFormComponent implements OnInit {
           this.survey.clear(false, true);
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
+          localStorage.removeItem(`record:${this.form.id}`);
           this.survey.showCompletedPage = true;
           this.save.emit(true);
         }
