@@ -1,13 +1,12 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import {Form, WhoConfirmModalComponent, WhoSnackBarService} from '@who-ems/builder';
+import {Form, WhoSnackBarService} from '@who-ems/builder';
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
-import {PlatformLocation} from '@angular/common';
-import {MatDialog} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 
 @Component({
