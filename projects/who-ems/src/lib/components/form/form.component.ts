@@ -7,6 +7,8 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
+import { WhoSnackBarService } from '../../services/snackbar.service';
+import { Observable } from 'apollo-link';
 
 @Component({
   selector: 'who-form',
@@ -28,7 +30,8 @@ export class WhoFormComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService
+    private formService: FormService,
+    private snackBar: WhoSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -53,11 +56,13 @@ export class WhoFormComponent implements OnInit {
     }
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
+    this.survey.showCompletedPage = false;
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
   public reset(): void {
     this.survey.clear();
+    this.survey.showCompletedPage = false;
     this.save.emit(false);
     this.survey.render();
   }
@@ -66,32 +71,38 @@ export class WhoFormComponent implements OnInit {
     localStorage.setItem(`record:${this.form.id}`, JSON.stringify(this.survey.data));
   }
 
-  /*  Custom SurveyJS method, save a new record.
+  /*  Custom SurveyJS method, save a new record or edit existing one.
   */
   public complete = () => {
+    let mutation: any;
     if (this.record) {
-      this.apollo.mutate<EditRecordMutationResponse>({
+      mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: this.record.id,
           data: this.survey.data
         }
-      }).subscribe(() => {
-        localStorage.removeItem(`record:${this.form.id}`);
-        this.save.emit(true);
       });
     } else {
-      this.apollo.mutate<AddRecordMutationResponse>({
+      mutation = this.apollo.mutate<AddRecordMutationResponse>({
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
           data: this.survey.data
         }
-      }).subscribe(() => {
-        localStorage.removeItem(`record:${this.form.id}`);
-        this.save.emit(true);
       });
     }
+    mutation.subscribe((res) => {
+      if (res.errors) {
+        this.save.emit(false);
+        this.survey.clear(false, true);
+        this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+      } else {
+        localStorage.removeItem(`record:${this.form.id}`);
+        this.survey.showCompletedPage = true;
+        this.save.emit(true);
+      }
+    });
   }
 
   /*  Event listener to trigger embedded forms.
