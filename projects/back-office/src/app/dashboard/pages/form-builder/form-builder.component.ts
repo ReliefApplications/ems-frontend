@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import {Form, WhoSnackBarService} from '@who-ems/builder';
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
+import { WhoAuthService, WhoSnackBarService, Form } from '@who-ems/builder';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 
@@ -53,12 +53,14 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: WhoSnackBarService,
     public dialog: MatDialog,
+    private authService: WhoAuthService
   ) {
 
     /* Shows modal confirmation before refresh or close the page if has changes on form
     */
     window.addEventListener('beforeunload', (event) => {
-      if (this.hasChanges) {
+      // if click on logout and this.authService.canLogout.value is false, we discard this modal and show modal on layout.component
+      if (this.hasChanges && !this.authService.canLogout.value) {
         event.preventDefault();
         event.returnValue = '';
       }
@@ -137,6 +139,7 @@ export class FormBuilderComponent implements OnInit {
           this.form = res.data.editForm;
           this.structure = structure; // Update current form to
           this.hasChanges = false;
+          this.authService.canLogout.next(true);
         }
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
@@ -228,5 +231,6 @@ export class FormBuilderComponent implements OnInit {
 
   formStructureChange(event: any): void {
     this.hasChanges = event;
+    this.authService.canLogout.next(!event);
   }
 }
