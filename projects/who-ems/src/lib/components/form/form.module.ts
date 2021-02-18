@@ -10,8 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     WhoFormModalModule,
-    MatDialogModule,
-    MatTooltipModule
+    MatDialogModule
   ],
   exports: [WhoFormComponent]
 })
