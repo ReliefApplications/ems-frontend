@@ -87,7 +87,7 @@
                 <ul class="matrix-cell">
                   <ng-container *ngIf="field.meta.type === 'matrix'">
                     <li *ngFor="let row of field.meta.rows">
-                      <input type="radio" kendoRadioButton [checked]="dataItem[field.name][row.name] === column.name"
+                      <input type="radio" kendoRadioButton [checked]="dataItem[field.name] && dataItem[field.name][row.name] === column.name"
                         disabled />
                     </li>
                   </ng-container>
