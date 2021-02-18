@@ -86,6 +86,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     this.layoutService.rightSidenav.subscribe(view => {
       if (view) {
+        // this is necessary to prevent have more than one history component at the same time.
+        this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
         for (const [key, value] of Object.entries(view.inputs)) {
