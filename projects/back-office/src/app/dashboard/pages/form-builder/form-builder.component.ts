@@ -72,6 +72,9 @@ export class FormBuilderComponent implements OnInit {
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const result = window.confirm('There are unsaved changes. Are you sure?');
+      if (result) {
+        this.authService.canLogout.next(true);
+      }
       return of(result);
     }
     return true;
