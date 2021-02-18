@@ -84,3 +84,16 @@
 .add-page-button {
   margin: 0 auto;
 }
+
+.notification-menu {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    a {
+        padding-right: 10px;
+        cursor: pointer;
+        mat-icon {
+            padding-left: 10px;
+        }
+    }
+}

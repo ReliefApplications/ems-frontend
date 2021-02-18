@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SeeNotificationMutationResponse, SEE_NOTIFICATION } from '../graphql/mutations';
+import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeAllNotificationMutationResponse, SEE_ALL_NOTIFICATION } from '../graphql/mutations';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/queries';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../graphql/subscriptions';
 import { Notification } from '../models/notification.model';
@@ -67,6 +67,26 @@ export class WhoNotificationService {
     }).subscribe(res => {
       if (res.data.seeNotification) {
         this._notifications.next(notifications.filter(x => x.id !== res.data.seeNotification.id));
+      }
+    });
+  }
+
+  /* Mark all notifications as seen and remove it from the array of notifications
+  */
+  markAllAsSeen(): void {
+    const notifications = this._notifications.getValue();
+    const notificationIds = [];
+    for (const notification of notifications) {
+      notificationIds.push(notification.id);
+    }
+    this.apollo.mutate<SeeAllNotificationMutationResponse>({
+      mutation: SEE_ALL_NOTIFICATION,
+      variables: {
+        id: notificationIds
+      }
+    }).subscribe(res => {
+      if (res.data.seeAllNotification.length === notifications.length) {
+        this._notifications.next([]);
       }
     });
   }

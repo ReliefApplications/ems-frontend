@@ -299,6 +299,33 @@ export interface SeeNotificationMutationResponse {
   seeNotification: Notification;
 }
 
+// === SEE ALL NOTIFICATION ===
+export const SEE_ALL_NOTIFICATION = gql`
+mutation seeAllNotification($id: [ID]!) {
+  seeAllNotification(id: $id) {
+    id
+    action
+    content
+    createdAt
+    channel {
+      id
+      title
+      application {
+        id
+      }
+    }
+    seenBy {
+      id
+      name
+    }
+  }
+}`;
+
+export interface SeeAllNotificationMutationResponse {
+  loading: boolean;
+  seeAllNotification: Notification[];
+}
+
 // === ADD CHANNEL ===
 export const ADD_CHANNEL = gql`
 mutation addChannel($title: String!, $application: ID) {
