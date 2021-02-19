@@ -75,6 +75,15 @@ export class WhoFormComponent implements OnInit {
   */
   public complete = () => {
     let mutation: any;
+    const data = this.survey.data;
+    const questions = this.survey.getAllQuestions();
+    for (const field in questions) {
+      if (questions[field]) {
+        const key = questions[field].getValueName();
+        if (!data[key]) { data[key] = null; }
+      }
+    }
+    this.survey.data = data;
     if (this.record) {
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
