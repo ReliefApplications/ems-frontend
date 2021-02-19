@@ -300,30 +300,14 @@ export interface SeeNotificationMutationResponse {
 }
 
 // === SEE ALL NOTIFICATION ===
-export const SEE_ALL_NOTIFICATION = gql`
-mutation seeAllNotification($id: [ID]!) {
-  seeAllNotification(id: $id) {
-    id
-    action
-    content
-    createdAt
-    channel {
-      id
-      title
-      application {
-        id
-      }
-    }
-    seenBy {
-      id
-      name
-    }
-  }
+export const SEE_NOTIFICATIONS = gql`
+mutation seeNotifications($ids: [ID]!) {
+  seeNotifications(ids: $ids)
 }`;
 
-export interface SeeAllNotificationMutationResponse {
+export interface SeeNotificationsMutationResponse {
   loading: boolean;
-  seeAllNotification: Notification[];
+  seeNotifications: boolean;
 }
 
 // === ADD CHANNEL ===
