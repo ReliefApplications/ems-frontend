@@ -184,6 +184,10 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  onMarkAllNotificationsAsRead(): void {
+    this.notificationService.markAllAsSeen();
+  }
+
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
   }
