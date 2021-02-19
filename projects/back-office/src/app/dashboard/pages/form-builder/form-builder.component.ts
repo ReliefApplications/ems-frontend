@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Form, WhoSnackBarService } from '@who-ems/builder';
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { MatDialog } from '@angular/material/dialog';
+import { WhoAuthService, WhoSnackBarService, Form } from '@who-ems/builder';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-form-builder',
@@ -42,13 +45,41 @@ export class FormBuilderComponent implements OnInit {
   // === FORM EDITION ===
   public formActive: boolean;
   public nameForm: FormGroup;
+  public hasChanges = false;
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
-  ) { }
+    private snackBar: WhoSnackBarService,
+    public dialog: MatDialog,
+    private authService: WhoAuthService
+  ) {
+
+    /* Shows modal confirmation before refresh or close the page if has changes on form
+    */
+    window.addEventListener('beforeunload', (event) => {
+      // if click on logout and this.authService.canLogout.value is false, we discard this modal and show modal on layout.component
+      if (this.hasChanges && !this.authService.canLogout.value) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+  }
+
+  /* Shows modal confirmation before leave the page if has changes on form
+  */
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.hasChanges) {
+      const result = window.confirm('There are unsaved changes. Are you sure?');
+      if (result) {
+        this.authService.canLogout.next(true);
+      }
+      return of(result);
+    }
+    return true;
+  }
+
 
   ngOnInit(): void {
     this.formActive = false;
@@ -110,6 +141,8 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar('Form updated');
           this.form = res.data.editForm;
           this.structure = structure; // Update current form to
+          this.hasChanges = false;
+          this.authService.canLogout.next(true);
         }
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
@@ -199,4 +232,8 @@ export class FormBuilderComponent implements OnInit {
     });
   }
 
+  formStructureChange(event: any): void {
+    this.hasChanges = event;
+    this.authService.canLogout.next(!event);
+  }
 }

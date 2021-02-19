@@ -41,6 +41,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   @Input() structure: any;
   @Output() save: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
   surveyCreator: SurveyCreator.SurveyCreator;
@@ -88,6 +89,11 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
           category: 'Question Library'
         };
       }));
+
+    // Notify parent that form structure has changed
+    this.surveyCreator.onModified.add((survey, option) => {
+      this.formChange.emit(true);
+    });
   }
 
   ngOnChanges(): void {
