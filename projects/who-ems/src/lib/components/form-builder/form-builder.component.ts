@@ -163,13 +163,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     await object.pages.forEach(page => {
       if (page.elements) {
         page.elements.forEach(element => {
+          console.log("first")
           if (!element.valueName) {
             if (element.title) {
               element.valueName = this.toSnakeCase(element.title);
               if (!this.isSnakeCase(element.valueName)) {
                 message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
               }
-              return element;
             } else {
               message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
             }
@@ -177,6 +177,15 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
             if (!this.isSnakeCase(element.valueName)) {
               message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
             }
+          }
+          console.log("here")
+          if (element.type === 'multipletext') {
+            element.items = element.items.map(e => {
+              return {
+                name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
+                title: e.title ? e.title : null
+              };
+            });
           }
           if (element.type === 'matrix') {
             element.columns = element.columns.map(x => {
