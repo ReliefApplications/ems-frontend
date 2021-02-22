@@ -163,7 +163,6 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     await object.pages.forEach(page => {
       if (page.elements) {
         page.elements.forEach(element => {
-          console.log("first")
           if (!element.valueName) {
             if (element.title) {
               element.valueName = this.toSnakeCase(element.title);
@@ -178,7 +177,6 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
               message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
             }
           }
-          console.log("here")
           if (element.type === 'multipletext') {
             element.items = element.items.map(e => {
               return {
