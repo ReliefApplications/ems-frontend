@@ -7,6 +7,7 @@ import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Subscription } from '../models/subscription.model';
+import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -215,6 +216,20 @@ mutation deleteRole($id: ID!) {
 export interface DeleteRoleMutationResponse {
   loading: boolean;
   deleteRole: Role;
+}
+
+// === ADD POSITION ===
+export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
+mutation addPositionAttributeCategory($title: String!, $application: ID!) {
+  addPositionAttributeCategory(title: $title, application: $application) {
+    id
+    title
+  }
+}`;
+
+export interface AddPositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  addPositionAttributeCategory: PositionAttributeCategory;
 }
 
 // === DELETE PAGE ===
