@@ -242,12 +242,17 @@ export class WhoApplicationService {
       mutation: ADD_ROLE_TO_USER,
       variables: {
         username: value.email,
-        role: value.role
+        role: value.role,
+        ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter(x => x.value) }
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-      application.users = application.users.concat([res.data.addRoleToUser]);
-      this._application.next(application);
+      if (!res.errors) {
+        this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
+        application.users = application.users.concat([res.data.addRoleToUser]);
+        this._application.next(application);
+      } else {
+        this.snackBar.openSnackBar('User could not be invited.', { error: true });
+      }
     });
   }
 
