@@ -1,9 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, WhoApplicationService } from '@who-ems/builder';
+import { Application, WhoApplicationService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
 import { MatDialog} from '@angular/material/dialog';
+import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { Apollo } from 'apollo-angular';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -12,12 +16,17 @@ import { DuplicateApplicationComponent } from '../../../components/duplicate-app
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
+
+  public applications = new MatTableDataSource<Application>([]);
   public settingsForm: FormGroup;
   private applicationSubscription: Subscription;
   private application: Application;
 
   constructor(
     private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private router: Router,
+    private snackBar: WhoSnackBarService,
     private applicationService: WhoApplicationService,
     public dialog: MatDialog
   ) { }
@@ -51,6 +60,34 @@ export class SettingsComponent implements OnInit, OnDestroy {
       data: {
         id: this.application.id,
         name: this.application.name
+      }
+    });
+  }
+
+  onDelete(): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete application',
+        content: `Do you confirm the deletion of this application ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const id = this.application.id;
+        this.apollo.mutate<DeleteApplicationMutationResponse>({
+          mutation: DELETE_APPLICATION,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
+          this.applications.data = this.applications.data.filter(x => {
+            return x.id !== res.data.deleteApplication.id;
+          });
+        });
+        this.router.navigate(['/applications']);
       }
     });
   }
