@@ -1,0 +1,16 @@
+#langSelect {
+  position: absolute !important;
+  z-index: 99;
+  top: 6rem;
+  right: 2.5rem;
+  border: 2px solid #777777;
+  border-radius: 3px;
+}
+
+::ng-deep .k-input{
+  border-right: 2px solid #777777;
+}
+
+::ng-deep .k-dropdown .k-dropdown-wrap {
+  background: white !important;
+}
