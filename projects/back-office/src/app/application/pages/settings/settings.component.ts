@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public settingsForm: FormGroup;
   private applicationSubscription: Subscription;
-  private application: Application;
+  public application: Application;
 
   constructor(
     private formBuilder: FormBuilder,
