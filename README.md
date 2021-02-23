@@ -21,6 +21,7 @@ The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - who-ems, a library shared by both other projects
+- web-element, an application to genereate the web components
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
@@ -67,6 +68,18 @@ ng build --project=who-ems
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
 npm publish ./projects/who-ems
+```
+
+## Build the web components
+
+We first need to generate the elements, using this command:
+```
+ng build web-element --aot --build-optimizer --extract-css --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk
+```
+
+Then, a bundle can be generated from the files using this command:
+```
+cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js > dist/web-element.js
 ```
 
 ## Running unit tests
