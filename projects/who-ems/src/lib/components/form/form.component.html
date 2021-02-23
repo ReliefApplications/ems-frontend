@@ -1,4 +1,4 @@
-<div class="k-float-right">
+<div class="survey-float" *ngIf="surveyActive">
   <kendo-dropdownlist *ngIf="survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
                       [value]="surveyLanguage.nativeName.split(',')[0]"
                       (selectionChange)="setLanguage($event)">

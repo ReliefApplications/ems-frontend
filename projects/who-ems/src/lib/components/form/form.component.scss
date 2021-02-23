@@ -1,14 +1,26 @@
+:host {
+  position: relative;
+}
+
+.survey-float {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 #langSelect {
-  position: absolute !important;
+  position: absolute;
   z-index: 99;
-  top: 6rem;
-  right: 2.5rem;
-  border: 2px solid #777777;
+  top: 8px;
+  right: 1em;
+  border: 1px solid #777777;
   border-radius: 3px;
 }
 
 ::ng-deep .k-input{
-  border-right: 2px solid #777777;
+  border-right: 1px solid #777777;
 }
 
 ::ng-deep .k-dropdown .k-dropdown-wrap {

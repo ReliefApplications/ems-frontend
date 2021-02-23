@@ -26,6 +26,7 @@ export class WhoFormComponent implements OnInit {
   public surveyLanguage = 'en';
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales = [];
+  public surveyActive = true;
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -88,6 +89,7 @@ export class WhoFormComponent implements OnInit {
     this.survey.showCompletedPage = false;
     this.save.emit(false);
     this.survey.render();
+    this.surveyActive = true;
   }
 
   public valueChange(): void {
@@ -98,6 +100,7 @@ export class WhoFormComponent implements OnInit {
   */
   public complete = () => {
     let mutation: any;
+    this.surveyActive = false;
     const data = this.survey.data;
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
@@ -128,6 +131,7 @@ export class WhoFormComponent implements OnInit {
       if (res.errors) {
         this.save.emit(false);
         this.survey.clear(false, true);
+        this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(`record:${this.form.id}`);
@@ -155,6 +159,8 @@ export class WhoFormComponent implements OnInit {
     });
   }
 
+  /* Change language of the form.
+  */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
   }
