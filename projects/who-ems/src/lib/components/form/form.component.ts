@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import * as Survey from 'survey-angular';
@@ -8,7 +8,7 @@ import { Record } from '../../models/record.model';
 import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
-import { Observable } from 'apollo-link';
+import { LANGUAGES } from '../../utils/languages';
 
 @Component({
   selector: 'who-form',
@@ -22,7 +22,11 @@ export class WhoFormComponent implements OnInit {
   @Output() save: EventEmitter<boolean> = new EventEmitter();
 
   // === SURVEYJS ===
-  private survey: Survey.Model;
+  public survey: Survey.Model;
+  public surveyLanguage = 'en';
+  public usedLocales: Array<{ text: string, value: string }> = [];
+  public dropdownLocales = [];
+  public surveyActive = true;
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -45,7 +49,9 @@ export class WhoFormComponent implements OnInit {
       .StylesManager
       .applyTheme();
 
-    this.survey = new Survey.Model(this.form.structure);
+    const structure = JSON.parse(this.form.structure);
+
+    this.survey = new Survey.Model(JSON.stringify(structure));
     const cachedData = localStorage.getItem(`record:${this.form.id}`);
     if (cachedData) {
       this.survey.data = JSON.parse(cachedData);
@@ -54,6 +60,24 @@ export class WhoFormComponent implements OnInit {
         this.survey.data = this.record.data;
       }
     }
+
+    if (this.survey.getUsedLocales().length > 1) {
+      this.survey.getUsedLocales().forEach(lang => {
+        const nativeName = LANGUAGES[lang].nativeName.split(',')[0];
+        this.usedLocales.push({value: lang, text: nativeName});
+        this.dropdownLocales.push(nativeName);
+      });
+    }
+
+    if (navigator.language) {
+      const clientLanguage = navigator.language.substring(0, 2);
+      const code = this.survey.getUsedLocales().includes(clientLanguage) ? clientLanguage : 'en';
+      this.surveyLanguage = LANGUAGES[code];
+      this.survey.locale = code;
+    } else {
+      this.survey.locale = this.surveyLanguage;
+    }
+
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
@@ -65,6 +89,7 @@ export class WhoFormComponent implements OnInit {
     this.survey.showCompletedPage = false;
     this.save.emit(false);
     this.survey.render();
+    this.surveyActive = true;
   }
 
   public valueChange(): void {
@@ -75,6 +100,7 @@ export class WhoFormComponent implements OnInit {
   */
   public complete = () => {
     let mutation: any;
+    this.surveyActive = false;
     const data = this.survey.data;
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
@@ -105,6 +131,7 @@ export class WhoFormComponent implements OnInit {
       if (res.errors) {
         this.save.emit(false);
         this.survey.clear(false, true);
+        this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(`record:${this.form.id}`);
@@ -130,5 +157,11 @@ export class WhoFormComponent implements OnInit {
         document.dispatchEvent(e);
       }
     });
+  }
+
+  /* Change language of the form.
+  */
+  setLanguage(ev: string): void {
+    this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
   }
 }
