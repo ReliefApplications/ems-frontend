@@ -19,7 +19,7 @@
             </form>
         </ng-container>
         <span class="flex-spacer"></span>
-        <app-access [access]="form.permissions" (save)="saveAccess($event)" *ngIf="form.canUpdate"></app-access>
+        <who-access [access]="form.permissions" (save)="saveAccess($event)" *ngIf="form.canUpdate"></who-access>
     </div>
     <div class="form-actions">
         <mat-button-toggle-group appearance="legacy" [value]="form.status" (change)="updateStatus($event)">
