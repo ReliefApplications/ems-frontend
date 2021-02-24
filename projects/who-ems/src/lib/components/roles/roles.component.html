@@ -8,12 +8,28 @@
   </div>
   <table mat-table [dataSource]="roles" matSort>
     <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
-        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      <th mat-header-cell *matHeaderCellDef>
+            <span class="headerTitle" mat-sort-header>
+              Title
+            </span>
+        <mat-form-field>
+          <mat-icon matSuffix>filter_alt</mat-icon>
+          <input matInput (keyup)="applyFilter('title', $event)">
+        </mat-form-field>
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.title }}</td>
     </ng-container>
 
     <ng-container matColumnDef="usersCount">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Users</th>
+      <th mat-header-cell *matHeaderCellDef>
+            <span class="headerTitle" mat-sort-header>
+              Users
+            </span>
+        <mat-form-field>
+          <mat-icon matSuffix>filter_alt</mat-icon>
+          <input matInput (keyup)="applyFilter('usersCount', $event)">
+        </mat-form-field>
+      </th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
     </ng-container>
 

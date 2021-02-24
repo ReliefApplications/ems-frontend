@@ -36,6 +36,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
 
+  // === FILTERS ===
+  public filters = [{id: 'title', value: ''}, {id: 'usersCount', value: ''}];
+
   constructor(
     public dialog: MatDialog,
     private applicationService: WhoApplicationService,
@@ -44,6 +47,8 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    this.filterPredicate();
+
     if (this.inApplication) {
       this.loading = false;
       this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
@@ -58,8 +63,24 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private filterPredicate(): void {
+    this.roles.filterPredicate = (data: any, filtersJson: string) => {
+      const matchFilter = [];
+      const filters = JSON.parse(filtersJson);
+
+      filters.forEach(filter => {
+        // check for null values
+        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'usersCount' ? 0 : '';
+        matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
+      });
+
+      return matchFilter.every(Boolean); // AND condition
+      // return matchFilter.some(Boolean); // OR condition
+    };
+  }
+
   /*  Load the roles.
-  */
+    */
   private getRoles(): void {
     this.apollo.watchQuery<GetRolesQueryResponse>({
       query: GET_ROLES
@@ -160,5 +181,16 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.roles.sort = this.sort;
+  }
+
+  applyFilter(column: string, event: any): void {
+    {
+      this.filters.map(f => {
+        if (f.id === column) {
+          f.value = event.target.value;
+        }
+      });
+      this.roles.filter = JSON.stringify(this.filters);
+    }
   }
 }
