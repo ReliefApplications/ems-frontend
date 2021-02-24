@@ -27,13 +27,35 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
 
+  // === FILTERS ===
+  public filters = [{id: 'username', value: ''}, {id: 'name', value: ''}, {id: 'oid', value: ''}, {id: 'roles', value: ''},
+    {id: 'actions', value: ''}];
+
   constructor(
     private apollo: Apollo,
     private snackBar: WhoSnackBarService,
     public dialog: MatDialog,
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.users.filterPredicate = (data: any, filtersJson: string) => {
+      const matchFilter = [];
+      const filters = JSON.parse(filtersJson);
+
+      filters.forEach(filter => {
+        // check for null values
+        let val = !!data[filter.id] ? data[filter.id] : '';
+        // for filter roles we have to check if is an array
+        if (val instanceof Array) {
+          val = val.length > 0 ? val[0].title : '';
+        }
+        matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
+      });
+
+      return matchFilter.every(Boolean); // AND condition
+      // return matchFilter.some(Boolean); // OR condition
+    };
+  }
 
   onInvite(): void {
     const dialogRef = this.dialog.open(WhoInviteUserComponent, {
@@ -98,5 +120,14 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.users.sort = this.sort;
+  }
+
+  applyFilter(column: any, event: any): void {
+    this.filters.map(f => {
+      if (f.id === column) {
+        f.value = event.target.value;
+      }
+    });
+    this.users.filter = JSON.stringify(this.filters);
   }
 }
