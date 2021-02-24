@@ -15,7 +15,7 @@ import {
     EditRoleMutationResponse, EDIT_ROLE } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
-import {MatSort} from "@angular/material/sort";
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'who-roles',

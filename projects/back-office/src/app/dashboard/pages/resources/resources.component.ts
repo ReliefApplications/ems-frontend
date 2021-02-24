@@ -4,8 +4,8 @@ import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphq
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
 import { Resource, WhoConfirmModalComponent } from '@who-ems/builder';
 import { MatDialog } from '@angular/material/dialog';
-import {MatTableDataSource} from "@angular/material/table";
-import {MatSort} from "@angular/material/sort";
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 
 @Component({
