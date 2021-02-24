@@ -1,28 +1,41 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { WhoSnackBarService, WhoAuthService, PermissionsManagement, PermissionType, WhoConfirmModalComponent } from '@who-ems/builder';
+import {
+  WhoSnackBarService,
+  WhoAuthService,
+  PermissionsManagement,
+  PermissionType,
+  WhoConfirmModalComponent,
+  Application, Form
+} from '@who-ems/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+
 
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss']
 })
-export class FormsComponent implements OnInit, OnDestroy {
+export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === DATA ===
   public loading = true;
-  displayedColumns: string[] = ['name', 'createdAt', 'status', 'versions', 'recordsCount', 'core', 'actions'];
-  dataSource = [];
+  displayedColumns = ['name', 'createdAt', 'status', 'versions', 'recordsCount', 'core', 'actions'];
+  dataSource = new MatTableDataSource<Form>([]);
 
   // === PERMISSIONS ===
   canAdd = false;
   private authSubscription: Subscription;
+
+  // === SORTING ===
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private apollo: Apollo,
@@ -39,12 +52,16 @@ export class FormsComponent implements OnInit, OnDestroy {
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS
     }).valueChanges.subscribe(res => {
-      this.dataSource = res.data.forms;
+      this.dataSource.data = res.data.forms;
       this.loading = res.loading;
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -73,7 +90,7 @@ export class FormsComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
-          this.dataSource = this.dataSource.filter(x => {
+          this.dataSource.data = this.dataSource.data.filter(x => {
             return x.id !== element.id;
           });
         });
@@ -112,4 +129,5 @@ export class FormsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 }

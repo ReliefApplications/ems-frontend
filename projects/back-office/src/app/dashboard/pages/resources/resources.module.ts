@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [ResourcesComponent],
@@ -20,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
+    MatSortModule
   ],
   exports: [ResourcesComponent]
 })
