@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,13 +7,14 @@ import { User, Role } from '../../models/user.model';
 import { AddRoleToUserMutationResponse, ADD_ROLE_TO_USER, EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'who-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class WhoUsersComponent implements OnInit {
+export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   // === INPUT DATA ===
   @Input() users: MatTableDataSource<User>;
@@ -22,6 +23,9 @@ export class WhoUsersComponent implements OnInit {
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
+
+  // === SORTING ===
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private apollo: Apollo,
@@ -90,5 +94,9 @@ export class WhoUsersComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.users.sort = this.sort;
   }
 }

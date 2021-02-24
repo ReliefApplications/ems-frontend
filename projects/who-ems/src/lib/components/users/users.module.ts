@@ -14,9 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-
-
-
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [WhoUsersComponent, WhoEditUserComponent, WhoInviteUserComponent],
@@ -32,7 +30,8 @@ import { MatInputModule } from '@angular/material/input';
     MatMenuModule,
     MatIconModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatSortModule
   ],
   exports: [WhoUsersComponent]
 })

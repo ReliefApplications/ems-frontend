@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import {Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { Role } from '../../models/user.model';
+import {Role, User} from '../../models/user.model';
 import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { WhoApplicationService } from '../../services/application.service';
@@ -14,22 +14,27 @@ import {
    DeleteRoleMutationResponse, DELETE_ROLE,
     EditRoleMutationResponse, EDIT_ROLE } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
+import { MatTableDataSource } from '@angular/material/table';
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'who-roles',
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
-export class WhoRolesComponent implements OnInit, OnDestroy {
+export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === INPUT DATA ===
   @Input() inApplication: boolean;
 
   // === DATA ===
   public loading = true;
-  public roles = [];
+  public roles = new MatTableDataSource([]);
   public displayedColumns = ['title', 'usersCount', 'actions'];
   private applicationSubscription: Subscription;
+
+  // === SORTING ===
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dialog: MatDialog,
@@ -43,9 +48,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
         if (application) {
-          this.roles = application.roles;
+          this.roles.data = application.roles;
         } else {
-          this.roles = [];
+          this.roles.data = [];
         }
       });
     } else {
@@ -59,7 +64,7 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
     this.apollo.watchQuery<GetRolesQueryResponse>({
       query: GET_ROLES
     }).valueChanges.subscribe(res => {
-      this.roles = res.data.roles;
+      this.roles.data = res.data.roles;
       this.loading = res.loading;
     });
   }
@@ -151,5 +156,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.roles.sort = this.sort;
   }
 }
