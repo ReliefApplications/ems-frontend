@@ -7,6 +7,7 @@ import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'who-form-modal',
@@ -23,6 +24,9 @@ export class WhoFormModalComponent implements OnInit {
 
   private isMultiEdition = false;
 
+  // === SURVEY COLORS
+  primaryColor = '#008DC9';
+
   constructor(
     public dialogRef: MatDialogRef<WhoFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -31,12 +35,23 @@ export class WhoFormModalComponent implements OnInit {
       locale?: string
     },
     private apollo: Apollo,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private formService: FormService
   ) {
     this.containerId = uuidv4();
   }
 
   ngOnInit(): void {
+    const defaultThemeColorsSurvey = Survey
+      .StylesManager
+      .ThemeColors.default;
+    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+
+    Survey
+      .StylesManager
+      .applyTheme();
+
     this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
       const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;

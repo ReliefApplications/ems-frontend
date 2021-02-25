@@ -19,6 +19,9 @@ export class WhoAuthService {
   private _user = new BehaviorSubject<User>(null);
   public account: Account;
 
+  // if we have the modal confirmation open on form builder we cannot logout until close modal
+  public canLogout = new BehaviorSubject<boolean>(true);
+
   constructor(
     private msalService: MsalService,
     private apollo: Apollo

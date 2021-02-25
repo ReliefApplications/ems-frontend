@@ -299,6 +299,17 @@ export interface SeeNotificationMutationResponse {
   seeNotification: Notification;
 }
 
+// === SEE ALL NOTIFICATION ===
+export const SEE_NOTIFICATIONS = gql`
+mutation seeNotifications($ids: [ID]!) {
+  seeNotifications(ids: $ids)
+}`;
+
+export interface SeeNotificationsMutationResponse {
+  loading: boolean;
+  seeNotifications: boolean;
+}
+
 // === ADD CHANNEL ===
 export const ADD_CHANNEL = gql`
 mutation addChannel($title: String!, $application: ID) {
@@ -380,7 +391,6 @@ export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
   deleteRecord(id: $id) {
     id
-    subscriptions
   }
 }`;
 

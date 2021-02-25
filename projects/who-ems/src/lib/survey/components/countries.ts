@@ -7,7 +7,7 @@ export function init(Survey: any): void{
     name: 'countries',
     // The text that shows on toolbox
     title: 'Countries',
-    category: 'Resource',
+    category: 'Custom Questions',
     // The actual question that will do the job
     questionJSON: {
       type: 'tagbox',

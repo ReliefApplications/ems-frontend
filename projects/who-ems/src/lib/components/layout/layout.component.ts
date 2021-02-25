@@ -9,7 +9,9 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { WhoNotificationService } from '../../services/notification.service';
+import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'who-layout',
@@ -52,7 +54,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private authService: WhoAuthService,
     private notificationService: WhoNotificationService,
-    private layoutService: LayoutService
+    private layoutService: LayoutService,
+    public dialog: MatDialog,
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -161,7 +164,29 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   /*  Call logout method of authService.
     */
   logout(): void {
-    this.authService.logout();
+    if (!this.authService.canLogout.value) {
+      const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+        data: {
+          title: `Exit without saving changes`,
+          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
+        }
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.authService.canLogout.next(true);
+          localStorage.clear();
+          this.authService.logout();
+        }
+      });
+    } else {
+      this.authService.logout();
+    }
+  }
+
+  onMarkAllNotificationsAsRead(): void {
+    this.notificationService.markAllAsSeen();
   }
 
   onNotificationClick(notification: Notification): void {
