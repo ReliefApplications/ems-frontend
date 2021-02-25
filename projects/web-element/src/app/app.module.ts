@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -20,15 +20,10 @@ import { setContext } from 'apollo-link-context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalInterceptor } from '@azure/msal-angular';
-import { BehaviorSubject } from 'rxjs';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 localStorage.setItem('loaded', 'false');
-
-const REFRESH = new BehaviorSubject<boolean>(false);
 
 /*  Configuration of the Apollo client.
 */
@@ -61,8 +56,6 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       connectionCallback: (error) => {
         if (localStorage.getItem('loaded') === 'true') {
-          // location.reload();
-          REFRESH.next(true);
           localStorage.setItem('loaded', 'false');
         }
         localStorage.setItem('loaded', 'true');
@@ -119,7 +112,8 @@ export function provideApollo(httpLink: HttpLink): any {
     ApolloModule,
     MatSnackBarModule,
     HttpLinkModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {
@@ -132,11 +126,11 @@ export function provideApollo(httpLink: HttpLink): any {
       useFactory: provideApollo,
       deps: [HttpLink]
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
-    }
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: MsalInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: []
 })

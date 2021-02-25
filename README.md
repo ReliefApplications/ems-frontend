@@ -74,7 +74,7 @@ npm publish ./projects/who-ems
 
 We first need to generate the elements, using this command:
 ```
-ng build web-element --aot --build-optimizer --extract-css --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk
+ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk
 ```
 
 Then, a bundle can be generated from the files using this command:
