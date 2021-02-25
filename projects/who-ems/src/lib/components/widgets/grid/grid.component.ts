@@ -688,6 +688,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         data[modification.field.name] = modification.value;
       }
       delete data.id;
+      delete data.__typename;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
