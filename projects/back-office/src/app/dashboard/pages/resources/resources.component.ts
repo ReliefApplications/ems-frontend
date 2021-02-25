@@ -6,6 +6,7 @@ import { Resource, WhoConfirmModalComponent } from '@who-ems/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 
 @Component({
@@ -24,6 +25,13 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
 
+  // === FILTERS ===
+  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'recordsCount', value: ''}];
+  public filtersDate = {startDate: '', endDate: ''};
+
+  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo
@@ -32,12 +40,37 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   /*  Load the resources.
   */
   ngOnInit(): void {
+    this.filterPredicate();
+
     this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED
     }).valueChanges.subscribe(res => {
       this.dataSource.data = res.data.resources;
       this.loading = res.loading;
     });
+  }
+
+  private filterPredicate(): void {
+    this.dataSource.filterPredicate = (data: any, filtersJson: string) => {
+      const matchFilter = [];
+      const filters = JSON.parse(filtersJson);
+
+      filters.forEach(filter => {
+        // check for null values
+        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'recordsCount' ? 0 : '';
+        // necessary to handler dates
+        if (filter.id === 'createdAt') {
+          const startDate = new Date(this.filtersDate.startDate).getTime();
+          const endDate = new Date(this.filtersDate.endDate).getTime();
+          matchFilter.push(!startDate || !endDate || data[filter.id] >=  startDate && data[filter.id] <= endDate);
+        } else {
+          matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
+        }
+      });
+
+      return matchFilter.every(Boolean); // AND condition
+      // return matchFilter.some(Boolean); // OR condition
+    };
   }
 
 
@@ -67,5 +100,27 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  applyFilter(column: string, event: any): void {
+    {
+      if (column !== 'createdAt' ) {
+        this.filters.map(f => {
+          if (f.id === column) {
+            f.value = event.target.value;
+          }
+        });
+      }
+      this.dataSource.filter = JSON.stringify(this.filters);
+    }
+  }
+
+  clearDateFilter(): void {
+    this.filtersDate.startDate = '';
+    this.filtersDate.endDate = '';
+    // ignore that error
+    this.startDate.value = '';
+    this.endDate.value = '';
+    this.applyFilter('createdAt', '');
   }
 }

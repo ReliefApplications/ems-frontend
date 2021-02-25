@@ -19,29 +19,34 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
-  imports: [
-    CommonModule,
-    ApplicationsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatSortModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatChipsModule,
-    WhoConfirmModalModule,
-    WhoAccessModule,
-    DuplicateApplicationModule
-  ],
+    imports: [
+        CommonModule,
+        ApplicationsRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatChipsModule,
+        WhoConfirmModalModule,
+        WhoAccessModule,
+        DuplicateApplicationModule,
+        MatDatepickerModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+    ],
   exports: [ApplicationsComponent]
 })
 export class ApplicationsModule { }

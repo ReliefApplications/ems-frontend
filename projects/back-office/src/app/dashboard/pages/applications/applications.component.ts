@@ -14,6 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-applications',
@@ -30,6 +31,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
 
+  // === FILTERS ===
+  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'status', value: ''}, {id: 'usersCount', value: ''}];
+  public filtersDate = {startDate: '', endDate: ''};
+
+  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+
   // === PERMISSIONS ===
   canAdd = false;
   private authSubscription: Subscription;
@@ -45,6 +53,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.filterPredicate();
+
     this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS
     }).valueChanges.subscribe(res => {
@@ -54,6 +64,29 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  private filterPredicate(): void {
+    this.applications.filterPredicate = (data: any, filtersJson: string) => {
+      const matchFilter = [];
+      const filters = JSON.parse(filtersJson);
+
+      filters.forEach(filter => {
+        // check for null values
+        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'usersCount' ? 0 : '';
+        // necessary to handler dates
+        if (filter.id === 'createdAt') {
+          const startDate = new Date(this.filtersDate.startDate).getTime();
+          const endDate = new Date(this.filtersDate.endDate).getTime();
+          matchFilter.push(!startDate || !endDate || data[filter.id] >=  startDate && data[filter.id] <= endDate);
+        } else {
+          matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
+        }
+      });
+
+      return matchFilter.every(Boolean); // AND condition
+      // return matchFilter.some(Boolean); // OR condition
+    };
   }
 
   ngAfterViewInit(): void {
@@ -171,5 +204,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.applications.data = this.applications.data;
       }
     });
+  }
+
+  applyFilter(column: string, event: any): void {
+    {
+      if (column !== 'createdAt' ) {
+        this.filters.map(f => {
+          if (f.id === column) {
+            f.value = event.target.value;
+          }
+        });
+      }
+      this.applications.filter = JSON.stringify(this.filters);
+    }
+  }
+
+  clearDateFilter(): void {
+    this.filtersDate.startDate = '';
+    this.filtersDate.endDate = '';
+    // ignore that error
+    this.startDate.value = '';
+    this.endDate.value = '';
+    this.applyFilter('createdAt', '');
   }
 }

@@ -16,6 +16,7 @@ import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_F
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 
 @Component({
@@ -37,6 +38,14 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
 
+  // === FILTERS ===
+  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'status', value: ''}, {id: 'versions', value: ''}, {id: 'recordsCount', value: ''}, {id: 'core', value: ''}];
+  public filtersDate = {startDate: '', endDate: ''};
+
+  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -49,6 +58,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     Check user permission to add new forms.
   */
   ngOnInit(): void {
+    this.filterPredicate();
+
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS
     }).valueChanges.subscribe(res => {
@@ -58,6 +69,37 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  private filterPredicate(): void {
+    this.dataSource.filterPredicate = (data: any, filtersJson: string) => {
+      const matchFilter = [];
+      const filters = JSON.parse(filtersJson);
+
+      filters.forEach(filter => {
+        // check for null values
+        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'recordsCount' ? 0 : '';
+        // necessary to handler dates
+        if (filter.id === 'createdAt') {
+          const startDate = new Date(this.filtersDate.startDate).getTime();
+          const endDate = new Date(this.filtersDate.endDate).getTime();
+          matchFilter.push(!startDate || !endDate || data[filter.id] >=  startDate && data[filter.id] <= endDate);
+        } else {
+          if (filter.id === 'core') {
+            matchFilter.push(!filter.value || !val && filter.value === 'false' || val === true && filter.value === 'true');
+          }
+          else if (filter.id === 'versions') {
+            // necessary to handle version array length
+            matchFilter.push(filter.value.trim().length === 0 || val.length.toString().includes(filter.value));
+          } else {
+            matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
+          }
+        }
+      });
+
+      return matchFilter.every(Boolean); // AND condition
+      // return matchFilter.some(Boolean); // OR condition
+    };
   }
 
   ngAfterViewInit(): void {
@@ -130,4 +172,25 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  applyFilter(column: string, event: any): void {
+    {
+      if (column !== 'createdAt' ) {
+        this.filters.map(f => {
+          if (f.id === column) {
+            f.value = event.target.value;
+          }
+        });
+      }
+      this.dataSource.filter = JSON.stringify(this.filters);
+    }
+  }
+
+  clearDateFilter(): void {
+    this.filtersDate.startDate = '';
+    this.filtersDate.endDate = '';
+    // ignore that error
+    this.startDate.value = '';
+    this.endDate.value = '';
+    this.applyFilter('createdAt', '');
+  }
 }

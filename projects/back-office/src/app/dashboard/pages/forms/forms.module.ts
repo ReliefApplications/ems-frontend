@@ -12,23 +12,31 @@ import { MatChipsModule } from '@angular/material/chips';
 import { WhoConfirmModalModule } from '@who-ems/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [FormsComponent],
-    imports: [
-        CommonModule,
-        FormsRoutingModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSortModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatChipsModule,
-        WhoConfirmModalModule,
-        AddFormModule,
-    ],
+  imports: [
+    CommonModule,
+    FormsRoutingModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatChipsModule,
+    WhoConfirmModalModule,
+    AddFormModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule
+  ],
   exports: [FormsComponent]
 })
 export class FormsModule { }
