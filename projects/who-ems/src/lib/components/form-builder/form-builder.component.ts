@@ -71,9 +71,8 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       'surveyCreatorContainer',
       options
     );
-    let localStorageStructure = window.localStorage.getItem('saveLoadSurveyCreator');
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = localStorageStructure || this.structure;
+    this.surveyCreator.text = this.structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
@@ -93,9 +92,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
-      window.localStorage.setItem('saveLoadSurveyCreator', survey.text);
-      localStorageStructure = window.localStorage.getItem('saveLoadSurveyCreator');
-      this.formChange.emit(this.structure !== localStorageStructure);
+      this.formChange.emit(survey.text);
     });
   }
 

@@ -71,7 +71,7 @@ export class FormBuilderComponent implements OnInit {
       return dialogRef.afterClosed().pipe(map(value => {
         if (value) {
           this.authService.canLogout.next(true);
-          window.localStorage.removeItem('saveLoadSurveyCreator');
+          window.localStorage.removeItem(`form:${this.id}`);
           return true;
         }
         return false;
@@ -83,7 +83,6 @@ export class FormBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.formActive = false;
-
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -98,10 +97,11 @@ export class FormBuilderComponent implements OnInit {
           this.nameForm = new FormGroup({
             formName: new FormControl(this.form.name, Validators.required)
           });
-          const surveyStructureStorage = window.localStorage.getItem('saveLoadSurveyCreator');
-          this.structure = this.form.structure;
-          if (surveyStructureStorage !== null && this.structure !== surveyStructureStorage) {
+          const storedStructure = window.localStorage.getItem(`form:${this.id}`);
+          this.structure = storedStructure ? storedStructure : this.form.structure;
+          if (this.structure !== this.form.structure) {
             this.hasChanges = true;
+            this.authService.canLogout.next(!this.hasChanges);
           }
         } else {
           this.snackBar.openSnackBar('No access provided to this form.', { error: true });
@@ -237,7 +237,8 @@ export class FormBuilderComponent implements OnInit {
   }
 
   formStructureChange(event: any): void {
-    this.hasChanges = event;
-    this.authService.canLogout.next(!event);
+    this.hasChanges = (event !== this.form.structure);
+    localStorage.setItem(`form:${this.id}`, event);
+    this.authService.canLogout.next(!this.hasChanges);
   }
 }

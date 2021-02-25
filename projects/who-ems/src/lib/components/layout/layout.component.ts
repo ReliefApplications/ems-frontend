@@ -176,7 +176,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
           this.authService.canLogout.next(true);
-          window.localStorage.removeItem('saveLoadSurveyCreator');
+          localStorage.clear();
           this.authService.logout();
         }
       });
