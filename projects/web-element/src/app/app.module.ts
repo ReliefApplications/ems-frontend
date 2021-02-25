@@ -1,14 +1,14 @@
 import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { WhoWidgetGridComponent, WhoWidgetGridModule, WhoSnackBarService } from '@who-ems/builder';
+import { WhoWidgetGridModule } from '@who-ems/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Apollo, ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { getMainDefinition } from 'apollo-utilities';
@@ -20,8 +20,9 @@ import { setContext } from 'apollo-link-context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -108,7 +109,7 @@ export function provideApollo(httpLink: HttpLink): any {
 }
 
 @NgModule({
-  declarations: [],
+  declarations: [DashboardComponent],
   imports: [
     BrowserModule,
     WhoWidgetGridModule,
@@ -118,36 +119,7 @@ export function provideApollo(httpLink: HttpLink): any {
     ApolloModule,
     MatSnackBarModule,
     HttpLinkModule,
-    BrowserAnimationsModule,
-    // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-    {
-      popUp: false,
-      consentScopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      unprotectedResources: [],
-      protectedResourceMap: [
-        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-      ],
-      extraQueryParameters: {}
-    })
+    BrowserAnimationsModule
   ],
   providers: [
     {
@@ -170,14 +142,16 @@ export function provideApollo(httpLink: HttpLink): any {
 })
 export class AppModule {
   constructor(
-    private injector: Injector,
-    private apollo: Apollo,
-    private snackBar: WhoSnackBarService
+    private injector: Injector
   ) {}
 
   ngDoBootstrap(): void {
-    const whoWidgetGrid = createCustomElement(WhoWidgetGridComponent, { injector: this.injector });
+    // const whoWidgetGrid = createCustomElement(WhoWidgetGridComponent, { injector: this.injector });
 
-    customElements.define('who-widget-grid', whoWidgetGrid);
+    // customElements.define('who-widget-grid', whoWidgetGrid);
+
+    const whoDashboard = createCustomElement(DashboardComponent, { injector: this.injector });
+
+    customElements.define('who-dashboard', whoDashboard);
   }
 }

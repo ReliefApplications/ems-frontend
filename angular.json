@@ -340,7 +340,16 @@
               "projects/web-element/src/assets"
             ],
             "styles": [
-              "projects/web-element/src/styles.scss"
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
+              },
+              "projects/web-element/src/styles.scss",
+              "projects/who-ems/src/lib/style/styles.scss",
+              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
             ],
             "scripts": []
           },
@@ -363,7 +372,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
