@@ -33,7 +33,7 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
-const DISABLED_FIELDS = ['id', 'createdAt'];
+const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
