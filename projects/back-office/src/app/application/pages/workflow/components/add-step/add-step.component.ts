@@ -64,7 +64,6 @@ export class AddStepComponent implements OnInit, OnDestroy {
         contentControl.updateValueAndValidity();
         this.showContent = false;
       }
-      this.onNext();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);

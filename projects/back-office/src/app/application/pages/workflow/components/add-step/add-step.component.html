@@ -11,9 +11,11 @@
             <h2>Select which type of step you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
                 <div class="content-type" *ngFor="let type of contentTypes">
-                    <label matRipple [matRippleCentered]="centered" [matRippleRadius]="radius" [matRippleColor]="color">
+                    <label>
                         <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
-                        <img src="./assets/{{type}}.svg">
+                        <div class="img-choice" matRipple [ngClass]="{'img-selected': type === stepForm.value.type }">
+                            <img src="./assets/{{type}}.svg">
+                        </div>
                     </label>
                 </div>
             </mat-radio-group>
@@ -35,5 +37,5 @@
 </form>
 <div class="add-step-stepper">
     <button mat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
-    <div [hidden]="stage > 1"><button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button></div>
+    <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
 </div>
