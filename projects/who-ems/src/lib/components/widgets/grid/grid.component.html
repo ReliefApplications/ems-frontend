@@ -1,5 +1,5 @@
 <div class="widget-container">
-  <div class="widget-header">
+  <div class="widget-header" *ngIf="!parent">
     {{settings.title}}
     <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
       <button mat-button color="primary" (click)="onFloatingButtonClick()">

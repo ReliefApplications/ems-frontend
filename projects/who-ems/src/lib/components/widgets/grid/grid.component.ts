@@ -626,7 +626,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public async onFloatingButtonClick(): Promise<void> {
     const options = this.settings.floatingButton;
-    console.log(options);
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -671,7 +670,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     if (options.goToNextStep) {
-      console.log('next step');
       this.goToNextStep.emit(true);
     } else {
       this.reloadData();

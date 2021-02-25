@@ -26,18 +26,10 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    public dialog: MatDialog,
-    // private renderer: Renderer2,
-    ) {
-      window.addEventListener('goToNextStep', () => {
-        this.goToNextStep.emit(true);
-      });
-    }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    // this.renderer.listen('document', 'goToNextStep', this.goToNextStep.emit($event));
   }
 
   /*  Material grid once template ready.
@@ -93,17 +85,20 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
   onExpandWidget(e: any): void {
     const widget = this.widgets.find(x => x.id === e.id);
-    this.dialog.open(WhoExpandedWidgetComponent, {
+    const dialogRef = this.dialog.open(WhoExpandedWidgetComponent, {
       data: {
         widget
       },
       autoFocus: false,
-      // hasBackdrop: false,
       position: {
         bottom: '0',
         right: '0'
       },
       panelClass: 'expanded-widget-dialog'
+    });
+    dialogRef.componentInstance.goToNextStep.subscribe((event) => {
+      this.goToNextStep.emit(event);
+      dialogRef.close();
     });
   }
 }
