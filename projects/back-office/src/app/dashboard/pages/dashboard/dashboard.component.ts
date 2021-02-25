@@ -68,6 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
           this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
           this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
+          console.log(JSON.parse(JSON.stringify(this.tiles)));
           this.loading = res.loading;
         } else {
           this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });
