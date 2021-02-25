@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
 
-const DISABLED_FIELDS = ['id', 'createdAt'];
+const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 @Component({
   selector: 'who-floating-button-settings',
