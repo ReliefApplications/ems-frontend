@@ -167,8 +167,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
         data: {
-          title: `Exit without save changes`,
-          content: `There are unsaved changes on your form. Do you confirm logout?`,
+          title: `Exit without saving changes`,
+          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
           confirmText: 'Confirm',
           confirmColor: 'primary'
         }
@@ -176,6 +176,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
           this.authService.canLogout.next(true);
+          localStorage.clear();
           this.authService.logout();
         }
       });
