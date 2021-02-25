@@ -1,5 +1,5 @@
 import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
@@ -26,11 +26,18 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    // private renderer: Renderer2,
+    ) { 
+      window.addEventListener('goToNextStep', () => {
+        this.goToNextStep.emit(true);
+      });
+    }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
+    // this.renderer.listen('document', 'goToNextStep', this.goToNextStep.emit($event));
   }
 
   /*  Material grid once template ready.
