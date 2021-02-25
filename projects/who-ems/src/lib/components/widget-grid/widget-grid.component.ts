@@ -29,7 +29,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     // private renderer: Renderer2,
-    ) { 
+    ) {
       window.addEventListener('goToNextStep', () => {
         this.goToNextStep.emit(true);
       });

@@ -12,7 +12,7 @@ export class WhoExpandedWidgetComponent implements OnInit {
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
-  
+
   constructor(
     public dialogRef: MatDialogRef<WhoExpandedWidgetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {

@@ -671,7 +671,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     if (options.goToNextStep) {
-      console.log("next step");
+      console.log('next step');
       this.goToNextStep.emit(true);
     } else {
       this.reloadData();
