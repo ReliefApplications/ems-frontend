@@ -151,6 +151,27 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 }
 
+@mixin img-choice($theme) {
+  $primary: map-get($theme, primary);
+
+  .img-choice {
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
+  }
+
+  .img-selected {
+    border-color: mat-color($primary);
+  }
+}
+
+// img-choice
+// img-selected
+
 // === GLOBAL STYLES ==
 .mat-table{
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
@@ -251,40 +272,42 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-
-  &:not(:first-child) {
-    margin-top: 32px;
-  }
-
-  .form-group-row {
-    display: flex;
-  }
-
-  .form-group-title {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 12px;
-    border-bottom: 1px solid darkgray;
-    padding-bottom: 4px;
-  }
-  .nested-form-group {
-    padding: 16px;
-    border: 1px solid darkgray;
-    border-radius: 4px;
-
-    .form-group:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .form-radio-group {
+  &:not(td) {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.25em;
-  }
-  .form-slide-toggle {
-    margin-bottom: 1.25em;
+
+    &:not(:first-child) {
+      margin-top: 32px;
+    }
+
+    .form-group-row {
+      display: flex;
+    }
+
+    .form-group-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid darkgray;
+      padding-bottom: 4px;
+    }
+    .nested-form-group {
+      padding: 16px;
+      border: 1px solid darkgray;
+      border-radius: 4px;
+
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .form-radio-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.25em;
+    }
+    .form-slide-toggle {
+      margin-bottom: 1.25em;
+    }
   }
 }
 
@@ -297,6 +320,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 @include angular-material-theme($who-theme);
 @include chip($who-theme);
 @include button($who-theme);
+@include img-choice($who-theme);
 @include custom-theme($who-theme);
 
 html, body { height: 100%; }

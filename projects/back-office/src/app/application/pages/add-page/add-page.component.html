@@ -11,8 +11,12 @@
             <h2>Select what type of page you want to create</h2>
             <mat-radio-group class="content-choice" formControlName="type">
                 <div class="content-type" *ngFor="let type of contentTypes">
-                    <img src="./assets/{{type}}.svg">
-                    <mat-radio-button [value]="type"></mat-radio-button>
+                    <label>
+                        <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
+                        <div class="img-choice" matRipple [ngClass]="{'img-selected': type === pageForm.value.type }">
+                            <img src="./assets/{{type}}.svg">
+                        </div>
+                    </label>
                 </div>
             </mat-radio-group>
         </ng-container>

@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Form, WhoSnackBarService } from '@who-ems/builder';
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { MatDialog } from '@angular/material/dialog';
+import { WhoAuthService, WhoSnackBarService, Form, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-form-builder',
@@ -42,17 +45,44 @@ export class FormBuilderComponent implements OnInit {
   // === FORM EDITION ===
   public formActive: boolean;
   public nameForm: FormGroup;
+  public hasChanges = false;
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    public dialog: MatDialog,
+    private authService: WhoAuthService
   ) { }
+
+  /* Shows modal confirmation before leave the page if has changes on form
+  */
+  canDeactivate(): Observable<boolean> | boolean{
+    if (this.hasChanges) {
+      const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+        data: {
+          title: `Exit without saving changes`,
+          content: `There are unsaved changes on your form. Are you sure you want to exit?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
+        }
+      });
+      return dialogRef.afterClosed().pipe(map(value => {
+        if (value) {
+          this.authService.canLogout.next(true);
+          window.localStorage.removeItem(`form:${this.id}`);
+          return true;
+        }
+        return false;
+      }));
+    }
+    return true;
+  }
+
 
   ngOnInit(): void {
     this.formActive = false;
-
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -67,7 +97,12 @@ export class FormBuilderComponent implements OnInit {
           this.nameForm = new FormGroup({
             formName: new FormControl(this.form.name, Validators.required)
           });
-          this.structure = this.form.structure;
+          const storedStructure = window.localStorage.getItem(`form:${this.id}`);
+          this.structure = storedStructure ? storedStructure : this.form.structure;
+          if (this.structure !== this.form.structure) {
+            this.hasChanges = true;
+            this.authService.canLogout.next(!this.hasChanges);
+          }
         } else {
           this.snackBar.openSnackBar('No access provided to this form.', { error: true });
           // redirect to default screen if error
@@ -110,6 +145,8 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar('Form updated');
           this.form = res.data.editForm;
           this.structure = structure; // Update current form to
+          this.hasChanges = false;
+          this.authService.canLogout.next(true);
         }
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
@@ -199,4 +236,9 @@ export class FormBuilderComponent implements OnInit {
     });
   }
 
+  formStructureChange(event: any): void {
+    this.hasChanges = (event !== this.form.structure);
+    localStorage.setItem(`form:${this.id}`, event);
+    this.authService.canLogout.next(!this.hasChanges);
+  }
 }
