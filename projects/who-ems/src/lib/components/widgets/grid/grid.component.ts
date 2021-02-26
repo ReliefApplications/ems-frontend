@@ -543,16 +543,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         inputs: {
           record: res.data.record,
           revert: (item) => {
-            this.confirmRevertDialog(item);
+            this.confirmRevertDialog(res.data.record, item);
           }
         },
       });
     });
   }
 
-  private confirmRevertDialog(item): void {
-    console.log(item);
-    const date = new Date(parseInt(item.created, 0));
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
@@ -567,8 +566,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         this.apollo.mutate<EditRecordMutationResponse>({
           mutation: EDIT_RECORD,
           variables: {
-            id: item.id,
-            data: item.data
+            id: record.id,
+            version: version.id
           }
         }).subscribe((res) => {
           this.reloadData();

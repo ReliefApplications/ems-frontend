@@ -62,10 +62,11 @@ export class WhoRecordHistoryComponent implements OnInit {
     for (let i = 1; i < versions.length; i++) {
       difference = this.getDifference(versions[i - 1].data, versions[i].data);
       res.push({
-        created: versions[i - 1].createdAt, createdBy: versions[i - 1].createdBy?.name,
+        created: versions[i - 1].createdAt,
+        createdBy: versions[i - 1].createdBy?.name,
         changes: difference.changes,
         data: difference.data,
-        id: record.id
+        id: versions[i - 1].id
       });
     }
     difference = this.getDifference(record.data, versions[versions.length - 1].data);
@@ -73,11 +74,12 @@ export class WhoRecordHistoryComponent implements OnInit {
       created: versions[versions.length - 1].createdAt,
       createdBy: versions[versions.length - 1].createdBy?.name,
       changes: difference.changes,
+      id: versions[versions.length - 1].id
     });
     return res.reverse();
   }
 
-  onRevert(item): void {
-    this.revert(item);
+  onRevert(version: any): void {
+    this.revert(version);
   }
 }
