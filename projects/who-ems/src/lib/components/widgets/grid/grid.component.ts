@@ -22,10 +22,9 @@ import { WhoRecordHistoryComponent } from '../../record-history/record-history.c
 import { LayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter
-} from '@angular/core';
+  ComponentFactoryResolver, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { WhoSnackBarService } from '../../../services/snackbar.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -33,7 +32,7 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
-const DISABLED_FIELDS = ['id', 'createdAt'];
+const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
@@ -122,7 +121,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService,
     private layoutService: LayoutService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private snackBar: WhoSnackBarService
   ) {
   }
 
@@ -541,9 +541,41 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {
-          record: res.data.record
-        }
+          record: res.data.record,
+          revert: (item) => {
+            this.confirmRevertDialog(res.data.record, item);
+          }
+        },
       });
+    });
+  }
+
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.reloadData();
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar('The data has been recovered');
+        });
+
+      }
     });
   }
 
@@ -688,6 +720,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         data[modification.field.name] = modification.value;
       }
       delete data.id;
+      delete data.__typename;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
@@ -704,4 +737,5 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
+
 }

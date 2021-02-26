@@ -22,6 +22,7 @@
         img {
             height: 196px;
             width: 196px;
+            cursor: pointer;
         }
     }
 }
@@ -30,4 +31,11 @@
     &:not(.content-choice-step) {
         max-width: 400px;
     }
+}
+
+.radio-hidden {
+    position:absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }

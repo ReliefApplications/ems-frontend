@@ -54,6 +54,11 @@ For example, in order to build the *who-ems* library, the command is:
 ng build --project=who-ems
 ```
 
+If you're working on the library, you can see the changes in direct time using this command:
+```
+ng build --watch --project=who-ems
+```
+
 ## Deploy the package
 
 Deployment of the npm @who-ems/builder package is a 3-steps process:

@@ -5,7 +5,7 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 @Injectable({
   providedIn: 'root'

@@ -89,6 +89,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     this.layoutService.rightSidenav.subscribe(view => {
       if (view) {
+        // this is necessary to prevent have more than one history component at the same time.
+        this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
         for (const [key, value] of Object.entries(view.inputs)) {
@@ -167,8 +169,8 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
         data: {
-          title: `Exit without save changes`,
-          content: `There are unsaved changes on your form. Do you confirm logout?`,
+          title: `Exit without saving changes`,
+          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
           confirmText: 'Confirm',
           confirmColor: 'primary'
         }
@@ -176,6 +178,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
           this.authService.canLogout.next(true);
+          localStorage.clear();
           this.authService.logout();
         }
       });
