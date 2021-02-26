@@ -92,7 +92,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
-      this.formChange.emit(true);
+      this.formChange.emit(survey.text);
     });
   }
 
