@@ -30,7 +30,10 @@
                             <mat-label>From template</mat-label>
                             <mat-select formControlName="template" placeholder="Pick an existing template">
                                 <mat-option *ngFor="let template of templates" [value]="template.id">
-                                    {{template.name}}
+                                    {{template.name}} 
+                                    <span *ngIf="template.core">
+                                        - Core form
+                                    </span>
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
