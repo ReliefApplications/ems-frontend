@@ -1,4 +1,14 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && dashboard">
-    <who-widget-grid [widgets]="tiles"></who-widget-grid>
-</ng-container>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav-content>
+        <div class="sidenav-content">
+            <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+            <ng-container *ngIf="!loading && dashboard">
+                <who-widget-grid [widgets]="tiles"></who-widget-grid>
+            </ng-container>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
+        <ng-template #rightSidenav></ng-template>
+    </mat-sidenav>
+</mat-sidenav-container>

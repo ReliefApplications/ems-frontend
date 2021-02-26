@@ -412,7 +412,9 @@
               "projects/web-element/src/assets"
             ],
             "styles": [
-              "projects/web-element/src/styles.scss"
+              "projects/web-element/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           }

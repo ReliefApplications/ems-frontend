@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Dashboard } from '@who-ems/builder';
+import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Dashboard, LayoutService } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../graphql/queries';
 
@@ -12,12 +12,20 @@ export class DashboardComponent implements OnInit {
 
   @Input() id: string;
 
+  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
+
   // === DATA ===
   public loading = true;
   public tiles = [];
   public dashboard: Dashboard;
 
-  constructor(private apollo: Apollo) { }
+  // === DISPLAY ===
+  public showSidenav = false;
+
+  constructor(
+    private apollo: Apollo,
+    private layoutService: LayoutService
+  ) { }
 
   ngOnInit(): void {
     this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
@@ -30,6 +38,26 @@ export class DashboardComponent implements OnInit {
         this.dashboard = res.data.dashboard;
         this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
         this.loading = res.loading;
+      }
+    });
+    this.layoutService.rightSidenav.subscribe(view => {
+      if (view) {
+        // this is necessary to prevent have more than one history component at the same time.
+        this.layoutService.setRightSidenav(null);
+        this.showSidenav = true;
+        const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
+        for (const [key, value] of Object.entries(view.inputs)) {
+          componentRef.instance[key] = value;
+        }
+        componentRef.instance.cancel.subscribe(() => {
+          componentRef.destroy();
+          this.layoutService.setRightSidenav(null);
+        });
+      } else {
+        this.showSidenav = false;
+        if (this.rightSidenav) {
+          this.rightSidenav.clear();
+        }
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { WhoWidgetGridModule } from '@who-ems/builder';
@@ -22,6 +22,8 @@ import { environment } from '../environments/environment';
 // MSAL
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 localStorage.setItem('loaded', 'false');
 
@@ -113,7 +115,8 @@ export function provideApollo(httpLink: HttpLink): any {
     MatSnackBarModule,
     HttpLinkModule,
     BrowserAnimationsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSidenavModule,
   ],
   providers: [
     {
@@ -126,6 +129,13 @@ export function provideApollo(httpLink: HttpLink): any {
       useFactory: provideApollo,
       deps: [HttpLink]
     },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () => {
+        //return the container ElementRef, where the popup will be injected
+        return { nativeElement: document.body } as ElementRef;
+      }
+    }
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: MsalInterceptor,
@@ -137,7 +147,7 @@ export function provideApollo(httpLink: HttpLink): any {
 export class AppModule {
   constructor(
     private injector: Injector
-  ) {}
+  ) { }
 
   ngDoBootstrap(): void {
     // const whoWidgetGrid = createCustomElement(WhoWidgetGridComponent, { injector: this.injector });
