@@ -1,6 +1,9 @@
 export function init(Survey: any): void {
-    const widget = {
+    const tooltipWidget = {
         name: 'tooltip-widget',
+        widgetIsLoaded(): boolean {
+            return true;
+        },
         isFit(question): any {
             return true;
         },
@@ -26,5 +29,5 @@ export function init(Survey: any): void {
             }
         }
     };
-    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'tooltip');
+    Survey.CustomWidgetCollection.Instance.addCustomWidget(tooltipWidget, 'tooltip');
 }
