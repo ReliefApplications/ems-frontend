@@ -141,7 +141,11 @@
           </ng-container>
         </kendo-grid-column-group>
       </ng-container>
-
+      <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
+        <ng-template kendoGridCellTemplate let-idx="rowIndex">
+          <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'" (click)="onShowDetails(gridData.data[idx].id)"></button>
+        </ng-template>
+      </kendo-grid-column>
       <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
           <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
