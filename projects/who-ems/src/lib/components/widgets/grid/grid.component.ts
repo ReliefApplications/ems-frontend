@@ -156,7 +156,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      console.log(f.type);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, f.name, true);
