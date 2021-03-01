@@ -48,6 +48,7 @@ export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
+export * from './lib/components/record-modal/public-api';
 
 // === MODULE ===
 export * from './lib/who-ems.module';
