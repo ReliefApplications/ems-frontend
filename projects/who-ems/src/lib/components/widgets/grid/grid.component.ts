@@ -452,6 +452,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           });
         }
       } else {
+        if (field.meta.type === 'multipletext') {
+          const fieldGroup = {};
+          for (const item of field.meta.items) {
+            fieldGroup[item.name] = [dataItem[field.name] ? dataItem[field.name][item.name] : null];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {

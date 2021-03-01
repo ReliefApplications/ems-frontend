@@ -132,12 +132,11 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   /*  Custom SurveyJS method, save the form when edited.
   */
   saveMySurvey = () => {
-    this.validateValueNames().then(res => {
-      if (res === '') {
-        this.save.emit(this.surveyCreator.text);
-      } else {
-        this.snackBar.openSnackBar(res, { error: true });
-      }
+    this.validateValueNames().then(() => {
+      this.save.emit(this.surveyCreator.text);
+    })
+    .catch((error) => {
+      this.snackBar.openSnackBar(error.message, { error: true });
     });
   }
 
@@ -157,8 +156,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
 
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
   */
-  private async validateValueNames(): Promise<string> {
-    let message = '';
+  private async validateValueNames(): Promise<void> {
     const object = JSON.parse(this.surveyCreator.text);
     await object.pages.forEach(page => {
       if (page.elements) {
@@ -167,16 +165,29 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
             if (element.title) {
               element.valueName = this.toSnakeCase(element.title);
               if (!this.isSnakeCase(element.valueName)) {
-                message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+               throw new Error('The value name ' + element.valueName + ' on page '
+                + page.name + ' is invalid. Please conform to snake_case.');
               }
-              return element;
             } else {
-              message = 'Missing value name for an element on page ' + page.name + '. Please provide a valid data value name (snake_case) to save the form.';
+              throw new Error('Missing value name for an element on page '
+                + page.name + '. Please provide a valid data value name (snake_case) to save the form.');
             }
           } else {
             if (!this.isSnakeCase(element.valueName)) {
-              message = 'The value name ' + element.valueName + ' on page ' + page.name + ' is invalid. Please conform to snake_case.';
+              throw new Error('The value name ' + element.valueName + ' on page '
+                + page.name + ' is invalid. Please conform to snake_case.');
             }
+          }
+          if (element.type === 'multipletext') {
+            element.items = element.items.map(e => {
+              if (!e.name && !e.title) {
+                throw new Error(`Please provide name or title for each text of question: ${element.valueName}`);
+              }
+              return {
+                name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
+                title: e.title ? e.title : null
+              };
+            });
           }
           if (element.type === 'matrix') {
             element.columns = element.columns.map(x => {
@@ -212,7 +223,6 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
       }
     });
     this.surveyCreator.text = JSON.stringify(object);
-    return message;
   }
 
   private toSnakeCase(text: string): string {
