@@ -1,9 +1,14 @@
 export function init(Survey: any): void {
     const widget = {
         name: 'tooltip-widget',
-        title: 'Tooltip Widget',
         isFit(question): any {
             return true;
+        },
+        init(): void {
+            Survey.Serializer.addProperty('question', {
+                name: 'tooltip:text',
+                category: 'general'
+            });
         },
         isDefaultRender: true,
         afterRender(question, el): void {
@@ -21,9 +26,5 @@ export function init(Survey: any): void {
             }
         }
     };
-    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget);
-    Survey.Serializer.addProperty('question', {
-        name: 'tooltip:text',
-        category: 'general'
-    });
+    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'tooltip');
 }

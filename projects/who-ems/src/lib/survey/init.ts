@@ -6,10 +6,10 @@ import { init as initTooltipWidget } from './widgets/tooltip';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey, API_URL): void{
+export function initCustomWidgets(Survey, API_URL): void {
+  initDateFormatWidget(Survey);
   initTooltipWidget(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
-  initDateFormatWidget(Survey);
   initResourceComponent(Survey, API_URL);
 }

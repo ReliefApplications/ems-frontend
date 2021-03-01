@@ -8,10 +8,10 @@ function addZero(i): string {
 export function init(Survey: any): void {
     const widget = {
         name: 'date-format-widget',
-        title: 'Date Format Widget',
         isFit(question): any {
             return ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType);
         },
+        init(): void {},
         isDefaultRender: true,
         afterRender(question, el): void {
             if (question.value) {
@@ -40,5 +40,5 @@ export function init(Survey: any): void {
             }
         }
     };
-    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget);
+    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'date-format');
 }
