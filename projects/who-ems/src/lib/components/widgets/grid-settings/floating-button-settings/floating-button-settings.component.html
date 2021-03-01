@@ -7,7 +7,7 @@
           <mat-label>Button name</mat-label>
           <input matInput formControlName="name" type="string">
         </mat-form-field>
-        <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
+        <mat-checkbox *ngIf="!dashboard" formControlName="goToNextStep">Go to next step</mat-checkbox>
         <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>

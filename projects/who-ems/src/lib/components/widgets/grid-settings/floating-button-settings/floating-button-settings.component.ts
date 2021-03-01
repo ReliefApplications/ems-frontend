@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -15,15 +16,18 @@ export class FloatingButtonSettingsComponent implements OnInit {
   @Input() fields: any[];
   @Input() channels: Channel[];
 
+  public dashboard = false;
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
   }
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) { this.dashboard = true; }
     this.buttonForm.get('notify').valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm.get('notificationChannel').setValidators(Validators.required);

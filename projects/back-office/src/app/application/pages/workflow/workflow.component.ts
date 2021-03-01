@@ -220,6 +220,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex += 1;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
+    } else if (this.selectedStepIndex + 1 === this.steps.length) {
+      this.selectedStepIndex = 0;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      this.navigateToSelectedStep();
+      this.snackBar.openSnackBar(`Back to "${this.steps[0].name}".`, { error: false });
     } else {
       this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
     }
