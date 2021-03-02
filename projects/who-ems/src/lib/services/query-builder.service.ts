@@ -5,7 +5,7 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'canUpdate'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'canUpdate', 'canDelete'];
 
 const DISABLED_FIELDS = ['createdBy'];
 
@@ -67,7 +67,7 @@ export class QueryBuilderService {
   }
 
   private buildFields(fields: any[]): any {
-    return ['id\ncanUpdate\n'].concat(fields.map(x => {
+    return ['id\n'].concat(fields.map(x => {
       switch (x.kind) {
         case 'SCALAR': {
           return x.name + '\n';
@@ -119,7 +119,7 @@ export class QueryBuilderService {
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
-      const fields = this.buildFields(builtQuery.fields);
+      const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {
