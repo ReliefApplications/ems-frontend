@@ -542,15 +542,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         factory: this.factory,
         inputs: {
           record: res.data.record,
-          revert: (item) => {
-            this.confirmRevertDialog(res.data.record, item);
+          revert: (item, dialog) => {
+            this.confirmRevertDialog(res.data.record, item, dialog);
           }
         },
       });
     });
   }
 
-  private confirmRevertDialog(record: any, version: any): void {
+  private confirmRevertDialog(record: any, version: any, dialog: any): void {
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
@@ -570,6 +570,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             version: version.id
           }
         }).subscribe((res) => {
+          // needs to close the compare records dialog
+          dialog.close();
           this.reloadData();
           this.layoutService.setRightSidenav(null);
           this.snackBar.openSnackBar('The data has been recovered');

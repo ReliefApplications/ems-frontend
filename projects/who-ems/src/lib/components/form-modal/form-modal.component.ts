@@ -21,6 +21,7 @@ export class WhoFormModalComponent implements OnInit {
   public form: Form;
 
   public containerId: string;
+  public containerId2: string;
 
   private isMultiEdition = false;
 
@@ -32,13 +33,16 @@ export class WhoFormModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       template?: string,
       recordId?: string | [],
-      locale?: string
+      locale?: string,
+      previewMode?: {selectedRecord: any, created: any, currentRecordModifiedAt: any},
+      revert?: () => void
     },
     private apollo: Apollo,
     public dialog: MatDialog,
     private formService: FormService
   ) {
     this.containerId = uuidv4();
+    this.containerId2 = uuidv4();
   }
 
   ngOnInit(): void {
@@ -54,38 +58,45 @@ export class WhoFormModalComponent implements OnInit {
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
-      const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
-      this.apollo.watchQuery<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id
-        }
-      }).valueChanges.subscribe(res => {
-        const record = res.data.record;
-        this.form = record.form;
-        this.loading = res.loading;
-        const survey = new Survey.Model(this.form.structure);
-        survey.data = this.isMultiEdition ? null : record.data;
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.showCompletedPage = false;
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.data.template
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = res.loading;
-        this.form = res.data.form;
-        const survey = new Survey.Model(this.form.structure);
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    }
+        const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
+        this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id
+          }
+        }).valueChanges.subscribe(res => {
+          if (!!this.data.previewMode) {
+            this.compareSurveys(res.data.record);
+          } else {
+            this.buildSurvey(res.data.record);
+          }
+        });
+      } else {
+        this.apollo.watchQuery<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.data.template
+          }
+        }).valueChanges.subscribe(res => {
+          this.loading = res.loading;
+          this.form = res.data.form;
+          const survey = new Survey.Model(this.form.structure);
+          survey.locale = this.data.locale ? this.data.locale : 'en';
+          survey.render(this.containerId);
+          survey.onComplete.add(this.completeMySurvey);
+        });
+      }
+  }
+
+  private buildSurvey(data): void {
+    this.form = data.form;
+    this.loading = false;
+    const survey = new Survey.Model(this.form.structure);
+    survey.data = !this.data.template ? data.data : null;
+    survey.locale = this.data.locale ? this.data.locale : 'en';
+    survey.showCompletedPage = false;
+    survey.render(this.containerId);
+    survey.onComplete.add(this.completeMySurvey);
   }
 
   /*  Create the record, or update it if provided.
@@ -143,4 +154,28 @@ export class WhoFormModalComponent implements OnInit {
     });
   }
 
+  private compareSurveys(record: any): void {
+    this.form = record.form;
+    this.loading = false;
+    const survey = new Survey.Model(this.form.structure);
+    survey.mode = 'display';
+    survey.data = this.data.previewMode.selectedRecord;
+    survey.locale = this.data.locale ? this.data.locale : 'en';
+    survey.showCompletedPage = false;
+    survey.render(this.containerId);
+    survey.showProgressBar = 'bottom';
+
+    const survey2 = new Survey.Model(this.form.structure);
+    survey2.mode = 'display';
+    survey2.data = record.data;
+    survey2.locale = this.data.locale ? this.data.locale : 'en';
+    survey2.showCompletedPage = false;
+    survey2.showNavigationButtons = false;
+    survey.onCurrentPageChanged.add((srv, option) => {
+      survey2.currentPageNo = srv.currentPageNo;
+    });
+    survey2.showProgressBar = 'bottom';
+    survey2.render(this.containerId2);
+
+  }
 }
