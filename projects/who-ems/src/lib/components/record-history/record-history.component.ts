@@ -84,10 +84,6 @@ export class WhoRecordHistoryComponent implements OnInit {
     return res.reverse();
   }
 
-  onRevert(version: any): void {
-    this.revert(version);
-  }
-
   preview(item: any): void {
     const dialog = this.dialog.open(WhoFormModalComponent, {
       data: {
