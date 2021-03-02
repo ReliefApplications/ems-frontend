@@ -532,7 +532,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids,
         locale: 'en',
-        modifiedAt: modifiedAt
+        modifiedAt
       }
     });
     dialogRef.afterClosed().subscribe(value => {
