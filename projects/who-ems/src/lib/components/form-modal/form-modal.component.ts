@@ -21,6 +21,7 @@ export class WhoFormModalComponent implements OnInit {
   public form: Form;
 
   public containerId: string;
+  public modifiedAt: Date;
 
   private isMultiEdition = false;
 
@@ -63,6 +64,7 @@ export class WhoFormModalComponent implements OnInit {
       }).valueChanges.subscribe(res => {
         const record = res.data.record;
         this.form = record.form;
+        this.modifiedAt = record.modifiedAt;
         this.loading = res.loading;
         const survey = new Survey.Model(this.form.structure);
         survey.data = this.isMultiEdition ? null : record.data;
@@ -91,7 +93,6 @@ export class WhoFormModalComponent implements OnInit {
   /*  Create the record, or update it if provided.
   */
   public completeMySurvey = (survey: any) => {
-
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
