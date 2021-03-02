@@ -67,7 +67,7 @@ export class QueryBuilderService {
   }
 
   private buildFields(fields: any[]): any {
-    return ['id\n'].concat(fields.map(x => {
+    return ['id\ncanEdit\n'].concat(fields.map(x => {
       switch (x.kind) {
         case 'SCALAR': {
           return x.name + '\n';
