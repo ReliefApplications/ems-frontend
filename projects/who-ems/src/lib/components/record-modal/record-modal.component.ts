@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 import { Apollo } from 'apollo-angular';
 import { FormService } from '../../services/form.service';
 import { Form } from '../../models/form.model';
+import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
@@ -17,9 +18,12 @@ export class WhoRecordModalComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public form: Form;
+  public record: Record;
   public survey: Survey.Model;
+  public surveyRight: Survey.Model;
 
   public containerId: string;
+  public containerRightId: string;
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -28,13 +32,17 @@ export class WhoRecordModalComponent implements OnInit {
     public dialogRef: MatDialogRef<WhoRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       recordId: string,
-      locale?: string
+      locale?: string,
+      compareTo?: any
     },
     private apollo: Apollo,
     public dialog: MatDialog,
     private formService: FormService
   ) {
     this.containerId = uuidv4();
+    if (this.data.compareTo) {
+      this.containerRightId = uuidv4();
+    }
   }
 
   ngOnInit(): void {
@@ -54,20 +62,39 @@ export class WhoRecordModalComponent implements OnInit {
         id: this.data.recordId
       }
     }).valueChanges.subscribe(res => {
-      const record = res.data.record;
-      this.form = record.form;
+      this.record = res.data.record;
+      this.form = this.record.form;
       this.loading = res.loading;
       this.survey = new Survey.Model(this.form.structure);
-      this.survey.data = record.data;
+      this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
       this.survey.mode = 'display';
       this.survey.showNavigationButtons = 'none';
       this.survey.showProgressBar = 'off';
       this.survey.render(this.containerId);
+
+      if (this.data.compareTo) {
+        this.surveyRight = new Survey.Model(this.form.structure);
+        this.surveyRight.data = this.data.compareTo.data;
+        this.surveyRight.locale = this.data.locale ? this.data.locale : 'en';
+        this.surveyRight.mode = 'display';
+        this.surveyRight.showNavigationButtons = 'none';
+        this.surveyRight.showProgressBar = 'off';
+        this.surveyRight.render(this.containerRightId);
+      }
     });
   }
 
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
+    if (this.data.compareTo) {
+      this.surveyRight.currentPageNo = i;
+    }
+  }
+
+  /* Close the modal without sending any data.
+  */
+  onClose(): void {
+    this.dialogRef.close();
   }
 }

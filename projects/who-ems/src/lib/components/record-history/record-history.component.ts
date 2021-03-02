@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Record } from '../../models/record.model';
-import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { WhoRecordModalComponent } from '../record-modal/record-modal.component';
 
 @Component({
   selector: 'who-record-history',
@@ -84,20 +84,26 @@ export class WhoRecordHistoryComponent implements OnInit {
     return res.reverse();
   }
 
-  preview(item: any): void {
-    const dialog = this.dialog.open(WhoFormModalComponent, {
+  onRevert(item: any): void {
+    const dialogRef = this.dialog.open(WhoRecordModalComponent, {
       data: {
-        previewMode: {selectedRecord: this.record.versions.filter(version => version.id === item.id )[0].data,
-          created: item.created, currentRecordModifiedAt: this.record.modifiedAt},
-        locale: 'en',
+        // previewMode: {selectedRecord: this.record.versions.filter(version => version.id === item.id )[0].data,
+        //   created: item.created, currentRecordModifiedAt: this.record.modifiedAt},
         recordId: this.record.id,
-        revert: () => {
-          this.revert(item, dialog);
-        }
+        locale: 'en',
+        compareTo: this.record.versions.find(x => x.id === item.id)
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
     });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        console.log(value);
+      }
+    });
+    // revert: () => {
+    //   this.revert(item);
+    // }
   }
 }
