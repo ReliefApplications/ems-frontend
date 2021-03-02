@@ -14,6 +14,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { HttpClientModule } from '@angular/common/http';
+import { WhoRecordModalModule } from '../../record-modal/record-modal.module';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatCheckboxModule,
     InputsModule,
     DateInputsModule,
-    DropDownsModule
+    DropDownsModule,
+    WhoRecordModalModule
   ],
   exports: [WhoGridComponent]
 })

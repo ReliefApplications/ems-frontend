@@ -22,6 +22,7 @@ export class WhoFormModalComponent implements OnInit {
 
   public containerId: string;
   public containerId2: string;
+  public modifiedAt: Date;
 
   private isMultiEdition = false;
 
@@ -102,7 +103,6 @@ export class WhoFormModalComponent implements OnInit {
   /*  Create the record, or update it if provided.
   */
   public completeMySurvey = (survey: any) => {
-
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {

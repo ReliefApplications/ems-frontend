@@ -25,6 +25,7 @@ import {
   ComponentFactoryResolver, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
+import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -452,6 +453,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           });
         }
       } else {
+        if (field.meta.type === 'multipletext') {
+          const fieldGroup = {};
+          for (const item of field.meta.items) {
+            fieldGroup[item.name] = [dataItem[field.name] ? dataItem[field.name][item.name] : null];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
@@ -531,6 +539,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  /* Opens the history of the record on the right side of the screen.
+  */
   public onViewHistory(id: string): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
@@ -547,6 +557,17 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         },
       });
+    });
+  }
+
+  /* Opens the record on a read-only modal.
+  */
+  public onShowDetails(id: string): void {
+    this.dialog.open(WhoRecordModalComponent, {
+      data: {
+        recordId: id,
+        locale: 'en'
+      }
     });
   }
 
