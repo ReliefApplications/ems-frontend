@@ -526,13 +526,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdateRow(items: string | string[]): void {
     const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => this.gridData.data[i].id) :
       (Array.isArray(items) ? this.gridData.data[items[0]].id : items);
-    const modifiedAt = (Array.isArray(items) && items.length > 1) ? items.map((i) => this.gridData.data[i].modifiedAt) :
-      (Array.isArray(items) ? this.gridData.data[0].modifiedAt : this.gridData.data[0].modifiedAt);
     const dialogRef = this.dialog.open(WhoFormModalComponent, {
       data: {
         recordId: ids,
-        locale: 'en',
-        modifiedAt
+        locale: 'en'
       }
     });
     dialogRef.afterClosed().subscribe(value => {

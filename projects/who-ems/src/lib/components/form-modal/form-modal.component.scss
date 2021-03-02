@@ -1,10 +1,7 @@
-.edit-form {
-    position: relative;
-    font: 400 15px/24px Roboto, "Helvetica Neue", sans-serif;
-    color: rgb(109, 112, 114);
-    .modifiedAt {
-        position: absolute;
-        top: 1%;
-        right: 0;
-    }
+.modified-at {
+    color: #9e9e9e;
+    font-size: 12px;
+    line-height: 12px;
+    text-align: right;
+    margin-bottom: 8px;
 }
