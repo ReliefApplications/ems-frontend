@@ -21,6 +21,7 @@ export class WhoFormModalComponent implements OnInit {
   public form: Form;
 
   public containerId: string;
+  public formModifiedAt: string | [];
 
   private isMultiEdition = false;
 
@@ -32,7 +33,8 @@ export class WhoFormModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       template?: string,
       recordId?: string | [],
-      locale?: string
+      locale?: string,
+      modifiedAt?: string | []
     },
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -42,6 +44,7 @@ export class WhoFormModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.formModifiedAt = Array.isArray(this.data.recordId) ? this.data.modifiedAt[0] : this.data.modifiedAt;
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -91,7 +94,7 @@ export class WhoFormModalComponent implements OnInit {
   /*  Create the record, or update it if provided.
   */
   public completeMySurvey = (survey: any) => {
-
+    this.formModifiedAt = null;
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {

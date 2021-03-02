@@ -1,1 +1,4 @@
-<mat-dialog-content [id]="containerId"></mat-dialog-content>
+<div class="edit-form">
+    <mat-dialog-content [id]="containerId"></mat-dialog-content>
+    <div class="modifiedAt" *ngIf="formModifiedAt">Last modification: {{formModifiedAt | date:'dd/MM/yy, h:mm a'}}</div>
+</div>
