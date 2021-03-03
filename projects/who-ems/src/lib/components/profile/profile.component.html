@@ -1,1 +1,22 @@
-<p>profile works!</p>
+<form [formGroup]="userForm" *ngIf="userForm">
+    <h1>General</h1>
+    <div class="form-group">
+        <div class="form-group-row">
+            <mat-form-field appearance="outline" style="flex: 2;">
+                <mat-label>
+                    Username
+                </mat-label>
+                <input matInput formControlName="name" type='text' />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="flex: 1;">
+                <mat-label>
+                    Name
+                </mat-label>
+                <input matInput formControlName="username" type='text' />
+            </mat-form-field>
+        </div>
+    </div>
+    <button mat-flat-button (click)="onSubmit()" color="primary"
+        [disabled]="userForm.invalid || !userForm.dirty">Save changes</button>
+</form>
