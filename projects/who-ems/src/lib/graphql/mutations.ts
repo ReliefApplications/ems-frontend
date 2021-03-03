@@ -11,8 +11,8 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
-  editRecord(id: $id, data: $data) {
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
     id
     data(display: $display)
     createdAt

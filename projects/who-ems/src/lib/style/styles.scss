@@ -96,6 +96,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   .mat-list-item:not(.active-link) {
     color: mat-color($mat-grey, 500);
   }
+
+  .primary {
+    color: mat-color($primary);
+  }
 }
 
 @mixin chip($theme) {
@@ -142,14 +146,35 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 
   .mat-button:disabled, .mat-stroked-button:disabled {
-    color: #97B0BB !important;
+    color: #adadad !important;
   }
 
   .mat-flat-button:disabled {
-    color: #7C8487 !important;
-    background-color: mat-color($who-primary, Blue800) !important;
+    color: #adadad !important;
+    background-color: #d8d8d8!important;
   }
 }
+
+@mixin img-choice($theme) {
+  $primary: map-get($theme, primary);
+
+  .img-choice {
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
+  }
+
+  .img-selected {
+    border-color: mat-color($primary);
+  }
+}
+
+// img-choice
+// img-selected
 
 // === GLOBAL STYLES ==
 .mat-table{
@@ -299,6 +324,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
 @include angular-material-theme($who-theme);
 @include chip($who-theme);
 @include button($who-theme);
+@include img-choice($who-theme);
 @include custom-theme($who-theme);
 
 html, body { height: 100%; }

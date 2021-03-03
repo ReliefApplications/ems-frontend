@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [AddPageComponent],
@@ -24,7 +25,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
     MatRadioModule,
     MatDialogModule,
-    AddPageRoutingModule
+    AddPageRoutingModule,
+    MatRippleModule
   ]
 })
 export class AddPageModule { }

@@ -1,98 +1,64 @@
+function addZero(i): string {
+    if (i < 10) {
+        i = '0' + i;
+    }
+    return i;
+}
+
 export function init(Survey: any): void {
     const widget = {
-        // the widget name. It should be unique and written in lowcase.
-        name: 'textwithbutton',
-        // the widget title. It is how it will appear on the toolbox of the SurveyJS Editor/Builder
-        title: 'Text with button',
-        // the name of the icon on the toolbox. We will leave it empty to use the standard one
-        iconName: '',
-        // If the widgets depends on third-party library(s) then here you may check if this library(s) is loaded
+        name: 'custom-widget',
         widgetIsLoaded(): boolean {
-            // return typeof $ == "function" && !!$.fn.select2; //return true if jQuery and select2 widget are loaded on the page
-            return true; // we do not require anything so we just return true.
+            return true;
         },
-        // SurveyJS library calls this function for every question to check,
-        // if it should use this widget instead of default rendering/behavior
         isFit(question): any {
-            // we return true if the type of question is textwithbutton
-            return question.getType() === 'textwithbutton';
-            // the following code will activate the widget for a text question with inputType equals to date
-            // return question.getType() === 'text' && question.inputType === "date";
+            return true;
         },
-        // Use this function to create a new class or add new properties or remove unneeded properties from your widget
-        // activatedBy tells how your widget has been activated by: property, type or customType
-        // property - it means that it will activated if a property of the existing question type is set to particular
-        // value, for example inputType = "date"
-        // type - you are changing the behaviour of entire question type. For example render radiogroup question differently,
-        // have a fancy radio buttons
-        // customType - you are creating a new type, like in our example "textwithbutton"
-        activatedByChanged(activatedBy): void {
-            // we do not need to check acticatedBy parameter, since we will use our widget for customType only
-            // We are creating a new class and derived it from text question type. It means that text model
-            // (properties and fuctions) will be available to us
-            Survey.JsonObject.metaData.addClass('textwithbutton', [], null, 'text');
-            // signaturepad is derived from "empty" class - basic question class
-            // Survey.JsonObject.metaData.addClass("signaturepad", [], null, "empty");
-
-            // Add new property(s)
-            // For more information go to https://surveyjs.io/Examples/Builder/?id=addproperties#content-docs
-            Survey.JsonObject.metaData.addProperties('textwithbutton', [
-                { name: 'buttonText', default: 'Click Me' },
-            ]);
+        init(): void {
+            Survey.Serializer.addProperty('question', {
+                name: 'tooltip:text',
+                category: 'general'
+            });
         },
-        // If you want to use the default question rendering then set this property to true. We do not need
-        // any default rendering, we will use our our htmlTemplate
-        isDefaultRender: false,
-        // You should use it if your set the isDefaultRender to false
-        htmlTemplate: '<div><input /><button></button></div>',
-        // The main function, rendering and two-way binding
+        isDefaultRender: true,
         afterRender(question, el): void {
-            // el is our root element in htmlTemplate, is "div" in our case
-            // get the text element
-            const text = el.getElementsByTagName('input')[0];
-            // set some properties
-            text.inputType = question.inputType;
-            text.placeholder = question.placeHolder;
-            // get button and set some rpoeprties
-            const button = el.getElementsByTagName('button')[0];
-            button.innerText = question.buttonText;
-            button.onclick = () => {
-                question.value = 'You have clicked me';
-            };
-
-            // set the changed value into question value
-            text.onchange = () => {
-                question.value = text.value;
-            };
-            const onValueChangedCallback = () => {
-                text.value = question.value ? question.value : '';
-            };
-            const onReadOnlyChangedCallback = () => {
-                if (question.isReadOnly) {
-                    text.setAttribute('disabled', 'disabled');
-                    button.setAttribute('disabled', 'disabled');
-                } else {
-                    text.removeAttribute('disabled');
-                    button.removeAttribute('disabled');
+            if (question.value && ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType)) {
+                const date = new Date(question.value);
+                const year = date.getFullYear();
+                const month = addZero(date.getMonth() + 1);
+                const day = addZero(date.getDate());
+                const hour = addZero(date.getUTCHours());
+                const minutes = addZero(date.getUTCMinutes());
+                switch (question.inputType) {
+                    case 'date':
+                        question.value = `${year}-${month}-${day}`;
+                        break;
+                    case 'datetime':
+                        break;
+                    case 'datetime-local':
+                        question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
+                        break;
+                    case 'time':
+                        question.value = `${hour}:${minutes}`;
+                        break;
+                    default:
+                        break;
                 }
-            };
-            // if question becomes readonly/enabled add/remove disabled attribute
-            question.readOnlyChangedCallback = onReadOnlyChangedCallback;
-            // if the question value changed in the code, for example you have changed it in JavaScript
-            question.valueChangedCallback = onValueChangedCallback;
-            // set initial value
-            onValueChangedCallback();
-            // make elements disabled if needed
-            onReadOnlyChangedCallback();
-        },
-        // Use it to destroy the widget. It is typically needed by jQuery widgets
-        willUnmount(question, el): void {
-            // We do not need to clear anything in our simple example
-            // Here is the example to destroy the image picker
-            // var $el = $(el).find("select");
-            // $el.data('picker').destroy();
-        },
+                el.value = question.value;
+            }
+            if (question.tooltip) {
+                const header = el.parentElement.parentElement.querySelector('h5');
+                if (header) {
+                    header.title = question.tooltip;
+                    const span = document.createElement('span');
+                    span.innerText = 'info';
+                    span.className = 'material-icons';
+                    span.style.fontSize = '1em';
+                    span.style.cursor = 'pointer';
+                    header.appendChild(span);
+                }
+            }
+        }
     };
-    // Register our widget in singleton custom widget collection
-    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customtype');
+    Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
 }

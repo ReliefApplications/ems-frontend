@@ -21,10 +21,9 @@ import { WhoRolesModule } from './components/roles/roles.module';
 import { WhoPreviousButtonModule } from './components/previous-button/previous-button.module';
 import { WhoConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { WhoRecordHistoryModule } from './components/record-history/record-history.module';
+import { WhoRecordModalModule } from './components/record-modal/public-api';
 
 @NgModule({
-  declarations: [],
-  imports: [],
   exports: [
     WhoLayoutModule,
     WhoAccessModule,
@@ -47,7 +46,8 @@ import { WhoRecordHistoryModule } from './components/record-history/record-histo
     WhoRolesModule,
     WhoPreviousButtonModule,
     WhoConvertModalModule,
-    WhoRecordHistoryModule
+    WhoRecordHistoryModule,
+    WhoRecordModalModule
   ]
 })
 export class WhoEmsModule { }

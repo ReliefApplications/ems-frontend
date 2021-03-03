@@ -5,8 +5,7 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'canUpdate', 'canDelete'];
-
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['createdBy', 'canUpdate', 'canDelete'];
 
 @Injectable({

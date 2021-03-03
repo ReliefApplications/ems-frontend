@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent
+  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -22,10 +22,10 @@ import { WhoRecordHistoryComponent } from '../../record-history/record-history.c
 import { LayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter
-} from '@angular/core';
+  ComponentFactoryResolver, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { WhoSnackBarService } from '../../../services/snackbar.service';
+import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -33,12 +33,20 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
-const DISABLED_FIELDS = ['id', 'createdAt'];
+const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
   mode: 'multiple',
   drag: false
+};
+
+const PAGER_SETTINGS: PagerSettings = {
+  buttonCount: 5,
+  type: 'numeric',
+  info: true,
+  pageSizes: true,
+  previousNext: true
 };
 
 @Component({
@@ -101,6 +109,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public canUpdateSelectedRows: boolean;
   public canDeleteSelectedRows: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public pagerSettings = PAGER_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -124,7 +133,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService,
     private layoutService: LayoutService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private snackBar: WhoSnackBarService
   ) {
   }
 
@@ -247,20 +257,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    if (this.settings.pageable) {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items))
-          .slice(this.skip, this.skip + this.pageSize),
-        total: this.items.length
-      };
-    } else {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)),
-        total: this.items.length
-      };
-    }
+    this.gridData = {
+      data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+        (this.filter ? filterBy(this.items, this.filter) : this.items))
+        .slice(this.skip, this.skip + this.pageSize),
+      total: this.items.length
+    };
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -454,6 +456,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           });
         }
       } else {
+        if (field.meta.type === 'multipletext') {
+          const fieldGroup = {};
+          for (const item of field.meta.items) {
+            fieldGroup[item.name] = [dataItem[field.name] ? dataItem[field.name][item.name] : null];
+          }
+          formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
@@ -492,6 +501,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public pageChange(event: PageChangeEvent): void {
     this.skip = event.skip;
+    this.pageSize = event.take;
     this.loadItems();
   }
 
@@ -535,6 +545,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  /* Opens the history of the record on the right side of the screen.
+  */
   public onViewHistory(id: string): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
@@ -545,9 +557,52 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {
-          record: res.data.record
-        }
+          record: res.data.record,
+          revert: (item, dialog) => {
+            this.confirmRevertDialog(res.data.record, item);
+          }
+        },
       });
+    });
+  }
+
+  /* Opens the record on a read-only modal.
+  */
+  public onShowDetails(id: string): void {
+    this.dialog.open(WhoRecordModalComponent, {
+      data: {
+        recordId: id,
+        locale: 'en'
+      }
+    });
+  }
+
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.reloadData();
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar('The data has been recovered');
+        });
+
+      }
     });
   }
 
@@ -692,6 +747,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         data[modification.field.name] = modification.value;
       }
       delete data.id;
+      delete data.__typename;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
@@ -708,4 +764,5 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
+
 }
