@@ -2,6 +2,7 @@ import { Page } from './page.model';
 import { Channel } from './channel.model';
 import { Role, User } from './user.model';
 import { Subscription } from './subscription.model';
+import { PositionAttributeCategory } from './position-attribute-category.model';
 
 /*  Model for Application object.
 */
@@ -23,4 +24,5 @@ export interface Application {
     canUpdate?: boolean;
     canDelete?: boolean;
     subscriptions?: Subscription[];
+    positionAttributeCategories?: PositionAttributeCategory[];
 }
