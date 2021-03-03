@@ -18,13 +18,13 @@
       <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
       <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
       <ng-container *ngIf="selectedRowsIndex.length > 0">
-        <button *ngIf="!settings.actions || settings.actions.delete" class='k-button'
+        <button *ngIf="(!settings.actions || settings.actions.delete) && canDeleteSelectedRows" class='k-button'
           (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete
         </button>
-        <button *ngIf="!settings.actions || settings.actions.update" class='k-button'
+        <button *ngIf="(!settings.actions || settings.actions.update) && canUpdateSelectedRows" class='k-button'
           (click)="onUpdateRow(selectedRowsIndex)" style="float: right">Update
         </button>
-        <button *ngIf="!settings.actions || settings.actions.convert" class='k-button'
+        <button *ngIf="(!settings.actions || settings.actions.convert) && canUpdateSelectedRows" class='k-button'
           (click)="onConvertRecord(selectedRowsIndex)" style="float: right">Convert
         </button>
       </ng-container>
@@ -136,18 +136,18 @@
           </button>
 
           <mat-menu #menu="matMenu">
-            <button *ngIf="!settings.actions || settings.actions.delete" mat-menu-item (click)="onDeleteRow([idx])">
+            <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete" mat-menu-item (click)="onDeleteRow([idx])">
               Delete
             </button>
             <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
               (click)="onViewHistory(gridData.data[idx].id)">
               History
             </button>
-            <button *ngIf="!settings.actions || settings.actions.convert" mat-menu-item color="warn"
+            <button *ngIf="(!settings.actions || settings.actions.convert) && gridData.data[idx].canUpdate" mat-menu-item color="warn"
               (click)="onConvertRecord([idx])">
               Convert
             </button>
-            <button *ngIf="!settings.actions || settings.actions.update" mat-menu-item color="warn"
+            <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate" mat-menu-item color="warn"
               (click)="onUpdateRow(gridData.data[idx].id)">
               Update
             </button>
