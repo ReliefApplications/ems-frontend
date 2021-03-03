@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Record } from '../../models/record.model';
+import { MatDialog } from '@angular/material/dialog';
+import { WhoRecordModalComponent } from '../record-modal/record-modal.component';
 
 @Component({
   selector: 'who-record-history',
@@ -15,6 +17,9 @@ export class WhoRecordHistoryComponent implements OnInit {
   public history: any[] = [];
   public loading = true;
   public displayedColumns: string[] = ['position'];
+
+
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
@@ -79,7 +84,19 @@ export class WhoRecordHistoryComponent implements OnInit {
     return res.reverse();
   }
 
-  onRevert(version: any): void {
-    this.revert(version);
+  onRevert(item: any): void {
+    const dialogRef = this.dialog.open(WhoRecordModalComponent, {
+      data: {
+        recordId: this.record.id,
+        locale: 'en',
+        compareTo: this.record.versions.find(x => x.id === item.id)
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) { this.revert(item); }
+    });
   }
 }

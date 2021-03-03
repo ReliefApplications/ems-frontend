@@ -55,39 +55,39 @@ export class WhoFormModalComponent implements OnInit {
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
-      const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
-      this.apollo.watchQuery<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id
-        }
-      }).valueChanges.subscribe(res => {
-        const record = res.data.record;
-        this.form = record.form;
-        this.modifiedAt = record.modifiedAt;
-        this.loading = res.loading;
-        const survey = new Survey.Model(this.form.structure);
-        survey.data = this.isMultiEdition ? null : record.data;
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.showCompletedPage = false;
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.data.template
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = res.loading;
-        this.form = res.data.form;
-        const survey = new Survey.Model(this.form.structure);
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    }
+        const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
+        this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id
+          }
+        }).valueChanges.subscribe(res => {
+          const record = res.data.record;
+          this.form = record.form;
+          this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt;
+          this.loading = false;
+          const survey = new Survey.Model(this.form.structure);
+          survey.data = this.isMultiEdition ? null : record.data;
+          survey.locale = this.data.locale ? this.data.locale : 'en';
+          survey.showCompletedPage = false;
+          survey.render(this.containerId);
+          survey.onComplete.add(this.completeMySurvey);
+        });
+      } else {
+        this.apollo.watchQuery<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.data.template
+          }
+        }).valueChanges.subscribe(res => {
+          this.loading = res.loading;
+          this.form = res.data.form;
+          const survey = new Survey.Model(this.form.structure);
+          survey.locale = this.data.locale ? this.data.locale : 'en';
+          survey.render(this.containerId);
+          survey.onComplete.add(this.completeMySurvey);
+        });
+      }
   }
 
   /*  Create the record, or update it if provided.
@@ -143,5 +143,4 @@ export class WhoFormModalComponent implements OnInit {
       this.dialogRef.close({template: this.form.id, data: res.data.editRecord});
     });
   }
-
 }

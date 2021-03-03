@@ -552,7 +552,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         factory: this.factory,
         inputs: {
           record: res.data.record,
-          revert: (item) => {
+          revert: (item, dialog) => {
             this.confirmRevertDialog(res.data.record, item);
           }
         },
