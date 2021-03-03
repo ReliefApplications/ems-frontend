@@ -36,7 +36,9 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 
   /* Display the AddChannel modal.

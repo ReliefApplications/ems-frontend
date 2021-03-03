@@ -197,8 +197,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.routeSubscription.unsubscribe();
-    this.workflowSubscription.unsubscribe();
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.workflowSubscription) {
+      this.workflowSubscription.unsubscribe();
+    }
   }
 
   /* Get data from within selected step
