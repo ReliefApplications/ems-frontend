@@ -74,7 +74,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe(event => {
         if (event) {
-          stepper.next();
+          if (this.selectedIndex + 1 < this.steps.length) {
+            stepper.next();
+          } else if (this.selectedIndex + 1 === this.steps.length) {
+            stepper.selectedIndex = 0;
+            this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
+          } else {
+            this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
+          }
         }
       });
     }
