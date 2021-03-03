@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { WhoConfirmModalModule } from '../confirm-modal/confirm-modal.module';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [WhoLayoutComponent],
@@ -25,7 +26,8 @@ import { WhoConfirmModalModule } from '../confirm-modal/confirm-modal.module';
     MatListModule,
     DragDropModule,
     MatBadgeModule,
-    WhoConfirmModalModule
+    WhoConfirmModalModule,
+    MatDividerModule
   ],
   exports: [WhoLayoutComponent]
 })

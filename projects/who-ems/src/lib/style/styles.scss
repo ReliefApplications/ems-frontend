@@ -100,6 +100,14 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   .primary {
     color: mat-color($primary);
   }
+
+  .accent {
+    color: mat-color($accent);
+  }
+
+  .warn {
+    color: mat-color($warn);
+  }
 }
 
 @mixin chip($theme) {

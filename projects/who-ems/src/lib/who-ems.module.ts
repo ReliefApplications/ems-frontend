@@ -22,6 +22,7 @@ import { WhoPreviousButtonModule } from './components/previous-button/previous-b
 import { WhoConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { WhoRecordHistoryModule } from './components/record-history/record-history.module';
 import { WhoRecordModalModule } from './components/record-modal/public-api';
+import { WhoProfileModule } from './components/profile/public-api';
 
 @NgModule({
   exports: [
@@ -47,7 +48,8 @@ import { WhoRecordModalModule } from './components/record-modal/public-api';
     WhoPreviousButtonModule,
     WhoConvertModalModule,
     WhoRecordHistoryModule,
-    WhoRecordModalModule
+    WhoRecordModalModule,
+    WhoProfileModule
   ]
 })
 export class WhoEmsModule { }
