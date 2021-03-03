@@ -5,7 +5,8 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = ['createdBy'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt'];
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +33,12 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields : [];
+    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getFieldsFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields : [];
+    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
