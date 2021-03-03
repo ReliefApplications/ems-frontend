@@ -246,20 +246,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    if (this.settings.pageable) {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items))
-          .slice(this.skip, this.skip + this.pageSize),
-        total: this.items.length
-      };
-    } else {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)),
-        total: this.items.length
-      };
-    }
+    this.gridData = {
+      data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+        (this.filter ? filterBy(this.items, this.filter) : this.items))
+        .slice(this.skip, this.skip + this.pageSize),
+      total: this.items.length
+    };
   }
 
   /*  Display an embedded form in a modal to add new record.
