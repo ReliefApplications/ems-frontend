@@ -142,12 +142,12 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 
   .mat-button:disabled, .mat-stroked-button:disabled {
-    color: #97B0BB !important;
+    color: #adadad !important;
   }
 
   .mat-flat-button:disabled {
-    color: #7C8487 !important;
-    background-color: mat-color($who-primary, Blue800) !important;
+    color: #adadad !important;
+    background-color: #d8d8d8!important;
   }
 }
 
