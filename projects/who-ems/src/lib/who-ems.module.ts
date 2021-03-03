@@ -24,8 +24,6 @@ import { WhoRecordHistoryModule } from './components/record-history/record-histo
 import { WhoRecordModalModule } from './components/record-modal/public-api';
 
 @NgModule({
-  declarations: [],
-  imports: [],
   exports: [
     WhoLayoutModule,
     WhoAccessModule,
