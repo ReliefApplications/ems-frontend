@@ -8,7 +8,7 @@
     </div>
   </div>
   <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-    [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="true"
+    [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true" [pageable]="pagerSettings"
     [sort]="sort" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)"
     (sortChange)="sortChange($event)" (pageChange)="pageChange($event)" filterable="menu" [filter]="filter"
     (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true">

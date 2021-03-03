@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent
+  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -39,6 +39,14 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
   mode: 'multiple',
   drag: false
+};
+
+const PAGER_SETTINGS: PagerSettings = {
+  buttonCount: 5,
+  type: 'numeric',
+  info: true,
+  pageSizes: true,
+  previousNext: true
 };
 
 @Component({
@@ -99,6 +107,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public pagerSettings = PAGER_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -490,6 +499,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public pageChange(event: PageChangeEvent): void {
     this.skip = event.skip;
+    this.pageSize = event.take;
     this.loadItems();
   }
 
