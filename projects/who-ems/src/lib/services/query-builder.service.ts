@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'canUpdate', 'canDelete'];
 
-const DISABLED_FIELDS = ['createdBy'];
+const DISABLED_FIELDS = ['createdBy', 'canUpdate', 'canDelete'];
 
 @Injectable({
   providedIn: 'root'
