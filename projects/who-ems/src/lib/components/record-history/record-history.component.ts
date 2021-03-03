@@ -87,8 +87,6 @@ export class WhoRecordHistoryComponent implements OnInit {
   onRevert(item: any): void {
     const dialogRef = this.dialog.open(WhoRecordModalComponent, {
       data: {
-        // previewMode: {selectedRecord: this.record.versions.filter(version => version.id === item.id )[0].data,
-        //   created: item.created, currentRecordModifiedAt: this.record.modifiedAt},
         recordId: this.record.id,
         locale: 'en',
         compareTo: this.record.versions.find(x => x.id === item.id)
@@ -98,12 +96,7 @@ export class WhoRecordHistoryComponent implements OnInit {
       panelClass: 'full-screen-modal',
     });
     dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        console.log(value);
-      }
+      if (value) { this.revert(item); }
     });
-    // revert: () => {
-    //   this.revert(item);
-    // }
   }
 }

@@ -1,14 +1,9 @@
 <ng-container *ngIf="!loading">
-    <mat-tab-group mat-dialog-title animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="survey.pages.length > 1">
-        <mat-tab *ngFor="let page of survey.pages" [label]="page.title"></mat-tab>
-    </mat-tab-group>
-</ng-container>
-<mat-dialog-content>
-    <ng-container *ngIf="!data.compareTo">
-        <div [id]="containerId"></div>
-    </ng-container>
-    <ng-container *ngIf="data.compareTo">
-        <div class="versions-info" *ngIf="!loading">
+    <div mat-dialog-title>
+        <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="survey.pages.length > 1">
+            <mat-tab *ngFor="let page of survey.pages" [label]="page.title"></mat-tab>
+        </mat-tab-group>
+        <div class="versions-info" *ngIf="data.compareTo">
             <div class="version-info">
                 <div>Past version</div>
                 <span>{{ data.compareTo.createdAt | date:'dd/MM/yy, h:mm a' }}</span>
@@ -18,10 +13,17 @@
                 <span>{{ record.modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
             </div>
         </div>
+    </div>
+</ng-container>
+<mat-dialog-content>
+    <ng-container *ngIf="!data.compareTo">
+        <div [id]="containerId"></div>
+    </ng-container>
+    <ng-container *ngIf="data.compareTo">
         <mat-grid-list cols="2" rowHeight="2:1">
             <mat-grid-tile [id]="containerId">
             </mat-grid-tile>
-            <mat-grid-tile [id]="containerRightId">
+            <mat-grid-tile [id]="containerNextId">
             </mat-grid-tile>
         </mat-grid-list>
     </ng-container>    

@@ -20,10 +20,10 @@ export class WhoRecordModalComponent implements OnInit {
   public form: Form;
   public record: Record;
   public survey: Survey.Model;
-  public surveyRight: Survey.Model;
+  public surveyNext: Survey.Model;
 
   public containerId: string;
-  public containerRightId: string;
+  public containerNextId: string;
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -41,7 +41,7 @@ export class WhoRecordModalComponent implements OnInit {
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
-      this.containerRightId = uuidv4();
+      this.containerNextId = uuidv4();
     }
   }
 
@@ -74,13 +74,13 @@ export class WhoRecordModalComponent implements OnInit {
       this.survey.render(this.containerId);
 
       if (this.data.compareTo) {
-        this.surveyRight = new Survey.Model(this.form.structure);
-        this.surveyRight.data = this.data.compareTo.data;
-        this.surveyRight.locale = this.data.locale ? this.data.locale : 'en';
-        this.surveyRight.mode = 'display';
-        this.surveyRight.showNavigationButtons = 'none';
-        this.surveyRight.showProgressBar = 'off';
-        this.surveyRight.render(this.containerRightId);
+        this.surveyNext = new Survey.Model(this.form.structure);
+        this.surveyNext.data = this.data.compareTo.data;
+        this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
+        this.surveyNext.mode = 'display';
+        this.surveyNext.showNavigationButtons = 'none';
+        this.surveyNext.showProgressBar = 'off';
+        this.surveyNext.render(this.containerNextId);
       }
     });
   }
@@ -88,7 +88,7 @@ export class WhoRecordModalComponent implements OnInit {
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
     if (this.data.compareTo) {
-      this.surveyRight.currentPageNo = i;
+      this.surveyNext.currentPageNo = i;
     }
   }
 
