@@ -31,7 +31,7 @@
       notifications</mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item>Profile</button>
+    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout()" class="warn">Logout</button>
   </mat-menu>

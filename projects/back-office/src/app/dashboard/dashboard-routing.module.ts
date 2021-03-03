@@ -19,6 +19,11 @@ export const routes = [
                 redirectTo: 'applications'
             },
             {
+                path: 'profile',
+                loadChildren: () => import('./pages/profile/profile.module')
+                    .then(m => m.ProfileModule),
+            },
+            {
                 path: 'forms',
                 children: [
                     {
