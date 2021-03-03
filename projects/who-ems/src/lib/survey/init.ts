@@ -1,17 +1,17 @@
-import { init as initCustomWidget } from './widgets/customwidget';
-import { init as initFullnameComponent } from './components/fullname';
 import { init as initCountryComponent } from './components/country';
 import { init as initCountriesComponent } from './components/countries';
-import { init as initResourceInputWidget } from './widgets/inputwithresource';
 import { init as initResourceComponent } from './components/resource';
+// import { init as initDateFormatWidget } from './widgets/date-format-widget';
+// import { init as initTooltipWidget } from './widgets/tooltip';
+import { init as initCustomWidget } from './widgets/customwidget';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey, API_URL): void{
-    initCustomWidget(Survey);
-    initFullnameComponent(Survey);
-    initCountryComponent(Survey);
-    initCountriesComponent(Survey);
-    initResourceInputWidget(Survey, API_URL);
-    initResourceComponent(Survey, API_URL);
+export function initCustomWidgets(Survey, API_URL): void {
+  // initTooltipWidget(Survey);
+  // initDateFormatWidget(Survey);
+  initCustomWidget(Survey);
+  initCountryComponent(Survey);
+  initCountriesComponent(Survey);
+  initResourceComponent(Survey, API_URL);
 }

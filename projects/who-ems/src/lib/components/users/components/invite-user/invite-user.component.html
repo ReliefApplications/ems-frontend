@@ -26,10 +26,19 @@
                     <mat-option *ngFor="let role of data.roles" [value]="role.id">{{ role.title }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <ng-container *ngIf="positionAttributes">
+                <ng-container formArrayName="positionAttributes">
+                    <label class="invite-label">Set additional attributes</label>
+                    <mat-form-field appearance="outline" *ngFor="let category of positionAttributes.controls; let index = index;" [formGroup]="category">
+                        <mat-label>{{ data.positionAttributeCategories[index].title | titlecase }}</mat-label>
+                        <input matInput formControlName="value" type="text" placeholder="Enter a value for the category"/>
+                    </mat-form-field>
+                </ng-container>
+            </ng-container>
         </div>
     </form>
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button [mat-dialog-close]="inviteForm.value" color="primary" [disabled]="!inviteForm.valid">Invite</button>
+    <button mat-flat-button [mat-dialog-close]="inviteForm.value" cdkFocusInitial color="primary" [disabled]="!inviteForm.valid">Invite</button>
 </div>

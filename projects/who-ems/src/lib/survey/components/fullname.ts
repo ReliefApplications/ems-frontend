@@ -32,7 +32,7 @@ export function init(Survey: any): void {
             Survey.Serializer.addProperty('fullname', {
                 name: 'showMiddleName:boolean',
                 default: false,
-                category: 'general',
+                category: 'Custom Library',
             });
         },
         // SurveyJS calls this function after creating new question and loading it's properties from JSON

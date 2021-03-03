@@ -82,7 +82,19 @@
 }
 
 .add-page-button {
-  color: #13AD38;
   margin: 0 auto;
-  border-color: #13AD38;
+}
+
+.notification-menu {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    a {
+        display: inline-flex;
+        padding-right: 8px;
+        cursor: pointer;
+        mat-icon {
+            padding-left: 10px;
+        }
+    }
 }

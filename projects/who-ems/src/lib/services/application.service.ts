@@ -20,7 +20,8 @@ import {
   DeleteChannelMutationResponse, DELETE_CHANNEL,
   AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
   EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION } from '../graphql/mutations';
+  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION, AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY
+} from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
 @Injectable({
@@ -54,7 +55,7 @@ export class WhoApplicationService {
   /*
     Edit Application
   */
-  editApplication(value: any): void{
+  editApplication(value: any): void {
     const application = this._application.getValue();
     this.apollo.mutate<EditApplicationMutationResponse>(
       {
@@ -136,7 +137,7 @@ export class WhoApplicationService {
   updatePageName(page: Page): void {
     const application = this._application.getValue();
     application.pages = application.pages.map(x => {
-      if (x.id === page.id) { x.name = page.name; }
+      if (x.id === page.id) { x.name = page.name; }
       return x;
     });
     this._application.next(application);
@@ -161,7 +162,7 @@ export class WhoApplicationService {
         application.pages = application.pages.concat([res.data.addPage]);
         this._application.next(application);
         this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
-        `/applications/${application.id}/${value.type}/${content}`]);
+          `/applications/${application.id}/${value.type}/${content}`]);
       });
     } else {
       this.snackBar.openSnackBar('No opened application.', { error: true });
@@ -241,12 +242,17 @@ export class WhoApplicationService {
       mutation: ADD_ROLE_TO_USER,
       variables: {
         username: value.email,
-        role: value.role
+        role: value.role,
+        ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter(x => x.value) }
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-      application.users = application.users.concat([res.data.addRoleToUser]);
-      this._application.next(application);
+      if (!res.errors) {
+        this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
+        application.users = application.users.concat([res.data.addRoleToUser]);
+        this._application.next(application);
+      } else {
+        this.snackBar.openSnackBar('User could not be invited.', { error: true });
+      }
     });
   }
 
@@ -269,9 +275,26 @@ export class WhoApplicationService {
     });
   }
 
+  /* Add a new position to the opened application.
+  */
+  addPositionAttributeCategory(value: any): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddPositionAttributeCategoryMutationResponse>({
+      mutation: ADD_POSITION_ATTRIBUTE_CATEGORY,
+      variables: {
+        title: value.title,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${value.title} position created`);
+      application.positionAttributeCategories = application.positionAttributeCategories.concat([res.data.addPositionAttributeCategory]);
+      this._application.next(application);
+    });
+  }
+
   /* Add a new channel to the application.
   */
-  addChannel(value: {title: string}): void {
+  addChannel(value: { title: string }): void {
     const application = this._application.getValue();
     this.apollo.mutate<AddChannelMutationResponse>({
       mutation: ADD_CHANNEL,
@@ -304,65 +327,65 @@ export class WhoApplicationService {
 
   /* Add a new subscription to the application.
   */
- addSubscription(value: {routingKey: string, title: string, convertTo: string, channel: string}): void {
-  const application = this._application.getValue();
-  this.apollo.mutate<AddSubscriptionMutationResponse>({
-    mutation: ADD_SUBSCRIPTION,
-    variables: {
-      application: application.id,
-      routingKey: value.routingKey,
-      title: value.title,
-      convertTo: value.convertTo,
-      channel: value.channel
-    }
-  }).subscribe(res => {
-    this.snackBar.openSnackBar('New subscription created.');
-    application.subscriptions = application.subscriptions.concat([res.data.addSubscription]);
-    this._application.next(application);
-  });
+  addSubscription(value: { routingKey: string, title: string, convertTo: string, channel: string }): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<AddSubscriptionMutationResponse>({
+      mutation: ADD_SUBSCRIPTION,
+      variables: {
+        application: application.id,
+        routingKey: value.routingKey,
+        title: value.title,
+        convertTo: value.convertTo,
+        channel: value.channel
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('New subscription created.');
+      application.subscriptions = application.subscriptions.concat([res.data.addSubscription]);
+      this._application.next(application);
+    });
   }
 
 
   /* Delete subscription from application.
   */
- deleteSubscription(value): void {
-  const application = this._application.getValue();
-  this.apollo.mutate<DeleteSubscriptionMutationResponse>({
-    mutation: DELETE_SUBSCRIPTION,
-    variables: {
-      applicationId: application.id,
-      routingKey: value
-    }
-  }).subscribe(res => {
-    this.snackBar.openSnackBar('Subscription removed.');
-    application.subscriptions = application.subscriptions.filter(sub =>  sub.routingKey !== value);
-    this._application.next(application);
-  });
+  deleteSubscription(value): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeleteSubscriptionMutationResponse>({
+      mutation: DELETE_SUBSCRIPTION,
+      variables: {
+        applicationId: application.id,
+        routingKey: value
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Subscription removed.');
+      application.subscriptions = application.subscriptions.filter(sub => sub.routingKey !== value);
+      this._application.next(application);
+    });
   }
 
   /* Edit existing subscription
   */
- editSubscription(value, previousSubscription): void {
-  const application = this._application.getValue();
-  this.apollo.mutate<EditSubscriptionMutationResponse>({
-    mutation: EDIT_SUBSCRIPTION,
-    variables: {
-      applicationId: application.id,
-      title: value.title,
-      routingKey: value.routingKey,
-      convertTo: value.convertTo,
-      channel: value.channel,
-      previousSubscription,
-    }
-  }).subscribe(res => {
-    this.snackBar.openSnackBar('Edited subscription.');
-    application.subscriptions = application.subscriptions.map(sub =>  {
-      if (sub.routingKey === previousSubscription) {
-        sub = res.data.editSubscription;
+  editSubscription(value, previousSubscription): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditSubscriptionMutationResponse>({
+      mutation: EDIT_SUBSCRIPTION,
+      variables: {
+        applicationId: application.id,
+        title: value.title,
+        routingKey: value.routingKey,
+        convertTo: value.convertTo,
+        channel: value.channel,
+        previousSubscription,
       }
-      return sub;
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Edited subscription.');
+      application.subscriptions = application.subscriptions.map(sub => {
+        if (sub.routingKey === previousSubscription) {
+          sub = res.data.editSubscription;
+        }
+        return sub;
+      });
+      this._application.next(application);
     });
-    this._application.next(application);
-  });
   }
 }

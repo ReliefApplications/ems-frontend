@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@angular/core';
-import * as SurveyCreator from 'survey-creator';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';
@@ -15,7 +14,7 @@ export class FormService {
     initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`);
 
     // === STYLE ===
-    SurveyCreator.StylesManager.applyTheme('darkblue');
+    // SurveyCreator.StylesManager.applyTheme('darkblue');
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
@@ -24,6 +23,6 @@ export class FormService {
     initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
 
     // === STYLE ===
-    Survey.StylesManager.applyTheme('darkblue');
+    // Survey.StylesManager.applyTheme('darkblue');
   }
 }

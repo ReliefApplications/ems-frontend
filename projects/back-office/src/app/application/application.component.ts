@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
+
   public title: string;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
@@ -85,6 +86,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Roles',
                 path: './settings/roles',
                 icon: 'admin_panel_settings'
+              },
+              {
+                name: 'Attributes',
+                path: './settings/position',
+                icon: 'manage_accounts'
               },
               {
                 name: 'Channels',

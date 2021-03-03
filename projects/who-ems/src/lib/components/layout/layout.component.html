@@ -34,8 +34,11 @@
     <button mat-menu-item (click)="logout()">Logout</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
-    <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{ notification.action }} -
-      {{ notification.createdAt | date }}</button>
+    <div class="notification-menu">
+      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline</mat-icon></a>
+      <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{ notification.action }} -
+        {{ notification.createdAt | date }}</button>
+    </div>
   </mat-menu>
 </mat-toolbar>
 
@@ -54,7 +57,7 @@
               <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
                 (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
                 <ng-container *ngIf="item.isAddPage">
-                  <button mat-stroked-button class="add-page-button" [class]="item.class ? item.class : ''">
+                  <button mat-stroked-button class="add-page-button" color="primary" [class]="item.class ? item.class : ''">
                     <mat-icon>add</mat-icon>
                     Add a Page
                   </button>

@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Role } from '../../../../models/user.model';
+import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
+import { Role, User } from '../../../../models/user.model';
 
 @Component({
   selector: 'who-edit-user',
@@ -13,13 +14,18 @@ export class WhoEditUserComponent implements OnInit {
   // === REACTIVE FORM ===
   userForm: FormGroup;
 
+  get positionAttributes(): FormArray {
+    return this.userForm.get('positionAttributes') ? this.userForm.get('positionAttributes') as FormArray : null;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<WhoEditUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      userRoles: Role[],
+      user: User,
       availableRoles: Role[],
-      multiple: boolean
+      multiple: boolean,
+      positionAttributeCategories?: PositionAttributeCategory[]
     },
   ) { }
 
@@ -28,11 +34,20 @@ export class WhoEditUserComponent implements OnInit {
   ngOnInit(): void {
     if (this.data.multiple) {
       this.userForm = this.formBuilder.group({
-        roles: [this.data.userRoles ? this.data.userRoles.map(x => x.id) : null]
+        roles: [this.data.user.roles ? this.data.user.roles.map(x => x.id) : null]
       });
     } else {
       this.userForm = this.formBuilder.group({
-        role: this.data.userRoles[0].id
+        role: this.data.user.roles[0].id,
+        ...this.data.positionAttributeCategories &&
+        {
+          positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
+            return this.formBuilder.group({
+              value: [''],
+              category: [x.id, Validators.required]
+            });
+          }))
+        }
       });
     }
   }

@@ -7,11 +7,12 @@ import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Subscription } from '../models/subscription.model';
+import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON!, $display: Boolean) {
-  editRecord(id: $id, data: $data) {
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
     id
     data(display: $display)
     createdAt
@@ -159,8 +160,8 @@ export interface AddRoleMutationResponse {
 }
 
 export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($username: String!, $role: ID!) {
-  addRoleToUser(username: $username, role: $role) {
+mutation addRoleToUser($username: String!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
+  addRoleToUser(username: $username, role: $role, positionAttributes: $positionAttributes) {
     id
     username
     name
@@ -215,6 +216,20 @@ mutation deleteRole($id: ID!) {
 export interface DeleteRoleMutationResponse {
   loading: boolean;
   deleteRole: Role;
+}
+
+// === ADD POSITION ===
+export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
+mutation addPositionAttributeCategory($title: String!, $application: ID!) {
+  addPositionAttributeCategory(title: $title, application: $application) {
+    id
+    title
+  }
+}`;
+
+export interface AddPositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  addPositionAttributeCategory: PositionAttributeCategory;
 }
 
 // === DELETE PAGE ===
@@ -299,6 +314,17 @@ export interface SeeNotificationMutationResponse {
   seeNotification: Notification;
 }
 
+// === SEE ALL NOTIFICATION ===
+export const SEE_NOTIFICATIONS = gql`
+mutation seeNotifications($ids: [ID]!) {
+  seeNotifications(ids: $ids)
+}`;
+
+export interface SeeNotificationsMutationResponse {
+  loading: boolean;
+  seeNotifications: boolean;
+}
+
 // === ADD CHANNEL ===
 export const ADD_CHANNEL = gql`
 mutation addChannel($title: String!, $application: ID) {
@@ -380,7 +406,6 @@ export const DELETE_RECORD = gql`
 mutation deleteRecord($id: ID!) {
   deleteRecord(id: $id) {
     id
-    subscriptions
   }
 }`;
 

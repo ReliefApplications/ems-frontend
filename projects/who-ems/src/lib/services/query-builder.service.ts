@@ -5,6 +5,9 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+const DISABLED_FIELDS = ['createdBy'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt'];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,12 +33,12 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields : [];
+    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getFieldsFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields : [];
+    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
@@ -89,10 +92,34 @@ export class QueryBuilderService {
     }));
   }
 
+  private buildMetaFields(fields: any[]): any {
+    return [''].concat(fields.filter(x => !DEFAULT_FIELDS.includes(x.name)).map(x => {
+      switch (x.kind) {
+        case 'SCALAR': {
+          return x.name + '\n';
+        }
+        case 'LIST': {
+          return `${x.name}() {
+            ${this.buildMetaFields(x.fields)}
+          }` + '\n';
+        }
+        case 'OBJECT': {
+          return `${x.name} {
+            ${this.buildMetaFields(x.fields)}
+          }` + '\n';
+        }
+        default: {
+          return;
+        }
+      }
+    }));
+  }
+
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = this.buildFields(builtQuery.fields);
+      const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {
           ${builtQuery.name}(
@@ -105,6 +132,26 @@ export class QueryBuilderService {
         }
       `;
       return this.apollo.watchQuery<any>({
+        query,
+        variables: {}
+      });
+    } else {
+      return null;
+    }
+  }
+
+  public buildMetaQuery(settings: any): any {
+    const builtQuery = settings.query;
+    if (builtQuery && builtQuery.fields.length > 0) {
+      const metaFields = this.buildMetaFields(builtQuery.fields);
+      const query = gql`
+        query GetCustomMetaQuery {
+          _${builtQuery.name}Meta {
+            ${metaFields}
+          }
+        }
+      `;
+      return this.apollo.query<any>({
         query,
         variables: {}
       });
