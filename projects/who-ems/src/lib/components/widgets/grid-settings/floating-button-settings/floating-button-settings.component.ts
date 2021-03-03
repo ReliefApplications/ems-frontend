@@ -16,7 +16,9 @@ export class FloatingButtonSettingsComponent implements OnInit {
   @Input() fields: any[];
   @Input() channels: Channel[];
 
-  public dashboard = false;
+  // Indicate is the page is a single dashboard.
+  public isDashboard = false;
+
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
   }
@@ -27,7 +29,7 @@ export class FloatingButtonSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) { this.dashboard = true; }
+    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) { this.isDashboard = true; }
     this.buttonForm.get('notify').valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm.get('notificationChannel').setValidators(Validators.required);

@@ -224,7 +224,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex = 0;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
-      this.snackBar.openSnackBar(`Back to "${this.steps[0].name}".`, { error: false });
+      this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
     } else {
       this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
     }
