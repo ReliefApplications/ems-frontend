@@ -22,8 +22,10 @@
                 </mat-form-field>
                 <ng-container *ngIf="addForm.controls.resource.value != null">
                     <div class="info-row">
-                        <mat-slide-toggle formControlName="inheritsTemplate" class="form-slide-toggle">Start from existing template</mat-slide-toggle>
-                        <mat-icon class="info-icon" matTooltip="If no template is selected, core structure will be loaded.">info</mat-icon>
+                        <mat-slide-toggle formControlName="inheritsTemplate" class="form-slide-toggle">Start from
+                            existing template</mat-slide-toggle>
+                        <mat-icon class="info-icon"
+                            matTooltip="If no template is selected, core structure will be loaded.">info</mat-icon>
                     </div>
                     <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
                         <mat-form-field>
@@ -31,6 +33,9 @@
                             <mat-select formControlName="template" placeholder="Pick an existing template">
                                 <mat-option *ngFor="let template of templates" [value]="template.id">
                                     {{template.name}}
+                                    <mat-chip-list *ngIf="template.core" class="core-form">
+                                        <mat-chip class="primary-chip" disabled>Core</mat-chip>
+                                    </mat-chip-list>
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -42,5 +47,6 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="addForm.value"  cdkFocusInitial color="primary" [disabled]="!addForm.valid">Create</button>
+    <button mat-flat-button [mat-dialog-close]="addForm.value" cdkFocusInitial color="primary"
+        [disabled]="!addForm.valid">Create</button>
 </div>

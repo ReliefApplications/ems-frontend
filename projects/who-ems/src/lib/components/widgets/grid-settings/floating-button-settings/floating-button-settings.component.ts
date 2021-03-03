@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
 
-const DISABLED_FIELDS = ['id', 'createdAt'];
+const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 @Component({
   selector: 'who-floating-button-settings',
@@ -15,15 +16,20 @@ export class FloatingButtonSettingsComponent implements OnInit {
   @Input() fields: any[];
   @Input() channels: Channel[];
 
+  // Indicate is the page is a single dashboard.
+  public isDashboard = false;
+
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
   }
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) { this.isDashboard = true; }
     this.buttonForm.get('notify').valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm.get('notificationChannel').setValidators(Validators.required);

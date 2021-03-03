@@ -5,12 +5,15 @@
     </button>
 </div>
 <ul>
-    <li *ngFor="let item of history">
+    <li *ngFor="let item of history; index as i">
         <table mat-table [dataSource]="item.changes" class="mat-elevation-z1">
             <ng-container matColumnDef="position">
                 <th mat-header-cell *matHeaderCellDef> <span class="user"
                         *ngIf="item.createdBy">{{item.createdBy}}</span> {{item.created |
-                    date:'dd/MM/yyyy HH:mm'}} </th>
+                    date:'dd/MM/yyyy HH:mm'}}
+                  <button class="revert-icon" mat-stroked-button (click)="onRevert(item)">Revert<mat-icon>update</mat-icon>
+                  </button>
+                </th>
                 <td mat-cell *matCellDef="let element" [innerHTML]="element"></td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
