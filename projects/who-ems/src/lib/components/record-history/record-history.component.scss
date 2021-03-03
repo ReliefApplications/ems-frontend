@@ -6,6 +6,7 @@
     width: 328px;
 }
 
+
 .history-header {
     display: flex;
     flex-direction: row;
@@ -18,29 +19,54 @@
     }
 }
 
-ul {
-    list-style-type: none;
-    padding-left: 0;
-    flex: 1;
-    overflow-y: auto;
-
-    li:not(:first-child) {
-        padding-top: 8px;
-    }
-}
-
-.mat-row .mat-cell:first-child  {
-    font-weight: 300;
-}
-
 .user {
-    background-color: #B0D2EA;
+    background-color: #b2c9eb;
     border-radius: 10px;
     padding: 5px;
-    margin-right: 10px;
 }
 
-.revert-icon {
-    float: right;
-    cursor: pointer;
+::ng-deep .modify-field {
+  background-color: #e8ddb8;
+  border-radius: 10px;
+  padding: 5px;
 }
+
+::ng-deep .add-field {
+  background-color: #b2ebbf;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.changes-content {
+  margin-top: 0.7rem;
+}
+
+mat-expansion-panel {
+  box-shadow: none !important;
+  border-bottom: solid 1px #E5E5E5;
+  border-radius: 0;
+}
+
+mat-expansion-panel-header{
+  border-bottom: 1px solid #E5E5E5;
+  border-radius: 0;
+}
+
+::ng-deep p {
+  line-height: 2;
+}
+
+.move-right {
+  float:right;
+}
+
+.name-space {
+  width: 100%;
+  text-align: end;
+}
+
+mat-panel-title > span:first-child {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+

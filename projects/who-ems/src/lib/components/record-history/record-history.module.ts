@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { WhoRecordHistoryComponent } from './record-history.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [WhoRecordHistoryComponent],
@@ -12,7 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatExpansionModule
   ],
   exports: [WhoRecordHistoryComponent]
 })

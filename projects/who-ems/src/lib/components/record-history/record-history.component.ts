@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Record } from '../../models/record.model';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'who-record-history',
   templateUrl: './record-history.component.html',
-  styleUrls: ['./record-history.component.scss']
+  styleUrls: ['./record-history.component.scss'],
 })
 export class WhoRecordHistoryComponent implements OnInit {
 
@@ -18,6 +19,7 @@ export class WhoRecordHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
+    this.loading = false;
   }
 
   onCancel(): void {
@@ -33,12 +35,12 @@ export class WhoRecordHistoryComponent implements OnInit {
     keysCurrent.forEach(key => {
       if (after[key]) {
         if (after[key] !== current[key]) {
-          changes.push('Change value of field <i>' + key + '</i> from <b>' + after[key] +
-            '</b> to <b>' + current[key] + '</b>');
+          changes.push('<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <b>' + after[key] +
+            '</b> to <b>' + current[key] + '</b> </p>');
           affectedData[key] = current[key];
         }
       } else {
-        changes.push('Add field <i>' + key + '</i> with value <b>' + current[key] + '</b>');
+        changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + current[key] + '</b> </p>');
         affectedData[key] = current[key];
       }
     });
@@ -46,7 +48,7 @@ export class WhoRecordHistoryComponent implements OnInit {
     const keysAfter = Object.keys(after);
     keysAfter.forEach(key => {
       if (!current[key]) {
-        changes.push('Add field <i>' + key + '</i> with value <b>' + after[key] + '</b>');
+        changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
       }
     });
     return {changes, data: affectedData};

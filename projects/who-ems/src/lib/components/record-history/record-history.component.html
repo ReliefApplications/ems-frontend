@@ -4,19 +4,19 @@
         <mat-icon>close</mat-icon>
     </button>
 </div>
-<ul>
-    <li *ngFor="let item of history; index as i">
-        <table mat-table [dataSource]="item.changes" class="mat-elevation-z1">
-            <ng-container matColumnDef="position">
-                <th mat-header-cell *matHeaderCellDef> <span class="user"
-                        *ngIf="item.createdBy">{{item.createdBy}}</span> {{item.created |
-                    date:'dd/MM/yyyy HH:mm'}}
-                  <mat-icon *ngIf="i != 0" class="revert-icon" (click)="onRevert(item)">update</mat-icon>
-                </th>
-                <td mat-cell *matCellDef="let element" [innerHTML]="element"></td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-    </li>
-</ul>
+<mat-card *ngFor="let item of history">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <span>
+          {{item.created | date:'dd/MM/yyyy'}}
+        </span> {{item.created | date:'HH:mm'}}
+        <div class="name-space">
+          <span class="user" *ngIf="item.createdBy">{{item.createdBy}}</span>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
+    <button class="move-right" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+  </mat-expansion-panel>
+</mat-card>
