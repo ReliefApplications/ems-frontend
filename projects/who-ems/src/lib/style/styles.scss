@@ -96,6 +96,10 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   .mat-list-item:not(.active-link) {
     color: mat-color($mat-grey, 500);
   }
+
+  .primary {
+    color: mat-color($primary);
+  }
 }
 
 @mixin chip($theme) {

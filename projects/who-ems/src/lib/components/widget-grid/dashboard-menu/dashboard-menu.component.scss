@@ -2,10 +2,7 @@
 .dashboard-menu {
   display: flex;
   align-items: center;
-
-  .mat-mini-fab.mat-accent {
-    background: #008DC9;
-  }
+  cursor: pointer;
   
   mat-icon {
     font-weight: bold;
@@ -15,7 +12,5 @@
     margin-left: 12px;
     font-weight: 700;
     font-size: 14px;
-    color: #008DC9;
-    cursor: pointer;
   }
 }

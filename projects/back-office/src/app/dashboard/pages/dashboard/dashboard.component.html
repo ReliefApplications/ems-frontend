@@ -1,6 +1,5 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && dashboard">
-<!--    <app-dashboard-menu (add)="onAdd($event)" *ngIf="dashboard.canUpdate"></app-dashboard-menu>-->
     <div *ngIf="!formActive" class="dashboard-name-container">
         <h1 class="dashboard-name" (click)="toggleFormActive()">{{dashboard.name}}</h1>
         <who-access [access]="dashboard.permissions"
@@ -23,10 +22,7 @@
                 <mat-icon>close</mat-icon>
             </button>
         </form>
-
     </ng-container>
-
     <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
         (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (addNewWidget)="onAdd($event)"></who-widget-grid>
-
 </ng-container>
