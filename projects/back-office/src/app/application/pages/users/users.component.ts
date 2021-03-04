@@ -36,6 +36,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

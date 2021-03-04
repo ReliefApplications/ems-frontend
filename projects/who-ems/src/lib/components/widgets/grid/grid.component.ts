@@ -668,7 +668,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private reloadData(): void {
     if (!this.parent) {
-      this.dataSubscription.unsubscribe();
+      if (this.dataSubscription) {
+        this.dataSubscription.unsubscribe();
+      }
       this.dataQuery = this.queryBuilder.buildQuery(this.settings);
       this.getRecords();
     } else {
@@ -760,5 +762,4 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
-
 }

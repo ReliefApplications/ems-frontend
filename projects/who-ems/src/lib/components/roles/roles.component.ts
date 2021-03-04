@@ -65,7 +65,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.inApplication) { this.applicationSubscription.unsubscribe(); }
+    if (this.inApplication && this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 
   onAdd(): void {
