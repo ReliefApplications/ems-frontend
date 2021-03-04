@@ -21,6 +21,8 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -133,7 +135,9 @@ export function provideApollo(httpLink: HttpLink): any {
         ['https://graph.microsoft.com/v1.0/me', ['user.read']]
       ],
       extraQueryParameters: {}
-    })
+    }),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {
