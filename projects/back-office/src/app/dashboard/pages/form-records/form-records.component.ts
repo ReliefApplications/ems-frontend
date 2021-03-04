@@ -54,8 +54,8 @@ export class FormRecordsComponent implements OnInit {
         extractColumns(page, columns);
       }
     }
-    columns.push('actions');
-    columns.push('versions');
+    columns.push('_actions');
+    columns.push('_versions');
     this.displayedColumns = columns;
   }
 
