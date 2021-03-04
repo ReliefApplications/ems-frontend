@@ -27,6 +27,17 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  get dashboardMenuRowSpan(): number {
+    if (this.widgets && this.widgets.length > 0) {
+      const defaultRows = (this.widgets[this.widgets.length - 1].defaultRows === 4 &&
+        this.widgets[this.widgets.length - 1].defaultCols === 8) ? 1 :
+        this.widgets[this.widgets.length - 1].defaultRows;
+      return (defaultRows > this.colsNumber) ? this.colsNumber : defaultRows;
+    } else {
+      return 1;
+    }
+  }
+
   constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
