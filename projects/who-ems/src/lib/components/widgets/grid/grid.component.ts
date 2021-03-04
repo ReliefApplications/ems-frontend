@@ -573,7 +573,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: id,
         locale: 'en'
-      }
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
     });
   }
 
@@ -672,7 +675,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private reloadData(): void {
     if (!this.parent) {
-      this.dataSubscription.unsubscribe();
+      if (this.dataSubscription) {
+        this.dataSubscription.unsubscribe();
+      }
       this.dataQuery = this.queryBuilder.buildQuery(this.settings);
       this.getRecords();
     } else {
@@ -764,5 +769,4 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
-
 }

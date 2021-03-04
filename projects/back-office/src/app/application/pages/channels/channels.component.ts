@@ -35,10 +35,6 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
-  }
-
   /* Display the AddChannel modal.
     Create a new channel linked to this application on close.
   */
@@ -68,5 +64,11 @@ export class ChannelsComponent implements OnInit, OnDestroy {
         this.applicationService.deleteChannel(channel);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }
