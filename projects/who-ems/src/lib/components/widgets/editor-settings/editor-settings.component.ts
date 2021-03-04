@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { EditorComponent } from '@progress/kendo-angular-editor';
 
 @Component({
   selector: 'who-editor-settings',
@@ -21,7 +22,17 @@ export class WhoEditorSettingsComponent implements OnInit, AfterViewInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === TEMPLATE REFERENCE TO THE KENDO EDITOR ===
-  @ViewChild('editor') public editor: any;
+  @ViewChild('editor') public editor: EditorComponent;
+
+  public data: Array<any> = [{
+    text: 'Variable 1',
+    icon: 'paste',
+    click: () => { this.editor.exec('insertText', '<p>Variable 1</p>'); }
+  }, {
+    text: 'Variable 2',
+    icon: 'paste',
+    click: () => { this.editor.exec('insertText', '<p>Variable 2</p>'); }
+  }];
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -47,7 +58,7 @@ export class WhoEditorSettingsComponent implements OnInit, AfterViewInit {
   /*  Update the text of the editor.
   */
   updateText(): void {
-    this.tileForm.setValue({...this.tileForm.value, text: this.editor.value});
+    this.tileForm.setValue({ ...this.tileForm.value, text: this.editor.value });
   }
 
 }

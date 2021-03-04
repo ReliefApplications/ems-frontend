@@ -59,6 +59,11 @@
       <kendo-toolbar-button kendoEditorInsertFileButton></kendo-toolbar-button>
       <kendo-toolbar-button kendoEditorInsertImageButton></kendo-toolbar-button>
       <kendo-toolbar-button kendoEditorViewSourceButton></kendo-toolbar-button>
+      <kendo-toolbar-separator></kendo-toolbar-separator>
+      <kendo-toolbar-dropdownbutton
+                [text]="'Insert Variable'"
+                [data]="data">
+            </kendo-toolbar-dropdownbutton>
     </kendo-toolbar>
   </kendo-editor>
 </ng-container>

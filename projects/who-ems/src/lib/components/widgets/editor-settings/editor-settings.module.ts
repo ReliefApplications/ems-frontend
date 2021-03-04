@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorModule } from '@progress/kendo-angular-editor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 
 @NgModule({
   declarations: [WhoEditorSettingsComponent],
@@ -14,7 +15,8 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    EditorModule
+    EditorModule,
+    ToolBarModule
   ],
   exports: [WhoEditorSettingsComponent]
 })
