@@ -1,10 +1,30 @@
 <div class="history-header">
+  <div>
     <h2>History</h2>
-    <button mat-icon-button (click)="onCancel()">
-        <mat-icon>close</mat-icon>
+    <button class="move-right" mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
     </button>
+  </div>
+
+
+  <div style="clear: both">
+    <mat-form-field>
+      <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
+        <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate placeholder="Start date" readonly>
+        <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate placeholder="End date" readonly>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter()">Apply</button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
 </div>
-<mat-card *ngFor="let item of history">
+<mat-card *ngFor="let item of filterHistory">
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -16,7 +36,10 @@
         </div>
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
-    <button class="move-right" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+
+    <ng-template matExpansionPanelContent>
+      <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
+      <button class="move-right" (click)="revert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+    </ng-template>
   </mat-expansion-panel>
 </mat-card>

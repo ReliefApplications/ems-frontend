@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
 import { Record } from '../../models/record.model';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 @Component({
   selector: 'who-record-history',
@@ -14,11 +14,17 @@ export class WhoRecordHistoryComponent implements OnInit {
   @Output() cancel = new EventEmitter();
 
   public history: any[] = [];
+  public filterHistory = [];
   public loading = true;
   public displayedColumns: string[] = ['position'];
+  public filtersDate = {startDate: '', endDate: ''};
+
+  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
 
   ngOnInit(): void {
     this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
+    this.filterHistory = this.history;
     this.loading = false;
   }
 
@@ -83,5 +89,20 @@ export class WhoRecordHistoryComponent implements OnInit {
 
   onRevert(version: any): void {
     this.revert(version);
+  }
+
+  clearDateFilter(): void {
+    this.filtersDate.startDate = '';
+    this.filtersDate.endDate = '';
+    this.filterHistory = this.history;
+    // ignore that error
+    this.startDate.value = '';
+    this.endDate.value = '';
+  }
+
+  applyFilter(): void {
+    const startDate = new Date(this.filtersDate.startDate).getTime();
+    const endDate = new Date(this.filtersDate.endDate).getTime();
+    this.filterHistory = this.history.filter(item  => !startDate || !endDate || item.created >=  startDate && item.created <= endDate);
   }
 }
