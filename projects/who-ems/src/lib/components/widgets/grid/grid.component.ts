@@ -569,7 +569,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: id,
         locale: 'en'
-      }
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
     });
   }
 
