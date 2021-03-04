@@ -5,8 +5,8 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DISABLED_FIELDS = ['createdBy'];
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
+const DISABLED_FIELDS = ['createdBy', 'canUpdate', 'canDelete'];
 
 @Injectable({
   providedIn: 'root'
@@ -118,7 +118,7 @@ export class QueryBuilderService {
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
-      const fields = this.buildFields(builtQuery.fields);
+      const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {

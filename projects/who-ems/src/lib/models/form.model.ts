@@ -28,4 +28,5 @@ export interface Form {
     canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
+    canCreateRecords?: boolean;
 }

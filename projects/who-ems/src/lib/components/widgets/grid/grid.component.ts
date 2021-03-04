@@ -106,6 +106,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
+  public canUpdateSelectedRows: boolean;
+  public canDeleteSelectedRows: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
   public editionActive = false;
@@ -278,7 +280,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Inline edition of the data.
   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
-    if (isEdited || (this.formGroup && !this.formGroup.valid)) {
+    if (!this.gridData.data[rowIndex].canUpdate || isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
 
@@ -521,6 +523,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       const selectedItems = selection.selectedRows.map((item) => item.index);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
+    this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
+    this.canDeleteSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canDelete);
   }
 
   /* Open the form corresponding to selected row in order to update it
