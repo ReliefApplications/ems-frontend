@@ -196,11 +196,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.routeSubscription.unsubscribe();
-    this.workflowSubscription.unsubscribe();
-  }
-
   /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
@@ -220,6 +215,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex += 1;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
+    } else if (this.selectedStepIndex + 1 === this.steps.length) {
+      this.selectedStepIndex = 0;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      this.navigateToSelectedStep();
+      this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
     } else {
       this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
     }
@@ -232,6 +232,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
     } else {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.workflowSubscription) {
+      this.workflowSubscription.unsubscribe();
     }
   }
 }

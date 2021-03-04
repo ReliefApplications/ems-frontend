@@ -204,6 +204,7 @@ query GetRecordById($id: ID!) {
   record(id: $id) {
     id
     data
+    modifiedAt
     form {
       id
       structure
@@ -426,6 +427,10 @@ export const GET_APPLICATION_BY_ID = gql`
       canSee
       canUpdate
       canDelete
+      positionAttributeCategories {
+        id
+        title
+      }
     }
   }
 `;

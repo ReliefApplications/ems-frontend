@@ -39,7 +39,7 @@
 
     <ng-template matExpansionPanelContent>
       <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
-      <button class="move-right" (click)="revert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+      <button class="move-right" (click)="onRevert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
     </ng-template>
   </mat-expansion-panel>
 </mat-card>

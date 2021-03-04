@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Application, User, Role, WhoApplicationService} from '@who-ems/builder';
+import { Application, User, Role, WhoApplicationService, PositionAttributeCategory} from '@who-ems/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,6 +14,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   public loading = true;
   public users = new MatTableDataSource<User>([]);
   public roles: Role[];
+  public positionAttributeCategories: PositionAttributeCategory[];
   private applicationSubscription: Subscription;
 
   constructor(
@@ -26,6 +27,7 @@ export class UsersComponent implements OnInit, OnDestroy {
       if (application) {
         this.users.data = application.users;
         this.roles = application.roles;
+        this.positionAttributeCategories = application.positionAttributeCategories;
       } else {
         this.users.data = [];
         this.roles = [];
@@ -34,6 +36,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent
+  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -39,6 +39,14 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
   mode: 'multiple',
   drag: false
+};
+
+const PAGER_SETTINGS: PagerSettings = {
+  buttonCount: 5,
+  type: 'numeric',
+  info: true,
+  pageSizes: true,
+  previousNext: true
 };
 
 @Component({
@@ -99,6 +107,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public selectedRowsIndex = [];
   public hasEnabledActions: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
+  public pagerSettings = PAGER_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -246,20 +255,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    if (this.settings.pageable) {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items))
-          .slice(this.skip, this.skip + this.pageSize),
-        total: this.items.length
-      };
-    } else {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)),
-        total: this.items.length
-      };
-    }
+    this.gridData = {
+      data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+        (this.filter ? filterBy(this.items, this.filter) : this.items))
+        .slice(this.skip, this.skip + this.pageSize),
+      total: this.items.length
+    };
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -498,6 +499,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public pageChange(event: PageChangeEvent): void {
     this.skip = event.skip;
+    this.pageSize = event.take;
     this.loadItems();
   }
 
@@ -552,7 +554,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         factory: this.factory,
         inputs: {
           record: res.data.record,
-          revert: (item) => {
+          revert: (item, dialog) => {
             this.confirmRevertDialog(res.data.record, item);
           }
         },
@@ -567,7 +569,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: id,
         locale: 'en'
-      }
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
     });
   }
 
@@ -666,7 +671,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private reloadData(): void {
     if (!this.parent) {
-      this.dataSubscription.unsubscribe();
+      if (this.dataSubscription) {
+        this.dataSubscription.unsubscribe();
+      }
       this.dataQuery = this.queryBuilder.buildQuery(this.settings);
       this.getRecords();
     } else {
@@ -758,5 +765,4 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
-
 }

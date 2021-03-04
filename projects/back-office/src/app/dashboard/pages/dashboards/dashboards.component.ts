@@ -47,7 +47,9 @@ export class DashboardsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.authSubscription.unsubscribe();
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   /*  Delete a dashboard if authorized.

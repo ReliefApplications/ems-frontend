@@ -40,6 +40,12 @@ const routes: Routes = [
             // canActivate: [WhoPermissionGuard]
           },
           {
+            path: 'position',
+            loadChildren: () => import('./pages/position/position.module')
+              .then(m => m.PositionModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+          {
             path: 'channels',
             loadChildren: () => import('./pages/channels/channels.module')
               .then(m => m.ChannelsModule),

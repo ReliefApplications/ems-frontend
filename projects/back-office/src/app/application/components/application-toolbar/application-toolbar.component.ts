@@ -30,10 +30,6 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
-  }
-
   onClose(): void {
     this.router.navigate(['/applications']);
   }
@@ -52,6 +48,11 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         this.applicationService.publish();
       }
     });
+  }
 
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

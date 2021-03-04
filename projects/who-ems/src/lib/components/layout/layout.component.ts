@@ -130,7 +130,9 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.notificationsSubscription.unsubscribe();
+    if (this.notificationsSubscription) {
+      this.notificationsSubscription.unsubscribe();
+    }
   }
 
   /*  Go back to previous view
