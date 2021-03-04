@@ -33,12 +33,6 @@ export class PositionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
-  }
-
   onAdd(): void {
     const dialogRef = this.dialog.open(AddPositionComponent);
     dialogRef.afterClosed().subscribe(value => {
@@ -54,5 +48,11 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   onDelete(positionCategory: PositionAttributeCategory): void {
     console.log('delete');
+  }
+
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

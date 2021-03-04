@@ -39,12 +39,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
-  }
-
   /* Display the AddSubscription modal.
     Create a new subscription linked to this application on close.
   */
@@ -88,4 +82,9 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
+  }
 }

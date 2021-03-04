@@ -70,12 +70,6 @@ export class AddStepComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-    this.authSubscription.unsubscribe();
-    }
-  }
-
   isStageValid(stage: number): boolean {
     switch (stage) {
       case 1: {
@@ -148,4 +142,9 @@ export class AddStepComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+    this.authSubscription.unsubscribe();
+    }
+  }
 }

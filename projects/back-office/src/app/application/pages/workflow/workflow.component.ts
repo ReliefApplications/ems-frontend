@@ -196,15 +196,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
-    }
-  }
-
   /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
@@ -241,6 +232,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
     } else {
       this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.workflowSubscription) {
+      this.workflowSubscription.unsubscribe();
     }
   }
 }

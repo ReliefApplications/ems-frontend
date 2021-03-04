@@ -67,12 +67,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-  }
-
   isStepValid(step: number): boolean {
     switch (step) {
       case 1: {
@@ -143,5 +137,11 @@ export class AddPageComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }

@@ -160,6 +160,8 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.dataSubscription) { this.dataSubscription.unsubscribe(); }
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   }
 }

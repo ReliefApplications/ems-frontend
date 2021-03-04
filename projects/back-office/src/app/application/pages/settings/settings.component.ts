@@ -46,12 +46,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
-  }
-
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm.value);
     this.settingsForm.markAsPristine();
@@ -92,5 +86,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/applications']);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }
