@@ -1,7 +1,7 @@
 <div class="history-header">
   <div>
     <h2>History</h2>
-    <button class="move-right" mat-icon-button (click)="onCancel()">
+    <button style="float: right" mat-icon-button (click)="onCancel()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -28,18 +28,15 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <span>
-          {{item.created | date:'dd/MM/yyyy'}}
-        </span> {{item.created | date:'HH:mm'}}
-        <div class="name-space">
-          <span class="user" *ngIf="item.createdBy">{{item.createdBy}}</span>
-        </div>
+        <span class="history-date">{{item.created | date:'dd/MM/yyyy'}}</span>
+        {{item.created | date:'HH:mm'}}
+        <span class="history-user" *ngIf="item.createdBy">{{item.createdBy}}</span>
       </mat-panel-title>
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
       <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
-      <button class="move-right" (click)="onRevert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+      <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
     </ng-template>
   </mat-expansion-panel>
 </mat-card>
