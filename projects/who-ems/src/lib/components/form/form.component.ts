@@ -28,8 +28,11 @@ export class WhoFormComponent implements OnInit {
   public dropdownLocales = [];
   public surveyActive = true;
 
-  // === SURVEY COLORS
+  // === SURVEY COLORS ===
   primaryColor = '#008DC9';
+
+  // === MODIFIED AT ===
+  public modifiedAt: Date;
 
   constructor(
     private apollo: Apollo,
@@ -55,6 +58,7 @@ export class WhoFormComponent implements OnInit {
     const cachedData = localStorage.getItem(`record:${this.form.id}`);
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt;
     } else {
       if (cachedData) {
         this.survey.data = JSON.parse(cachedData);

@@ -144,6 +144,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     canCreateRecords
     uniqueRecord {
       id
+      modifiedAt
       data
     }
   }
