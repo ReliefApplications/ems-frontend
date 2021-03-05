@@ -53,11 +53,15 @@ export class WhoFormComponent implements OnInit {
 
     this.survey = new Survey.Model(JSON.stringify(structure));
     const cachedData = localStorage.getItem(`record:${this.form.id}`);
-    if (cachedData) {
-      this.survey.data = JSON.parse(cachedData);
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
     } else {
-      if (this.record && this.record.data) {
-        this.survey.data = this.record.data;
+      if (cachedData) {
+        this.survey.data = JSON.parse(cachedData);
+      } else {
+        if (this.record && this.record.data) {
+          this.survey.data = this.record.data;
+        }
       }
     }
 
@@ -113,11 +117,12 @@ export class WhoFormComponent implements OnInit {
       }
     }
     this.survey.data = data;
-    if (this.record) {
+    if (this.record || this.form.uniqueRecord) {
+      const recordId = this.record ? this.record.id : this.form.uniqueRecord.id;
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
-          id: this.record.id,
+          id: recordId,
           data: this.survey.data
         }
       });
