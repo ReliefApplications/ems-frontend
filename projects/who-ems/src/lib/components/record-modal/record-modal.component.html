@@ -17,6 +17,7 @@
 </ng-container>
 <mat-dialog-content>
     <ng-container *ngIf="!data.compareTo">
+        <span mat-dialog-title *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
         <div [id]="containerId"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
