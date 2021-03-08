@@ -147,7 +147,13 @@ export class WhoFormComponent implements OnInit {
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(`record:${this.form.id}`);
-        this.survey.showCompletedPage = true;
+        if (this.form.uniqueRecord) {
+          this.survey.clear(false, true);
+          this.modifiedAt = res.data.editRecord.modifiedAt;
+          this.surveyActive = true;
+        } else {
+          this.survey.showCompletedPage = true;
+        }
         this.save.emit(true);
       }
     });
