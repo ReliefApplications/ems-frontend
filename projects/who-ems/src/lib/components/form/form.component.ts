@@ -109,7 +109,7 @@ export class WhoFormComponent implements OnInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key]) { data[key] = null; }
+        if (!data[key] && questions[field].getType() != "boolean") { data[key] = null; }
       }
     }
     this.survey.data = data;
