@@ -3,7 +3,7 @@ name: Front-end CD Azure
 on:
   push:
     branches:
-      - 'SAFE-205'
+      - 'main'
 
 jobs:
   build:
