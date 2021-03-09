@@ -49,9 +49,9 @@
             </ng-container>
             <ng-container *ngIf="field.meta.type === 'dropdown'">
               <kendo-dropdownlist [data]="field.meta.choices"
-                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
-                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'" [valuePrimitive]="true"
-                [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
+                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
+                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null" 
+                [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
             </ng-container>
           </ng-template>
           <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
@@ -70,7 +70,26 @@
               (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON'">
+        <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'checkbox'" 
+        [columnMenu]="false" [editor]="field.editor" [editable]="field.editor && !field.disabled" 
+        [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
+          <ng-template kendoGridCellTemplate let-dataItem= "dataItem">
+            {{ dataItem[field.name] }}
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+            <kendo-multiselect [data]="field.meta.choices"
+              [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
+              [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null" 
+              [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false">
+              <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                <input type="checkbox" class="k-checkbox"
+                 [checked]="isCheckboxSelected(formGroup.get(field.name).value, dataItem)">
+                <label class="k-checkbox-label">{{ dataItem.text ? dataItem.text : dataItem }}</label>
+              </ng-template>
+            </kendo-multiselect>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type !== 'checkbox'">
           <ng-container *ngIf="field.meta.type !== 'multipletext'">
             <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
               <ng-template kendoGridCellTemplate let-dataItem="dataItem">

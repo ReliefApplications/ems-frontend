@@ -447,10 +447,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
+    console.log(this.fields);
     for (const field of this.fields.filter(x => !x.disabled)) {
-      if (field.type !== 'JSON') {
+      if (field.type !== 'JSON' || field.meta.type === 'checkbox') {
         formGroup[field.name] = [dataItem[field.name]];
-        if (field.meta.type === 'dropdown' && field.meta.choicesByUrl) {
+        if ((field.meta.type === 'dropdown' || field.meta.type === 'checkbox') && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
@@ -762,6 +763,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  public isCheckboxSelected(items: any[], item: any): boolean {
+    return items.some(x => x.value ? x.value === item.value : x === item);
   }
 
   ngOnDestroy(): void {
