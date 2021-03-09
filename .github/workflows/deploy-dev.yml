@@ -25,21 +25,21 @@ jobs:
     - name: Build Shared Library
       run: npm run build who-ems
     - name: Build Back-office
-      run: npm run build:ci
-    - name: Build Front-office
-      run: npm run build:ci front-office
+      run: npm run build:azure
+    # - name: Build Front-office
+    #   run: npm run build:ci front-office
     - name: Archive build Back-office
       if: success()
       uses: actions/upload-artifact@v2
       with:
         name: deploy_dist_back_office
         path: dist/back-office
-    - name: Archive build Front-office
-      if: success()
-      uses: actions/upload-artifact@v2
-      with:
-        name: deploy_dist_front_office
-        path: dist/front-office
+    # - name: Archive build Front-office
+    #   if: success()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: deploy_dist_front_office
+    #     path: dist/front-office
 
   deploy_back_office_azure:
     name: Deploy Back-office
