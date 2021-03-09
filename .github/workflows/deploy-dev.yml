@@ -25,9 +25,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build who-ems
     - name: Build Back-office
-      run: npm run build:azure
+      run: npm run build:az
     # - name: Build Front-office
-    #   run: npm run build:ci front-office
+    #   run: npm run build:az front-office
     - name: Archive build Back-office
       if: success()
       uses: actions/upload-artifact@v2
@@ -54,10 +54,6 @@ jobs:
       with:
         name: deploy_dist_back_office
         path: dist/back-office
-    # - name: Azure login
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Deploy on Azure
       uses: azure/CLI@v1
       with:
@@ -65,6 +61,3 @@ jobs:
         inlineScript: |
           az storage blob delete-batch --source '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
           az storage blob upload-batch -s dist/back-office/ -d '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
-    # - name: logout
-    #   run: |
-    #     az logout
