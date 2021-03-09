@@ -9,7 +9,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { WhoChartBuilderModule } from '../../chart-builder/chart-builder.module';
+// import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
 
 @NgModule({
   declarations: [WhoChartSettingsComponent],
@@ -24,7 +25,8 @@ import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module'
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
-    WhoQueryBuilderModule
+    // WhoQueryBuilderModule,
+    WhoChartBuilderModule
   ],
   exports: [WhoChartSettingsComponent]
 })

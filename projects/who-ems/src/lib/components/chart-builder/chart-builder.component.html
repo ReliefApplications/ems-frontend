@@ -1,1 +1,17 @@
-<p>chart-builder works!</p>
+<mat-tab-group mat-align-tabs="start" animationDuration="0ms">
+    <mat-tab label="Data">
+        <ng-template matTabContent>
+            <who-tab-chart-data></who-tab-chart-data>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Filter">
+        <ng-template matTabContent>
+            <who-tab-chart-filter></who-tab-chart-filter>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Options">
+        <ng-template matTabContent>
+            <who-tab-chart-options></who-tab-chart-options>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

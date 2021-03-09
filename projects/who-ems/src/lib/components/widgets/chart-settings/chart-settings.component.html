@@ -16,7 +16,11 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="form-group" *ngIf="tileForm">
+        <div class="form-group">
+            <div class="form-group-title">Chart Definition</div>
+            <who-chart-builder></who-chart-builder>
+        </div>
+        <!-- <div class="form-group" *ngIf="tileForm">
             <div class="form-group-title">Data set selection</div>
             <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings" [canExpand]="false"></who-query-builder>
             <ng-container *ngIf="selectedFields.length > 0">
@@ -37,6 +41,6 @@
                     </mat-select>
                 </mat-form-field>
             </ng-container>
-        </div>
+        </div> -->
     </form>
 </ng-container>
