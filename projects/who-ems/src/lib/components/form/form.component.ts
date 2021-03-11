@@ -81,7 +81,7 @@ export class WhoFormComponent implements OnInit {
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
-    if (!this.form.canCreateRecords) {
+    if (!this.form.canCreateRecords && !this.record) {
       this.survey.mode = 'display';
     }
     this.survey.onValueChanged.add(this.valueChange.bind(this));
