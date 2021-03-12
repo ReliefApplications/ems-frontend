@@ -41,7 +41,7 @@
       <ng-container *ngFor="let field of fields">
         <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - boolean - numeric - date / datetime / datetime-local / time -->
         <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"
-          [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
+          [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled && !field.meta.readOnly"
           [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
           [minResizableWidth]="50">
           <!-- EDITION ( text / comment - resource - dropdown ) -->
@@ -81,7 +81,7 @@
         </kendo-grid-column>
         <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
         <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'checkbox'" 
-        [columnMenu]="false" [editor]="field.editor" [editable]="field.editor && !field.disabled" 
+        [columnMenu]="false" [editor]="field.editor" [editable]="!field.disabled && !field.meta.readOnly" 
         [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
           <ng-template kendoGridCellTemplate let-dataItem= "dataItem">
             {{ dataItem[field.name] }}
@@ -98,7 +98,8 @@
         <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type !== 'checkbox'">
           <ng-container *ngIf="field.meta.type !== 'multipletext'">
             <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
-            <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
+            <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50"
+            [editable]="!field.disabled && !field.meta.readOnly">
               <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <ul class="matrix-cell">
                   <li *ngFor="let row of field.meta.rows">
@@ -111,7 +112,7 @@
           <!-- QUESTION COLUMNS / ITEMS -->
           <ng-container *ngFor="let column of (field.meta.columns ? field.meta.columns : field.meta.items)">
             <kendo-grid-column [title]="column.label" [columnMenu]="false" [width]="column.label.length * 7 + 50"
-              [minResizableWidth]="50">
+              [minResizableWidth]="50" [editable]="!field.disabled && !field.meta.readOnly">
               <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <!-- DISPLAY ( matrix / matrix dropdown ) -->
                 <ng-container *ngIf="field.meta.type !== 'multipletext'">
