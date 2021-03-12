@@ -1,16 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
-import {
-  GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
-} from '@progress/kendo-angular-grid';
+import { CompositeFilterDescriptor, filterBy, orderBy, process, SortDescriptor } from '@progress/kendo-data-query';
+import { ExcelExportEvent, GridComponent as KendoGridComponent, GridDataResult, PageChangeEvent, PagerSettings, SelectableSettings,
+  SelectionEvent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import {
-  CONVERT_RECORD,
-  ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
-} from '../../../graphql/mutations';
+import { CONVERT_RECORD, ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD,
+  EditRecordMutationResponse, PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse } from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -20,9 +15,8 @@ import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
-import {
-  Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+  Renderer2, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -762,6 +756,55 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  public onExcelExport(grid: ExcelExportEvent): void {
+    const data = this.gridData.data;
+    const rows = grid.workbook.sheets[0].rows;
+    const matrixData = [];
+    let i = 0;
+    rows.forEach(row => {
+      if (row.type === 'header') {
+        row.cells.forEach(cell => {
+          this.fields.forEach((field, index) => {
+            if (field.name === cell.value && field.type === 'JSON') {
+              data.forEach(record => {
+                if (field.meta.type === 'matrix') {
+                  const entries = Object.entries(record[field.name]);
+                  field.meta.columns.map((col, j) => {
+                    const value = entries.filter(e => e.includes(col.name));
+                    if (value.length > 0) {
+                      const values = [];
+                      value.forEach(v => values.push(v[0]));
+                      matrixData.push({position: index + j + i, value: values.toString()});
+                    }
+                  });
+                } else if (field.meta.type === 'matrixdropdown') {
+                  const keys = Object.keys(record[field.name]);
+                  field.meta.columns.map((col, j) => {
+                    let str = '';
+                    keys.forEach(k => {
+                      if (Object.keys(record[field.name][k]).includes(col.name) && !!record[field.name][k][col.name]) {
+                        str += `${k} (${record[field.name][k][col.name]}) `;
+                      }
+                    });
+                    if (str.trim().length > 0) {
+                      matrixData.push({position: index + j + i, value: str});
+                    }
+                  });
+                }
+              });
+              i += field.meta.columns.length - 1;
+            }
+          });
+        });
+      }
+      else if (row.type === 'data' && matrixData.length > 0) {
+        matrixData.map(matrixCell => {
+          row.cells[matrixCell.position].value = matrixCell.value;
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {
