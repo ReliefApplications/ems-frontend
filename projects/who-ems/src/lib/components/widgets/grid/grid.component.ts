@@ -762,13 +762,15 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     const data = this.gridData.data;
     const rows = grid.workbook.sheets[0].rows;
     const matrixData = [];
+    let rowIndex = 0;
     let i = 0;
+    // We need to save manually matrix and matrix dropdown records to export on excel
     rows.forEach(row => {
       if (row.type === 'header') {
         row.cells.forEach(cell => {
           this.fields.forEach((field, index) => {
             if (field.name === cell.value && field.type === 'JSON') {
-              data.forEach(record => {
+              data.forEach((record, dataIndex) => {
                 if (field.meta.type === 'matrix') {
                   const entries = Object.entries(record[field.name]);
                   field.meta.columns.map((col, j) => {
@@ -776,7 +778,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                     if (value.length > 0) {
                       const values = [];
                       value.forEach(v => values.push(v[0]));
-                      matrixData.push({position: index + j + i, value: values.toString()});
+                      matrixData.push({row: dataIndex, position: index + j + i, value: values.toString()});
                     }
                   });
                 } else if (field.meta.type === 'matrixdropdown') {
@@ -789,7 +791,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                       }
                     });
                     if (str.trim().length > 0) {
-                      matrixData.push({position: index + j + i, value: str});
+                      matrixData.push({row: dataIndex, position: index + j + i, value: str});
                     }
                   });
                 }
@@ -800,9 +802,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
       else if (row.type === 'data' && matrixData.length > 0) {
-        matrixData.map(matrixCell => {
-          row.cells[matrixCell.position].value = matrixCell.value;
+        matrixData.map((matrixCell, cellIndex) => {
+          if (matrixCell.row === rowIndex) {
+            row.cells[matrixCell.position].value = matrixCell.value;
+          }
         });
+        rowIndex++;
       }
     });
   }
