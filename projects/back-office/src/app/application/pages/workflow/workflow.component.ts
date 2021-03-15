@@ -149,6 +149,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.selectedStep = null;
           this.selectedStepIndex = null;
           this.router.navigate(['./'], { relativeTo: this.route });
+          this.workflowService.loadWorkflow(this.id);
         });
       }
     });

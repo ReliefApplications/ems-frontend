@@ -52,6 +52,14 @@ export class WhoFormComponent implements OnInit {
     const structure = JSON.parse(this.form.structure);
 
     this.survey = new Survey.Model(JSON.stringify(structure));
+    // Unset readOnly fields if it's the record creation
+    if (!this.record) {
+      for (const field of this.form.fields) {
+        if (field.readOnly) {
+          this.survey.getQuestionByName(field.name).readOnly = false;
+        }
+      }
+    }
     const cachedData = localStorage.getItem(`record:${this.form.id}`);
     if (cachedData) {
       this.survey.data = JSON.parse(cachedData);
@@ -81,7 +89,7 @@ export class WhoFormComponent implements OnInit {
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
-    if (!this.form.canCreateRecords && !this.record) {
+    if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
     this.survey.onValueChanged.add(this.valueChange.bind(this));
