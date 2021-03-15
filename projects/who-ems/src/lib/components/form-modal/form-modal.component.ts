@@ -99,10 +99,10 @@ export class WhoFormModalComponent implements OnInit {
     */
     const questions = survey.getAllQuestions();
     const data = survey.data;
-    for (const question of questions) {
-      const key = question.getValueName();
-      if (!survey.data[key] && !question.isRequired) {
-        data[key] = null;
+    for (const field in questions) {
+      if (questions[field]) {
+        const key = questions[field].getValueName();
+        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
       }
     }
     survey.data = data;
