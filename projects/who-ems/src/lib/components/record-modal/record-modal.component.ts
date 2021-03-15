@@ -19,6 +19,7 @@ export class WhoRecordModalComponent implements OnInit {
   public loading = true;
   public form: Form;
   public record: Record;
+  public modifiedAt: Date;
   public survey: Survey.Model;
   public surveyNext: Survey.Model;
 
@@ -63,6 +64,7 @@ export class WhoRecordModalComponent implements OnInit {
       }
     }).valueChanges.subscribe(res => {
       this.record = res.data.record;
+      this.modifiedAt = this.record.modifiedAt;
       this.form = this.record.form;
       this.loading = res.loading;
       this.survey = new Survey.Model(this.form.structure);
