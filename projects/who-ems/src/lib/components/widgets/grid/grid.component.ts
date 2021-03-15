@@ -26,6 +26,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
+import { GradientSettings } from '@progress/kendo-angular-inputs';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -47,6 +48,10 @@ const PAGER_SETTINGS: PagerSettings = {
   info: true,
   pageSizes: true,
   previousNext: true
+};
+
+const GRADIENT_SETTINGS: GradientSettings = {
+  opacity: false
 };
 
 @Component({
@@ -110,6 +115,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public canDeleteSelectedRows: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
+  public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
