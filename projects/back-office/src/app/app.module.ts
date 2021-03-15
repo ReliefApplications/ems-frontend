@@ -23,6 +23,8 @@ import { environment } from '../environments/environment';
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { WhoSnackBarService } from '@who-ems/builder';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 
 
@@ -152,7 +154,9 @@ export function provideApollo(httpLink: HttpLink): any {
         ['https://graph.microsoft.com/v1.0/me', ['user.read']]
       ],
       extraQueryParameters: {}
-    })
+    }),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {

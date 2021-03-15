@@ -10,6 +10,6 @@
 <ng-container *ngIf="!loading">
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
-<ng-container *ngIf="completed">
+<ng-container *ngIf="completed && !form.permissions.recordsUnicity">
     <button mat-flat-button (click)="clearForm()">New record</button>
 </ng-container>

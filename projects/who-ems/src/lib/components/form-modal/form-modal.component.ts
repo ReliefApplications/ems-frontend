@@ -95,6 +95,17 @@ export class WhoFormModalComponent implements OnInit {
   public completeMySurvey = (survey: any) => {
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
+    /* we can send to backend empty data if they are not required
+    */
+    const questions = survey.getAllQuestions();
+    const data = survey.data;
+    for (const field in questions) {
+      if (questions[field]) {
+        const key = questions[field].getValueName();
+        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+      }
+    }
+    survey.data = data;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: `Update row${rowsSelected > 1 ? 's' : ''}`,

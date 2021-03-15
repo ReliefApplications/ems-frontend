@@ -141,6 +141,12 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     }
     canCreate
     canUpdate
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
   }
 }`;
 
