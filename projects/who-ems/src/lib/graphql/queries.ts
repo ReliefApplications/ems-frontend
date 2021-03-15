@@ -226,6 +226,9 @@ query GetRecordDetails($id: ID!) {
     data
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     form {
       id
       name
