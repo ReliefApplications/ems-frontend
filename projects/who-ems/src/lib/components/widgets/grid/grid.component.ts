@@ -181,7 +181,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name)
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly
           };
         }
       }
