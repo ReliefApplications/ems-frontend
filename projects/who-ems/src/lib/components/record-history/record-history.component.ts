@@ -18,6 +18,7 @@ export class WhoRecordHistoryComponent implements OnInit {
   public history: any[] = [];
   public filterHistory = [];
   public loading = true;
+  public showMore = false;
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
 
