@@ -24,21 +24,21 @@
   margin-left: auto;
 }
 
-::ng-deep .modify-field {
-  background-color: #e8ddb8;
+::ng-deep .modify-field, ::ng-deep .add-field, ::ng-deep .remove-field {
   border-radius: 10px;
   padding: 5px;
 }
 
+::ng-deep .modify-field {
+  background-color: #e8ddb8;
+}
+
 ::ng-deep .add-field {
   background-color: #b2ebbf;
-  border-radius: 10px;
-  padding: 5px;
 }
+
 ::ng-deep .remove-field {
   background-color: #EBB2B2;
-  border-radius: 10px;
-  padding: 5px;
 }
 
 .changes-content {

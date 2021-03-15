@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,10 +19,10 @@ export class WhoRecordHistoryComponent implements OnInit {
   public filterHistory = [];
   public loading = true;
   public displayedColumns: string[] = ['position'];
-  public filtersDate = {startDate: '', endDate: ''};
+  public filtersDate = { startDate: '', endDate: '' };
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate }) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate }) endDate: MatEndDate<string>;
 
 
   constructor(public dialog: MatDialog) { }
@@ -41,58 +41,59 @@ export class WhoRecordHistoryComponent implements OnInit {
   */
   getDifference(current, after): string[] {
     const changes = [];
-    const keysCurrent = Object.keys(current);
-    keysCurrent.forEach(key => {
-      if (typeof after[key] === 'boolean' || typeof current[key] === 'boolean') {
-        if (current[key] !== null && after[key] !== current[key]) {
-          changes.push(this.modifyField(key, after, current));
-        }
-      } else if (!Array.isArray(after[key]) && !Array.isArray(current[key])) {
-        if (after[key]) {
-          if (after[key] instanceof Object && current[key]) {
-            const element = this.modifyObjects(after, current, key);
-            if (element.length > 0) {
-              changes.push(element);
-            }
-          } else if (current[key] && after[key] !== current[key]) {
+    if (current) {
+      const keysCurrent = Object.keys(current);
+      keysCurrent.forEach(key => {
+        if (typeof after[key] === 'boolean' || typeof current[key] === 'boolean') {
+          if (current[key] !== null && after[key] !== current[key]) {
             changes.push(this.modifyField(key, after, current));
           }
-        } else if (current[key]) {
-          if (current[key] instanceof Object) {
-            const element = this.modifyObjects(after, current, key);
-            if (element.length > 0) {
-              changes.push(element);
+        } else if (!Array.isArray(after[key]) && !Array.isArray(current[key])) {
+          if (after[key]) {
+            if (after[key] instanceof Object && current[key]) {
+              const element = this.modifyObjects(after, current, key);
+              if (element.length > 0) {
+                changes.push(element);
+              }
+            } else if (current[key] && after[key] !== current[key]) {
+              changes.push(this.modifyField(key, after, current));
             }
-          } else if (after[key] !== current[key]) {
-            changes.push(this.modifyField(key, after, current));
+          } else if (current[key]) {
+            if (current[key] instanceof Object) {
+              const element = this.modifyObjects(after, current, key);
+              if (element.length > 0) {
+                changes.push(element);
+              }
+            } else if (after[key] !== current[key]) {
+              changes.push(this.modifyField(key, after, current));
+            }
+            else {
+              changes.push(this.addField(key, current));
+            }
           }
-          else {
+        } else {
+          if (!after[key] && current[key] || current[key] && after[key] && after[key].toString() !== current[key].toString()) {
+            changes.push(this.modifyField(key, after, current));
+          } else if (!after[key] && current[key]) {
             changes.push(this.addField(key, current));
           }
         }
-      } else {
-        if (!after[key] && current[key] || current[key] && after[key] && after[key].toString() !== current[key].toString()) {
-          changes.push(this.modifyField(key, after, current));
-        } else if (!after[key] && current[key]){
-          changes.push(this.addField(key, current));
-        }
-      }
-
-    });
+      });
+    }
 
     const keysAfter = Object.keys(after);
     keysAfter.forEach(key => {
       if (typeof after[key] === 'boolean') {
-        if (current[key] === null && after[key] !== null) {
+        if ((!current || current[key]) === null && after[key] !== null) {
           changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
         }
-      } else if (current[key] === null && !Array.isArray(after[key]) && after[key] instanceof Object) {
+      } else if ((!current || current[key] === null) && !Array.isArray(after[key]) && after[key] instanceof Object) {
         const element = this.addObject(after, key);
         if (element.length > 0) {
           changes.push(element);
         }
       }
-      else if (current[key] === null && after[key]) {
+      else if ((!current || current[key] === null) && after[key]) {
         changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
       }
     });
@@ -156,25 +157,39 @@ export class WhoRecordHistoryComponent implements OnInit {
   private getHistory(record: Record): any[] {
     const res = [];
     const versions = record.versions;
+    let difference;
     if (versions.length === 0) {
+      difference = this.getDifference(null, record.data);
+      res.push({
+        created: record.createdAt,
+        createdBy: record.createdBy?.name,
+        changes: difference,
+        id: record.id
+      });
       return res;
     }
-    let difference;
+    difference = this.getDifference(null, versions[0].data);
+    res.push({
+      created: versions[0].createdAt,
+      createdBy: record.createdBy?.name,
+      changes: difference,
+      id: versions[0].id
+    });
     for (let i = 1; i < versions.length; i++) {
       difference = this.getDifference(versions[i - 1].data, versions[i].data);
       res.push({
-        created: versions[i - 1].createdAt,
+        created: versions[i].createdAt,
         createdBy: versions[i - 1].createdBy?.name,
         changes: difference,
-        id: versions[i - 1].id
+        id: versions[i].id
       });
     }
     difference = this.getDifference(versions[versions.length - 1].data, record.data);
     res.push({
-      created: versions[versions.length - 1].createdAt,
+      created: record.modifiedAt,
       createdBy: versions[versions.length - 1].createdBy?.name,
       changes: difference,
-      id: versions[versions.length - 1].id
+      id: record.id
     });
     return res.reverse();
   }
@@ -207,6 +222,6 @@ export class WhoRecordHistoryComponent implements OnInit {
   applyFilter(): void {
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
-    this.filterHistory = this.history.filter(item  => !startDate || !endDate || item.created >=  startDate && item.created <= endDate);
+    this.filterHistory = this.history.filter(item => !startDate || !endDate || item.created >= startDate && item.created <= endDate);
   }
 }
