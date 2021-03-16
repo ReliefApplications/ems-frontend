@@ -10,8 +10,8 @@ import { init as initCustomWidget } from './widgets/customwidget';
 export function initCustomWidgets(Survey, API_URL): void {
   // initTooltipWidget(Survey);
   // initDateFormatWidget(Survey);
-  initCustomWidget(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, API_URL);
+  initCustomWidget(Survey);
 }
