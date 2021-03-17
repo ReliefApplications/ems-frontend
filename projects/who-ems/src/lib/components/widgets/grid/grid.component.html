@@ -85,10 +85,12 @@
               (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
           </ng-template>
           <!-- DISPLAY ( color ) -->
-          <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
-            <!-- In order to display the div -->
-            <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
-          </ng-template>
+          <ng-container *ngIf="field.meta">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
+              <!-- In order to display the div -->
+              <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
+            </ng-template>
+          </ng-container>
         </kendo-grid-column>
         <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
         <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'checkbox'"
