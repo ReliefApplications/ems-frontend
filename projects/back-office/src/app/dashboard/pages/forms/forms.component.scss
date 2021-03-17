@@ -5,6 +5,51 @@
     justify-content: flex-end;
 }
 
-th {
-  padding-top: 15px !important;
+#searchDiv {
+  float: left;
+}
+
+#filterInputs {
+  clear: both;
+}
+
+::ng-deep .mat-form-field .mat-icon {
+  color: #A6A6A7 !important;
+  margin-right: 0.5rem;
+}
+
+::ng-deep .mat-form-field-flex {
+  color: #A6A6A7 !important;
+  padding: 5px;
+  align-items: flex-end !important;
+  background: white !important;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0;
+}
+
+::ng-deep .mat-form-field-infix {
+  border: 0;
+}
+
+::ng-deep #searchDiv button {
+  background: #C9C9C9;
+  color: #635C5C;
+  margin-left: 1rem;
+  vertical-align: super;
+}
+
+::ng-deep #filterInputs .mat-form-field {
+  margin-right: 1rem;
+  width: 160px;
+}
+
+::ng-deep #filterInputs .mat-form-field-flex {
+  padding-top: 10px !important;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none;
 }

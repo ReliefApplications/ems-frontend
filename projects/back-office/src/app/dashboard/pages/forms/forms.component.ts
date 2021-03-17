@@ -10,7 +10,7 @@ import {
   PermissionsManagement,
   PermissionType,
   WhoConfirmModalComponent,
-  Application, Form
+  Form
 } from '@who-ems/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
@@ -39,8 +39,15 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'status', value: ''}, {id: 'versions', value: ''}, {id: 'recordsCount', value: ''}, {id: 'core', value: ''}];
   public filtersDate = {startDate: '', endDate: ''};
+  public showFilters = false;
+  public nameFilter = '';
+  public statusFilter = '';
+  public versionsFilter = '';
+  public recordsFilter = '';
+  public coreFilter = '';
+
+
 
   @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
@@ -58,13 +65,13 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     Check user permission to add new forms.
   */
   ngOnInit(): void {
-    this.filterPredicate();
 
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS
     }).valueChanges.subscribe(res => {
       this.dataSource.data = res.data.forms;
       this.loading = res.loading;
+      this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
@@ -72,33 +79,20 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any, filtersJson: string) => {
-      const matchFilter = [];
-      const filters = JSON.parse(filtersJson);
-
-      filters.forEach(filter => {
-        // check for null values
-        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'recordsCount' ? 0 : '';
-        // necessary to handler dates
-        if (filter.id === 'createdAt') {
-          const startDate = new Date(this.filtersDate.startDate).getTime();
-          const endDate = new Date(this.filtersDate.endDate).getTime();
-          matchFilter.push(!startDate || !endDate || data[filter.id] >=  startDate && data[filter.id] <= endDate);
-        } else {
-          if (filter.id === 'core') {
-            matchFilter.push(!filter.value || !val && filter.value === 'false' || val === true && filter.value === 'true');
-          }
-          else if (filter.id === 'versions') {
-            // necessary to handle version array length
-            matchFilter.push(filter.value.trim().length === 0 || val.length.toString().includes(filter.value));
-          } else {
-            matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
-          }
-        }
-      });
-
-      return matchFilter.every(Boolean); // AND condition
-      // return matchFilter.some(Boolean); // OR condition
+    this.dataSource.filterPredicate = (data: any) => {
+      const endDate = new Date(this.filtersDate.endDate).getTime();
+      const startDate = new Date(this.filtersDate.startDate).getTime();
+      return (((this.nameFilter.trim().length === 0 ||
+        (this.nameFilter.trim().length > 0 && data.name.toLowerCase().includes(this.nameFilter.trim()))) &&
+        (this.coreFilter.trim().length === 0 ||
+          (this.coreFilter.trim().length > 0 && data.core.toString().toLowerCase().includes(this.coreFilter.trim()))) &&
+        (this.recordsFilter.trim().length === 0 ||
+          (this.recordsFilter.trim().length > 0 && data.recordsCount.toString().toLowerCase().includes(this.recordsFilter.trim()))) &&
+        (this.versionsFilter.trim().length === 0 ||
+          (this.versionsFilter.trim().length > 0 && data.versions.length.toString().toLowerCase().includes(this.versionsFilter.trim()))) &&
+        (this.statusFilter.trim().length === 0 ||
+          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))) &&
+        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
     };
   }
 
@@ -173,16 +167,18 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilter(column: string, event: any): void {
-    {
-      if (column !== 'createdAt' ) {
-        this.filters.map(f => {
-          if (f.id === column) {
-            f.value = event.target.value;
-          }
-        });
-      }
-      this.dataSource.filter = JSON.stringify(this.filters);
+    if (column === 'versions') {
+      this.versionsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
+    } else if (column === 'recordsCount') {
+      this.recordsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
+    } else if (column === 'status') {
+      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+    } else if (column === 'core') {
+      this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+    } else{
+      this.nameFilter = !!event ? event.target.value.trim().toLowerCase() : this.nameFilter;
     }
+    this.dataSource.filter = '##';
   }
 
   clearDateFilter(): void {
@@ -192,5 +188,14 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startDate.value = '';
     this.endDate.value = '';
     this.applyFilter('createdAt', '');
+  }
+
+  clearAllFilters(): void {
+    this.nameFilter = '';
+    this.statusFilter = '';
+    this.versionsFilter = '';
+    this.coreFilter = '';
+    this.recordsFilter = '';
+    this.clearDateFilter();
   }
 }

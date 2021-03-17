@@ -1,21 +1,91 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
+
+  <div id="searchDiv" *ngIf="!loading">
+    <mat-form-field floatLabel=never>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [ngModel]="nameFilter" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
+    </mat-form-field>
+    <button mat-flat-button (click)="showFilters = !showFilters">
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </div>
+
   <div class="actions">
     <button mat-flat-button color="primary" (click)="onAdd()" *ngIf="canAdd">
       <mat-icon>add</mat-icon>
       Create a form
     </button>
   </div>
+
+  <div id="filterInputs" [style.display]="!showFilters ? 'none' : ''">
+    <mat-form-field>
+      <mat-label>Date Range</mat-label>
+      <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
+        <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate
+               readonly>
+        <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate readonly>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter('createdAt', null)">
+            Apply
+          </button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+        <mat-option>-</mat-option>
+        <mat-option value="active">
+          Active
+        </mat-option>
+        <mat-option value="pending">
+          Pending
+        </mat-option>
+        <mat-option value="archived">
+          Archived
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field floatLabel=never>
+      <input [ngModel]="versionsFilter" matInput (keyup)="applyFilter('versions', $event)" type="number" placeholder="History">
+    </mat-form-field>
+
+    <mat-form-field floatLabel=never>
+      <input [ngModel]="recordsFilter" matInput (keyup)="applyFilter('recordsCount', $event)" type="number" placeholder="Records">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Is Core</mat-label>
+      <mat-select [ngModel]="coreFilter" (selectionChange)="applyFilter('core', $event)">
+        <mat-option>-</mat-option>
+        <mat-option value="true">
+          Yes
+        </mat-option>
+        <mat-option value="false">
+          No
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
+
+  </div>
+
+
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
             <span class="headerTitle" mat-sort-header>
               Name
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('name', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
@@ -25,19 +95,6 @@
             <span class="headerTitle" mat-sort-header>
               Created on
             </span>
-        <mat-form-field>
-          <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
-            <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate placeholder="Start date" readonly>
-            <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate placeholder="End date" readonly>
-          </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #rangePicker>
-            <mat-date-range-picker-actions>
-              <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
-              <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter('createdAt', null)">Apply</button>
-            </mat-date-range-picker-actions>
-          </mat-date-range-picker>
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
     </ng-container>
@@ -47,10 +104,6 @@
             <span class="headerTitle" mat-sort-header>
               Status
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('status', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
@@ -72,10 +125,6 @@
             <span class="headerTitle" mat-sort-header>
               History
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('versions', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.versions.length }}</td>
     </ng-container>
@@ -85,10 +134,6 @@
             <span class="headerTitle" mat-sort-header>
               Records
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('recordsCount', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
     </ng-container>
@@ -98,14 +143,6 @@
             <span class="headerTitle" mat-sort-header>
               Is Core
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <select matNativeControl (change)="applyFilter('core', $event)">
-            <option value="" selected></option>
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </select>
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list *ngIf="element.core">

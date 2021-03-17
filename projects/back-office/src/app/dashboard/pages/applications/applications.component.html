@@ -1,6 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
-  <div id="searchDiv">
+  <div id="searchDiv" *ngIf="!loading">
     <mat-form-field floatLabel=never>
       <mat-icon matPrefix>search</mat-icon>
       <input matInput [ngModel]="stringFilter" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
@@ -49,10 +49,10 @@
     </mat-form-field>
 
     <mat-form-field floatLabel=never>
-      <input matInput (keyup)="applyFilter('usersCount', $event)" type="number" placeholder="Users">
+      <input [ngModel]="usersFilter" matInput (keyup)="applyFilter('usersCount', $event)" type="number" placeholder="Users">
     </mat-form-field>
 
-    <button mat-button color="warn" (click)="clearAllFilters()">Clear filters</button>
+    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
 
   </div>
   <table mat-table [dataSource]="applications" matSort>

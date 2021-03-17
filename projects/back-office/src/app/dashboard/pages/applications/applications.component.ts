@@ -32,7 +32,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'status', value: ''}, {id: 'usersCount', value: ''}];
   public filtersDate = {startDate: '', endDate: ''};
   public stringFilter = '';
   public statusFilter = '';
