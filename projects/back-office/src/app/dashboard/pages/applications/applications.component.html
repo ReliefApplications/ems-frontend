@@ -1,10 +1,59 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
+  <div id="searchDiv">
+    <mat-form-field floatLabel=never>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [ngModel]="stringFilter" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
+    </mat-form-field>
+    <button mat-flat-button (click)="showFilters = !showFilters">
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </div>
   <div class="actions">
     <button mat-flat-button color="primary" (click)="onAdd()" *ngIf="canAdd">
       <mat-icon>add</mat-icon>
       Create an application
     </button>
+  </div>
+  <div id="filterInputs" [style.display]="!showFilters ? 'none' : ''">
+    <mat-form-field>
+      <mat-label>Date Range</mat-label>
+      <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
+        <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate
+               readonly>
+        <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate readonly>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter('createdAt', null)">
+            Apply
+          </button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+        <mat-option>-</mat-option>
+        <mat-option value="active">
+          Active
+        </mat-option>
+        <mat-option value="pending">
+          Pending
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field floatLabel=never>
+      <input matInput (keyup)="applyFilter('usersCount', $event)" type="number" placeholder="Users">
+    </mat-form-field>
+
+    <button mat-button color="warn" (click)="clearAllFilters()">Clear filters</button>
+
   </div>
   <table mat-table [dataSource]="applications" matSort>
     <ng-container matColumnDef="name">
@@ -12,10 +61,6 @@
             <span class="headerTitle" mat-sort-header>
               Name
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('name', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
@@ -25,19 +70,6 @@
             <span class="headerTitle" mat-sort-header>
               Created on
             </span>
-        <mat-form-field>
-          <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
-            <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate placeholder="Start date" readonly>
-            <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate placeholder="End date" readonly>
-          </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #rangePicker>
-            <mat-date-range-picker-actions>
-              <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
-              <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter('createdAt', null)">Apply</button>
-            </mat-date-range-picker-actions>
-          </mat-date-range-picker>
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
     </ng-container>
@@ -47,10 +79,6 @@
             <span class="headerTitle" mat-sort-header>
               Status
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('status', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
@@ -72,10 +100,6 @@
             <span class="headerTitle" mat-sort-header>
               Users
             </span>
-        <mat-form-field>
-          <mat-icon matSuffix>filter_alt</mat-icon>
-          <input matInput (keyup)="applyFilter('usersCount', $event)">
-        </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
     </ng-container>
@@ -91,7 +115,8 @@
             <mat-icon>preview</mat-icon>
             Preview
           </button>
-          <who-access menuItem="true" [access]="element.permissions" (save)="saveAccess($event, element)" *ngIf="element.canUpdate"></who-access>
+          <who-access menuItem="true" [access]="element.permissions" (save)="saveAccess($event, element)"
+                      *ngIf="element.canUpdate"></who-access>
           <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
             <mat-icon>file_copy</mat-icon>
             Duplicate
@@ -106,6 +131,6 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
-      [routerLink]="['/applications', row.id]"></tr>
+        [routerLink]="['/applications', row.id]"></tr>
   </table>
 </ng-container>
