@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import {Role, User} from '../../models/user.model';
+import { Role } from '../../models/user.model';
 import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { WhoApplicationService } from '../../services/application.service';
@@ -38,6 +38,10 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === FILTERS ===
   public filters = [{id: 'title', value: ''}, {id: 'usersCount', value: ''}];
+  public showFilters = false;
+  public titleFilter = '';
+  public usersFilter = '';
+
 
   constructor(
     public dialog: MatDialog,
@@ -64,19 +68,13 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private filterPredicate(): void {
-    this.roles.filterPredicate = (data: any, filtersJson: string) => {
-      const matchFilter = [];
-      const filters = JSON.parse(filtersJson);
-
-      filters.forEach(filter => {
-        // check for null values
-        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'usersCount' ? 0 : '';
-        matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
-      });
-
-      return matchFilter.every(Boolean); // AND condition
-      // return matchFilter.some(Boolean); // OR condition
+    this.roles.filterPredicate = (data: any) => {
+      return (this.titleFilter.trim().length === 0 ||
+        (this.titleFilter.trim().length > 0 && data.title.toLowerCase().includes(this.titleFilter.trim()))) &&
+        (this.usersFilter.trim().length === 0 ||
+          this.usersFilter.trim().length > 0 && data.usersCount.toString().includes(this.usersFilter.trim()));
     };
+
   }
 
   /*  Load the roles.
@@ -184,13 +182,19 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilter(column: string, event: any): void {
-    {
-      this.filters.map(f => {
-        if (f.id === column) {
-          f.value = event.target.value;
-        }
-      });
-      this.roles.filter = JSON.stringify(this.filters);
+    if (column === 'usersCount') {
+      this.usersFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
     }
+    else{
+      this.titleFilter = !!event ? event.target.value.trim().toLowerCase() : this.titleFilter;
+    }
+    this.roles.filter = '##';
+  }
+
+
+  clearAllFilters(): void {
+    this.titleFilter = '';
+    this.usersFilter = '';
+    this.applyFilter('', null);
   }
 }
