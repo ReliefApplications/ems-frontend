@@ -91,7 +91,7 @@
           </ng-template>
         </kendo-grid-column>
         <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
-        <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'checkbox'"
+        <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && multiselectTypes.includes(field.meta.type)"
           [columnMenu]="false" [editor]="field.editor" [editable]="!field.disabled"
           [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
           <ng-template kendoGridCellTemplate let-dataItem="dataItem">
@@ -106,7 +106,7 @@
           </ng-template>
         </kendo-grid-column>
         <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / multipletext ) -->
-        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type !== 'checkbox'">
+        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && !multiselectTypes.includes(field.meta.type)">
           <ng-container *ngIf="field.meta.type !== 'multipletext'">
             <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
             <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50"

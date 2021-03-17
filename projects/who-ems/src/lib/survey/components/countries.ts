@@ -27,7 +27,7 @@ export function init(Survey: any): void{
       question.choicesByUrl = 'https://restcountries.eu/rest/v2/all';
       Survey.Serializer.findProperty('countries', 'choicesByUrl').readOnly = true;
     },
-  }
+  };
   Survey.ComponentCollection.Instance.add(component);
 }
 

@@ -54,6 +54,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+
 @Component({
   selector: 'who-grid',
   templateUrl: './grid.component.html',
@@ -62,6 +64,9 @@ const GRADIENT_SETTINGS: GradientSettings = {
 /*  Grid widget using KendoUI.
 */
 export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
+
+  // === CONST ACCESSIBLE IN TEMPLATE ===
+  public multiselectTypes: string[] = MULTISELECT_TYPES;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -452,11 +457,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Generates the form group for in-line edition.
   */
   public createFormGroup(dataItem: any): FormGroup {
+    console.log(this.fields);
+    console.log(dataItem);
     const formGroup = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
-      if (field.type !== 'JSON' || field.meta.type === 'checkbox') {
+      if (field.type !== 'JSON' || this.multiselectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if ((field.meta.type === 'dropdown' || field.meta.type === 'checkbox') && field.meta.choicesByUrl) {
+        if ((field.meta.type === 'dropdown' || this.multiselectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
