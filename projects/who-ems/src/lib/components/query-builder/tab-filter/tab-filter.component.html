@@ -12,7 +12,12 @@
                     <mat-option [value]="false">False</mat-option>
                 </mat-select>
             </ng-container>
-            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean'">
+            <ng-container *ngIf="filter.type.name === 'DateTime'">
+                <input matInput [matDatepicker]="picker" [formControlName]="filter.name">
+                <mat-datepicker-toggle matSuffix [for]="picker" class="date-picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </ng-container>
+            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean' && filter.type.name !== 'DateTime'">
                 <input matInput [formControlName]="filter.name" type="string" />
             </ng-container>
         </mat-form-field>
