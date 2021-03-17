@@ -26,8 +26,11 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public filters = [{id: 'name', value: ''}, {id: 'createdAt', value: ''}, {id: 'recordsCount', value: ''}];
+  public showFilters = false;
   public filtersDate = {startDate: '', endDate: ''};
+  public stringFilter = '';
+  public recordsFilter = '';
+
 
   @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
@@ -51,28 +54,16 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any, filtersJson: string) => {
-      const matchFilter = [];
-      const filters = JSON.parse(filtersJson);
-
-      filters.forEach(filter => {
-        // check for null values
-        const val = !!data[filter.id] ? data[filter.id] : filter.id === 'recordsCount' ? 0 : '';
-        // necessary to handler dates
-        if (filter.id === 'createdAt') {
-          const startDate = new Date(this.filtersDate.startDate).getTime();
-          const endDate = new Date(this.filtersDate.endDate).getTime();
-          matchFilter.push(!startDate || !endDate || data[filter.id] >=  startDate && data[filter.id] <= endDate);
-        } else {
-          matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
-        }
-      });
-
-      return matchFilter.every(Boolean); // AND condition
-      // return matchFilter.some(Boolean); // OR condition
+    this.dataSource.filterPredicate = (data: any) => {
+      const endDate = new Date(this.filtersDate.endDate).getTime();
+      const startDate = new Date(this.filtersDate.startDate).getTime();
+      return (((this.stringFilter.trim().length === 0 ||
+        (this.stringFilter.trim().length > 0 && data.name.toLowerCase().includes(this.stringFilter.trim()))) &&
+        (this.recordsFilter.trim().length === 0 ||
+          this.recordsFilter.trim().length > 0 && data.recordsCount.toString().includes(this.recordsFilter.trim()))) &&
+        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
     };
   }
-
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
@@ -103,16 +94,12 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   applyFilter(column: string, event: any): void {
-    {
-      if (column !== 'createdAt' ) {
-        this.filters.map(f => {
-          if (f.id === column) {
-            f.value = event.target.value;
-          }
-        });
-      }
-      this.dataSource.filter = JSON.stringify(this.filters);
+    if (column === 'recordsCount') {
+      this.recordsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
+    } else {
+      this.stringFilter = !!event ? event.target.value.trim().toLowerCase() : this.stringFilter;
     }
+    this.dataSource.filter = '##';
   }
 
   clearDateFilter(): void {
@@ -122,5 +109,11 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.startDate.value = '';
     this.endDate.value = '';
     this.applyFilter('createdAt', '');
+  }
+
+  clearAllFilters(): void {
+    this.stringFilter = '';
+    this.recordsFilter = '';
+    this.clearDateFilter();
   }
 }

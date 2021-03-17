@@ -13,24 +13,26 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [ResourcesComponent],
-  imports: [
-    CommonModule,
-    ResourcesRoutingModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatIconModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatSortModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule
-  ],
+    imports: [
+        CommonModule,
+        ResourcesRoutingModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatIconModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatSortModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        FormsModule
+    ],
   exports: [ResourcesComponent]
 })
 export class ResourcesModule { }
