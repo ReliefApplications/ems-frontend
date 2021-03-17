@@ -1,3 +1,4 @@
+<span mat-dialog-title *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
 <div class="survey-float" *ngIf="surveyActive">
   <kendo-dropdownlist *ngIf="survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
                       [value]="surveyLanguage.nativeName.split(',')[0]"

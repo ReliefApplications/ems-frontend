@@ -1,5 +1,5 @@
 import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
@@ -22,10 +22,21 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() addNewWidget: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  get dashboardMenuRowSpan(): number {
+    if (this.widgets && this.widgets.length > 0) {
+      const defaultRows = (this.widgets[this.widgets.length - 1].defaultRows === 4 &&
+        this.widgets[this.widgets.length - 1].defaultCols === 8) ? 1 :
+        this.widgets[this.widgets.length - 1].defaultRows;
+      return (defaultRows > this.colsNumber) ? this.colsNumber : defaultRows;
+    } else {
+      return 1;
+    }
+  }
 
   constructor(public dialog: MatDialog) { }
 
@@ -86,17 +97,20 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
   onExpandWidget(e: any): void {
     const widget = this.widgets.find(x => x.id === e.id);
-    this.dialog.open(WhoExpandedWidgetComponent, {
+    const dialogRef = this.dialog.open(WhoExpandedWidgetComponent, {
       data: {
         widget
       },
       autoFocus: false,
-      // hasBackdrop: false,
       position: {
         bottom: '0',
         right: '0'
       },
       panelClass: 'expanded-widget-dialog'
+    });
+    dialogRef.componentInstance.goToNextStep.subscribe((event) => {
+      this.goToNextStep.emit(event);
+      dialogRef.close();
     });
   }
 }

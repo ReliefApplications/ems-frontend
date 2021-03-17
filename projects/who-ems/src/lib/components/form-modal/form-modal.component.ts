@@ -21,6 +21,7 @@ export class WhoFormModalComponent implements OnInit {
   public form: Form;
 
   public containerId: string;
+  public modifiedAt: Date;
 
   private isMultiEdition = false;
 
@@ -54,46 +55,57 @@ export class WhoFormModalComponent implements OnInit {
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
-      const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
-      this.apollo.watchQuery<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id
-        }
-      }).valueChanges.subscribe(res => {
-        const record = res.data.record;
-        this.form = record.form;
-        this.loading = res.loading;
-        const survey = new Survey.Model(this.form.structure);
-        survey.data = this.isMultiEdition ? null : record.data;
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.showCompletedPage = false;
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.data.template
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = res.loading;
-        this.form = res.data.form;
-        const survey = new Survey.Model(this.form.structure);
-        survey.locale = this.data.locale ? this.data.locale : 'en';
-        survey.render(this.containerId);
-        survey.onComplete.add(this.completeMySurvey);
-      });
-    }
+        const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
+        this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id
+          }
+        }).valueChanges.subscribe(res => {
+          const record = res.data.record;
+          this.form = record.form;
+          this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt;
+          this.loading = false;
+          const survey = new Survey.Model(this.form.structure);
+          survey.data = this.isMultiEdition ? null : record.data;
+          survey.locale = this.data.locale ? this.data.locale : 'en';
+          survey.showCompletedPage = false;
+          survey.render(this.containerId);
+          survey.onComplete.add(this.completeMySurvey);
+        });
+      } else {
+        this.apollo.watchQuery<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.data.template
+          }
+        }).valueChanges.subscribe(res => {
+          this.loading = res.loading;
+          this.form = res.data.form;
+          const survey = new Survey.Model(this.form.structure);
+          survey.locale = this.data.locale ? this.data.locale : 'en';
+          survey.render(this.containerId);
+          survey.onComplete.add(this.completeMySurvey);
+        });
+      }
   }
 
   /*  Create the record, or update it if provided.
   */
   public completeMySurvey = (survey: any) => {
-
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
+    /* we can send to backend empty data if they are not required
+    */
+    const questions = survey.getAllQuestions();
+    const data = survey.data;
+    for (const field in questions) {
+      if (questions[field]) {
+        const key = questions[field].getValueName();
+        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+      }
+    }
+    survey.data = data;
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: `Update row${rowsSelected > 1 ? 's' : ''}`,
@@ -142,5 +154,4 @@ export class WhoFormModalComponent implements OnInit {
       this.dialogRef.close({template: this.form.id, data: res.data.editRecord});
     });
   }
-
 }

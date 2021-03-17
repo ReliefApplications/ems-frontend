@@ -8,6 +8,7 @@ import { AddRoleToUserMutationResponse, ADD_ROLE_TO_USER, EditUserMutationRespon
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
 import { MatSort } from '@angular/material/sort';
+import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 
 @Component({
   selector: 'who-users',
@@ -19,6 +20,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   // === INPUT DATA ===
   @Input() users: MatTableDataSource<User>;
   @Input() roles: Role[];
+  @Input() positionAttributeCategories: PositionAttributeCategory[];
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
@@ -52,7 +54,8 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(WhoInviteUserComponent, {
       panelClass: 'add-dialog',
       data: {
-        roles: this.roles
+        roles: this.roles,
+        ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -67,8 +70,12 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
               role: value.role
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-            this.users.data = this.users.data.concat([res.data.addRoleToUser]);
+            if (!res.errors) {
+              this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
+              this.users.data = this.users.data.concat([res.data.addRoleToUser]);
+            } else {
+              this.snackBar.openSnackBar('User could not be invited.', { error: true });
+            }
           });
         }
       }
@@ -79,9 +86,10 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(WhoEditUserComponent, {
       panelClass: 'add-dialog',
       data: {
-        userRoles: user.roles,
+        user,
         availableRoles: this.roles,
-        multiple: Boolean(!this.applicationService)
+        multiple: Boolean(!this.applicationService),
+        ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {

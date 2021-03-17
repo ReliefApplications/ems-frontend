@@ -17,11 +17,14 @@ import { WhoFloatingOptionsComponent } from './floating-options/floating-options
 import { WhoTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { WhoTileDisplayComponent } from './floating-options/menu/tile-display/tile-display.component';
 import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import {WhoDashboardMenuComponent} from './dashboard-menu/dashboard-menu.component';
+
 
 @NgModule({
   declarations: [
     WhoWidgetGridComponent,
     WhoFloatingOptionsComponent,
+    WhoDashboardMenuComponent,
     WhoTileDataComponent,
     WhoTileDisplayComponent,
     WhoExpandedWidgetComponent

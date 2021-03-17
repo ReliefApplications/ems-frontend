@@ -88,6 +88,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 icon: 'admin_panel_settings'
               },
               {
+                name: 'Attributes',
+                path: './settings/position',
+                icon: 'manage_accounts'
+              },
+              {
                 name: 'Channels',
                 path: './settings/channels',
                 icon: 'edit_notifications'
@@ -147,7 +152,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 }

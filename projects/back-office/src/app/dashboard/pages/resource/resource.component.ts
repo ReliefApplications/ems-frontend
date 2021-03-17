@@ -23,7 +23,7 @@ export class ResourceComponent implements OnInit {
   dataSourceRecords = [];
 
   // === FORMS ASSOCIATED ===
-  displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', 'actions'];
+  displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', '_actions'];
   dataSourceForms = [];
 
   constructor(
@@ -77,7 +77,7 @@ export class ResourceComponent implements OnInit {
         columns.push(field.name);
       }
     }
-    columns.push('actions');
+    columns.push('_actions');
     this.displayedColumnsRecords = columns;
   }
 

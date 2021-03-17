@@ -1,14 +1,12 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { WhoGridService } from '@who-ems/builder';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {WhoGridService} from '../../../services/grid.service';
 
 @Component({
-  selector: 'app-floating-menu',
-  templateUrl: './floating-menu.component.html',
-  styleUrls: ['./floating-menu.component.scss']
+  selector: 'who-dashboard-menu',
+  templateUrl: './dashboard-menu.component.html',
+  styleUrls: ['./dashboard-menu.component.scss']
 })
-/*  Floating button that displays a list of all available widgets, defined by the grid service.
-*/
-export class FloatingMenuComponent implements OnInit {
+export class WhoDashboardMenuComponent implements OnInit {
 
   // === WIDGETS ===
   public items: any[];

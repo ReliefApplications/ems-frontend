@@ -1,20 +1,43 @@
 <div class="history-header">
+  <div>
     <h2>History</h2>
-    <button mat-icon-button (click)="onCancel()">
-        <mat-icon>close</mat-icon>
+    <button style="float: right" mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
     </button>
+  </div>
+
+
+  <div style="clear: both">
+    <mat-form-field>
+      <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
+        <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate placeholder="Start date" readonly>
+        <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate placeholder="End date" readonly>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter()">Apply</button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
 </div>
-<ul>
-    <li *ngFor="let item of history">
-        <table mat-table [dataSource]="item.changes" class="mat-elevation-z1">
-            <ng-container matColumnDef="position">
-                <th mat-header-cell *matHeaderCellDef> <span class="user"
-                        *ngIf="item.createdBy">{{item.createdBy}}</span> {{item.created |
-                    date:'dd/MM/yyyy HH:mm'}} </th>
-                <td mat-cell *matCellDef="let element" [innerHTML]="element"></td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-    </li>
-</ul>
+<mat-card *ngFor="let item of filterHistory; let index=index">
+  <mat-expansion-panel (closed)="showMore = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <span class="history-date">{{item.created | date:'dd/MM/yyyy'}}</span>
+        {{item.created | date:'HH:mm'}}
+        <span class="history-user" *ngIf="item.createdBy">{{item.createdBy}}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+      <div class="changes-content" *ngFor="let value of showMore ? item.changes : item.changes.slice(0, 4)" [innerHTML]="value"></div>
+      <div class="full-history"><button mat-button color="primary" *ngIf="!showMore && item.changes.length > 4" (click)="showMore = true">Show more ({{item.changes.length - 4}})</button></div>
+      <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button *ngIf="index > 0">Preview and revert <mat-icon>update</mat-icon></button>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-card>
