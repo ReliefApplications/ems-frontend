@@ -25,6 +25,8 @@ export class WhoFormModalComponent implements OnInit {
 
   private isMultiEdition = false;
 
+  private survey: Survey.Model;
+
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
@@ -66,12 +68,18 @@ export class WhoFormModalComponent implements OnInit {
           this.form = record.form;
           this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt;
           this.loading = false;
-          const survey = new Survey.Model(this.form.structure);
-          survey.data = this.isMultiEdition ? null : record.data;
-          survey.locale = this.data.locale ? this.data.locale : 'en';
-          survey.showCompletedPage = false;
-          survey.render(this.containerId);
-          survey.onComplete.add(this.completeMySurvey);
+          this.survey = new Survey.Model(this.form.structure);
+          this.survey.data = this.isMultiEdition ? null : record.data;
+          this.survey.locale = this.data.locale ? this.data.locale : 'en';
+          this.survey.showCompletedPage = false;
+          this.survey.render(this.containerId);
+          this.survey.onComplete.add(this.completeMySurvey);
+          this.survey.onUploadFiles.add((survey, options) => {
+            console.log('files');
+          });
+          this.survey.onDownloadFile.add((survey, options) => {
+            console.log('files');
+          });
         });
       } else {
         this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -82,10 +90,10 @@ export class WhoFormModalComponent implements OnInit {
         }).valueChanges.subscribe(res => {
           this.loading = res.loading;
           this.form = res.data.form;
-          const survey = new Survey.Model(this.form.structure);
-          survey.locale = this.data.locale ? this.data.locale : 'en';
-          survey.render(this.containerId);
-          survey.onComplete.add(this.completeMySurvey);
+          this.survey = new Survey.Model(this.form.structure);
+          this.survey.locale = this.data.locale ? this.data.locale : 'en';
+          this.survey.render(this.containerId);
+          this.survey.onComplete.add(this.completeMySurvey);
         });
       }
   }

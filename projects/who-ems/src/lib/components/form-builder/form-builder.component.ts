@@ -22,7 +22,7 @@ const QUESTION_TYPES = [
   'html',
   // 'signaturepad',
   'expression',
-  // 'file',
+  'file',
   'matrix',
   'matrixdropdown',
   'matrixdynamic',
@@ -93,6 +93,12 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
+    });
+    // Files
+    this.surveyCreator.onUploadFile.add((survey, option) => {
+      option.files.forEach(file => {
+        console.log(file.name);
+      });
     });
   }
 
