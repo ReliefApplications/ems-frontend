@@ -5,6 +5,32 @@
     justify-content: flex-end;
 }
 
-th {
-  padding-top: 15px !important;
+#searchDiv {
+  float: left;
 }
+
+::ng-deep .mat-form-field .mat-icon {
+  color: #A6A6A7 !important;
+  margin-right: 0.5rem;
+}
+
+::ng-deep .mat-form-field-flex {
+  color: #A6A6A7 !important;
+  padding: 5px;
+  align-items: flex-end !important;
+  background: white !important;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0;
+}
+
+::ng-deep .mat-form-field-infix {
+  border: 0;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none;
+}
+

@@ -28,8 +28,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public filters = [{id: 'username', value: ''}, {id: 'name', value: ''}, {id: 'oid', value: ''}, {id: 'roles', value: ''},
-    {id: 'actions', value: ''}];
+  public stringFilter = '';
 
   constructor(
     private apollo: Apollo,
@@ -38,22 +37,14 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.users.filterPredicate = (data: any, filtersJson: string) => {
-      const matchFilter = [];
-      const filters = JSON.parse(filtersJson);
-
-      filters.forEach(filter => {
-        // check for null values
-        let val = !!data[filter.id] ? data[filter.id] : '';
-        // for filter roles we have to check if is an array
-        if (val instanceof Array) {
-          val = val.length > 0 ? val[0].title : '';
-        }
-        matchFilter.push(val.toString().toLowerCase().includes(filter.value.toLowerCase()));
-      });
-
-      return matchFilter.every(Boolean); // AND condition
-      // return matchFilter.some(Boolean); // OR condition
+    this.users.filterPredicate = (data: any) => {
+      return this.stringFilter.trim().length === 0 ||
+        (this.stringFilter.trim().length > 0 &&
+          data.username.toLowerCase().includes(this.stringFilter.trim()) ||
+          !!data.name && data.name.toLowerCase().toString().includes(this.stringFilter.trim()) ||
+          !!data.roles && data.roles.length > 0 &&
+          data.roles.filter(r => r.title.toLowerCase().includes(this.stringFilter.trim())).length > 0 ||
+          !!data.oid && data.oid.toString().includes(this.stringFilter.trim()));
     };
   }
 
@@ -122,12 +113,8 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     this.users.sort = this.sort;
   }
 
-  applyFilter(column: any, event: any): void {
-    this.filters.map(f => {
-      if (f.id === column) {
-        f.value = event.target.value;
-      }
-    });
-    this.users.filter = JSON.stringify(this.filters);
+  applyFilter(event: any): void {
+    this.stringFilter = !!event ? event.target.value.trim().toLowerCase() : this.stringFilter;
+    this.users.filter = '##';
   }
 }
