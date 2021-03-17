@@ -42,18 +42,11 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.users.filterPredicate = (data: any) => {
-      // return this.searchText.trim().length === 0 ||
-      //   (this.searchText.trim().length > 0 &&
-      //     data.username.toLowerCase().includes(this.searchText.trim()) ||
-      //     !!data.name && data.name.toLowerCase().toString().includes(this.searchText.trim()) ||
-      //     !!data.roles && data.roles.length > 0 &&
-      //     data.roles.filter(r => r.title.toLowerCase().includes(this.searchText.trim())).length > 0 ||
-      //     !!data.oid && data.oid.toString().includes(this.searchText.trim()));
       return ((this.searchText.trim().length === 0 ||
         (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.roleFilter.trim().length === 0 ||
-          (this.roleFilter.trim().length > 0 && !!data.roles && data.roles.length > 0 &&
-          data.roles.filter(r => r.title.toLowerCase().includes(this.roleFilter.trim())).length > 0)));
+        (this.roleFilter.trim().toLowerCase().length === 0 ||
+          (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
+          data.roles.filter(r => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
     };
   }
 
@@ -130,7 +123,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
-      this.roleFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+      this.roleFilter = !!event.value ? event.value.trim() : '';
     } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
