@@ -41,10 +41,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
   public showFilters = false;
-  public nameFilter = '';
+  public searchText = '';
   public statusFilter = '';
-  public versionsFilter = '';
-  public recordsFilter = '';
   public coreFilter = '';
 
 
@@ -82,14 +80,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataSource.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.nameFilter.trim().length === 0 ||
-        (this.nameFilter.trim().length > 0 && data.name.toLowerCase().includes(this.nameFilter.trim()))) &&
+      return (((this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.coreFilter.trim().length === 0 ||
           (this.coreFilter.trim().length > 0 && data.core.toString().toLowerCase().includes(this.coreFilter.trim()))) &&
-        (this.recordsFilter.trim().length === 0 ||
-          (this.recordsFilter.trim().length > 0 && data.recordsCount.toString().toLowerCase().includes(this.recordsFilter.trim()))) &&
-        (this.versionsFilter.trim().length === 0 ||
-          (this.versionsFilter.trim().length > 0 && data.versions.length.toString().toLowerCase().includes(this.versionsFilter.trim()))) &&
         (this.statusFilter.trim().length === 0 ||
           (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))) &&
         (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
@@ -169,16 +163,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilter(column: string, event: any): void {
-    if (column === 'versions') {
-      this.versionsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
-    } else if (column === 'recordsCount') {
-      this.recordsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
-    } else if (column === 'status') {
+    if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else if (column === 'core') {
       this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else{
-      this.nameFilter = !!event ? event.target.value.trim().toLowerCase() : this.nameFilter;
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.dataSource.filter = '##';
   }
@@ -193,11 +183,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clearAllFilters(): void {
-    this.nameFilter = '';
+    this.searchText = '';
     this.statusFilter = '';
-    this.versionsFilter = '';
     this.coreFilter = '';
-    this.recordsFilter = '';
     this.clearDateFilter();
   }
 }

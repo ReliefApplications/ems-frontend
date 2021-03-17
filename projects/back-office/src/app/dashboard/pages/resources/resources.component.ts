@@ -28,7 +28,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   // === FILTERS ===
   public showFilters = false;
   public filtersDate = {startDate: '', endDate: ''};
-  public stringFilter = '';
+  public searchText = '';
   public recordsFilter = '';
 
 
@@ -57,8 +57,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.dataSource.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.stringFilter.trim().length === 0 ||
-        (this.stringFilter.trim().length > 0 && data.name.toLowerCase().includes(this.stringFilter.trim()))) &&
+      return (((this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.recordsFilter.trim().length === 0 ||
           this.recordsFilter.trim().length > 0 && data.recordsCount.toString().includes(this.recordsFilter.trim()))) &&
         (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
@@ -97,7 +97,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     if (column === 'recordsCount') {
       this.recordsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
     } else {
-      this.stringFilter = !!event ? event.target.value.trim().toLowerCase() : this.stringFilter;
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.dataSource.filter = '##';
   }
@@ -112,7 +112,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   clearAllFilters(): void {
-    this.stringFilter = '';
+    this.searchText = '';
     this.recordsFilter = '';
     this.clearDateFilter();
   }

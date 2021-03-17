@@ -33,9 +33,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
-  public stringFilter = '';
+  public searchText = '';
   public statusFilter = '';
-  public usersFilter = '';
   public showFilters = false;
 
   @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
@@ -73,13 +72,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.applications.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.stringFilter.trim().length === 0 ||
-          (this.stringFilter.trim().length > 0 && data.name.toLowerCase().includes(this.stringFilter.trim()))) &&
+      return (((this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.statusFilter.trim().length === 0 ||
           (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
-        (this.usersFilter.trim().length === 0 ||
-          this.usersFilter.trim().length > 0 && data.usersCount.toString().includes(this.usersFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
+        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
     };
   }
 
@@ -203,13 +200,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyFilter(column: string, event: any): void {
-    if (column === 'usersCount') {
-      this.usersFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
-    }
-    else if (column === 'status') {
+    if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else{
-      this.stringFilter = !!event ? event.target.value.trim().toLowerCase() : this.stringFilter;
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.applications.filter = '##';
   }
@@ -224,9 +218,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   clearAllFilters(): void {
-    this.stringFilter = '';
+    this.searchText = '';
     this.statusFilter = '';
-    this.usersFilter = '';
     this.clearDateFilter();
   }
 }

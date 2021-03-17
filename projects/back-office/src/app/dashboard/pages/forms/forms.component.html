@@ -1,12 +1,12 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
 
-  <div id="searchDiv" *ngIf="!loading">
-    <mat-form-field floatLabel=never>
+  <div class="searchbar" *ngIf="!loading">
+    <mat-form-field appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput [ngModel]="nameFilter" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
+      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
     </mat-form-field>
-    <button mat-flat-button (click)="showFilters = !showFilters">
+    <button mat-flat-button (click)="showFilters = !showFilters" class="filters-toggle">
       <mat-icon>filter_list</mat-icon>
       Filter
     </button>
@@ -19,8 +19,8 @@
     </button>
   </div>
 
-  <div id="filterInputs" [style.display]="!showFilters ? 'none' : ''">
-    <mat-form-field>
+  <div class="filters" [style.display]="!showFilters ? 'none' : ''">
+    <mat-form-field appearance="outline">
       <mat-label>Date Range</mat-label>
       <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
         <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate
@@ -38,7 +38,7 @@
       </mat-date-range-picker>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
       <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
         <mat-option>-</mat-option>
@@ -54,15 +54,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field floatLabel=never>
-      <input [ngModel]="versionsFilter" matInput (keyup)="applyFilter('versions', $event)" type="number" placeholder="History">
-    </mat-form-field>
-
-    <mat-form-field floatLabel=never>
-      <input [ngModel]="recordsFilter" matInput (keyup)="applyFilter('recordsCount', $event)" type="number" placeholder="Records">
-    </mat-form-field>
-
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Is Core</mat-label>
       <mat-select [ngModel]="coreFilter" (selectionChange)="applyFilter('core', $event)">
         <mat-option>-</mat-option>
@@ -74,9 +66,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-
     <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
-
   </div>
 
 

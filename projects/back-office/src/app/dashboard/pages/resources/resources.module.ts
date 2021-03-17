@@ -17,22 +17,22 @@ import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ResourcesComponent],
-    imports: [
-        CommonModule,
-        ResourcesRoutingModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatIconModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatSortModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatFormFieldModule,
-        FormsModule
-    ],
+  imports: [
+    CommonModule,
+    ResourcesRoutingModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatSortModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    FormsModule
+  ],
   exports: [ResourcesComponent]
 })
 export class ResourcesModule { }

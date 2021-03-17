@@ -44,7 +44,6 @@ import { MatNativeDateModule } from '@angular/material/core';
     WhoAccessModule,
     DuplicateApplicationModule,
     MatDatepickerModule,
-    MatDatepickerModule,
     MatNativeDateModule
   ],
   exports: [ApplicationsComponent]
