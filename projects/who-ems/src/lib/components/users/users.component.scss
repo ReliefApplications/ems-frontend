@@ -1,36 +1,23 @@
 .actions {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
-#searchDiv {
+.searchbar {
   float: left;
+
+  .filters-toggle {
+    margin-left: 12px;
+  }
 }
 
-::ng-deep .mat-form-field .mat-icon {
-  color: #A6A6A7 !important;
-  margin-right: 0.5rem;
-}
+.filters {
+  clear: both;
+  margin-left: -12px;
 
-::ng-deep .mat-form-field-flex {
-  color: #A6A6A7 !important;
-  padding: 5px;
-  align-items: flex-end !important;
-  background: white !important;
-  border-radius: 8px;
+  .mat-form-field {
+    margin-left: 12px;
+  }
 }
-
-::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding: 0;
-}
-
-::ng-deep .mat-form-field-infix {
-  border: 0;
-}
-
-::ng-deep .mat-form-field-underline {
-  display: none;
-}
-

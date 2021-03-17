@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -30,7 +30,9 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public stringFilter = '';
+  public searchText = '';
+  public roleFilter = '';
+  public showFilters = false;
 
   constructor(
     private apollo: Apollo,
@@ -40,13 +42,18 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.users.filterPredicate = (data: any) => {
-      return this.stringFilter.trim().length === 0 ||
-        (this.stringFilter.trim().length > 0 &&
-          data.username.toLowerCase().includes(this.stringFilter.trim()) ||
-          !!data.name && data.name.toLowerCase().toString().includes(this.stringFilter.trim()) ||
-          !!data.roles && data.roles.length > 0 &&
-          data.roles.filter(r => r.title.toLowerCase().includes(this.stringFilter.trim())).length > 0 ||
-          !!data.oid && data.oid.toString().includes(this.stringFilter.trim()));
+      // return this.searchText.trim().length === 0 ||
+      //   (this.searchText.trim().length > 0 &&
+      //     data.username.toLowerCase().includes(this.searchText.trim()) ||
+      //     !!data.name && data.name.toLowerCase().toString().includes(this.searchText.trim()) ||
+      //     !!data.roles && data.roles.length > 0 &&
+      //     data.roles.filter(r => r.title.toLowerCase().includes(this.searchText.trim())).length > 0 ||
+      //     !!data.oid && data.oid.toString().includes(this.searchText.trim()));
+      return ((this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.roleFilter.trim().length === 0 ||
+          (this.roleFilter.trim().length > 0 && !!data.roles && data.roles.length > 0 &&
+          data.roles.filter(r => r.title.toLowerCase().includes(this.roleFilter.trim())).length > 0)));
     };
   }
 
@@ -121,8 +128,17 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     this.users.sort = this.sort;
   }
 
-  applyFilter(event: any): void {
-    this.stringFilter = !!event ? event.target.value.trim().toLowerCase() : this.stringFilter;
+  applyFilter(column: string, event: any): void {
+    if (column === 'role') {
+      this.roleFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+    } else {
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
+    }
     this.users.filter = '##';
+  }
+
+  clearAllFilters(): void {
+    this.searchText = '';
+    this.roleFilter = '';
   }
 }

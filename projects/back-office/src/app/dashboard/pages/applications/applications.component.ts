@@ -55,7 +55,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
     this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS
     }).valueChanges.subscribe(res => {
@@ -202,7 +201,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else{
+    } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.applications.filter = '##';

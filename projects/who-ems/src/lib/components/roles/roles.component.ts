@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
@@ -11,8 +11,9 @@ import { WhoAddRoleComponent } from './components/add-role/add-role.component';
 import { WhoEditRoleComponent } from './components/edit-role/edit-role.component';
 import {
   AddRoleMutationResponse, ADD_ROLE,
-   DeleteRoleMutationResponse, DELETE_ROLE,
-    EditRoleMutationResponse, EDIT_ROLE } from '../../graphql/mutations';
+  DeleteRoleMutationResponse, DELETE_ROLE,
+  EditRoleMutationResponse, EDIT_ROLE
+} from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -37,9 +38,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // === FILTERS ===
-  public filters = [{id: 'title', value: ''}, {id: 'usersCount', value: ''}];
+  public filters = [{ id: 'title', value: '' }, { id: 'usersCount', value: '' }];
   public showFilters = false;
-  public titleFilter = '';
+  public searchText = '';
   public usersFilter = '';
 
 
@@ -69,8 +70,8 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private filterPredicate(): void {
     this.roles.filterPredicate = (data: any) => {
-      return (this.titleFilter.trim().length === 0 ||
-        (this.titleFilter.trim().length > 0 && data.title.toLowerCase().includes(this.titleFilter.trim()))) &&
+      return (this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 && data.title.toLowerCase().includes(this.searchText.trim()))) &&
         (this.usersFilter.trim().length === 0 ||
           this.usersFilter.trim().length > 0 && data.usersCount.toString().includes(this.usersFilter.trim()));
     };
@@ -187,15 +188,15 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     if (column === 'usersCount') {
       this.usersFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
     }
-    else{
-      this.titleFilter = !!event ? event.target.value.trim().toLowerCase() : this.titleFilter;
+    else {
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.roles.filter = '##';
   }
 
 
   clearAllFilters(): void {
-    this.titleFilter = '';
+    this.searchText = '';
     this.usersFilter = '';
     this.applyFilter('', null);
   }
