@@ -15,7 +15,6 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 @Component({
   selector: 'app-applications',
