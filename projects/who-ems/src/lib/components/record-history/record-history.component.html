@@ -24,8 +24,8 @@
   </div>
 
 </div>
-<mat-card *ngFor="let item of filterHistory">
-  <mat-expansion-panel>
+<mat-card *ngFor="let item of filterHistory; let index=index">
+  <mat-expansion-panel (closed)="showMore = false">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <span class="history-date">{{item.created | date:'dd/MM/yyyy'}}</span>
@@ -35,8 +35,9 @@
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
-      <div class="changes-content" *ngFor="let value of item.changes" [innerHTML]="value"></div>
-      <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button>Preview and revert <mat-icon>update</mat-icon></button>
+      <div class="changes-content" *ngFor="let value of showMore ? item.changes : item.changes.slice(0, 4)" [innerHTML]="value"></div>
+      <div class="full-history"><button mat-button color="primary" *ngIf="!showMore && item.changes.length > 4" (click)="showMore = true">Show more ({{item.changes.length - 4}})</button></div>
+      <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button *ngIf="index > 0">Preview and revert <mat-icon>update</mat-icon></button>
     </ng-template>
   </mat-expansion-panel>
 </mat-card>

@@ -17,16 +17,17 @@
 </ng-container>
 <mat-dialog-content>
     <ng-container *ngIf="!data.compareTo">
+        <span mat-dialog-title *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
         <div [id]="containerId"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
         <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile [id]="containerId">
-            </mat-grid-tile>
             <mat-grid-tile [id]="containerNextId">
             </mat-grid-tile>
+            <mat-grid-tile [id]="containerId">
+            </mat-grid-tile>
         </mat-grid-list>
-    </ng-container>    
+    </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
     <button mat-button (click)="onClose()">Close</button>

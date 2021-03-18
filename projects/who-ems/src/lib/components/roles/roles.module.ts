@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { WhoConfirmModalModule } from '../confirm-modal/confirm-modal.module';
+import { MatSortModule } from '@angular/material/sort';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { WhoConfirmModalModule } from '../confirm-modal/confirm-modal.module';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    WhoConfirmModalModule
+    WhoConfirmModalModule,
+    MatSortModule
   ],
   exports: [WhoRolesComponent]
 })

@@ -1,6 +1,25 @@
 .actions {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
+  text-align: end;
+  float: right;
+}
+
+.searchbar {
+  float: left;
+
+  .filters-toggle {
+    margin-left: 12px;
+  }
+}
+
+.filters {
+  clear: both;
+  margin-left: -12px;
+
+  .mat-form-field {
+    margin-left: 12px;
+  }
 }

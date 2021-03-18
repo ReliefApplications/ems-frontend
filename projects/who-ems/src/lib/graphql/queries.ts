@@ -208,6 +208,9 @@ query GetRecordById($id: ID!) {
     form {
       id
       structure
+      permissions {
+        recordsUnicity
+      }
     }
   }
 }`;
@@ -226,6 +229,9 @@ query GetRecordDetails($id: ID!) {
     data
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     form {
       id
       name

@@ -14,6 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-applications',
@@ -29,6 +30,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
+
+  // === FILTERS ===
+  public filtersDate = {startDate: '', endDate: ''};
+  public searchText = '';
+  public statusFilter = '';
+  public showFilters = false;
+
+  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -50,10 +60,23 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     }).valueChanges.subscribe(res => {
       this.applications.data = res.data.applications;
       this.loading = res.loading;
+      this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  private filterPredicate(): void {
+    this.applications.filterPredicate = (data: any) => {
+      const endDate = new Date(this.filtersDate.endDate).getTime();
+      const startDate = new Date(this.filtersDate.startDate).getTime();
+      return (((this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.statusFilter.trim().length === 0 ||
+          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
+        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
+    };
   }
 
   ngAfterViewInit(): void {
@@ -173,5 +196,29 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.applications.data = this.applications.data;
       }
     });
+  }
+
+  applyFilter(column: string, event: any): void {
+    if (column === 'status') {
+      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+    } else {
+      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
+    }
+    this.applications.filter = '##';
+  }
+
+  clearDateFilter(): void {
+    this.filtersDate.startDate = '';
+    this.filtersDate.endDate = '';
+    // ignore that error
+    this.startDate.value = '';
+    this.endDate.value = '';
+    this.applyFilter('createdAt', '');
+  }
+
+  clearAllFilters(): void {
+    this.searchText = '';
+    this.statusFilter = '';
+    this.clearDateFilter();
   }
 }

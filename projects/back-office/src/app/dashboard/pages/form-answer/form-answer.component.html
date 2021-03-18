@@ -1,15 +1,7 @@
 <h1>Answer the form</h1>
-<!-- <mat-form-field>
-    <mat-label>Locale</mat-label>
-    <mat-select (selectionChange)="changeLocale($event)">
-        <mat-option *ngFor="let locale of locales" [value]="locale">
-            {{locale}}
-        </mat-option>
-    </mat-select>
-</mat-form-field> -->
 <ng-container *ngIf="!loading">
     <who-form [form]="form" (save)="onComplete($event)"></who-form>
 </ng-container>
-<ng-container *ngIf="completed">
+<ng-container *ngIf="completed && !form.uniqueRecord">
     <button mat-flat-button (click)="clearForm()">New record</button>
 </ng-container>

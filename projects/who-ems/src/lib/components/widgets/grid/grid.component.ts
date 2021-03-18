@@ -26,6 +26,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
+import { GradientSettings } from '@progress/kendo-angular-inputs';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -49,6 +50,12 @@ const PAGER_SETTINGS: PagerSettings = {
   previousNext: true
 };
 
+const GRADIENT_SETTINGS: GradientSettings = {
+  opacity: false
+};
+
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+
 @Component({
   selector: 'who-grid',
   templateUrl: './grid.component.html',
@@ -57,6 +64,9 @@ const PAGER_SETTINGS: PagerSettings = {
 /*  Grid widget using KendoUI.
 */
 export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
+
+  // === CONST ACCESSIBLE IN TEMPLATE ===
+  public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -110,6 +120,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public canDeleteSelectedRows: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
+  public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -150,7 +161,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     this.metaQuery.subscribe(res => {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -181,7 +192,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name)
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly
           };
         }
       }
@@ -448,9 +459,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
-      if (field.type !== 'JSON') {
+      if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if (field.meta.type === 'dropdown' && field.meta.choicesByUrl) {
+        if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
