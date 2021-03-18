@@ -66,7 +66,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
-  public multiselectTypes: string[] = MULTISELECT_TYPES;
+  public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -461,9 +461,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     console.log(dataItem);
     const formGroup = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
-      if (field.type !== 'JSON' || this.multiselectTypes.includes(field.meta.type)) {
+      if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if ((field.meta.type === 'dropdown' || this.multiselectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
+        if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
