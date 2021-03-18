@@ -208,6 +208,9 @@ query GetRecordById($id: ID!) {
     form {
       id
       structure
+      permissions {
+        recordsUnicity
+      }
     }
   }
 }`;

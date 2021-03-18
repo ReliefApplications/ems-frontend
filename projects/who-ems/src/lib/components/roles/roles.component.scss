@@ -4,3 +4,20 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+
+.searchbar {
+  float: left;
+
+  .filters-toggle {
+    margin-left: 12px;
+  }
+}
+
+.filters {
+  clear: both;
+  margin-left: -12px;
+
+  .mat-form-field {
+    margin-left: 12px;
+  }
+}
