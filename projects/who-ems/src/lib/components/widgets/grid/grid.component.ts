@@ -161,7 +161,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     this.metaQuery.subscribe(res => {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {

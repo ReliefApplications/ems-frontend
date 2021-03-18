@@ -93,7 +93,6 @@ export class QueryBuilderService {
   }
 
   private buildMetaFields(fields: any[]): any {
-    console.log(fields);
     return [''].concat(fields.map(x => {
       switch (x.kind) {
         case 'SCALAR': {
@@ -141,20 +140,13 @@ export class QueryBuilderService {
     }
   }
 
-  public buildMetaQuery(settings: any): any {
-    const builtQuery = settings.query;
+  public buildMetaQuery(settings: any, subQuery = false): any {
+    const builtQuery = subQuery ? settings : settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
-      console.log(`
-      query GetCustomMetaQuery {
-        _${builtQuery.name}Meta {
-          ${metaFields}
-        }
-      }
-    `);
       const query = gql`
         query GetCustomMetaQuery {
-          _${builtQuery.name}Meta {
+          _${subQuery ? builtQuery.type : builtQuery.name}Meta {
             ${metaFields}
           }
         }
