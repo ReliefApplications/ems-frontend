@@ -53,7 +53,7 @@
         <div mat-subheader>{{ group.name }}</div>
         <div cdkDropList (cdkDropListDropped)="drop($event, group)" class="nav-items-list">
           <ng-container *ngFor="let item of group.navItems">
-            <div cdkDrag [cdkDragDisabled]="!item.orderable">
+            <div style="display: flex" cdkDrag [cdkDragDisabled]="!item.orderable">
               <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
                 (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
                 <ng-container *ngIf="item.isAddPage">
@@ -67,17 +67,19 @@
                     {{ item.icon }}
                   </mat-icon>
                   <div mat-line>{{ item.name }}</div>
-                  <div class="nav-actions" *ngIf="item.action || item.orderable">
-                    <button mat-icon-button class="nav-action" *ngIf="item.action"
-                      (click)="onClick(item.action.callback, $event)">
-                      <mat-icon>{{ item.action.icon }}</mat-icon>
-                    </button>
-                    <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
-                      <mat-icon>drag_indicator</mat-icon>
-                    </button>
-                  </div>
                 </ng-container>
               </a>
+
+                <a *ngIf="!item.isAddPage && (item.action || item.orderable)" style="display: flex" class="nav-item">
+                <button mat-icon-button class="nav-action" *ngIf="item.action"
+                        (click)="onClick(item.action.callback, $event)">
+                  <mat-icon>{{ item.action.icon }}</mat-icon>
+                </button>
+                <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+                </a>
+
               <mat-list *cdkDragPreview>
                 <a mat-list-item class="nav-item" [class]="item.class ? item.class : ''">
                   <mat-icon mat-list-icon class="nav-icon">
