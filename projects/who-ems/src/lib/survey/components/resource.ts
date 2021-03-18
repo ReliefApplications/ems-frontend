@@ -6,7 +6,7 @@ export function init(Survey: any, API_URL: string): void {
     questionJSON: {
       name: 'resource',
       type: 'dropdown',
-      optionsCaption: 'Select a resource...',
+      optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
       choices: [],
     },
@@ -203,8 +203,15 @@ export function init(Survey: any, API_URL: string): void {
           }
         },
       });
+      Survey.Serializer.addProperty('resource', {
+        name: 'placeholder',
+        category: 'Custom Questions'
+      });
     },
     onLoaded(question): void {
+      if (question.placeholder) {
+        question.contentQuestion.optionsCaption = question.placeholder;
+      }
       const xhr = new XMLHttpRequest();
       const query = {
         query: `query GetResourceById($id: ID!) {
@@ -234,6 +241,9 @@ export function init(Survey: any, API_URL: string): void {
         }
         // question.choices = res;
         question.contentQuestion.choices = res;
+        if (!question.placeholder) {
+          question.contentQuestion.optionsCaption = 'Select a record from ' + xhr.response.data.resource.name + '...';
+        }
         question.survey.render();
       };
       xhr.send(JSON.stringify(query));
