@@ -457,8 +457,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Generates the form group for in-line edition.
   */
   public createFormGroup(dataItem: any): FormGroup {
-    console.log(this.fields);
-    console.log(dataItem);
     const formGroup = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
       if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
