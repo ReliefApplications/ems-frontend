@@ -107,9 +107,9 @@
             </kendo-multiselect>
           </ng-template>
         </kendo-grid-column>
-        <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / multipletext ) -->
+        <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
         <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type)">
-          <ng-container *ngIf="field.meta.type !== 'multipletext'">
+          <ng-container *ngIf="field.meta.type !== 'multipletext' && field.meta.type !== 'matrixdynamic'">
             <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
             <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50"
               [editable]="!field.disabled">
@@ -127,7 +127,7 @@
             <kendo-grid-column [title]="column.label" [columnMenu]="false" [width]="column.label.length * 7 + 50"
               [minResizableWidth]="50" [editable]="!field.disabled">
               <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                <!-- DISPLAY ( matrix / matrix dropdown ) -->
+                <!-- DISPLAY ( matrix / matrix dropdown / matrix dynamic ) -->
                 <ng-container *ngIf="field.meta.type !== 'multipletext'">
                   <ul class="matrix-cell">
                     <ng-container *ngIf="field.meta.type === 'matrix'">
@@ -141,6 +141,13 @@
                         <ng-container
                           *ngIf="['text', 'dropdown', 'radiogroup'].includes(column.type) && dataItem[field.name] && dataItem[field.name][row.name]">
                           {{ dataItem[field.name][row.name][column.name] }}
+                        </ng-container>
+                      </li>
+                    </ng-container>
+                    <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                      <li *ngFor="let row of dataItem[field.name]">
+                        <ng-container *ngIf="row[column.name] || row[column.name] === false">
+                          {{ row[column.name] }}
                         </ng-container>
                       </li>
                     </ng-container>
@@ -173,6 +180,29 @@
                           <kendo-dropdownlist [data]="field.meta.choices" [textField]="'text'" [valueField]="'value'"
                             [valuePrimitive]="true" [formControl]="formGroup.get([field.name, row.name, column.name])">
                           </kendo-dropdownlist>
+                        </ng-container>
+                      </li>
+                    </ng-container>
+                    <!-- EDITION ( matrixdynamic ) -->
+                    <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                      <li *ngFor="let row of dataItem[field.name]; index as i">
+                        <ng-container *ngIf="column.cellType === 'text'">
+                          <textarea rows="2" [formControl]="formGroup.get(field.name).at(i).get(column.name)"
+                            kendoGridFocusable [name]="row.name" class="k-textbox"></textarea>
+                        </ng-container>
+                        <ng-container *ngIf="['dropdown', 'radiogroup'].includes(column.cellType)">
+                          <kendo-dropdownlist [data]="field.meta.choices" [textField]="'text'" [valueField]="'value'"
+                            [valuePrimitive]="true" [formControl]="formGroup.get(field.name).at(i).get(column.name)">
+                          </kendo-dropdownlist>
+                        </ng-container>
+                        <ng-container *ngIf="column.cellType === 'boolean'">
+                          <input type="checkbox" kendoCheckBox [formControl]="formGroup.get(field.name).at(i).get(column.name)"/>
+                        </ng-container>
+                        <ng-container *ngIf="multiSelectTypes.includes(column.cellType)">
+                          <kendo-multiselect [data]="field.meta.choices"
+                            [textField]="'text'"  [valueField]="'value'" [valuePrimitive]="true" 
+                            [formControl]="formGroup.get(field.name).at(i).get(column.name)" [autoClose]="false">
+                          </kendo-multiselect>
                         </ng-container>
                       </li>
                     </ng-container>
