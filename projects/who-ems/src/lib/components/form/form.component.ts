@@ -155,7 +155,7 @@ export class WhoFormComponent implements OnInit {
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(`record:${this.form.id}`);
-        if (this.form.permissions.recordsUnicity) {
+        if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, true);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
