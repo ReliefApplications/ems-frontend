@@ -49,6 +49,13 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     createdAt
     modifiedAt
     data(display: $display)
+    form {
+      uniqueRecord {
+        id
+        modifiedAt
+        data
+      }
+    }
   }
 }`;
 
