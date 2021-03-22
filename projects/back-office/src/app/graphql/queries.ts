@@ -248,6 +248,7 @@ query GetRecordById($id: ID!) {
   record(id: $id) {
     id
     data
+    modifiedAt
     form {
       id
       structure

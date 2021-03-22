@@ -27,6 +27,7 @@ export class WhoFormComponent implements OnInit {
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales = [];
   public surveyActive = true;
+  public selectedTabIndex: number;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -73,6 +74,7 @@ export class WhoFormComponent implements OnInit {
       } else {
         if (this.record && this.record.data) {
           this.survey.data = this.record.data;
+          this.modifiedAt = this.record.modifiedAt;
         }
       }
     }
@@ -100,6 +102,9 @@ export class WhoFormComponent implements OnInit {
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
+    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+      this.selectedTabIndex = surveyModel.currentPageNo;
+    });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
@@ -167,6 +172,9 @@ export class WhoFormComponent implements OnInit {
         } else {
           this.survey.showCompletedPage = true;
         }
+        if (this.form.uniqueRecord) {
+          this.selectedTabIndex = 0;
+        }
         this.save.emit(true);
       }
     });
@@ -194,5 +202,13 @@ export class WhoFormComponent implements OnInit {
   */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
+  }
+
+  public onShowPage(i: number): void {
+    this.survey.currentPageNo = i;
+    this.selectedTabIndex = i;
+    if (this.survey.compareTo) {
+      this.survey.currentPageNo = i;
+    }
   }
 }
