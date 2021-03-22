@@ -74,6 +74,7 @@ export class WhoFormComponent implements OnInit {
       } else {
         if (this.record && this.record.data) {
           this.survey.data = this.record.data;
+          this.modifiedAt = this.record.modifiedAt;
         }
       }
     }
