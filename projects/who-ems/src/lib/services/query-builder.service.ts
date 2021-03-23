@@ -58,14 +58,10 @@ export class QueryBuilderService {
 
   private buildFilter(filter: any): any {
     return filter ? Object.keys(filter).reduce((o, key) => {
-      const date = new Date().toISOString()
-      
-      if (filter[key] != null)  {
-        // console.log("filter key = ", filter[key])
-        // console.log("date = ", date);
-      }
       if (filter[key] || filter[key] === false) {
-        console.log({...o, [key]: filter[key]})
+        if (filter[key] === '$today') {
+          return { ...o, [key]: new Date().toISOString()}
+        }
         return { ...o, [key]: filter[key] };
       }
       return { ...o };
@@ -127,7 +123,6 @@ export class QueryBuilderService {
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
-      // console.log("BuildQuery = ", this.objToString(this.buildFilter(builtQuery.filter)));
       const query = gql`
         query GetCustomQuery {
           ${builtQuery.name}(

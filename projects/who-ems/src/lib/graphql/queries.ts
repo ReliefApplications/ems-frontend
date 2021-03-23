@@ -205,6 +205,9 @@ query GetRecordById($id: ID!) {
     id
     data
     modifiedAt
+    permissions {
+      recordsUnicity
+    }
     form {
       id
       structure
