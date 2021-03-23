@@ -22,7 +22,8 @@ import { WhoRecordHistoryComponent } from '../../record-history/record-history.c
 import { LayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter } from '@angular/core';
+  ComponentFactoryResolver, EventEmitter
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -477,7 +478,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
-            fieldGroup[row.name] = [dataItem[field.name][row.name]];
+            fieldGroup[row.name] = [dataItem[field.name] ? dataItem[field.name][row.name] : null];
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
@@ -494,6 +495,23 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             fieldGroup[row.name] = this.formBuilder.group(rowGroup);
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+        if (field.meta.type === 'matrixdynamic') {
+          const fieldArray = [];
+          const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
+          for (const rowValue of fieldValue) {
+            const rowGroup = {};
+            for (const column of field.meta.columns) {
+              const columnValue = rowValue ? rowValue[column.name] : null;
+              if (this.multiSelectTypes.includes(column.cellType)) {
+                rowGroup[column.name] = [columnValue];
+              } else {
+                rowGroup[column.name] = columnValue;
+              }
+            }
+            fieldArray.push(this.formBuilder.group(rowGroup));
+          }
+          formGroup[field.name] = this.formBuilder.array(fieldArray);
         }
       }
     }
