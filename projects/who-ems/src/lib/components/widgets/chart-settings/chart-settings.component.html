@@ -6,37 +6,71 @@
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" type="string" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Chart Type</mat-label>
-                <mat-select formControlName="type">
-                    <mat-select-trigger><mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase }}</mat-select-trigger>
-                    <mat-option *ngFor="let type of types" [value]="type.name">
-                        <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="form-group" *ngIf="tileForm">
-            <div class="form-group-title">Data set selection</div>
-            <who-query-builder [form]="tileForm.controls.query" [settings]="tile.settings" [canExpand]="false"></who-query-builder>
-            <ng-container *ngIf="selectedFields.length > 0">
+            <ng-container  formGroupName="chart">
                 <mat-form-field appearance="outline">
-                    <mat-label>X-Axis</mat-label>
-                    <mat-select formControlName="xAxis">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Y-Axis</mat-label>
-                    <mat-select formControlName="yAxis">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
+                    <mat-label>Chart Type</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-select-trigger><mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase }}</mat-select-trigger>
+                        <mat-option *ngFor="let type of types" [value]="type.name">
+                            <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </ng-container>
         </div>
+        <ng-container *ngIf="chartForm">
+            <ng-container formGroupName="chart">
+                <div class="chart-option-group">
+                    <h2>Legend</h2>
+                    <div formGroupName="legend">
+                        <mat-slide-toggle formControlName="visible">Display</mat-slide-toggle>
+                        <ng-container *ngIf="chartForm.value.legend.visible">
+                            <div>
+                                <h3>Position</h3>
+                                <div>
+                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({legend: { position: position.value }})"
+                                        *ngFor="let position of legendPositions">
+                                        <mat-icon>{{ position.icon }}</mat-icon>
+                                    </button> 
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Orientation</h3>
+                                <div>
+                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
+                                        *ngFor="let orientation of legendOrientations">
+                                        <mat-icon>{{ orientation.icon }}</mat-icon>
+                                    </button> 
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="chart-option-group">
+                    <h2>Title</h2>
+                    <div formGroupName="title">
+                        <mat-slide-toggle formControlName="visible">Display</mat-slide-toggle>
+                        <ng-container *ngIf="chartForm.value.title.visible">
+                            <div>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Text</mat-label>
+                                    <input matInput formControlName="text">
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <h3>Position</h3>
+                                <div>
+                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({title: { position: position.value }})"
+                                        *ngFor="let position of titlePositions">
+                                        <mat-icon>{{ position.icon }}</mat-icon>
+                                    </button> 
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+            <who-chart class="widget-content" [settings]="chartForm.value"></who-chart>
+        </ng-container>
     </form>
 </ng-container>

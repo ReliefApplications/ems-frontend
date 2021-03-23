@@ -4,6 +4,7 @@ import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { BAR, CIRCULAR, COLUMN, LINE, SCATTER } from './mock';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -26,6 +27,33 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  get chartData(): any {
+    switch (this.settings.type) {
+      case 'line':
+        return LINE;
+      case 'verticalLine':
+        return LINE;
+      case 'donut':
+        return CIRCULAR;
+      case 'pie':
+        return CIRCULAR;
+      case 'bar':
+        return BAR;
+      case 'column':
+        return COLUMN;
+      // case 'area':
+      //   return AREA;
+      // case 'verticalArea':
+      //   return AREA;
+      case 'scatter':
+        return SCATTER;
+      case 'scatterLine':
+        return SCATTER;
+      default:
+        return null;
+    }
+  }
+
   // === CHART ===
   @ViewChild('chart')
   private chart: ChartComponent;
@@ -37,12 +65,13 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    if (this.dataQuery) {
-      this.getData();
-    } else {
-      this.loading = false;
-    }
+    this.loading = false;
+    // this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    // if (this.dataQuery) {
+    //   this.getData();
+    // } else {
+    //   this.loading = false;
+    // }
   }
 
   public onExport(): void {

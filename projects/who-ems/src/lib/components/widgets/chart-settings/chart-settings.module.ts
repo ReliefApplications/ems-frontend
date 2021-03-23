@@ -10,6 +10,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { WhoChartModule } from '../chart/chart.module';
 
 @NgModule({
   declarations: [WhoChartSettingsComponent],
@@ -24,7 +25,8 @@ import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module'
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
-    WhoQueryBuilderModule
+    WhoQueryBuilderModule,
+    WhoChartModule
   ],
   exports: [WhoChartSettingsComponent]
 })
