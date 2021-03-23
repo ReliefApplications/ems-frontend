@@ -478,7 +478,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
-            fieldGroup[row.name] = [dataItem[field.name][row.name]];
+            fieldGroup[row.name] = [dataItem[field.name] ? dataItem[field.name][row.name] : null];
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
@@ -497,8 +497,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
         if (field.meta.type === 'matrixdynamic') {
-          const fieldGroup = [];
-          const fieldValue = dataItem[field.name];
+          const fieldArray = [];
+          const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
           for (const rowValue of fieldValue) {
             const rowGroup = {};
             for (const column of field.meta.columns) {
@@ -509,9 +509,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                 rowGroup[column.name] = columnValue;
               }
             }
-            fieldGroup.push(this.formBuilder.group(rowGroup));
+            fieldArray.push(this.formBuilder.group(rowGroup));
           }
-          formGroup[field.name] = this.formBuilder.array(fieldGroup);
+          formGroup[field.name] = this.formBuilder.array(fieldArray);
         }
       }
     }
