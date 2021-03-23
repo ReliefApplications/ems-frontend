@@ -21,19 +21,6 @@
                 calendar_today
                 </mat-icon>
             </ng-container>
-            <!-- <ng-container *ngIf="filter.type.name === 'DateTime'">
-                <input [ngClass]="filter.name" matInput [matDatepicker]="picker" [formControlName]="filter.name" type="text">
-                <mat-datepicker-toggle matSuffix [for]="picker" class="date-picker" matTooltip="Select a date" [matTooltipPosition]="'above'"></mat-datepicker-toggle>
-                <mat-datepicker #picker>
-                    <mat-datepicker-actions>
-                        <mat-icon matTooltip="Always change to current date" [matTooltipPosition]="'above'">info</mat-icon> 
-                        <button mat-button color="primary" class="mat-stroked-button mat-button-base" (click)="setCurrentDate(filter.name)" (click)="picker.close()">
-                            Current date
-                        </button>
-                        <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
-                      </mat-datepicker-actions>
-                </mat-datepicker>
-            </ng-container> -->
         </mat-form-field>
     </ng-container>
 </form>

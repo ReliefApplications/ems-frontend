@@ -60,7 +60,7 @@ export class QueryBuilderService {
     return filter ? Object.keys(filter).reduce((o, key) => {
       if (filter[key] || filter[key] === false) {
         if (filter[key] === '$today') {
-          return { ...o, [key]: new Date().toISOString()}
+          return { ...o, [key]: new Date().toISOString()};
         }
         return { ...o, [key]: filter[key] };
       }

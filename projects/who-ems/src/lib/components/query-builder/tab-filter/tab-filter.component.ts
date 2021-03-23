@@ -23,9 +23,9 @@ export class WhoTabFilterComponent implements OnInit {
   }
 
   onKey(e, filterName): void {
-    if (e.target.value === '') this.inputs = '';
+    if (e.target.value === '') { this.inputs = ''; }
     if (e.keyCode === 8) {
-      this.inputs = this.inputs.slice(0, this.inputs.length -1);
+      this.inputs = this.inputs.slice(0, this.inputs.length - 1);
     }
     if (this.inputs.length <= 9) {
       if (RegExp('^[0-9]*$').test(e.key)) {
@@ -37,18 +37,18 @@ export class WhoTabFilterComponent implements OnInit {
         }
       } else if (e.key === '/') {
         e.stopPropagation();
-        this.inputs = this.inputs.slice(0, this.inputs.length -1);
+        this.inputs = this.inputs.slice(0, this.inputs.length - 1);
       } else {
         e.stopPropagation();
         e.target.value = e.target.value.replace(/[^0-9\/]/g, '');
       }
     } else {
       e.stopPropagation();
-      e.target.value = this.inputs
+      e.target.value = this.inputs;
     }
     if (this.inputs.length > 9 && !RegExp('\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])*').test(this.inputs)) {
       this.isDateValid = false;
-      this.form.controls[filterName].setErrors({'incorrect': true})
+      this.form.controls[filterName].setErrors({incorrect: true});
     }
   }
 }
