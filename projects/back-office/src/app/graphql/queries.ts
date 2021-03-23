@@ -224,7 +224,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
         id
         title
       }
-      recordsUnicity
     }
     canCreate
     canUpdate
@@ -249,12 +248,10 @@ query GetRecordById($id: ID!) {
   record(id: $id) {
     id
     data
+    modifiedAt
     form {
       id
       structure
-      permissions {
-        recordsUnicity
-      }
     }
   }
 }`;
