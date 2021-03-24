@@ -34,12 +34,15 @@
 }
 
 .nav-item-add {
-    .nav-icon {
-        color: #13AD38;
-    }
+    margin: auto;
 }
 
 .nav-item {
+    a {
+        display: flex;
+        align-items: center;
+    }
+
     .nav-actions {
         margin-left: auto;
     }

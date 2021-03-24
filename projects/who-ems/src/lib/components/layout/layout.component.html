@@ -35,8 +35,10 @@
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline</mat-icon></a>
-      <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{ notification.action }} -
+      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline
+        </mat-icon></a>
+      <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{
+        notification.action }} -
         {{ notification.createdAt | date }}</button>
     </div>
   </mat-menu>
@@ -54,30 +56,33 @@
         <div cdkDropList (cdkDropListDropped)="drop($event, group)" class="nav-items-list">
           <ng-container *ngFor="let item of group.navItems">
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
-              <a mat-list-item class="nav-item" [routerLink]="item.path" routerLinkActive="active-link"
-                (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
-                <ng-container *ngIf="item.isAddPage">
-                  <button mat-stroked-button class="add-page-button" color="primary" [class]="item.class ? item.class : ''">
-                    <mat-icon>add</mat-icon>
-                    Add a Page
+              <mat-list-item class="nav-item">
+                <a [routerLink]="item.path" routerLinkActive="active-link"
+                  (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                  <ng-container *ngIf="item.isAddPage">
+                    <button mat-stroked-button class="add-page-button" color="primary"
+                      [class]="item.class ? item.class : ''">
+                      <mat-icon>add</mat-icon>
+                      Add a Page
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="!item.isAddPage">
+                    <mat-icon mat-list-icon class="nav-icon">
+                      {{ item.icon }}
+                    </mat-icon>
+                    <div mat-line>{{ item.name }}</div>
+                  </ng-container>
+                </a>
+                <div class="nav-actions" *ngIf="item.action || item.orderable">
+                  <button mat-icon-button class="nav-action" *ngIf="item.action"
+                    (click)="onClick(item.action.callback, $event)">
+                    <mat-icon>{{ item.action.icon }}</mat-icon>
                   </button>
-                </ng-container>
-                <ng-container *ngIf="!item.isAddPage">
-                  <mat-icon mat-list-icon class="nav-icon">
-                    {{ item.icon }}
-                  </mat-icon>
-                  <div mat-line>{{ item.name }}</div>
-                  <div class="nav-actions" *ngIf="item.action || item.orderable">
-                    <button mat-icon-button class="nav-action" *ngIf="item.action"
-                      (click)="onClick(item.action.callback, $event)">
-                      <mat-icon>{{ item.action.icon }}</mat-icon>
-                    </button>
-                    <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
-                      <mat-icon>drag_indicator</mat-icon>
-                    </button>
-                  </div>
-                </ng-container>
-              </a>
+                  <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
+                    <mat-icon>drag_indicator</mat-icon>
+                  </button>
+                </div>
+              </mat-list-item>
               <mat-list *cdkDragPreview>
                 <a mat-list-item class="nav-item" [class]="item.class ? item.class : ''">
                   <mat-icon mat-list-icon class="nav-icon">
