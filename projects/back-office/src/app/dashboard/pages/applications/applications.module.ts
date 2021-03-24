@@ -19,6 +19,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
@@ -40,7 +42,9 @@ import { DuplicateApplicationModule } from '../../../components/duplicate-applic
     MatChipsModule,
     WhoConfirmModalModule,
     WhoAccessModule,
-    DuplicateApplicationModule
+    DuplicateApplicationModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   exports: [ApplicationsComponent]
 })

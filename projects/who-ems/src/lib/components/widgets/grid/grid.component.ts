@@ -15,11 +15,14 @@ import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { WhoRecordHistoryComponent } from '../../record-history/record-history.component';
 import { LayoutService } from '../../../services/layout.service';
-import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
-  Renderer2, ViewChild } from '@angular/core';
+import {
+  Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
+  ComponentFactoryResolver, EventEmitter
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
+import { GradientSettings } from '@progress/kendo-angular-inputs';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -43,6 +46,12 @@ const PAGER_SETTINGS: PagerSettings = {
   previousNext: true
 };
 
+const GRADIENT_SETTINGS: GradientSettings = {
+  opacity: false
+};
+
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+
 @Component({
   selector: 'who-grid',
   templateUrl: './grid.component.html',
@@ -51,6 +60,9 @@ const PAGER_SETTINGS: PagerSettings = {
 /*  Grid widget using KendoUI.
 */
 export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
+
+  // === CONST ACCESSIBLE IN TEMPLATE ===
+  public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -104,6 +116,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public canDeleteSelectedRows: boolean;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
+  public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -144,7 +157,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     this.metaQuery.subscribe(res => {
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -175,7 +188,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name)
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly
           };
         }
       }
@@ -442,9 +455,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
-      if (field.type !== 'JSON' || field.meta.type === 'checkbox') {
+      if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if ((field.meta.type === 'dropdown' || field.meta.type === 'checkbox') && field.meta.choicesByUrl) {
+        if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
@@ -460,7 +473,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         if (field.meta.type === 'matrix') {
           const fieldGroup = {};
           for (const row of field.meta.rows) {
-            fieldGroup[row.name] = [dataItem[field.name][row.name]];
+            fieldGroup[row.name] = [dataItem[field.name] ? dataItem[field.name][row.name] : null];
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
@@ -477,6 +490,23 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
             fieldGroup[row.name] = this.formBuilder.group(rowGroup);
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
+        }
+        if (field.meta.type === 'matrixdynamic') {
+          const fieldArray = [];
+          const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
+          for (const rowValue of fieldValue) {
+            const rowGroup = {};
+            for (const column of field.meta.columns) {
+              const columnValue = rowValue ? rowValue[column.name] : null;
+              if (this.multiSelectTypes.includes(column.cellType)) {
+                rowGroup[column.name] = [columnValue];
+              } else {
+                rowGroup[column.name] = columnValue;
+              }
+            }
+            fieldArray.push(this.formBuilder.group(rowGroup));
+          }
+          formGroup[field.name] = this.formBuilder.array(fieldArray);
         }
       }
     }

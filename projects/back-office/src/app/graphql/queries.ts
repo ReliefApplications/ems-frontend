@@ -228,12 +228,18 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     canCreate
     canUpdate
     canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
   }
 }`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
+  errors: any;
 }
 
 // === GET RECORD BY ID ===
@@ -242,6 +248,7 @@ query GetRecordById($id: ID!) {
   record(id: $id) {
     id
     data
+    modifiedAt
     form {
       id
       structure

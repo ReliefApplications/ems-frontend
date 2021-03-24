@@ -27,9 +27,13 @@ export class WhoFormComponent implements OnInit {
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales = [];
   public surveyActive = true;
+  public selectedTabIndex: number;
 
-  // === SURVEY COLORS
+  // === SURVEY COLORS ===
   primaryColor = '#008DC9';
+
+  // === MODIFIED AT ===
+  public modifiedAt: Date;
 
   constructor(
     private apollo: Apollo,
@@ -52,12 +56,26 @@ export class WhoFormComponent implements OnInit {
     const structure = JSON.parse(this.form.structure);
 
     this.survey = new Survey.Model(JSON.stringify(structure));
+    // Unset readOnly fields if it's the record creation
+    if (!this.record) {
+      for (const field of this.form.fields) {
+        if (field.readOnly) {
+          this.survey.getQuestionByName(field.name).readOnly = false;
+        }
+      }
+    }
     const cachedData = localStorage.getItem(`record:${this.form.id}`);
-    if (cachedData) {
-      this.survey.data = JSON.parse(cachedData);
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt;
     } else {
-      if (this.record && this.record.data) {
-        this.survey.data = this.record.data;
+      if (cachedData) {
+        this.survey.data = JSON.parse(cachedData);
+      } else {
+        if (this.record && this.record.data) {
+          this.survey.data = this.record.data;
+          this.modifiedAt = this.record.modifiedAt;
+        }
       }
     }
 
@@ -81,9 +99,12 @@ export class WhoFormComponent implements OnInit {
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
-    if (!this.form.canCreateRecords) {
+    if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
+    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+      this.selectedTabIndex = surveyModel.currentPageNo;
+    });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
@@ -113,11 +134,12 @@ export class WhoFormComponent implements OnInit {
       }
     }
     this.survey.data = data;
-    if (this.record) {
+    if (this.record || this.form.uniqueRecord) {
+      const recordId = this.record ? this.record.id : this.form.uniqueRecord.id;
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
-          id: this.record.id,
+          id: recordId,
           data: this.survey.data
         }
       });
@@ -138,7 +160,21 @@ export class WhoFormComponent implements OnInit {
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(`record:${this.form.id}`);
-        this.survey.showCompletedPage = true;
+        if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
+          this.survey.clear(false, true);
+          if (res.data.addRecord) {
+            this.record = res.data.addRecord;
+            this.modifiedAt = this.record.modifiedAt;
+          } else {
+            this.modifiedAt = res.data.editRecord.modifiedAt;
+          }
+          this.surveyActive = true;
+        } else {
+          this.survey.showCompletedPage = true;
+        }
+        if (this.form.uniqueRecord) {
+          this.selectedTabIndex = 0;
+        }
         this.save.emit(true);
       }
     });
@@ -166,5 +202,13 @@ export class WhoFormComponent implements OnInit {
   */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
+  }
+
+  public onShowPage(i: number): void {
+    this.survey.currentPageNo = i;
+    this.selectedTabIndex = i;
+    if (this.survey.compareTo) {
+      this.survey.currentPageNo = i;
+    }
   }
 }

@@ -130,7 +130,6 @@ export function provideApollo(httpLink: HttpLink): any {
         'openid',
         'profile',
       ],
-      unprotectedResources: [],
       protectedResourceMap: [
         ['https://graph.microsoft.com/v1.0/me', ['user.read']]
       ],

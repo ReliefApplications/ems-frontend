@@ -250,7 +250,7 @@ $who-theme: mat-light-theme($who-primary, $who-accent, $who-warn);
   }
 }
 
-.mat-column-actions {
+.mat-column-_actions, .mat-column-actions {
   width: 64px;
 }
 

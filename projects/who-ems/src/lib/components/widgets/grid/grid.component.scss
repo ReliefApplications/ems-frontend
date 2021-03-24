@@ -20,6 +20,9 @@ textarea {
     padding: unset;
     margin: unset;
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between !important;
     li {
         min-height: 20px;
         .k-dropdown {

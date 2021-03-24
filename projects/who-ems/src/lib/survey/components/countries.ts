@@ -1,7 +1,4 @@
-import * as widgets from 'surveyjs-widgets';
-
 export function init(Survey: any): void{
-  widgets.select2tagbox(Survey);
   const component = {
     // Unique component name. It becomes a new question type. Please note, it should be written in lowercase.
     name: 'countries',
@@ -15,6 +12,17 @@ export function init(Survey: any): void{
       choicesByUrl: {
         url: 'https://restcountries.eu/rest/v2/all',
       },
+    },
+    onInit(): void {
+      // SurveyJS will create a new class "countries". We can add properties for this class onInit()
+      Survey.Serializer.addProperty('countries', {
+          name: 'choicesByUrl',
+          category: 'Choices',
+      });
+    },
+    onLoaded(question): void {
+      question.choicesByUrl = 'https://restcountries.eu/rest/v2/all';
+      Survey.Serializer.findProperty('countries', 'choicesByUrl').readOnly = true;
     },
   };
   Survey.ComponentCollection.Instance.add(component);
