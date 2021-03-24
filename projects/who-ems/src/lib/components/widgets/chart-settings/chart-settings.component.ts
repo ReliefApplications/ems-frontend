@@ -48,17 +48,18 @@ export class WhoChartSettingsComponent implements OnInit {
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    this.type = this.tile.settings.type;
-    if (tileSettings.type) {
-      this.chart = new (this.types.find(x => x.name === tileSettings.type).class)();
+    const chartSettings = tileSettings.chart;
+    if (chartSettings.type) {
+      this.type = this.types.find(x => x.name === chartSettings.type);
+      this.chart = new (this.types.find(x => x.name === chartSettings.type).class)(chartSettings);
     } else {
+      this.type = null;
       this.chart = new Chart(tileSettings);
     }
     this.tileForm = this.formBuilder.group(
       {
         id: this.tile.id,
         title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-        // type: [(tileSettings && tileSettings.type) ? tileSettings.type : '', Validators.required],
         chart: this.chart.form
       }
     );
@@ -72,7 +73,10 @@ export class WhoChartSettingsComponent implements OnInit {
     //   this.selectedFields = this.getFields(this.tileForm.value.query.fields);
     // }
 
-    // const queryForm = this.tileForm.get('query') as FormGroup;
+    const chartForm = this.tileForm.get('chart') as FormGroup;
+    chartForm.controls.type.valueChanges.subscribe((value) => {
+      this.type = this.types.find(x => x.name === value);
+    });
 
     // queryForm.controls.name.valueChanges.subscribe(() => {
     //   this.tileForm.controls.xAxis.setValue('');

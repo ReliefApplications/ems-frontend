@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { WhoQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { WhoChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [WhoChartSettingsComponent],
@@ -28,7 +29,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     TextFieldModule,
     WhoQueryBuilderModule,
     WhoChartModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatSlideToggleModule
   ],
   exports: [WhoChartSettingsComponent]
 })

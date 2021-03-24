@@ -6,6 +6,7 @@ export class Chart {
     private fb: FormBuilder;
 
     constructor(settings?: any) {
+        console.log(settings);
         this.fb = new FormBuilder();
         const legend = settings ? settings.legend : null;
         const title = settings ? settings.title : null;

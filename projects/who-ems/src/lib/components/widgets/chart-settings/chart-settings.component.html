@@ -6,7 +6,7 @@
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" type="string" />
             </mat-form-field>
-            <ng-container formGroupName="chart">
+            <ng-container formGroupName="chart" *ngIf="chartForm">
                 <mat-form-field appearance="outline">
                     <mat-label>Chart Type</mat-label>
                     <mat-select formControlName="type">
@@ -23,7 +23,7 @@
         </div>
         <div formGroupName="chart" class="chart-form-container" *ngIf="chartForm">
             <div class="chart-form">
-                <mat-accordion multi>
+                <mat-accordion>
                     <mat-expansion-panel formGroupName="legend">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -35,7 +35,7 @@
                             <div>
                                 <h3>Position</h3>
                                 <div>
-                                    <button mat-flat-button color="primary"
+                                    <button mat-flat-button [color]="position.value === chartForm.value.legend.position ? 'primary' : ''"
                                         (click)="chartForm.patchValue({legend: { position: position.value }})"
                                         *ngFor="let position of legendPositions">
                                         <mat-icon>{{ position.icon }}</mat-icon>
@@ -45,7 +45,7 @@
                             <div>
                                 <h3>Orientation</h3>
                                 <div>
-                                    <button mat-flat-button color="primary"
+                                    <button mat-flat-button [color]="orientation.value === chartForm.value.legend.orientation ? 'primary' : ''"
                                         (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
                                         *ngFor="let orientation of legendOrientations">
                                         <mat-icon>{{ orientation.icon }}</mat-icon>
@@ -71,7 +71,7 @@
                             <div>
                                 <h3>Position</h3>
                                 <div>
-                                    <button mat-flat-button color="primary"
+                                    <button mat-flat-button [color]="position.value === chartForm.value.title.position ? 'primary' : ''"
                                         (click)="chartForm.patchValue({title: { position: position.value }})"
                                         *ngFor="let position of titlePositions">
                                         <mat-icon>{{ position.icon }}</mat-icon>
@@ -83,7 +83,7 @@
                 </mat-accordion>
             </div>
             <div class="chart-display">
-                <who-chart class="widget-content" [header]="false" [settings]="chartForm.value"></who-chart>
+                <who-chart class="widget-content" [header]="false" [export]="false" [settings]="tileForm.value"></who-chart>
             </div>
         </div>
     </form>

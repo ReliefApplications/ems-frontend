@@ -24,10 +24,11 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
+  @Input() export = true;
   @Input() settings: any = null;
 
   get chartData(): any {
-    switch (this.settings.type) {
+    switch (this.settings.chart.type) {
       case 'line':
         return LINE;
       case 'verticalLine':

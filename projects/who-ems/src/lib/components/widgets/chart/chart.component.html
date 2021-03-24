@@ -1,32 +1,32 @@
 <div class="widget-container">
     <div class="widget-header" *ngIf="header">{{settings.title}}</div>
-    <button mat-icon-button class="export-button" (click)="onExport()">
+    <button mat-icon-button class="export-button" (click)="onExport()" *ngIf="export">
         <mat-icon>get_app</mat-icon>
     </button>
     <kendo-chart #chart class="widget-content">
-        <kendo-chart-title *ngIf="settings.title" [visible]='settings.title.visible' [text]='settings.title.text'
-            [position]='settings.title.position'></kendo-chart-title>
-        <kendo-chart-legend *ngIf="settings.legend" [visible]='settings.legend.visible' [position]='settings.legend.position'
-            [orientation]='settings.legend.orientation'></kendo-chart-legend>
+        <kendo-chart-title *ngIf="settings.chart.title" [visible]='settings.chart.title.visible' [text]='settings.chart.title.text'
+            [position]='settings.chart.title.position'></kendo-chart-title>
+        <kendo-chart-legend *ngIf="settings.chart.legend" [visible]='settings.chart.legend.visible' [position]='settings.chart.legend.position'
+            [orientation]='settings.chart.legend.orientation'></kendo-chart-legend>
         <kendo-chart-tooltip format='{0}'></kendo-chart-tooltip>
         <kendo-chart-series>
-            <ng-container *ngIf="['line', 'verticalLine', 'bar', 'column', 'area', 'verticalArea'].includes(settings.type)">
+            <ng-container *ngIf="['line', 'verticalLine', 'bar', 'column', 'area', 'verticalArea'].includes(settings.chart.type)">
                 <kendo-chart-series-item *ngFor='let item of chartData.series'
-                    [type]='settings.type' [style]='item.style' [stack]="{ type: '100%' }" [data]='item.data' [name]='item.color' field="x" categoryField="y">
+                    [type]='settings.chart.type' [style]='item.style' [stack]="{ type: '100%' }" [data]='item.data' [name]='item.color' field="x" categoryField="y">
                 </kendo-chart-series-item>
             </ng-container>
-            <ng-container *ngIf="['pie', 'donut'].includes(settings.type)">
+            <ng-container *ngIf="['pie', 'donut'].includes(settings.chart.type)">
                 <kendo-chart-series-item *ngFor='let item of chartData.series'
-                    [type]="settings.type"
+                    [type]="settings.chart.type"
                     [data]="item.data"
                     field="value"
                     categoryField="category"
                 ></kendo-chart-series-item>
             </ng-container>
-            <ng-container *ngIf="['scatter', 'scatterLine'].includes(settings.type)">
+            <ng-container *ngIf="['scatter', 'scatterLine'].includes(settings.chart.type)">
                 <kendo-chart-series-item *ngFor='let item of chartData.series'
                     [name]="item.name"
-                    [type]="settings.type"
+                    [type]="settings.chart.type"
                     [data]="item.data"
                     xField="xField" yField="yField">
                 </kendo-chart-series-item>
