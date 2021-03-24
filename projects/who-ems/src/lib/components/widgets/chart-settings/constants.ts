@@ -1,6 +1,6 @@
 import { Pie } from './charts/pie';
 
-export const chartTypes = [
+export const CHART_TYPES = [
     {
         name: 'bar',
         icon: 'bar_chart',
@@ -21,11 +21,11 @@ export const chartTypes = [
         icon: 'pie_chart',
         class: Pie
     },
-    {
-        name: 'scatter',
-        icon: 'scatter_plot',
-        class: Pie
-    }
+    // {
+    //     name: 'scatter',
+    //     icon: 'scatter_plot',
+    //     class: Pie
+    // }
 ];
 
 export const LEGEND_POSITIONS = [

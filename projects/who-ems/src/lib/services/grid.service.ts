@@ -62,26 +62,26 @@ export class WhoGridService {
       component: 'chart',
       settingsTemplate: WhoChartSettingsComponent
     },
-    {
-      name: 'SCATTER PLOT',
-      icon: 'scatter_plot',
-      settings: {title: 'Scatter chart', chart: {
-        type: 'scatter'
-      }},
-      defaultCols: 2,
-      defaultRows: 2,
-      component: 'chart',
-      settingsTemplate: WhoChartSettingsComponent
-    },
-    {
-      name: 'SCHEDULER',
-      icon: 'schedule',
-      settings: {title: 'Scheduler'},
-      defaultCols: 3,
-      defaultRows: 3,
-      component: 'scheduler',
-      settingsTemplate: WhoSchedulerSettingsComponent
-    },
+    // {
+    //   name: 'SCATTER PLOT',
+    //   icon: 'scatter_plot',
+    //   settings: {title: 'Scatter chart', chart: {
+    //     type: 'scatter'
+    //   }},
+    //   defaultCols: 2,
+    //   defaultRows: 2,
+    //   component: 'chart',
+    //   settingsTemplate: WhoChartSettingsComponent
+    // },
+    // {
+    //   name: 'SCHEDULER',
+    //   icon: 'schedule',
+    //   settings: {title: 'Scheduler'},
+    //   defaultCols: 3,
+    //   defaultRows: 3,
+    //   component: 'scheduler',
+    //   settingsTemplate: WhoSchedulerSettingsComponent
+    // },
     {
       name: 'GRID',
       icon: 'view_column',

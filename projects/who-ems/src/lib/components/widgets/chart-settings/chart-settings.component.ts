@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { Chart } from './charts/chart';
-import { chartTypes, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } from './constants';
+import { CHART_TYPES, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } from './constants';
 
 @Component({
   selector: 'who-chart-settings',
@@ -25,7 +24,7 @@ export class WhoChartSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === DATA ===
-  public types = chartTypes;
+  public types = CHART_TYPES;
   public legendPositions = LEGEND_POSITIONS;
   public legendOrientations = LEGEND_ORIENTATIONS;
   public titlePositions = TITLE_POSITIONS;
