@@ -92,6 +92,28 @@ export function init(Survey: any, API_URL: string): void {
         },
       });
       Survey.Serializer.addProperty('resource', {
+        name: 'filterByQuestion',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        required: true,
+        visibleIf: (obj) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj, choicesCallback) => {
+          if (obj.resource) {
+            const questions = [];
+            obj.survey.getAllQuestions().filter(q => q.id !== obj.id).map
+            (question => questions.push({value: question.name,  field: question.id}));
+            choicesCallback(questions);
+          }
+        },
+      });
+      Survey.Serializer.addProperty('resource', {
         name: 'test service',
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
