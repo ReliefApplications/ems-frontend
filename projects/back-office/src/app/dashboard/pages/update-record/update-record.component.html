@@ -1,4 +1,8 @@
 <h1>Update record</h1>
+<button color="primary" mat-flat-button (click)="goBack()">
+  <mat-icon>keyboard_arrow_left</mat-icon>
+  Go back
+</button>
 <ng-container *ngIf="!loading">
     <who-form [form]="record.form" [record]="record"></who-form>
 </ng-container>

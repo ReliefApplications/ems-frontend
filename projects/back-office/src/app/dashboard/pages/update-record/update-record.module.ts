@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { UpdateRecordRoutingModule } from './update-record-routing.module';
 import { UpdateRecordComponent } from './update-record.component';
 import { WhoFormModule } from '@who-ems/builder';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -11,7 +13,9 @@ import { WhoFormModule } from '@who-ems/builder';
   imports: [
     CommonModule,
     UpdateRecordRoutingModule,
-    WhoFormModule
+    WhoFormModule,
+    MatIconModule,
+    MatButtonModule
   ],
   exports: [UpdateRecordComponent]
 })

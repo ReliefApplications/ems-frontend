@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { Record } from '@who-ems/builder';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-update-record',
@@ -18,7 +19,8 @@ export class UpdateRecordComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _location: Location
   ) { }
 
   ngOnInit(): void {
@@ -34,5 +36,9 @@ export class UpdateRecordComponent implements OnInit {
         this.loading = res.loading;
       });
     }
+  }
+
+  goBack(): void {
+    this._location.back();
   }
 }
