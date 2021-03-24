@@ -1,11 +1,15 @@
 import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, process, SortDescriptor } from '@progress/kendo-data-query';
-import { ExcelExportEvent, GridComponent as KendoGridComponent, GridDataResult, PageChangeEvent, PagerSettings, SelectableSettings,
-  SelectionEvent } from '@progress/kendo-angular-grid';
+import {
+  ExcelExportEvent, GridComponent as KendoGridComponent, GridDataResult, PageChangeEvent, PagerSettings, SelectableSettings,
+  SelectionEvent
+} from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { CONVERT_RECORD, ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD,
-  EditRecordMutationResponse, PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse } from '../../../graphql/mutations';
+import {
+  CONVERT_RECORD, ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD,
+  EditRecordMutationResponse, PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
+} from '../../../graphql/mutations';
 import { WhoFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -788,9 +792,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     return promises;
   }
 
+  /* Export the grid data in Excel file.
+  */
   public onExcelExport(grid: ExcelExportEvent): void {
     const data = this.gridData.data;
     const rows = grid.workbook.sheets[0].rows;
+    console.log(rows);
     const matrixData = [];
     let rowIndex = 0;
     let i = 0;
@@ -800,6 +807,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         row.cells.forEach(cell => {
           this.fields.forEach((field, index) => {
             if (field.name === cell.value && field.type === 'JSON') {
+              console.log('json');
               data.forEach((record, dataIndex) => {
                 if (field.meta.type === 'matrix') {
                   const entries = Object.entries(record[field.name]);
@@ -808,7 +816,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                     if (value.length > 0) {
                       const values = [];
                       value.forEach(v => values.push(v[0]));
-                      matrixData.push({row: dataIndex, position: index + j + i, value: values.toString()});
+                      matrixData.push({ row: dataIndex, position: index + j + i, value: values.toString() });
                     }
                   });
                 } else if (field.meta.type === 'matrixdropdown') {
@@ -821,7 +829,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
                       }
                     });
                     if (str.trim().length > 0) {
-                      matrixData.push({row: dataIndex, position: index + j + i, value: str});
+                      matrixData.push({ row: dataIndex, position: index + j + i, value: str });
                     }
                   });
                 }

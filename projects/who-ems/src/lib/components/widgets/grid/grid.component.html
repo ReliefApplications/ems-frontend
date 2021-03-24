@@ -44,7 +44,7 @@
           [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
           [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
           [minResizableWidth]="50">
-          <!-- EDITION ( text / color / comment - resource - dropdown ) -->
+          <!-- EDITION ( text / color / comment - resource - dropdown - radiogroup ) -->
           <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
             *ngIf="field.editor === 'text'">
             <!-- EDITION ( text / comment ) -->
@@ -58,7 +58,7 @@
                 (open)="editionActive = true" (close)="editionActive = false"></kendo-colorpicker>
             </ng-container>
             <!-- EDITION ( dropdown ) -->
-            <ng-container *ngIf="field.meta.type === 'dropdown'">
+            <ng-container *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)">
               <kendo-dropdownlist [data]="field.meta.choices"
                 [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
                 [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
