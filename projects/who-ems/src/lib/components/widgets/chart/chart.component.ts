@@ -4,6 +4,7 @@ import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { BAR, CIRCULAR, COLUMN, LINE, SCATTER } from './mock';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -18,7 +19,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public data = [];
+  public series = [];
   private dataQuery: any;
   private dataSubscription: Subscription;
 
@@ -27,51 +28,25 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   @Input() export = true;
   @Input() settings: any = null;
 
-  get chartData(): any {
-    switch (this.settings.chart.type) {
-      case 'line':
-        return LINE;
-      case 'verticalLine':
-        return LINE;
-      case 'donut':
-        return CIRCULAR;
-      case 'pie':
-        return CIRCULAR;
-      case 'bar':
-        return BAR;
-      case 'column':
-        return COLUMN;
-      // case 'area':
-      //   return AREA;
-      // case 'verticalArea':
-      //   return AREA;
-      case 'scatter':
-        return SCATTER;
-      case 'scatterLine':
-        return SCATTER;
-      default:
-        return null;
-    }
-  }
-
   // === CHART ===
   @ViewChild('chart')
   private chart: ChartComponent;
 
   constructor(
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private aggregationBuilder: AggregationBuilderService
   ) {}
 
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
     this.loading = false;
-    // this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    // if (this.dataQuery) {
-    //   this.getData();
-    // } else {
-    //   this.loading = false;
-    // }
+    this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
+    if (this.dataQuery) {
+      this.getData();
+    } else {
+      this.loading = false;
+    }
   }
 
   public onExport(): void {
@@ -87,23 +62,29 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   */
   private getData(): void {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      this.data = [];
-      const dataToAggregate = [];
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          for (const record of res.data[field]) {
-            const existingField = dataToAggregate.find(x => {
-              return x[this.settings.xAxis] === record[this.settings.xAxis];
-            });
-            if (existingField) {
-              existingField[this.settings.yAxis] += record[this.settings.yAxis];
-            } else {
-              dataToAggregate.push(record);
-            }
-          }
+      console.log(res);
+      this.series = [
+        {
+          data: res.data.recordsAggregation
         }
-      }
-      this.data = dataToAggregate;
+      ];
+      // this.data = [];
+      // const dataToAggregate = [];
+      // for (const field in res.data) {
+      //   if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+      //     for (const record of res.data[field]) {
+      //       const existingField = dataToAggregate.find(x => {
+      //         return x[this.settings.xAxis] === record[this.settings.xAxis];
+      //       });
+      //       if (existingField) {
+      //         existingField[this.settings.yAxis] += record[this.settings.yAxis];
+      //       } else {
+      //         dataToAggregate.push(record);
+      //       }
+      //     }
+      //   }
+      // }
+      // this.data = dataToAggregate;
       this.loading = res.loading;
     });
   }

@@ -6,12 +6,13 @@ export class Chart {
     private fb: FormBuilder;
 
     constructor(settings?: any) {
-        console.log(settings);
         this.fb = new FormBuilder();
         const legend = settings ? settings.legend : null;
         const title = settings ? settings.title : null;
+        const pipeline = settings ? settings.pipeline : null;
         this.form = this.fb.group({
             type: [(settings && settings.type) ? settings.type : null, Validators.required],
+            pipeline: [pipeline, Validators.required],
             legend: this.fb.group({
                 visible: [legend ? legend.visible : true],
                 position: [legend ? legend.position : 'bottom'],

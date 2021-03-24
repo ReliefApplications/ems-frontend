@@ -11,12 +11,12 @@
         <kendo-chart-tooltip format='{0}'></kendo-chart-tooltip>
         <kendo-chart-series>
             <ng-container *ngIf="['line', 'verticalLine', 'bar', 'column', 'area', 'verticalArea'].includes(settings.chart.type)">
-                <kendo-chart-series-item *ngFor='let item of chartData.series'
-                    [type]='settings.chart.type' [style]='item.style' [stack]="{ type: '100%' }" [data]='item.data' [name]='item.color' field="x" categoryField="y">
+                <kendo-chart-series-item *ngFor='let item of series'
+                    [type]='settings.chart.type' [style]='item.style' [stack]="{ type: '100%' }" [data]='item.data' [name]='item.name' field="x" categoryField="y">
                 </kendo-chart-series-item>
             </ng-container>
             <ng-container *ngIf="['pie', 'donut'].includes(settings.chart.type)">
-                <kendo-chart-series-item *ngFor='let item of chartData.series'
+                <kendo-chart-series-item *ngFor='let item of series'
                     [type]="settings.chart.type"
                     [data]="item.data"
                     field="value"
@@ -24,7 +24,7 @@
                 ></kendo-chart-series-item>
             </ng-container>
             <ng-container *ngIf="['scatter', 'scatterLine'].includes(settings.chart.type)">
-                <kendo-chart-series-item *ngFor='let item of chartData.series'
+                <kendo-chart-series-item *ngFor='let item of series'
                     [name]="item.name"
                     [type]="settings.chart.type"
                     [data]="item.data"
