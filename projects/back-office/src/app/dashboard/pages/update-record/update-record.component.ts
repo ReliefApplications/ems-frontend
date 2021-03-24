@@ -20,7 +20,7 @@ export class UpdateRecordComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private _location: Location
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +39,6 @@ export class UpdateRecordComponent implements OnInit {
   }
 
   goBack(): void {
-    this._location.back();
+    this.location.back();
   }
 }
