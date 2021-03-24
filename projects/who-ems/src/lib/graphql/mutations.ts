@@ -334,7 +334,7 @@ export interface SeeNotificationsMutationResponse {
 
 // === ADD CHANNEL ===
 export const ADD_CHANNEL = gql`
-mutation addChannel($title: String!, $application: ID) {
+mutation addChannel($title: String!, $application: ID!) {
   addChannel(title: $title, application: $application){
     id
     title
