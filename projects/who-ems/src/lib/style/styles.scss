@@ -376,6 +376,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
   .mat-dialog-content {
     max-height: calc(100% - 68px - 32px);
+    height: 100%;
   }
 }
 

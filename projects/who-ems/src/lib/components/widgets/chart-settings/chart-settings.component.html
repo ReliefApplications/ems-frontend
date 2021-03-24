@@ -1,16 +1,19 @@
 <ng-container *ngIf="tileForm">
-    <form [formGroup]="tileForm">
+    <form [formGroup]="tileForm" class="widget-form-container">
         <div class="form-group">
             <div class="form-group-title">General</div>
             <mat-form-field appearance="outline">
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" type="string" />
             </mat-form-field>
-            <ng-container  formGroupName="chart">
+            <ng-container formGroupName="chart">
                 <mat-form-field appearance="outline">
                     <mat-label>Chart Type</mat-label>
                     <mat-select formControlName="type">
-                        <mat-select-trigger><mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase }}</mat-select-trigger>
+                        <mat-select-trigger>
+                            <mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase
+                            }}
+                        </mat-select-trigger>
                         <mat-option *ngFor="let type of types" [value]="type.name">
                             <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
                         </mat-option>
@@ -18,37 +21,45 @@
                 </mat-form-field>
             </ng-container>
         </div>
-        <ng-container *ngIf="chartForm">
-            <ng-container formGroupName="chart">
-                <div class="chart-option-group">
-                    <h2>Legend</h2>
-                    <div formGroupName="legend">
+        <div formGroupName="chart" class="chart-form-container" *ngIf="chartForm">
+            <div class="chart-form">
+                <mat-accordion multi>
+                    <mat-expansion-panel formGroupName="legend">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Legend
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
                         <mat-slide-toggle formControlName="visible">Display</mat-slide-toggle>
                         <ng-container *ngIf="chartForm.value.legend.visible">
                             <div>
                                 <h3>Position</h3>
                                 <div>
-                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({legend: { position: position.value }})"
+                                    <button mat-flat-button color="primary"
+                                        (click)="chartForm.patchValue({legend: { position: position.value }})"
                                         *ngFor="let position of legendPositions">
                                         <mat-icon>{{ position.icon }}</mat-icon>
-                                    </button> 
+                                    </button>
                                 </div>
                             </div>
                             <div>
                                 <h3>Orientation</h3>
                                 <div>
-                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
+                                    <button mat-flat-button color="primary"
+                                        (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
                                         *ngFor="let orientation of legendOrientations">
                                         <mat-icon>{{ orientation.icon }}</mat-icon>
-                                    </button> 
+                                    </button>
                                 </div>
                             </div>
                         </ng-container>
-                    </div>
-                </div>
-                <div class="chart-option-group">
-                    <h2>Title</h2>
-                    <div formGroupName="title">
+                    </mat-expansion-panel>
+                    <mat-expansion-panel formGroupName="title">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Title
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
                         <mat-slide-toggle formControlName="visible">Display</mat-slide-toggle>
                         <ng-container *ngIf="chartForm.value.title.visible">
                             <div>
@@ -60,17 +71,20 @@
                             <div>
                                 <h3>Position</h3>
                                 <div>
-                                    <button mat-flat-button color="primary" (click)="chartForm.patchValue({title: { position: position.value }})"
+                                    <button mat-flat-button color="primary"
+                                        (click)="chartForm.patchValue({title: { position: position.value }})"
                                         *ngFor="let position of titlePositions">
                                         <mat-icon>{{ position.icon }}</mat-icon>
-                                    </button> 
+                                    </button>
                                 </div>
                             </div>
                         </ng-container>
-                    </div>
-                </div>
-            </ng-container>
-            <who-chart class="widget-content" [settings]="chartForm.value"></who-chart>
-        </ng-container>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+            <div class="chart-display">
+                <who-chart class="widget-content" [header]="false" [settings]="chartForm.value"></who-chart>
+            </div>
+        </div>
     </form>
 </ng-container>

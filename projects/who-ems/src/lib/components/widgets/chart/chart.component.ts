@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
