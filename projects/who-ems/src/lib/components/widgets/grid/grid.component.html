@@ -115,7 +115,7 @@
           </ng-template>
         </kendo-grid-column>
         <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
-        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type)  && field.meta.type !== 'file'"">
+        <kendo-grid-column-group [title]="field.title" *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type)  && field.meta.type !== 'file'">
           <ng-container *ngIf="field.meta.type !== 'multipletext' && field.meta.type !== 'matrixdynamic'">
             <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
             <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50" [minResizableWidth]="50"
