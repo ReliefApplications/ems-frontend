@@ -1,3 +1,11 @@
 .mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
 }
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end !important;
+    text-align: end;
+    margin-left: auto;
+}
