@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -9,7 +9,12 @@ export class WhoDownloadService {
   constructor(private http: HttpClient) { }
 
   getFile(url: string, type: string, fileName: string, options?: any): void {
-    this.http.get(url, { responseType: 'blob' }).subscribe((res) => {
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    this.http.get(url, { responseType: 'blob', headers }).subscribe((res) => {
       const blob = new Blob([res], { type });
       this.saveFile(fileName, blob);
     });
