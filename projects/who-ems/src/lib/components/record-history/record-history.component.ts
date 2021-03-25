@@ -106,7 +106,12 @@ export class WhoRecordHistoryComponent implements OnInit {
     let currentValuesHTML = '';
     let element = `<p> <span class="add-field">Add field</span> <b> ${key} </b> with value  `;
     currentKeys.forEach(k => {
-      const currentValues = Object.values(current[key][k]);
+      let currentValues;
+      if (current[key][k] instanceof Object) {
+        currentValues = Object.values(current[key][k]);
+      } else {
+        currentValues = current[key][k];
+      }
       currentValuesHTML += `<b>${k} ( ${currentValues} )</b> `;
     });
     element += `${currentValuesHTML} </p>`;
@@ -137,10 +142,18 @@ export class WhoRecordHistoryComponent implements OnInit {
       let afterValues = [];
       let currentValues = [];
       if (after[key] && after[key][k]) {
-        afterValues = Object.values(after[key][k]);
+        if (after[key][k] instanceof  Object) {
+          afterValues = Object.values(after[key][k]);
+        } else {
+          afterValues = after[key][k];
+        }
       }
       if (current[key] && current[key][k]) {
-        currentValues = Object.values(current[key][k]);
+        if (current[key][k] instanceof Object) {
+          currentValues = Object.values(current[key][k]);
+        } else {
+          currentValues = current[key][k];
+        }
       }
 
       if (currentValues.toString() !== afterValues.toString()) {

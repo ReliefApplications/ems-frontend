@@ -1,7 +1,4 @@
-import * as widgets from 'surveyjs-widgets';
-
 export function init(Survey: any, API_URL: string): void {
-    widgets.select2tagbox(Survey);
     const component = {
         name: 'resources',
         title: 'Resources',

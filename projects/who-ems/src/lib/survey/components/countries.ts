@@ -1,7 +1,4 @@
-import * as widgets from 'surveyjs-widgets';
-
 export function init(Survey: any): void{
-  widgets.select2tagbox(Survey);
   const component = {
     // Unique component name. It becomes a new question type. Please note, it should be written in lowercase.
     name: 'countries',

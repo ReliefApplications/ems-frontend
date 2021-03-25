@@ -1,4 +1,12 @@
-<h1>List of records</h1>
+<div class="page-header">
+    <h1 class="page-title">List of records</h1>
+    <div class="actions">
+        <button mat-flat-button color="primary" (click)="onDownload()">
+          <mat-icon>file_download</mat-icon>
+          Download records
+        </button>
+    </div>
+</div>
 <ng-container *ngIf="!loading">
     <table mat-table [dataSource]="dataSource">
         <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
@@ -26,6 +34,6 @@
             </ng-container>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="['/forms/update', row.id]"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="['./update', row.id]"></tr>
     </table>
 </ng-container>
