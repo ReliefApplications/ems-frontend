@@ -29,7 +29,7 @@ export class AddPositionComponent implements OnInit {
       title: ['', Validators.required]
     });
     if (this.data.edit) {
-      this.positionForm.controls['title'].setValue(this.data.title)
+      this.positionForm.controls.title.setValue(this.data.title);
     }
   }
 

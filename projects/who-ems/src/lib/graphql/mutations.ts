@@ -240,7 +240,7 @@ export interface AddPositionAttributeCategoryMutationResponse {
 }
 
 // === DELETE POSITION ===
-export const DELETE_POSITION_ATTRIBUTE_CATEGORY= gql`
+export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
 mutation deletePositionAttributeCategory($id: ID!, $application: ID!) {
   deletePositionAttributeCategory(id: $id, application: $application){
     id

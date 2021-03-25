@@ -20,7 +20,10 @@ import {
   DeleteChannelMutationResponse, DELETE_CHANNEL,
   AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
   EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION, AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY, DeletePositionAttributeCategoryMutationResponse, DELETE_POSITION_ATTRIBUTE_CATEGORY, EDIT_POSITION_ATTRIBUTE_CATEGORY, EditPositionAttributeCategoryMutationResponse
+  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION,
+  AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY,
+  DeletePositionAttributeCategoryMutationResponse, DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY, EditPositionAttributeCategoryMutationResponse
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
@@ -305,7 +308,8 @@ export class WhoApplicationService {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${positionCategory.title} position deleted.`);
-      application.positionAttributeCategories = application.positionAttributeCategories.filter(x => x.id !== res.data.deletePositionAttributeCategory.id);
+      application.positionAttributeCategories = application.positionAttributeCategories.filter(x =>
+        x.id !== res.data.deletePositionAttributeCategory.id);
       this._application.next(application);
     });
   }
