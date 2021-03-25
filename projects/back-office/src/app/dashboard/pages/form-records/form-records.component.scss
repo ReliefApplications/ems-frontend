@@ -1,3 +1,15 @@
+.page-header {
+    justify-content: space-between;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end !important;
+    text-align: end;
+    float: right;
+}
+
 .table-column {
     padding: 0px 4px;
 }

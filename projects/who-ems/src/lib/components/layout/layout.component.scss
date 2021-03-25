@@ -41,6 +41,8 @@
     a {
         display: flex;
         align-items: center;
+        flex: 1;
+        height: 100%;
     }
 
     .nav-actions {

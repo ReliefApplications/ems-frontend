@@ -1,4 +1,12 @@
-<h1>List of records</h1>
+<div class="page-header">
+    <h1 class="page-title">List of records</h1>
+    <div class="actions">
+        <button mat-flat-button color="primary" (click)="onDownload()">
+          <mat-icon>add</mat-icon>
+          Download records
+        </button>
+    </div>
+</div>
 <ng-container *ngIf="!loading">
     <table mat-table [dataSource]="dataSource">
         <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
