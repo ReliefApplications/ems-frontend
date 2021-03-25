@@ -239,6 +239,33 @@ export interface AddPositionAttributeCategoryMutationResponse {
   addPositionAttributeCategory: PositionAttributeCategory;
 }
 
+// === DELETE POSITION ===
+export const DELETE_POSITION_ATTRIBUTE_CATEGORY= gql`
+mutation deletePositionAttributeCategory($id: ID!, $application: ID!) {
+  deletePositionAttributeCategory(id: $id, application: $application){
+    id
+  }
+}`;
+
+
+export interface DeletePositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  deletePositionAttributeCategory: PositionAttributeCategory;
+}
+
+// === EDIT POSITION ===
+export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
+mutation editPositionAttributeCategory($id: ID!, $application: ID!, $title: String!) {
+  editPositionAttributeCategory(id: $id, application: $application, title: $title) {
+    id
+    title
+  }
+}`;
+
+export interface EditPositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  editPositionAttributeCategory: PositionAttributeCategory;
+}
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {

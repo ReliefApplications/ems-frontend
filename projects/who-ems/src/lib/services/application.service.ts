@@ -20,9 +20,10 @@ import {
   DeleteChannelMutationResponse, DELETE_CHANNEL,
   AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
   EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION, AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY
+  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION, AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY, DeletePositionAttributeCategoryMutationResponse, DELETE_POSITION_ATTRIBUTE_CATEGORY, EDIT_POSITION_ATTRIBUTE_CATEGORY, EditPositionAttributeCategoryMutationResponse
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
+import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 
 @Injectable({
   providedIn: 'root'
@@ -288,6 +289,46 @@ export class WhoApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${value.title} position created`);
       application.positionAttributeCategories = application.positionAttributeCategories.concat([res.data.addPositionAttributeCategory]);
+      this._application.next(application);
+    });
+  }
+
+  /* Remove a position from the opened application
+  */
+  deletePositionAttributeCategory(positionCategory: PositionAttributeCategory): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeletePositionAttributeCategoryMutationResponse>({
+      mutation: DELETE_POSITION_ATTRIBUTE_CATEGORY,
+      variables: {
+        id: positionCategory.id,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${positionCategory.title} position deleted.`);
+      application.positionAttributeCategories = application.positionAttributeCategories.filter(x => x.id !== res.data.deletePositionAttributeCategory.id);
+      this._application.next(application);
+    });
+  }
+
+  /* Edit a position's name from the opened application
+  */
+  editPositionAttributeCategory(value: any, positionCategory: PositionAttributeCategory): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditPositionAttributeCategoryMutationResponse>({
+      mutation: EDIT_POSITION_ATTRIBUTE_CATEGORY,
+      variables: {
+        id: positionCategory.id,
+        application: application.id,
+        title: value.title
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar('Edited subscription.');
+      application.positionAttributeCategories = application.positionAttributeCategories.map(pos => {
+        if (pos.title === positionCategory.title) {
+          pos.title = res.data.editPositionAttributeCategory.title;
+        }
+        return pos;
+      });
       this._application.next(application);
     });
   }

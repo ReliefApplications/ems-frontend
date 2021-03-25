@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, WhoApplicationService, PositionAttributeCategory } from '@who-ems/builder';
+import { Application, WhoApplicationService, PositionAttributeCategory, WhoConfirmModalComponent } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { AddPositionComponent } from './components/add-position/add-position.component';
+import { AddPositionComponent } from './components/position-modal/position-modal.component';
 
 @Component({
   selector: 'app-position',
@@ -34,7 +34,11 @@ export class PositionComponent implements OnInit, OnDestroy {
   }
 
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddPositionComponent);
+    const dialogRef = this.dialog.open(AddPositionComponent, {
+      data: {
+        add: true
+      }
+    });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.applicationService.addPositionAttributeCategory(value);
@@ -43,11 +47,34 @@ export class PositionComponent implements OnInit, OnDestroy {
   }
 
   onEdit(positionCategory: PositionAttributeCategory): void {
-    console.log('edit');
+    const dialogRef = this.dialog.open(AddPositionComponent, {
+      width: '400px',
+      data: {
+        edit: true,
+        title: positionCategory.title
+      }
+    });
+    dialogRef.afterClosed().subscribe((value: any) => {
+      if (value) {
+        this.applicationService.editPositionAttributeCategory(value, positionCategory);
+      }
+    });
   }
 
   onDelete(positionCategory: PositionAttributeCategory): void {
-    console.log('delete');
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete position attribute',
+        content: `Do you confirm the deletion of the position attribute ${positionCategory.title} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.applicationService.deletePositionAttributeCategory(positionCategory);
+      }
+    });
   }
 
   ngOnDestroy(): void {
