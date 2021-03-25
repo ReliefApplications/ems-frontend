@@ -1,13 +1,9 @@
-.page-header {
-    justify-content: space-between;
-}
-
 .actions {
     display: flex;
     flex-direction: row;
     justify-content: flex-end !important;
     text-align: end;
-    float: right;
+    margin-left: auto;
 }
 
 .table-column {
