@@ -1,24 +1,52 @@
 <h1 mat-dialog-title>Invite user</h1>
 <div mat-dialog-content>
-    <form [formGroup]="inviteForm">
+
+  <form [formGroup]="inviteForm">
         <div class="form-group">
             <label class="invite-label">Select an existing one, or invite a new one</label>
-            <mat-form-field>
-                <input type="text"
-                       placeholder="Email"
-                       aria-label="Email"
-                       matInput
-                       formControlName="email"
-                       [matAutocomplete]="auto">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
-                    {{user.username}}
-                  </mat-option>
-                </mat-autocomplete>
-                <button mat-button *ngIf="email" matSuffix mat-icon-button aria-label="Clear" (click)="email=''">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
+          <mat-form-field class="chip-list">
+<!--            <mat-label>Favorite Fruits</mat-label>-->
+            <mat-chip-list #chipList aria-label="Email invitation">
+              <mat-chip
+                *ngFor="let email of emails"
+                [selectable]="true"
+                [removable]="true"
+                (removed)="remove(email)">
+                {{email}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input
+                placeholder="Email..."
+                #emailInput
+                [formControl]="emailCtrl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (focusout)="add($event)"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
+                {{user.username}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+<!--          <mat-form-field>-->
+<!--                <input type="text"-->
+<!--                       placeholder="Email"-->
+<!--                       aria-label="Email"-->
+<!--                       matInput-->
+<!--                       formControlName="email"-->
+<!--                       [matAutocomplete]="auto">-->
+<!--                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">-->
+<!--                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">-->
+<!--                    {{user.username}}-->
+<!--                  </mat-option>-->
+<!--                </mat-autocomplete>-->
+<!--                <button mat-button *ngIf="email" matSuffix mat-icon-button aria-label="Clear" (click)="email=''">-->
+<!--                    <mat-icon>close</mat-icon>-->
+<!--                </button>-->
+<!--            </mat-form-field>-->
             <label class="invite-label">Select the role to assign</label>
             <mat-form-field appearance="outline">
                 <mat-label>Role</mat-label>
@@ -40,5 +68,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="inviteForm.value" cdkFocusInitial color="primary" [disabled]="!inviteForm.valid">Invite</button>
+    <button type="submit" mat-flat-button [mat-dialog-close]="inviteForm.value" color="primary" [disabled]="emails.length === 0 || !inviteForm.valid">Invite</button>
 </div>

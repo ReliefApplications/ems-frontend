@@ -245,10 +245,10 @@ export class WhoApplicationService {
         role: value.role,
         ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter(x => x.value) }
       }
-    }).subscribe(res => {
+    }).subscribe((res: any) => {
       if (!res.errors) {
-        this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-        application.users = application.users.concat([res.data.addRoleToUser]);
+        this.snackBar.openSnackBar(`${res.data.addRoleToUser.length} user(s) was invited.`);
+        application.users = application.users.concat(res.data.addRoleToUser);
         this._application.next(application);
       } else {
         this.snackBar.openSnackBar('User could not be invited.', { error: true });

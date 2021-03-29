@@ -55,11 +55,14 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
       panelClass: 'add-dialog',
       data: {
         roles: this.roles,
+        users: this.users.data,
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        // remove duplicated emails form array
+        value.email = Array.from(new Set(value.email));
         if (this.applicationService) {
           this.applicationService.inviteUser(value);
         } else {
@@ -69,10 +72,10 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
               username: value.email,
               role: value.role
             }
-          }).subscribe(res => {
+          }).subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-              this.users.data = this.users.data.concat([res.data.addRoleToUser]);
+              this.snackBar.openSnackBar(`${res.data.addRoleToUser.length} user(s) was invited.`);
+              this.users.data = this.users.data.concat(res.data.addRoleToUser);
             } else {
               this.snackBar.openSnackBar('User could not be invited.', { error: true });
             }
