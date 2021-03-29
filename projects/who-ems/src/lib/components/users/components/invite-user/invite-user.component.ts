@@ -24,14 +24,16 @@ export class WhoInviteUserComponent implements OnInit {
   emailCtrl = new FormControl();
 
   // === DATA ===
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB, ];
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
   private users: User[];
   public filteredUsers: Observable<User[]>;
   public emails = [];
   public formValues: any;
+  public csvRecords: any[] = [];
 
   @ViewChild('emailInput') emailInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('csvReader') csvReader: any;
 
   get email(): string {
     return this.inviteForm.value.email;
@@ -103,7 +105,6 @@ export class WhoInviteUserComponent implements OnInit {
     setTimeout(() => {
       const input = event.type === 'focusout' ? this.emailInput.nativeElement : event.input;
       const value = event.type === 'focusout' ? this.emailInput.nativeElement.value : event.value;
-
       if ((value || '').trim()) {
         if (!this.data.users.find((email: any) => email.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
@@ -133,4 +134,82 @@ export class WhoInviteUserComponent implements OnInit {
     this.inviteForm.get('email').setValue(this.emails);
     this.emailInput.nativeElement.value = '';
     this.emailCtrl.setValue(null);
-  }}
+  }
+
+  uploadListener($event: any): void {
+
+    const files = $event.target.files;
+
+    if (files[0] && this.isValidCSVFile(files[0])) {
+
+      const input = $event.target;
+      const reader = new FileReader();
+      let emailRegistered = false;
+      reader.readAsText(input.files[0]);
+
+      reader.onload = () => {
+        const csvData = reader.result;
+        const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
+
+        const headersRow = this.getHeaderArray(csvRecordsArray);
+
+        this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+        for (const record of this.csvRecords) {
+          if (record.trim()) {
+            if (!this.data.users.find((email: any) => email.username.toLowerCase() === record.toLocaleString())) {
+              this.emails.push(record.trim());
+              this.inviteForm.get('email').setValue(this.emails);
+            } else {
+              emailRegistered = true;
+            }
+          }
+        }
+        if (emailRegistered) {
+          this.snackBar.openSnackBar('There was some emails that already exists on the application and will not added to the list');
+        }
+      };
+
+      reader.onerror = () => {
+        console.log('error is occured while reading file!');
+      };
+
+    } else {
+      if (files.length > 0) {
+        this.snackBar.openSnackBar('Please import valid .csv file.', {error: true});
+      }
+      this.fileReset();
+    }
+  }
+
+  fileReset(): void {
+    this.csvReader.nativeElement.value = '';
+    this.csvRecords = [];
+  }
+
+  getHeaderArray(csvRecordsArr: any): any {
+    const headers = (csvRecordsArr[0]).split(',');
+    const headerArray = [];
+    for (const header of headers) {
+      headerArray.push(header);
+    }
+    return headerArray;
+  }
+
+  isValidCSVFile(file: any): any {
+    return file.name.endsWith('.csv');
+  }
+
+  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any): any {
+    const csvArr = [];
+
+    for (let i = 1; i < csvRecordsArray.length; i++) {
+      const currentRecord = (csvRecordsArray[i]).split(',');
+      if (currentRecord.length > 0) {
+        const csvRecord: string  = currentRecord.toString().trim();
+        csvArr.push(csvRecord);
+      }
+    }
+    return  Array.from(new Set(csvArr));
+  }
+
+}

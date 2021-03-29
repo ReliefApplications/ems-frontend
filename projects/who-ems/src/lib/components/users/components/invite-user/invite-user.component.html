@@ -1,11 +1,12 @@
-<h1 mat-dialog-title>Invite user</h1>
+<h1 mat-dialog-title>Invite users</h1>
 <div mat-dialog-content>
 
   <form [formGroup]="inviteForm">
         <div class="form-group">
-            <label class="invite-label">Select an existing one, or invite a new one</label>
+            <label class="invite-label">Select existing users, invite new users or
+              <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
+            </label>
           <mat-form-field class="chip-list">
-<!--            <mat-label>Favorite Fruits</mat-label>-->
             <mat-chip-list #chipList aria-label="Email invitation">
               <mat-chip
                 *ngFor="let email of emails"
