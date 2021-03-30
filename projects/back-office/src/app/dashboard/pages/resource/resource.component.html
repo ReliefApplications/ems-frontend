@@ -6,6 +6,12 @@
             {{resource.name}}
         </h1>
         <who-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></who-access>
+        <div class="actions">
+            <button mat-flat-button color="primary" (click)="onDownload()">
+              <mat-icon>file_download</mat-icon>
+              Download records
+            </button>
+        </div>
     </div>
     <mat-tab-group dynamicHeight>
         <mat-tab>

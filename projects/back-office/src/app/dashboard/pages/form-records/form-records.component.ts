@@ -4,6 +4,8 @@ import { Apollo } from 'apollo-angular';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
+import { WhoDownloadService } from '@who-ems/builder';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-form-records',
@@ -21,7 +23,8 @@ export class FormRecordsComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private downloadService: WhoDownloadService
   ) { }
 
   /*  Load the records, using the form id passed as a parameter.
@@ -73,5 +76,11 @@ export class FormRecordsComponent implements OnInit {
         return x.id !== id;
       });
     });
+  }
+
+  onDownload(): void {
+    const url = `${environment.API_URL}/download/form/records/${this.id}`;
+    const fileName = `${this.form.name}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { WhoSnackBarService } from '@who-ems/builder';
+import { WhoDownloadService, WhoSnackBarService } from '@who-ems/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-resource',
@@ -30,7 +31,8 @@ export class ResourceComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private downloadService: WhoDownloadService
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -131,5 +133,11 @@ export class ResourceComponent implements OnInit {
     }).subscribe(res => {
       this.resource = res.data.editResource;
     });
+  }
+
+  onDownload(): void {
+    const url = `${environment.API_URL}/download/resource/records/${this.id}`;
+    const fileName = `${this.resource.name}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
   }
 }
