@@ -8,19 +8,35 @@ import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { WhoSnackBarService } from './snackbar.service';
 import {
-  AddPageMutationResponse, ADD_PAGE,
-  AddRoleMutationResponse, ADD_ROLE,
-  AddRoleToUserMutationResponse, ADD_ROLE_TO_USER,
-  DeletePageMutationResponse, DELETE_PAGE,
-  DeleteRoleMutationResponse, DELETE_ROLE,
-  EditApplicationMutationResponse, EDIT_APPLICATION,
-  EditUserMutationResponse, EDIT_USER,
-  EditRoleMutationResponse, EDIT_ROLE,
-  AddChannelMutationResponse, ADD_CHANNEL,
-  DeleteChannelMutationResponse, DELETE_CHANNEL,
-  AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
-  EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION, AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY
+  AddPageMutationResponse,
+  ADD_PAGE,
+  AddRoleMutationResponse,
+  ADD_ROLE,
+  AddRoleToUserMutationResponse,
+  ADD_ROLE_TO_USER,
+  DeletePageMutationResponse,
+  DELETE_PAGE,
+  DeleteRoleMutationResponse,
+  DELETE_ROLE,
+  EditApplicationMutationResponse,
+  EDIT_APPLICATION,
+  EditUserMutationResponse,
+  EDIT_USER,
+  EditRoleMutationResponse,
+  EDIT_ROLE,
+  AddChannelMutationResponse,
+  ADD_CHANNEL,
+  DeleteChannelMutationResponse,
+  DELETE_CHANNEL,
+  AddSubscriptionMutationResponse,
+  ADD_SUBSCRIPTION,
+  EditSubscriptionMutationResponse,
+  EDIT_SUBSCRIPTION,
+  DeleteSubscriptionMutationResponse,
+  DELETE_SUBSCRIPTION,
+  AddPositionAttributeCategoryMutationResponse,
+  ADD_POSITION_ATTRIBUTE_CATEGORY,
+  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 
@@ -230,6 +246,23 @@ export class WhoApplicationService {
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${role.title} role deleted.`);
       application.roles = application.roles.filter(x => x.id !== role.id);
+      this._application.next(application);
+    });
+  }
+
+  /* Delete user from application.
+*/
+  deleteUserFromApplication(user: User): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeleteUserFromApplicationMutationResponse>({
+      mutation: DELETE_USER_FROM_APPLICATION,
+      variables: {
+        username: user.username,
+        roles: user.roles
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${user.username} was deleted. from the application`);
+      application.users = application.users.filter(x => x.id !== user.id);
       this._application.next(application);
     });
   }

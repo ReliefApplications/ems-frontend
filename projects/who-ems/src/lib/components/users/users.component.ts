@@ -4,11 +4,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
-import { AddRoleToUserMutationResponse, ADD_ROLE_TO_USER, EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
+import {
+  AddRoleToUserMutationResponse,
+  ADD_ROLE_TO_USER,
+  EditUserMutationResponse,
+  EDIT_USER,
+  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION
+} from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
+import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'who-users',
@@ -113,6 +120,31 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
             });
           });
         }
+      }
+    });
+  }
+
+  onDelete(user: User): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete user',
+        content: `Do you confirm the deletion of the user ${user.username} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<DeleteUserFromApplicationMutationResponse>({
+          mutation: DELETE_USER_FROM_APPLICATION,
+          variables: {
+            username: user.username,
+            roles: user.roles.map(r => r.id)
+          }
+        }).subscribe(res => {
+          this.snackBar.openSnackBar(`User ${user.username} was deleted from the application`, { duration: 3000 });
+          this.users.data = this.users.data.filter(u => u.id !== res.data.deleteUserFromApplication.id);
+        });
       }
     });
   }
