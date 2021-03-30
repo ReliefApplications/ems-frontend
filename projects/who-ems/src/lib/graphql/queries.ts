@@ -6,6 +6,7 @@ import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
+import { Workflow } from '../models/workflow.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -553,4 +554,72 @@ query getChannels($application: ID) {
 export interface GetChannelsQueryResponse {
   loading: boolean;
   channels: Channel[];
+}
+
+// === GET WORKFLOW BY ID ===
+export const GET_WORKFLOW_BY_ID = gql`
+  query GetWorkflowById($id: ID!, $asRole: ID){
+    workflow(id: $id, asRole: $asRole){
+      id
+      name
+      createdAt
+      modifiedAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      steps {
+        id
+        name
+        type
+        content
+        createdAt
+      }
+      page {
+        id
+        name
+        canUpdate
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canCreate {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        application {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export interface GetWorkflowByIdQueryResponse {
+  loading: boolean;
+  workflow: Workflow;
 }

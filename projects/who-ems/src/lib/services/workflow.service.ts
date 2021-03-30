@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Workflow, Step, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../graphql/queries';
 import { AddStepMutationResponse, ADD_STEP } from '../graphql/mutations';
+import { Workflow } from '../models/workflow.model';
+import { WhoSnackBarService } from './snackbar.service';
+import { ContentType } from '../models/page.model';
+import { Step } from '../models/step.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WorkflowService {
+export class WhoWorkflowService {
 
   // tslint:disable-next-line: variable-name
   private _workflow = new BehaviorSubject<Workflow>(null);

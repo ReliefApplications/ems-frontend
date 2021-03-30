@@ -8,6 +8,7 @@ import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Subscription } from '../models/subscription.model';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
+import { Step } from '../models/step.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -476,4 +477,21 @@ mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {
 export interface DeleteSubscriptionMutationResponse {
   loading: boolean;
   deleteSubscription: Subscription;
+}
+
+// === ADD STEP ===
+export const ADD_STEP = gql`
+mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
+  addStep(name: $name, type: $type, content: $content, workflow: $workflow){
+    id
+    name
+    type
+    content
+    createdAt
+  }
+}`;
+
+export interface AddStepMutationResponse {
+  loading: boolean;
+  addStep: Step;
 }

@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
+import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { WorkflowService } from '../../../services/workflow.service';
 import {
   EditPageMutationResponse, EDIT_PAGE,
   DeleteStepMutationResponse, DELETE_STEP,
@@ -49,7 +48,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private workflowService: WorkflowService,
+    private workflowService: WhoWorkflowService,
     private applicationService: WhoApplicationService,
     private route: ActivatedRoute,
     private router: Router,
