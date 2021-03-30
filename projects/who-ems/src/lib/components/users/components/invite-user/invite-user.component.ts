@@ -11,6 +11,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { WhoSnackBarService } from '../../../../services/snackbar.service';
+import { valueFromAST } from 'graphql';
 
 @Component({
   selector: 'who-invite-user',
@@ -21,7 +22,6 @@ export class WhoInviteUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
   inviteForm: FormGroup;
-  emailCtrl = new FormControl();
 
   // === DATA ===
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
@@ -64,7 +64,7 @@ export class WhoInviteUserComponent implements OnInit {
   */
   ngOnInit(): void {
     this.inviteForm = this.formBuilder.group({
-      email: [['']],
+      email: [[], Validators.minLength(1)],
       role: ['', Validators.required],
       ...this.data.positionAttributeCategories &&
       {
@@ -81,9 +81,11 @@ export class WhoInviteUserComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       // filter the users that are not registered in the application
       this.users = res.data.users.filter((u: any) => !this.data.users.find((usr: any) => usr.id === u.id));
-      this.filteredUsers = this.emailCtrl.valueChanges.pipe(
+      this.inviteForm.controls.email.valueChanges.subscribe(x => console.log(x));
+      this.filteredUsers = this.inviteForm.controls.email.valueChanges.pipe(
         startWith(''),
-        map((email: string | null) => email ? this.filter(email) : this.users.slice())
+        map(value => typeof value === 'string' ? value : ''),
+        map(x => this.filter(x))
       );
     });
 
@@ -133,7 +135,7 @@ export class WhoInviteUserComponent implements OnInit {
     this.emails.push(event.option.viewValue);
     this.inviteForm.get('email').setValue(this.emails);
     this.emailInput.nativeElement.value = '';
-    this.emailCtrl.setValue(null);
+    // this.emailCtrl.setValue(null);
   }
 
   uploadListener($event: any): void {
@@ -151,9 +153,7 @@ export class WhoInviteUserComponent implements OnInit {
         const csvData = reader.result;
         const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
 
-        const headersRow = this.getHeaderArray(csvRecordsArray);
-
-        this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+        this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray);
         for (const record of this.csvRecords) {
           if (record.trim()) {
             if (!this.data.users.find((email: any) => email.username.toLowerCase() === record.toLocaleString())) {
@@ -165,12 +165,12 @@ export class WhoInviteUserComponent implements OnInit {
           }
         }
         if (emailRegistered) {
-          this.snackBar.openSnackBar('There was some emails that already exists on the application and will not added to the list');
+          this.snackBar.openSnackBar('Some emails are already part of the application and will not be invited.');
         }
       };
 
       reader.onerror = () => {
-        console.log('error is occured while reading file!');
+        console.log('Error is occured while reading file!');
       };
 
     } else {
@@ -181,35 +181,25 @@ export class WhoInviteUserComponent implements OnInit {
     }
   }
 
-  fileReset(): void {
+  private fileReset(): void {
     this.csvReader.nativeElement.value = '';
     this.csvRecords = [];
   }
 
-  getHeaderArray(csvRecordsArr: any): any {
-    const headers = (csvRecordsArr[0]).split(',');
-    const headerArray = [];
-    for (const header of headers) {
-      headerArray.push(header);
-    }
-    return headerArray;
-  }
-
-  isValidCSVFile(file: any): any {
+  private isValidCSVFile(file: any): any {
     return file.name.endsWith('.csv');
   }
 
-  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any): any {
+  private getDataRecordsArrayFromCSVFile(csvRecordsArray: any): any {
     const csvArr = [];
-
-    for (let i = 1; i < csvRecordsArray.length; i++) {
-      const currentRecord = (csvRecordsArray[i]).split(',');
+    for (const record of csvRecordsArray) {
+      const currentRecord = record.split(',');
       if (currentRecord.length > 0) {
         const csvRecord: string  = currentRecord.toString().trim();
         csvArr.push(csvRecord);
       }
     }
-    return  Array.from(new Set(csvArr));
+    return Array.from(new Set(csvArr));
   }
 
 }
