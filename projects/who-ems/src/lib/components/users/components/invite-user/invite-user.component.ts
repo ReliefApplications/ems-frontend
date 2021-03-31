@@ -1,17 +1,16 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import { Role, User } from '../../../../models/user.model';
 import { GetUsersQueryResponse, GET_USERS } from '../../../../graphql/queries';
 import { Observable } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { WhoSnackBarService } from '../../../../services/snackbar.service';
-import { valueFromAST } from 'graphql';
 
 @Component({
   selector: 'who-invite-user',
@@ -32,7 +31,6 @@ export class WhoInviteUserComponent implements OnInit {
   public csvRecords: any[] = [];
 
   @ViewChild('emailInput') emailInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
   @ViewChild('csvReader') csvReader: any;
 
   get email(): string {
@@ -81,7 +79,6 @@ export class WhoInviteUserComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       // filter the users that are not registered in the application
       this.users = res.data.users.filter((u: any) => !this.data.users.find((usr: any) => usr.id === u.id));
-      this.inviteForm.controls.email.valueChanges.subscribe(x => console.log(x));
       this.filteredUsers = this.inviteForm.controls.email.valueChanges.pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : ''),
@@ -108,13 +105,14 @@ export class WhoInviteUserComponent implements OnInit {
       const input = event.type === 'focusout' ? this.emailInput.nativeElement : event.input;
       const value = event.type === 'focusout' ? this.emailInput.nativeElement.value : event.value;
       if ((value || '').trim()) {
-        if (!this.data.users.find((email: any) => email.username.toLowerCase() === value.toLocaleString())) {
+        if (!this.data.users.find((user: any) => user.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
-          this.inviteForm.get('email').setValue(this.emails);
         } else {
           this.snackBar.openSnackBar(`${value} already exists on this application`);
         }
       }
+      this.inviteForm.get('email').setValue(this.emails);
+      console.log(this.inviteForm.value.email);
 
       // Reset the input value
       if (input) {
@@ -135,7 +133,6 @@ export class WhoInviteUserComponent implements OnInit {
     this.emails.push(event.option.viewValue);
     this.inviteForm.get('email').setValue(this.emails);
     this.emailInput.nativeElement.value = '';
-    // this.emailCtrl.setValue(null);
   }
 
   uploadListener($event: any): void {
@@ -192,11 +189,15 @@ export class WhoInviteUserComponent implements OnInit {
 
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any): any {
     const csvArr = [];
-    for (const record of csvRecordsArray) {
-      const currentRecord = record.split(',');
-      if (currentRecord.length > 0) {
-        const csvRecord: string  = currentRecord.toString().trim();
-        csvArr.push(csvRecord);
+    for (const recordLine of csvRecordsArray) {
+      const currentRecordLine = recordLine.split(';').map(x => x.split(','));
+      if (currentRecordLine.length > 0) {
+        for (const record of currentRecordLine) {
+          const csvRecord: string  = record.toString().trim();
+          if (csvRecord) {
+            csvArr.push(csvRecord);
+          }
+        }
       }
     }
     return Array.from(new Set(csvArr));

@@ -74,8 +74,8 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
             }
           }).subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(res.data.addRoleToUser.length > 1 ? `${res.data.addRoleToUser.length} users were invited.` : 'user was invited.');
-              this.users.data = this.users.data.concat(res.data.addRoleToUser);
+              this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+              this.users.data = this.users.data.concat(res.data.addRoleToUsers);
             } else {
               this.snackBar.openSnackBar('User could not be invited.', { error: true });
             }
