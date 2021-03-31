@@ -10,7 +10,7 @@ import { WhoSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse, ADD_PAGE,
   AddRoleMutationResponse, ADD_ROLE,
-  AddRoleToUserMutationResponse, ADD_ROLE_TO_USER,
+  AddRoleToUsersMutationResponse, ADD_ROLE_TO_USERS,
   DeletePageMutationResponse, DELETE_PAGE,
   DeleteRoleMutationResponse, DELETE_ROLE,
   EditApplicationMutationResponse, EDIT_APPLICATION,
@@ -242,17 +242,17 @@ export class WhoApplicationService {
   */
   inviteUser(value: any): void {
     const application = this._application.getValue();
-    this.apollo.mutate<AddRoleToUserMutationResponse>({
-      mutation: ADD_ROLE_TO_USER,
+    this.apollo.mutate<AddRoleToUsersMutationResponse>({
+      mutation: ADD_ROLE_TO_USERS,
       variables: {
-        username: value.email,
+        usernames: value.email,
         role: value.role,
         ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter(x => x.value) }
       }
-    }).subscribe(res => {
+    }).subscribe((res: any) => {
       if (!res.errors) {
-        this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-        application.users = application.users.concat([res.data.addRoleToUser]);
+        this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+        application.users = application.users.concat(res.data.addRoleToUsers);
         this._application.next(application);
       } else {
         this.snackBar.openSnackBar('User could not be invited.', { error: true });

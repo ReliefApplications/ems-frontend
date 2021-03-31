@@ -24,6 +24,25 @@ The project is seperated into three sub-projects:
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
+# Bundle Analysis
+
+First, install globally the bundle analyzer:
+```
+npm install -g webpack-bundle-analyzer
+````
+
+You can then run, for both back and front office:
+```
+ng build --stats-json.
+```
+This will create an additional find stats.json in your ./dist folder of each project.
+
+
+Finally, run:
+```
+webpack-bundle-analyzer ./dist/<project-name>/stats.json
+```
+and your browser will pop up the page at localhost:8888.
 
 # Useful commands
 
