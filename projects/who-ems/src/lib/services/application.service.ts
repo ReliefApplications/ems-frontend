@@ -12,8 +12,8 @@ import {
   ADD_PAGE,
   AddRoleMutationResponse,
   ADD_ROLE,
-  AddRoleToUserMutationResponse,
-  ADD_ROLE_TO_USER,
+  AddRoleToUsersMutationResponse,
+  ADD_ROLE_TO_USERS,
   DeletePageMutationResponse,
   DELETE_PAGE,
   DeleteRoleMutationResponse,
@@ -36,9 +36,15 @@ import {
   DELETE_SUBSCRIPTION,
   AddPositionAttributeCategoryMutationResponse,
   ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION
+  DeleteUsersFromApplicationMutationResponse,
+  DELETE_USERS_FROM_APPLICATION,
+  DeletePositionAttributeCategoryMutationResponse,
+  DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  EditPositionAttributeCategoryMutationResponse,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
+import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 
 @Injectable({
   providedIn: 'root'
@@ -254,8 +260,8 @@ export class WhoApplicationService {
   */
   deleteUserFromApplication(usernames: any[], roles: any[], resolved): void {
     const application = this._application.getValue();
-    this.apollo.mutate<DeleteUserFromApplicationMutationResponse>({
-      mutation: DELETE_USER_FROM_APPLICATION,
+    this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
+      mutation: DELETE_USERS_FROM_APPLICATION,
       variables: {
         usernames,
         roles
@@ -279,17 +285,17 @@ export class WhoApplicationService {
   */
   inviteUser(value: any): void {
     const application = this._application.getValue();
-    this.apollo.mutate<AddRoleToUserMutationResponse>({
-      mutation: ADD_ROLE_TO_USER,
+    this.apollo.mutate<AddRoleToUsersMutationResponse>({
+      mutation: ADD_ROLE_TO_USERS,
       variables: {
-        username: value.email,
+        usernames: value.email,
         role: value.role,
         ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter(x => x.value) }
       }
-    }).subscribe(res => {
+    }).subscribe((res: any) => {
       if (!res.errors) {
-        this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-        application.users = application.users.concat([res.data.addRoleToUser]);
+        this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+        application.users = application.users.concat(res.data.addRoleToUsers);
         this._application.next(application);
       } else {
         this.snackBar.openSnackBar('User could not be invited.', { error: true });
@@ -327,9 +333,54 @@ export class WhoApplicationService {
         application: application.id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${value.title} position created`);
+      this.snackBar.openSnackBar(`${value.title} position category created`);
       application.positionAttributeCategories = application.positionAttributeCategories.concat([res.data.addPositionAttributeCategory]);
       this._application.next(application);
+    });
+  }
+
+  /* Remove a position from the opened application
+  */
+  deletePositionAttributeCategory(positionCategory: PositionAttributeCategory): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeletePositionAttributeCategoryMutationResponse>({
+      mutation: DELETE_POSITION_ATTRIBUTE_CATEGORY,
+      variables: {
+        id: positionCategory.id,
+        application: application.id
+      }
+    }).subscribe(res => {
+      this.snackBar.openSnackBar(`${positionCategory.title} position category deleted.`);
+      application.positionAttributeCategories = application.positionAttributeCategories.filter(x =>
+        x.id !== res.data.deletePositionAttributeCategory.id);
+      this._application.next(application);
+    });
+  }
+
+  /* Edit a position's name from the opened application
+  */
+  editPositionAttributeCategory(value: any, positionCategory: PositionAttributeCategory): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditPositionAttributeCategoryMutationResponse>({
+      mutation: EDIT_POSITION_ATTRIBUTE_CATEGORY,
+      variables: {
+        id: positionCategory.id,
+        application: application.id,
+        title: value.title
+      }
+    }).subscribe(res => {
+      if (res.errors) {
+        this.snackBar.openSnackBar('Position category with this title already exists.', { error: true });
+      } else {
+        this.snackBar.openSnackBar('Edited position category.');
+        application.positionAttributeCategories = application.positionAttributeCategories.map(pos => {
+          if (pos.title === positionCategory.title) {
+            pos.title = res.data.editPositionAttributeCategory.title;
+          }
+          return pos;
+        });
+        this._application.next(application);
+      }
     });
   }
 

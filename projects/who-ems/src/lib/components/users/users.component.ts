@@ -5,11 +5,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
 import {
-  AddRoleToUserMutationResponse,
-  ADD_ROLE_TO_USER,
+  AddRoleToUsersMutationResponse,
+  ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
-  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION, DELETE_USER, DeleteUserMutationResponse
+  DELETE_USERS, DeleteUsersMutationResponse
 } from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
@@ -66,24 +66,27 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
       panelClass: 'add-dialog',
       data: {
         roles: this.roles,
+        users: this.users.data,
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        // remove duplicated emails form array
+        value.email = Array.from(new Set(value.email));
         if (this.applicationService) {
           this.applicationService.inviteUser(value);
         } else {
-          this.apollo.mutate<AddRoleToUserMutationResponse>({
-            mutation: ADD_ROLE_TO_USER,
+          this.apollo.mutate<AddRoleToUsersMutationResponse>({
+            mutation: ADD_ROLE_TO_USERS,
             variables: {
-              username: value.email,
+              usernames: value.email,
               role: value.role
             }
-          }).subscribe(res => {
+          }).subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(`${res.data.addRoleToUser.username} invited.`);
-              this.users.data = this.users.data.concat([res.data.addRoleToUser]);
+              this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+              this.users.data = this.users.data.concat(res.data.addRoleToUsers);
             } else {
               this.snackBar.openSnackBar('User could not be invited.', { error: true });
             }
@@ -152,18 +155,18 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
           this.applicationService.deleteUserFromApplication(usernames, roles, () => this.loading = false);
         } else {
           const ids = users.map(u => u.id);
-          this.apollo.mutate<DeleteUserMutationResponse>({
-            mutation: DELETE_USER,
+          this.apollo.mutate<DeleteUsersMutationResponse>({
+            mutation: DELETE_USERS,
             variables: { ids }
           }).subscribe(res => {
             this.loading = false;
-            if (!res.errors) {
+            if (res.errors) {
+              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+            } else {
               const usersLength = ids.length;
               this.snackBar.openSnackBar(`${usersLength} user${usersLength > 1 ? 's' : ''} has been deleted`,
                 { duration: 3000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
-            } else {
-              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
             }
           });
         }
