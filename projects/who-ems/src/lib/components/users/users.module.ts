@@ -14,6 +14,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 
@@ -34,7 +36,9 @@ import { MatRippleModule } from '@angular/material/core';
     MatAutocompleteModule,
     MatSortModule,
     MatChipsModule,
-    MatRippleModule
+    MatRippleModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule
   ],
   exports: [WhoUsersComponent]
 })

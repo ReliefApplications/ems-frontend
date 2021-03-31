@@ -4,11 +4,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
-import { AddRoleToUsersMutationResponse, ADD_ROLE_TO_USERS, EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
+import {
+  AddRoleToUsersMutationResponse,
+  ADD_ROLE_TO_USERS,
+  EditUserMutationResponse,
+  EDIT_USER,
+  DELETE_USERS, DeleteUsersMutationResponse
+} from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
+import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'who-users',
@@ -24,7 +32,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
@@ -33,6 +41,9 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   public searchText = '';
   public roleFilter = '';
   public showFilters = false;
+
+  selection = new SelectionModel<User>(true, []);
+  loading = false;
 
   constructor(
     private apollo: Apollo,
@@ -120,6 +131,41 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onDelete(users: User[]): void {
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: 'Delete user',
+        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
+        confirmText: 'Delete',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const ids = users.map(u => u.id);
+        this.loading = true;
+        this.selection.clear();
+        if (this.applicationService) {
+          this.applicationService.deleteUsersFromApplication(ids, () => this.loading = false);
+        } else {
+          this.apollo.mutate<DeleteUsersMutationResponse>({
+            mutation: DELETE_USERS,
+            variables: { ids }
+          }).subscribe(res => {
+            this.loading = false;
+            if (res.errors) {
+              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+            } else {
+              this.snackBar.openSnackBar(res.data.deleteUsers > 1 ? `${res.data.deleteUsers} users were deleted` : 'User was deleted',
+                { duration: 3000 });
+              this.users.data = this.users.data.filter(u => !ids.includes(u.id));
+            }
+          });
+        }
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
     this.users.sort = this.sort;
   }
@@ -136,5 +182,27 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   clearAllFilters(): void {
     this.searchText = '';
     this.roleFilter = '';
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.users.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle(): void {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.users.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 }

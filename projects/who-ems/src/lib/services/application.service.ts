@@ -8,22 +8,40 @@ import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { WhoSnackBarService } from './snackbar.service';
 import {
-  AddPageMutationResponse, ADD_PAGE,
-  AddRoleMutationResponse, ADD_ROLE,
-  AddRoleToUsersMutationResponse, ADD_ROLE_TO_USERS,
-  DeletePageMutationResponse, DELETE_PAGE,
-  DeleteRoleMutationResponse, DELETE_ROLE,
-  EditApplicationMutationResponse, EDIT_APPLICATION,
-  EditUserMutationResponse, EDIT_USER,
-  EditRoleMutationResponse, EDIT_ROLE,
-  AddChannelMutationResponse, ADD_CHANNEL,
-  DeleteChannelMutationResponse, DELETE_CHANNEL,
-  AddSubscriptionMutationResponse, ADD_SUBSCRIPTION,
-  EditSubscriptionMutationResponse, EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse, DELETE_SUBSCRIPTION,
-  AddPositionAttributeCategoryMutationResponse, ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DeletePositionAttributeCategoryMutationResponse, DELETE_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_POSITION_ATTRIBUTE_CATEGORY, EditPositionAttributeCategoryMutationResponse
+  AddPageMutationResponse,
+  ADD_PAGE,
+  AddRoleMutationResponse,
+  ADD_ROLE,
+  AddRoleToUsersMutationResponse,
+  ADD_ROLE_TO_USERS,
+  DeletePageMutationResponse,
+  DELETE_PAGE,
+  DeleteRoleMutationResponse,
+  DELETE_ROLE,
+  EditApplicationMutationResponse,
+  EDIT_APPLICATION,
+  EditUserMutationResponse,
+  EDIT_USER,
+  EditRoleMutationResponse,
+  EDIT_ROLE,
+  AddChannelMutationResponse,
+  ADD_CHANNEL,
+  DeleteChannelMutationResponse,
+  DELETE_CHANNEL,
+  AddSubscriptionMutationResponse,
+  ADD_SUBSCRIPTION,
+  EditSubscriptionMutationResponse,
+  EDIT_SUBSCRIPTION,
+  DeleteSubscriptionMutationResponse,
+  DELETE_SUBSCRIPTION,
+  AddPositionAttributeCategoryMutationResponse,
+  ADD_POSITION_ATTRIBUTE_CATEGORY,
+  DeleteUsersFromApplicationMutationResponse,
+  DELETE_USERS_FROM_APPLICATION,
+  DeletePositionAttributeCategoryMutationResponse,
+  DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  EditPositionAttributeCategoryMutationResponse,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
@@ -235,6 +253,30 @@ export class WhoApplicationService {
       this.snackBar.openSnackBar(`${role.title} role deleted.`);
       application.roles = application.roles.filter(x => x.id !== role.id);
       this._application.next(application);
+    });
+  }
+
+  /* Delete users to the opened application.
+  */
+  deleteUsersFromApplication(ids: any[], resolved): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
+      mutation: DELETE_USERS_FROM_APPLICATION,
+      variables: {
+        ids,
+        application: application.id
+      }
+    }).subscribe(res => {
+      if (!res.errors) {
+        const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
+        this.snackBar.openSnackBar(deletedUsers.length > 1 ? `${deletedUsers.length} users were deleted` : 'User was deleted',
+        { duration: 3000 });
+        application.users = application.users.filter(u => !deletedUsers.includes(u.id));
+        this._application.next(application);
+      } else {
+        this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+      }
+      resolved();
     });
   }
 
