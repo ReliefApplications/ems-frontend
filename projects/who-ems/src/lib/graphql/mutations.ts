@@ -226,30 +226,21 @@ export interface DeleteRoleMutationResponse {
 }
 
 // === DELETE USER ===
-export const DELETE_USER = gql`
-  mutation deleteUser($ids: [ID]!) {
-    deleteUser(ids: $ids) {
-      id
-      username
-      name
-      roles {
-        id
-        title
-      }
-      oid
-    }
+export const DELETE_USERS = gql`
+  mutation deleteUsers($ids: [ID]!) {
+    deleteUsers(ids: $ids)
   }`;
 
 
-export interface DeleteUserMutationResponse {
+export interface DeleteUsersMutationResponse {
   loading: boolean;
-  deleteUser: User[];
+  deleteUsers: number;
 }
 
 // === DELETE USER FROM APPLICATION ===
-export const DELETE_USER_FROM_APPLICATION = gql`
-mutation deleteUserFromApplication($usernames: [String]!, $roles: [ID]!) {
-  deleteUserFromApplication(usernames: $usernames, roles: $roles) {
+export const DELETE_USERS_FROM_APPLICATION = gql`
+mutation deleteUsersFromApplication($ids: [ID]!, $application: ID!) {
+  deleteUsersFromApplication(ids: $ids, application: $application) {
     id
     username
     name
@@ -261,9 +252,9 @@ mutation deleteUserFromApplication($usernames: [String]!, $roles: [ID]!) {
   }
 }`;
 
-export interface DeleteUserFromApplicationMutationResponse {
+export interface DeleteUsersFromApplicationMutationResponse {
   loading: boolean;
-  deleteUserFromApplication: User[];
+  deleteUsersFromApplication: User[];
 }
 
 // === ADD POSITION ===

@@ -14,8 +14,8 @@
     Invite users
   </button>
 </div>
-<div class="actions move-right">
-  <button [style.visibility]="selection.selected.length > 0 ? 'visible' : 'hidden'" mat-flat-button color="warn" (click)="onDelete(selection.selected)">
+<div class="actions move-right" *ngIf="selection.selected.length > 0">
+  <button mat-flat-button color="warn" (click)="onDelete(selection.selected)">
     <mat-icon>delete</mat-icon>
     Delete selected users
   </button>

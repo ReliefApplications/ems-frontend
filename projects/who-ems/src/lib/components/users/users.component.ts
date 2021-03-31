@@ -142,19 +142,12 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        const ids = users.map(u => u.id);
         this.loading = true;
         this.selection.clear();
         if (this.applicationService) {
-          const usernames = [];
-          let roles = [];
-          users.map(u => {
-            usernames.push(u.username);
-            roles = roles.concat(u.roles.map(r => r.id));
-          });
-          roles = Array.from(new Set(roles));
-          this.applicationService.deleteUserFromApplication(usernames, roles, () => this.loading = false);
+          this.applicationService.deleteUsersFromApplication(ids, () => this.loading = false);
         } else {
-          const ids = users.map(u => u.id);
           this.apollo.mutate<DeleteUsersMutationResponse>({
             mutation: DELETE_USERS,
             variables: { ids }
@@ -163,8 +156,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
             if (res.errors) {
               this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
             } else {
-              const usersLength = ids.length;
-              this.snackBar.openSnackBar(`${usersLength} user${usersLength > 1 ? 's' : ''} has been deleted`,
+              this.snackBar.openSnackBar(res.data.deleteUsers > 1 ? `${res.data.deleteUsers} users were deleted` : 'User was deleted',
                 { duration: 3000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             }

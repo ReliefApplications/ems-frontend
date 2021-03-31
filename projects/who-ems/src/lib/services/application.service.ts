@@ -258,21 +258,20 @@ export class WhoApplicationService {
 
   /* Delete users to the opened application.
   */
-  deleteUserFromApplication(usernames: any[], roles: any[], resolved): void {
+  deleteUsersFromApplication(ids: any[], resolved): void {
     const application = this._application.getValue();
     this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
       mutation: DELETE_USERS_FROM_APPLICATION,
       variables: {
-        usernames,
-        roles
+        ids,
+        application: application.id
       }
     }).subscribe(res => {
       if (!res.errors) {
-        const usersLength = res.data.deleteUserFromApplication.length;
-        const deleteUsersIDs = res.data.deleteUserFromApplication.map(u => u.id);
-        this.snackBar.openSnackBar(`${usersLength} user${usersLength > 1 ? 's' : ''} has been deleted from the application`,
-          { duration: 3000 });
-        application.users = application.users.filter(u => !deleteUsersIDs.includes(u.id));
+        const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
+        this.snackBar.openSnackBar(deletedUsers.length > 1 ? `${deletedUsers.length} users were deleted` : 'User was deleted',
+        { duration: 3000 });
+        application.users = application.users.filter(u => !deletedUsers.includes(u.id));
         this._application.next(application);
       } else {
         this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
