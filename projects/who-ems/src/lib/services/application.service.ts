@@ -250,20 +250,28 @@ export class WhoApplicationService {
     });
   }
 
-  /* Delete user from application.
-*/
-  deleteUserFromApplication(user: User): void {
+  /* Delete users to the opened application.
+  */
+  deleteUserFromApplication(usernames: any[], roles: any[], resolved): void {
     const application = this._application.getValue();
     this.apollo.mutate<DeleteUserFromApplicationMutationResponse>({
       mutation: DELETE_USER_FROM_APPLICATION,
       variables: {
-        username: user.username,
-        roles: user.roles
+        usernames,
+        roles
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${user.username} was deleted. from the application`);
-      application.users = application.users.filter(x => x.id !== user.id);
-      this._application.next(application);
+      if (!res.errors) {
+        const usersLength = res.data.deleteUserFromApplication.length;
+        const deleteUsersIDs = res.data.deleteUserFromApplication.map(u => u.id);
+        this.snackBar.openSnackBar(`${usersLength} user${usersLength > 1 ? 's' : ''} has been deleted from the application`,
+          { duration: 3000 });
+        application.users = application.users.filter(u => !deleteUsersIDs.includes(u.id));
+        this._application.next(application);
+      } else {
+        this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+      }
+      resolved();
     });
   }
 

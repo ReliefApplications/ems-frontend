@@ -227,8 +227,8 @@ export interface DeleteRoleMutationResponse {
 
 // === DELETE USER FROM APPLICATION ===
 export const DELETE_USER_FROM_APPLICATION = gql`
-mutation deleteUserFromApplication($username: String!, $roles: [ID]!) {
-  deleteUserFromApplication(username: $username, roles: $roles) {
+mutation deleteUserFromApplication($usernames: [String]!, $roles: [ID]!) {
+  deleteUserFromApplication(usernames: $usernames, roles: $roles) {
     id
     username
     name
@@ -242,7 +242,7 @@ mutation deleteUserFromApplication($username: String!, $roles: [ID]!) {
 
 export interface DeleteUserFromApplicationMutationResponse {
   loading: boolean;
-  deleteUserFromApplication: User;
+  deleteUserFromApplication: User[];
 }
 
 // === ADD POSITION ===

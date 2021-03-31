@@ -15,24 +15,28 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [WhoUsersComponent, WhoEditUserComponent, WhoInviteUserComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatTableModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSortModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatTableModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSortModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule
+    ],
   exports: [WhoUsersComponent]
 })
 export class WhoUsersModule { }
