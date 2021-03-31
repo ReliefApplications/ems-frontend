@@ -290,7 +290,7 @@ export class WhoApplicationService {
         application: application.id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${value.title} position created`);
+      this.snackBar.openSnackBar(`${value.title} position category created`);
       application.positionAttributeCategories = application.positionAttributeCategories.concat([res.data.addPositionAttributeCategory]);
       this._application.next(application);
     });
@@ -307,7 +307,7 @@ export class WhoApplicationService {
         application: application.id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${positionCategory.title} position deleted.`);
+      this.snackBar.openSnackBar(`${positionCategory.title} position category deleted.`);
       application.positionAttributeCategories = application.positionAttributeCategories.filter(x =>
         x.id !== res.data.deletePositionAttributeCategory.id);
       this._application.next(application);
@@ -326,14 +326,18 @@ export class WhoApplicationService {
         title: value.title
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Edited subscription.');
-      application.positionAttributeCategories = application.positionAttributeCategories.map(pos => {
-        if (pos.title === positionCategory.title) {
-          pos.title = res.data.editPositionAttributeCategory.title;
-        }
-        return pos;
-      });
-      this._application.next(application);
+      if (res.errors) {
+        this.snackBar.openSnackBar('Position category with this title already exists.', { error: true });
+      } else {
+        this.snackBar.openSnackBar('Edited position category.');
+        application.positionAttributeCategories = application.positionAttributeCategories.map(pos => {
+          if (pos.title === positionCategory.title) {
+            pos.title = res.data.editPositionAttributeCategory.title;
+          }
+          return pos;
+        });
+        this._application.next(application);
+      }
     });
   }
 
