@@ -38,6 +38,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+  public isStep: boolean;
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -53,7 +54,8 @@ export class FormComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      if (this.router.url.includes('/workflow/')) {
+      this.isStep = this.router.url.includes('/workflow/');
+      if (this.isStep) {
         this.apollo.watchQuery<GetStepByIdQueryResponse>({
           query: GET_STEP_BY_ID,
           variables: {
@@ -108,7 +110,7 @@ export class FormComponent implements OnInit, OnDestroy {
   saveName(): void {
     const { tabName } = this.tabNameForm.value;
     this.toggleFormActive();
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
@@ -144,7 +146,7 @@ export class FormComponent implements OnInit, OnDestroy {
   /*  Edit the permissions layer.
   */
   saveAccess(e: any): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
@@ -176,7 +178,7 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   editForm(): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.router.navigate([`./builder/${this.step.content}`], { relativeTo: this.route });
     } else {
       this.router.navigate([`./builder/${this.page.content}`], { relativeTo: this.route });
