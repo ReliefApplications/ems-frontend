@@ -9,7 +9,7 @@ import {
   ADD_ROLE_TO_USER,
   EditUserMutationResponse,
   EDIT_USER,
-  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION
+  DeleteUserFromApplicationMutationResponse, DELETE_USER_FROM_APPLICATION, DELETE_USER, DeleteUserMutationResponse
 } from '../../graphql/mutations';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
@@ -132,7 +132,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: 'Delete user',
-        content: `Do you confirm the deletion of the selected user${users.length > 1 ? 's' : ''} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
+        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
@@ -140,31 +140,28 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.loading = true;
-        const usernames = [];
-        let roles = [];
-        users.map(u => {
-          usernames.push(u.username);
-          roles = roles.concat(u.roles.map(r => r.id));
-        });
-        roles = Array.from(new Set(roles));
         this.selection.clear();
         if (this.applicationService) {
+          const usernames = [];
+          let roles = [];
+          users.map(u => {
+            usernames.push(u.username);
+            roles = roles.concat(u.roles.map(r => r.id));
+          });
+          roles = Array.from(new Set(roles));
           this.applicationService.deleteUserFromApplication(usernames, roles, () => this.loading = false);
         } else {
-          this.apollo.mutate<DeleteUserFromApplicationMutationResponse>({
-            mutation: DELETE_USER_FROM_APPLICATION,
-            variables: {
-              usernames,
-              roles
-            }
+          const ids = users.map(u => u.id);
+          this.apollo.mutate<DeleteUserMutationResponse>({
+            mutation: DELETE_USER,
+            variables: { ids }
           }).subscribe(res => {
             this.loading = false;
             if (!res.errors) {
-              const usersLength = res.data.deleteUserFromApplication.length;
-              const deleteUsersIDs = res.data.deleteUserFromApplication.map(u => u.id);
+              const usersLength = ids.length;
               this.snackBar.openSnackBar(`${usersLength} user${usersLength > 1 ? 's' : ''} has been deleted`,
                 { duration: 3000 });
-              this.users.data = this.users.data.filter(u => !deleteUsersIDs.includes(u.id));
+              this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             } else {
               this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
             }
