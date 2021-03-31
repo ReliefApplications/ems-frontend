@@ -166,9 +166,9 @@ export interface AddRoleMutationResponse {
   addRole: Role;
 }
 
-export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($username: String!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
-  addRoleToUser(username: $username, role: $role, positionAttributes: $positionAttributes) {
+export const ADD_ROLE_TO_USERS = gql`
+mutation addRoleToUsers($usernames: [String]!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
+  addRoleToUsers(usernames: $usernames, role: $role, positionAttributes: $positionAttributes) {
     id
     username
     name
@@ -180,9 +180,9 @@ mutation addRoleToUser($username: String!, $role: ID!, $positionAttributes: [Pos
   }
 }`;
 
-export interface AddRoleToUserMutationResponse {
+export interface AddRoleToUsersMutationResponse {
   loading: boolean;
-  addRoleToUser: User;
+  addRoleToUsers: User[];
 }
 
 // === EDIT ROLE ===
