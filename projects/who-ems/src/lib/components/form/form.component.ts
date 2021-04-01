@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import * as Survey from 'survey-angular';
@@ -9,13 +9,16 @@ import { FormService } from '../../services/form.service';
 import { WhoFormModalComponent } from '../form-modal/form-modal.component';
 import { WhoSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { WhoWorkflowService } from '../../services/workflow.service';
 
 @Component({
   selector: 'who-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class WhoFormComponent implements OnInit {
+export class WhoFormComponent implements OnInit, OnDestroy {
 
   @Input() form: Form;
   @Input() record: Record;
@@ -35,11 +38,17 @@ export class WhoFormComponent implements OnInit {
   // === MODIFIED AT ===
   public modifiedAt: Date;
 
+  // === PASS RECORDS FROM WORKFLOW ===
+  private isStep: boolean;
+  private recordsSubscription: Subscription;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private formService: FormService,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private router: Router,
+    private workflowService: WhoWorkflowService
   ) {}
 
   ngOnInit(): void {
@@ -54,8 +63,8 @@ export class WhoFormComponent implements OnInit {
       .applyTheme();
 
     const structure = JSON.parse(this.form.structure);
-
     this.survey = new Survey.Model(JSON.stringify(structure));
+
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       for (const field of this.form.fields) {
@@ -64,13 +73,32 @@ export class WhoFormComponent implements OnInit {
         }
       }
     }
-    const cachedData = localStorage.getItem(`record:${this.form.id}`);
+
+    // Fetch cached data from local storage
+    let cachedData = JSON.parse(localStorage.getItem(`record:${this.form.id}`));
+
+    this.isStep = this.router.url.includes('/workflow/');
+    if (this.isStep) {
+      this.recordsSubscription = this.workflowService.records.subscribe(records => {
+        if (records) {
+          const mergedRecord = records[0];
+          cachedData = mergedRecord.data;
+          const resourcesField = this.form.fields.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === mergedRecord.form.resource.id) {
+            cachedData[resourcesField.name] = records.map(x => x.id);
+          } else {
+            this.snackBar.openSnackBar('Selected records do not match with any fields from this form', { error: true });
+          }
+        }
+      });
+    }
+
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt;
     } else {
       if (cachedData) {
-        this.survey.data = JSON.parse(cachedData);
+        this.survey.data = cachedData;
       } else {
         if (this.record && this.record.data) {
           this.survey.data = this.record.data;
@@ -209,6 +237,13 @@ export class WhoFormComponent implements OnInit {
     this.selectedTabIndex = i;
     if (this.survey.compareTo) {
       this.survey.currentPageNo = i;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.recordsSubscription) {
+      this.recordsSubscription.unsubscribe();
+      this.workflowService.storeRecords(null);
     }
   }
 }

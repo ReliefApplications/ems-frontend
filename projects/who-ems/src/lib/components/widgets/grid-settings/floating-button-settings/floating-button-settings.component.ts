@@ -1,7 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
+import { Form } from 'projects/who-ems/src/lib/models/form.model';
+import { ContentType } from 'projects/who-ems/src/lib/models/page.model';
+import { WhoWorkflowService } from 'projects/who-ems/src/lib/services/workflow.service';
+import { Subscription } from 'rxjs';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -10,14 +14,19 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
   templateUrl: './floating-button-settings.component.html',
   styleUrls: ['./floating-button-settings.component.scss']
 })
-export class FloatingButtonSettingsComponent implements OnInit {
+export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @Input() buttonForm: FormGroup;
   @Input() fields: any[];
   @Input() channels: Channel[];
+  @Input() forms: Form[];
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
+
+  // Indicate if the next step is a Form and so we could potentially pass some data to it.
+  public canPassData = false;
+  private workflowSubscription: Subscription;
 
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
@@ -25,11 +34,28 @@ export class FloatingButtonSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private workflowService: WhoWorkflowService
   ) { }
 
   ngOnInit(): void {
-    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) { this.isDashboard = true; }
+    if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) {
+      this.isDashboard = true;
+    } else {
+      const currentStepContent = this.router.url.split('/').pop();
+      this.workflowSubscription = this.workflowService.workflow.subscribe(workflow => {
+        if (workflow) {
+          const currentStepIndex = workflow.steps.findIndex(x => x.content === currentStepContent);
+          if (currentStepIndex >= 0) {
+            const nextStep = workflow.steps[currentStepIndex + 1];
+            this.canPassData = nextStep && nextStep.type === ContentType.form;
+          }
+        } else {
+          const workflowId = this.router.url.split('/workflow/').pop().split('/').shift();
+          this.workflowService.loadWorkflow(workflowId);
+        }
+      });
+    }
     this.buttonForm.get('notify').valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm.get('notificationChannel').setValidators(Validators.required);
@@ -58,6 +84,7 @@ export class FloatingButtonSettingsComponent implements OnInit {
         this.buttonForm.controls.publish.setValue(false);
       }
     });
+
     this.buttonForm.get('modifySelectedRows').valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
@@ -96,6 +123,12 @@ export class FloatingButtonSettingsComponent implements OnInit {
         modifications.removeAt(i);
         i--;
       }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.workflowSubscription) {
+      this.workflowSubscription.unsubscribe();
     }
   }
 }

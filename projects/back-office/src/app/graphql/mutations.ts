@@ -40,25 +40,6 @@ export interface AddRoleMutationResponse {
   addRole: Role;
 }
 
-export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($id: ID!, $role: ID!) {
-  addRoleToUser(id: $id, role: $role) {
-    id
-    username
-    name
-    roles {
-      id
-      title
-    }
-    oid
-  }
-}`;
-
-export interface AddRoleToUserMutationResponse {
-  loading: boolean;
-  addRoleToUser: User;
-}
-
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
@@ -630,21 +611,3 @@ export interface EditStepMutationResponse {
   loading: boolean;
   editStep: Step;
 }
-
-// === ADD STEP ===
-export const ADD_STEP = gql`
-mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
-  addStep(name: $name, type: $type, content: $content, workflow: $workflow){
-    id
-    name
-    type
-    content
-    createdAt
-  }
-}`;
-
-export interface AddStepMutationResponse {
-  loading: boolean;
-  addStep: Step;
-}
-

@@ -8,3 +8,24 @@
 .chart-icon {
     margin-right: 8px;
 }
+
+.widget-form-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-form-container {
+    display: flex;
+    height: 100%;
+
+    .chart-form {
+        flex: 1;
+        max-width: 300px;
+    }
+
+    .chart-display {
+        margin-left: 8px;
+        flex: 1;
+    }
+}

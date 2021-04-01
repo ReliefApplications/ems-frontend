@@ -18,7 +18,12 @@ export class WhoGridService {
     {
       name: 'BAR CHART',
       icon: 'bar_chart',
-      settings: {title: 'Bar chart', type: 'bar', source: '', xAxis: '', yAxis: ''},
+      settings: {
+        title: 'Bar chart',
+        chart: {
+          type: 'bar'
+        }
+      },
       defaultCols: 2,
       defaultRows: 2,
       component: 'chart',
@@ -27,7 +32,9 @@ export class WhoGridService {
     {
       name: 'DONUT CHART',
       icon: 'donut_small',
-      settings: {title: 'Donut chart', type: 'donut', source: '', xAxis: '', yAxis: ''},
+      settings: {title: 'Donut chart', chart: {
+        type: 'donut'
+      }},
       defaultCols: 2,
       defaultRows: 2,
       component: 'chart',
@@ -36,7 +43,9 @@ export class WhoGridService {
     {
       name: 'LINE CHART',
       icon: 'show_chart',
-      settings: {title: 'Line chart', type: 'line', query: '', xAxis: '', yAxis: ''},
+      settings: {title: 'Line chart', chart: {
+        type: 'line'
+      }},
       defaultCols: 2,
       defaultRows: 2,
       component: 'chart',
@@ -45,30 +54,34 @@ export class WhoGridService {
     {
       name: 'PIE CHART',
       icon: 'pie_chart',
-      settings: {title: 'Pie chart', type: 'pie', source: '', xAxis: '', yAxis: ''},
+      settings: {title: 'Pie chart', chart: {
+        type: 'pie'
+      }},
       defaultCols: 2,
       defaultRows: 2,
       component: 'chart',
       settingsTemplate: WhoChartSettingsComponent
     },
-    {
-      name: 'SCATTER PLOT',
-      icon: 'scatter_plot',
-      settings: {title: 'Scatter chart', type: 'scatter', source: '', xAxis: '', yAxis: ''},
-      defaultCols: 2,
-      defaultRows: 2,
-      component: 'chart',
-      settingsTemplate: WhoChartSettingsComponent
-    },
-    {
-      name: 'SCHEDULER',
-      icon: 'schedule',
-      settings: {title: 'Scheduler'},
-      defaultCols: 3,
-      defaultRows: 3,
-      component: 'scheduler',
-      settingsTemplate: WhoSchedulerSettingsComponent
-    },
+    // {
+    //   name: 'SCATTER PLOT',
+    //   icon: 'scatter_plot',
+    //   settings: {title: 'Scatter chart', chart: {
+    //     type: 'scatter'
+    //   }},
+    //   defaultCols: 2,
+    //   defaultRows: 2,
+    //   component: 'chart',
+    //   settingsTemplate: WhoChartSettingsComponent
+    // },
+    // {
+    //   name: 'SCHEDULER',
+    //   icon: 'schedule',
+    //   settings: {title: 'Scheduler'},
+    //   defaultCols: 3,
+    //   defaultRows: 3,
+    //   component: 'scheduler',
+    //   settingsTemplate: WhoSchedulerSettingsComponent
+    // },
     {
       name: 'GRID',
       icon: 'view_column',
