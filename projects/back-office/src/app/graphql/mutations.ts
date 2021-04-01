@@ -611,21 +611,3 @@ export interface EditStepMutationResponse {
   loading: boolean;
   editStep: Step;
 }
-
-// === ADD STEP ===
-export const ADD_STEP = gql`
-mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
-  addStep(name: $name, type: $type, content: $content, workflow: $workflow){
-    id
-    name
-    type
-    content
-    createdAt
-  }
-}`;
-
-export interface AddStepMutationResponse {
-  loading: boolean;
-  addStep: Step;
-}
-

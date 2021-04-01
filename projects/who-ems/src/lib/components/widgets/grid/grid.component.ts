@@ -28,6 +28,7 @@ import { HttpClient } from '@angular/common/http';
 import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
+import { WhoWorkflowService } from '../../../services/workflow.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -146,7 +147,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
-    private snackBar: WhoSnackBarService
+    private snackBar: WhoSnackBarService,
+    private workflowService: WhoWorkflowService
   ) {
   }
 
@@ -760,6 +762,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (promises.length > 0) {
         await Promise.all(promises);
+      }
+      if (options.passDataToNextStep) {
+        const promisedRecords = [];
+        for (const record of selectedRecords) {
+          promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
+            query: GET_RECORD_DETAILS,
+            variables: {
+              id: record.id
+            }
+          }).toPromise());
+        }
+        const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
+        this.workflowService.storeRecords(records);
       }
     }
     if (options.goToNextStep) {

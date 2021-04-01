@@ -1,18 +1,24 @@
 import { Injectable } from '@angular/core';
-import { Workflow, Step, WhoSnackBarService, ContentType } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../graphql/queries';
 import { AddStepMutationResponse, ADD_STEP } from '../graphql/mutations';
+import { Workflow } from '../models/workflow.model';
+import { WhoSnackBarService } from './snackbar.service';
+import { ContentType } from '../models/page.model';
+import { Step } from '../models/step.model';
+import { Record } from '../models/record.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WorkflowService {
+export class WhoWorkflowService {
 
   // tslint:disable-next-line: variable-name
   private _workflow = new BehaviorSubject<Workflow>(null);
+  // tslint:disable-next-line: variable-name
+  private _records = new BehaviorSubject<Record[]>(null);
 
   constructor(
     private apollo: Apollo,
@@ -76,5 +82,17 @@ export class WorkflowService {
       return x;
     });
     this._workflow.next(workflow);
+  }
+
+  /*  Store records used to prefill next step form
+  */
+  storeRecords(records: Record[]): void {
+    this._records.next(records);
+  }
+
+  /*  Return records as an Observable.
+  */
+  get records(): Observable<Record[]> {
+    return this._records.asObservable();
   }
 }

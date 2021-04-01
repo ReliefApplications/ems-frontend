@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
-import { WorkflowService } from '../../../../../services/workflow.service';
 import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
 
 @Component({
@@ -38,7 +37,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
     private snackBar: WhoSnackBarService,
     private authService: WhoAuthService,
     private apollo: Apollo,
-    private workflowServive: WorkflowService,
+    private workflowServive: WhoWorkflowService,
   ) { }
 
   ngOnInit(): void {
