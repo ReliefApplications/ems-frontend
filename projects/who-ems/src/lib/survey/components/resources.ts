@@ -1,7 +1,7 @@
-import { ComponentFactory, ViewContainerRef } from '@angular/core';
-import { WhoQueryBuilderComponent } from '../../components/query-builder/query-builder.component';
+import { WhoSurveyGridComponent } from '../../components/survey/survey-grid/survey-grid.component';
+import { DomService } from '../../services/dom.service';
 
-export function init(Survey: any, API_URL: string, componentFactoryResolver: any): void {
+export function init(Survey: any, API_URL: string, domService: DomService): void {
     const component = {
         name: 'resources',
         title: 'Resources',
@@ -309,9 +309,11 @@ export function init(Survey: any, API_URL: string, componentFactoryResolver: any
             };
             mainDiv.appendChild(btnEl);
             el.parentElement.insertBefore(mainDiv, el);
-            const childTemplate: ViewContainerRef = null;
-            const factory: ComponentFactory<any> = componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
-            const componentRef = childTemplate.createComponent(factory);
+            const grid = domService.appendComponentToBody(WhoSurveyGridComponent, el.parentElement);
+            const instance = grid.instance;
+            // instance.settings = {
+            //     title: null
+            // };
         },
     };
     Survey.CustomWidgetCollection.Instance.add(widget);
