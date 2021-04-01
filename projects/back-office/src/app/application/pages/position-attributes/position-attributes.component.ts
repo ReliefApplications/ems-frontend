@@ -26,5 +26,6 @@ export class PositionAttributesComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     console.log(this.id);
+    
   }
 }

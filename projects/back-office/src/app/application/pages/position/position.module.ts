@@ -15,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { WhoConfirmModalModule } from '@who-ems/builder';
 import { AddPositionComponent } from './components/add-position/add-position.component';
-import { PositionAttributesRoutingModule } from './position-attributes/position-attributes-routing.module';
+import { PositionAttributesRoutingModule } from '../position-attributes/position-attributes-routing.module';
 
 @NgModule({
   declarations: [

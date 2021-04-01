@@ -606,3 +606,22 @@ export interface GetRoutingKeysQueryResponse{
   loading: boolean;
   applications: Application[];
 }
+
+// === GET POSITION ATTRIBUTES ===
+export const GET_POSITION_ATTRIBUTES = gql`
+query GetRecordById($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    modifiedAt
+    form {
+      id
+      structure
+    }
+  }
+}`;
+
+export interface GetPositionAttributesQueryResponse {
+  loading: boolean;
+  record: Record;
+}
