@@ -1,4 +1,7 @@
-export function init(Survey: any, API_URL: string): void {
+import { ComponentFactory, ViewContainerRef } from '@angular/core';
+import { WhoQueryBuilderComponent } from '../../components/query-builder/query-builder.component';
+
+export function init(Survey: any, API_URL: string, componentFactoryResolver: any): void {
     const component = {
         name: 'resources',
         title: 'Resources',
@@ -306,6 +309,9 @@ export function init(Survey: any, API_URL: string): void {
             };
             mainDiv.appendChild(btnEl);
             el.parentElement.insertBefore(mainDiv, el);
+            const childTemplate: ViewContainerRef = null;
+            const factory: ComponentFactory<any> = componentFactoryResolver.resolveComponentFactory(WhoQueryBuilderComponent);
+            const componentRef = childTemplate.createComponent(factory);
         },
     };
     Survey.CustomWidgetCollection.Instance.add(widget);
