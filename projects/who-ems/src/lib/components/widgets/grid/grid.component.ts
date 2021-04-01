@@ -719,8 +719,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Execute sequentially actions enabled by settings for the floating button
   */
-  public async onFloatingButtonClick(): Promise<void> {
-    const options = this.settings.floatingButton;
+  public async onFloatingButtonClick(options: any): Promise<void> {
+
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {

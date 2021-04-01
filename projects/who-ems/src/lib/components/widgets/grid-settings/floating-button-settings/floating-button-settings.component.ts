@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
@@ -20,6 +20,8 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() fields: any[];
   @Input() channels: Channel[];
   @Input() forms: Form[];
+
+  @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
@@ -124,6 +126,10 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         i--;
       }
     }
+  }
+
+  public emitDeleteButton(): void {
+    this.deleteButton.emit(true);
   }
 
   ngOnDestroy(): void {

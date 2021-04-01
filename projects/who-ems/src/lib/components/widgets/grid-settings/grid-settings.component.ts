@@ -32,6 +32,7 @@ export class WhoGridSettingsComponent implements OnInit {
   // === FLOATING BUTTON ===
   public fields: any[];
   public queryName: string;
+  public tabIndex: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,6 +46,7 @@ export class WhoGridSettingsComponent implements OnInit {
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
+
     const hasActions = !!tileSettings && !!tileSettings.actions;
 
     this.tileForm = this.formBuilder.group({
@@ -57,7 +59,8 @@ export class WhoGridSettingsComponent implements OnInit {
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update : true]
       }),
-      floatingButton: this.createFloatingButtonForm(tileSettings.floatingButton)
+      floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
+        tileSettings.floatingButtons.map(x => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
 
     this.change.emit(this.tileForm);
@@ -87,9 +90,12 @@ export class WhoGridSettingsComponent implements OnInit {
     this.tileForm.get('query').valueChanges.subscribe(res => {
       if (res.name) {
         if (this.fields && (res.name !== this.queryName)) {
-          const modifications = this.tileForm.get('floatingButton.modifications') as FormArray;
-          modifications.clear();
-          this.tileForm.get('floatingButton.modifySelectedRows').setValue(false);
+          const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+          for (const floatingButton of floatingButtons.controls) {
+            const modifications = floatingButton.get('modifications') as FormArray;
+            modifications.clear();
+            floatingButton.get('modifySelectedRows').setValue(false);
+          }
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
@@ -107,7 +113,7 @@ export class WhoGridSettingsComponent implements OnInit {
       passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
-      modifications: this.formBuilder.array(value && value.modifications.length
+      modifications: this.formBuilder.array(value && value.modifications && value.modifications.length
         ? value.modifications.map(x => this.formBuilder.group({
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
@@ -122,5 +128,17 @@ export class WhoGridSettingsComponent implements OnInit {
       value && value.publish ? Validators.required : null]
     });
     return buttonForm;
+  }
+
+  public addFloatingButton(): void {
+    const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+    floatingButtons.push(this.createFloatingButtonForm({ show: true }));
+    this.tabIndex = floatingButtons.length - 1;
+  }
+
+  public deleteFloatingButton(): void {
+    const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+    floatingButtons.removeAt(this.tabIndex);
+    this.tabIndex = 0;
   }
 }
