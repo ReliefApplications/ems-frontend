@@ -32,7 +32,6 @@ export class PositionComponent implements OnInit, OnDestroy {
         this.positionCategories = [];
       }
     });
-    console.log("positions categories : ", this.positionCategories);
   }
 
   onAdd(): void {

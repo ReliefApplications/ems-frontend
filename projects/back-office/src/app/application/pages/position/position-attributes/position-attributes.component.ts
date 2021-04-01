@@ -12,7 +12,7 @@ export class PositionAttributesComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: String;
+  public id: string;
   public attributes: any;
   public displayedColumns = ['attribute', 'users'];
 
