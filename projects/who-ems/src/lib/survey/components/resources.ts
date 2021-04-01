@@ -145,6 +145,19 @@ export function init(Survey: any, API_URL: string, domService: DomService): void
                 },
             });
             Survey.Serializer.addProperty('resources', {
+                name: 'displayAsGrid:boolean',
+                category: 'Custom Questions',
+                dependsOn: ['resource'],
+                visibleIf: (obj) => {
+                    if (!obj || !obj.resource) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                visibleIndex: 3,
+            });
+            Survey.Serializer.addProperty('resources', {
                 name: 'canAddNew:boolean',
                 category: 'Custom Questions',
                 dependsOn: ['resource'],
@@ -309,6 +322,20 @@ export function init(Survey: any, API_URL: string, domService: DomService): void
             };
             mainDiv.appendChild(btnEl);
             el.parentElement.insertBefore(mainDiv, el);
+        },
+    };
+    Survey.CustomWidgetCollection.Instance.add(widget);
+    const gridWidget = {
+        name: 'displayAsGrid',
+        isFit: (question) => {
+            if (question.getType() === 'resources') {
+                return question.displayAsGrid;
+            } else {
+                return false;
+            }
+        },
+        isDefaultRender: true,
+        afterRender: (question, el) => {
             const grid = domService.appendComponentToBody(WhoSurveyGridComponent, el.parentElement);
             const instance = grid.instance;
             // instance.settings = {
@@ -316,5 +343,5 @@ export function init(Survey: any, API_URL: string, domService: DomService): void
             // };
         },
     };
-    Survey.CustomWidgetCollection.Instance.add(widget);
+    Survey.CustomWidgetCollection.Instance.add(gridWidget);
 }
