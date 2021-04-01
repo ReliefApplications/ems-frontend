@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { Subscription, Observable } from 'rxjs';
-import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService } from '@who-ems/builder';
+import { Subscription } from 'rxjs';
+import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -13,7 +13,6 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE
 } from '../../../graphql/mutations';
-import { WorkflowService } from '../../../services/workflow.service';
 
 @Component({
   selector: 'app-form',
@@ -39,10 +38,11 @@ export class FormComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription: Subscription;
+  public isStep: boolean;
 
   constructor(
     private applicationService: WhoApplicationService,
-    private workflowService: WorkflowService,
+    private workflowService: WhoWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
@@ -54,7 +54,8 @@ export class FormComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      if (this.router.url.includes('/workflow/')) {
+      this.isStep = this.router.url.includes('/workflow/');
+      if (this.isStep) {
         this.apollo.watchQuery<GetStepByIdQueryResponse>({
           query: GET_STEP_BY_ID,
           variables: {
@@ -109,7 +110,7 @@ export class FormComponent implements OnInit, OnDestroy {
   saveName(): void {
     const { tabName } = this.tabNameForm.value;
     this.toggleFormActive();
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
@@ -145,7 +146,7 @@ export class FormComponent implements OnInit, OnDestroy {
   /*  Edit the permissions layer.
   */
   saveAccess(e: any): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
@@ -177,7 +178,7 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   editForm(): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.router.navigate([`./builder/${this.step.content}`], { relativeTo: this.route });
     } else {
       this.router.navigate([`./builder/${this.page.content}`], { relativeTo: this.route });

@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { Dashboard, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
+import { Dashboard, WhoSnackBarService, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -11,7 +11,6 @@ import {
   EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { WorkflowService } from '../../../services/workflow.service';
 
 
 @Component({
@@ -42,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationService: WhoApplicationService,
-    private workflowService: WorkflowService,
+    private workflowService: WhoWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,

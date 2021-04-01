@@ -26,11 +26,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.checkAccount();
       const idToken = this.authService.account.idToken;
       const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
-      setTimeout(() => {
-        this.msalService.acquireTokenSilent({
-          scopes: [environment.clientId]
-        });
-      }, timeout);
+      if (idToken && timeout > 0) {
+        setTimeout(() => {
+          this.msalService.acquireTokenSilent({
+            scopes: [environment.clientId]
+          });
+        }, timeout);
+      }
     });
   }
 

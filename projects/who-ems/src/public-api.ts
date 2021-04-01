@@ -8,6 +8,7 @@ export * from './lib/services/snackbar.service';
 export * from './lib/services/grid.service';
 export * from './lib/services/application.service';
 export * from './lib/services/download.service';
+export * from './lib/services/workflow.service';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';

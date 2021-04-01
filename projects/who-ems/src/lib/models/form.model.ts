@@ -21,7 +21,7 @@ export interface Form {
     recordsCount?: number;
     core?: boolean;
     records?: Record[];
-    fields?: any;
+    fields?: any[];
     permissions?: any;
     resource?: Resource;
     canSee?: boolean;

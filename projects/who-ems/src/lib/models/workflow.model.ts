@@ -1,4 +1,5 @@
 import { Page } from './page.model';
+import { Step } from './step.model';
 
 /*  Model for Workflow object.
 */
@@ -7,7 +8,7 @@ export interface Workflow {
     name?: string;
     createdAt?: Date;
     modifiedAt?: Date;
-    steps?: any;
+    steps?: Step[];
     permissions?: any;
     page?: Page;
 }

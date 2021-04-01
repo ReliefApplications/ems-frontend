@@ -14,10 +14,18 @@
 }
 
 .filters {
-  clear: both;
   margin-left: -12px;
+  padding-top: 30px;
 
   .mat-form-field {
     margin-left: 12px;
   }
+}
+
+.mat-checkbox {
+  margin-right: 12px;
+}
+
+.move-right {
+  float: right;
 }
