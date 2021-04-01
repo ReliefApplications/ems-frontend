@@ -1,9 +1,8 @@
 import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 import { saveAs } from '@progress/kendo-file-saver';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -18,26 +17,33 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public data = [];
+  public series = [];
   private dataQuery: any;
   private dataSubscription: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
+  @Input() export = true;
   @Input() settings: any = null;
 
   // === CHART ===
   @ViewChild('chart')
   private chart: ChartComponent;
 
+  public categoryAxis: any = {
+    type: 'date',
+    maxDivisions: 10
+  };
+
   constructor(
-    private queryBuilder: QueryBuilderService
-  ) {}
+    private aggregationBuilder: AggregationBuilderService
+  ) { }
 
   /*  Detect changes of the settings to reload the data.
   */
   ngOnChanges(): void {
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.loading = false;
+    this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
     if (this.dataQuery) {
       this.getData();
     } else {
@@ -58,29 +64,21 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   */
   private getData(): void {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
-      this.data = [];
-      const dataToAggregate = [];
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          for (const record of res.data[field]) {
-            const existingField = dataToAggregate.find(x => {
-              return x[this.settings.xAxis] === record[this.settings.xAxis];
-            });
-            if (existingField) {
-              existingField[this.settings.yAxis] += record[this.settings.yAxis];
-            } else {
-              dataToAggregate.push(record);
-            }
+      if (['pie', 'donut', 'line'].includes(this.settings.chart.type)) {
+        this.series = [
+          {
+            data: res.data.recordsAggregation
           }
-        }
+        ];
+      } else {
+        this.series = res.data.recordsAggregation;
       }
-      this.data = dataToAggregate;
       this.loading = res.loading;
     });
   }
 
   ngOnDestroy(): void {
-    if (this.dataSubscription) {
+    if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
   }

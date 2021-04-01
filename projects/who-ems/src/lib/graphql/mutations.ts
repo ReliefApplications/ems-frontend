@@ -167,9 +167,9 @@ export interface AddRoleMutationResponse {
   addRole: Role;
 }
 
-export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($username: String!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
-  addRoleToUser(username: $username, role: $role, positionAttributes: $positionAttributes) {
+export const ADD_ROLE_TO_USERS = gql`
+mutation addRoleToUsers($usernames: [String]!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
+  addRoleToUsers(usernames: $usernames, role: $role, positionAttributes: $positionAttributes) {
     id
     username
     name
@@ -181,9 +181,9 @@ mutation addRoleToUser($username: String!, $role: ID!, $positionAttributes: [Pos
   }
 }`;
 
-export interface AddRoleToUserMutationResponse {
+export interface AddRoleToUsersMutationResponse {
   loading: boolean;
-  addRoleToUser: User;
+  addRoleToUsers: User[];
 }
 
 // === EDIT ROLE ===
@@ -226,6 +226,38 @@ export interface DeleteRoleMutationResponse {
   deleteRole: Role;
 }
 
+// === DELETE USER ===
+export const DELETE_USERS = gql`
+  mutation deleteUsers($ids: [ID]!) {
+    deleteUsers(ids: $ids)
+  }`;
+
+
+export interface DeleteUsersMutationResponse {
+  loading: boolean;
+  deleteUsers: number;
+}
+
+// === DELETE USER FROM APPLICATION ===
+export const DELETE_USERS_FROM_APPLICATION = gql`
+mutation deleteUsersFromApplication($ids: [ID]!, $application: ID!) {
+  deleteUsersFromApplication(ids: $ids, application: $application) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
+  }
+}`;
+
+export interface DeleteUsersFromApplicationMutationResponse {
+  loading: boolean;
+  deleteUsersFromApplication: User[];
+}
+
 // === ADD POSITION ===
 export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
 mutation addPositionAttributeCategory($title: String!, $application: ID!) {
@@ -240,6 +272,33 @@ export interface AddPositionAttributeCategoryMutationResponse {
   addPositionAttributeCategory: PositionAttributeCategory;
 }
 
+// === DELETE POSITION ===
+export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
+mutation deletePositionAttributeCategory($id: ID!, $application: ID!) {
+  deletePositionAttributeCategory(id: $id, application: $application){
+    id
+  }
+}`;
+
+
+export interface DeletePositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  deletePositionAttributeCategory: PositionAttributeCategory;
+}
+
+// === EDIT POSITION ===
+export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
+mutation editPositionAttributeCategory($id: ID!, $application: ID!, $title: String!) {
+  editPositionAttributeCategory(id: $id, application: $application, title: $title) {
+    id
+    title
+  }
+}`;
+
+export interface EditPositionAttributeCategoryMutationResponse {
+  loading: boolean;
+  editPositionAttributeCategory: PositionAttributeCategory;
+}
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
 mutation deletePage($id: ID!) {
