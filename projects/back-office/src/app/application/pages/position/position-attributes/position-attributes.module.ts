@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PositionRoutingModule } from './position-routing.module';
-import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -13,18 +11,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { WhoConfirmModalModule } from '@who-ems/builder';
-import { AddPositionComponent } from './components/add-position/add-position.component';
-import { PositionAttributesRoutingModule } from './position-attributes/position-attributes-routing.module';
+import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
+import { PositionAttributesComponent } from './position-attributes.component';
 
 @NgModule({
   declarations: [
-    PositionComponent,
-    AddPositionComponent
+    PositionAttributesComponent,
   ],
   imports: [
     CommonModule,
-    PositionRoutingModule,
     PositionAttributesRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -37,8 +32,7 @@ import { PositionAttributesRoutingModule } from './position-attributes/position-
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    WhoConfirmModalModule
   ],
-  exports: [PositionComponent]
+  exports: [PositionAttributesComponent]
 })
-export class PositionModule { }
+export class PositionAttributesModule { }

@@ -63,6 +63,7 @@ export class WhoInviteUserComponent implements OnInit {
     this.apollo.watchQuery<GetUsersQueryResponse>({
       query: GET_USERS
     }).valueChanges.subscribe(res => {
+      console.log("res = ", res.data.users);
       this.users = res.data.users;
     });
     this.filteredUsers = this.inviteForm.controls.email.valueChanges.pipe(
@@ -70,6 +71,7 @@ export class WhoInviteUserComponent implements OnInit {
       map(value => typeof value === 'string' ? value : value.username),
       map(x => this.filter(x))
     );
+    console.log("users = ", this.users);
   }
 
   private filter(value: string): User[] {

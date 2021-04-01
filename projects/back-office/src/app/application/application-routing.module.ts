@@ -44,6 +44,14 @@ const routes: Routes = [
             loadChildren: () => import('./pages/position/position.module')
               .then(m => m.PositionModule),
             // canActivate: [WhoPermissionGuard]
+            children: [
+              {
+                path: ':id',
+                loadChildren: () => import('./pages/position/position-attributes/position-attributes.module')
+                  .then(m => m.PositionAttributesModule),
+                // canActivate: [WhoPermissionGuard]
+              },
+            ]
           },
           {
             path: 'channels',
