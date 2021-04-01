@@ -8,9 +8,8 @@
           <input matInput formControlName="name" type="string">
         </mat-form-field>
         <mat-checkbox *ngIf="!isDashboard" formControlName="goToNextStep">Go to next step</mat-checkbox>
-        <span class="info-row">
-          <mat-checkbox *ngIf="!isDashboard && buttonForm.value.goToNextStep && canPassData" 
-            formControlName="passDataToNextStep">Prefill next step form with selected data</mat-checkbox>
+        <span class="info-row" *ngIf="!isDashboard && buttonForm.value.goToNextStep && canPassData">
+          <mat-checkbox formControlName="passDataToNextStep">Prefill next step form with selected data</mat-checkbox>
           <mat-icon class="info-icon"
             matTooltip="When enabled, the next step should be a form containing some matching fields with this grid's records AND a 'Resources' question referring to this grid's records. The next step form will then be prefilled with values from selected records and the 'Resources' question will also be prefilled with selected records."
             matTooltipPosition="right">

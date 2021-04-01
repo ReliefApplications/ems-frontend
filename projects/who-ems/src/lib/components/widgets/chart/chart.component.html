@@ -3,7 +3,7 @@
     <button mat-icon-button class="export-button" (click)="onExport()" *ngIf="export">
         <mat-icon>get_app</mat-icon>
     </button>
-    <kendo-chart #chart class="widget-content" [categoryAxis]="settings.chart.type === 'line' ? categoryAxis : ''">
+    <kendo-chart #chart class="widget-content" [categoryAxis]="settings.chart.type === 'line' ? categoryAxis : ''" *ngIf="settings.chart">
         <kendo-chart-title *ngIf="settings.chart.title" [visible]='settings.chart.title.visible' [text]='settings.chart.title.text'
             [position]='settings.chart.title.position'></kendo-chart-title>
         <kendo-chart-legend *ngIf="settings.chart.legend" [visible]='settings.chart.legend.visible' [position]='settings.chart.legend.position'
