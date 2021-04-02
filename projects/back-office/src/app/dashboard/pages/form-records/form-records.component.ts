@@ -5,7 +5,6 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queri
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
 import { WhoDownloadService } from '@who-ems/builder';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-form-records',
@@ -79,8 +78,8 @@ export class FormRecordsComponent implements OnInit {
   }
 
   onDownload(): void {
-    const url = `${environment.API_URL}/download/form/records/${this.id}`;
+    const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
+    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
   }
 }

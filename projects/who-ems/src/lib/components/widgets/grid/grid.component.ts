@@ -29,6 +29,7 @@ import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { WhoWorkflowService } from '../../../services/workflow.service';
+import { WhoDownloadService } from '../../../services/download.service';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -148,7 +149,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: WhoSnackBarService,
-    private workflowService: WhoWorkflowService
+    private workflowService: WhoWorkflowService,
+    private downloadService: WhoDownloadService
   ) {
   }
 
@@ -806,6 +808,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  /* Download the file.
+  */
+  public onDownload(record: any, file: any): void {
+    const path = `download/record/${record.id}/file/${0}`;
+    this.downloadService.getFile(path, file.type, file.name);
   }
 
   ngOnDestroy(): void {
