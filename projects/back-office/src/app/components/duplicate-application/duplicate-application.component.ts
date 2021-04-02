@@ -1,9 +1,10 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DuplicateApplicationMutationResponse, DUPLICATE_APPLICATION} from '../../graphql/mutations';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+
 
 @Component({
   selector: 'app-duplicate-application',

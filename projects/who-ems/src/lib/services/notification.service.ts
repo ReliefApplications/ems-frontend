@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeNotificationsMutationResponse, SEE_NOTIFICATIONS } from '../graphql/mutations';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/queries';

@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentType, Form, Permissions, WhoApplicationService, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
