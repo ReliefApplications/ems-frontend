@@ -1,6 +1,7 @@
+import {Apollo, gql} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
+
+
 import { pipe } from 'rxjs';
 
 @Injectable({

@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';

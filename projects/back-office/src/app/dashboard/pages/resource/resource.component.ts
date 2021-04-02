@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { WhoDownloadService, WhoSnackBarService } from '@who-ems/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';

@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import {gql} from 'apollo-angular';
+
 import { Role, User } from '@who-ems/builder';
 
 // === ADD ROLE ===

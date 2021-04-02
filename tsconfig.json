@@ -20,6 +20,7 @@
         "dist/who-ems/who-ems",
         "dist/who-ems"
       ]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   }
 }

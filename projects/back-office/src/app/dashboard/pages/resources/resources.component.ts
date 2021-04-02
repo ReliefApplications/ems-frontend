@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
 import { Resource, WhoConfirmModalComponent } from '@who-ems/builder';

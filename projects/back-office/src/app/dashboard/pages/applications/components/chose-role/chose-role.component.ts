@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { GetRolesQueryResponse, GET_ROLES } from '../../../../../graphql/queries';
 import { Role } from '@who-ems/builder';
 

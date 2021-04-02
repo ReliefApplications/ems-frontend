@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {

@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 

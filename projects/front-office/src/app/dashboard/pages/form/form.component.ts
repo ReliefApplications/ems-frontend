@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { Form, WhoFormComponent } from '@who-ems/builder';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 

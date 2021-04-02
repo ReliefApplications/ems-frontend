@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import {gql} from 'apollo-angular';
+
 import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
 

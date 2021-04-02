@@ -1,8 +1,9 @@
+import {Apollo, gql} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-import gql from 'graphql-tag';
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];

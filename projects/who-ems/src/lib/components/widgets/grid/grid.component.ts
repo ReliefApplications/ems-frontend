@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import {Apollo} from 'apollo-angular';
+
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
