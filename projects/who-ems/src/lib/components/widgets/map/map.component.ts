@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Apollo } from 'apollo-angular';
+
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';

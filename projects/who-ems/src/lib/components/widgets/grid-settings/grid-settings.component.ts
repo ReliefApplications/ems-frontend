@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';

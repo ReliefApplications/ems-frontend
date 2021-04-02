@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';

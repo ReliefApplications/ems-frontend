@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Application, Channel, Subscription as ApplicationSubscription, WhoApplicationService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
-import { Apollo } from 'apollo-angular';
+
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 
 @Component({

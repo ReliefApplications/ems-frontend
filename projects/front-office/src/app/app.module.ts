@@ -8,13 +8,12 @@ import { AppRoutingModule } from './app-routing.module';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { getMainDefinition } from 'apollo-utilities';
-import { WebSocketLink } from 'apollo-link-ws';
-import { ApolloLink, split } from 'apollo-link';
-import { setContext } from 'apollo-link-context';
+import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { setContext } from '@apollo/client/link/context';
 
 // Env
 import { environment } from '../environments/environment';
@@ -103,9 +102,7 @@ export function provideApollo(httpLink: HttpLink): any {
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    ApolloModule,
     MatSnackBarModule,
-    HttpLinkModule,
     BrowserAnimationsModule,
     // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
     MsalModule.forRoot({

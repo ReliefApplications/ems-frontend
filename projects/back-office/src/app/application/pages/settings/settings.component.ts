@@ -1,3 +1,4 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -5,7 +6,7 @@ import { Application, WhoApplicationService, WhoConfirmModalComponent, WhoSnackB
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
-import { Apollo } from 'apollo-angular';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 

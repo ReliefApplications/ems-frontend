@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { Record } from '@who-ems/builder';
 
