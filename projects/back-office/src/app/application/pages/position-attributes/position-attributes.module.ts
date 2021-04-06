@@ -31,7 +31,7 @@ import { PositionAttributesComponent } from './position-attributes.component';
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule,
+    MatIconModule
   ],
   exports: [PositionAttributesComponent]
 })

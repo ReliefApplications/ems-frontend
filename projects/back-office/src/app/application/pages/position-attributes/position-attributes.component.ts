@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PositionAttributes } from '@who-ems/builder';
@@ -21,6 +22,7 @@ export class PositionAttributesComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
+    private location: Location,
   ) { }
 
   ngOnInit(): void {
@@ -34,5 +36,9 @@ export class PositionAttributesComponent implements OnInit {
       this.positionAttributes = res.data.positionAttributes;
       this.loading = res.loading;
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
