@@ -70,7 +70,6 @@ export class WhoApplicationService {
         asRole
       }
     }).valueChanges.subscribe(res => {
-      console.log(this.application)
       this._application.next(res.data.application);
     });
   }

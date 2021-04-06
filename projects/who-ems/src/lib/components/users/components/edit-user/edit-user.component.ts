@@ -43,8 +43,9 @@ export class WhoEditUserComponent implements OnInit {
         ...this.data.positionAttributeCategories &&
         {
           positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
-            let attributeValue = this.data.user.positionAttributes.find(element => {
-              return x.id === (Object(element.category).id)});
+            const attributeValue = this.data.user.positionAttributes.find(element => {
+              return x.id === (Object(element.category).id);
+            });
             return this.formBuilder.group({
               value: [attributeValue ? attributeValue.value : ''],
               category: [x.id, Validators.required]
