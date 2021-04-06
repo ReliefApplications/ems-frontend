@@ -70,6 +70,7 @@ export class WhoApplicationService {
         asRole
       }
     }).valueChanges.subscribe(res => {
+      console.log(this.application)
       this._application.next(res.data.application);
     });
   }
@@ -311,7 +312,8 @@ export class WhoApplicationService {
       variables: {
         id: user.id,
         roles: [value.role],
-        application: application.id
+        application: application.id,
+        ...value.positionAttributes && { positionAttributes: value.positionAttributes }
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`${user.username} roles updated.`);

@@ -115,7 +115,8 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
             mutation: EDIT_USER,
             variables: {
               id: user.id,
-              roles: value.roles
+              roles: value.roles,
+              ...value.positionAttributes && { positionAttributes: value.positionAttributes }
             }
           }).subscribe(res => {
             this.snackBar.openSnackBar(`${user.username} roles updated.`);

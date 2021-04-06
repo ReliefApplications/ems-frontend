@@ -23,6 +23,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = false;
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      console.log("here",  application.users)
       if (application) {
         this.users.data = application.users;
         this.roles = application.roles;
