@@ -89,6 +89,24 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.deleteInvalidModifications();
       }
     });
+
+    this.buttonForm.get('attachToRecord').valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('targetForm').setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('targetForm').clearValidators();
+      }
+      this.buttonForm.get('targetForm').updateValueAndValidity();
+    });
+
+    this.buttonForm.get('targetForm').valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('targetFormField').setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('targetFormField').clearValidators();
+      }
+      this.buttonForm.get('targetFormField').updateValueAndValidity();
+    });
   }
 
   compareFields(field1: any, field2: any): boolean {

@@ -99,11 +99,7 @@ query GetRelatedForms($resource: ID!) {
   relatedForms(resource: $resource) {
     id
     name
-    createdAt
-    resource{
-      id
-      name
-    }
+    fields
   }
 }`;
 

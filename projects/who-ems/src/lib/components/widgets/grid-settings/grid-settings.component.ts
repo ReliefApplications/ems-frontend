@@ -139,6 +139,9 @@ export class WhoGridSettingsComponent implements OnInit {
           value: [x.value, Validators.required],
         }))
         : []),
+      attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
+      targetForm: [value && value.targetForm ? value.targetForm : null],
+      targetFormField: [value && value.targetFormField ? value.targetFormField : null],
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
       value && value.notify ? Validators.required : null],
