@@ -6,7 +6,7 @@ import { Inject, Injectable } from '@angular/core';
 })
 export class WhoDownloadService {
 
-  private baseUrl: string;
+  public baseUrl: string;
 
   constructor(
     @Inject('environment') environment,
@@ -16,7 +16,7 @@ export class WhoDownloadService {
   }
 
   getFile(path: string, type: string, fileName: string, options?: any): void {
-    const url = `${this.baseUrl}/${path}`;
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

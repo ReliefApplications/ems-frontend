@@ -43,7 +43,6 @@ export interface ConvertRecordMutationResponse {
 }
 
 // === ADD RECORD ===
-
 export const ADD_RECORD = gql`
 mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
   addRecord(form: $form, data: $data) {
@@ -64,6 +63,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
 export interface AddRecordMutationResponse {
   loading: boolean;
   addRecord: Record;
+}
+
+// === UPLOAD FILE ===
+export const UPLOAD_FILE = gql`
+mutation uploadFile($file: Upload!, $form: ID!) {
+  uploadFile(file: $file, form: $form)
+}`;
+
+export interface UploadFileMutationResponse {
+  loading: boolean;
+  uploadFile: string;
 }
 
 // === EDIT FORM ===

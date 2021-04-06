@@ -1,9 +1,9 @@
-import {Apollo} from 'apollo-angular';
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as Survey from 'survey-angular';
-import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
+import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { FormService } from '../../services/form.service';
@@ -13,6 +13,7 @@ import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { WhoWorkflowService } from '../../services/workflow.service';
+import { WhoDownloadService } from '../../services/download.service';
 
 @Component({
   selector: 'who-form',
@@ -32,6 +33,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
   public dropdownLocales = [];
   public surveyActive = true;
   public selectedTabIndex: number;
+  private temporaryFilesStorage = {};
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -49,8 +51,9 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     private formService: FormService,
     private snackBar: WhoSnackBarService,
     private router: Router,
-    private workflowService: WhoWorkflowService
-  ) {}
+    private workflowService: WhoWorkflowService,
+    private downloadService: WhoDownloadService
+  ) { }
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -65,6 +68,58 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
     const structure = JSON.parse(this.form.structure);
     this.survey = new Survey.Model(JSON.stringify(structure));
+    this.survey.onClearFiles.add((survey, options) => {
+      options.callback('success');
+    });
+    this.survey.onUploadFiles.add((survey, options) => {
+      if (this.temporaryFilesStorage[options.name] !== undefined) {
+        this.temporaryFilesStorage[options.name].concat(options.files);
+      } else {
+        this.temporaryFilesStorage[options.name] = options.files;
+      }
+      const question = survey.getQuestionByName(options.name);
+      let content = [];
+      options
+        .files
+        .forEach((file) => {
+          const fileReader = new FileReader();
+          fileReader.onload = (e) => {
+            content = content.concat([
+              {
+                name: file.name,
+                type: file.type,
+                content: fileReader.result,
+                file
+              }
+            ]);
+            if (content.length === options.files.length) {
+              options.callback('success', content.map((fileContent) => {
+                return { file: fileContent.file, content: fileContent.content };
+              }));
+            }
+          };
+          fileReader.readAsDataURL(file);
+        });
+    });
+    this.survey.onDownloadFile.add((survey, options) => {
+      if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+        options.callback('success', options.content);
+        return;
+      }
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+      xhr.onloadstart = (ev) => {
+        xhr.responseType = 'blob';
+      };
+      xhr.onload = () => {
+        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          options.callback('success', e.target.result);
+        };
+        reader.readAsDataURL(file);
+      };
+    });
 
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
@@ -111,7 +166,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
         const nativeName = LANGUAGES[lang].nativeName.split(',')[0];
-        this.usedLocales.push({value: lang, text: nativeName});
+        this.usedLocales.push({ value: lang, text: nativeName });
         this.dropdownLocales.push(nativeName);
       });
     }
@@ -139,6 +194,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
   public reset(): void {
     this.survey.clear();
+    this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit(false);
     this.survey.render();
@@ -151,10 +207,31 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
   /*  Custom SurveyJS method, save a new record or edit existing one.
   */
-  public complete = () => {
+  public complete = async () => {
     let mutation: any;
     this.surveyActive = false;
     const data = this.survey.data;
+    const questionsToUpload = Object.keys(this.temporaryFilesStorage);
+    for (const name of questionsToUpload) {
+      const files = this.temporaryFilesStorage[name];
+      for (const [index, file] of files.entries()) {
+        const res = await this.apollo.mutate<UploadFileMutationResponse>({
+          mutation: UPLOAD_FILE,
+          variables: {
+            file,
+            form: this.form.id
+          },
+          context: {
+            useMultipart: true
+          }
+        }).toPromise();
+        if (res.errors) {
+          this.snackBar.openSnackBar('Upload failed.', { error: true });
+        } else {
+          data[name][index].content = res.data.uploadFile;
+        }
+      }
+    }
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
