@@ -32,7 +32,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'username', 'name', 'oid', 'attributes', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort: MatSort;
