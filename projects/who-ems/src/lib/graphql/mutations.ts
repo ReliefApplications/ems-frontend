@@ -119,6 +119,13 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID, $positionAttributes
         id
       }
     }
+    positionAttributes {
+      value
+      category {
+        id
+        title
+      }
+    }
     oid
   }
 }`;

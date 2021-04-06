@@ -315,7 +315,7 @@ export class WhoApplicationService {
         ...value.positionAttributes && { positionAttributes: value.positionAttributes }
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`${user.username} roles updated.`);
+      this.snackBar.openSnackBar(`${user.username} updated.`);
       const index = application.users.indexOf(user);
       application.users[index] = res.data.editUser;
       this._application.next(application);
