@@ -16,11 +16,10 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 })
 export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
-  @Input() queryName: string;
   @Input() buttonForm: FormGroup;
   @Input() fields: any[];
   @Input() channels: Channel[];
-  @Input() forms: Form[];
+  @Input() relatedForms: Form[];
 
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
 

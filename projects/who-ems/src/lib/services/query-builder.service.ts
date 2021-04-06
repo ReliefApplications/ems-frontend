@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import gql from 'graphql-tag';
@@ -230,5 +230,31 @@ export class QueryBuilderService {
         });
       }
     }
+  }
+
+  // public getRelatedForms(resourceName: string): string[] {
+  //   const queries = this.__availableQueries.getValue();
+  //   console.log(queries);
+  //   return queries.reduce((res, query) => {
+  //     const fields: any[] = query.type.ofType.fields;
+  //     if (fields.some(field => field.type.ofType && field.type.ofType.name === resourceName)) {
+  //       res.push(query.type.ofType.name);
+  //     }
+  //     return res;
+  //   }, []);
+  // }
+
+  public resourceQuery(queryName: string): QueryRef<any[]> {
+    const query = gql`
+        query GetCustomQuery {
+          ${queryName}(perPage: 1) {
+            resource
+          }
+        }
+      `;
+    return this.apollo.watchQuery<any[]>({
+      query,
+      variables: {}
+    });
   }
 }

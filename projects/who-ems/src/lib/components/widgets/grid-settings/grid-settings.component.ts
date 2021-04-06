@@ -2,10 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GetChannelsQueryResponse, GET_CHANNELS } from '../../../graphql/queries';
+import { GetChannelsQueryResponse, GetRelatedFormsQueryResponse, GET_CHANNELS, GET_RELATED_FORMS } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { WhoApplicationService } from '../../../services/application.service';
+import { Form } from '../../../models/form.model';
 
 @Component({
   selector: 'who-grid-settings',
@@ -31,6 +32,7 @@ export class WhoGridSettingsComponent implements OnInit {
 
   // === FLOATING BUTTON ===
   public fields: any[];
+  public relatedForms: Form[];
   public queryName: string;
   public tabIndex: number;
 
@@ -68,6 +70,7 @@ export class WhoGridSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
+    // Fetch channels for floating buttons parameters
     this.applicationService.application.subscribe((application: Application) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
@@ -87,6 +90,23 @@ export class WhoGridSettingsComponent implements OnInit {
       }
     });
 
+    // Fetch related forms with a question referring to the current form displayed in the grid
+    this.queryName = this.tileForm.get('query').value.name;
+    this.queryBuilder.resourceQuery(this.queryName).valueChanges.subscribe(res1 => {
+      const resource = res1.data[this.queryName][0].resource;
+      if (resource) {
+        this.apollo.watchQuery<GetRelatedFormsQueryResponse>({
+          query: GET_RELATED_FORMS,
+          variables: {
+            resource
+          }
+        }).valueChanges.subscribe(res2 => {
+          this.relatedForms = res2.data.relatedForms;
+        });
+      }
+    });
+
+    // Clean up modifications field from floating buttons on query change
     this.tileForm.get('query').valueChanges.subscribe(res => {
       if (res.name) {
         if (this.fields && (res.name !== this.queryName)) {

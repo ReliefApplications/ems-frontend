@@ -38,7 +38,8 @@
         <ng-container *ngFor="let floatingButton of tileForm.controls.floatingButtons.controls">
           <mat-tab [label]="floatingButton.value.name">
             <ng-template matTabContent>
-              <who-floating-button-settings [buttonForm]="floatingButton" [fields]="fields" [channels]="channels" (deleteButton)="deleteFloatingButton()"></who-floating-button-settings>
+              <who-floating-button-settings [buttonForm]="floatingButton" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
+                (deleteButton)="deleteFloatingButton()"></who-floating-button-settings>
             </ng-template>
           </mat-tab>
         </ng-container>
