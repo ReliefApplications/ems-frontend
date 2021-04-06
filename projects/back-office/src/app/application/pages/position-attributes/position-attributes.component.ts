@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { WhoSnackBarService } from '@who-ems/builder';
+import { ActivatedRoute } from '@angular/router';
+import { PositionAttributes } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
+import { GetPositionAttributesFromCategoryQueryResponse, GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-position',
@@ -13,18 +14,25 @@ export class PositionAttributesComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public id: string;
-  public attributes: any;
-  public displayedColumns = ['attribute', 'users'];
+  public categoryName = '';
+  public displayedColumns = ['value', 'userCount'];
+  public positionAttributes: PositionAttributes[] = [];
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router,
-    private snackBar: WhoSnackBarService,
   ) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log(this.id);    
+    this.apollo.watchQuery<GetPositionAttributesFromCategoryQueryResponse>({
+      query: GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
+      variables: {
+        id: this.id,
+      }
+    }).valueChanges.subscribe(res => {
+      this.positionAttributes = res.data.positionAttributes;
+      this.loading = res.loading;
+    });
   }
 }

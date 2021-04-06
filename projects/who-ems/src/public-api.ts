@@ -27,6 +27,7 @@ export * from './lib/models/notification.model';
 export * from './lib/models/channel.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
+export * from './lib/models/position-attributes.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';

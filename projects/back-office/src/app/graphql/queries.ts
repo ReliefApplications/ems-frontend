@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step, PositionAttributes } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -607,21 +607,19 @@ export interface GetRoutingKeysQueryResponse{
   applications: Application[];
 }
 
-// === GET POSITION ATTRIBUTES ===
-export const GET_POSITION_ATTRIBUTES = gql`
-query GetRecordById($id: ID!) {
-  record(id: $id) {
-    id
-    data
-    modifiedAt
-    form {
-      id
-      structure
+// === GET POSITION ATTRIBUTES FORM CATEGORY ===
+export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
+query GetPositionAttributesFromCategory($id: ID!) {
+  positionAttributes(category: $id) {
+    value
+    category {
+      title
     }
+    userCount
   }
 }`;
 
-export interface GetPositionAttributesQueryResponse {
+export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
-  record: Record;
+  positionAttributes: PositionAttributes[];
 }
