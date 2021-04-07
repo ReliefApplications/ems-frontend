@@ -1,7 +1,6 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttributes } from '@who-ems/builder';
+import { PositionAttribute } from '@who-ems/builder';
 import { Apollo } from 'apollo-angular';
 import { GetPositionAttributesFromCategoryQueryResponse, GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from '../../../graphql/queries';
 
@@ -17,7 +16,7 @@ export class PositionAttributesComponent implements OnInit {
   public id: string;
   public categoryName = '';
   public displayedColumns = ['value', 'usersCount'];
-  public positionAttributes: PositionAttributes[] = [];
+  public positionAttributes: PositionAttribute[] = [];
   public backPath: string;
 
   constructor(
@@ -36,6 +35,9 @@ export class PositionAttributesComponent implements OnInit {
       }
     }).valueChanges.subscribe(res => {
       this.positionAttributes = res.data.positionAttributes;
+      if (this.positionAttributes.length > 0) {
+        this.categoryName = this.positionAttributes[0].category.title;
+      }
       this.loading = res.loading;
     });
   }
