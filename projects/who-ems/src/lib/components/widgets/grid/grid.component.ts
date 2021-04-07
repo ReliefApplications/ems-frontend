@@ -813,10 +813,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
-     Then return the attach as a 
   */
-  private async promisedAttachToRecord(selectedRecords: any, targetForm: Form, targetFormField: string): Promise<any> {
-    console.log(this.settings);
+  private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
     const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
       data: {
         targetForm,
@@ -824,24 +822,35 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       },
     });
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
-    const resourceField = targetForm.fields.find(field => field.resource && field.resource === this.settings.resource);
-    const data = value.record.data;
-    Object.keys(value.record.data).forEach(key => {
-      if (key === resourceField.name) {
-        if (resourceField.type === 'resource') {
-          data[key] = selectedRecords[0].id;
-        } else {
-          data[key].push(selectedRecords.map(x => x.id));
+    if (value) {
+      const resourceField = targetForm.fields.find(field => field.resource && field.resource === this.settings.resource);
+      const data = value.record.data;
+      Object.keys(value.record.data).forEach(key => {
+        if (key === resourceField.name) {
+          if (resourceField.type === 'resource') {
+            data[key] = selectedRecords[0].id;
+          } else {
+            if (data[key]) {
+              selectedRecords.forEach(record => data[key].push(record.id));
+            } else {
+              data[key] = selectedRecords.map(x => x.id);
+            }
+          }
         }
-      }
-    }, this);
-    return this.apollo.mutate<EditRecordMutationResponse>({
-      mutation: EDIT_RECORD,
-      variables: {
-        id: value.record.id,
-        data
-      }
-    }).toPromise();
+      }, this);
+      this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: value.record.id,
+          data
+        }
+      }).subscribe(res => {
+        const record = res.data.editRecord;
+        if (record) {
+          this.snackBar.openSnackBar(`Added ${selectedRecords.length} row${selectedRecords.length > 1 ? 's' : ''} to the field ${resourceField.name} in the record ${value.record.data[targetFormField]}.`);
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {
