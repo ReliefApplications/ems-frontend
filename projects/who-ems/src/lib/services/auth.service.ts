@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Account } from 'msal';
 import { MsalService } from '@azure/msal-angular';
-import { Apollo } from 'apollo-angular';
+
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 

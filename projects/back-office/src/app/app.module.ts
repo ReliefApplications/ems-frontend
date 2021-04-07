@@ -8,19 +8,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Apollo, ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { getMainDefinition } from 'apollo-utilities';
-import { WebSocketLink } from 'apollo-link-ws';
-import { ApolloLink, split } from 'apollo-link';
-import { setContext } from 'apollo-link-context';
+import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { setContext } from '@apollo/client/link/context';
 
 // Env
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { WhoSnackBarService } from '@who-ems/builder';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -122,9 +121,7 @@ export function provideApollo(httpLink: HttpLink): any {
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    ApolloModule,
     MatSnackBarModule,
-    HttpLinkModule,
     BrowserAnimationsModule,
     // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
     MsalModule.forRoot({
@@ -142,18 +139,18 @@ export function provideApollo(httpLink: HttpLink): any {
         isAngular: true
       }
     },
-    {
-      popUp: false,
-      consentScopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      protectedResourceMap: [
-        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-      ],
-      extraQueryParameters: {}
-    }),
+      {
+        popUp: false,
+        consentScopes: [
+          'user.read',
+          'openid',
+          'profile',
+        ],
+        protectedResourceMap: [
+          ['https://graph.microsoft.com/v1.0/me', ['user.read']]
+        ],
+        extraQueryParameters: {}
+      }),
     MatDatepickerModule,
     MatNativeDateModule
   ],
@@ -178,8 +175,7 @@ export function provideApollo(httpLink: HttpLink): any {
 })
 export class AppModule {
   constructor(
-    private apollo: Apollo,
-    private snackBar: WhoSnackBarService
+    private apollo: Apollo
   ) {
     REFRESH.asObservable().subscribe((res) => {
       if (res) {

@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';

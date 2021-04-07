@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { Apollo } from 'apollo-angular';
+
 import { Application } from '../../models/application.model';
 import { Role } from '../../models/user.model';
 import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.component';

@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
-import { Apollo } from 'apollo-angular';
+
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({

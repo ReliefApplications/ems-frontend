@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { Dashboard, WhoSnackBarService, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {

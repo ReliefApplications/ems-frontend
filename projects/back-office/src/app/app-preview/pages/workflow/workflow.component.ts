@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';

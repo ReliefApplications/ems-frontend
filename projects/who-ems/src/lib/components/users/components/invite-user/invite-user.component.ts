@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { Role, User } from '../../../../models/user.model';
 import { GetUsersQueryResponse, GET_USERS } from '../../../../graphql/queries';
 import { Observable } from 'rxjs';

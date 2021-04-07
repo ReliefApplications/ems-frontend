@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
 import {
