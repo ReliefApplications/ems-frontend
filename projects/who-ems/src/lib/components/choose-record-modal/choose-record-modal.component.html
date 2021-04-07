@@ -1,0 +1,22 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<div style="width: 320px" *ngIf="!loading">
+    <h1 mat-dialog-title>Choose the {{ data.targetForm.name }} to attach rows to</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="chooseRecordForm">
+            <div class="form-group">
+                <mat-form-field>
+                    <mat-label>Record</mat-label>
+                    <mat-select formControlName="record">
+                        <mat-option *ngFor="let record of records" [value]="record">
+                            {{record.data[data.targetFormField]}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="onClose()">Close</button>
+        <button mat-flat-button [mat-dialog-close]="chooseRecordForm.value" cdkFocusInitial color="primary" [disabled]="!chooseRecordForm.valid">Attach rows to selected {{ data.targetForm.name }}</button>
+    </div>
+</div>

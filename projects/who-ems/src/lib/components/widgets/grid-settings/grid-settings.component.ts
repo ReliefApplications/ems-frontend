@@ -55,6 +55,7 @@ export class WhoGridSettingsComponent implements OnInit {
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
+      resource: [tileSettings && tileSettings.resource ? tileSettings.resource : null],
       actions: this.formBuilder.group({
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
@@ -94,6 +95,7 @@ export class WhoGridSettingsComponent implements OnInit {
     this.queryName = this.tileForm.get('query').value.name;
     this.queryBuilder.resourceQuery(this.queryName).valueChanges.subscribe(res1 => {
       const resource = res1.data[this.queryName][0].resource;
+      this.tileForm.get('resource').setValue(resource);
       if (resource) {
         this.apollo.watchQuery<GetRelatedFormsQueryResponse>({
           query: GET_RELATED_FORMS,

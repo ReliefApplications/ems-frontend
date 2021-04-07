@@ -29,6 +29,7 @@ import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { WhoWorkflowService } from '../../../services/workflow.service';
+import { WhoChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -740,6 +741,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
+      if (options.attachToRecord) {
+        await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField);
+      }
       const promises = [];
       if (options.notify) {
         promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
@@ -806,6 +810,38 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  /* Open a modal to select which record we want to attach the rows to and perform the attach.
+     Then return the attach as a 
+  */
+  private async promisedAttachToRecord(selectedRecords: any, targetForm: Form, targetFormField: string): Promise<any> {
+    console.log(this.settings);
+    const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
+      data: {
+        targetForm,
+        targetFormField,
+      },
+    });
+    const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
+    const resourceField = targetForm.fields.find(field => field.resource && field.resource === this.settings.resource);
+    const data = value.record.data;
+    Object.keys(value.record.data).forEach(key => {
+      if (key === resourceField.name) {
+        if (resourceField.type === 'resource') {
+          data[key] = selectedRecords[0].id;
+        } else {
+          data[key].push(selectedRecords.map(x => x.id));
+        }
+      }
+    }, this);
+    return this.apollo.mutate<EditRecordMutationResponse>({
+      mutation: EDIT_RECORD,
+      variables: {
+        id: value.record.id,
+        data
+      }
+    }).toPromise();
   }
 
   ngOnDestroy(): void {
