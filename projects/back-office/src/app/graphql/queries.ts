@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'apollo-angular';
 import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step, PositionAttributes } from '@who-ems/builder';
 
 // === GET USERS ===
