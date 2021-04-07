@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
     this.generatedTiles += 1;
-    this.tiles.push(tile);
+    this.tiles = [...this.tiles, tile];
     this.autoSaveChanges();
   }
 
