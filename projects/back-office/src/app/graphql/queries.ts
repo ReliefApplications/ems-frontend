@@ -615,7 +615,7 @@ query GetPositionAttributesFromCategory($id: ID!) {
     category {
       title
     }
-    userCount
+    usersCount
   }
 }`;
 

@@ -1,29 +1,27 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && positionAttributes">
+<ng-container *ngIf="!loading">
     <div class="page-header">
-        <button mat-button color="primary" (click)="goBack()">
-            <mat-icon>keyboard_backspace</mat-icon>
-            </button>
-            <h1 class="page-title">
-            {{positionAttributes[0].category.title}}
+        <who-previous-button [path]="backPath"></who-previous-button>
+        <h1 class="page-title">
+            <!-- {{positionAttributes[0].category.title}} -->
         </h1>
     </div>
     <table mat-table [dataSource]="positionAttributes">
         <ng-container matColumnDef="value">
             <th mat-header-cell *matHeaderCellDef>
                 <span class="headerTitle" mat-sort-header>
-                Name
+                    Name
                 </span>
             </th>
             <td mat-cell *matCellDef="let element">{{ element.value }}</td>
         </ng-container>
-        <ng-container matColumnDef="userCount">
+        <ng-container matColumnDef="usersCount">
             <th mat-header-cell *matHeaderCellDef>
                 <span class="headerTitle" mat-sort-header>
-                Users
+                    Users
                 </span>
             </th>
-            <td mat-cell *matCellDef="let element">{{ element.userCount }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
         </ng-container>
         <ng-container *ngIf="column === '_actions'">
             <th mat-header-cell *matHeaderCellDef></th>

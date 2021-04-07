@@ -14,7 +14,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { WhoConfirmModalModule } from '@who-ems/builder';
-import { PositionAttributesRoutingModule } from '../position-attributes/position-attributes-routing.module';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 
 @NgModule({
@@ -25,7 +24,6 @@ import { AddPositionComponent } from './components/position-modal/position-modal
   imports: [
     CommonModule,
     PositionRoutingModule,
-    PositionAttributesRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
