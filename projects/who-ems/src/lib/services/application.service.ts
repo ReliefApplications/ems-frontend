@@ -63,7 +63,7 @@ export class WhoApplicationService {
 
   /*  Get the application from the database, using GraphQL.
   */
-  loadApplication(id: string, asRole: string): void {
+  loadApplication(id: string, asRole?: string): void {
     this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
