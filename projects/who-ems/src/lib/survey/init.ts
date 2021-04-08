@@ -1,3 +1,6 @@
+// tslint:disable-next-line: no-reference
+/// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
+
 import * as widgets from 'surveyjs-widgets';
 import { init as initCountryComponent } from './components/country';
 import { init as initCountriesComponent } from './components/countries';
