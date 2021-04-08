@@ -16,13 +16,13 @@ import { map, startWith } from 'rxjs/operators';
 export class SubscriptionModalComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  subscriptionForm: FormGroup;
+  subscriptionForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  public forms: Form[];
+  public forms: Form[] = [];
   // === DATA ===
-  private applications: Application[];
-  public filteredApplications: Observable<Application[]>;
+  private applications: Application[] = [];
+  public filteredApplications!: Observable<Application[]>;
 
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
@@ -57,7 +57,7 @@ export class SubscriptionModalComponent implements OnInit {
     this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
       query: GET_ROUTING_KEYS
     }).valueChanges.subscribe(res => {
-      this.applications = res.data.applications.filter(x => x.channels.length > 0);
+      this.applications = res.data.applications.filter(x => x.channels ? x.channels.length > 0 : false);
     });
     this.filteredApplications = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
       startWith(''),
@@ -68,7 +68,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   private filter(value: string): Application[] {
     const filterValue = value.toLowerCase();
-    return this.applications ? this.applications.filter(x => x.name.toLowerCase().indexOf(filterValue) === 0) : this.applications;
+    return this.applications ? this.applications.filter(x => x.name?.toLowerCase().indexOf(filterValue) === 0) : this.applications;
   }
 
   /*  Close the modal without sending any data.

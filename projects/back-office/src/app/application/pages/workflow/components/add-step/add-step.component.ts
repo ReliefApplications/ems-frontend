@@ -19,16 +19,16 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public contentTypes = Object.keys(ContentType).filter((key) => key !== ContentType.workflow);
-  public forms: Form[];
+  public forms: Form[] = [];
 
   // === REACTIVE FORM ===
-  public stepForm: FormGroup;
+  public stepForm: FormGroup = new FormGroup({});
   public showContent = false;
   public stage = 1;
 
   // === PERMISSIONS ===
   canCreateForm = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private router: Router,
@@ -47,7 +47,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
       type: ['', Validators.required],
       content: [''],
     });
-    this.stepForm.get('type').valueChanges.subscribe(type => {
+    this.stepForm.get('type')?.valueChanges.subscribe(type => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
@@ -132,9 +132,11 @@ export class AddStepComponent implements OnInit, OnDestroy {
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
-          const { id } = res.data.addForm;
-          this.stepForm.controls.content.setValue(id);
-          this.onSubmit();
+          if (res.data) {
+            const { id } = res.data.addForm;
+            this.stepForm.controls.content.setValue(id);
+            this.onSubmit();
+          }
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         });

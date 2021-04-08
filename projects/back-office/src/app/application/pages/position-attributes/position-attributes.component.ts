@@ -13,11 +13,11 @@ export class PositionAttributesComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public categoryName = '';
   public displayedColumns = ['value', 'usersCount'];
   public positionAttributes: PositionAttribute[] = [];
-  public backPath: string;
+  public backPath = '';
 
   constructor(
     private apollo: Apollo,
@@ -26,7 +26,7 @@ export class PositionAttributesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     this.backPath = this.router.url.replace(`/${this.id}`, '');
     this.apollo.watchQuery<GetPositionAttributesFromCategoryQueryResponse>({
       query: GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
@@ -36,7 +36,7 @@ export class PositionAttributesComponent implements OnInit {
     }).valueChanges.subscribe(res => {
       this.positionAttributes = res.data.positionAttributes;
       if (this.positionAttributes.length > 0) {
-        this.categoryName = this.positionAttributes[0].category.title;
+        this.categoryName = this.positionAttributes[0].category?.title || '';
       }
       this.loading = res.loading;
     });

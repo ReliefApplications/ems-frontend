@@ -21,31 +21,31 @@ import {
 export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
   public loading = true;
-  public steps: Step[];
+  public steps: Step[] = [];
 
   // === WORKFLOW ===
-  public workflow: Workflow;
-  private workflowSubscription: Subscription;
+  public workflow?: Workflow;
+  private workflowSubscription?: Subscription;
 
   // === WORKFLOW NAME EDITION ===
-  public formActive: boolean;
-  public workflowNameForm: FormGroup;
+  public formActive = false;
+  public workflowNameForm: FormGroup = new FormGroup({});
 
   // === SELECTED STEP ===
-  public dragging: boolean;
-  public selectedStep: Step;
-  public selectedStepIndex: number;
+  public dragging = false;
+  public selectedStep: Step | null = null;
+  public selectedStepIndex = 0;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === NEXT BUTTON ===
-  private nextData: any[] = null;
+  private nextData: any[] = [];
   public showSettings = false;
-  public settingsForm: FormGroup;
-  public fields: any[];
+  public settingsForm: FormGroup = new FormGroup({});
+  public fields: any[] = [];
 
   constructor(
     private apollo: Apollo,
@@ -63,15 +63,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
-    this.workflowSubscription = this.workflowService.workflow.subscribe((workflow: Workflow) => {
+    this.workflowSubscription = this.workflowService.workflow.subscribe((workflow: Workflow | null) => {
       if (workflow) {
-        this.steps = workflow.steps;
+        this.steps = workflow.steps || [];
         this.workflowNameForm = new FormGroup({
           workflowName: new FormControl(workflow.name, Validators.required)
         });
         this.loading = false;
         if (!this.workflow || workflow.id !== this.workflow.id) {
-          const { steps: [firstStep, ..._] } = workflow;
+          const [firstStep, ..._] = workflow.steps || [];
           if (firstStep) {
             if (firstStep.type === ContentType.form) {
               this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
@@ -90,7 +90,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   toggleFormActive(): void {
-    if (this.workflow.page.canUpdate) { this.formActive = !this.formActive; }
+    if (this.workflow?.page?.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the workflow and his linked page.
@@ -101,12 +101,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.apollo.mutate<EditPageMutationResponse>({
       mutation: EDIT_PAGE,
       variables: {
-        id: this.workflow.page.id,
+        id: this.workflow?.page?.id,
         name: workflowName
       }
     }).subscribe(res => {
-      this.workflow.name = res.data.editPage.name;
-      this.applicationService.updatePageName(res.data.editPage);
+      if (res.data) {
+        Object.assign(this.workflow, { name: res.data.editPage.name });
+        this.applicationService.updatePageName(res.data.editPage);
+      }
     });
   }
 
@@ -116,11 +118,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.apollo.mutate<EditPageMutationResponse>({
       mutation: EDIT_PAGE,
       variables: {
-        id: this.workflow.page.id,
+        id: this.workflow?.page?.id,
         permissions: e
       }
     }).subscribe(res => {
-      this.workflow.permissions = res.data.editPage.permissions;
+      Object.assign(this.workflow, { permissions: res.data?.editPage.permissions });
     });
   }
 
@@ -144,14 +146,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             id: step.id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
-          this.steps = this.steps.filter(x => {
-            return x.id !== res.data.deleteStep.id;
-          });
-          this.selectedStep = null;
-          this.selectedStepIndex = null;
-          this.router.navigate(['./'], { relativeTo: this.route });
-          this.workflowService.loadWorkflow(this.id);
+          if (res.data) {
+            this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+            this.steps = this.steps.filter(x => {
+              return x.id !== res.data?.deleteStep.id;
+            });
+            this.selectedStep = null;
+            this.selectedStepIndex = 0;
+            this.router.navigate(['./'], { relativeTo: this.route });
+            this.workflowService.loadWorkflow(this.id);
+          }
         });
       }
     });
@@ -203,7 +207,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe(event => {
+      elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
           this.goToNextStep();
         }
@@ -231,10 +235,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Navigate to selected step
   */
   private navigateToSelectedStep(): void {
-    if (this.selectedStep.type === ContentType.form) {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
-    } else {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+    if (this.selectedStep) {
+      if (this.selectedStep.type === ContentType.form) {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+      }
     }
   }
 

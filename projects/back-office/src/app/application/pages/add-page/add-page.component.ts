@@ -18,16 +18,16 @@ export class AddPageComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public contentTypes = Object.keys(ContentType);
-  public forms: Form[];
+  public forms: Form[] = [];
 
   // === REACTIVE FORM ===
-  public pageForm: FormGroup;
+  public pageForm: FormGroup = new FormGroup({});
   public showContent = false;
   public step = 1;
 
   // === PERMISSIONS ===
   canCreateForm = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,7 +45,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
       content: [''],
       newForm: [false]
     });
-    this.pageForm.get('type').valueChanges.subscribe(type => {
+    this.pageForm.get('type')?.valueChanges.subscribe(type => {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
@@ -130,7 +130,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
-          const { id } = res.data.addForm;
+          const id = res.data?.addForm.id || '';
           this.pageForm.controls.content.setValue(id);
           this.onSubmit();
         }, (err) => {
