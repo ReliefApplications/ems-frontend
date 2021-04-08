@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public id = '';
+  public applicationId?: string;
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
@@ -68,6 +69,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
           this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
           this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
+          this.applicationId = this.dashboard.page ? this.dashboard.page.application?.id : this.dashboard.step ?
+            this.dashboard.step.workflow?.page?.application?.id : '';
           this.loading = res.loading;
         } else {
           this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });

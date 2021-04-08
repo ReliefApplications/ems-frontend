@@ -28,6 +28,7 @@ export class FormComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public id = '';
+  public applicationId = '';
   public form?: Form;
   public completed = false;
 
@@ -74,6 +75,7 @@ export class FormComponent implements OnInit, OnDestroy {
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.step?.name, Validators.required)
             });
+            this.applicationId = this.step?.workflow?.page?.application?.id || '';
             this.loading = res2.data.loading;
           });
         });
@@ -95,6 +97,7 @@ export class FormComponent implements OnInit, OnDestroy {
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page?.name, Validators.required)
             });
+            this.applicationId = this.page?.application?.id || '';
             this.loading = res2.data.loading;
           });
         });

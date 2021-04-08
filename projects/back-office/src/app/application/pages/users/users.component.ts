@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
 
   constructor(
-    private applicationService: WhoApplicationService
+    public applicationService: WhoApplicationService
   ) { }
 
   ngOnInit(): void {
