@@ -21,17 +21,17 @@
         <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
             <mat-tab label="Fields">
                 <ng-template matTabContent>
-                    <who-tab-fields [form]="form.controls.fields" [fields]="availableFields" [factory]="factory"></who-tab-fields>
+                    <who-tab-fields [form]="$any(form.controls.fields)" [fields]="availableFields" [factory]="factory"></who-tab-fields>
                 </ng-template>
             </mat-tab>
             <mat-tab label="Sort" *ngIf="form.get('sort')">
                 <ng-template matTabContent>
-                    <who-tab-sort [form]="form.controls.sort" [fields]="availableScalarFields"></who-tab-sort>
+                    <who-tab-sort [form]="$any(form.controls.sort)" [fields]="availableScalarFields"></who-tab-sort>
                 </ng-template>
             </mat-tab>
             <mat-tab label="Filter" *ngIf="form.get('filter')">
                 <ng-template matTabContent>
-                    <who-tab-filter [form]="form.controls.filter" [filters]="availableFilters"></who-tab-filter>
+                    <who-tab-filter [form]="$any(form.controls.filter)" [filters]="availableFilters"></who-tab-filter>
                 </ng-template>
             </mat-tab>
         </mat-tab-group>

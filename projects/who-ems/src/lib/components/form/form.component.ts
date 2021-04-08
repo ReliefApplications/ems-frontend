@@ -27,7 +27,10 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage = 'en';
+  public surveyLanguage: { name: string, nativeName: string } = {
+    name: 'English',
+    nativeName: 'English'
+  };
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales: any[] = [];
   public surveyActive = true;
@@ -122,7 +125,8 @@ export class WhoFormComponent implements OnInit, OnDestroy {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      this.survey.locale = this.surveyLanguage;
+      // TODO: check
+      this.survey.locale = 'en';
     }
 
     this.survey.render('surveyContainer');
