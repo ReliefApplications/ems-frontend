@@ -10,15 +10,15 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 })
 export class WhoTabFieldsComponent implements OnInit, OnChanges {
 
-  @Input() form: FormArray;
+  @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
   // === TEMPLATE REFERENCE ===
-  @Input() factory: ComponentFactory<any>;
-  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate: ViewContainerRef;
+  @Input() factory?: ComponentFactory<any>;
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate?: ViewContainerRef;
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
-  public fieldForm: FormGroup = null;
+  public fieldForm: FormGroup = new FormGroup({});
 
   constructor(private queryBuilder: QueryBuilderService) { }
 
@@ -49,7 +49,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
         event.currentIndex);
       if (this.selectedFields === event.previousContainer.data) {
         if (this.fieldForm === this.form.at(event.previousIndex) as FormGroup) {
-          this.fieldForm = null;
+          this.fieldForm = new FormGroup({});
         }
         this.form.removeAt(event.previousIndex);
       } else {
@@ -59,19 +59,21 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
   }
 
   public onCloseField(): void {
-    this.fieldForm = null;
+    this.fieldForm = new FormGroup({});
   }
 
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
-      const componentRef = this.childTemplate.createComponent(this.factory);
-      componentRef.instance.form = this.fieldForm;
-      componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
-      componentRef.instance.closeField.subscribe(() => {
-        this.onCloseField();
-        componentRef.destroy();
-      });
+      if (this.childTemplate && this.factory) {
+        const componentRef = this.childTemplate.createComponent(this.factory);
+        componentRef.instance.form = this.fieldForm;
+        componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
+        componentRef.instance.closeField.subscribe(() => {
+          this.onCloseField();
+          componentRef.destroy();
+        });
+      }
     }
   }
 }

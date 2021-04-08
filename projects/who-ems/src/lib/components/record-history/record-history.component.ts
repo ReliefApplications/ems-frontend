@@ -11,19 +11,19 @@ import { WhoRecordModalComponent } from '../record-modal/record-modal.component'
 })
 export class WhoRecordHistoryComponent implements OnInit {
 
-  @Input() record: Record;
+  @Input() record: Record = {};
   @Input() revert: any;
   @Output() cancel = new EventEmitter();
 
   public history: any[] = [];
-  public filterHistory = [];
+  public filterHistory: any[] = [];
   public loading = true;
   public showMore = false;
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
 
-  @ViewChild('startDate', { read: MatStartDate }) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
 
   constructor(public dialog: MatDialog) { }
@@ -40,8 +40,8 @@ export class WhoRecordHistoryComponent implements OnInit {
 
   /*  Get current and next record to see difference and put it in a string
   */
-  getDifference(current, after): string[] {
-    const changes = [];
+  getDifference(current: any, after: any): string[] {
+    const changes: any[] = [];
     if (current) {
       const keysCurrent = Object.keys(current);
       keysCurrent.forEach(key => {
@@ -101,7 +101,7 @@ export class WhoRecordHistoryComponent implements OnInit {
     return changes;
   }
 
-  private addObject(current, key: string): string {
+  private addObject(current: any, key: string): string {
     const currentKeys = Object.keys(current[key]);
     let currentValuesHTML = '';
     let element = `<p> <span class="add-field">Add field</span> <b> ${key} </b> with value  `;
@@ -118,11 +118,11 @@ export class WhoRecordHistoryComponent implements OnInit {
     return element;
   }
 
-  private addField(key: string, current): string {
+  private addField(key: string, current: any): string {
     return '<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + current[key] + '</b> </p>';
   }
 
-  private modifyField(key: string, after, current): string {
+  private modifyField(key: string, after: any, current: any): string {
     if (after[key] === null) {
       return '<p> <span  class="remove-field">Remove field</span> <b>' + key + '</b> with value <b>' + current[key] +
         '</b> </p>';
@@ -132,7 +132,7 @@ export class WhoRecordHistoryComponent implements OnInit {
     }
   }
 
-  modifyObjects(after, current, key): string {
+  modifyObjects(after: any, current: any, key: string): string {
     const afterKeys = Object.keys(after[key] ? after[key] : current[key]);
     let element = `<p> <span class="modify-field">Change field</span> <b> ${key} </b> from  `;
     let afterValuesHTML = '';
@@ -170,7 +170,7 @@ export class WhoRecordHistoryComponent implements OnInit {
 
   private getHistory(record: Record): any[] {
     const res = [];
-    const versions = record.versions;
+    const versions = record.versions || [];
     let difference;
     if (versions.length === 0) {
       difference = this.getDifference(null, record.data);
@@ -213,7 +213,7 @@ export class WhoRecordHistoryComponent implements OnInit {
       data: {
         recordId: this.record.id,
         locale: 'en',
-        compareTo: this.record.versions.find(x => x.id === item.id)
+        compareTo: this.record.versions?.find(x => x.id === item.id)
       },
       height: '98%',
       width: '100vw',
@@ -228,7 +228,6 @@ export class WhoRecordHistoryComponent implements OnInit {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
     this.filterHistory = this.history;
-    // ignore that error
     this.startDate.value = '';
     this.endDate.value = '';
   }

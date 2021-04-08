@@ -18,14 +18,14 @@ export class WhoRecordModalComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public form: Form;
-  public record: Record;
-  public modifiedAt: Date;
-  public survey: Survey.Model;
-  public surveyNext: Survey.Model;
+  public form?: Form;
+  public record: Record = {};
+  public modifiedAt: Date | null = null;
+  public survey!: Survey.Model;
+  public surveyNext: Survey.Model | null = null;
 
   public containerId: string;
-  public containerNextId: string;
+  public containerNextId = '';
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -65,10 +65,10 @@ export class WhoRecordModalComponent implements OnInit {
       }
     }).valueChanges.subscribe(res => {
       this.record = res.data.record;
-      this.modifiedAt = this.record.modifiedAt;
+      this.modifiedAt = this.record.modifiedAt || null;
       this.form = this.record.form;
       this.loading = res.loading;
-      this.survey = new Survey.Model(this.form.structure);
+      this.survey = new Survey.Model(this.form?.structure);
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
       this.survey.mode = 'display';
@@ -77,7 +77,7 @@ export class WhoRecordModalComponent implements OnInit {
       this.survey.render(this.containerId);
 
       if (this.data.compareTo) {
-        this.surveyNext = new Survey.Model(this.form.structure);
+        this.surveyNext = new Survey.Model(this.form?.structure);
         this.surveyNext.data = this.data.compareTo.data;
         this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
         this.surveyNext.mode = 'display';
@@ -90,7 +90,7 @@ export class WhoRecordModalComponent implements OnInit {
 
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
-    if (this.data.compareTo) {
+    if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }
   }

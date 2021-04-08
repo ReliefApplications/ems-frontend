@@ -29,7 +29,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
   public survey!: Survey.Model;
   public surveyLanguage = 'en';
   public usedLocales: Array<{ text: string, value: string }> = [];
-  public dropdownLocales = [];
+  public dropdownLocales: any[] = [];
   public surveyActive = true;
   public selectedTabIndex = 0;
 
@@ -37,7 +37,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
   primaryColor = '#008DC9';
 
   // === MODIFIED AT ===
-  public modifiedAt?: Date;
+  public modifiedAt: Date | null = null;
 
   // === PASS RECORDS FROM WORKFLOW ===
   private isStep = false;
@@ -96,21 +96,21 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else {
       if (cachedData) {
         this.survey.data = cachedData;
       } else {
         if (this.record && this.record.data) {
           this.survey.data = this.record.data;
-          this.modifiedAt = this.record.modifiedAt;
+          this.modifiedAt = this.record.modifiedAt || null;
         }
       }
     }
 
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
-        const nativeName = LANGUAGES[lang].nativeName.split(',')[0];
+        const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
         this.usedLocales.push({value: lang, text: nativeName});
         this.dropdownLocales.push(nativeName);
       });
@@ -119,7 +119,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     if (navigator.language) {
       const clientLanguage = navigator.language.substring(0, 2);
       const code = this.survey.getUsedLocales().includes(clientLanguage) ? clientLanguage : 'en';
-      this.surveyLanguage = LANGUAGES[code];
+      this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
       this.survey.locale = this.surveyLanguage;
@@ -164,7 +164,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     }
     this.survey.data = data;
     if (this.record || this.form.uniqueRecord) {
-      const recordId = this.record ? this.record.id : this.form.uniqueRecord.id;
+      const recordId = this.record ? this.record.id : this.form.uniqueRecord?.id;
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
@@ -181,7 +181,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
         }
       });
     }
-    mutation.subscribe((res) => {
+    mutation.subscribe((res: any) => {
       if (res.errors) {
         this.save.emit(false);
         this.survey.clear(false, true);
@@ -193,7 +193,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
           this.survey.clear(false, true);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
-            this.modifiedAt = this.record.modifiedAt;
+            this.modifiedAt = this.record?.modifiedAt || null;
           } else {
             this.modifiedAt = res.data.editRecord.modifiedAt;
           }

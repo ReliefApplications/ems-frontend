@@ -8,8 +8,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class WhoTabFilterComponent implements OnInit {
 
-  @Input() form: FormGroup;
-  @Input() filters: any[];
+  @Input() form: FormGroup = new FormGroup({});
+  @Input() filters: any[] = [];
 
   constructor() { }
 

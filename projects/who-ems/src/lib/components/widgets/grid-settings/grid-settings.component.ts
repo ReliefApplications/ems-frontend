@@ -18,7 +18,7 @@ import { WhoApplicationService } from '../../../services/application.service';
 export class WhoGridSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -31,8 +31,8 @@ export class WhoGridSettingsComponent implements OnInit {
   public channels: Channel[] = [];
 
   // === FLOATING BUTTON ===
-  public fields: any[];
-  public queryName: string;
+  public fields: any[] = [];
+  public queryName = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,7 +66,7 @@ export class WhoGridSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    this.applicationService.application.subscribe((application: Application) => {
+    this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
           query: GET_CHANNELS,
@@ -85,12 +85,12 @@ export class WhoGridSettingsComponent implements OnInit {
       }
     });
 
-    this.tileForm.get('query').valueChanges.subscribe(res => {
+    this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
         if (this.fields && (res.name !== this.queryName)) {
           const modifications = this.tileForm.get('floatingButton.modifications') as FormArray;
           modifications.clear();
-          this.tileForm.get('floatingButton.modifySelectedRows').setValue(false);
+          this.tileForm.get('floatingButton.modifySelectedRows')?.setValue(false);
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
@@ -109,7 +109,7 @@ export class WhoGridSettingsComponent implements OnInit {
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications.length
-        ? value.modifications.map(x => this.formBuilder.group({
+        ? value.modifications.map((x: any) => this.formBuilder.group({
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
         }))

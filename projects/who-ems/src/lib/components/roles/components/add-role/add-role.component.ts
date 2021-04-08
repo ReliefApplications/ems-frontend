@@ -10,7 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class WhoAddRoleComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup;
+  roleForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

@@ -27,16 +27,16 @@ import { MatSort } from '@angular/material/sort';
 export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === INPUT DATA ===
-  @Input() inApplication: boolean;
+  @Input() inApplication = false;
 
   // === DATA ===
   public loading = true;
-  public roles = new MatTableDataSource([]);
+  public roles: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   public displayedColumns = ['title', 'usersCount', 'actions'];
-  private applicationSubscription: Subscription;
+  private applicationSubscription?: Subscription;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
 
   // === FILTERS ===
   public filters = [{ id: 'title', value: '' }, { id: 'usersCount', value: '' }];
@@ -57,9 +57,9 @@ export class WhoRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.inApplication) {
       this.loading = false;
-      this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+      this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
         if (application) {
-          this.roles.data = application.roles;
+          this.roles.data = application.roles || [];
         } else {
           this.roles.data = [];
         }

@@ -23,7 +23,7 @@ export class WhoEditRoleComponent implements OnInit {
   public channels: Channel[] = [];
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup;
+  roleForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,
