@@ -190,7 +190,7 @@ export class WhoInviteUserComponent implements OnInit {
   }
 
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any): any {
-    const csvArr = [];
+    const csvArr: any[] = [];
     for (const recordLine of csvRecordsArray) {
       const currentRecordLine = recordLine.split(';').map((x: any) => x.split(','));
       if (currentRecordLine.length > 0) {

@@ -56,7 +56,7 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   /*  Generation of an unique id for the map ( in case multiple widgets use map ).
   */
   private generateUniqueId(parts: number = 4): string {
-    const stringArr = [];
+    const stringArr: string[] = [];
     for (let i = 0; i < parts; i++) {
       // tslint:disable-next-line:no-bitwise
       const S4 = (((1 + Math.random()) * 0x10000) | 0)

@@ -169,7 +169,7 @@ export class WhoRecordHistoryComponent implements OnInit {
   }
 
   private getHistory(record: Record): any[] {
-    const res = [];
+    const res: any[] = [];
     const versions = record.versions || [];
     let difference;
     if (versions.length === 0) {

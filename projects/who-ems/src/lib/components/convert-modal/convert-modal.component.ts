@@ -19,7 +19,7 @@ export class WhoConvertModalComponent implements OnInit {
   // === DATA ===
   public form?: Form;
   public availableForms: Form[] = [];
-  public ignoredFields: string[] = [];
+  public ignoredFields: any[] = [];
 
   // === LOAD DATA ===
   public loading = true;

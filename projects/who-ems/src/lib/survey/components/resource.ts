@@ -34,7 +34,7 @@ export function init(Survey: any, API_URL: string): void {
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.onload = () => {
             const serverRes = xhr.response.data.resources;
-            const res = [];
+            const res: any[] = [];
             res.push({ value: null });
             for (const item of serverRes) {
               res.push({ value: item.id, text: item.name });
@@ -80,7 +80,7 @@ export function init(Survey: any, API_URL: string): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.fields;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.name });
@@ -130,7 +130,7 @@ export function init(Survey: any, API_URL: string): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.records;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.data[obj.displayField] });
@@ -192,7 +192,7 @@ export function init(Survey: any, API_URL: string): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.forms;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.name });
@@ -235,7 +235,7 @@ export function init(Survey: any, API_URL: string): void {
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = () => {
         const serverRes = xhr.response.data.resource.records;
-        const res = [];
+        const res: any[] = [];
         for (const item of serverRes) {
           res.push({ value: item.id, text: item.data[question.displayField] });
         }
@@ -276,7 +276,7 @@ export function init(Survey: any, API_URL: string): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.records;
-              const res = [];
+              const res: any[] = [];
               for (const item of serverRes) {
                 res.push({
                   value: item.id,

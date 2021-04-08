@@ -39,7 +39,7 @@
                     <mat-option *ngFor="let role of data.roles" [value]="role.id">{{ role.title }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <ng-container *ngIf="positionAttributes">
+            <ng-container *ngIf="data.positionAttributeCategories && positionAttributes">
                 <ng-container formArrayName="positionAttributes">
                     <label class="invite-label">Set additional attributes</label>
                     <mat-form-field appearance="outline" *ngFor="let category of positionAttributes.controls; let index = index;" [formGroup]="category">

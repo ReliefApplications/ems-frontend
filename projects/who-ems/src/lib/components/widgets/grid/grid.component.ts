@@ -367,7 +367,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private promisedChanges(): Promise<any>[] {
-    const promises = [];
+    const promises: Promise<any>[] = [];
     for (const item of this.updatedItems) {
       const data = Object.assign({}, item);
       delete data.id;
@@ -568,7 +568,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open the form corresponding to selected row in order to update it
   */
-  public onUpdateRow(items: string | string[]): void {
+  public onUpdateRow(items: number | number[]): void {
     const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
       (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
     const dialogRef = this.dialog.open(WhoFormModalComponent, {
@@ -663,7 +663,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises = [];
+        const promises: Promise<any>[] = [];
         for (const index of items) {
           const id = this.gridData.data[index].id;
           promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
@@ -691,7 +691,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
       if (value) {
-        const promises = [];
+        const promises: Promise<any>[] = [];
         for (const index of items) {
           const id = this.gridData.data[index].id;
           promises.push(this.apollo.mutate<ConvertRecordMutationResponse>({
@@ -712,7 +712,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Reload data and unselect all rows
   */
-  private reloadData(): void {
+  public reloadData(): void {
     if (!this.parent) {
       if (this.dataSubscription) {
         this.dataSubscription.unsubscribe();
@@ -772,7 +772,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         await Promise.all(promises);
       }
       if (options.passDataToNextStep) {
-        const promisedRecords = [];
+        const promisedRecords: Promise<any>[] = [];
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
             query: GET_RECORD_DETAILS,
@@ -796,7 +796,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       Apply inline edition before applying modifications.
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
-    const promises = [];
+    const promises: Promise<any>[] = [];
     for (const index of rows) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
