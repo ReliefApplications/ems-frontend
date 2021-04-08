@@ -191,8 +191,8 @@ export class WhoApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(`${value.name} page created`);
           const content = res.data.addPage.content;
-          application.pages = application.pages?.concat([res.data.addPage]);
-          this._application.next(application);
+          const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
+          this._application.next(newApplication);
           this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
             `/applications/${application.id}/${value.type}/${content}`]);
         }
@@ -216,8 +216,8 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${value.title} role created`);
-          application.roles = application.roles?.concat([res.data.addRole]);
-          this._application.next(application);
+          const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -504,8 +504,8 @@ export class WhoApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar('Subscription removed.');
-        application.subscriptions = application.subscriptions?.filter(sub => sub.routingKey !== value);
-        this._application.next(application);
+        const newApplication = {...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value)};
+        this._application.next(newApplication);
       });
     }
   }
@@ -529,13 +529,13 @@ export class WhoApplicationService {
         if (res.data) {
           const subscription = res.data.editSubscription;
           this.snackBar.openSnackBar('Edited subscription.');
-          application.subscriptions = application.subscriptions?.map(sub => {
+          const newApplication = {...application, subscriptions: application.subscriptions = application.subscriptions?.map(sub => {
             if (sub.routingKey === previousSubscription) {
               sub = subscription;
             }
             return sub;
-          });
-          this._application.next(application);
+          })};
+          this._application.next(newApplication);
         }
       });
     }
