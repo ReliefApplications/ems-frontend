@@ -366,7 +366,8 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${value.title} position category created`);
-          application.positionAttributeCategories = application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory]);
+          application.positionAttributeCategories = application.positionAttributeCategories?.concat(
+            [res.data.addPositionAttributeCategory]);
           this._application.next(application);
         }
       });
