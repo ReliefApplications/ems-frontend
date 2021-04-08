@@ -260,9 +260,9 @@
         <who-grid [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></who-grid>
       </div>
     </ng-container>
-    <!-- EMPTY TABLE -->
+    <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-      No record detected.
+      {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
     </ng-template>
     <!-- EXCEL EXPORT -->
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>

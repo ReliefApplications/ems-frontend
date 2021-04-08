@@ -88,6 +88,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public formGroup: FormGroup;
   private isNew = false;
   public loading = true;
+  public queryError = false;
   public fields: any[] = [];
   private metaFields: any;
   public detailsField: string;
@@ -166,14 +167,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
-    this.metaQuery.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.metaFields = res.data[field];
+    if (this.metaQuery) {
+      this.metaQuery.subscribe(res => {
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.metaFields = res.data[field];
+          }
         }
-      }
-      this.getRecords();
-    });
+        this.getRecords();
+      });
+    } else {
+      this.loading = false;
+      this.queryError = true;
+    }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
