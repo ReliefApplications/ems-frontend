@@ -1,7 +1,7 @@
 export function init(Survey: any, API_URL: string): void {
   const widget = {
     name: 'inputwithresource',
-    isFit: (question) => {
+    isFit: (question: any) => {
       return question.getType() === 'text';
     },
     isDefaultRender: true,
@@ -38,7 +38,7 @@ export function init(Survey: any, API_URL: string): void {
           if (!obj) { return false; }
           return obj.inputType === 'resource';
         },
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           const xhr = new XMLHttpRequest();
           const query = {
             query: `{
@@ -69,11 +69,11 @@ export function init(Survey: any, API_URL: string): void {
         displayName: 'Resource field',
         category: 'Question Library',
         dependsOn: 'resources',
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resources) { return false; }
           return obj.inputType === 'resource';
         },
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resources) {
             const xhr = new XMLHttpRequest();
             const query = {

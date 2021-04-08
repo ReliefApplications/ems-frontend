@@ -20,7 +20,7 @@ export function init(Survey: any): void{
           category: 'Choices',
       });
     },
-    onLoaded(question): void {
+    onLoaded(question: any): void {
       question.choicesByUrl = 'https://restcountries.eu/rest/v2/all';
       Survey.Serializer.findProperty('countries', 'choicesByUrl').readOnly = true;
     },

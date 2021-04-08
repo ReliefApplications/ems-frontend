@@ -1,4 +1,4 @@
-function addZero(i): string {
+function addZero(i: any): string {
     if (i < 10) {
         i = '0' + i;
     }
@@ -11,7 +11,7 @@ export function init(Survey: any): void {
         widgetIsLoaded(): boolean {
             return true;
         },
-        isFit(question): any {
+        isFit(question: any): any {
             return true;
         },
         init(): void {
@@ -21,7 +21,7 @@ export function init(Survey: any): void {
             });
         },
         isDefaultRender: true,
-        afterRender(question, el): void {
+        afterRender(question: any, el: any): void {
             if (question.value && ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType)) {
                 const date = new Date(question.value);
                 const year = date.getFullYear();
