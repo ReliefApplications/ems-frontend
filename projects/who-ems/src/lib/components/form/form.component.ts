@@ -1,5 +1,5 @@
 import {Apollo} from 'apollo-angular';
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as Survey from 'survey-angular';
@@ -21,27 +21,27 @@ import { WhoWorkflowService } from '../../services/workflow.service';
 })
 export class WhoFormComponent implements OnInit, OnDestroy {
 
-  @Input() form: Form;
-  @Input() record: Record;
+  @Input() form!: Form;
+  @Input() record?: Record;
   @Output() save: EventEmitter<boolean> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey: Survey.Model;
+  public survey!: Survey.Model;
   public surveyLanguage = 'en';
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales = [];
   public surveyActive = true;
-  public selectedTabIndex: number;
+  public selectedTabIndex = 0;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
 
   // === MODIFIED AT ===
-  public modifiedAt: Date;
+  public modifiedAt?: Date;
 
   // === PASS RECORDS FROM WORKFLOW ===
-  private isStep: boolean;
-  private recordsSubscription: Subscription;
+  private isStep = false;
+  private recordsSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -63,20 +63,20 @@ export class WhoFormComponent implements OnInit, OnDestroy {
       .StylesManager
       .applyTheme();
 
-    const structure = JSON.parse(this.form.structure);
+    const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
 
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
-      for (const field of this.form.fields) {
+      this.form.fields?.forEach(field => {
         if (field.readOnly) {
           this.survey.getQuestionByName(field.name).readOnly = false;
         }
-      }
+      });
     }
 
     // Fetch cached data from local storage
-    let cachedData = JSON.parse(localStorage.getItem(`record:${this.form.id}`));
+    let cachedData = JSON.parse(localStorage.getItem(`record:${this.form.id}`) || '');
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
@@ -84,8 +84,8 @@ export class WhoFormComponent implements OnInit, OnDestroy {
         if (records) {
           const mergedRecord = records[0];
           cachedData = mergedRecord.data;
-          const resourcesField = this.form.fields.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === mergedRecord.form.resource.id) {
+          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
             this.snackBar.openSnackBar('Selected records do not match with any fields from this form', { error: true });
@@ -244,7 +244,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.recordsSubscription) {
       this.recordsSubscription.unsubscribe();
-      this.workflowService.storeRecords(null);
+      this.workflowService.storeRecords([]);
     }
   }
 }

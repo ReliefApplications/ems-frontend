@@ -43,10 +43,10 @@ export class WhoEditAccessComponent implements OnInit {
       this.loading = res.loading;
     });
     this.accessForm = this.formBuilder.group({
-      canSee: [this.data.access.canSee ? this.data.access.canSee.map(x => x.id) : null],
-      canCreate: [this.data.access.canCreate ? this.data.access.canCreate.map(x => x.id) : null],
-      canUpdate: [this.data.access.canUpdate ? this.data.access.canUpdate.map(x => x.id) : null],
-      canDelete: [this.data.access.canDelete ? this.data.access.canDelete.map(x => x.id) : null]
+      canSee: [this.data.access.canSee ? this.data.access.canSee.map((x: any) => x.id) : null],
+      canCreate: [this.data.access.canCreate ? this.data.access.canCreate.map((x: any) => x.id) : null],
+      canUpdate: [this.data.access.canUpdate ? this.data.access.canUpdate.map((x: any) => x.id) : null],
+      canDelete: [this.data.access.canDelete ? this.data.access.canDelete.map((x: any) => x.id) : null]
     });
   }
 

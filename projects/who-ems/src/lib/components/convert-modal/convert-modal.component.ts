@@ -14,11 +14,11 @@ import { Form } from '../../models/form.model';
 export class WhoConvertModalComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  convertForm: FormGroup;
+  convertForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  public form: Form;
-  public availableForms: Form[];
+  public form?: Form;
+  public availableForms: Form[] = [];
   public ignoredFields: string[] = [];
 
   // === LOAD DATA ===
@@ -44,16 +44,16 @@ export class WhoConvertModalComponent implements OnInit {
       const record = res.data.record;
       this.form = record.form;
       this.loading = false;
-      this.availableForms = this.form.resource.forms.filter(x => x.id !== this.form.id);
+      this.availableForms = this.form?.resource?.forms?.filter(x => x.id !== this.form?.id) || [];
     });
     this.convertForm = this.formBuilder.group({
       targetForm: [null, Validators.required],
       copyRecord: [true, Validators.required]
     });
-    this.convertForm.get('targetForm').valueChanges.subscribe((targetForm: Form) => {
+    this.convertForm.get('targetForm')?.valueChanges.subscribe((targetForm: Form) => {
       if (targetForm) {
-        this.ignoredFields = this.form.fields.filter(sourceField => !targetForm.fields.some(
-          targetField => sourceField.name === targetField.name));
+        this.ignoredFields = this.form?.fields?.filter(sourceField => !targetForm?.fields?.some(
+          targetField => sourceField.name === targetField.name)) || [];
       }
     });
   }
