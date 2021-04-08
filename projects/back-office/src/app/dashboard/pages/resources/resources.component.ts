@@ -24,7 +24,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   dataSource =  new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public showFilters = false;
@@ -33,8 +33,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   public recordsFilter = '';
 
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
   constructor(
     private dialog: MatDialog,
@@ -67,7 +67,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort || null;
   }
 
   onDelete(resource: Resource): void {
@@ -106,7 +106,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   clearDateFilter(): void {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
-    // ignore that error
     this.startDate.value = '';
     this.endDate.value = '';
     this.applyFilter('createdAt', '');

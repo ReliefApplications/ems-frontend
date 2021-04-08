@@ -18,8 +18,8 @@ import { map } from 'rxjs/operators';
 export class FormBuilderComponent implements OnInit {
 
   public loading = true;
-  public id: string;
-  public form: Form;
+  public id = '';
+  public form?: Form;
   public structure: any;
   public activeVersions = false;
   public activeVersion: any;
@@ -44,8 +44,8 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   // === FORM EDITION ===
-  public formActive: boolean;
-  public nameForm: FormGroup;
+  public formActive = false;
+  public nameForm: FormGroup = new FormGroup({});
   public hasChanges = false;
 
   constructor(
@@ -84,7 +84,7 @@ export class FormBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.formActive = false;
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -122,7 +122,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   toggleFormActive(): void {
-    if (this.form.canUpdate) {
+    if (this.form?.canUpdate) {
       this.formActive = !this.formActive;
     }
   }
@@ -130,7 +130,7 @@ export class FormBuilderComponent implements OnInit {
   /* Save the form
   */
   public onSave(structure: any): void {
-    if (!this.form.id) {
+    if (!this.form?.id) {
       alert('not valid');
     } else {
       this.apollo.mutate<EditFormMutationResponse>({
@@ -144,7 +144,7 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
           this.snackBar.openSnackBar('Form updated');
-          this.form = res.data.editForm;
+          this.form = res.data?.editForm;
           this.structure = structure; // Update current form to
           this.hasChanges = false;
           this.authService.canLogout.next(true);
@@ -166,7 +166,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
-      this.form.status = res.data.editForm.status;
+      Object.assign(this.form, { status: res.data?.editForm.status });
     });
   }
 
@@ -196,7 +196,7 @@ export class FormBuilderComponent implements OnInit {
   */
   public resetActiveVersion(): void {
     this.activeVersion = null;
-    this.structure = this.form.structure;
+    this.structure = this.form?.structure;
     // this.surveyCreator.makeNewViewActive('designer');
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
@@ -218,7 +218,7 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar('The Form was not changed. ' + res.errors[0].message);
         } else {
           this.snackBar.openSnackBar('Name updated', { duration: 1000 });
-          this.form.name = res.data.editForm.name;
+          Object.assign(this.form, { name: res.data?.editForm.name });
         }
     });
   }
@@ -233,12 +233,12 @@ export class FormBuilderComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.form = res.data.editForm;
+      this.form = res.data?.editForm;
     });
   }
 
   formStructureChange(event: any): void {
-    this.hasChanges = (event !== this.form.structure);
+    this.hasChanges = (event !== this.form?.structure);
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
   }
