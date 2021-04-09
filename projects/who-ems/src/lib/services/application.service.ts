@@ -138,8 +138,8 @@ export class WhoApplicationService {
         this.snackBar.openSnackBar('Page deleted');
         const application = this._application.getValue();
         if (application) {
-          application.pages = application.pages?.filter(x => x.id !== res.data?.deletePage.id);
-          this._application.next(application);
+          const newApplication = { ...application, pages: application.pages?.filter(x => x.id !== res.data?.deletePage.id) };
+          this._application.next(newApplication);
           this.router.navigate([`./applications/${application.id}`]);
         }
       }
@@ -166,12 +166,14 @@ export class WhoApplicationService {
   updatePageName(page: Page): void {
     const application = this._application.getValue();
     if (application) {
-      application.pages = application.pages?.map(x => {
-        if (x.id === page.id) { x.name = page.name; }
+      const newApplication = { ...application, pages: application.pages?.map(x => {
+        if (x.id === page.id) {
+          x = { ...x, name: page.name };
+        }
         return x;
-      });
+      })};
+      this._application.next(newApplication);
     }
-    this._application.next(application);
   }
 
   /* Add a new page to the opened application.
@@ -238,22 +240,26 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${role.title} role updated.`);
-          application.roles = application.roles?.map(x => {
-            if (x.id === role.id) {
-              x.permissions = res.data?.editRole.permissions;
-              x.channels = res.data?.editRole.channels;
-            }
-            return x;
-          });
-          application.channels = application.channels?.map(x => {
-            if (value.channels.includes(x.id)) {
-              x.subscribedRoles = x.subscribedRoles?.concat([role]);
-            } else if (x.subscribedRoles?.some(subRole => subRole.id === role.id)) {
-              x.subscribedRoles = x.subscribedRoles.filter(subRole => subRole.id !== role.id);
-            }
-            return x;
-          });
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            roles: application.roles?.map(x => {
+              if (x.id === role.id) {
+                x = { ...x,
+                  permissions: res.data?.editRole.permissions,
+                  channels: res.data?.editRole.channels
+                };
+              }
+              return x;
+            }),
+            channels: application.channels?.map(x => {
+              if (value.channels.includes(x.id)) {
+                x = { ...x, subscribedRoles: x.subscribedRoles?.concat([role]) };
+              } else if (x.subscribedRoles?.some(subRole => subRole.id === role.id)) {
+                x = { ...x, subscribedRoles: x.subscribedRoles.filter(subRole => subRole.id !== role.id) };
+              }
+              return x;
+            })
+          };
+          this._application.next(newApplication);
         }
       });
     }
@@ -271,8 +277,8 @@ export class WhoApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(`${role.title} role deleted.`);
-        application.roles = application.roles?.filter(x => x.id !== role.id);
-        this._application.next(application);
+        const newApplication = { ...application, roles: application.roles?.filter(x => x.id !== role.id) };
+        this._application.next(newApplication);
       });
     }
   }
@@ -293,8 +299,8 @@ export class WhoApplicationService {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
           this.snackBar.openSnackBar(deletedUsers.length > 1 ? `${deletedUsers.length} users were deleted` : 'User was deleted',
           { duration: 3000 });
-          application.users = application.users?.filter(u => !deletedUsers.includes(u.id));
-          this._application.next(application);
+          const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
+          this._application.next(newApplication);
         } else {
           this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
         }
@@ -318,8 +324,8 @@ export class WhoApplicationService {
       }).subscribe((res: any) => {
         if (res.data) {
           this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
-          application.users = application.users?.concat(res.data.addRoleToUsers);
-          this._application.next(application);
+          const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
+          this._application.next(newApplication);
         } else {
           this.snackBar.openSnackBar('User could not be invited.', { error: true });
         }
@@ -366,9 +372,9 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${value.title} position category created`);
-          application.positionAttributeCategories = application.positionAttributeCategories?.concat(
-            [res.data.addPositionAttributeCategory]);
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory]) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -388,9 +394,10 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${positionCategory.title} position category deleted.`);
-          application.positionAttributeCategories = application.positionAttributeCategories?.filter(x =>
-            x.id !== res.data?.deletePositionAttributeCategory.id);
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
+              x.id !== res.data?.deletePositionAttributeCategory.id) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -413,13 +420,15 @@ export class WhoApplicationService {
           this.snackBar.openSnackBar('Position category with this title already exists.', { error: true });
         } else {
           this.snackBar.openSnackBar('Edited position category.');
-          application.positionAttributeCategories = application.positionAttributeCategories?.map(pos => {
-            if (pos.title === positionCategory.title) {
-              pos.title = res.data?.editPositionAttributeCategory.title;
-            }
-            return pos;
-          });
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            positionAttributeCategories: application.positionAttributeCategories?.map(pos => {
+              if (pos.title === positionCategory.title) {
+                pos = { ...pos, title: res.data?.editPositionAttributeCategory.title };
+              }
+              return pos;
+            })
+          };
+          this._application.next(newApplication);
         }
       });
     }
@@ -439,8 +448,8 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${value.title} channel created.`);
-          application.channels = application.channels?.concat([res.data.addChannel]);
-          this._application.next(application);
+          const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -459,8 +468,9 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(`${channel.title} channel deleted.`);
-          application.channels = application.channels?.filter(x => x.id !== res.data?.deleteChannel.id);
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -483,8 +493,9 @@ export class WhoApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar('New subscription created.');
-          application.subscriptions = application.subscriptions?.concat([res.data.addSubscription]);
-          this._application.next(application);
+          const newApplication: Application = { ...application,
+            subscriptions: application.subscriptions?.concat([res.data.addSubscription]) };
+          this._application.next(newApplication);
         }
       });
     }
@@ -529,7 +540,7 @@ export class WhoApplicationService {
         if (res.data) {
           const subscription = res.data.editSubscription;
           this.snackBar.openSnackBar('Edited subscription.');
-          const newApplication = {...application, subscriptions: application.subscriptions = application.subscriptions?.map(sub => {
+          const newApplication = {...application, subscriptions: application.subscriptions?.map(sub => {
             if (sub.routingKey === previousSubscription) {
               sub = subscription;
             }

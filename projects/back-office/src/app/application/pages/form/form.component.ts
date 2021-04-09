@@ -143,7 +143,8 @@ export class FormComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message);
         } else {
           if (res.data) {
-            Object.assign(this.page, { name: res.data.editPage.name });
+            const newPage = { ...this.page, name: res.data.editPage.name };
+            this.page = newPage;
             this.applicationService.updatePageName(res.data.editPage);
           }
         }

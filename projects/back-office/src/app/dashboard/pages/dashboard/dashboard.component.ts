@@ -209,7 +209,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        Object.assign(this.dashboard, { name: res.data?.editPage.name });
+        const newDashboard = { ...this.dashboard, name: res.data?.editPage.name };
+        this.dashboard = newDashboard;
         if (res.data?.editPage) {
           this.applicationService.updatePageName(res.data.editPage);
         }

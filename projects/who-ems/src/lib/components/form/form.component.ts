@@ -79,7 +79,8 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     }
 
     // Fetch cached data from local storage
-    let cachedData = JSON.parse(localStorage.getItem(`record:${this.form.id}`) || '');
+    const storedData = localStorage.getItem(`record:${this.form.id}`);
+    let cachedData = storedData ? JSON.parse(storedData) : null;
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
