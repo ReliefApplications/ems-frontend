@@ -17,16 +17,16 @@ export class ResourceComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public resource: any;
 
   // === RECORDS ASSOCIATED ===
   displayedColumnsRecords: string[] = [];
-  dataSourceRecords = [];
+  dataSourceRecords: any[] = [];
 
   // === FORMS ASSOCIATED ===
   displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', '_actions'];
-  dataSourceForms = [];
+  dataSourceForms: any[] = [];
 
   constructor(
     private apollo: Apollo,
@@ -39,7 +39,7 @@ export class ResourceComponent implements OnInit {
   /*  Load data from the id of the resource passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
@@ -72,7 +72,7 @@ export class ResourceComponent implements OnInit {
   private setDisplayedColumns(core: boolean): void {
     const columns = [];
     if (core) {
-      for (const field of this.resource.fields.filter(x => x.isRequired === true)) {
+      for (const field of this.resource.fields.filter((x: any) => x.isRequired === true)) {
         columns.push(field.name);
       }
     } else {
@@ -132,7 +132,9 @@ export class ResourceComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.resource = res.data.editResource;
+      if (res.data) {
+        this.resource = res.data.editResource;
+      }
     });
   }
 

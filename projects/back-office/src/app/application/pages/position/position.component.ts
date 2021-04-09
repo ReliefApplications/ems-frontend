@@ -13,9 +13,9 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public positionCategories = [];
+  public positionCategories: any[] = [];
   public displayedColumns = ['title', 'actions'];
-  private applicationSubscription: Subscription;
+  private applicationSubscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -24,9 +24,9 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.positionCategories = application.positionAttributeCategories;
+        this.positionCategories = application.positionAttributeCategories || [];
       } else {
         this.positionCategories = [];
       }

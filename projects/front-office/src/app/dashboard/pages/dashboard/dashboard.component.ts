@@ -15,13 +15,13 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
   public loading = true;
   public tiles = [];
-  public dashboard: Dashboard;
+  public dashboard?: Dashboard;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();

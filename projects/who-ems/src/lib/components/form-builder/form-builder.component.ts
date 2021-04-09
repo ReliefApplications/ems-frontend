@@ -44,7 +44,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
-  surveyCreator: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
   // === SURVEY COLORS
@@ -158,9 +158,9 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
   */
   private async validateValueNames(): Promise<void> {
     const object = JSON.parse(this.surveyCreator.text);
-    await object.pages.forEach(page => {
+    await object.pages.forEach((page: any) => {
       if (page.elements) {
-        page.elements.forEach(element => {
+        page.elements.forEach((element: any) => {
           if (!element.valueName) {
             if (element.title) {
               element.valueName = this.toSnakeCase(element.title);
@@ -179,7 +179,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
             }
           }
           if (element.type === 'multipletext') {
-            element.items = element.items.map(e => {
+            element.items = element.items.map((e: any) => {
               if (!e.name && !e.title) {
                 throw new Error(`Please provide name or title for each text of question: ${element.valueName}`);
               }
@@ -190,13 +190,13 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
             });
           }
           if (element.type === 'matrix') {
-            element.columns = element.columns.map(x => {
+            element.columns = element.columns.map((x: any) => {
               return {
                 value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
                 text: x.text ? x.text : x
               };
             });
-            element.rows = element.rows.map(x => {
+            element.rows = element.rows.map((x: any) => {
               return {
                 value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
                 text: x.text ? x.text : x
@@ -204,7 +204,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
             });
           }
           if (element.type === 'matrixdropdown') {
-            element.columns = element.columns.map(x => {
+            element.columns = element.columns.map((x: any) => {
               return {
                 name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
                 title: x.title ? x.title : (x.name ? x.name : x),
@@ -212,7 +212,7 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
                 ...x.isRequired && { isRequired: true }
               };
             });
-            element.rows = element.rows.map(x => {
+            element.rows = element.rows.map((x: any) => {
               return {
                 value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
                 text: x.text ? x.text : x

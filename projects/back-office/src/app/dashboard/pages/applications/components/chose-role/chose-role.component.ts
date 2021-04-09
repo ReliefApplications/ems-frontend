@@ -18,7 +18,7 @@ export class ChoseRoleComponent implements OnInit {
   public loading = true;
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup;
+  roleForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

@@ -32,8 +32,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns;"
-    [routerLink]="[row.id]">
+    <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="[row.id]">
     </tr>
   </table>
 </ng-container>

@@ -15,7 +15,7 @@ import { GetResourcesQueryResponse, GET_RESOURCES, GetFormsQueryResponse,
 export class WhoSchedulerSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -25,8 +25,8 @@ export class WhoSchedulerSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === DATA ===
-  public sources = [];
-  public fields = [];
+  public sources: any[] = [];
+  public fields: any[] = [];
   public forms: any[] = [];
 
   constructor(
@@ -56,7 +56,7 @@ export class WhoSchedulerSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    this.getSources({ value: this.tileForm.get('from').value }, true);
+    this.getSources({ value: this.tileForm.get('from')?.value }, true);
     if (tileSettings.source) {
       this.getSource({ value: tileSettings.source });
     }
@@ -71,11 +71,11 @@ export class WhoSchedulerSettingsComponent implements OnInit {
       }).subscribe(res => {
         this.sources = res.data.resources.map(source => source = { id: source.id, name: source.name });
         if (!init) {
-          this.tileForm.get('source').setValue(null);
-          this.tileForm.get('events.title').setValue(null);
-          this.tileForm.get('events.description').setValue(null);
-          this.tileForm.get('events.startDate').setValue(null);
-          this.tileForm.get('events.endDate').setValue(null);
+          this.tileForm.get('source')?.setValue(null);
+          this.tileForm.get('events.title')?.setValue(null);
+          this.tileForm.get('events.description')?.setValue(null);
+          this.tileForm.get('events.startDate')?.setValue(null);
+          this.tileForm.get('events.endDate')?.setValue(null);
         }
         this.fields = [];
       });
@@ -85,11 +85,11 @@ export class WhoSchedulerSettingsComponent implements OnInit {
       }).subscribe(res => {
         this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
         if (!init) {
-          this.tileForm.get('source').setValue(null);
-          this.tileForm.get('events.title').setValue(null);
-          this.tileForm.get('events.description').setValue(null);
-          this.tileForm.get('events.startDate').setValue(null);
-          this.tileForm.get('events.endDate').setValue(null);
+          this.tileForm.get('source')?.setValue(null);
+          this.tileForm.get('events.title')?.setValue(null);
+          this.tileForm.get('events.description')?.setValue(null);
+          this.tileForm.get('events.startDate')?.setValue(null);
+          this.tileForm.get('events.endDate')?.setValue(null);
         }
         this.fields = [];
       });
@@ -106,8 +106,8 @@ export class WhoSchedulerSettingsComponent implements OnInit {
           id: e.value
         }
       }).subscribe(res => {
-        this.fields = res.data.resource.fields;
-        this.forms = res.data.resource.forms;
+        this.fields = res.data.resource.fields || [];
+        this.forms = res.data.resource.forms || [];
       });
     } else {
       this.apollo.query<GetFormByIdQueryResponse>({
@@ -116,7 +116,7 @@ export class WhoSchedulerSettingsComponent implements OnInit {
           id: e.value
         }
       }).subscribe(res => {
-        this.fields = res.data.form.fields;
+        this.fields = res.data.form.fields || [];
         this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
       });
     }

@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public users = new MatTableDataSource<User>([]);
-  public roles: Role[];
+  public roles: Role[] = [];
   public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
 
   constructor(

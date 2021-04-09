@@ -12,8 +12,8 @@ import { Subscription } from 'rxjs';
 export class ApplicationToolbarComponent implements OnInit, OnDestroy {
 
   // === APPLICATION ===
-  public application: Application;
-  private applicationSubscription: Subscription;
+  public application: Application | null = null;
+  private applicationSubscription?: Subscription;
 
   public canPublish = false;
 
@@ -24,9 +24,9 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       this.application = application;
-      this.canPublish = !!this.application && this.application.pages.length > 0;
+      this.canPublish = !!this.application && this.application.pages ? this.application.pages.length > 0 : false;
     });
   }
 
@@ -38,7 +38,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
       data: {
         title: `Publish application`,
-        content: `Do you confirm the publication of ${this.application.name} ?`,
+        content: `Do you confirm the publication of ${this.application?.name} ?`,
         confirmText: 'Confirm',
         confirmColor: 'primary'
       }

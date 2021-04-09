@@ -37,18 +37,18 @@ export function init(Survey: any): void {
         },
         // SurveyJS calls this function after creating new question and loading it's properties from JSON
         // It calls in runtime and at design-time (after loading from JSON) and pass the current component/root question as parameter
-        onLoaded(question): void {
+        onLoaded(question: any): void {
             this.changeMiddleVisibility(question);
         },
         // SurveyJS calls this on a property change in the component/root question
         // It has three parameters that are self explained
-        onPropertyChanged(question, propertyName, newValue): void {
+        onPropertyChanged(question: any, propertyName: string, newValue: any): void {
             if (propertyName === 'showMiddleName') {
                 this.changeMiddleVisibility(question);
             }
         },
         // The custom function that used in onLoaded and onPropertyChanged functions
-        changeMiddleVisibility(question): void {
+        changeMiddleVisibility(question: any): void {
             // get middle question from the content panel
             const middle = question.contentPanel.getQuestionByName('middleName');
             if (!!middle) {

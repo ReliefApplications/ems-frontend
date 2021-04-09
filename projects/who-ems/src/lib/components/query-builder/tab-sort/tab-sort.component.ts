@@ -8,8 +8,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class WhoTabSortComponent implements OnInit {
 
-  @Input() form: FormGroup;
-  @Input() fields: any[];
+  @Input() form: FormGroup = new FormGroup({});
+  @Input() fields: any[] = [];
 
   constructor() { }
 
