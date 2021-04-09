@@ -1,11 +1,11 @@
 import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { Account } from 'msal';
-import { MsalService } from '@azure/msal-angular';
-
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AccountInfo, AuthenticationResult, EventMessage, EventType } from '@azure/msal-browser';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +18,35 @@ export class WhoAuthService {
   // === LOGGED USER ===
   // tslint:disable-next-line: variable-name
   private _user = new BehaviorSubject<User | null>(null);
-  public account: Account | null = null;
+  public account: AccountInfo | null = null;
 
   // if we have the modal confirmation open on form builder we cannot logout until close modal
   public canLogout = new BehaviorSubject<boolean>(true);
 
   constructor(
     private msalService: MsalService,
+    private msalBroadcastService: MsalBroadcastService,
     private apollo: Apollo
   ) {
     this.checkAccount();
+    this.msalBroadcastService.msalSubject$.pipe(
+      filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
+    )
+    .subscribe((res: EventMessage) => {
+      const payload = res.payload as AuthenticationResult;
+      console.log(payload);
+      this.msalService.instance.setActiveAccount(payload.account);
+      this.getProfile();
+    });
+    this.msalBroadcastService.msalSubject$.pipe(
+      filter((msg: EventMessage) => msg.eventType === EventType.HANDLE_REDIRECT_START)
+    )
+    .subscribe((res: EventMessage) => {
+      console.log(res);
+      // const payload = res.payload as AuthenticationResult;
+      // this.msalService.instance.setActiveAccount(payload.account);
+      this.getProfile();
+    });
   }
 
   /*  Check if user has permission.
@@ -70,7 +89,7 @@ export class WhoAuthService {
   /*  Get the Azure AD profile.
   */
   checkAccount(): void {
-    this.account = this.msalService.getAccount();
+    this.account = this.msalService.instance.getActiveAccount();
   }
 
   /*  Get the profile from the database, using GraphQL.

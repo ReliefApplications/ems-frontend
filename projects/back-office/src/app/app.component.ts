@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BroadcastService, MsalService } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+import { EventMessage, EventType, InteractionType } from '@azure/msal-browser';
 import { WhoAuthService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -17,17 +19,21 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
 
   constructor(
-    private broadcastService: BroadcastService,
+    private msalBroadcastService: MsalBroadcastService,
     private authService: WhoAuthService,
     private msalService: MsalService
   ) { }
 
   ngOnInit(): void {
-    this.subscription = this.broadcastService.subscribe('msal:acquireTokenSuccess', () => {
+    this.subscription = this.msalBroadcastService.msalSubject$.pipe(
+      filter((msg: EventMessage) => msg.eventType === EventType.HANDLE_REDIRECT_START)
+    )
+    .subscribe(() => {
       this.authService.getProfile();
       this.authService.checkAccount();
+      console.log(this.authService.account);
       if (this.authService.account) {
-        const idToken = this.authService.account.idToken;
+        const idToken: any = this.msalService.instance.getActiveAccount()?.idTokenClaims;
         const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
         if (idToken && timeout > 0) {
           setTimeout(() => {
@@ -41,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.broadcastService.getMSALSubject().next(1);
+    // this.msalBroadcastService.msalSubject$.pipe().next(1);
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
