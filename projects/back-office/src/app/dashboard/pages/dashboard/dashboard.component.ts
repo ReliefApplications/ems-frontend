@@ -104,18 +104,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Edit the settings or display of a widget.
   */
   onEditTile(e: any): void {
-    const tile = this.tiles.find(x => x.id === e.id);
     const options = e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
-          tile.defaultCols = options.cols;
-          tile.defaultRows = options.rows;
+          this.tiles = this.tiles.map(x => {
+            if (x.id === e.id) {
+              x = { ...x, defaultCols: options.cols, defaultRows: options.rows };
+            }
+            return x;
+          });
           this.autoSaveChanges();
           break;
         }
         case 'data': {
-          tile.settings = options;
+          this.tiles = this.tiles.map(x => {
+            if (x.id === e.id) {
+              x = { ...x, settings: options };
+            }
+            return x;
+          });
           this.autoSaveChanges();
           break;
         }

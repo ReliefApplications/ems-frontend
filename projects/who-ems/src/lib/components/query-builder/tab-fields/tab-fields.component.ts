@@ -18,7 +18,7 @@ export class WhoTabFieldsComponent implements OnInit, OnChanges {
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
-  public fieldForm: FormGroup = new FormGroup({});
+  public fieldForm?: FormGroup;
 
   constructor(private queryBuilder: QueryBuilderService) { }
 
