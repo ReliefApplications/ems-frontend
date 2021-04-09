@@ -81,11 +81,13 @@ export class WhoWorkflowService {
   updateStepName(step: Step): void {
     const workflow = this._workflow.getValue();
     if (workflow) {
-      workflow.steps = workflow.steps?.map(x => {
-        if (x.id === step.id) { x.name = step.name; }
+      const newWorkflow: Workflow = { ...workflow, steps: workflow.steps?.map(x => {
+        if (x.id === step.id) {
+          x = { ...x, name: step.name };
+        }
         return x;
-      });
-      this._workflow.next(workflow);
+      }) };
+      this._workflow.next(newWorkflow);
     }
   }
 

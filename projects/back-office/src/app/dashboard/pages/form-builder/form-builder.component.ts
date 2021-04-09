@@ -166,7 +166,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
-      Object.assign(this.form, { status: res.data?.editForm.status });
+      this.form = { ...this.form, status: res.data?.editForm.status };
     });
   }
 
@@ -218,7 +218,7 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar('The Form was not changed. ' + res.errors[0].message);
         } else {
           this.snackBar.openSnackBar('Name updated', { duration: 1000 });
-          Object.assign(this.form, { name: res.data?.editForm.name });
+          this.form = { ...this.form, name: res.data?.editForm.name };
         }
     });
   }

@@ -164,7 +164,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        Object.assign(this.dashboard, { permissions: res.data?.editStep.permissions });
+        this.dashboard = { ...this.dashboard, permissions: res.data?.editStep.permissions };
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -174,7 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        Object.assign(this.dashboard, { permissions: res.data?.editPage.permissions });
+        this.dashboard = { ...this.dashboard, permissions: res.data?.editPage.permissions };
       });
     }
   }
@@ -196,7 +196,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        Object.assign(this.dashboard, { name: res.data?.editStep.name });
+        this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
         if (res.data?.editStep) {
           this.workflowService.updateStepName(res.data.editStep);
         }
@@ -209,8 +209,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        const newDashboard = { ...this.dashboard, name: res.data?.editPage.name };
-        this.dashboard = newDashboard;
+        this.dashboard = { ...this.dashboard, name: res.data?.editPage.name };
         if (res.data?.editPage) {
           this.applicationService.updatePageName(res.data.editPage);
         }

@@ -106,7 +106,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       if (res.data) {
-        Object.assign(this.workflow, { name: res.data.editPage.name });
+        this.workflow = { ...this.workflow, name: res.data.editPage.name };
         this.applicationService.updatePageName(res.data.editPage);
       }
     });
@@ -122,7 +122,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         permissions: e
       }
     }).subscribe(res => {
-      Object.assign(this.workflow, { permissions: res.data?.editPage.permissions });
+      this.workflow = { ...this.workflow, permissions: res.data?.editPage.permissions };
     });
   }
 

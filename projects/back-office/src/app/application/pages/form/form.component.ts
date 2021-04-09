@@ -126,7 +126,7 @@ export class FormComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message);
         } else {
           if (res.data) {
-            Object.assign(this.step, { name: res.data.editStep.name });
+            this.step = { ...this.step, name: res.data.editStep.name };
             this.workflowService.updateStepName(res.data.editStep);
           }
         }
@@ -163,7 +163,7 @@ export class FormComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        Object.assign(this.form, { permissions: res.data?.editStep.permissions });
+        this.form = { ...this.form, permissions: res.data?.editStep.permissions };
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -173,7 +173,7 @@ export class FormComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        Object.assign(this.form, { permissions: res.data?.editPage.permissions });
+        this.form = { ...this.form, permissions: res.data?.editPage.permissions };
       });
     }
   }
