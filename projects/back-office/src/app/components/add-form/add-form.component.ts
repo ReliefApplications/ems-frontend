@@ -13,7 +13,7 @@ import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse,
 export class AddFormComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  addForm: FormGroup;
+  addForm: FormGroup = new FormGroup({});
 
   // === DATA ===
   resources: any[] = [];
@@ -53,7 +53,7 @@ export class AddFormComponent implements OnInit {
         id: e.value
       }
     }).subscribe(res => {
-      this.templates = res.data.resource.forms;
+      this.templates = res.data.resource.forms || [];
     });
   }
 

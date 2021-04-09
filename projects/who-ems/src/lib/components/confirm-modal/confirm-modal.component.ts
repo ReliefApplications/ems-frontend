@@ -12,12 +12,12 @@ interface DialogData {
 @Component({
   selector: 'who-confirm-modal',
   templateUrl: './confirm-modal.component.html',
-  styleUrls: ['./confirm-modal.component.css']
+  styleUrls: ['./confirm-modal.component.scss']
 })
 export class WhoConfirmModalComponent implements OnInit {
 
   public title = 'Confirm';
-  public content: string;
+  public content = '';
   public cancelText = 'Cancel';
   public confirmText = 'Confirm';
   public confirmColor = 'primary';

@@ -21,29 +21,29 @@ import { WhoConfirmModalComponent } from '../confirm-modal/confirm-modal.compone
 export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   // === HEADER TITLE ===
-  @Input() title: string;
+  @Input() title = '';
 
-  @Input() navGroups: any[];
+  @Input() navGroups: any[] = [];
 
-  @Input() applications: Application[];
+  @Input() applications: Application[] = [];
 
-  @Input() route: ActivatedRoute;
+  @Input() route?: ActivatedRoute;
 
-  @Input() toolbar: TemplateRef<any>;
+  @Input() toolbar?: TemplateRef<any>;
 
-  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav: ViewContainerRef;
+  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
 
-  filteredNavGroups = [];
+  filteredNavGroups: any[] = [];
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
-  notificationsSubscription: Subscription;
+  notificationsSubscription?: Subscription;
 
   // === AZURE ACCOUNT ===
-  account: Account;
+  account: Account | null;
 
   // === DISPLAY ===
   public largeDevice: boolean;
@@ -65,7 +65,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.authService.user.subscribe(() => {
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
-        const navItems = group.navItems.filter((item) => {
+        const navItems = group.navItems.filter((item: any) => {
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
           return this.authService.userHasClaim(permission);
         });
@@ -88,7 +88,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.layoutService.rightSidenav.subscribe(view => {
-      if (view) {
+      if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
@@ -113,7 +113,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.authService.user.subscribe(() => {
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
-        const navItems = group.navItems.filter((item) => {
+        const navItems = group.navItems.filter((item: any) => {
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
           return this.authService.userHasClaim(permission);
         });
@@ -144,7 +144,7 @@ export class WhoLayoutComponent implements OnInit, OnChanges, OnDestroy {
   /*  Change the display depending on windows size.
   */
   @HostListener('window:resize', ['$event'])
-  onResize(event): void {
+  onResize(event: any): void {
     this.largeDevice = (event.target.innerWidth > 1024);
   }
 

@@ -19,9 +19,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
 
   public applications = new MatTableDataSource<Application>([]);
-  public settingsForm: FormGroup;
-  private applicationSubscription: Subscription;
-  public application: Application;
+  public settingsForm: FormGroup = new FormGroup({});
+  private applicationSubscription?: Subscription;
+  public application?: Application;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application){
         this.application = application;
         this.settingsForm = this.formBuilder.group(
@@ -55,8 +55,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     this.dialog.open(DuplicateApplicationComponent, {
       data: {
-        id: this.application.id,
-        name: this.application.name
+        id: this.application?.id,
+        name: this.application?.name
       }
     });
   }
@@ -72,7 +72,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = this.application.id;
+        const id = this.application?.id;
         this.apollo.mutate<DeleteApplicationMutationResponse>({
           mutation: DELETE_APPLICATION,
           variables: {
@@ -81,7 +81,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data.deleteApplication.id;
+            return x.id !== res.data?.deleteApplication.id;
           });
         });
         this.router.navigate(['/applications']);

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
@@ -28,33 +27,33 @@ export class QueryBuilderService {
     this.apollo.watchQuery<GetQueryTypes>({
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
-      this.__availableQueries.next(res.data.__schema.queryType.fields.filter(x => x.name.startsWith('all')));
+      this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
     });
   }
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
+    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getFieldsFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter(x => !DISABLED_FIELDS.includes(x.name)) : [];
+    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter(x => x.type.kind === 'LIST') : [];
+    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST') : [];
   }
 
   public getFilter(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.args.find(x => x.name === 'filter').type.inputFields : [];
+    return query ? query.args.find((x: any) => x.name === 'filter').type.inputFields : [];
   }
 
   public getFilterFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.args.find(x => x.name === 'filter').type.inputFields : [];
+    return query ? query.args.find((x: any) => x.name === 'filter').type.inputFields : [];
   }
 
   private buildFilter(filter: any): any {
@@ -87,7 +86,7 @@ export class QueryBuilderService {
           }` + '\n';
         }
         default: {
-          return;
+          return '';
         }
       }
     }));
@@ -110,7 +109,7 @@ export class QueryBuilderService {
           }` + '\n';
         }
         default: {
-          return;
+          return '';
         }
       }
     }));
@@ -161,7 +160,7 @@ export class QueryBuilderService {
     }
   }
 
-  private objToString(obj): string {
+  private objToString(obj: any): string {
     let str = '{';
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
@@ -174,7 +173,7 @@ export class QueryBuilderService {
   public createQueryForm(value: any): FormGroup {
     return this.formBuilder.group({
       name: [value ? value.name : '', Validators.required],
-      fields: this.formBuilder.array((value && value.fields) ? value.fields.map(x => this.addNewField(x)) : [], Validators.required),
+      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
@@ -185,7 +184,7 @@ export class QueryBuilderService {
 
   public createFilterGroup(filter: any, availableFilter: any): FormGroup {
     if (availableFilter) {
-      const group = availableFilter.reduce((o, key) => {
+      const group = availableFilter.reduce((o: any, key: any) => {
         return ({ ...o, [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)] });
       }, {});
       return this.formBuilder.group(group);
@@ -205,7 +204,7 @@ export class QueryBuilderService {
           type: [newField ? field.type.ofType.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
-            field.fields.map(x => this.addNewField(x)) : [], Validators.required),
+            field.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
           sort: this.formBuilder.group({
             field: [field.sort ? field.sort.field : ''],
             order: [(field.sort && field.sort.order) ? field.sort.order : 'asc']
@@ -219,7 +218,7 @@ export class QueryBuilderService {
           type: [newField ? field.type.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
-            field.fields.map(x => this.addNewField(x)) : [], Validators.required),
+            field.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
         });
       }
       default: {

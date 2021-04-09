@@ -12,11 +12,11 @@ export class WhoEditorComponent implements OnInit {
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
-  @Input() public title: string;
-  @Input() public text: string;
+  @Input() public title = '';
+  @Input() public text = '';
 
   // === TEXT SANITIZED ===
-  public safeText: SafeHtml;
+  public safeText: SafeHtml = '';
 
   constructor(private sanitizer: DomSanitizer) { }
 

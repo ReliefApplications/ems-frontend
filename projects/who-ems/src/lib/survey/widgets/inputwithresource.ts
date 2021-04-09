@@ -1,7 +1,7 @@
 export function init(Survey: any, API_URL: string): void {
   const widget = {
     name: 'inputwithresource',
-    isFit: (question) => {
+    isFit: (question: any) => {
       return question.getType() === 'text';
     },
     isDefaultRender: true,
@@ -38,7 +38,7 @@ export function init(Survey: any, API_URL: string): void {
           if (!obj) { return false; }
           return obj.inputType === 'resource';
         },
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           const xhr = new XMLHttpRequest();
           const query = {
             query: `{
@@ -53,7 +53,7 @@ export function init(Survey: any, API_URL: string): void {
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.onload = () => {
             const serverRes = xhr.response.data.resources;
-            const res = [];
+            const res: any[] = [];
             res.push({ value: null });
             for (const item of serverRes) {
               res.push({ value: item.id, text: item.name });
@@ -69,11 +69,11 @@ export function init(Survey: any, API_URL: string): void {
         displayName: 'Resource field',
         category: 'Question Library',
         dependsOn: 'resources',
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resources) { return false; }
           return obj.inputType === 'resource';
         },
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resources) {
             const xhr = new XMLHttpRequest();
             const query = {
@@ -94,7 +94,7 @@ export function init(Survey: any, API_URL: string): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.fields;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.name });

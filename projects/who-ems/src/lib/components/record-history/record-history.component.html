@@ -24,7 +24,7 @@
   </div>
 
 </div>
-<mat-card *ngFor="let item of filterHistory; let index=index">
+<ng-container *ngFor="let item of filterHistory; let index=index">
   <mat-expansion-panel (closed)="showMore = false">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -40,4 +40,4 @@
       <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button *ngIf="index > 0">Preview and revert <mat-icon>update</mat-icon></button>
     </ng-template>
   </mat-expansion-panel>
-</mat-card>
+</ng-container>

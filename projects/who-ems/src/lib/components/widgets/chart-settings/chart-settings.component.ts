@@ -14,7 +14,7 @@ import { CHART_TYPES, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } f
 export class WhoChartSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -28,7 +28,7 @@ export class WhoChartSettingsComponent implements OnInit {
   public legendPositions = LEGEND_POSITIONS;
   public legendOrientations = LEGEND_ORIENTATIONS;
   public titlePositions = TITLE_POSITIONS;
-  public chart: Chart;
+  public chart?: Chart;
   public type: any;
 
   public get chartForm(): FormGroup {
@@ -51,7 +51,10 @@ export class WhoChartSettingsComponent implements OnInit {
     const chartSettings = tileSettings.chart;
     if (chartSettings.type) {
       this.type = this.types.find(x => x.name === chartSettings.type);
-      this.chart = new (this.types.find(x => x.name === chartSettings.type).class)(chartSettings);
+      const chartClass = this.types.find(x => x.name === chartSettings.type);
+      if (chartClass) {
+        this.chart = new (chartClass.class)(chartSettings);
+      }
     } else {
       this.type = null;
       this.chart = new Chart(tileSettings);
@@ -60,7 +63,7 @@ export class WhoChartSettingsComponent implements OnInit {
       {
         id: this.tile.id,
         title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-        chart: this.chart.form
+        chart: this.chart?.form
       }
     );
     this.change.emit(this.tileForm);

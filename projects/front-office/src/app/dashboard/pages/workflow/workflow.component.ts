@@ -15,17 +15,17 @@ import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graph
 export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
   public loading = true;
-  public workflow: Workflow;
-  public steps: Step[];
+  public workflow?: Workflow;
+  public steps: Step[] = [];
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === SELECTED STEP ===
-  public selectedStep: Step;
-  public selectedIndex: number;
+  public selectedStep?: Step;
+  public selectedIndex = 0;
 
   constructor(
     private apollo: Apollo,
@@ -45,7 +45,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }).valueChanges.subscribe((res) => {
         if (res.data.workflow) {
           this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps;
+          this.steps = res.data.workflow.steps || [];
           this.loading = res.loading;
           if (this.steps.length > 0) {
             this.stepChange({selectedIndex: 0});

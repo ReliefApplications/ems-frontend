@@ -11,17 +11,17 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
-  public title: string;
+  public title = '';
   public applications: Application[] = [];
 
   // === SUBSCRIPTIONS ===
-  private authSubscription: Subscription;
-  public application: Application;
-  private applicationSubscription: Subscription;
+  private authSubscription?: Subscription;
+  public application: Application | null = null;
+  private applicationSubscription?: Subscription;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  private permissions: Permission[];
-  public navGroups = [];
+  private permissions: Permission[] = [];
+  public navGroups: any[] = [];
 
   constructor(
     private authService: WhoAuthService,
@@ -31,21 +31,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user.subscribe((user: User) => {
+    this.authSubscription = this.authService.user.subscribe((user: User | null) => {
       if (user) {
-        if (user.applications.length > 0) {
-          this.applications = user.applications;
-          this.applicationService.loadApplication(user.applications[0].id);
-          this.permissions = user.permissions;
+        const applications = user.applications || [];
+        if (applications.length > 0) {
+          this.applications = applications;
+          this.applicationService.loadApplication(applications[0].id || '');
+          this.permissions = user.permissions || [];
         } else {
           this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
         }
       }
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.title = application.name;
-        const adminNavItems = [];
+        this.title = application.name || '';
+        const adminNavItems: any[] = [];
         if (this.permissions.some(x => (x.type === Permissions.canSeeUsers && !x.global)
           || (x.type === Permissions.canManageApplications && x.global))) {
           adminNavItems.push({
@@ -65,11 +66,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages.filter(x => x.content).map(x => {
+            navItems: application.pages?.filter(x => x.content).map(x => {
               return {
                 name: x.name,
                 path: `/${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type)
+                icon: this.getNavIcon(x.type || '')
               };
             })
           },
@@ -79,7 +80,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         ];
         if (!this.application || application.id !== this.application.id) {
-          const { pages: [firstPage, ..._]} = application;
+          const [firstPage, ..._] = application.pages || [];
           if (firstPage) {
             this.router.navigate([`/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
           } else {
@@ -94,7 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onOpenApplication(application: Application): void {
-    this.applicationService.loadApplication(application.id);
+    this.applicationService.loadApplication(application.id || '');
   }
 
   private getNavIcon(type: string): string {
