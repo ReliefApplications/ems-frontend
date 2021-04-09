@@ -179,7 +179,7 @@ export class AppModule {
   ) {
     REFRESH.asObservable().subscribe((res) => {
       if (res) {
-        this.apollo.getClient().cache.reset().then(() => {
+        this.apollo.client.cache.reset().then(() => {
           console.log('Schema generated.');
         });
       }

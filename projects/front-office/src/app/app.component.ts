@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'front-office';
 
   // === MSAL ERROR HANDLING ===
-  private subscription: Subscription;
+  private subscription?: Subscription;
 
   constructor(
     private broadcastService: BroadcastService,
@@ -24,14 +24,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription = this.broadcastService.subscribe('msal:acquireTokenSuccess', () => {
       this.authService.getProfile();
       this.authService.checkAccount();
-      const idToken = this.authService.account.idToken;
-      const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
-      if (idToken && timeout > 0) {
-        setTimeout(() => {
-          this.msalService.acquireTokenSilent({
-            scopes: [environment.clientId]
-          });
-        }, timeout);
+      if (this.authService.account) {
+        const idToken = this.authService.account.idToken;
+        const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
+        if (idToken && timeout > 0) {
+          setTimeout(() => {
+            this.msalService.acquireTokenSilent({
+              scopes: [environment.clientId]
+            });
+          }, timeout);
+        }
       }
     });
   }

@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 })
 export class WhoPreviousButtonComponent implements OnInit {
 
-  @Input() path: string;
+  @Input() path = '';
 
   constructor(private router: Router) { }
 

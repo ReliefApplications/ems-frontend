@@ -13,12 +13,12 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queri
 export class FormAnswerComponent implements OnInit {
 
   @ViewChild(WhoFormComponent)
-  private formComponent: WhoFormComponent;
+  private formComponent?: WhoFormComponent;
 
   // === DATA ===
   public loading = true;
-  public id: string;
-  public form: Form;
+  public id = '';
+  public form?: Form;
   public completed = false;
 
   constructor(
@@ -27,7 +27,7 @@ export class FormAnswerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -46,6 +46,6 @@ export class FormAnswerComponent implements OnInit {
   }
 
   clearForm(): void {
-    this.formComponent.reset();
+    this.formComponent?.reset();
   }
 }

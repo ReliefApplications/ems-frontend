@@ -18,7 +18,7 @@ export class PreviewToolbarComponent implements OnInit {
   }
 
   onClose(): void {
-    this.previewService.setRole(null);
+    this.previewService.setRole('');
     this.router.navigate(['/']);
   }
 }

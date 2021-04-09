@@ -21,17 +21,17 @@ import { WhoSnackBarService } from '../../../../services/snackbar.service';
 export class WhoInviteUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  inviteForm: FormGroup;
+  inviteForm: FormGroup = new FormGroup({});
 
   // === DATA ===
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
-  private users: User[];
-  public filteredUsers: Observable<User[]>;
-  public emails = [];
+  private users: User[] = [];
+  public filteredUsers?: Observable<User[]>;
+  public emails: any[] = [];
   public formValues: any;
   public csvRecords: any[] = [];
 
-  @ViewChild('emailInput') emailInput: ElementRef<HTMLInputElement>;
+  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvReader') csvReader: any;
 
   get email(): string {
@@ -42,7 +42,7 @@ export class WhoInviteUserComponent implements OnInit {
     this.inviteForm.controls.email.setValue(value);
   }
 
-  get positionAttributes(): FormArray {
+  get positionAttributes(): FormArray | null {
     return this.inviteForm.get('positionAttributes') ? this.inviteForm.get('positionAttributes') as FormArray : null;
   }
 
@@ -91,7 +91,7 @@ export class WhoInviteUserComponent implements OnInit {
 
   private filter(value: string): User[] {
     const filterValue = value.toLowerCase();
-    return this.users ? this.users.filter(x => x.username.toLowerCase().indexOf(filterValue) === 0) : this.users;
+    return this.users ? this.users.filter(x => x.username?.toLowerCase().indexOf(filterValue) === 0) : this.users;
   }
 
   /*  Close the modal without sending data.
@@ -103,8 +103,8 @@ export class WhoInviteUserComponent implements OnInit {
   add(event: MatChipInputEvent | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(() => {
-      const input = event.type === 'focusout' ? this.emailInput.nativeElement : event.input;
-      const value = event.type === 'focusout' ? this.emailInput.nativeElement.value : event.value;
+      const input = event.type === 'focusout' ? this.emailInput?.nativeElement : event.input;
+      const value = event.type === 'focusout' ? this.emailInput?.nativeElement.value : event.value;
       if ((value || '').trim()) {
         if (!this.data.users.find((user: any) => user.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
@@ -112,7 +112,7 @@ export class WhoInviteUserComponent implements OnInit {
           this.snackBar.openSnackBar(`${value} already exists on this application`);
         }
       }
-      this.inviteForm.get('email').setValue(this.emails);
+      this.inviteForm.get('email')?.setValue(this.emails);
 
       // Reset the input value
       if (input) {
@@ -131,8 +131,10 @@ export class WhoInviteUserComponent implements OnInit {
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.emails.push(event.option.viewValue);
-    this.inviteForm.get('email').setValue(this.emails);
-    this.emailInput.nativeElement.value = '';
+    this.inviteForm.get('email')?.setValue(this.emails);
+    if (this.emailInput) {
+      this.emailInput.nativeElement.value = '';
+    }
   }
 
   uploadListener($event: any): void {
@@ -147,7 +149,7 @@ export class WhoInviteUserComponent implements OnInit {
       reader.readAsText(input.files[0]);
 
       reader.onload = () => {
-        const csvData = reader.result;
+        const csvData = reader.result || '';
         const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
 
         this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray);
@@ -155,7 +157,7 @@ export class WhoInviteUserComponent implements OnInit {
           if (record.trim()) {
             if (!this.data.users.find((email: any) => email.username.toLowerCase() === record.toLocaleString())) {
               this.emails.push(record.trim());
-              this.inviteForm.get('email').setValue(this.emails);
+              this.inviteForm.get('email')?.setValue(this.emails);
             } else {
               emailRegistered = true;
             }
@@ -188,9 +190,9 @@ export class WhoInviteUserComponent implements OnInit {
   }
 
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any): any {
-    const csvArr = [];
+    const csvArr: any[] = [];
     for (const recordLine of csvRecordsArray) {
-      const currentRecordLine = recordLine.split(';').map(x => x.split(','));
+      const currentRecordLine = recordLine.split(';').map((x: any) => x.split(','));
       if (currentRecordLine.length > 0) {
         for (const record of currentRecordLine) {
           const csvRecord: string  = record.toString().trim();

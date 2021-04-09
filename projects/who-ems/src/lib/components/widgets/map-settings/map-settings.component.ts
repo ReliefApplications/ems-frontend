@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 @Component({
@@ -13,7 +12,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 export class WhoMapSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;

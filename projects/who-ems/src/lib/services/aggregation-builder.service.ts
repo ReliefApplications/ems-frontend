@@ -1,9 +1,6 @@
 import {Apollo, gql} from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
-
-import { pipe } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })

@@ -9,7 +9,7 @@ import {WhoGridService} from '../../../services/grid.service';
 export class WhoDashboardMenuComponent implements OnInit {
 
   // === WIDGETS ===
-  public items: any[];
+  public items: any[] = [];
 
   // === EMIT THE WIDGET TO ADD ===
   @Output() add: EventEmitter<any> = new EventEmitter();

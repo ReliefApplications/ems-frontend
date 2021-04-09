@@ -14,13 +14,13 @@ import { SubscriptionModalComponent } from './components/subscription-modal/subs
 export class SubscriptionsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public subscriptions: ApplicationSubscription[];
+  public subscriptions: ApplicationSubscription[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'convertTo', 'channel', 'actions'];
 
   // === SUBSCRIPTIONS ===
-  private applicationSubscription: Subscription;
-  private channels: Channel[];
+  private applicationSubscription?: Subscription;
+  private channels: Channel[] = [];
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -30,10 +30,10 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.subscriptions = application.subscriptions;
-        this.channels = application.channels;
+        this.subscriptions = application.subscriptions || [];
+        this.channels = application.channels || [];
       } else {
         this.subscriptions = [];
       }
@@ -62,13 +62,13 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDelete(element): void {
+  onDelete(element: any): void {
     if (element) {
       this.applicationService.deleteSubscription(element.routingKey);
     }
   }
 
-  onEdit(element): void {
+  onEdit(element: any): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',
       data: {

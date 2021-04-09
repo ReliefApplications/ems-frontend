@@ -19,7 +19,7 @@ export class AccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       return this.authService.user.pipe(
         skip(1), // this is important as first value of behaviorSubject is null
-        map((user: User) => {
+        map((user: User | null) => {
           if (user) {
             if (user.isAdmin) {
               return true;
@@ -34,6 +34,7 @@ export class AccessGuard implements CanActivate {
             } else {
               this.router.navigate(['/auth']);
             }
+            return false;
           }
         })
       );

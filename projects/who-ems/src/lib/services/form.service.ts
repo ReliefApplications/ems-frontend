@@ -9,20 +9,14 @@ import { initCustomWidgets } from '../survey/init';
 })
 export class FormService {
 
-  constructor(@Inject('environment') environment) {
+  constructor(@Inject('environment') environment: any) {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`);
-
-    // === STYLE ===
-    // SurveyCreator.StylesManager.applyTheme('darkblue');
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
-
-    // === STYLE ===
-    // Survey.StylesManager.applyTheme('darkblue');
   }
 }

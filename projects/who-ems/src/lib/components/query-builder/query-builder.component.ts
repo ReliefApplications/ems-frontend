@@ -11,21 +11,21 @@ import { QueryBuilderService } from '../../services/query-builder.service';
 export class WhoQueryBuilderComponent implements OnInit {
 
   // === QUERY BUILDER ===
-  public availableQueries: Observable<any[]>;
-  public availableFields: any[];
-  public availableFilters: any[];
-  public factory: ComponentFactory<any>;
+  public availableQueries?: Observable<any[]>;
+  public availableFields: any[] = [];
+  public availableFilters: any[] = [];
+  public factory?: ComponentFactory<any>;
 
   get availableScalarFields(): any[] {
     return this.availableFields.filter(x => x.type.kind === 'SCALAR');
   }
 
-  @Input() form: FormGroup;
+  @Input() form: FormGroup = new FormGroup({});
   @Input() settings: any;
   @Input() canExpand = true;
 
   // === FIELD EDITION ===
-  public isField: boolean;
+  public isField = false;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
   constructor(

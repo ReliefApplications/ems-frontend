@@ -13,17 +13,17 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
 
-  public title: string;
+  public title = '';
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [];
+  public navGroups: any[] = [];
 
   // === APPLICATION ===
-  public application: Application;
-  private applicationSubscription: Subscription;
+  public application?: Application;
+  private applicationSubscription?: Subscription;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -36,20 +36,21 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.applicationService.loadApplication(params.id);
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.title = application.name;
+        this.title = application.name || '';
+        const navItems: any[] = [];
         this.navGroups = [
           {
             name: 'Display',
-            callback: (event) => this.onReorder(event),
-            navItems: []
-            .concat(application.pages.filter(x => x.content).map(x => {
+            callback: (event: any) => this.onReorder(event),
+            navItems: navItems
+            .concat(application.pages?.filter(x => x.content).map(x => {
               return {
                 id: x.id,
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type),
+                icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
                 action: {
@@ -106,10 +107,17 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           }
         ];
         if (!this.application || application.id !== this.application.id) {
-          const { pages: [firstPage, ..._]} = application;
+          const [firstPage, ..._] = application.pages || [];
           if (!firstPage) {
             this.router.navigate([`./`], { relativeTo: this.route });
           }
+          // const [firstPage, ..._] = application.pages || [];
+          // if (firstPage) {
+          //   this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+          //     { relativeTo: this.route });
+          // } else {
+          //   this.router.navigate([`./`], { relativeTo: this.route });
+          // }
         }
         this.application = application;
       } else {
@@ -147,7 +155,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onReorder(event: any): void {
-    this.applicationService.reorderPages(event.filter(x => x.id).map(x => x.id));
+    this.applicationService.reorderPages(event.filter((x: any) => x.id).map((x: any) => x.id));
   }
 
   ngOnDestroy(): void {

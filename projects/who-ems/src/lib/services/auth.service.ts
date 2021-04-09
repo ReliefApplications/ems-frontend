@@ -17,8 +17,8 @@ export class WhoAuthService {
 
   // === LOGGED USER ===
   // tslint:disable-next-line: variable-name
-  private _user = new BehaviorSubject<User>(null);
-  public account: Account;
+  private _user = new BehaviorSubject<User | null>(null);
+  public account: Account | null = null;
 
   // if we have the modal confirmation open on form builder we cannot logout until close modal
   public canLogout = new BehaviorSubject<boolean>(true);
@@ -52,7 +52,7 @@ export class WhoAuthService {
   get userIsAdmin(): boolean {
     const user = this._user.getValue();
     if (user) {
-      return user.isAdmin;
+      return user.isAdmin || false;
     } else {
       this.getProfile();
       return false;
@@ -89,7 +89,7 @@ export class WhoAuthService {
 
   /*  Return the user as an Observable.
   */
-  get user(): Observable<User> {
+  get user(): Observable<User | null> {
     return this._user.asObservable();
   }
 }
