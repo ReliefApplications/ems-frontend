@@ -14,8 +14,8 @@ export const AVAILABLE_TILES = [
         type: 'bar'
       }
     },
-    defaultCols: 4,
-    defaultRows: 4,
+    defaultCols: 3,
+    defaultRows: 3,
     component: 'chart',
     settingsTemplate: WhoChartSettingsComponent
   },
@@ -25,8 +25,8 @@ export const AVAILABLE_TILES = [
     settings: {title: 'Donut chart', chart: {
       type: 'donut'
     }},
-    defaultCols: 4,
-    defaultRows: 4,
+    defaultCols: 3,
+    defaultRows: 3,
     component: 'chart',
     settingsTemplate: WhoChartSettingsComponent
   },
@@ -36,8 +36,8 @@ export const AVAILABLE_TILES = [
     settings: {title: 'Line chart', chart: {
       type: 'line'
     }},
-    defaultCols: 4,
-    defaultRows: 4,
+    defaultCols: 3,
+    defaultRows: 3,
     component: 'chart',
     settingsTemplate: WhoChartSettingsComponent
   },
@@ -47,8 +47,8 @@ export const AVAILABLE_TILES = [
     settings: {title: 'Pie chart', chart: {
       type: 'pie'
     }},
-    defaultCols: 4,
-    defaultRows: 4,
+    defaultCols: 3,
+    defaultRows: 3,
     component: 'chart',
     settingsTemplate: WhoChartSettingsComponent
   },
@@ -86,7 +86,7 @@ export const AVAILABLE_TILES = [
       canAdd: false
     },
     defaultCols: 8,
-    defaultRows: 8,
+    defaultRows: 4,
     component: 'grid',
     settingsTemplate: WhoGridSettingsComponent
   },
@@ -94,8 +94,8 @@ export const AVAILABLE_TILES = [
     name: 'MAP',
     icon: 'explore',
     settings: {},
-    defaultCols: 6,
-    defaultRows: 6,
+    defaultCols: 4,
+    defaultRows: 4,
     component: 'map',
     settingsTemplate: WhoMapSettingsComponent
   },
@@ -103,8 +103,8 @@ export const AVAILABLE_TILES = [
     name: 'TEXT',
     icon: 'text_fields',
     settings: {title: 'Enter a title', text: 'Enter a content'},
-    defaultCols: 6,
-    defaultRows: 6,
+    defaultCols: 3,
+    defaultRows: 3,
     component: 'editor',
     settingsTemplate: WhoEditorSettingsComponent
   }
