@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
+import { ContentType, Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
 
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
@@ -75,7 +75,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   stepChange(e: any): void {
     this.selectedStep = this.steps[e.selectedIndex];
     this.selectedIndex = e.selectedIndex;
-    this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    if (this.selectedStep.type === ContentType.form) {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+    }
   }
 
   /* Trigger step changes from grid widgets

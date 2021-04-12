@@ -85,7 +85,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
       this.recordsSubscription = this.workflowService.records.subscribe(records => {
-        if (records) {
+        if (records.length > 0) {
           const mergedRecord = records[0];
           cachedData = mergedRecord.data;
           const resourcesField = this.form.fields?.find(x => x.type === 'resources');
