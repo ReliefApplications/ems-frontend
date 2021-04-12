@@ -112,7 +112,6 @@ export class WhoInviteUserComponent implements OnInit {
         }
       }
       this.inviteForm.get('email').setValue(this.emails);
-      console.log(this.inviteForm.value.email);
 
       // Reset the input value
       if (input) {

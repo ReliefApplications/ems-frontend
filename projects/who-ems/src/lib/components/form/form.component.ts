@@ -208,24 +208,6 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*  Event listener to trigger embedded forms.
-  */
-  @HostListener('document:openForm', ['$event'])
-  onOpenEmbeddedForm(event: any): void {
-    const dialogRef = this.dialog.open(WhoFormModalComponent, {
-      data: {
-        template: event.detail.template,
-        locale: event.locale
-      }
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        const e = new CustomEvent('saveResourceFromEmbed', { detail: { resource: res.data, template: res.template } });
-        document.dispatchEvent(e);
-      }
-    });
-  }
-
   /* Change language of the form.
   */
   setLanguage(ev: string): void {

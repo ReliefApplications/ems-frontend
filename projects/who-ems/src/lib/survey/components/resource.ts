@@ -1,4 +1,7 @@
-export function init(Survey: any, API_URL: string): void {
+import { WhoFormModalComponent } from '../../components/form-modal/form-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+
+export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
   const component = {
     name: 'resource',
     title: 'Resource',
@@ -309,10 +312,17 @@ export function init(Survey: any, API_URL: string): void {
       btnEl.innerText = 'Add';
       btnEl.style.width = '120px';
       btnEl.onclick = () => {
-        const event = new CustomEvent('openForm', {
-          detail: { template: question.addTemplate },
+        const dialogRef = dialog.open(WhoFormModalComponent, {
+          data: {
+            template: question.addTemplate,
+          }
         });
-        document.dispatchEvent(event);
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            const e = new CustomEvent('saveResourceFromEmbed', { detail: { resource: res.data, template: res.template } });
+            document.dispatchEvent(e);
+          }
+        });
       };
       mainDiv.appendChild(btnEl);
       el.parentElement.insertBefore(mainDiv, el);

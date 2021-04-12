@@ -140,20 +140,6 @@ export class WhoFormBuilderComponent implements OnInit, OnChanges {
     });
   }
 
-  /*  Event listener to trigger embedded forms.
-  */
-  @HostListener('document:openForm', ['$event'])
-  onOpenEmbeddedForm(event: any): void {
-    const dialogRef = this.dialog.open(WhoFormModalComponent, {
-      data: {
-        template: event.detail.template,
-        locale: event.locale
-      }
-    });
-    dialogRef.afterClosed().subscribe(() => {
-    });
-  }
-
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
   */
   private async validateValueNames(): Promise<void> {

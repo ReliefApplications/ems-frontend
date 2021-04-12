@@ -1,17 +1,33 @@
-<kendo-grid [data]="gridData" [height]="410">
-    <kendo-grid-column field="ProductID" title="ID" width="40">
-    </kendo-grid-column>
-    <kendo-grid-column field="ProductName" title="Name" width="250">
-    </kendo-grid-column>
-    <kendo-grid-column field="Category.CategoryName" title="Category">
-    </kendo-grid-column>
-    <kendo-grid-column field="UnitPrice" title="Price" width="80">
-    </kendo-grid-column>
-    <kendo-grid-column field="UnitsInStock" title="In stock" width="80">
-    </kendo-grid-column>
-    <kendo-grid-column field="Discontinued" title="Discontinued" width="120">
-        <ng-template kendoGridCellTemplate let-dataItem>
-            <input type="checkbox" [checked]="dataItem.Discontinued" disabled/>
-        </ng-template>
-    </kendo-grid-column>
+<kendo-grid [data]="gridData.getValue()" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">
+  <ng-template kendoGridToolbarTemplate position="top">
+    <mat-form-field *ngIf="getAvailableRecords().length > 0">
+      <mat-select (selectionChange)="onAdd($event)" placeholder="Add record...">
+        <mat-option *ngFor="let data of getAvailableRecords()" [value]="data.value">{{data.text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="selectedRowsIndex.length > 0">
+      <button class='k-button' (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete selected rows
+      </button>
+    </ng-container>
+  </ng-template>
+  <kendo-grid-checkbox-column
+    [width]="41" [resizable]="false"
+    [columnMenu]="false" showSelectAll="true">
+  </kendo-grid-checkbox-column>
+  <kendo-grid-column field="text" title="Name" width="250">
+  </kendo-grid-column>
+  <kendo-grid-column [columnMenu]="false" [width]="56">
+    <ng-template kendoGridCellTemplate let-idx="rowIndex" style="display: inline-grid">
+      <mat-grid-list cols="2" rowHeight="2:1">
+        <mat-grid-tile>
+          <button (click)="onShowDetails(idx)" kendoButton [icon]="'detail-section'" [look]="'flat'">
+          </button>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <button (click)="onDeleteRow([idx])"  kendoButton [icon]="'delete'" [look]="'flat'">
+          </button>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </ng-template>
+  </kendo-grid-column>
 </kendo-grid>
