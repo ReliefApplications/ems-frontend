@@ -823,7 +823,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
-    console.log(selectedRecords);
     const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
       data: {
         targetForm,
@@ -837,13 +836,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       Object.keys(value.record.data).forEach(key => {
         if (key === resourceField.name) {
           if (resourceField.type === 'resource') {
-            data = { ...data, [data[key]]: selectedRecords[0].id };
+            data = { ...data, [key]: selectedRecords[0].id };
           } else {
             if (data[key]) {
               const ids = selectedRecords.map(x => x.id);
-              data = { ...data, [data[key]]: [data[key]].concat(ids) };
+              data = { ...data, [key]: data[key].concat(ids) };
             } else {
-              data = { ...data, [data[key]]: selectedRecords.map(x => x.id) };
+              data = { ...data, [key]: selectedRecords.map(x => x.id) };
             }
           }
         }
