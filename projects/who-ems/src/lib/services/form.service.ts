@@ -17,10 +17,5 @@ export class FormService {
 
     // === CUSTOM WIDGETS / COMPONENTS FOR SURVEY ===
     initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
-
-    console.log(Survey.ComponentCollection.Instance.items);
-    console.log(Survey.Serializer.getAllClasses());
-    console.log(Survey.CustomWidgetCollection.Instance.widgets);
-    
   }
 }
