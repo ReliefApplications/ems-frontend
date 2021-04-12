@@ -19,7 +19,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
 
   public applications = new MatTableDataSource<Application>([]);
-  public settingsForm: FormGroup = new FormGroup({});
+  public settingsForm?: FormGroup;
   private applicationSubscription?: Subscription;
   public application?: Application;
 
@@ -48,8 +48,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.applicationService.editApplication(this.settingsForm.value);
-    this.settingsForm.markAsPristine();
+    this.applicationService.editApplication(this.settingsForm?.value);
+    this.settingsForm?.markAsPristine();
   }
 
   onDuplicate(): void {
