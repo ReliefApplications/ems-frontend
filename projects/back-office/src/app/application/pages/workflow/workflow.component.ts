@@ -175,7 +175,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
-    moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
+    const newSteps = this.steps.slice();
+    moveItemInArray(newSteps, event.previousIndex, event.currentIndex);
+    this.steps = newSteps;
     if (event.previousIndex !== event.currentIndex) {
       this.apollo.mutate<EditWorkflowMutationResponse>({
         mutation: EDIT_WORKFLOW,
