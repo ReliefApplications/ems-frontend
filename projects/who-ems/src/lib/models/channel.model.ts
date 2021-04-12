@@ -6,4 +6,5 @@ export interface Channel {
     title?: string;
     application?: Application;
     subscribedRoles?: Role[];
+    routingKey?: string;
 }

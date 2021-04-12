@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { WhoUsersComponent } from './users.component';
 import { WhoEditUserComponent } from './components/edit-user/edit-user.component';
 import { WhoInviteUserComponent } from './components/invite-user/invite-user.component';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -15,6 +14,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [WhoUsersComponent, WhoEditUserComponent, WhoInviteUserComponent],
@@ -31,7 +34,11 @@ import { MatSortModule } from '@angular/material/sort';
     MatIconModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSortModule
+    MatSortModule,
+    MatChipsModule,
+    MatRippleModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule
   ],
   exports: [WhoUsersComponent]
 })

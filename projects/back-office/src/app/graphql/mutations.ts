@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import {gql} from 'apollo-angular';
+
 import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
 
 // === EDIT USER ===
@@ -38,25 +39,6 @@ mutation addRole($title: String!, $application: ID) {
 export interface AddRoleMutationResponse {
   loading: boolean;
   addRole: Role;
-}
-
-export const ADD_ROLE_TO_USER = gql`
-mutation addRoleToUser($id: ID!, $role: ID!) {
-  addRoleToUser(id: $id, role: $role) {
-    id
-    username
-    name
-    roles {
-      id
-      title
-    }
-    oid
-  }
-}`;
-
-export interface AddRoleToUserMutationResponse {
-  loading: boolean;
-  addRoleToUser: User;
 }
 
 // === EDIT ROLE ===

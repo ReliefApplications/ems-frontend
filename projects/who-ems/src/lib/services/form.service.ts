@@ -3,26 +3,19 @@ import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';
 import { initCustomWidgets } from '../survey/init';
-
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
 
-  constructor(@Inject('environment') environment) {
+  constructor(@Inject('environment') environment: any) {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`);
-
-    // === STYLE ===
-    // SurveyCreator.StylesManager.applyTheme('darkblue');
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
-    // === CUSTOM WIDGETS / COMPONENTS ===
+    // === CUSTOM WIDGETS / COMPONENTS FOR SURVEY ===
     initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
-
-    // === STYLE ===
-    // Survey.StylesManager.applyTheme('darkblue');
   }
 }

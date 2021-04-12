@@ -23,7 +23,7 @@ export class WhoFloatingOptionsComponent implements OnInit {
   @Output() expand: EventEmitter<any> = new EventEmitter();
 
   // === AVAILABLE ACTIONS ===
-  public items: any[];
+  public items: any[] = [];
 
   constructor(
     public dialog: MatDialog,

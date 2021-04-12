@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class PreviewService {
 
   // tslint:disable-next-line: variable-name
-  private _roleId = new BehaviorSubject<string>(null);
+  private _roleId = new BehaviorSubject<string>('');
 
   constructor() { }
 

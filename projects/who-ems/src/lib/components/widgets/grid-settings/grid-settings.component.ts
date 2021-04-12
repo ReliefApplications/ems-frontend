@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GetChannelsQueryResponse, GetRelatedFormsQueryResponse, GET_CHANNELS, GET_RELATED_FORMS } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
@@ -18,7 +19,7 @@ import { Form } from '../../../models/form.model';
 export class WhoGridSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -31,10 +32,10 @@ export class WhoGridSettingsComponent implements OnInit {
   public channels: Channel[] = [];
 
   // === FLOATING BUTTON ===
-  public fields: any[];
-  public relatedForms: Form[];
-  public queryName: string;
-  public tabIndex: number;
+  public fields: any[] = [];
+  public queryName = '';
+  public relatedForms: Form[] = [];
+  public tabIndex = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -63,7 +64,7 @@ export class WhoGridSettingsComponent implements OnInit {
         update: [hasActions ? tileSettings.actions.update : true]
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
-        tileSettings.floatingButtons.map(x => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
+        tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
 
     this.change.emit(this.tileForm);
@@ -71,8 +72,7 @@ export class WhoGridSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    // Fetch channels for floating buttons parameters
-    this.applicationService.application.subscribe((application: Application) => {
+    this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
         this.apollo.watchQuery<GetChannelsQueryResponse>({
           query: GET_CHANNELS,
@@ -92,10 +92,10 @@ export class WhoGridSettingsComponent implements OnInit {
     });
 
     // Fetch related forms with a question referring to the current form displayed in the grid
-    this.queryName = this.tileForm.get('query').value.name;
-    this.queryBuilder.resourceQuery(this.queryName).valueChanges.subscribe(res1 => {
+    this.queryName = this.tileForm.get('query')?.value.name;
+    this.queryBuilder.resourceQuery(this.queryName).valueChanges.subscribe((res1: { data: any }) => {
       const resource = res1.data[this.queryName][0].resource;
-      this.tileForm.get('resource').setValue(resource);
+      this.tileForm.get('resource')?.setValue(resource);
       if (resource) {
         this.apollo.watchQuery<GetRelatedFormsQueryResponse>({
           query: GET_RELATED_FORMS,
@@ -108,15 +108,14 @@ export class WhoGridSettingsComponent implements OnInit {
       }
     });
 
-    // Clean up modifications field from floating buttons on query change
-    this.tileForm.get('query').valueChanges.subscribe(res => {
+    this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
-            floatingButton.get('modifySelectedRows').setValue(false);
+            this.tileForm.get('floatingButton.modifySelectedRows')?.setValue(false);
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
@@ -136,7 +135,7 @@ export class WhoGridSettingsComponent implements OnInit {
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length
-        ? value.modifications.map(x => this.formBuilder.group({
+        ? value.modifications.map((x: any) => this.formBuilder.group({
           field: [x.field, Validators.required],
           value: [x.value, Validators.required],
         }))

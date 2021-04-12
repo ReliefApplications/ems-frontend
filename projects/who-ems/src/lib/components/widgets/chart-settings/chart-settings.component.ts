@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { chartTypes } from './constants';
+import { Chart } from './charts/chart';
+import { CHART_TYPES, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } from './constants';
 
 @Component({
   selector: 'who-chart-settings',
@@ -13,7 +14,7 @@ import { chartTypes } from './constants';
 export class WhoChartSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -23,13 +24,20 @@ export class WhoChartSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === DATA ===
-  public types = chartTypes;
+  public types = CHART_TYPES;
+  public legendPositions = LEGEND_POSITIONS;
+  public legendOrientations = LEGEND_ORIENTATIONS;
+  public titlePositions = TITLE_POSITIONS;
+  public chart?: Chart;
+  public type: any;
 
-  public selectedFields: any[] = [];
-
-  public get type(): object {
-    return this.types.find(x => x.name === this.tileForm.value.type);
+  public get chartForm(): FormGroup {
+    return this.tileForm.controls.chart as FormGroup;
   }
+
+  // public get type(): object {
+  //   return this.types.find(x => x.name === this.tileForm.value.chart.type);
+  // }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,14 +48,22 @@ export class WhoChartSettingsComponent implements OnInit {
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
+    const chartSettings = tileSettings.chart;
+    if (chartSettings.type) {
+      this.type = this.types.find(x => x.name === chartSettings.type);
+      const chartClass = this.types.find(x => x.name === chartSettings.type);
+      if (chartClass) {
+        this.chart = new (chartClass.class)(chartSettings);
+      }
+    } else {
+      this.type = null;
+      this.chart = new Chart(tileSettings);
+    }
     this.tileForm = this.formBuilder.group(
       {
         id: this.tile.id,
         title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
-        type: [(tileSettings && tileSettings.type) ? tileSettings.type : '', Validators.required],
-        query: this.queryBuilder.createQueryForm(tileSettings.query),
-        xAxis: [(tileSettings && tileSettings.xAxis) ? tileSettings.xAxis : '', Validators.required],
-        yAxis: [(tileSettings && tileSettings.yAxis) ? tileSettings.yAxis : '', Validators.required]
+        chart: this.chart?.form
       }
     );
     this.change.emit(this.tileForm);
@@ -56,19 +72,22 @@ export class WhoChartSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    if (this.tileForm.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm.value.query.fields);
-    }
+    // if (this.tileForm.value.query.name) {
+    //   this.selectedFields = this.getFields(this.tileForm.value.query.fields);
+    // }
 
-    const queryForm = this.tileForm.get('query') as FormGroup;
+    const chartForm = this.tileForm.get('chart') as FormGroup;
+    chartForm.controls.type.valueChanges.subscribe((value) => {
+      this.type = this.types.find(x => x.name === value);
+    });
 
-    queryForm.controls.name.valueChanges.subscribe(() => {
-      this.tileForm.controls.xAxis.setValue('');
-      this.tileForm.controls.yAxis.setValue('');
-    });
-    queryForm.valueChanges.subscribe((res) => {
-      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-    });
+    // queryForm.controls.name.valueChanges.subscribe(() => {
+    //   this.tileForm.controls.xAxis.setValue('');
+    //   this.tileForm.controls.yAxis.setValue('');
+    // });
+    // queryForm.valueChanges.subscribe((res) => {
+    //   this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+    // });
   }
 
   private flatDeep(arr: any[]): any[] {

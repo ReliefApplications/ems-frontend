@@ -11,10 +11,10 @@ export class WhoAccessComponent implements OnInit {
 
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
   @Input() access: any;
-  @Input() application: string;
+  @Input() application?: string;
 
   // === DISPLAY ===
-  @Input() menuItem: boolean;
+  @Input() menuItem = false;
 
   // === PASS THE RESULT TO PARENT COMPONENT ===
   @Output() save: EventEmitter<any> = new EventEmitter();

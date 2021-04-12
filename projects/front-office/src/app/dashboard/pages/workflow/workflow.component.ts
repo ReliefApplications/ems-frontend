@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+import { ContentType, Step, WhoSnackBarService, Workflow } from '@who-ems/builder';
+
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 
@@ -14,17 +15,17 @@ import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graph
 export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
   public loading = true;
-  public workflow: Workflow;
-  public steps: Step[];
+  public workflow?: Workflow;
+  public steps: Step[] = [];
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === SELECTED STEP ===
-  public selectedStep: Step;
-  public selectedIndex: number;
+  public selectedStep?: Step;
+  public selectedIndex = 0;
 
   constructor(
     private apollo: Apollo,
@@ -44,7 +45,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }).valueChanges.subscribe((res) => {
         if (res.data.workflow) {
           this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps;
+          this.steps = res.data.workflow.steps || [];
           this.loading = res.loading;
           if (this.steps.length > 0) {
             this.stepChange({selectedIndex: 0});
@@ -62,17 +63,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Display selected step
   */
-  stepChange(e): void {
+  stepChange(e: any): void {
     this.selectedStep = this.steps[e.selectedIndex];
     this.selectedIndex = e.selectedIndex;
-    this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
+    if (this.selectedStep.type === ContentType.form) {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+    }
   }
 
   /* Trigger step changes from grid widgets
   */
   onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
     if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe(event => {
+      elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
           if (this.selectedIndex + 1 < this.steps.length) {
             stepper.next();

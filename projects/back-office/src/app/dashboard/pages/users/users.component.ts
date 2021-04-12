@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { GetUsersQueryResponse, GET_USERS, GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
 import { Role, User } from '@who-ems/builder';
@@ -17,7 +18,7 @@ export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public users = new MatTableDataSource<User>([]);
-  public roles: Role[];
+  public roles: Role[] = [];
   public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
 
   constructor(

@@ -16,19 +16,18 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 })
 export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
-  @Input() buttonForm: FormGroup;
-  @Input() fields: any[];
-  @Input() channels: Channel[];
-  @Input() relatedForms: Form[];
-
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  @Input() buttonForm: FormGroup = new FormGroup({});
+  @Input() fields: any[] = [];
+  @Input() channels: Channel[] = [];
+  @Input() forms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
-  private workflowSubscription: Subscription;
+  private workflowSubscription?: Subscription;
 
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
@@ -47,36 +46,40 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
       const currentStepContent = this.router.url.split('/').pop();
       this.workflowSubscription = this.workflowService.workflow.subscribe(workflow => {
         if (workflow) {
-          const currentStepIndex = workflow.steps.findIndex(x => x.content === currentStepContent);
+          const steps = workflow.steps || [];
+          const currentStepIndex = steps.findIndex(x => x.content === currentStepContent);
           if (currentStepIndex >= 0) {
-            const nextStep = workflow.steps[currentStepIndex + 1];
+            const nextStep = steps[currentStepIndex + 1];
             this.canPassData = nextStep && nextStep.type === ContentType.form;
           }
+        } else {
+          const workflowId = this.router.url.split('/workflow/').pop()?.split('/').shift();
+          this.workflowService.loadWorkflow(workflowId);
         }
       });
     }
-    this.buttonForm.get('notify').valueChanges.subscribe(value => {
+    this.buttonForm.get('notify')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('notificationChannel').setValidators(Validators.required);
-        this.buttonForm.get('notificationMessage').setValidators(Validators.required);
+        this.buttonForm.get('notificationChannel')?.setValidators(Validators.required);
+        this.buttonForm.get('notificationMessage')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('notificationChannel').clearValidators();
-        this.buttonForm.get('notificationMessage').clearValidators();
+        this.buttonForm.get('notificationChannel')?.clearValidators();
+        this.buttonForm.get('notificationMessage')?.clearValidators();
       }
-      this.buttonForm.get('notificationChannel').updateValueAndValidity();
-      this.buttonForm.get('notificationMessage').updateValueAndValidity();
+      this.buttonForm.get('notificationChannel')?.updateValueAndValidity();
+      this.buttonForm.get('notificationMessage')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('publish').valueChanges.subscribe(value => {
+    this.buttonForm.get('publish')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('publicationChannel').setValidators(Validators.required);
+        this.buttonForm.get('publicationChannel')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('publicationChannel').clearValidators();
+        this.buttonForm.get('publicationChannel')?.clearValidators();
       }
-      this.buttonForm.get('publicationChannel').updateValueAndValidity();
+      this.buttonForm.get('publicationChannel')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('show').valueChanges.subscribe(value => {
+    this.buttonForm.get('show')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
         this.buttonForm.controls.notify.setValue(false);
@@ -84,28 +87,28 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.buttonForm.get('modifySelectedRows').valueChanges.subscribe(value => {
+    this.buttonForm.get('modifySelectedRows')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
       }
     });
 
-    this.buttonForm.get('attachToRecord').valueChanges.subscribe(value => {
+    this.buttonForm.get('attachToRecord')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('targetForm').setValidators(Validators.required);
+        this.buttonForm.get('targetForm')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('targetForm').clearValidators();
+        this.buttonForm.get('targetForm')?.clearValidators();
       }
-      this.buttonForm.get('targetForm').updateValueAndValidity();
+      this.buttonForm.get('targetForm')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('targetForm').valueChanges.subscribe(value => {
+    this.buttonForm.get('targetForm')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('targetFormField').setValidators(Validators.required);
+        this.buttonForm.get('targetFormField')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('targetFormField').clearValidators();
+        this.buttonForm.get('targetFormField')?.clearValidators();
       }
-      this.buttonForm.get('targetFormField').updateValueAndValidity();
+      this.buttonForm.get('targetFormField')?.updateValueAndValidity();
     });
   }
 

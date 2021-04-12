@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeNotificationsMutationResponse, SEE_NOTIFICATIONS } from '../graphql/mutations';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/queries';
@@ -12,7 +13,7 @@ import { Notification } from '../models/notification.model';
 export class WhoNotificationService {
 
   // tslint:disable-next-line: variable-name
-  private _notifications = new BehaviorSubject<Notification[]>(null);
+  private _notifications = new BehaviorSubject<Notification[]>([]);
   private firstLoad = true;
 
   constructor(
@@ -37,7 +38,7 @@ export class WhoNotificationService {
       this.apollo.subscribe<NotificationSubscriptionResponse>({
         query: NOTIFICATION_SUBSCRIPTION
       }).subscribe(res => {
-        if (res.data.notification) {
+        if (res.data && res.data.notification) {
           const notifications = this._notifications.getValue();
           if (notifications) {
             this._notifications.next([res.data.notification, ...notifications]);
@@ -65,8 +66,9 @@ export class WhoNotificationService {
         id: notification.id
       }
     }).subscribe(res => {
-      if (res.data.seeNotification) {
-        this._notifications.next(notifications.filter(x => x.id !== res.data.seeNotification.id));
+      if (res.data && res.data.seeNotification) {
+        const seeNotification = res.data.seeNotification;
+        this._notifications.next(notifications.filter(x => x.id !== seeNotification.id));
       }
     });
   }
@@ -81,7 +83,7 @@ export class WhoNotificationService {
         ids: notificationsIds
       }
     }).subscribe(res => {
-      if (res.data.seeNotifications) {
+      if (res.data && res.data.seeNotifications) {
         this._notifications.next([]);
       }
     });

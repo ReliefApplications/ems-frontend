@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../graphql/queries';
@@ -16,9 +17,9 @@ import { Record } from '../models/record.model';
 export class WhoWorkflowService {
 
   // tslint:disable-next-line: variable-name
-  private _workflow = new BehaviorSubject<Workflow>(null);
+  private _workflow = new BehaviorSubject<Workflow | null>(null);
   // tslint:disable-next-line: variable-name
-  private _records = new BehaviorSubject<Record[]>(null);
+  private _records = new BehaviorSubject<Record[]>([]);
 
   constructor(
     private apollo: Apollo,
@@ -28,7 +29,7 @@ export class WhoWorkflowService {
 
   /*  Get the workflow from the database, using GraphQL.
   */
-  loadWorkflow(id: string): void {
+  loadWorkflow(id: any): void {
     this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
     query: GET_WORKFLOW_BY_ID,
     variables: {
@@ -41,7 +42,7 @@ export class WhoWorkflowService {
 
   /*  Return the workflow as an Observable.
   */
-  get workflow(): Observable<Workflow> {
+  get workflow(): Observable<Workflow | null> {
     return this._workflow.asObservable();
   }
 
@@ -59,12 +60,14 @@ export class WhoWorkflowService {
           workflow: workflow.id
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(`${value.name} step created`);
-        this.loadWorkflow(workflow.id);
-        if (value.type === ContentType.form) {
-          this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
-        } else {
-          this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
+        if (res.data) {
+          this.snackBar.openSnackBar(`${value.name} step created`);
+          this.loadWorkflow(workflow.id);
+          if (value.type === ContentType.form) {
+            this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
+          } else {
+            this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
+          }
         }
       });
     } else {
@@ -77,11 +80,15 @@ export class WhoWorkflowService {
   */
   updateStepName(step: Step): void {
     const workflow = this._workflow.getValue();
-    workflow.steps = workflow.steps.map(x => {
-      if (x.id === step.id) { x.name = step.name; }
-      return x;
-    });
-    this._workflow.next(workflow);
+    if (workflow) {
+      const newWorkflow: Workflow = { ...workflow, steps: workflow.steps?.map(x => {
+        if (x.id === step.id) {
+          x = { ...x, name: step.name };
+        }
+        return x;
+      }) };
+      this._workflow.next(newWorkflow);
+    }
   }
 
   /*  Store records used to prefill next step form

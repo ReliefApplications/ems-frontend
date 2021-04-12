@@ -26,7 +26,7 @@
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>
           <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
-            <form [formGroup]="modification" *ngFor="let modification of modificationsArray.controls; index as i"
+            <form [formGroup]="$any(modification)" *ngFor="let modification of modificationsArray.controls; index as i"
               class="update-row">
               <mat-form-field appearance="outline">
                 <mat-label>Field to update</mat-label>

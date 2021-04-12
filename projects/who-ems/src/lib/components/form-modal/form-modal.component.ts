@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { GetFormByIdQueryResponse, GetRecordByIdQueryResponse, GET_FORM_BY_ID, GET_RECORD_BY_ID } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
@@ -18,10 +19,10 @@ export class WhoFormModalComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public form: Form;
+  public form?: Form;
 
   public containerId: string;
-  public modifiedAt: Date;
+  public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
 
@@ -64,9 +65,9 @@ export class WhoFormModalComponent implements OnInit {
         }).valueChanges.subscribe(res => {
           const record = res.data.record;
           this.form = record.form;
-          this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt;
+          this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
           this.loading = false;
-          const survey = new Survey.Model(this.form.structure);
+          const survey = new Survey.Model(this.form?.structure);
           survey.data = this.isMultiEdition ? null : record.data;
           survey.locale = this.data.locale ? this.data.locale : 'en';
           survey.showCompletedPage = false;
@@ -133,7 +134,9 @@ export class WhoFormModalComponent implements OnInit {
               display: true
             }
           }).subscribe(res => {
-            this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
+            if (res.data) {
+              this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
+            }
           });
         }
         survey.showCompletedPage = true;
@@ -143,7 +146,7 @@ export class WhoFormModalComponent implements OnInit {
     });
   }
 
-  public updateData(id, survey: any): void {
+  public updateData(id: any, survey: any): void {
     this.apollo.mutate<EditRecordMutationResponse>({
       mutation: EDIT_RECORD,
       variables: {
@@ -151,7 +154,9 @@ export class WhoFormModalComponent implements OnInit {
         data: survey.data
       }
     }).subscribe(res => {
-      this.dialogRef.close({template: this.form.id, data: res.data.editRecord});
+      if (res.data) {
+        this.dialogRef.close({template: this.form?.id, data: res.data.editRecord});
+      }
     });
   }
 }
