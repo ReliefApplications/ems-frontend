@@ -92,7 +92,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public queryError = false;
   public fields: any[] = [];
   private metaFields: any;
-  public detailsField = '';
+  public detailsField: any;
   public canEdit = false;
   private dataQuery: any;
   private metaQuery: any;
@@ -260,7 +260,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
               if (this.detailsField) {
-                Object.assign(this.detailsField, { actions: this.settings.actions });
+                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
               this.gridData = {
                 data: this.items,
