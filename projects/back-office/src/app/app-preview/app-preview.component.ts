@@ -77,8 +77,16 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         ];
         if (!this.application || application.id !== this.application.id) {
           const [firstPage, ..._] = application.pages || [];
-          if (firstPage) {
-            this.router.navigate([`app-preview/${application.id}/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          // if (firstPage) {
+          //   this.router.navigate([`app-preview/${application.id}/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          // }
+          if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+              { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;
