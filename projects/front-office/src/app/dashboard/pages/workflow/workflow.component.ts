@@ -63,7 +63,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Display selected step
   */
-  stepChange(e): void {
+  stepChange(e: any): void {
     this.selectedStep = this.steps[e.selectedIndex];
     this.selectedIndex = e.selectedIndex;
     this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content ], { relativeTo: this.route });
@@ -73,7 +73,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
     if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe(event => {
+      elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
           if (this.selectedIndex + 1 < this.steps.length) {
             stepper.next();
