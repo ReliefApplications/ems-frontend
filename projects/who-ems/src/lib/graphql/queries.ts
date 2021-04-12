@@ -93,6 +93,24 @@ export interface GetFormByIdQueryResponse {
   form: Form;
 }
 
+// === GET RELATED FORMS FROM RESOURCE ===
+
+export const GET_RELATED_FORMS = gql`
+query GetRelatedForms($resource: ID!) {
+  resource(id: $resource) {
+    relatedForms {
+      id
+      name
+      fields
+    }
+  }
+}`;
+
+export interface GetRelatedFormsQueryResponse {
+  loading: boolean;
+  resource: Resource;
+}
+
 // === GET RESOURCE BY ID ===
 
 export const GET_RESOURCE_BY_ID = gql`

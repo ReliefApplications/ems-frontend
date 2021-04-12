@@ -1,7 +1,13 @@
 <ng-container *ngIf="buttonForm">
   <form [formGroup]="buttonForm" class="form-container">
     <div class="form-group">
-      <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
+      <div style="display: flex; justify-content: space-between;">
+        <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
+        <button mat-button color="warn" (click)="emitDeleteButton()">
+          <mat-icon>remove_circle_outline</mat-icon>
+          Delete this button
+        </button>
+      </div>
       <ng-container *ngIf="buttonForm.value.show">
         <mat-form-field appearance="outline">
           <mat-label>Button name</mat-label>
@@ -55,6 +61,36 @@
             </button>
           </div>
         </div>
+        <span class="info-row">
+          <mat-checkbox formControlName="attachToRecord">Attach to record</mat-checkbox>
+          <mat-icon class="info-icon"
+            matTooltip="When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field."
+            matTooltipPosition="right">
+            info
+          </mat-icon>
+        </span>
+        <ng-container *ngIf="buttonForm.value.attachToRecord">
+          <mat-form-field appearance="outline">
+            <mat-label>Target form</mat-label>
+            <mat-select formControlName="targetForm" [compareWith]="compareFields">
+              <mat-option>-- None --</mat-option>
+              <mat-option *ngFor="let form of relatedForms" [value]="form">
+                {{form.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+        <ng-container *ngIf="buttonForm.value.targetForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Display field</mat-label>
+            <mat-select formControlName="targetFormField">
+              <mat-option>-- None --</mat-option>
+              <mat-option *ngFor="let field of buttonForm.value.targetForm.fields" [value]="field.name">
+                {{field.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
         <span class="info-row">
           <mat-checkbox formControlName="notify">Notify</mat-checkbox>
           <mat-icon class="info-icon"

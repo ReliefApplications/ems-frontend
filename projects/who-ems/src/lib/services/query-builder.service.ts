@@ -1,6 +1,5 @@
-import {Apollo, gql} from 'apollo-angular';
+import {Apollo, gql, QueryRef} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -230,5 +229,19 @@ export class QueryBuilderService {
         });
       }
     }
+  }
+
+  public sourceQuery(queryName: string): any {
+    const query = gql`
+        query GetCustomSourceQuery {
+          _${queryName}Meta {
+            _source
+          }
+        }
+      `;
+    return this.apollo.query<any>({
+      query,
+      variables: {}
+    });
   }
 }
