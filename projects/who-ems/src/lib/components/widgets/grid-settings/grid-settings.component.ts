@@ -37,6 +37,10 @@ export class WhoGridSettingsComponent implements OnInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
+  get floatingButtons(): FormArray {
+    return this.tileForm.controls.floatingButtons as FormArray;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -92,21 +96,8 @@ export class WhoGridSettingsComponent implements OnInit {
     });
 
     // Fetch related forms with a question referring to the current form displayed in the grid
-    this.queryName = this.tileForm.get('query')?.value.name;
-    this.queryBuilder.resourceQuery(this.queryName).valueChanges.subscribe((res1: { data: any }) => {
-      const resource = res1.data[this.queryName][0].resource;
-      this.tileForm.get('resource')?.setValue(resource);
-      if (resource) {
-        this.apollo.watchQuery<GetRelatedFormsQueryResponse>({
-          query: GET_RELATED_FORMS,
-          variables: {
-            resource
-          }
-        }).valueChanges.subscribe(res2 => {
-          this.relatedForms = res2.data.relatedForms;
-        });
-      }
-    });
+    // this.queryName = this.tileForm.get('query')?.value.name;
+
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
@@ -120,6 +111,24 @@ export class WhoGridSettingsComponent implements OnInit {
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
+        this.queryBuilder.sourceQuery(this.queryName).subscribe((res1: { data: any }) => {
+          const source = res1.data[`_${this.queryName}Meta`]._source;
+          this.tileForm.get('resource')?.setValue(source);
+          if (source) {
+            this.apollo.query<GetRelatedFormsQueryResponse>({
+              query: GET_RELATED_FORMS,
+              variables: {
+                resource: source
+              }
+            }).subscribe(res2 => {
+              if (res2.errors) {
+                this.relatedForms = [];
+              } else {
+                this.relatedForms = res2.data.resource.relatedForms || [];
+              }
+            });
+          }
+        });
       } else {
         this.fields = [];
       }

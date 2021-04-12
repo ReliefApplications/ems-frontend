@@ -21,6 +21,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() forms: Form[] = [];
+  @Input() relatedForms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
@@ -98,6 +99,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm.get('targetForm')?.setValidators(Validators.required);
       } else {
         this.buttonForm.get('targetForm')?.clearValidators();
+        this.buttonForm.get('targetForm')?.setValue(null);
       }
       this.buttonForm.get('targetForm')?.updateValueAndValidity();
     });
@@ -107,6 +109,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm.get('targetFormField')?.setValidators(Validators.required);
       } else {
         this.buttonForm.get('targetFormField')?.clearValidators();
+        this.buttonForm.get('targetFormField')?.setValue(null);
       }
       this.buttonForm.get('targetFormField')?.updateValueAndValidity();
     });

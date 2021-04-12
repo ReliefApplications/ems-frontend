@@ -14,10 +14,10 @@ import { Record } from '../../models/record.model';
 export class WhoChooseRecordModalComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  chooseRecordForm: FormGroup;
+  chooseRecordForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  public records: Record[];
+  public records: Record[] = [];
 
   // === LOAD DATA ===
   public loading = true;
@@ -40,7 +40,7 @@ export class WhoChooseRecordModalComponent implements OnInit {
         display: false
       }
     }).valueChanges.subscribe(res => {
-      this.records = res.data.form.records;
+      this.records = res.data.form.records || [];
       this.loading = false;
     });
     this.chooseRecordForm = this.formBuilder.group({

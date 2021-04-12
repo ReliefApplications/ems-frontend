@@ -555,12 +555,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public selectionChange(selection: SelectionEvent): void {
     const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
       const deselectIndex = deselectedRows.map((item => item.index));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
-    if (deselectedRows.length > 0) {
-      const selectedItems = deselectedRows.map((item) => item.index);
+    if (selectedRows.length > 0) {
+      const selectedItems = selectedRows.map((item) => item.index);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
@@ -729,7 +730,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
-
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -823,6 +823,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
+    console.log(selectedRecords);
     const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
       data: {
         targetForm,
@@ -832,16 +833,17 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
     if (value) {
       const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
-      const data = value.record.data;
+      let data = value.record.data;
       Object.keys(value.record.data).forEach(key => {
         if (key === resourceField.name) {
           if (resourceField.type === 'resource') {
-            data[key] = selectedRecords[0].id;
+            data = { ...data, [data[key]]: selectedRecords[0].id };
           } else {
             if (data[key]) {
-              selectedRecords.forEach(record => data[key].push(record.id));
+              const ids = selectedRecords.map(x => x.id);
+              data = { ...data, [data[key]]: [data[key]].concat(ids) };
             } else {
-              data[key] = selectedRecords.map(x => x.id);
+              data = { ...data, [data[key]]: selectedRecords.map(x => x.id) };
             }
           }
         }

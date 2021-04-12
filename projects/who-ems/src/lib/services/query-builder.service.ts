@@ -231,15 +231,15 @@ export class QueryBuilderService {
     }
   }
 
-  public resourceQuery(queryName: string): QueryRef<any[]> {
+  public sourceQuery(queryName: string): any {
     const query = gql`
-        query GetCustomQuery {
-          ${queryName}(perPage: 1) {
-            resource
+        query GetCustomSourceQuery {
+          _${queryName}Meta {
+            _source
           }
         }
       `;
-    return this.apollo.watchQuery<any[]>({
+    return this.apollo.query<any>({
       query,
       variables: {}
     });

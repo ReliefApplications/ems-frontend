@@ -34,11 +34,11 @@
         Add a button
       </button>
       <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px" [(selectedIndex)]="tabIndex"
-      *ngIf="tileForm.controls.floatingButtons && tileForm.controls.floatingButtons.length > 0">
-        <ng-container *ngFor="let floatingButton of tileForm.controls.floatingButtons.controls">
+      *ngIf="floatingButtons.length > 0">
+        <ng-container *ngFor="let floatingButton of floatingButtons.controls">
           <mat-tab [label]="floatingButton.value.name">
             <ng-template matTabContent>
-              <who-floating-button-settings [buttonForm]="floatingButton" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
+              <who-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
                 (deleteButton)="deleteFloatingButton()"></who-floating-button-settings>
             </ng-template>
           </mat-tab>
