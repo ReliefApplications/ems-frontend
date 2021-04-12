@@ -72,14 +72,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (!this.workflow || workflow.id !== this.workflow.id) {
           const [firstStep, ..._] = workflow.steps || [];
-          if (firstStep) {
-            if (firstStep.type === ContentType.form) {
-              this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
+          if (this.router.url.endsWith(this.id) || !firstStep) {
+            if (firstStep) {
+              if (firstStep.type === ContentType.form) {
+                this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
+              } else {
+                this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
+              }
+              this.selectedStep = firstStep;
+              this.selectedStepIndex = 0;
             } else {
-              this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
+              this.router.navigate([`./`], { relativeTo: this.route });
             }
-            this.selectedStep = firstStep;
-            this.selectedStepIndex = 0;
           }
         }
         this.workflow = workflow;
