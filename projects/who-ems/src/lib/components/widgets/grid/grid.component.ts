@@ -698,7 +698,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         const promises: Promise<any>[] = [];
         for (const index of items) {
           const id = this.gridData.data[index].id;
-          console.log("id = ", id)
           // promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
           //   mutation: DELETE_RECORD,
           //   variables: { id }
