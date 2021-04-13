@@ -1,4 +1,4 @@
-UI Builder Front-end
+SAFE Front-end
 =======
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
