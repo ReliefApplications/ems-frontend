@@ -5,6 +5,7 @@ import { initCreatorSettings } from '../survey/creator';
 import { initCustomWidgets } from '../survey/init';
 import { DomService } from './dom.service';
 import { MatDialog } from '@angular/material/dialog';
+import { Apollo } from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,15 @@ export class FormService {
     @Inject('environment') environment: any,
     private domService: DomService,
     public dialog: MatDialog,
+    public apollo: Apollo
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`, domService, dialog);
+    initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`, domService, dialog, apollo);
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(Survey, `${environment.API_URL}/graphql`, domService, dialog);
+    initCustomWidgets(Survey, `${environment.API_URL}/graphql`, domService, dialog, apollo);
   }
 }

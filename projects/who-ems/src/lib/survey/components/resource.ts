@@ -1,7 +1,25 @@
 import { WhoFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Apollo } from 'apollo-angular';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_RESOURCES,
+  GetResourceByIdQueryResponse,
+  GetResourcesQueryResponse
+} from '../../graphql/queries';
 
-export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
+export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Apollo): void {
+  const getResources = () => apollo.query<GetResourcesQueryResponse>({
+    query: GET_RESOURCES,
+  });
+
+  const getResourcesById = (id: string) => apollo.query<GetResourceByIdQueryResponse>({
+    query: GET_RESOURCE_BY_ID,
+    variables: {
+      id
+    }
+  });
+
   const component = {
     name: 'resource',
     title: 'Resource',
@@ -20,32 +38,19 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-          const xhr = new XMLHttpRequest();
-          const query = {
-            query: `{
-                            resources {
-                              id
-                              name
-                            }
-                          }`,
-          };
-          xhr.responseType = 'json';
-          xhr.open('POST', API_URL);
-          const token = localStorage.getItem('msal.idtoken');
-          // Apollo client doesn't intercept the request, so it has to be built 'manually'
-          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.onload = () => {
-            const serverRes = xhr.response.data.resources;
-            const res: any[] = [];
-            res.push({ value: null });
-            for (const item of serverRes) {
-              res.push({ value: item.id, text: item.name });
+          getResources().subscribe(
+            (response: any) => {
+              console.log('GET RESOURCES', response);
+              const serverRes = response.data.resources;
+              const res = [];
+              res.push({ value: null });
+              for (const item of serverRes) {
+                res.push({ value: item.id, text: item.name });
+              }
+              choicesCallback(res);
             }
-            choicesCallback(res);
-          };
-          xhr.send(JSON.stringify(query));
-        },
+          );
+        }
       });
       Survey.Serializer.addProperty('resource', {
         name: 'displayField',
@@ -61,37 +66,16 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        fields
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.fields;
-              const res: any[] = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
-          }
+          getResourcesById(obj.resource).subscribe(response => {
+            console.log('RESOURCE BY ID', response);
+            const serverRes = response.data.resource.fields;
+            const res = [];
+            res.push({ value: null });
+            for (const item of serverRes) {
+              res.push({ value: item.name });
+            }
+            choicesCallback(res);
+          });
         },
       });
       Survey.Serializer.addProperty('resource', {
@@ -109,38 +93,16 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        records {
-                                            id
-                                            data
-                                        }
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.records;
-              const res: any[] = [];
+            getResourcesById(obj.resource).subscribe(response => {
+              console.log('GET RESOURCES BT ID 2', response);
+              const serverRes = response.data.resource.records || [];
+              const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.data[obj.displayField] });
               }
               choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         },
       });

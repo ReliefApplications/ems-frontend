@@ -10,11 +10,11 @@ import { init as initCustomWidget } from './widgets/customwidget';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey: any, API_URL: string, domService: any, dialog: any): void {
+export function initCustomWidgets(Survey, API_URL, domService, dialog, apollo): void {
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
-  initResourceComponent(Survey, API_URL, dialog);
+  initResourceComponent(Survey, API_URL, dialog, apollo);
   initResourcesComponent(Survey, API_URL, domService, dialog);
   initCustomWidget(Survey);
 }
