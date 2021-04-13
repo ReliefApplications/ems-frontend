@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, WhoApplicationService, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService } from '@safe/builder';
 
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
@@ -32,10 +32,10 @@ export class AddPageComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
   ) { }
 
   ngOnInit(): void {

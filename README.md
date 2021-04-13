@@ -8,7 +8,7 @@ This front-end was made using [Angular](https://angular.io/). It uses multiple e
 *   [SurveyJS](https://surveyjs.io/), for the form builder
 *   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
 
-It was made for a Proof of Concept of a UI Builder for WHO.
+It was made for a Proof of Concept of a UI Builder for SAFE.
 
 To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
 
@@ -20,7 +20,7 @@ To read more about the project, and how to setup the back-end, please refer to t
 The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- who-ems, a library shared by both other projects
+- safe, a library shared by both other projects
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
@@ -54,7 +54,7 @@ It is needed to use the `--project` flag in order to serve a specific project.
 
 For example, in order to serve the *back-office* application, the command is:
 ```
-ng serve --project=who-ems
+ng serve --project=safe
 ```
 
 ## Code scaffolding
@@ -67,30 +67,30 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 It is needed to use the `--project` flag in order to build a specific project.
 
-For example, in order to build the *who-ems* library, the command is:
+For example, in order to build the *safe* library, the command is:
 ```
-ng build --project=who-ems
+ng build --project=safe
 ```
 
 If you're working on the library, you can see the changes in direct time using this command:
 ```
-ng build --watch --project=who-ems
+ng build --watch --project=safe
 ```
 
 ## Deploy the package
 
-Deployment of the npm @who-ems/builder package is a 3-steps process:
+Deployment of the npm @safe/builder package is a 3-steps process:
 
 - check that the current package version isn't already deployed. Increase it if a version exists.
 
 - Build the package:
 ```
-ng build --project=who-ems
+ng build --project=safe
 ```
 
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
-npm publish ./projects/who-ems
+npm publish ./projects/safe
 ```
 
 ## Running unit tests

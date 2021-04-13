@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Application, User, Role, WhoApplicationService, PositionAttributeCategory} from '@who-ems/builder';
+import { Application, User, Role, SafeApplicationService, PositionAttributeCategory} from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
 
   constructor(
-    public applicationService: WhoApplicationService
+    public applicationService: SafeApplicationService
   ) { }
 
   ngOnInit(): void {

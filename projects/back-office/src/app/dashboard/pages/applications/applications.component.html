@@ -109,8 +109,8 @@
             <mat-icon>preview</mat-icon>
             Preview
           </button>
-          <who-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
-            *ngIf="element.canUpdate"></who-access>
+          <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
+                       *ngIf="element.canUpdate"></safe-access>
           <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
             <mat-icon>file_copy</mat-icon>
             Duplicate

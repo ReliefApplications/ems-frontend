@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { WhoSnackBarService } from '@who-ems/builder';
+import { SafeSnackBarService } from '@safe/builder';
 
 @Component({
   selector: 'app-share-url',
@@ -13,7 +13,7 @@ import { WhoSnackBarService } from '@who-ems/builder';
 export class ShareUrlComponent implements OnInit {
 
   constructor(
-    public snackBar: WhoSnackBarService,
+    public snackBar: SafeSnackBarService,
     private clipboard: Clipboard,
     public dialogRef: MatDialogRef<ShareUrlComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {

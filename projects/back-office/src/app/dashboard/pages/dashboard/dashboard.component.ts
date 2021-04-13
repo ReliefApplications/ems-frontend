@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Dashboard, WhoSnackBarService, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -42,13 +42,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    private applicationService: WhoApplicationService,
-    private workflowService: WhoWorkflowService,
+    private applicationService: SafeApplicationService,
+    private workflowService: SafeWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {

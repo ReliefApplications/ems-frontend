@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { GetUsersQueryResponse, GET_USERS, GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
-import { Role, User } from '@who-ems/builder';
+import { Role, User } from '@safe/builder';
 
 @Component({
   selector: 'app-users',

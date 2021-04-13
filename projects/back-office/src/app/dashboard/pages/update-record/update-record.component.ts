@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
-import { Record } from '@who-ems/builder';
+import { Record } from '@safe/builder';
 
 @Component({
   selector: 'app-update-record',
