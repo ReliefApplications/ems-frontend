@@ -199,6 +199,9 @@ export const GET_RESOURCES = gql`
       id
       name
     }
+    coreForm {
+      uniqueRecord { id }
+    }
   }
 }`;
 

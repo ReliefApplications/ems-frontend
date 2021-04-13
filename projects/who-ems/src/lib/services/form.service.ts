@@ -19,12 +19,12 @@ export class FormService {
     public apollo: Apollo
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`, domService, dialog, apollo);
+    initCustomWidgets(SurveyKo, domService, dialog, apollo);
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(Survey, `${environment.API_URL}/graphql`, domService, dialog, apollo);
+    initCustomWidgets(Survey, domService, dialog, apollo);
   }
 }

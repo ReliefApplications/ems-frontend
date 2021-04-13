@@ -2,9 +2,25 @@ import { WhoSurveyGridComponent } from '../../components/survey/survey-grid/surv
 import { DomService } from '../../services/dom.service';
 import { WhoFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_RESOURCES,
+  GetResourceByIdQueryResponse,
+  GetResourcesQueryResponse
+} from '../../graphql/queries';
+import { Apollo } from 'apollo-angular';
 
-export function init(Survey: any, API_URL: string, domService: DomService, dialog: MatDialog): void {
-  const getFromServer = buildServerDispatcher(API_URL);
+export function init(Survey: any, domService: DomService, dialog: MatDialog, apollo: Apollo): void {
+  const getResources = () => apollo.query<GetResourcesQueryResponse>({
+    query: GET_RESOURCES,
+  });
+
+  const getResourcesById = (id: string) => apollo.query<GetResourceByIdQueryResponse>({
+    query: GET_RESOURCE_BY_ID,
+    variables: {
+      id
+    }
+  });
 
   let resourcesForms: any[] = [];
 
@@ -26,18 +42,9 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-          getFromServer<{ resources: any }>({
-            query: `{resources {
-                                id
-                                name
-                                coreForm {
-                                  uniqueRecord { id }
-                                }
-                              }
-                            }`,
-          }).then((data) => {
-            const serverRes = data.resources;
-            resourcesForms = data.resources;
+        getResources().subscribe((response) => {
+            const serverRes = response.data.resources;
+            resourcesForms = response.data.resources;
             const res = [];
             res.push({value: null});
             for (const item of serverRes) {
@@ -62,22 +69,8 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getFromServer<{ resource: any }>({
-              query: `query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          fields
-                                          coreForm {
-                                            uniqueRecord { id }
-                                          }
-                                        }
-                                    }`,
-              variables: {
-                id: obj.resource,
-              },
-            }).then((data) => {
-              const serverRes = data.resource.fields;
+            getResourcesById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.fields;
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
@@ -103,22 +96,8 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getFromServer<{ resource: any }>({
-              query: `query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          records {
-                                              id
-                                              data
-                                          }
-                                        }
-                                    }`,
-              variables: {
-                id: obj.resource,
-              },
-            }).then((data) => {
-              const serverRes = data.resource.records;
+            getResourcesById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.records || [];
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
@@ -169,22 +148,8 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
-            getFromServer<{ resource: any }>({
-              query: `query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          forms {
-                                              id
-                                              name
-                                          }
-                                        }
-                                    }`,
-              variables: {
-                id: obj.resource,
-              },
-            }).then((data) => {
-              const serverRes = data.resource.forms;
+            getResourcesById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.forms || [];
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
@@ -197,22 +162,8 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
       });
     },
     onLoaded(question: any): void {
-      getFromServer<{ resource: any }>({
-        query: `query GetResourceById($id: ID!) {
-                      resource(id: $id) {
-                          id
-                          name
-                          records {
-                              id
-                              data
-                          }
-                      }
-                  }`,
-        variables: {
-          id: question.resource,
-        },
-      }).then((data) => {
-        const serverRes = data.resource.records;
+      getResourcesById(question.resource).subscribe((response) => {
+        const serverRes = response.data.resource.records || [];
         const res = [];
         for (const item of serverRes) {
           res.push({value: item.id, text: item.data[question.displayField]});
@@ -239,22 +190,8 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
           if (detail.template === question.addTemplate) {
-            getFromServer<{ resource: any }>({
-              query: `query GetResourceById($id: ID!) {
-                                  resource(id: $id) {
-                                      id
-                                      name
-                                      records {
-                                          id
-                                          data
-                                      }
-                                  }
-                              }`,
-              variables: {
-                id: question.resource,
-              },
-            }).then((data) => {
-              const serverRes = data.resource.records;
+            getResourcesById(question.resource).subscribe((response) => {
+              const serverRes = response.data.resource.records || [];
               const res = [];
               for (const item of serverRes) {
                 res.push({
@@ -343,22 +280,3 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 }
-
-const buildServerDispatcher = (API_URL: string) => <T>(query: {query: string, variables?: object}): Promise<T> => {
-  return new Promise<T>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.open('POST', API_URL);
-    const token = localStorage.getItem('msal.idtoken');
-    // Apollo client doesn't intercept the request, so it has to be built 'manually'
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = () => {
-      resolve(xhr.response.data);
-    };
-    xhr.onerror = () => {
-      reject(xhr);
-    };
-    xhr.send(JSON.stringify(query));
-  });
-};

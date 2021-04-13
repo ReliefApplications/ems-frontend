@@ -13,11 +13,11 @@ import { DomService } from '../services/dom.service';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey: any, API_URL: string, domService: DomService, dialog: MatDialog, apollo: Apollo): void {
+export function initCustomWidgets(Survey: any, domService: DomService, dialog: MatDialog, apollo: Apollo): void {
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
-  initResourceComponent(Survey, API_URL, dialog, apollo);
-  initResourcesComponent(Survey, API_URL, domService, dialog);
+  initResourceComponent(Survey, dialog, apollo);
+  initResourcesComponent(Survey, domService, dialog, apollo);
   initCustomWidget(Survey);
 }

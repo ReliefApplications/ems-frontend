@@ -8,7 +8,7 @@ import {
   GetResourcesQueryResponse
 } from '../../graphql/queries';
 
-export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Apollo): void {
+export function init(Survey: any, dialog: MatDialog, apollo: Apollo): void {
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
   });
