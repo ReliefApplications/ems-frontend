@@ -31,8 +31,8 @@
         <button *ngIf="(!settings.actions || settings.actions.convert)" class='k-button'
           (click)="onConvertRecord(selectedRowsIndex)" style="float: right" [disabled]="!canUpdateSelectedRows">Convert
         </button>
-        <button *ngIf="(!settings.actions || settings.actions.exportMultiple)" class='k-button'
-          (click)="onExportRecord(selectedRowsIndex)" style="float: right" [disabled]="!canExportSelectedRows">Export selected
+        <button class='k-button'
+          (click)="onExportRecord(selectedRowsIndex)" style="float: right">Export selected
         </button>
       </ng-container>
     </ng-template>

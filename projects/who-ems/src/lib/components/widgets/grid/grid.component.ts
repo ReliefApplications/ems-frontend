@@ -30,6 +30,7 @@ import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { WhoWorkflowService } from '../../../services/workflow.service';
+import { WhoDownloadService } from '../../../services/download.service';
 import { WhoChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -151,7 +152,8 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: WhoSnackBarService,
-    private workflowService: WhoWorkflowService
+    private workflowService: WhoWorkflowService,
+    private downloadService: WhoDownloadService
   ) {
   }
 
@@ -695,17 +697,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises: Promise<any>[] = [];
+        console.log(value);
         for (const index of items) {
           const id = this.gridData.data[index].id;
-          // promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
-          //   mutation: DELETE_RECORD,
-          //   variables: { id }
-          // }).toPromise());
         }
-        // Promise.all(promises).then(() => {
-        //   this.reloadData();
-        // });
+          // const url = `http://localhost:3000/download/form/records/${this.id}`;
+          // const fileName = `${this.settings.title}.csv`;
+          // this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
       }
     });
   }
