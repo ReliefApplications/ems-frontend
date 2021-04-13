@@ -94,26 +94,6 @@ export class WhoFormComponent implements OnInit {
       this.survey.locale = this.surveyLanguage;
     }
 
-    this.survey.getAllQuestions().map(question => {
-      if (question.getType() === 'resource') {
-        const filter = this.survey.getQuestionByName(question.getPropertyValue('filterByQuestion'));
-        question.readOnly = !filter.value || filter.value.trim().length <= 0;
-
-        // const allChoices = question.contentQuestion.choices;
-
-        this.survey.onValueChanged.add((surveyModel, options) => {
-          if (filter.name === options.name) {
-            question.readOnly = options.value.trim().length <= 0;
-            if (question.readOnly) {
-              question.value = '';
-            }
-            // question.contentQuestion.choices =
-            //   allChoices.filter(choice => choice.text.toLowerCase().includes(filter.value.toLowerCase()));
-          }
-        });
-      }
-    });
-
     this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
