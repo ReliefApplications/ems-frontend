@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import {Apollo} from 'apollo-angular';
+
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
@@ -29,8 +30,9 @@ import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { WhoWorkflowService } from '../../../services/workflow.service';
+import { WhoChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 
-const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
+const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -72,54 +74,55 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
-  private grid: KendoGridComponent;
+  private grid?: KendoGridComponent;
 
   // === DETECTION OF TRIGGER FOR INLINE EDITION ===
   private docClickSubscription: any;
 
   // === DATA ===
-  public gridData: GridDataResult;
-  private items: any[];
+  public gridData: GridDataResult = { data: [], total: 0};
+  private items: any[] = [];
   private originalItems: any[] = [];
   private updatedItems: any[] = [];
-  private editedRowIndex: number;
-  private editedRecordId: string;
-  public formGroup: FormGroup;
+  private editedRowIndex = 0;
+  private editedRecordId = '';
+  public formGroup: FormGroup = new FormGroup({});
   private isNew = false;
   public loading = true;
+  public queryError = false;
   public fields: any[] = [];
   private metaFields: any;
-  public detailsField: string;
+  public detailsField: any;
   public canEdit = false;
   private dataQuery: any;
   private metaQuery: any;
-  private dataSubscription: Subscription;
+  private dataSubscription?: Subscription;
 
   // === SORTING ===
-  public sort: SortDescriptor[];
+  public sort: SortDescriptor[] = [];
 
   // === PAGINATION ===
   public pageSize = 10;
   public skip = 0;
 
   // === FILTER ===
-  public filter: CompositeFilterDescriptor;
+  public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
 
   // === SETTINGS ===
   @Input() header = true;
   @Input() settings: any = null;
 
   // === PARENT DATA FOR CHILDREN-GRID ===
-  @Input() parent;
+  @Input() parent: any;
 
   // === EXCEL ===
-  public excelFileName: string;
+  public excelFileName = '';
 
   // === ACTIONS ON SELECTION ===
-  public selectedRowsIndex = [];
-  public hasEnabledActions: boolean;
-  public canUpdateSelectedRows: boolean;
-  public canDeleteSelectedRows: boolean;
+  public selectedRowsIndex: number[] = [];
+  public hasEnabledActions = false;
+  public canUpdateSelectedRows = false;
+  public canDeleteSelectedRows = false;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -136,7 +139,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory: ComponentFactory<any>;
+  public factory?: ComponentFactory<any>;
 
   constructor(
     private apollo: Apollo,
@@ -165,14 +168,19 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
-    this.metaQuery.subscribe(res => {
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          this.metaFields = res.data[field];
+    if (this.metaQuery) {
+      this.metaQuery.subscribe((res: any) => {
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.metaFields = res.data[field];
+          }
         }
-      }
-      this.getRecords();
-    });
+        this.getRecords();
+      });
+    } else {
+      this.loading = false;
+      this.queryError = true;
+    }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
@@ -226,11 +234,11 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
-        this.detailsField = this.settings.fields.find(x => x.kind === 'LIST');
+        this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
       } else {
         this.originalItems = [];
         this.fields = [];
-        this.detailsField = null;
+        this.detailsField = '';
       }
       this.gridData = {
         data: this.items,
@@ -241,7 +249,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       // Parent grid
     } else {
       if (this.dataQuery) {
-        this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -250,9 +258,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
-              this.detailsField = fields.find(x => x.kind === 'LIST');
+              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
               if (this.detailsField) {
-                Object.assign(this.detailsField, { actions: this.settings.actions });
+                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
               this.gridData = {
                 data: this.items,
@@ -293,7 +301,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /*  Inline edition of the data.
   */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }): void {
+  public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     if (!this.gridData.data[rowIndex].canUpdate || isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
@@ -310,7 +318,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     this.editedRecordId = dataItem.id;
     this.editedRowIndex = rowIndex;
 
-    this.grid.editRow(rowIndex, this.formGroup);
+    this.grid?.editRow(rowIndex, this.formGroup);
   }
 
   public cancelHandler(): void {
@@ -342,12 +350,12 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Close the inline edition.
   */
   private closeEditor(): void {
-    this.grid.closeRow(this.editedRowIndex);
-    this.grid.cancelCell();
+    this.grid?.closeRow(this.editedRowIndex);
+    this.grid?.cancelCell();
     this.isNew = false;
-    this.editedRowIndex = undefined;
-    this.editedRecordId = undefined;
-    this.formGroup = undefined;
+    this.editedRowIndex = 0;
+    this.editedRecordId = '';
+    this.formGroup = new FormGroup({});
   }
 
   /* Save all in-line changes and then reload data
@@ -360,7 +368,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private promisedChanges(): Promise<any>[] {
-    const promises = [];
+    const promises: Promise<any>[] = [];
     for (const item of this.updatedItems) {
       const data = Object.assign({}, item);
       delete data.id;
@@ -410,7 +418,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'time';
       }
       case 'JSON': {
-        return null;
+        return '';
       }
       default: {
         return 'text';
@@ -449,7 +457,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'JSON': {
-        return null;
+        return '';
       }
       default: {
         return 'text';
@@ -460,36 +468,36 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Generates the form group for in-line edition.
   */
   public createFormGroup(dataItem: any): FormGroup {
-    const formGroup = {};
+    const formGroup: any = {};
     for (const field of this.fields.filter(x => !x.disabled)) {
       if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
         if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
-          this.http.get(field.meta.choicesByUrl.url).toPromise().then(res => {
+          this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
             field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
           });
         }
       } else {
         if (field.meta.type === 'multipletext') {
-          const fieldGroup = {};
+          const fieldGroup: any = {};
           for (const item of field.meta.items) {
             fieldGroup[item.name] = [dataItem[field.name] ? dataItem[field.name][item.name] : null];
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
         if (field.meta.type === 'matrix') {
-          const fieldGroup = {};
+          const fieldGroup: any = {};
           for (const row of field.meta.rows) {
             fieldGroup[row.name] = [dataItem[field.name] ? dataItem[field.name][row.name] : null];
           }
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
         if (field.meta.type === 'matrixdropdown') {
-          const fieldGroup = {};
+          const fieldGroup: any = {};
           const fieldValue = dataItem[field.name];
           for (const row of field.meta.rows) {
             const rowValue = fieldValue ? fieldValue[row.name] : null;
-            const rowGroup = {};
+            const rowGroup: any = {};
             for (const column of field.meta.columns) {
               const columnValue = rowValue ? rowValue[column.name] : null;
               rowGroup[column.name] = [columnValue];
@@ -499,10 +507,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
           formGroup[field.name] = this.formBuilder.group(fieldGroup);
         }
         if (field.meta.type === 'matrixdynamic') {
-          const fieldArray = [];
+          const fieldArray: any = [];
           const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
           for (const rowValue of fieldValue) {
-            const rowGroup = {};
+            const rowGroup: any = {};
             for (const column of field.meta.columns) {
               const columnValue = rowValue ? rowValue[column.name] : null;
               if (this.multiSelectTypes.includes(column.cellType)) {
@@ -546,12 +554,14 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Detect selection event and display actions available on rows.
   */
   public selectionChange(selection: SelectionEvent): void {
-    if (selection.deselectedRows.length > 0) {
-      const deselectIndex = selection.deselectedRows.map((item => item.index));
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      const deselectIndex = deselectedRows.map((item => item.index));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
-    if (selection.selectedRows.length > 0) {
-      const selectedItems = selection.selectedRows.map((item) => item.index);
+    if (selectedRows.length > 0) {
+      const selectedItems = selectedRows.map((item) => item.index);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
@@ -560,9 +570,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open the form corresponding to selected row in order to update it
   */
-  public onUpdateRow(items: string | string[]): void {
-    const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => this.gridData.data[i].id) :
-      (Array.isArray(items) ? this.gridData.data[items[0]].id : items);
+  public onUpdateRow(items: number | number[]): void {
+    const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
+      (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
     const dialogRef = this.dialog.open(WhoFormModalComponent, {
       data: {
         recordId: ids,
@@ -589,7 +599,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         factory: this.factory,
         inputs: {
           record: res.data.record,
-          revert: (item, dialog) => {
+          revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
           }
         },
@@ -655,7 +665,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises = [];
+        const promises: Promise<any>[] = [];
         for (const index of items) {
           const id = this.gridData.data[index].id;
           promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
@@ -683,7 +693,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
       if (value) {
-        const promises = [];
+        const promises: Promise<any>[] = [];
         for (const index of items) {
           const id = this.gridData.data[index].id;
           promises.push(this.apollo.mutate<ConvertRecordMutationResponse>({
@@ -704,7 +714,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Reload data and unselect all rows
   */
-  private reloadData(): void {
+  public reloadData(): void {
     if (!this.parent) {
       if (this.dataSubscription) {
         this.dataSubscription.unsubscribe();
@@ -719,8 +729,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Execute sequentially actions enabled by settings for the floating button
   */
-  public async onFloatingButtonClick(): Promise<void> {
-    const options = this.settings.floatingButton;
+  public async onFloatingButtonClick(options: any): Promise<void> {
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -740,7 +749,10 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
-      const promises = [];
+      if (options.attachToRecord) {
+        await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField);
+      }
+      const promises: Promise<any>[] = [];
       if (options.notify) {
         promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
           mutation: PUBLISH_NOTIFICATION,
@@ -764,7 +776,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         await Promise.all(promises);
       }
       if (options.passDataToNextStep) {
-        const promisedRecords = [];
+        const promisedRecords: Promise<any>[] = [];
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
             query: GET_RECORD_DETAILS,
@@ -788,7 +800,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       Apply inline edition before applying modifications.
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
-    const promises = [];
+    const promises: Promise<any>[] = [];
     for (const index of rows) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
@@ -806,6 +818,50 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  /* Open a modal to select which record we want to attach the rows to and perform the attach.
+  */
+  private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
+    const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
+      data: {
+        targetForm,
+        targetFormField,
+      },
+    });
+    const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
+    if (value) {
+      const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
+      let data = value.record.data;
+      Object.keys(value.record.data).forEach(key => {
+        if (key === resourceField.name) {
+          if (resourceField.type === 'resource') {
+            data = { ...data, [key]: selectedRecords[0].id };
+          } else {
+            if (data[key]) {
+              const ids = selectedRecords.map(x => x.id);
+              data = { ...data, [key]: data[key].concat(ids) };
+            } else {
+              data = { ...data, [key]: selectedRecords.map(x => x.id) };
+            }
+          }
+        }
+      }, this);
+      this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: value.record.id,
+          data
+        }
+      }).subscribe(res => {
+        if (res.data) {
+          const record = res.data.editRecord;
+          if (record) {
+            this.snackBar.openSnackBar(`Added ${selectedRecords.length} row${selectedRecords.length > 1 ? 's' : ''} to the field ${resourceField.name} in the record ${value.record.data[targetFormField]}.`);
+          }
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

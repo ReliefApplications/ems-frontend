@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from 'projects/who-ems/src/lib/models/channel.model';
 import { Form } from 'projects/who-ems/src/lib/models/form.model';
 import { ContentType } from 'projects/who-ems/src/lib/models/page.model';
-import { WhoWorkflowService } from 'projects/who-ems/src/lib/services/workflow.service';
+import { WhoWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -16,17 +16,19 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 })
 export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
-  @Input() buttonForm: FormGroup;
-  @Input() fields: any[];
-  @Input() channels: Channel[];
-  @Input() forms: Form[];
+  @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  @Input() buttonForm: FormGroup = new FormGroup({});
+  @Input() fields: any[] = [];
+  @Input() channels: Channel[] = [];
+  @Input() forms: Form[] = [];
+  @Input() relatedForms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
-  private workflowSubscription: Subscription;
+  private workflowSubscription?: Subscription;
 
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
@@ -35,7 +37,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private workflowService: WhoWorkflowService
+    private workflowService: WhoWorkflowService,
   ) { }
 
   ngOnInit(): void {
@@ -45,39 +47,40 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
       const currentStepContent = this.router.url.split('/').pop();
       this.workflowSubscription = this.workflowService.workflow.subscribe(workflow => {
         if (workflow) {
-          const currentStepIndex = workflow.steps.findIndex(x => x.content === currentStepContent);
+          const steps = workflow.steps || [];
+          const currentStepIndex = steps.findIndex(x => x.content === currentStepContent);
           if (currentStepIndex >= 0) {
-            const nextStep = workflow.steps[currentStepIndex + 1];
+            const nextStep = steps[currentStepIndex + 1];
             this.canPassData = nextStep && nextStep.type === ContentType.form;
           }
         } else {
-          const workflowId = this.router.url.split('/workflow/').pop().split('/').shift();
+          const workflowId = this.router.url.split('/workflow/').pop()?.split('/').shift();
           this.workflowService.loadWorkflow(workflowId);
         }
       });
     }
-    this.buttonForm.get('notify').valueChanges.subscribe(value => {
+    this.buttonForm.get('notify')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('notificationChannel').setValidators(Validators.required);
-        this.buttonForm.get('notificationMessage').setValidators(Validators.required);
+        this.buttonForm.get('notificationChannel')?.setValidators(Validators.required);
+        this.buttonForm.get('notificationMessage')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('notificationChannel').clearValidators();
-        this.buttonForm.get('notificationMessage').clearValidators();
+        this.buttonForm.get('notificationChannel')?.clearValidators();
+        this.buttonForm.get('notificationMessage')?.clearValidators();
       }
-      this.buttonForm.get('notificationChannel').updateValueAndValidity();
-      this.buttonForm.get('notificationMessage').updateValueAndValidity();
+      this.buttonForm.get('notificationChannel')?.updateValueAndValidity();
+      this.buttonForm.get('notificationMessage')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('publish').valueChanges.subscribe(value => {
+    this.buttonForm.get('publish')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('publicationChannel').setValidators(Validators.required);
+        this.buttonForm.get('publicationChannel')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('publicationChannel').clearValidators();
+        this.buttonForm.get('publicationChannel')?.clearValidators();
       }
-      this.buttonForm.get('publicationChannel').updateValueAndValidity();
+      this.buttonForm.get('publicationChannel')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('show').valueChanges.subscribe(value => {
+    this.buttonForm.get('show')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
         this.buttonForm.controls.notify.setValue(false);
@@ -85,10 +88,30 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.buttonForm.get('modifySelectedRows').valueChanges.subscribe(value => {
+    this.buttonForm.get('modifySelectedRows')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
       }
+    });
+
+    this.buttonForm.get('attachToRecord')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('targetForm')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('targetForm')?.clearValidators();
+        this.buttonForm.get('targetForm')?.setValue(null);
+      }
+      this.buttonForm.get('targetForm')?.updateValueAndValidity();
+    });
+
+    this.buttonForm.get('targetForm')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm.get('targetFormField')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('targetFormField')?.clearValidators();
+        this.buttonForm.get('targetFormField')?.setValue(null);
+      }
+      this.buttonForm.get('targetFormField')?.updateValueAndValidity();
     });
   }
 
@@ -124,6 +147,10 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         i--;
       }
     }
+  }
+
+  public emitDeleteButton(): void {
+    this.deleteButton.emit(true);
   }
 
   ngOnDestroy(): void {

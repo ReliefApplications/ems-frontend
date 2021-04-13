@@ -10,12 +10,12 @@ import { WhoExpandedWidgetComponent } from './expanded-widget/expanded-widget.co
 })
 export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
 
-  @Input() widgets: any[];
-  @Input() canUpdate: boolean;
+  @Input() widgets: any[] = [];
+  @Input() canUpdate = false;
 
   // === GRID ===
-  @ViewChildren(CdkDropList) dropsQuery: QueryList<CdkDropList>;
-  drops: CdkDropList[];
+  @ViewChildren(CdkDropList) dropsQuery?: QueryList<CdkDropList>;
+  drops: CdkDropList[] = [];
   colsNumber = 8;
 
   // === EVENT EMITTER ===
@@ -47,18 +47,20 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
   /*  Material grid once template ready.
   */
   ngAfterViewInit(): void {
-    this.dropsQuery.changes.subscribe(() => {
-      this.drops = this.dropsQuery.toArray();
-    });
-    Promise.resolve().then(() => {
-      this.drops = this.dropsQuery.toArray();
-    });
+    if (this.dropsQuery) {
+      this.dropsQuery.changes.subscribe(() => {
+        this.drops = this.dropsQuery?.toArray() || [];
+      });
+      Promise.resolve().then(() => {
+        this.drops = this.dropsQuery?.toArray() || [];
+      });
+    }
   }
 
   /*  Change display when windows size changes.
   */
   @HostListener('window:resize', ['$event'])
-  onResize(event): void {
+  onResize(event: any): void {
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
   }
 
@@ -108,7 +110,7 @@ export class WhoWidgetGridComponent implements OnInit, AfterViewInit {
       },
       panelClass: 'expanded-widget-dialog'
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event) => {
+    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
       this.goToNextStep.emit(event);
       dialogRef.close();
     });

@@ -1,8 +1,10 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { Form, WhoFormComponent } from '@who-ems/builder';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { Form, Page, Step, WhoFormComponent } from '@who-ems/builder';
+import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -12,32 +14,73 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queri
 export class FormComponent implements OnInit {
 
   @ViewChild(WhoFormComponent)
-  private formComponent: WhoFormComponent;
+  private formComponent?: WhoFormComponent;
 
   // === DATA ===
   public loading = true;
-  public id: string;
-  public form: Form;
+  public id = '';
+  public form?: Form;
   public completed = false;
+
+  // === ROUTER ===
+  public page?: Page;
+  public step?: Step;
+
+  // === ROUTE ===
+  private routeSubscription?: Subscription;
+  public isStep = false;
 
   constructor(
     private apollo: Apollo,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
-    if (this.id !== null) {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe(res => {
-        this.loading = res.loading;
-        this.form = res.data.form;
-      });
-    }
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
+      this.id = params.id;
+      this.isStep = this.router.url.includes('/workflow/');
+      if (this.isStep) {
+        this.apollo.watchQuery<GetStepByIdQueryResponse>({
+          query: GET_STEP_BY_ID,
+          variables: {
+            id: this.id
+          }
+        }).valueChanges.subscribe((res) => {
+          this.step = res.data.step;
+          this.apollo.watchQuery<GetFormByIdQueryResponse>({
+            query: GET_FORM_BY_ID,
+            variables: {
+              id: this.step.content
+            }
+          }).valueChanges.subscribe((res2) => {
+            this.form = res2.data.form;
+            this.loading = res2.data.loading;
+          });
+        });
+      } else {
+        this.apollo.watchQuery<GetPageByIdQueryResponse>({
+          query: GET_PAGE_BY_ID,
+          variables: {
+            id: this.id
+          }
+        }).valueChanges.subscribe((res) => {
+          this.page = res.data.page;
+          this.apollo.watchQuery<GetFormByIdQueryResponse>({
+            query: GET_FORM_BY_ID,
+            variables: {
+              id: this.page.content
+            }
+          }).valueChanges.subscribe((res2) => {
+            if (res2.data) {
+              this.form = res2.data.form;
+            }
+            this.loading = res2.data.loading;
+          });
+        });
+      }
+    });
   }
 
   onComplete(e: any): void {
@@ -45,6 +88,6 @@ export class FormComponent implements OnInit {
   }
 
   clearForm(): void {
-    this.formComponent.reset();
+    this.formComponent?.reset();
   }
 }

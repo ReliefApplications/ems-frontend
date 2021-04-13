@@ -11,7 +11,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 export class WhoEditorSettingsComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup;
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;

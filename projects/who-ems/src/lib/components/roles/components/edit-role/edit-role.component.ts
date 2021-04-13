@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { Channel } from '../../../../models/channel.model';
 import {
   GetPermissionsQueryResponse, GET_PERMISSIONS,
@@ -22,7 +23,7 @@ export class WhoEditRoleComponent implements OnInit {
   public channels: Channel[] = [];
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup;
+  roleForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

@@ -19,8 +19,8 @@
     </mat-menu>
   </ng-container>
   <div class="account-container">
-    <div class="account-property">{{account.name}}</div>
-    <div class="account-property">{{account.userName}}</div>
+    <div class="account-property">{{account ? account.name : ''}}</div>
+    <div class="account-property">{{account ? account.userName : ''}}</div>
   </div>
   <button mat-icon-button [matMenuTriggerFor]="accountMenu">
     <mat-icon>account_circle</mat-icon>

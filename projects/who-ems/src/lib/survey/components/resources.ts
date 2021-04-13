@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 export function init(Survey: any, API_URL: string, domService: DomService, dialog: MatDialog): void {
   const getFromServer = buildServerDispatcher(API_URL);
 
-  let resourcesForms = [];
+  let resourcesForms: any[] = [];
 
   const component = {
     name: 'resources',
@@ -25,7 +25,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         category: 'Custom Questions',
         visibleIndex: 3,
         required: true,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           getFromServer<{ resources: any }>({
             query: `{resources {
                                 id
@@ -52,7 +52,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         category: 'Custom Questions',
         dependsOn: 'resource',
         required: true,
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -60,7 +60,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getFromServer<{ resource: any }>({
               query: `query GetResourceById($id: ID!) {
@@ -93,7 +93,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource || !obj.displayField) {
             return false;
           } else {
@@ -101,7 +101,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getFromServer<{ resource: any }>({
               query: `query GetResourceById($id: ID!) {
@@ -133,7 +133,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         name: 'displayAsGrid:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -146,7 +146,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         name: 'canAddNew:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -159,7 +159,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.canAddNew) {
             return false;
           } else {
@@ -167,7 +167,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
             getFromServer<{ resource: any }>({
               query: `query GetResourceById($id: ID!) {
@@ -196,7 +196,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         },
       });
     },
-    onLoaded(question): void {
+    onLoaded(question: any): void {
       getFromServer<{ resource: any }>({
         query: `query GetResourceById($id: ID!) {
                       resource(id: $id) {
@@ -223,20 +223,20 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
         question.survey.render();
       });
     },
-    onPropertyChanged(question, propertyName, newValue): void {
+    onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resource') {
         question.canAddNew = false;
         question.addTemplate = null;
       }
     },
-    onAfterRender(question, el): void {
+    onAfterRender(question: any, el: any): void {
       if (question.displayAsGrid) {
         // hide tagbox if grid view is enable
         const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
         element.style.display = 'none';
       }
       if (question.canAddNew && question.addTemplate) {
-        document.addEventListener('saveResourceFromEmbed', (e: CustomEvent) => {
+        document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
           if (detail.template === question.addTemplate) {
             getFromServer<{ resource: any }>({
@@ -273,7 +273,7 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
   Survey.ComponentCollection.Instance.add(component);
   const gridWidget = {
     name: 'displayAsGrid',
-    isFit: (question) => {
+    isFit: (question: any) => {
       if (question.getType() === 'resources') {
         return question.displayAsGrid || question.canAddNew;
       } else {
@@ -281,15 +281,15 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
       }
     },
     isDefaultRender: true,
-    afterRender: (question, el) => {
+    afterRender: (question: any, el: any) => {
       if (question.resource) {
-        let instance;
+        let instance: any;
         if (question.displayAsGrid) {
           const grid = domService.appendComponentToBody(WhoSurveyGridComponent, el.parentElement);
           instance = grid.instance;
           instance.fetchData(question.resource, question.displayField);
           // subscribed grid data to add values to survey question.
-          instance.gridData.subscribe((value) => {
+          instance.gridData.subscribe((value: any[]) => {
             question.value = value.map(v => v.value);
           });
         }

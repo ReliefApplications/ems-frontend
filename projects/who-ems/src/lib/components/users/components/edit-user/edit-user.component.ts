@@ -12,9 +12,9 @@ import { Role, User } from '../../../../models/user.model';
 export class WhoEditUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  userForm: FormGroup;
+  userForm: FormGroup = new FormGroup({});
 
-  get positionAttributes(): FormArray {
+  get positionAttributes(): FormArray | null {
     return this.userForm.get('positionAttributes') ? this.userForm.get('positionAttributes') as FormArray : null;
   }
 
@@ -38,7 +38,7 @@ export class WhoEditUserComponent implements OnInit {
       });
     } else {
       this.userForm = this.formBuilder.group({
-        role: this.data.user.roles[0].id,
+        role: this.data.user?.roles ? this.data.user.roles[0].id : '',
         ...this.data.positionAttributeCategories &&
         {
           positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {

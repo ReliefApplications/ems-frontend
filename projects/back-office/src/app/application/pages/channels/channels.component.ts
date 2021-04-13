@@ -12,12 +12,12 @@ import { AddChannelComponent } from './components/add-channel/add-channel.compon
 export class ChannelsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public channels: Channel[];
+  public channels: Channel[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
 
   // === SUBSCRIPTIONS ===
-  private applicationSubscription: Subscription;
+  private applicationSubscription?: Subscription;
 
   constructor(
     private applicationService: WhoApplicationService,
@@ -26,9 +26,9 @@ export class ChannelsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.channels = application.channels;
+        this.channels = application.channels || [];
       } else {
         this.channels = [];
       }

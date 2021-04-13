@@ -1,5 +1,6 @@
-import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { gql } from 'apollo-angular';
+import { Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@who-ems/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -605,4 +606,21 @@ query GetRoutingKeys {
 export interface GetRoutingKeysQueryResponse{
   loading: boolean;
   applications: Application[];
+}
+
+// === GET POSITION ATTRIBUTES FORM CATEGORY ===
+export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
+query GetPositionAttributesFromCategory($id: ID!) {
+  positionAttributes(category: $id) {
+    value
+    category {
+      title
+    }
+    usersCount
+  }
+}`;
+
+export interface GetPositionAttributesFromCategoryQueryResponse {
+  loading: boolean;
+  positionAttributes: PositionAttribute[];
 }

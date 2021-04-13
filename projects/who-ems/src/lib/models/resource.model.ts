@@ -7,6 +7,7 @@ export interface Resource {
     id?: string;
     name?: string;
     forms?: Form[];
+    relatedForms?: Form[];
     createdAt?: Date;
     records?: Record[];
     fields?: any;

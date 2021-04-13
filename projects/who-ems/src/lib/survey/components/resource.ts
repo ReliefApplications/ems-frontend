@@ -19,7 +19,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         category: 'Custom Questions',
         visibleIndex: 3,
         required: true,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           const xhr = new XMLHttpRequest();
           const query = {
             query: `{
@@ -37,7 +37,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.onload = () => {
             const serverRes = xhr.response.data.resources;
-            const res = [];
+            const res: any[] = [];
             res.push({ value: null });
             for (const item of serverRes) {
               res.push({ value: item.id, text: item.name });
@@ -52,7 +52,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         category: 'Custom Questions',
         dependsOn: 'resource',
         required: true,
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -60,7 +60,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             const xhr = new XMLHttpRequest();
             const query = {
@@ -83,7 +83,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.fields;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.name });
@@ -99,7 +99,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource || !obj.displayField) {
             return false;
           } else {
@@ -107,7 +107,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             const xhr = new XMLHttpRequest();
             const query = {
@@ -133,7 +133,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.records;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.data[obj.displayField] });
@@ -148,7 +148,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         name: 'canAddNew:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -161,7 +161,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: 'canAddNew',
-        visibleIf: (obj) => {
+        visibleIf: (obj: any) => {
           if (!obj || !obj.canAddNew) {
             return false;
           } else {
@@ -169,7 +169,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
           }
         },
         visibleIndex: 3,
-        choices: (obj, choicesCallback) => {
+        choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
             const xhr = new XMLHttpRequest();
             const query = {
@@ -195,7 +195,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.forms;
-              const res = [];
+              const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.name });
@@ -211,7 +211,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
         category: 'Custom Questions'
       });
     },
-    onLoaded(question): void {
+    onLoaded(question: any): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -238,7 +238,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = () => {
         const serverRes = xhr.response.data.resource.records;
-        const res = [];
+        const res: any[] = [];
         for (const item of serverRes) {
           res.push({ value: item.id, text: item.data[question.displayField] });
         }
@@ -251,9 +251,9 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
       };
       xhr.send(JSON.stringify(query));
     },
-    onAfterRender(question, el): void {
+    onAfterRender(question: any, el: any): void {
       if (question.canAddNew && question.addTemplate) {
-        document.addEventListener('saveResourceFromEmbed', (e: CustomEvent) => {
+        document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
           if (detail.template === question.addTemplate) {
             const xhr = new XMLHttpRequest();
@@ -279,7 +279,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
               const serverRes = xhr.response.data.resource.records;
-              const res = [];
+              const res: any[] = [];
               for (const item of serverRes) {
                 res.push({
                   value: item.id,
@@ -298,7 +298,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
   Survey.ComponentCollection.Instance.add(component);
   const widget = {
     name: 'addResource',
-    isFit: (question) => {
+    isFit: (question: any) => {
       if (question.getType() === 'resource') {
         return question.canAddNew && question.addTemplate;
       } else {
@@ -306,7 +306,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
       }
     },
     isDefaultRender: true,
-    afterRender: (question, el) => {
+    afterRender: (question: any, el: any) => {
       const mainDiv = document.createElement('div');
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Add';

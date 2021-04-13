@@ -15,6 +15,7 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { HttpClientModule } from '@angular/common/http';
 import { WhoRecordModalModule } from '../../record-modal/record-modal.module';
+import { WhoChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { WhoRecordModalModule } from '../../record-modal/record-modal.module';
     InputsModule,
     DateInputsModule,
     DropDownsModule,
-    WhoRecordModalModule
+    WhoRecordModalModule,
+    WhoChooseRecordModalModule
   ],
   exports: [WhoGridComponent]
 })

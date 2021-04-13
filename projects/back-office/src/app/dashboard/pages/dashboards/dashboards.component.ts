@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
 import { DeleteDashboardMutationResponse, DELETE_DASHBOARD, AddDashboardMutationResponse, ADD_DASHBOARD } from '../../../graphql/mutations';
@@ -17,12 +18,12 @@ export class DashboardsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public dashboards = [];
+  public dashboards: any[] = [];
   public displayedColumns = ['name', 'createdAt', 'actions'];
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -54,7 +55,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
 
   /*  Delete a dashboard if authorized.
   */
-  deleteDashboard(id, e): void {
+  deleteDashboard(id: any, e: any): void {
     e.stopPropagation();
     this.apollo.mutate<DeleteDashboardMutationResponse>({
       mutation: DELETE_DASHBOARD,
@@ -62,10 +63,12 @@ export class DashboardsComponent implements OnInit, OnDestroy {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Dashboard deleted', { duration: 1000 });
-      this.dashboards = this.dashboards.filter(x => {
-        return x.id !== res.data.deleteDashboard.id;
-      });
+      if (res.data) {
+        this.snackBar.openSnackBar('Dashboard deleted', { duration: 1000 });
+        this.dashboards = this.dashboards.filter(x => {
+          return x.id !== res.data?.deleteDashboard.id;
+        });
+      }
     });
   }
 
@@ -83,7 +86,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar(`${value.name} dashboard created`);
-          const id = res.data.addDashboard.id;
+          const id = res.data?.addDashboard.id;
           this.router.navigate(['/dashboards', id]);
         });
       }

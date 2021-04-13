@@ -35,7 +35,7 @@ export class WhoTileDataComponent implements OnInit, AfterViewInit {
     const factory = this.componentFactoryResolver.resolveComponentFactory(this.data.template);
     const componentRef = this.settingsContainer.createComponent(factory);
     componentRef.instance.tile = this.data.tile;
-    componentRef.instance.change.subscribe(e => { this.tileForm = e; });
+    componentRef.instance.change.subscribe((e: any) => { this.tileForm = e; });
   }
 
   /*  Close the modal without sending any data.

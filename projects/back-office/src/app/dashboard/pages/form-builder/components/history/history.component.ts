@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class HistoryComponent implements OnInit {
 
   // === DATA ===
-  @Input() dataSource = [];
+  @Input() dataSource: any[] = [];
   displayedColumns: string[] = ['id', 'createdAt'];
 
   // === EMIT THE SELECTED FORM VERSION ===

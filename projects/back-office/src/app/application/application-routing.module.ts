@@ -41,9 +41,20 @@ const routes: Routes = [
           },
           {
             path: 'position',
-            loadChildren: () => import('./pages/position/position.module')
-              .then(m => m.PositionModule),
-            // canActivate: [WhoPermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () => import('./pages/position/position.module')
+                .then(m => m.PositionModule),
+                // canActivate: [WhoPermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () => import('./pages/position-attributes/position-attributes.module')
+                  .then(m => m.PositionAttributesModule),
+                // canActivate: [WhoPermissionGuard]
+              },
+            ]
           },
           {
             path: 'channels',

@@ -1,9 +1,10 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DuplicateApplicationMutationResponse, DUPLICATE_APPLICATION} from '../../graphql/mutations';
 import { Application, WhoSnackBarService } from '@who-ems/builder';
-import { Apollo } from 'apollo-angular';
+
 
 @Component({
   selector: 'app-duplicate-application',
@@ -13,14 +14,14 @@ import { Apollo } from 'apollo-angular';
 export class DuplicateApplicationComponent implements OnInit {
 
   public currentApp: Application;
-  public duplicateForm: FormGroup;
+  public duplicateForm: FormGroup = new FormGroup({});
 
   constructor(
     private snackBar: WhoSnackBarService,
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<DuplicateApplicationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data) {
+    @Inject(MAT_DIALOG_DATA) public data: any) {
       this.currentApp = data;
     }
 
@@ -44,7 +45,7 @@ export class DuplicateApplicationComponent implements OnInit {
         this.snackBar.openSnackBar('App not duplicated: ' + res.errors[0].message);
       } else {
         this.snackBar.openSnackBar('Successfully duplicated ' + this.currentApp.name);
-        this.dialogRef.close(res.data.duplicateApplication);
+        this.dialogRef.close(res.data?.duplicateApplication);
       }
     });
   }

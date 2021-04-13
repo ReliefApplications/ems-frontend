@@ -7,7 +7,7 @@
       </mat-form-field>
     </div>
   </form>
-  <kendo-editor #editor id="editor" iframe="false" [value]="tile.settings.text" (valueChange)="updateText()">
+  <kendo-editor #editor id="editor" [iframe]="false" [value]="tile.settings.text" (valueChange)="updateText()">
     <kendo-toolbar>
       <kendo-toolbar-buttongroup>
         <kendo-toolbar-button kendoEditorUndoButton></kendo-toolbar-button>

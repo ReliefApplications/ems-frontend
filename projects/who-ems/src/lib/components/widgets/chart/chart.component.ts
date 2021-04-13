@@ -17,9 +17,9 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public series = [];
+  public series: any[] = [];
   private dataQuery: any;
-  private dataSubscription: Subscription;
+  private dataSubscription?: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -28,7 +28,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
 
   // === CHART ===
   @ViewChild('chart')
-  private chart: ChartComponent;
+  private chart?: ChartComponent;
 
   public categoryAxis: any = {
     type: 'date',
@@ -52,7 +52,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   }
 
   public onExport(): void {
-    this.chart.exportImage({
+    this.chart?.exportImage({
       width: 1200,
       height: 800
     }).then((dataURI) => {
@@ -63,7 +63,7 @@ export class WhoChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
   */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
       if (['pie', 'donut', 'line'].includes(this.settings.chart.type)) {
         this.series = [
           {
