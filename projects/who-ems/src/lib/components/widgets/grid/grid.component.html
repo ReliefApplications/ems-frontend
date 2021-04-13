@@ -1,10 +1,12 @@
 <div class="widget-container">
   <div class="widget-header" *ngIf="!parent">
     {{settings.title}}
-    <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
-      <button mat-button color="primary" (click)="onFloatingButtonClick()">
-        {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
-      </button>
+    <div class="floating-button">
+      <ng-container *ngFor="let floatingButton of settings.floatingButtons">
+        <button mat-button color="primary" (click)="onFloatingButtonClick(floatingButton)" *ngIf="floatingButton.show">
+          {{floatingButton.name}}
+        </button>
+      </ng-container>
     </div>
   </div>
   <!-- GRID HEADER -->

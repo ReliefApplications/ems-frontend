@@ -30,6 +30,7 @@ import { WhoSnackBarService } from '../../../services/snackbar.service';
 import { WhoRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { WhoWorkflowService } from '../../../services/workflow.service';
+import { WhoChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -91,7 +92,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public queryError = false;
   public fields: any[] = [];
   private metaFields: any;
-  public detailsField = '';
+  public detailsField: any;
   public canEdit = false;
   private dataQuery: any;
   private metaQuery: any;
@@ -261,7 +262,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
               if (this.detailsField) {
-                Object.assign(this.detailsField, { actions: this.settings.actions });
+                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
               this.gridData = {
                 data: this.items,
@@ -557,12 +558,13 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public selectionChange(selection: SelectionEvent): void {
     const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
       const deselectIndex = deselectedRows.map((item => item.index));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
-    if (deselectedRows.length > 0) {
-      const selectedItems = deselectedRows.map((item) => item.index);
+    if (selectedRows.length > 0) {
+      const selectedItems = selectedRows.map((item) => item.index);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
@@ -761,8 +763,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Execute sequentially actions enabled by settings for the floating button
   */
-  public async onFloatingButtonClick(): Promise<void> {
-    const options = this.settings.floatingButton;
+  public async onFloatingButtonClick(options: any): Promise<void> {
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -782,6 +783,9 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
+      if (options.attachToRecord) {
+        await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField);
+      }
       const promises: Promise<any>[] = [];
       if (options.notify) {
         promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
@@ -848,6 +852,50 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  /* Open a modal to select which record we want to attach the rows to and perform the attach.
+  */
+  private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
+    const dialogRef = this.dialog.open(WhoChooseRecordModalComponent, {
+      data: {
+        targetForm,
+        targetFormField,
+      },
+    });
+    const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
+    if (value) {
+      const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
+      let data = value.record.data;
+      Object.keys(value.record.data).forEach(key => {
+        if (key === resourceField.name) {
+          if (resourceField.type === 'resource') {
+            data = { ...data, [key]: selectedRecords[0].id };
+          } else {
+            if (data[key]) {
+              const ids = selectedRecords.map(x => x.id);
+              data = { ...data, [key]: data[key].concat(ids) };
+            } else {
+              data = { ...data, [key]: selectedRecords.map(x => x.id) };
+            }
+          }
+        }
+      }, this);
+      this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: value.record.id,
+          data
+        }
+      }).subscribe(res => {
+        if (res.data) {
+          const record = res.data.editRecord;
+          if (record) {
+            this.snackBar.openSnackBar(`Added ${selectedRecords.length} row${selectedRecords.length > 1 ? 's' : ''} to the field ${resourceField.name} in the record ${value.record.data[targetFormField]}.`);
+          }
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

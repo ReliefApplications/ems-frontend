@@ -27,9 +27,23 @@
       </mat-slide-toggle>
     </div>
     <div class="form-group">
-      <div class="form-group-title">Quick action button</div>
-      <div class="info-text">A quick action button will appear on the widget and allow you to complete any of the actions below.</div>
-      <who-floating-button-settings [buttonForm]="$any(tileForm.controls.floatingButton)" [fields]="fields" [channels]="channels"></who-floating-button-settings>
+      <div class="form-group-title">Quick action buttons</div>
+      <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions below.</div>
+      <button mat-button color="primary" class="add-button" (click)="addFloatingButton()">
+        <mat-icon>add</mat-icon>
+        Add a button
+      </button>
+      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px" [(selectedIndex)]="tabIndex"
+      *ngIf="floatingButtons.length > 0">
+        <ng-container *ngFor="let floatingButton of floatingButtons.controls">
+          <mat-tab [label]="floatingButton.value.name">
+            <ng-template matTabContent>
+              <who-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
+                (deleteButton)="deleteFloatingButton()"></who-floating-button-settings>
+            </ng-template>
+          </mat-tab>
+        </ng-container>
+      </mat-tab-group>
     </div>
   </form>
 </ng-container>
