@@ -1,0 +1,49 @@
+<ng-container *ngIf="tileForm">
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <div class="form-group-title">General</div>
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Data set selection</div>
+      <safe-query-builder [form]="$any(tileForm.controls.query)" [settings]="tile.settings"></safe-query-builder>
+    </div>
+    <div formGroupName="actions" class="form-group">
+      <div class="form-group-title">Enabled actions</div>
+      <mat-slide-toggle formControlName="delete">
+        Delete records
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="history">
+        Show history
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="convert">
+        Convert records
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="update">
+        Update records
+      </mat-slide-toggle>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">Quick action buttons</div>
+      <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions below.</div>
+      <button mat-button color="primary" class="add-button" (click)="addFloatingButton()">
+        <mat-icon>add</mat-icon>
+        Add a button
+      </button>
+      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px" [(selectedIndex)]="tabIndex"
+      *ngIf="floatingButtons.length > 0">
+        <ng-container *ngFor="let floatingButton of floatingButtons.controls">
+          <mat-tab [label]="floatingButton.value.name">
+            <ng-template matTabContent>
+              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
+                                             (deleteButton)="deleteFloatingButton()"></safe-floating-button-settings>
+            </ng-template>
+          </mat-tab>
+        </ng-container>
+      </mat-tab-group>
+    </div>
+  </form>
+</ng-container>
