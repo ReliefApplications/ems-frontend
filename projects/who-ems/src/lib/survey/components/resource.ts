@@ -40,7 +40,6 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
         choices: (obj: any, choicesCallback: any) => {
           getResources().subscribe(
             (response: any) => {
-              console.log('GET RESOURCES', response);
               const serverRes = response.data.resources;
               const res = [];
               res.push({ value: null });
@@ -67,7 +66,6 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           getResourcesById(obj.resource).subscribe(response => {
-            console.log('RESOURCE BY ID', response);
             const serverRes = response.data.resource.fields;
             const res = [];
             res.push({ value: null });
@@ -94,7 +92,6 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourcesById(obj.resource).subscribe(response => {
-              console.log('GET RESOURCES BT ID 2', response);
               const serverRes = response.data.resource.records || [];
               const res = [];
               res.push({ value: null });
@@ -133,38 +130,15 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        forms {
-                                            id
-                                            name
-                                        }
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.forms;
+            getResourcesById(obj.resource).subscribe(response => {
+              const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.name });
               }
               choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         },
       });
@@ -177,70 +151,26 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
-      const xhr = new XMLHttpRequest();
-      const query = {
-        query: `query GetResourceById($id: ID!) {
-                    resource(id: $id) {
-                        id
-                        name
-                        records {
-                            id
-                            data
-                        }
-                    }
-                }`,
-        variables: {
-          id: question.resource,
-        },
-      };
-      xhr.responseType = 'json';
-      xhr.open('POST', API_URL);
-      const token = localStorage.getItem('msal.idtoken');
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = () => {
-        const serverRes = xhr.response.data.resource.records;
+      getResourcesById(question.resource).subscribe(response => {
+        const serverRes = response.data.resource.records || [];
         const res: any[] = [];
         for (const item of serverRes) {
           res.push({ value: item.id, text: item.data[question.displayField] });
         }
-        // question.choices = res;
         question.contentQuestion.choices = res;
         if (!question.placeholder) {
-          question.contentQuestion.optionsCaption = 'Select a record from ' + xhr.response.data.resource.name + '...';
+          question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
         }
         question.survey.render();
-      };
-      xhr.send(JSON.stringify(query));
+      });
     },
     onAfterRender(question: any, el: any): void {
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
           if (detail.template === question.addTemplate) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `query GetResourceById($id: ID!) {
-                                resource(id: $id) {
-                                    id
-                                    name
-                                    records {
-                                        id
-                                        data
-                                    }
-                                }
-                            }`,
-              variables: {
-                id: question.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.records;
+            getResourcesById(question.resource).subscribe(response => {
+              const serverRes = response.data.resource.records || [];
               const res: any[] = [];
               for (const item of serverRes) {
                 res.push({
@@ -250,8 +180,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog, apollo: Ap
               }
               question.contentQuestion.choices = res;
               question.survey.render();
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         });
       }
