@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
-import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
+import { Dashboard, SafeSnackBarService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {

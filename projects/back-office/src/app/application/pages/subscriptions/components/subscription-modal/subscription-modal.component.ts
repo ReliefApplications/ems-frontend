@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Application, Channel, Form, Subscription } from '@who-ems/builder';
+import { Application, Channel, Form, Subscription } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { GetFormsQueryResponse, GetRoutingKeysQueryResponse, GET_FORMS, GET_ROUTING_KEYS } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';

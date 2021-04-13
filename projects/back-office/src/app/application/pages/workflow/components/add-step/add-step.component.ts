@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, WhoAuthService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
+import { ContentType, Form, Permissions, SafeAuthService, SafeSnackBarService, SafeWorkflowService } from '@safe/builder';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs';
@@ -35,10 +35,10 @@ export class AddStepComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService,
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private apollo: Apollo,
-    private workflowServive: WhoWorkflowService,
+    private workflowServive: SafeWorkflowService,
   ) { }
 
   ngOnInit(): void {

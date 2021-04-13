@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { WhoDownloadService, WhoSnackBarService } from '@who-ems/builder';
+import { SafeDownloadService, SafeSnackBarService } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
@@ -32,8 +32,8 @@ export class ResourceComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private downloadService: WhoDownloadService
+    private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.

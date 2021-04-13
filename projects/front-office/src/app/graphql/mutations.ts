@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { Role, User } from '@who-ems/builder';
+import { Role, User } from '@safe/builder';
 
 // === ADD ROLE ===
 export const ADD_ROLE = gql`

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, User, WhoAuthService, WhoSnackBarService, WhoApplicationService, Permission, Permissions, ContentType } from '@who-ems/builder';
+import { Application, User, SafeAuthService, SafeSnackBarService, SafeApplicationService, Permission, Permissions, ContentType } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -24,10 +24,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public navGroups: any[] = [];
 
   constructor(
-    private authService: WhoAuthService,
-    private applicationService: WhoApplicationService,
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
-    private snackBar: WhoSnackBarService,
+    private snackBar: SafeSnackBarService,
     private router: Router
   ) { }
 

@@ -6,13 +6,13 @@ import { Router } from '@angular/router';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
-  WhoSnackBarService,
-  WhoAuthService,
+  SafeSnackBarService,
+  SafeAuthService,
   PermissionsManagement,
   PermissionType,
-  WhoConfirmModalComponent,
+  SafeConfirmModalComponent,
   Form
-} from '@who-ems/builder';
+} from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -56,8 +56,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
   ) { }
 
   /*  Load the forms.
@@ -105,7 +105,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
         content: `Do you confirm the deletion of the form ${element.name} ?`,
