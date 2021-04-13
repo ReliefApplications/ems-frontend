@@ -22,7 +22,7 @@
         Description
       </mat-label>
       <textarea matInput formControlName="description" placeholder="Please enter a description for the application"
-        matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5"></textarea>
+        [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5"></textarea>
     </mat-form-field>
   </div>
   <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="settingsForm.invalid || !settingsForm.dirty">Save changes</button>

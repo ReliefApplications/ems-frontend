@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import {gql} from 'apollo-angular';
+
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
 import { Role, User, Permission } from '../models/user.model';
@@ -90,6 +91,24 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
+}
+
+// === GET RELATED FORMS FROM RESOURCE ===
+
+export const GET_RELATED_FORMS = gql`
+query GetRelatedForms($resource: ID!) {
+  resource(id: $resource) {
+    relatedForms {
+      id
+      name
+      fields
+    }
+  }
+}`;
+
+export interface GetRelatedFormsQueryResponse {
+  loading: boolean;
+  resource: Resource;
 }
 
 // === GET RESOURCE BY ID ===

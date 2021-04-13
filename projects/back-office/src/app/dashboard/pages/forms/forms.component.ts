@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
@@ -33,10 +34,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
@@ -47,8 +48,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
 
   constructor(
@@ -91,7 +92,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -152,8 +153,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           if (res.errors) {
             this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message, { error: true });
           } else {
-            const { id } = res.data.addForm;
-            this.router.navigate(['/forms/builder', id]);
+            if (res.data) {
+              const { id } = res.data.addForm;
+              this.router.navigate(['/forms/builder', id]);
+            }
           }
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

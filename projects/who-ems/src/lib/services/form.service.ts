@@ -12,23 +12,17 @@ import { MatDialog } from '@angular/material/dialog';
 export class FormService {
 
   constructor(
-    @Inject('environment') environment,
+    @Inject('environment') environment: any,
     private domService: DomService,
     public dialog: MatDialog,
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`, domService, dialog);
 
-    // === STYLE ===
-    // SurveyCreator.StylesManager.applyTheme('darkblue');
-
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(Survey, `${environment.API_URL}/graphql`, domService, dialog);
-
-    // === STYLE ===
-    // Survey.StylesManager.applyTheme('darkblue');
   }
 }

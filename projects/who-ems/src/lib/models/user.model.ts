@@ -95,9 +95,9 @@ export class PermissionsManagement {
         let value = this.mappedPermissions;
         for (const key of keys) {
             if (key in value) {
-                value = value[key];
+                value = (value as any)[key];
             }
         }
-        return value[type];
+        return (value as any)[type];
     }
 }

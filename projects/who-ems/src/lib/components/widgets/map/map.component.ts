@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Apollo } from 'apollo-angular';
+
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -32,15 +33,15 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
   // === MARKERS ===
-  private markersLayer;
-  private markersLayerGroup;
-  private popupMarker;
+  private markersLayer: any;
+  private markersLayerGroup: any;
+  private popupMarker: any;
 
   // === RECORDS ===
-  private selectedItem: Record;
-  private data: any[];
+  private selectedItem: Record | null = null;
+  private data: any[] = [];
   private dataQuery: any;
-  private dataSubscription: Subscription;
+  private dataSubscription?: Subscription;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -55,7 +56,7 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
   /*  Generation of an unique id for the map ( in case multiple widgets use map ).
   */
   private generateUniqueId(parts: number = 4): string {
-    const stringArr = [];
+    const stringArr: string[] = [];
     for (let i = 0; i < parts; i++) {
       // tslint:disable-next-line:no-bitwise
       const S4 = (((1 + Math.random()) * 0x10000) | 0)
@@ -103,7 +104,7 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
-    this.markersLayerGroup.on('click', event => {
+    this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
@@ -126,13 +127,13 @@ export class WhoMapComponent implements AfterViewInit, OnDestroy {
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(res => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
       this.data = [];
       this.selectedItem = null;
       this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].map(x => this.drawMarkers(myIcon, x));
+          res.data[field].map((x: any) => this.drawMarkers(myIcon, x));
         }
       }
     });

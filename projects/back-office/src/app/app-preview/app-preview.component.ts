@@ -12,17 +12,17 @@ import { PreviewService } from '../services/preview.service';
 export class AppPreviewComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
-  public title: string;
+  public title = '';
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [];
+  public navGroups: any[] = [];
 
   // === APPLICATION ===
-  public application: Application;
-  private applicationSubscription: Subscription;
+  public application: Application | null = null;
+  private applicationSubscription?: Subscription;
 
   // === PREVIEWED ROLE ID ===
-  public role: string;
+  public role = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -38,33 +38,35 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         this.role = role;
       });
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name + ' (Preview)';
-        const role = application.roles.find(x => this.role ? x.id === this.role : true);
+        const role = application.roles?.find(x => this.role ? x.id === this.role : true);
         const adminNavItems = [];
-        if (role.permissions.some(x => x.type === Permissions.canSeeUsers && !x.global)) {
-          adminNavItems.push({
-            name: 'Users',
-            path: './settings/users',
-            icon: 'supervisor_account'
-          });
-        }
-        if (role.permissions.some(x => x.type === Permissions.canSeeRoles && !x.global)) {
-          adminNavItems.push({
-            name: 'Roles',
-            path: './settings/roles',
-            icon: 'admin_panel_settings'
-          });
+        if (role) {
+          if (role.permissions?.some(x => x.type === Permissions.canSeeUsers && !x.global)) {
+            adminNavItems.push({
+              name: 'Users',
+              path: './settings/users',
+              icon: 'supervisor_account'
+            });
+          }
+          if (role.permissions?.some(x => x.type === Permissions.canSeeRoles && !x.global)) {
+            adminNavItems.push({
+              name: 'Roles',
+              path: './settings/roles',
+              icon: 'admin_panel_settings'
+            });
+          }
         }
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages.filter(x => x.content).map(x => {
+            navItems: application.pages?.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type)
+                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
+                icon: this.getNavIcon(x.type || '')
               };
             })
           },
@@ -74,9 +76,14 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
           }
         ];
         if (!this.application || application.id !== this.application.id) {
-          const { pages: [firstPage, ..._]} = application;
-          if (firstPage) {
-            this.router.navigate([`app-preview/${application.id}/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          const [firstPage, ..._] = application.pages || [];
+          if (this.router.url.endsWith('/') || (this.application && (application.id !== this.application?.id)) || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+              { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;

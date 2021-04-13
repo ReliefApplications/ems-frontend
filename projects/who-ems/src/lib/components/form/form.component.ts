@@ -1,6 +1,7 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Apollo} from 'apollo-angular';
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
@@ -20,27 +21,30 @@ import { WhoWorkflowService } from '../../services/workflow.service';
 })
 export class WhoFormComponent implements OnInit, OnDestroy {
 
-  @Input() form: Form;
-  @Input() record: Record;
+  @Input() form!: Form;
+  @Input() record?: Record;
   @Output() save: EventEmitter<boolean> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey: Survey.Model;
-  public surveyLanguage = 'en';
+  public survey!: Survey.Model;
+  public surveyLanguage: { name: string, nativeName: string } = {
+    name: 'English',
+    nativeName: 'English'
+  };
   public usedLocales: Array<{ text: string, value: string }> = [];
-  public dropdownLocales = [];
+  public dropdownLocales: any[] = [];
   public surveyActive = true;
-  public selectedTabIndex: number;
+  public selectedTabIndex = 0;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
 
   // === MODIFIED AT ===
-  public modifiedAt: Date;
+  public modifiedAt: Date | null = null;
 
   // === PASS RECORDS FROM WORKFLOW ===
-  private isStep: boolean;
-  private recordsSubscription: Subscription;
+  private isStep = false;
+  private recordsSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -62,29 +66,30 @@ export class WhoFormComponent implements OnInit, OnDestroy {
       .StylesManager
       .applyTheme();
 
-    const structure = JSON.parse(this.form.structure);
+    const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
 
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
-      for (const field of this.form.fields) {
+      this.form.fields?.forEach(field => {
         if (field.readOnly) {
           this.survey.getQuestionByName(field.name).readOnly = false;
         }
-      }
+      });
     }
 
     // Fetch cached data from local storage
-    let cachedData = JSON.parse(localStorage.getItem(`record:${this.form.id}`));
+    const storedData = localStorage.getItem(`record:${this.form.id}`);
+    let cachedData = storedData ? JSON.parse(storedData) : null;
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
       this.recordsSubscription = this.workflowService.records.subscribe(records => {
-        if (records) {
+        if (records.length > 0) {
           const mergedRecord = records[0];
           cachedData = mergedRecord.data;
-          const resourcesField = this.form.fields.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === mergedRecord.form.resource.id) {
+          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
             this.snackBar.openSnackBar('Selected records do not match with any fields from this form', { error: true });
@@ -95,21 +100,21 @@ export class WhoFormComponent implements OnInit, OnDestroy {
 
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else {
       if (cachedData) {
         this.survey.data = cachedData;
       } else {
         if (this.record && this.record.data) {
           this.survey.data = this.record.data;
-          this.modifiedAt = this.record.modifiedAt;
+          this.modifiedAt = this.record.modifiedAt || null;
         }
       }
     }
 
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
-        const nativeName = LANGUAGES[lang].nativeName.split(',')[0];
+        const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
         this.usedLocales.push({value: lang, text: nativeName});
         this.dropdownLocales.push(nativeName);
       });
@@ -118,10 +123,11 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     if (navigator.language) {
       const clientLanguage = navigator.language.substring(0, 2);
       const code = this.survey.getUsedLocales().includes(clientLanguage) ? clientLanguage : 'en';
-      this.surveyLanguage = LANGUAGES[code];
+      this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      this.survey.locale = this.surveyLanguage;
+      // TODO: check
+      this.survey.locale = 'en';
     }
 
     this.survey.render('surveyContainer');
@@ -163,7 +169,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
     }
     this.survey.data = data;
     if (this.record || this.form.uniqueRecord) {
-      const recordId = this.record ? this.record.id : this.form.uniqueRecord.id;
+      const recordId = this.record ? this.record.id : this.form.uniqueRecord?.id;
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
@@ -180,7 +186,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
         }
       });
     }
-    mutation.subscribe((res) => {
+    mutation.subscribe((res: any) => {
       if (res.errors) {
         this.save.emit(false);
         this.survey.clear(false, true);
@@ -192,7 +198,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
           this.survey.clear(false, true);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
-            this.modifiedAt = this.record.modifiedAt;
+            this.modifiedAt = this.record?.modifiedAt || null;
           } else {
             this.modifiedAt = res.data.editRecord.modifiedAt;
           }
@@ -225,7 +231,7 @@ export class WhoFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.recordsSubscription) {
       this.recordsSubscription.unsubscribe();
-      this.workflowService.storeRecords(null);
+      this.workflowService.storeRecords([]);
     }
   }
 }

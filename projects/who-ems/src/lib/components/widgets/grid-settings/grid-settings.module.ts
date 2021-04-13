@@ -14,6 +14,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FloatingButtonSettingsComponent } from './floating-button-settings/floating-button-settings.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [WhoGridSettingsComponent, FloatingButtonSettingsComponent],
@@ -31,7 +32,8 @@ import { FloatingButtonSettingsComponent } from './floating-button-settings/floa
     WhoQueryBuilderModule,
     MatSlideToggleModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ],
   exports: [WhoGridSettingsComponent]
 })

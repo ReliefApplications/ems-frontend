@@ -1,10 +1,12 @@
 <div class="widget-container">
   <div class="widget-header" *ngIf="!parent">
     {{settings.title}}
-    <div class="floating-button" *ngIf="settings.floatingButton && settings.floatingButton.show">
-      <button mat-button color="primary" (click)="onFloatingButtonClick()">
-        {{settings.floatingButton && settings.floatingButton.name ? settings.floatingButton.name : 'Next'}}
-      </button>
+    <div class="floating-button">
+      <ng-container *ngFor="let floatingButton of settings.floatingButtons">
+        <button mat-button color="primary" (click)="onFloatingButtonClick(floatingButton)" *ngIf="floatingButton.show">
+          {{floatingButton.name}}
+        </button>
+      </ng-container>
     </div>
   </div>
   <!-- GRID HEADER -->
@@ -36,7 +38,7 @@
       <kendo-grid-checkbox-column
         *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
         [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
-        [columnMenu]="false" showSelectAll="true">
+        [columnMenu]="false" [showSelectAll]="true">
       </kendo-grid-checkbox-column>
       <!-- FIELDS -->
       <ng-container *ngFor="let field of fields">
@@ -185,7 +187,7 @@
                     </ng-container>
                     <!-- EDITION ( matrixdynamic ) -->
                     <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
-                      <li *ngFor="let group of formGroup.get(field.name).controls; let index = i" [formGroup]="group">
+                      <li *ngFor="let group of formGroup.get(field.name).controls; let i = index" [formGroup]="group">
                         <ng-container *ngIf="column.cellType === 'text'">
                           <textarea rows="2" [formControlName]="column.name"
                             kendoGridFocusable [name]="field.name + i" class="k-textbox"></textarea>
@@ -260,9 +262,9 @@
         <who-grid [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></who-grid>
       </div>
     </ng-container>
-    <!-- EMPTY TABLE -->
+    <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-      No record detected.
+      {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
     </ng-template>
     <!-- EXCEL EXPORT -->
     <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>

@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
-import { Apollo } from 'apollo-angular';
+
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
@@ -51,7 +52,7 @@ export class WhoSchedulerComponent implements OnInit {
         }
       }).valueChanges.subscribe(res => {
         this.loading = false;
-        const scheduleData = res.data.resource.records.map(item => (
+        this.events = res.data.resource?.records?.map(item => (
           {
             id: item.id,
             title: item.data[this.settings.events.title],
@@ -60,8 +61,7 @@ export class WhoSchedulerComponent implements OnInit {
             end: (this.settings.events.endDate && item.data[this.settings.events.endDate]) ?
               this.parseAdjust(item.data[this.settings.events.endDate]) : this.endlessDate
           } as SchedulerEvent
-        ));
-        this.events = scheduleData;
+        )) || [];
       });
     } else {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -72,7 +72,7 @@ export class WhoSchedulerComponent implements OnInit {
         }
       }).valueChanges.subscribe(res => {
         this.loading = false;
-        const scheduleData = res.data.form.records.map(item => (
+        this.events = res.data.form?.records?.map(item => (
           {
             id: item.id,
             title: item.data[this.settings.events.title],
@@ -81,8 +81,7 @@ export class WhoSchedulerComponent implements OnInit {
             end: (this.settings.events.endDate && item.data[this.settings.events.endDate]) ?
               this.parseAdjust(item.data[this.settings.events.endDate]) : this.endlessDate
           } as SchedulerEvent
-        ));
-        this.events = scheduleData;
+        )) || [];
       });
     }
   }

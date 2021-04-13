@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Dashboard, WhoSnackBarService } from '@who-ems/builder';
 import { Subscription } from 'rxjs';
@@ -14,13 +15,13 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
   public loading = true;
   public tiles = [];
-  public dashboard: Dashboard;
+  public dashboard?: Dashboard;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();

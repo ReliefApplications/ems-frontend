@@ -3,6 +3,17 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@who-ems/builder": [
+        "dist/who-ems/who-ems",
+        "dist/who-ems"
+      ]
+    },
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -14,12 +25,12 @@
     "lib": [
       "es2018",
       "dom"
-    ],
-    "paths": {
-      "@who-ems/builder": [
-        "dist/who-ems/who-ems",
-        "dist/who-ems"
-      ]
-    }
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

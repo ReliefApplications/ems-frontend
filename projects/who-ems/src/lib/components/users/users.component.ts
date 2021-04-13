@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { WhoSnackBarService } from '../../services/snackbar.service';
@@ -26,16 +27,16 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class WhoUsersComponent implements OnInit, AfterViewInit {
 
   // === INPUT DATA ===
-  @Input() users: MatTableDataSource<User>;
-  @Input() roles: Role[];
-  @Input() positionAttributeCategories: PositionAttributeCategory[];
+  @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
+  @Input() roles: Role[] = [];
+  @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public searchText = '';
@@ -57,7 +58,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
         (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
-          data.roles.filter(r => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
+          data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
     };
   }
 
@@ -118,13 +119,15 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
               roles: value.roles
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(`${user.username} roles updated.`);
-            this.users.data = this.users.data.map(x => {
-              if (x.id === user.id) {
-                x.roles = res.data.editUser.roles.filter(role => !role.application);
-              }
-              return x;
-            });
+            if (res.data) {
+              this.snackBar.openSnackBar(`${user.username} roles updated.`);
+              this.users.data = this.users.data.map(x => {
+                if (x.id === user.id) {
+                  x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
+                }
+                return x;
+              });
+            }
           });
         }
       }
@@ -153,12 +156,12 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
             variables: { ids }
           }).subscribe(res => {
             this.loading = false;
-            if (res.errors) {
-              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
-            } else {
+            if (res.data) {
               this.snackBar.openSnackBar(res.data.deleteUsers > 1 ? `${res.data.deleteUsers} users were deleted` : 'User was deleted',
                 { duration: 3000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
+            } else {
+              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
             }
           });
         }
@@ -167,7 +170,7 @@ export class WhoUsersComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.users.sort = this.sort;
+    this.users.sort = this.sort || null;
   }
 
   applyFilter(column: string, event: any): void {
