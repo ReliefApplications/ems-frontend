@@ -485,9 +485,7 @@ export interface DeleteRecordMutationResponse {
 // === EXPORT ROWS RECORD ===
 export const EXPORT_ROWS_RECORD = gql`
 mutation exportRowsRecord($ids: [ID]!) {
-  exportRowsRecord(id: $id) {
-    id
-  }
+  exportRowsRecord(ids: $ids)
 }`;
 
 export interface DeleteRecordMutationResponse {

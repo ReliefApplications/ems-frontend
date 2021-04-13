@@ -123,7 +123,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public hasEnabledActions = false;
   public canUpdateSelectedRows = false;
   public canDeleteSelectedRows = false;
-  public canExportSelectedRows = false;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -173,7 +172,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.metaQuery.subscribe((res: any) => {
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            console.log("ok jsuis la");
             this.metaFields = res.data[field];
           }
         }
@@ -396,7 +394,6 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
-    console.log("tu as click sur un truc la");
     if (this.formGroup && !this.editionActive && this.formGroup.valid &&
       !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
       this.updateCurrent();

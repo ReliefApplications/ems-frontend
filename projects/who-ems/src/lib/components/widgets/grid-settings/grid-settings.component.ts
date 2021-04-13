@@ -53,7 +53,6 @@ export class WhoGridSettingsComponent implements OnInit {
   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-
     const hasActions = !!tileSettings && !!tileSettings.actions;
 
     this.tileForm = this.formBuilder.group({
