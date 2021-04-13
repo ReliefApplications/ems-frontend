@@ -482,6 +482,19 @@ export interface DeleteRecordMutationResponse {
   deleteRecord: Record;
 }
 
+// === EXPORT ROWS RECORD ===
+export const EXPORT_ROWS_RECORD = gql`
+mutation exportRowsRecord($ids: [ID]!) {
+  exportRowsRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteRecordMutationResponse {
+  loading: boolean;
+  exportRowsRecord: Record[];
+}
+
 // === ADD SUBSCRIPTION ===
 export const ADD_SUBSCRIPTION = gql`
 mutation addSubscription($application: ID!, $routingKey: String!, $title: String!, $convertTo: ID, $channel: ID) {

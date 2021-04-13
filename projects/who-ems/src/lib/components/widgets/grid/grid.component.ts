@@ -122,6 +122,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   public hasEnabledActions = false;
   public canUpdateSelectedRows = false;
   public canDeleteSelectedRows = false;
+  public canExportSelectedRows = false;
   public selectableSettings = SELECTABLE_SETTINGS;
   public pagerSettings = PAGER_SETTINGS;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -171,6 +172,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
       this.metaQuery.subscribe((res: any) => {
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            console.log("ok jsuis la");
             this.metaFields = res.data[field];
           }
         }
@@ -393,6 +395,7 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect document click to save record if outside the inline edition form.
   */
   private onDocumentClick(e: any): void {
+    console.log("tu as click sur un truc la");
     if (this.formGroup && !this.editionActive && this.formGroup.valid &&
       !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
       this.updateCurrent();
@@ -674,6 +677,37 @@ export class WhoGridComponent implements OnInit, OnChanges, OnDestroy {
         Promise.all(promises).then(() => {
           this.reloadData();
         });
+      }
+    });
+  }
+
+  /* Open a confirmation modal and then delete the selected record
+  */
+  public onExportRecord(items: number[]): void {
+    const rowsSelected = items.length;
+    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      data: {
+        title: `Export row${rowsSelected > 1 ? 's' : ''}`,
+        content: `Do you confirm the export of ${rowsSelected > 1 ?
+          'these ' + rowsSelected : 'this'} row${rowsSelected > 1 ? 's' : ''} ?`,
+        confirmText: 'Export',
+        confirmColor: 'warn'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        const promises: Promise<any>[] = [];
+        for (const index of items) {
+          const id = this.gridData.data[index].id;
+          console.log("id = ", id)
+          // promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
+          //   mutation: DELETE_RECORD,
+          //   variables: { id }
+          // }).toPromise());
+        }
+        // Promise.all(promises).then(() => {
+        //   this.reloadData();
+        // });
       }
     });
   }
