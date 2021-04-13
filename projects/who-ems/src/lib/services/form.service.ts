@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, Inject, Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';

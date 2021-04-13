@@ -35,9 +35,9 @@ export class WhoSurveyGridComponent {
   public selectableSettings = SELECTABLE_SETTINGS;
 
   public allData: any[] = [];
-  public gridData: BehaviorSubject<any[]> = new BehaviorSubject([]);
-  public selectedRowsIndex = [];
-  public canDeleteSelectedRows: boolean;
+  public gridData: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
+  public selectedRowsIndex: number[] = [];
+  public canDeleteSelectedRows = false;
 
   fetchData(id: string, field: string): void {
     this.apollo.watchQuery<GetResourceByIdQueryResponse>({
@@ -48,7 +48,8 @@ export class WhoSurveyGridComponent {
       }
     }).valueChanges.subscribe((res) => {
       if (res.data.resource) {
-        for (const record of res.data.resource.records) {
+        const records = res.data.resource.records || [];
+        for (const record of records) {
           this.allData.push({value: record.id, text: record.data[field]});
         }
       } else {
@@ -60,17 +61,19 @@ export class WhoSurveyGridComponent {
   }
 
   selectionChange(selection: SelectionEvent): void {
-    if (selection.deselectedRows.length > 0) {
-      const deselectIndex = selection.deselectedRows.map((item => item.index));
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      const deselectIndex = deselectedRows.map((item => item.index));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
-    if (selection.selectedRows.length > 0) {
-      const selectedItems = selection.selectedRows.map((item) => item.index);
+    if (selectedRows.length > 0) {
+      const selectedItems = selectedRows.map((item) => item.index);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
   }
 
-  onAdd(event): void {
+  onAdd(event: any): void {
     const matSelect: MatSelect = event.source;
     matSelect.writeValue(null);
     const value = this.allData.filter(d => d.value === event.value)[0];
@@ -101,7 +104,7 @@ export class WhoSurveyGridComponent {
     });
   }
 
-  public onShowDetails(index: string): void {
+  public onShowDetails(index: number): void {
     this.dialog.open(WhoRecordModalComponent, {
       data: {
         recordId: this.gridData.getValue()[index].value,

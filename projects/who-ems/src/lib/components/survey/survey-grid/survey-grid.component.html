@@ -12,9 +12,9 @@
   </ng-template>
   <kendo-grid-checkbox-column
     [width]="41" [resizable]="false"
-    [columnMenu]="false" showSelectAll="true">
+    [columnMenu]="false" [showSelectAll]="true">
   </kendo-grid-checkbox-column>
-  <kendo-grid-column field="text" title="Name" width="250">
+  <kendo-grid-column field="text" title="Name" [width]="250">
   </kendo-grid-column>
   <kendo-grid-column [columnMenu]="false" [width]="56">
     <ng-template kendoGridCellTemplate let-idx="rowIndex" style="display: inline-grid">
