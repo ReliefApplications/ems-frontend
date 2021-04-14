@@ -682,30 +682,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Open a confirmation modal and then delete the selected record
+  /* Export selected records to a csv file
   */
   public onExportRecord(items: number[]): void {
-    const rowsSelected = items.length;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Export row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the export of ${rowsSelected > 1 ?
-          'these ' + rowsSelected : 'this'} row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Export',
-        confirmColor: 'warn'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        console.log(value);
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
-        }
-          // const url = `http://localhost:3000/download/form/records/${this.id}`;
-          // const fileName = `${this.settings.title}.csv`;
-          // this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
-      }
-    });
+    const ids: any[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      ids.push(id);
+    }
+    const url = `http://localhost:3000/download/form/records/${ids}`;
+    const fileName = `${this.settings.title}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
   }
 
   /* Open a dialog component which provide tools to convert the selected record
