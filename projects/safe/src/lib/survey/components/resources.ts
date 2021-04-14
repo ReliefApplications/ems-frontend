@@ -8,8 +8,10 @@ export function init(Survey: any, API_URL: string): void {
             type: 'tagbox',
             optionsCaption: 'Select a resource...',
             choicesOrder: 'asc',
-            choices: [],
+            choices: [] as any[],
         },
+        filters: [] as any[],
+        resourceFieldsName: [] as any[],
         onInit(): void {
             Survey.Serializer.addProperty('resources', {
                 name: 'resource',
@@ -82,8 +84,10 @@ export function init(Survey: any, API_URL: string): void {
                             const serverRes = xhr.response.data.resource.fields;
                             const res: any[] = [];
                             res.push({ value: null });
+                            this.resourceFieldsName = [];
                             for (const item of serverRes) {
                                 res.push({ value: item.name });
+                                this.resourceFieldsName.push(item.name);
                             }
                             choicesCallback(res);
                         };
@@ -91,6 +95,31 @@ export function init(Survey: any, API_URL: string): void {
                     }
                 },
             });
+            Survey.Serializer.addProperty('resources', {
+                name: 'filterByQuestions:multiplevalues',
+                category: 'Custom Questions',
+                dependsOn: ['resource', 'displayField'],
+                required: true,
+                visibleIf: (obj: any) => {
+                  if (!obj || !obj.resource || !obj.displayField) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                },
+                visibleIndex: 3,
+                choices: (obj: any, choicesCallback: any) => {
+                  if (obj && obj.resource) {
+                    const questions: any[] = [];
+                    obj.survey.getAllQuestions().forEach((question: any) => {
+                      if (question.id !== obj.id && this.resourceFieldsName.includes(question.name)) {
+                        questions.push(question.name);
+                      }
+                    });
+                    choicesCallback(questions);
+                  }
+                },
+              });
             Survey.Serializer.addProperty('resources', {
                 name: 'test service',
                 category: 'Custom Questions',
@@ -204,22 +233,49 @@ export function init(Survey: any, API_URL: string): void {
                 },
             });
         },
+        onPropertyChanged(question: any, propertyName: string, newValue: any): void {
+            if (propertyName === 'resource') {
+                question.filterByQuestions = [];
+                question.displayField = null;
+            }
+        },
         onLoaded(question: any): void {
+            if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
+                this.populateChoices(question);
+            }
+        },
+        filtersAsString(): string {
+            if (this.filters.length < 1) {
+                return '[]';
+            }
+            let str = '[';
+            for (const filter of this.filters) {
+                str += '{';
+                for (const p in filter) {
+                    if (filter.hasOwnProperty(p)) {
+                        str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
+                    }
+                }
+                str += '},';
+            }
+            return str.substring(0, str.length - 1) + ']';
+        },
+        populateChoices(question: any): void {
             const xhr = new XMLHttpRequest();
             const query = {
                 query: `query GetResourceById($id: ID!) {
-                      resource(id: $id) {
-                          id
-                          name
-                          records {
-                              id
-                              data
-                          }
-                      }
-                  }`,
+                            resource(id: $id) {
+                                id
+                                name
+                                records(containsFilters: ${this.filtersAsString()}) {
+                                    id
+                                    data
+                                }
+                            }
+                        }`,
                 variables: {
-                    id: question.resource,
-                },
+                id: question.resource,
+                }
             };
             xhr.responseType = 'json';
             xhr.open('POST', API_URL);
@@ -232,13 +288,36 @@ export function init(Survey: any, API_URL: string): void {
                 for (const item of serverRes) {
                     res.push({ value: item.id, text: item.data[question.displayField] });
                 }
-                // question.choices = res;
                 question.contentQuestion.choices = res;
-                question.survey.render();
             };
             xhr.send(JSON.stringify(query));
         },
         onAfterRender(question: any, el: any): void {
+            if (question.filterByQuestions && question.filterByQuestions.length > 0) {
+                question.filterByQuestions.forEach((questionName: string) => {
+                    const value = question.survey.data[questionName];
+                    if (value) {
+                        this.filters.push({ name: questionName, value });
+                    }
+                    this.populateChoices(question);
+                    const watchedQuestion = question.survey.getQuestionByName(questionName);
+                    watchedQuestion.valueChangedCallback = () => {
+                        if (!this.filters.some(x => x.name === questionName)) {
+                            if (watchedQuestion.value) {
+                                this.filters.push({ name: questionName, value: watchedQuestion.value });
+                            }
+                        } else {
+                            this.filters = this.filters.map(x => {
+                                if (x.name === questionName) {
+                                    x.value = watchedQuestion.value;
+                                }
+                                return x;
+                            });
+                        }
+                        this.populateChoices(question);
+                    };
+                });
+            }
             if (question.canAddNew && question.addTemplate) {
                 document.addEventListener('saveResourceFromEmbed', (e: any) => {
                     const detail = e.detail;
