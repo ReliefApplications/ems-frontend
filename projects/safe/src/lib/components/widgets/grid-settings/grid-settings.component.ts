@@ -64,7 +64,6 @@ export class SafeGridSettingsComponent implements OnInit {
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
         convert: [hasActions ? tileSettings.actions.convert : true],
-        exportMultiple: [hasActions ? tileSettings.actions.exportMultiple : true],
         update: [hasActions ? tileSettings.actions.update : true]
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?

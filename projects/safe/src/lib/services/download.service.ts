@@ -14,7 +14,7 @@ export class SafeDownloadService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    this.http.get(url, { responseType: 'blob', headers }).subscribe((res) => {
+    this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe((res) => {
       const blob = new Blob([res], { type });
       this.saveFile(fileName, blob);
     });

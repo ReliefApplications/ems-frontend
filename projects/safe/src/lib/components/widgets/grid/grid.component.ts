@@ -690,9 +690,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const id = this.gridData.data[index].id;
       ids.push(id);
     }
-    const url = `http://localhost:3000/download/form/records/${ids}`;
+    const url = 'http://localhost:3000/download/records';
     const fileName = `${this.settings.title}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
