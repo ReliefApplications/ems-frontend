@@ -31,6 +31,7 @@ import { SafeRecordModalComponent } from '../../record-modal/record-modal.compon
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
+import { SafeDownloadService } from '../../../services/download.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -151,7 +152,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
-    private workflowService: SafeWorkflowService
+    private workflowService: SafeWorkflowService,
+    private downloadService: SafeDownloadService
   ) {
   }
 
@@ -678,6 +680,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     });
+  }
+
+  /* Export selected records to a csv file
+  */
+  public onExportRecord(items: number[]): void {
+    const ids: any[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      ids.push(id);
+    }
+    const url = 'http://localhost:3000/download/records';
+    const fileName = `${this.settings.title}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
