@@ -3,7 +3,6 @@
 }
 
 // === DASHBOARD WIDGETS===
-
 .mat-grid-tile {
     overflow: unset;
 }
@@ -15,7 +14,7 @@
     flex-direction: column;
 }
 
-.widget-content{
+.widget-content {
     flex: 1;
     height: auto;
 }
@@ -30,14 +29,14 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 5px 0 rgba(219,134,134,.2);
+    box-shadow: 0 2px 5px 0 rgba(219, 134, 134, .2);
+    border: 1px solid;
 }
 
 // .grid-widget:active {
 //     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
 //         0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 // }
-
 .widget-handle {
     position: absolute;
     top: 0;
@@ -49,7 +48,8 @@
     z-index: 1100;
 }
 
-.widget-options, .widget-expand {
+.widget-options,
+.widget-expand {
     position: absolute;
     top: 0;
     right: 0;
@@ -91,3 +91,19 @@
 //   left: 0;
 //   bottom: 0;
 // }
+.controls-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    &>* {
+        margin: 8px 24px 8px 0;
+    }
+}
+
+.grid-container {
+    padding: 4px;
+    box-sizing: border-box;
+    border: 1px solid gray;
+    border-radius: 2px;
+}
