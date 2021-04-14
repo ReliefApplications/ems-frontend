@@ -168,6 +168,13 @@ export class FormBuilderComponent implements OnInit {
   /*  Update the status of the form.
   */
   public updateStatus(e: any): void {
+    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      disableClose: true,
+      data: {
+        title: 'Saving survey',
+        showSpinner: true
+      }
+    });
     this.apollo.mutate<EditFormMutationResponse>({
       mutation: EDIT_FORM_STATUS,
       variables: {
@@ -175,8 +182,14 @@ export class FormBuilderComponent implements OnInit {
         status: e.value
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
-      this.form = { ...this.form, status: res.data?.editForm.status };
+      if (res.errors) {
+        this.snackBar.openSnackBar('Unable to update the status: ' + res.errors[0].message);
+        statusModal.close();
+      } else {
+        this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
+        this.form = { ...this.form, status: res.data?.editForm.status };
+        statusModal.close();
+      }
     });
   }
 
@@ -214,6 +227,13 @@ export class FormBuilderComponent implements OnInit {
   /*  Edit the form name.
 */
   public saveName(): void {
+    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      disableClose: true,
+      data: {
+        title: 'Saving survey',
+        showSpinner: true
+      }
+    });
     const { formName } = this.nameForm.value;
     this.toggleFormActive();
     this.apollo.mutate<EditFormMutationResponse>({
@@ -225,10 +245,12 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Form was not changed. ' + res.errors[0].message);
+          this.snackBar.openSnackBar('Unable to update the form: ' + res.errors[0].message);
+          statusModal.close();
         } else {
           this.snackBar.openSnackBar('Name updated', { duration: 1000 });
           this.form = { ...this.form, name: res.data?.editForm.name };
+          statusModal.close();
         }
     });
   }
@@ -236,6 +258,13 @@ export class FormBuilderComponent implements OnInit {
   /*  Edit the permissions layer.
   */
   saveAccess(e: any): void {
+    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      disableClose: true,
+      data: {
+        title: 'Saving survey',
+        showSpinner: true
+      }
+    });
     this.apollo.mutate<EditFormMutationResponse>({
       mutation: EDIT_FORM_PERMISSIONS,
       variables: {
@@ -243,7 +272,13 @@ export class FormBuilderComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.form = res.data?.editForm;
+      if (res.errors) {
+        this.snackBar.openSnackBar('Unable to update the access: ' + res.errors[0].message);
+        statusModal.close();
+      } else {
+        this.form = res.data?.editForm;
+        statusModal.close();
+      }
     });
   }
 

@@ -18,7 +18,7 @@ export class SafeStatusModalComponent implements OnInit {
     if (data) {
       this.dialogRef.updateSize('200px', '90px');
       if (!data.title && !data.content) {
-        this.dialogRef.addPanelClass('custom-dialog');
+        this.dialogRef.addPanelClass('status-dialog');
       }
     }
   }
