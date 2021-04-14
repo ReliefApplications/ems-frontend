@@ -3,7 +3,7 @@
         <button mat-raised-button (click)="generateLayout()">
             Generate layout
         </button>
-        <button mat-raised-button (click)="addItemToLayout()">Add item</button>
+        <!-- <button mat-raised-button (click)="addItemToLayout()">Add item</button> -->
         <mat-form-field color="accent">
             <mat-label>Compact type</mat-label>
             <mat-select [value]="compactType" (selectionChange)="onCompactTypeChange($event)">
@@ -42,10 +42,14 @@
         <mat-checkbox color="accent" [checked]="autoResize" (change)="onAutoResizeChange($event.checked)">
             Auto resize
         </mat-checkbox>
+        <mat-checkbox color="accent" [checked]="newOnBottom" (change)="onNewOnBottomChange($event.checked)">
+            New on bottom
+        </mat-checkbox>
         <mat-chip-list>
             <mat-chip color="accent" [selected]="isDragging">isDragging</mat-chip>
             <mat-chip color="accent" [selected]="isResizing">isResizing</mat-chip>
         </mat-chip-list>
+        <safe-dashboard-menu (add)="addItemToLayout($event)"></safe-dashboard-menu>
     </div>
 
 

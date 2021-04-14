@@ -26,6 +26,7 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() addNewWidget: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(KtdGridComponent, { static: true })
   grid!: KtdGridComponent;
@@ -70,6 +71,7 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
   autoResize = true;
   isDragging = false;
   isResizing = false;
+  newOnBottom = false;
   resizeSubscription: Subscription = new Subscription();
 
   constructor(private ngZone: NgZone, public dialog: MatDialog) {
@@ -149,9 +151,9 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
   }
 
   onDeleteWidget(e: any): void {
-    this.delete.emit(e);
-    console.log(e);
-    this.removeItem(e);
+    console.log(this.layout);
+    this.delete.emit(e.id);
+    this.removeItem(e.id);
     console.log(this.layout);
   }
 
@@ -213,6 +215,10 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
     this.dragStartThreshold = parseInt((event.target as HTMLInputElement).value, 10);
   }
 
+  onNewOnBottomChange(checked: boolean): void {
+    this.newOnBottom = checked;
+  }
+
   generateLayout(): void {
     const layout: KtdGridLayout = [];
     for (let i = 0; i < this.cols; i++) {
@@ -231,18 +237,30 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
   }
 
   /** Adds a grid item to the layout */
-  addItemToLayout(): void {
+  addItemToLayout(newWidget: any): void {
     const maxId = this.layout.reduce( (acc: any, cur: any) => Math.max(acc, parseInt(cur.id, 10)), -1);
     const nextId = maxId + 1;
-
-    const newLayoutItem: KtdGridLayoutItem = {
+    const maxY = this.layout.reduce( (acc: any, cur: any) => Math.max(acc, parseInt(cur.y, 10)), -1);
+    let newLayoutItem: KtdGridLayoutItem = {
       id: nextId.toString(),
       x: 0,
       y: 0,
       w: 2,
       h: 2
     };
-
+    if ( this.newOnBottom === true ) {
+       newLayoutItem = {
+        id: nextId.toString(),
+        x: 0,
+        y: maxY + 1,
+        w: 2,
+        h: 2
+      };
+    }
+    newLayoutItem = {
+      ...newLayoutItem,
+      ...newWidget
+    };
     // Important: Don't mutate the array, create new instance. This way notifies the Grid component that the layout has changed.
     this.layout = [
       newLayoutItem,
