@@ -1,10 +1,11 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
@@ -29,7 +30,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
@@ -37,20 +38,20 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public statusFilter = '';
   public showFilters = false;
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService,
-    private applicationService: WhoApplicationService,
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
     private previewService: PreviewService
   ) { }
 
@@ -80,7 +81,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.applications.sort = this.sort;
+    this.applications.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -91,9 +92,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e): void {
+  onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
         content: `Do you confirm the deletion of the application ${element.name} ?`,
@@ -112,7 +113,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data.deleteApplication.id;
+            return x.id !== res.data?.deleteApplication.id;
           });
         });
       }
@@ -140,7 +141,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           } else {
             this.snackBar.openSnackBar(`${value.name} application created`);
-            const id = res.data.addApplication.id;
+            const id = res.data?.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
         });
@@ -158,10 +159,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         permissions: e
       }
     }).subscribe((res) => {
-      this.snackBar.openSnackBar(`${element.name} access edited.`);
-      const index = this.applications.data.findIndex(x => x.id === element.id);
-      this.applications.data[index] = res.data.editApplication;
-      this.applications.data = this.applications.data;
+      if (res.data) {
+        this.snackBar.openSnackBar(`${element.name} access edited.`);
+        const index = this.applications.data.findIndex(x => x.id === element.id);
+        this.applications.data[index] = res.data.editApplication;
+        this.applications.data = this.applications.data;
+      }
     });
   }
 

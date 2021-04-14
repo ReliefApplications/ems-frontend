@@ -1,10 +1,12 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { WhoSnackBarService } from '@who-ems/builder';
+
+import { SafeDownloadService, SafeSnackBarService } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-resource',
@@ -15,28 +17,29 @@ export class ResourceComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public resource: any;
 
   // === RECORDS ASSOCIATED ===
   displayedColumnsRecords: string[] = [];
-  dataSourceRecords = [];
+  dataSourceRecords: any[] = [];
 
   // === FORMS ASSOCIATED ===
   displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', '_actions'];
-  dataSourceForms = [];
+  dataSourceForms: any[] = [];
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
@@ -69,7 +72,7 @@ export class ResourceComponent implements OnInit {
   private setDisplayedColumns(core: boolean): void {
     const columns = [];
     if (core) {
-      for (const field of this.resource.fields.filter(x => x.isRequired === true)) {
+      for (const field of this.resource.fields.filter((x: any) => x.isRequired === true)) {
         columns.push(field.name);
       }
     } else {
@@ -129,7 +132,15 @@ export class ResourceComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.resource = res.data.editResource;
+      if (res.data) {
+        this.resource = res.data.editResource;
+      }
     });
+  }
+
+  onDownload(): void {
+    const url = `${environment.API_URL}/download/resource/records/${this.id}`;
+    const fileName = `${this.resource.name}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
   }
 }

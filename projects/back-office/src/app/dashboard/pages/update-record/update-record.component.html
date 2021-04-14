@@ -1,4 +1,7 @@
-<h1>Update record</h1>
-<ng-container *ngIf="!loading">
-    <who-form [form]="record.form" [record]="record"></who-form>
+<div class="page-header">
+    <safe-previous-button [path]="backPath"></safe-previous-button>
+    <h1 class="page-title">Update record</h1>
+</div>
+<ng-container *ngIf="!loading && record.form">
+    <safe-form [form]="record.form" [record]="record"></safe-form>
 </ng-container>

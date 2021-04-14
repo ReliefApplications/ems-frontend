@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, WhoApplicationService, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
@@ -12,21 +12,21 @@ import { Subscription } from 'rxjs';
 export class ApplicationToolbarComponent implements OnInit, OnDestroy {
 
   // === APPLICATION ===
-  public application: Application;
-  private applicationSubscription: Subscription;
+  public application: Application | null = null;
+  private applicationSubscription?: Subscription;
 
   public canPublish = false;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       this.application = application;
-      this.canPublish = !!this.application && this.application.pages.length > 0;
+      this.canPublish = !!this.application && this.application.pages ? this.application.pages.length > 0 : false;
     });
   }
 
@@ -35,10 +35,10 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   }
 
   onPublish(): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: `Publish application`,
-        content: `Do you confirm the publication of ${this.application.name} ?`,
+        content: `Do you confirm the publication of ${this.application?.name} ?`,
         confirmText: 'Confirm',
         confirmColor: 'primary'
       }
