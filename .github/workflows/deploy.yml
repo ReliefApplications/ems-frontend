@@ -23,7 +23,7 @@ jobs:
     - name:
       run: npm ci
     - name: Build Shared Library
-      run: npm run build who-ems
+      run: npm run build safe
     - name: Build Back-office
       run: npm run build:ci
     - name: Build Front-office

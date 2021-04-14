@@ -3,7 +3,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
-import { Resource, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Resource, SafeConfirmModalComponent } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -71,7 +71,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(resource: Resource): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete Resource',
         content: `Are you sure you want to delete this resource?`,

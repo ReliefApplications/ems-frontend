@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { WhoAuthService } from '@who-ems/builder';
+import { SafeAuthService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 @Component({
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private broadcastService: BroadcastService,
-    private authService: WhoAuthService,
+    private authService: SafeAuthService,
     private msalService: MsalService
   ) { }
 

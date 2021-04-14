@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { WhoAccessModule, WhoWidgetGridModule } from '@who-ems/builder';
+import { SafeAccessModule, SafeWidgetGridModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -21,8 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    WhoAccessModule,
-    WhoWidgetGridModule,
+    SafeAccessModule,
+    SafeWidgetGridModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,

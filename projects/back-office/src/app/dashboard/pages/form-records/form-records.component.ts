@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
-import { WhoDownloadService } from '@who-ems/builder';
+import { SafeDownloadService } from '@safe/builder';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -25,7 +25,7 @@ export class FormRecordsComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: WhoDownloadService
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load the records, using the form id passed as a parameter.

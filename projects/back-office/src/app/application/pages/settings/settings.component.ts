@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, WhoApplicationService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
@@ -27,8 +27,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private applicationService: WhoApplicationService,
+    private snackBar: SafeSnackBarService,
+    private applicationService: SafeApplicationService,
     public dialog: MatDialog
   ) { }
 
@@ -62,7 +62,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
         content: `Do you confirm the deletion of this application ?`,

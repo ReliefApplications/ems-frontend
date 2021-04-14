@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
-import { WhoAuthService, WhoSnackBarService, Form, WhoConfirmModalComponent } from '@who-ems/builder';
+import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -52,16 +52,16 @@ export class FormBuilderComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService,
+    private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
-    private authService: WhoAuthService
+    private authService: SafeAuthService
   ) { }
 
   /* Shows modal confirmation before leave the page if has changes on form
   */
   canDeactivate(): Observable<boolean> | boolean{
     if (this.hasChanges) {
-      const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: `Exit without saving changes`,
           content: `There are unsaved changes on your form. Are you sure you want to exit?`,

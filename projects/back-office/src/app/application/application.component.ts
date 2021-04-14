@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
+import { Application, SafeConfirmModalComponent, ContentType, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,7 +26,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog
@@ -137,7 +137,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete page',
         content: `Do you confirm the deletion of the page ${item.name} ?`,

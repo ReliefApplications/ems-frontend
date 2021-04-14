@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import { MatButtonModule } from '@angular/material/button';
-import { WhoFormModule } from '@who-ems/builder';
+import { SafeFormModule } from '@safe/builder';
 
 @NgModule({
   declarations: [FormComponent],
@@ -12,7 +12,7 @@ import { WhoFormModule } from '@who-ems/builder';
     CommonModule,
     FormRoutingModule,
     MatButtonModule,
-    WhoFormModule
+    SafeFormModule
   ],
   exports: [FormComponent]
 })

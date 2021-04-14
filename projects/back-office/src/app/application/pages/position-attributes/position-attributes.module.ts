@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
 import { PositionAttributesComponent } from './position-attributes.component';
-import { WhoPreviousButtonModule } from '@who-ems/builder';
+import { SafePreviousButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,7 @@ import { WhoPreviousButtonModule } from '@who-ems/builder';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    WhoPreviousButtonModule
+    SafePreviousButtonModule
   ],
   exports: [PositionAttributesComponent]
 })
