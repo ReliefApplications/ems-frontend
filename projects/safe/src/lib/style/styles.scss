@@ -365,6 +365,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.custom-dialog {
+  mat-dialog-container {
+    box-shadow: none;
+    background: none;
+  }
+}
+
 .tile-settings-dialog, .expanded-widget-dialog {
   max-width: unset !important;
   width: 100%;

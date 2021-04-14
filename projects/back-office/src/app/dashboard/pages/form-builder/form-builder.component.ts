@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SafeStatusModalComponent } from '@safe/builder';
 
 @Component({
   selector: 'app-form-builder',
@@ -133,6 +134,13 @@ export class FormBuilderComponent implements OnInit {
     if (!this.form?.id) {
       alert('not valid');
     } else {
+      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+        disableClose: true,
+        data: {
+          title: 'Saving survey',
+          showSpinner: true
+        }
+      });
       this.apollo.mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_STRUCTURE,
         variables: {
@@ -149,8 +157,10 @@ export class FormBuilderComponent implements OnInit {
           this.hasChanges = false;
           this.authService.canLogout.next(true);
         }
+        statusModal.close();
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
+        statusModal.close();
       });
     }
   }
