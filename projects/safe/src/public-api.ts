@@ -53,6 +53,7 @@ export * from './lib/components/previous-button/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
+export * from './lib/components/status-modal/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

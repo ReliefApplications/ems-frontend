@@ -1,4 +1,4 @@
-UI Builder Front-end
+SAFE Front-end
 =======
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
@@ -24,12 +24,26 @@ The project is seperated into three sub-projects:
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
+# Azure configuration
+
+If you want to deploy on Azure, start building the shared library:
+```
+ng build safe
+```
+
+Then, build the back-office with Azure environment file:
+```
+ng build --configuration azure
+```
+
+The compiled code can be found there in ./dist/back-office folder.
+
 # Bundle Analysis
 
 First, install globally the bundle analyzer:
 ```
 npm install -g webpack-bundle-analyzer
-````
+```
 
 You can then run, for both back and front office:
 ```
