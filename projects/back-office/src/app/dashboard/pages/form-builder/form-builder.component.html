@@ -29,4 +29,3 @@
     <app-history *ngIf="activeVersions" [dataSource]="form.versions || []" (open)="onOpenVersion($event)"></app-history>
     <safe-form-builder [structure]="structure" (save)="onSave($event)" (formChange)="formStructureChange($event)"></safe-form-builder>
 </ng-container>
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
