@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, ContentType, Permissions, WhoApplicationService } from '@who-ems/builder';
+import { Application, ContentType, Permissions, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 
@@ -26,7 +26,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     private previewService: PreviewService,
     private router: Router
   ) { }
@@ -65,7 +65,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
             navItems: application.pages?.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `./${x.type}/${x.content}`,
+                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
                 icon: this.getNavIcon(x.type || '')
               };
             })
@@ -77,8 +77,13 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         ];
         if (!this.application || application.id !== this.application.id) {
           const [firstPage, ..._] = application.pages || [];
-          if (firstPage) {
-            this.router.navigate([`app-preview/${application.id}/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
+          if (this.router.url.endsWith('/') || (this.application && (application.id !== this.application?.id)) || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+              { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;

@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { WhoConfirmModalModule } from '@who-ems/builder';
+import { SafeConfirmModalModule } from '@safe/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,7 +32,7 @@ import { FormsModule as AngularFormsModule } from '@angular/forms';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    WhoConfirmModalModule,
+    SafeConfirmModalModule,
     AddFormModule,
     MatFormFieldModule,
     MatDatepickerModule,

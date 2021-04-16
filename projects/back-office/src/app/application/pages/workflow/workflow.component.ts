@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
+import { Workflow, Step, SafeSnackBarService, SafeConfirmModalComponent, ContentType, SafeApplicationService, SafeWorkflowService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse, EDIT_PAGE,
@@ -49,12 +49,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private workflowService: WhoWorkflowService,
-    private applicationService: WhoApplicationService,
+    private workflowService: SafeWorkflowService,
+    private applicationService: SafeApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -72,14 +72,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (!this.workflow || workflow.id !== this.workflow.id) {
           const [firstStep, ..._] = workflow.steps || [];
-          if (firstStep) {
-            if (firstStep.type === ContentType.form) {
-              this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
+          if (this.router.url.endsWith(this.id) || !firstStep) {
+            if (firstStep) {
+              if (firstStep.type === ContentType.form) {
+                this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
+              } else {
+                this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
+              }
+              this.selectedStep = firstStep;
+              this.selectedStepIndex = 0;
             } else {
-              this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
+              this.router.navigate([`./`], { relativeTo: this.route });
             }
-            this.selectedStep = firstStep;
-            this.selectedStepIndex = 0;
           }
         }
         this.workflow = workflow;
@@ -130,7 +134,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   deleteStep(step: Step, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete step',
         content: `Do you confirm the deletion of the step ${step.name} ?`,
@@ -171,7 +175,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
-    moveItemInArray(this.steps, event.previousIndex, event.currentIndex);
+    const newSteps = this.steps.slice();
+    moveItemInArray(newSteps, event.previousIndex, event.currentIndex);
+    this.steps = newSteps;
     if (event.previousIndex !== event.currentIndex) {
       this.apollo.mutate<EditWorkflowMutationResponse>({
         mutation: EDIT_WORKFLOW,

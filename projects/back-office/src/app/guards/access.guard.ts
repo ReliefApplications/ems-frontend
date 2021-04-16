@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { User, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { User, SafeAuthService, SafeSnackBarService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { filter, map, skip } from 'rxjs/operators';
 
@@ -9,8 +9,8 @@ import { filter, map, skip } from 'rxjs/operators';
 })
 export class AccessGuard implements CanActivate {
   constructor(
-    private authService: WhoAuthService,
-    private snackBar: WhoSnackBarService,
+    private authService: SafeAuthService,
+    private snackBar: SafeSnackBarService,
     private router: Router
   ) { }
 

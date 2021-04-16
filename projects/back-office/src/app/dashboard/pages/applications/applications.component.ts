@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
@@ -49,9 +49,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService,
-    private applicationService: WhoApplicationService,
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
     private previewService: PreviewService
   ) { }
 
@@ -94,7 +94,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
         content: `Do you confirm the deletion of the application ${element.name} ?`,

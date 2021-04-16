@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { Dashboard, Application, Form, User, Workflow, Permission} from '@who-ems/builder';
+import { Dashboard, Application, Form, User, Workflow, Permission, Step, Page} from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -216,4 +216,43 @@ query GetPermissions($application: Boolean) {
 export interface GetPermissionsQueryResponse {
   loading: boolean;
   permissions: Permission[];
+}
+
+// === GET STEP BY ID ===
+export const GET_STEP_BY_ID = gql`
+  query GetStepById($id: ID!){
+    step(id: $id){
+      id
+      name
+      createdAt
+      modifiedAt
+      content
+      canSee
+    }
+  }
+`;
+
+export interface GetStepByIdQueryResponse {
+  loading: boolean;
+  step: Step;
+}
+
+// === GET PAGE BY ID ===
+export const GET_PAGE_BY_ID = gql`
+  query GetPageById($id: ID!){
+    page(id: $id){
+      id
+      name
+      createdAt
+      modifiedAt
+      type
+      content
+      canSee
+    }
+  }
+`;
+
+export interface GetPageByIdQueryResponse {
+  loading: boolean;
+  page: Page;
 }

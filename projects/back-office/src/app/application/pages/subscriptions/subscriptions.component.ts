@@ -1,7 +1,7 @@
 import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, Subscription as ApplicationSubscription, WhoApplicationService } from '@who-ems/builder';
+import { Application, Channel, Subscription as ApplicationSubscription, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
@@ -23,7 +23,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   private channels: Channel[] = [];
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private apollo: Apollo,
   ) { }

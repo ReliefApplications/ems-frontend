@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
+import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService } from '@safe/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -22,8 +22,8 @@ import {
 })
 export class FormComponent implements OnInit, OnDestroy {
 
-  @ViewChild(WhoFormComponent)
-  private formComponent?: WhoFormComponent;
+  @ViewChild(SafeFormComponent)
+  private formComponent?: SafeFormComponent;
 
   // === DATA ===
   public loading = true;
@@ -43,12 +43,12 @@ export class FormComponent implements OnInit, OnDestroy {
   public isStep = false;
 
   constructor(
-    private applicationService: WhoApplicationService,
-    private workflowService: WhoWorkflowService,
+    private applicationService: SafeApplicationService,
+    private workflowService: SafeWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {

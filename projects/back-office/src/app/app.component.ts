@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionType } from '@azure/msal-browser';
-import { WhoAuthService } from '@who-ems/builder';
+import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { environment } from '../environments/environment';
@@ -20,8 +20,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private msalBroadcastService: MsalBroadcastService,
-    private authService: WhoAuthService,
-    private msalService: MsalService
+    private authService: SafeAuthService,
+    private msalService: MsalService,
+    private formService: SafeFormService
   ) { }
 
   ngOnInit(): void {

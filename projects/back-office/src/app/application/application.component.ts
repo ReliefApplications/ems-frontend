@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
+import { Application, SafeConfirmModalComponent, ContentType, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,7 +26,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog
@@ -108,11 +108,13 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         ];
         if (!this.application || application.id !== this.application.id) {
           const [firstPage, ..._] = application.pages || [];
-          if (firstPage) {
-            this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+          if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
-          } else {
-            this.router.navigate([`./`], { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;
@@ -135,7 +137,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete page',
         content: `Do you confirm the deletion of the page ${item.name} ?`,
@@ -144,7 +146,9 @@ export class ApplicationComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe(value => {
-      if ( value ) { this.applicationService.deletePage(item.id); }
+      if ( value ) {
+        this.applicationService.deletePage(item.id);
+      }
     });
   }
 
