@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeFormBuilderComponent } from './form-builder.component';
 import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { WhoSurveyGridModule } from '../survey/survey-grid/survey-grid.module';
+import { SafeSurveyGridModule } from '../survey/survey-grid/survey-grid.module';
 
 @NgModule({
   declarations: [SafeFormBuilderComponent],
@@ -11,7 +11,7 @@ import { WhoSurveyGridModule } from '../survey/survey-grid/survey-grid.module';
     CommonModule,
     SafeFormModalModule,
     MatDialogModule,
-    WhoSurveyGridModule
+    SafeSurveyGridModule
   ],
   exports: [SafeFormBuilderComponent]
 })

@@ -1,4 +1,4 @@
-import { WhoFormModalComponent } from '../../components/form-modal/form-modal.component';
+import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 
 export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
@@ -390,7 +390,7 @@ export function init(Survey: any, API_URL: string, dialog: MatDialog): void {
       btnEl.innerText = 'Add';
       btnEl.style.width = '120px';
       btnEl.onclick = () => {
-        const dialogRef = dialog.open(WhoFormModalComponent, {
+        const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
             template: question.addTemplate,
           }

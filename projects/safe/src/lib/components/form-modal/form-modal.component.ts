@@ -9,7 +9,7 @@ import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { FormService } from '../../services/form.service';
-import { WhoSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'safe-form-modal',
@@ -40,7 +40,7 @@ export class SafeFormModalComponent implements OnInit {
     private apollo: Apollo,
     public dialog: MatDialog,
     private formService: FormService,
-    private snackBar: WhoSnackBarService,
+    private snackBar: SafeSnackBarService,
   ) {
     this.containerId = uuidv4();
   }
