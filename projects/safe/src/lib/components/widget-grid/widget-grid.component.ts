@@ -1,88 +1,54 @@
-import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output,
-   QueryList, Renderer2, ViewChildren, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { MatSelectChange } from '@angular/material/select';
 import { fromEvent, merge, Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
-import {
-  KtdDragEnd, KtdDragStart, KtdGridComponent, KtdGridLayout, KtdGridLayoutItem, KtdResizeEnd, KtdResizeStart, ktdTrackById
-} from '@katoid/angular-grid-layout';
-
-import { SafeChartSettingsComponent } from '../../components/widgets/chart-settings/chart-settings.component';
+import { KtdGridComponent, KtdGridLayout, KtdGridLayoutItem, ktdTrackById } from '@katoid/angular-grid-layout';
 
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss']
 })
-export class SafeWidgetGridComponent implements OnInit, OnDestroy {
+export class SafeWidgetGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
 
+  // === EVENT EMITTER ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() addNewWidget: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(KtdGridComponent, { static: true })
+
+  // === DECALRE PARAMETERS OF THE GRID ===
   grid!: KtdGridComponent;
   trackById = ktdTrackById;
-  widget = {
-    name: 'BAR CHART',
-    icon: 'bar_chart',
-    settings: {
-      title: 'Bar chart',
-      chart: {
-        type: 'bar'
-      }
-    },
-    defaultCols: 3,
-    defaultRows: 3,
-    component: 'chart',
-    settingsTemplate: SafeChartSettingsComponent
-  };
-  cols = 12;
-  copyWidgets = [] as any;
-  rowHeight = 50;
+  cols = 8;
+  phoneView = false;
+  rowHeight = 75;
   compactType: 'vertical' | 'horizontal' | null = 'vertical';
   layout: KtdGridLayout = [];
-  transitions: { name: string, value: string }[] = [
-    { name: 'ease', value: 'transform 500ms ease, width 500ms ease, height 500ms ease' },
-    { name: 'ease-out', value: 'transform 500ms ease-out, width 500ms ease-out, height 500ms ease-out' },
-    { name: 'linear', value: 'transform 500ms linear, width 500ms linear, height 500ms linear' },
-    {
-      name: 'overflowing',
-      value: 'transform 500ms cubic-bezier(.28,.49,.79,1.35), width 500ms cubic-bezier(.28,.49,.79,1.35), height 500ms cubic-bezier(.28,.49,.79,1.35)'
-    },
-    { name: 'fast', value: 'transform 200ms ease, width 200ms linear, height 200ms linear' },
-    { name: 'slow-motion', value: 'transform 1000ms linear, width 1000ms linear, height 1000ms linear' },
-    { name: 'transform-only', value: 'transform 500ms ease' },
-  ];
-  currentTransition: string = this.transitions[0].value;
-
+  currentTransition = 'transform 500ms ease, width 500ms ease, height 500ms ease';
   dragStartThreshold = 0;
   disableDrag = true;
-  disableResize = false;
-  disableRemove = false;
+  disableResize = true;
   autoResize = true;
-  isDragging = false;
-  isResizing = false;
-  newOnBottom = false;
   resizeSubscription: Subscription = new Subscription();
 
-  constructor(private ngZone: NgZone, public dialog: MatDialog) {
-    // this.ngZone.onUnstable.subscribe(() => console.log('UnStable'));
-  }
+  canModify = false;
+  copyWidgets = [] as any;
+
+  constructor(private ngZone: NgZone, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    console.log(this.widgets);
-    this.copyWidgets = this.initSelect(this.widgets);
-    this.layout = this.copyWidgets;
-    console.log(this.layout);
+    this.layout = this.gridInitialisation(this.widgets);
+
+    // Listen resize
     this.resizeSubscription = merge(
       fromEvent(window, 'resize'),
       fromEvent(window, 'orientationchange')
@@ -92,21 +58,106 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.grid.resize();
     });
+
+    this.canModify = this.canUpdate;
+    if ( this.canModify ) {
+      this.disableResize = false;
+    }
   }
 
-  initSelect(data: any): any[] {
-    return data.map( (item: any) => ({
-      ...item,
-      x: 0,
-      y: 0,
-      w: item.defaultCols,
-      h: item.defaultRows,
-      id: String(item.id)
-      // w: item.defaultCols,
-      // h: item.defaultRows
-    }));
+  /*  Resize grid now and after 1 sec to adapt widgets to grid
+  */
+  ngAfterViewInit(): void {
+    console.log('loaded');
+    setTimeout(() => {  this.grid.resize(); }, 1000);
+    this.grid.resize();
   }
 
+  /* Check if a widget is in good format for the grid layout
+  */
+  transformItemIf(item: any): any {
+    if ( item.hasOwnProperty('x') && item.hasOwnProperty('y') && item.hasOwnProperty('h') && item.hasOwnProperty('w') ) {
+      return {
+        ...item,
+        id: String(item.id)
+      };
+    }
+    else {
+      return {
+        ...item,
+        x: 0,
+        y: 0,
+        w: item.defaultCols,
+        h: item.defaultRows,
+        id: String(item.id)
+      };
+    }
+  }
+
+  /*  Change display when windows size changes.
+  */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.setPhoneView(event.target.innerWidth);
+  }
+
+  private setPhoneView(width: number): void {
+    if (width <= 800) {
+      if (!this.phoneView){
+        this.cols = 1;
+        this.layout = this.reloadGrid(this.layout);
+        this.phoneView = true;
+        this.disableResize = true;
+        this.disableDrag = true;
+      }
+    }
+    else {
+      if (this.phoneView){
+        this.cols = 8;
+        this.phoneView = false;
+        this.layout = this.gridInitialisation(this.widgets);
+        if ( this.canModify ) {
+          this.disableResize = false;
+        }
+        this.disableDrag = true;
+      }
+    }
+  }
+
+  /* Reload the display of the grid for the phone display
+  */
+  reloadGrid(mygrid: any): any[] {
+    const arrayCopy = [...mygrid];
+    arrayCopy.forEach( (element: any) => {
+      element.x = 0;
+      element.y = 0;
+      element.w = 1;
+      element.h = 6;
+    });
+    return arrayCopy;
+  }
+
+  /* Initiate the grid from the DB
+  */
+  gridInitialisation(data: any): any[] {
+    return data.map( (item: any) => (
+      this.transformItemIf(item)
+    ));
+  }
+
+  ngOnDestroy(): void {
+    this.resizeSubscription.unsubscribe();
+  }
+
+  /* Update of the grid when a widget is moved or resized
+  */
+  onLayoutUpdated(layout: KtdGridLayout): void {
+    this.layout = this.getNewLayout(layout);
+    this.savePosition();
+  }
+
+  /* Create a new widget with combination of the widget object and his size
+  */
   getNewLayout(newArray: any): any[] {
     const newCopy: any[] = [];
     let i = 0;
@@ -120,30 +171,10 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
     return newCopy;
   }
 
-  ngOnDestroy(): void {
-    this.resizeSubscription.unsubscribe();
-  }
-
-  onDragStarted(event: KtdDragStart): void {
-    this.isDragging = true;
-  }
-
-  onResizeStarted(event: KtdResizeStart): void {
-    this.isResizing = true;
-  }
-
-  onDragEnded(event: KtdDragEnd): void {
-    this.isDragging = false;
-  }
-
-  onResizeEnded(event: KtdResizeEnd): void {
-    this.isResizing = false;
-  }
-
-  onLayoutUpdated(layout: KtdGridLayout): void {
-    console.log('on layout updated', layout);
-    this.layout = this.getNewLayout(layout);
-    console.log(this.layout);
+  /* Save all the grid in DB
+  */
+  savePosition(): void {
+    this.update.emit(this.layout);
   }
 
   onEditWidget(e: any): void {
@@ -151,12 +182,28 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
   }
 
   onDeleteWidget(e: any): void {
-    console.log(this.layout);
-    this.delete.emit(e.id);
+    this.delete.emit({id: e.id});
     this.removeItem(e.id);
-    console.log(this.layout);
   }
 
+  /* Removes the item from the layout
+  */
+  removeItem(id: any): void {
+    // Important: Don't mutate the array. Let Angular know that the layout has changed creating a new reference.
+    this.layout = this.ktdArrayRemoveItem(this.layout, (item: any) => item.id === id);
+  }
+
+  ktdArrayRemoveItem<T>(array: T[], condition: (item: T) => boolean): any[] {
+    const arrayCopy = [...array];
+    const index = array.findIndex((item) => condition(item));
+    if (index > -1) {
+        arrayCopy.splice(index, 1);
+    }
+    return arrayCopy;
+  }
+
+  /* Expand widget in full screen
+  */
   onExpandWidget(e: any): void {
     const widget = this.widgets.find(x => x.id === e.id);
     const dialogRef = this.dialog.open(SafeExpandedWidgetComponent, {
@@ -176,67 +223,12 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCompactTypeChange(change: MatSelectChange): void {
-    console.log('onCompactTypeChange', change);
-    this.compactType = change.value;
-  }
-
-  onTransitionChange(change: MatSelectChange): void {
-    console.log('onTransitionChange', change);
-    this.currentTransition = change.value;
-  }
-
   onDisableDragChange(checked: boolean): void {
     this.disableDrag = checked;
   }
 
-  onDisableResizeChange(checked: boolean): void {
-    this.disableResize = checked;
-  }
-
-  onDisableRemoveChange(checked: boolean): void {
-    this.disableRemove = checked;
-    console.log(this.disableRemove);
-  }
-
-  onAutoResizeChange(checked: boolean): void {
-    this.autoResize = checked;
-  }
-
-  onColsChange(event: Event): void {
-    this.cols = parseInt((event.target as HTMLInputElement).value, 10);
-  }
-
-  onRowHeightChange(event: Event): void {
-    this.rowHeight = parseInt((event.target as HTMLInputElement).value, 10);
-  }
-
-  onDragStartThresholdChange(event: Event): void {
-    this.dragStartThreshold = parseInt((event.target as HTMLInputElement).value, 10);
-  }
-
-  onNewOnBottomChange(checked: boolean): void {
-    this.newOnBottom = checked;
-  }
-
-  generateLayout(): void {
-    const layout: KtdGridLayout = [];
-    for (let i = 0; i < this.cols; i++) {
-      const y = Math.ceil(Math.random() * 4) + 1;
-      layout.push({
-        x: Math.round(Math.random() * (Math.floor((this.cols / 2) - 1))) * 2,
-        y: Math.floor(i / 6) * y,
-        w: 2,
-        h: y,
-        id: i.toString()
-        // static: Math.random() < 0.05
-      });
-    }
-    console.log('layout', layout);
-    this.layout = layout;
-  }
-
-  /** Adds a grid item to the layout */
+  /* Adds a grid item to the layout
+  */
   addItemToLayout(newWidget: any): void {
     const maxId = this.layout.reduce( (acc: any, cur: any) => Math.max(acc, parseInt(cur.id, 10)), -1);
     const nextId = maxId + 1;
@@ -244,54 +236,30 @@ export class SafeWidgetGridComponent implements OnInit, OnDestroy {
     let newLayoutItem: KtdGridLayoutItem = {
       id: nextId.toString(),
       x: 0,
-      y: 0,
-      w: 2,
-      h: 2
+      y: maxY + 1,
+      w: newWidget.defaultCols,
+      h: newWidget.defaultRows * 2
     };
-    if ( this.newOnBottom === true ) {
-       newLayoutItem = {
-        id: nextId.toString(),
-        x: 0,
-        y: maxY + 1,
-        w: 2,
-        h: 2
-      };
-    }
     newLayoutItem = {
       ...newLayoutItem,
       ...newWidget
     };
     // Important: Don't mutate the array, create new instance. This way notifies the Grid component that the layout has changed.
-    this.layout = [
-      newLayoutItem,
-      ...this.layout
-    ];
-  }
-
-  /**
-   * Fired when a mousedown happens on the remove grid item button.
-   * Stops the event from propagating an causing the drag to start.
-   * We don't want to drag when mousedown is fired on remove icon button.
-   */
-  stopEventPropagation(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  /** Removes the item from the layout */
-  removeItem(id: string): void {
-    // Important: Don't mutate the array. Let Angular know that the layout has changed creating a new reference.
-    console.log(this.layout);
-    this.layout = this.ktdArrayRemoveItem(this.layout, (item: any) => item.id === id);
-    console.log(this.layout);
-  }
-
-  ktdArrayRemoveItem<T>(array: T[], condition: (item: T) => boolean): any[] {
-    const arrayCopy = [...array];
-    const index = array.findIndex((item) => condition(item));
-    if (index > -1) {
-        arrayCopy.splice(index, 1);
+    this.addNewWidget.emit(newLayoutItem);
+    if (!this.phoneView) {
+      this.layout = [
+        newLayoutItem,
+        ...this.layout
+      ];
     }
-    return arrayCopy;
-}
+    // Diferant display size of new widget for phone screen but no differance in DB
+    else {
+      newLayoutItem.w = 1;
+      newLayoutItem.h = 6;
+      this.layout = [
+        newLayoutItem,
+        ...this.layout
+      ];
+    }
+  }
 }
