@@ -1,391 +1,309 @@
-export function init(Survey: any, API_URL: string): void {
-    const component = {
-        name: 'resources',
-        title: 'Resources',
+import { Apollo } from 'apollo-angular';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_RESOURCES,
+  GetResourceByIdQueryResponse,
+  GetResourcesQueryResponse
+} from '../../graphql/queries';
+
+export function init(Survey: any, apollo: Apollo): void {
+  let resourcesForms: any[] = [];
+  const getResources = () => apollo.query<GetResourcesQueryResponse>({
+    query: GET_RESOURCES,
+  });
+
+  const getResourceById = (id: string, containsFilters?: any) => apollo.query<GetResourceByIdQueryResponse>({
+    query: GET_RESOURCE_BY_ID,
+    variables: {
+      id,
+      containsFilters
+    }
+  });
+
+  const hasUniqueRecord = ((id: string) =>
+    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
+
+  const component = {
+    name: 'resources',
+    title: 'Resources',
+    category: 'Custom Questions',
+    questionJSON: {
+      name: 'resources',
+      type: 'tagbox',
+      optionsCaption: 'Select a record...',
+      choicesOrder: 'asc',
+      choices: [] as any[],
+    },
+    filters: [] as any[],
+    resourceFieldsName: [] as any[],
+    onInit(): void {
+      Survey.Serializer.addProperty('resources', {
+        name: 'resource',
         category: 'Custom Questions',
-        questionJSON: {
-            name: 'resources',
-            type: 'tagbox',
-            optionsCaption: 'Select a resource...',
-            choicesOrder: 'asc',
-            choices: [] as any[],
+        visibleIndex: 3,
+        required: true,
+        choices: (obj: any, choicesCallback: any) => {
+          getResources().subscribe((response) => {
+            const serverRes = response.data.resources;
+            resourcesForms = response.data.resources;
+            const res = [];
+            res.push({ value: null });
+            for (const item of serverRes) {
+              res.push({ value: item.id, text: item.name });
+            }
+            choicesCallback(res);
+          });
         },
-        filters: [] as any[],
-        resourceFieldsName: [] as any[],
-        onInit(): void {
-            Survey.Serializer.addProperty('resources', {
-                name: 'resource',
-                category: 'Custom Questions',
-                visibleIndex: 3,
-                required: true,
-                choices: (obj: any, choicesCallback: any) => {
-                    const xhr = new XMLHttpRequest();
-                    const query = {
-                        query: `{
-                              resources {
-                                id
-                                name
-                              }
-                            }`,
-                    };
-                    xhr.responseType = 'json';
-                    xhr.open('POST', API_URL);
-                    const token = localStorage.getItem('msal.idtoken');
-                    // Apollo client doesn't intercept the request, so it has to be built 'manually'
-                    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.onload = () => {
-                        const serverRes = xhr.response.data.resources;
-                        const res: any[] = [];
-                        res.push({ value: null });
-                        for (const item of serverRes) {
-                            res.push({ value: item.id, text: item.name });
-                        }
-                        choicesCallback(res);
-                    };
-                    xhr.send(JSON.stringify(query));
-                },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'displayField',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        required: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj.resource) {
+            getResourceById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.fields;
+              const res = [];
+              res.push({ value: null });
+              for (const item of serverRes) {
+                res.push({ value: item.name });
+              }
+              choicesCallback(res);
             });
-            Survey.Serializer.addProperty('resources', {
-                name: 'displayField',
-                category: 'Custom Questions',
-                dependsOn: 'resource',
-                required: true,
-                visibleIf: (obj: any) => {
-                    if (!obj || !obj.resource) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                visibleIndex: 3,
-                choices: (obj: any, choicesCallback: any) => {
-                    if (obj.resource) {
-                        const xhr = new XMLHttpRequest();
-                        const query = {
-                            query: `
-                                    query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          fields
-                                        }
-                                    }`,
-                            variables: {
-                                id: obj.resource,
-                            },
-                        };
-                        xhr.responseType = 'json';
-                        xhr.open('POST', API_URL);
-                        const token = localStorage.getItem('msal.idtoken');
-                        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                        xhr.onload = () => {
-                            const serverRes = xhr.response.data.resource.fields;
-                            const res: any[] = [];
-                            res.push({ value: null });
-                            this.resourceFieldsName = [];
-                            for (const item of serverRes) {
-                                res.push({ value: item.name });
-                                this.resourceFieldsName.push(item.name);
-                            }
-                            choicesCallback(res);
-                        };
-                        xhr.send(JSON.stringify(query));
-                    }
-                },
+          }
+        },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'filterByQuestions:multiplevalues',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayField'],
+        required: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayField) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj && obj.resource) {
+            const questions: any[] = [];
+            obj.survey.getAllQuestions().forEach((question: any) => {
+              if (question.id !== obj.id && this.resourceFieldsName.includes(question.name)) {
+                questions.push(question.name);
+              }
             });
-            Survey.Serializer.addProperty('resources', {
-                name: 'filterByQuestions:multiplevalues',
-                category: 'Custom Questions',
-                dependsOn: ['resource', 'displayField'],
-                required: true,
-                visibleIf: (obj: any) => {
-                  if (!obj || !obj.resource || !obj.displayField) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                },
-                visibleIndex: 3,
-                choices: (obj: any, choicesCallback: any) => {
-                  if (obj && obj.resource) {
-                    const questions: any[] = [];
-                    obj.survey.getAllQuestions().forEach((question: any) => {
-                      if (question.id !== obj.id && this.resourceFieldsName.includes(question.name)) {
-                        questions.push(question.name);
-                      }
-                    });
-                    choicesCallback(questions);
-                  }
-                },
-              });
-            Survey.Serializer.addProperty('resources', {
-                name: 'test service',
-                category: 'Custom Questions',
-                dependsOn: ['resource', 'displayField'],
-                required: true,
-                visibleIf: (obj: any) => {
-                    if (!obj || !obj.resource || !obj.displayField) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                visibleIndex: 3,
-                choices: (obj: any, choicesCallback: any) => {
-                    if (obj.resource) {
-                        const xhr = new XMLHttpRequest();
-                        const query = {
-                            query: `
-                                    query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          records {
-                                              id
-                                              data
-                                          }
-                                        }
-                                    }`,
-                            variables: {
-                                id: obj.resource,
-                            },
-                        };
-                        xhr.responseType = 'json';
-                        xhr.open('POST', API_URL);
-                        const token = localStorage.getItem('msal.idtoken');
-                        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                        xhr.onload = () => {
-                            const serverRes = xhr.response.data.resource.records;
-                            const res: any[] = [];
-                            res.push({ value: null });
-                            for (const item of serverRes) {
-                                res.push({ value: item.id, text: item.data[obj.displayField] });
-                            }
-                            choicesCallback(res);
-                        };
-                        xhr.send(JSON.stringify(query));
-                    }
-                },
+            choicesCallback(questions);
+          }
+        },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'test service',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayField'],
+        required: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayField) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj.resource) {
+            getResourceById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.records || [];
+              const res = [];
+              res.push({ value: null });
+              for (const item of serverRes) {
+                res.push({ value: item.id, text: item.data[obj.displayField] });
+              }
+              choicesCallback(res);
             });
-            Survey.Serializer.addProperty('resources', {
-                name: 'canAddNew:boolean',
-                category: 'Custom Questions',
-                dependsOn: ['resource'],
-                visibleIf: (obj: any) => {
-                    if (!obj || !obj.resource) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                visibleIndex: 3,
+          }
+        },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'displayAsGrid:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'canAddNew:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'addTemplate',
+        category: 'Custom Questions',
+        dependsOn: ['canAddNew', 'resource'],
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.canAddNew) {
+            return false;
+          } else {
+            return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj.resource && obj.canAddNew) {
+            getResourceById(obj.resource).subscribe((response) => {
+              const serverRes = response.data.resource.forms || [];
+              const res = [];
+              res.push({ value: null });
+              for (const item of serverRes) {
+                res.push({ value: item.id, text: item.name });
+              }
+              choicesCallback(res);
             });
-            Survey.Serializer.addProperty('resources', {
-                name: 'addTemplate',
-                category: 'Custom Questions',
-                dependsOn: 'canAddNew',
-                visibleIf: (obj: any) => {
-                    if (!obj || !obj.canAddNew) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                visibleIndex: 3,
-                choices: (obj: any, choicesCallback: any) => {
-                    if (obj.resource && obj.canAddNew) {
-                        const xhr = new XMLHttpRequest();
-                        const query = {
-                            query: `
-                                    query GetResourceById($id: ID!) {
-                                      resource(id: $id) {
-                                          id
-                                          name
-                                          forms {
-                                              id
-                                              name
-                                          }
-                                        }
-                                    }`,
-                            variables: {
-                                id: obj.resource,
-                            },
-                        };
-                        xhr.responseType = 'json';
-                        xhr.open('POST', API_URL);
-                        const token = localStorage.getItem('msal.idtoken');
-                        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                        xhr.onload = () => {
-                            const serverRes = xhr.response.data.resource.forms;
-                            const res: any[] = [];
-                            res.push({ value: null });
-                            for (const item of serverRes) {
-                                res.push({ value: item.id, text: item.name });
-                            }
-                            choicesCallback(res);
-                        };
-                        xhr.send(JSON.stringify(query));
-                    }
-                },
-            });
+          }
         },
-        onPropertyChanged(question: any, propertyName: string, newValue: any): void {
-            if (propertyName === 'resource') {
-                question.filterByQuestions = [];
-                question.displayField = null;
-            }
-        },
-        onLoaded(question: any): void {
-            if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
-                this.populateChoices(question);
-            }
-        },
-        filtersAsString(): string {
-            if (this.filters.length < 1) {
-                return '[]';
-            }
-            let str = '[';
-            for (const filter of this.filters) {
-                str += '{';
-                for (const p in filter) {
-                    if (filter.hasOwnProperty(p)) {
-                        str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
-                    }
-                }
-                str += '},';
-            }
-            return str.substring(0, str.length - 1) + ']';
-        },
-        populateChoices(question: any): void {
-            const xhr = new XMLHttpRequest();
-            const query = {
-                query: `query GetResourceById($id: ID!) {
-                            resource(id: $id) {
-                                id
-                                name
-                                records(containsFilters: ${this.filtersAsString()}) {
-                                    id
-                                    data
-                                }
-                            }
-                        }`,
-                variables: {
-                id: question.resource,
-                }
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-                const serverRes = xhr.response.data.resource.records;
-                const res: any[] = [];
-                for (const item of serverRes) {
-                    res.push({ value: item.id, text: item.data[question.displayField] });
-                }
-                question.contentQuestion.choices = res;
-            };
-            xhr.send(JSON.stringify(query));
-        },
-        onAfterRender(question: any, el: any): void {
-            if (question.filterByQuestions && question.filterByQuestions.length > 0) {
-                question.filterByQuestions.forEach((questionName: string) => {
-                    const value = question.survey.data[questionName];
-                    if (value) {
-                        this.filters.push({ name: questionName, value });
-                    }
-                    this.populateChoices(question);
-                    const watchedQuestion = question.survey.getQuestionByName(questionName);
-                    watchedQuestion.valueChangedCallback = () => {
-                        if (!this.filters.some(x => x.name === questionName)) {
-                            if (watchedQuestion.value) {
-                                this.filters.push({ name: questionName, value: watchedQuestion.value });
-                            }
-                        } else {
-                            this.filters = this.filters.map(x => {
-                                if (x.name === questionName) {
-                                    x.value = watchedQuestion.value;
-                                }
-                                return x;
-                            });
-                        }
-                        this.populateChoices(question);
-                    };
-                });
-            }
-            if (question.canAddNew && question.addTemplate) {
-                document.addEventListener('saveResourceFromEmbed', (e: any) => {
-                    const detail = e.detail;
-                    if (detail.template === question.addTemplate) {
-                        const xhr = new XMLHttpRequest();
-                        const query = {
-                            query: `query GetResourceById($id: ID!) {
-                                  resource(id: $id) {
-                                      id
-                                      name
-                                      records {
-                                          id
-                                          data
-                                      }
-                                  }
-                              }`,
-                            variables: {
-                                id: question.resource,
-                            },
-                        };
-                        xhr.responseType = 'json';
-                        xhr.open('POST', API_URL);
-                        const token = localStorage.getItem('msal.idtoken');
-                        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                        xhr.onload = () => {
-                            const serverRes = xhr.response.data.resource.records;
-                            const res: any[] = [];
-                            for (const item of serverRes) {
-                                res.push({
-                                    value: item.id,
-                                    text: item.data[question.displayField],
-                                });
-                            }
-                            question.contentQuestion.choices = res;
-                            question.survey.render();
-                        };
-                        xhr.send(JSON.stringify(query));
-                    }
-                });
-            }
-        },
-    };
-    Survey.ComponentCollection.Instance.add(component);
-    const widget = {
-        name: 'addResource',
-        isFit: (question: any) => {
-            if (question.getType() === 'resources') {
-                return question.canAddNew && question.addTemplate;
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'placeholder',
+        category: 'Custom Questions'
+      });
+    },
+    onLoaded(question: any): void {
+      if (question.placeholder) {
+        question.contentQuestion.optionsCaption = question.placeholder;
+      }
+      if (question.resource) {
+        getResourceById(question.resource).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
+          }
+          if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
+            this.populateChoices(question);
+          }
+          question.survey.render();
+        });
+      }
+    },
+    onPropertyChanged(question: any, propertyName: string, newValue: any): void {
+      if (propertyName === 'resource') {
+        question.filterByQuestions = [];
+        question.displayField = null;
+        this.filters = [];
+        this.resourceFieldsName = [];
+        question.canAddNew = false;
+        question.addTemplate = null;
+      }
+    },
+    filtersAsString(): string {
+      if (this.filters.length < 1) {
+        return '[]';
+      }
+      let str = '[';
+      for (const filter of this.filters) {
+        str += '{';
+        for (const p in filter) {
+          if (filter.hasOwnProperty(p)) {
+            str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
+          }
+        }
+        str += '},';
+      }
+      return str.substring(0, str.length - 1) + ']';
+    },
+    populateChoices(question: any): void {
+      if (question.resource) {
+        getResourceById(question.resource, this.filtersAsString()).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res: any[] = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+        });
+      } else {
+        question.contentQuestion.choices = [];
+      }
+    },
+    onAfterRender(question: any, el: any): void {
+      if (question.filterByQuestions && question.filterByQuestions.length > 0) {
+        question.filterByQuestions.forEach((questionName: string) => {
+          const value = question.survey.data[questionName];
+          if (value) {
+            this.filters.push({ name: questionName, value });
+          }
+          this.populateChoices(question);
+          const watchedQuestion = question.survey.getQuestionByName(questionName);
+          watchedQuestion.valueChangedCallback = () => {
+            if (!this.filters.some(x => x.name === questionName)) {
+              if (watchedQuestion.value) {
+                this.filters.push({ name: questionName, value: watchedQuestion.value });
+              }
             } else {
-                return false;
+              this.filters = this.filters.map(x => {
+                if (x.name === questionName) {
+                  x.value = watchedQuestion.value;
+                }
+                return x;
+              });
             }
-        },
-        isDefaultRender: true,
-        afterRender: (question: any, el: any) => {
-            const mainDiv = document.createElement('div');
-            const btnEl = document.createElement('button');
-            btnEl.innerText = 'Add';
-            btnEl.style.width = '120px';
-            btnEl.onclick = () => {
-                const event = new CustomEvent('openForm', {
-                    detail: { template: question.addTemplate },
+            this.populateChoices(question);
+          };
+        });
+      }
+      if (question.displayAsGrid) {
+        // hide tagbox if grid view is enable
+        const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
+        element.style.display = 'none';
+      }
+      if (question.canAddNew && question.addTemplate) {
+        document.addEventListener('saveResourceFromEmbed', (e: any) => {
+          const detail = e.detail;
+          if (detail.template === question.addTemplate && question.resource) {
+            getResourceById(question.resource).subscribe((response) => {
+              const serverRes = response.data.resource.records || [];
+              const res = [];
+              for (const item of serverRes) {
+                res.push({
+                  value: item.id,
+                  text: item.data[question.displayField],
                 });
-                document.dispatchEvent(event);
-            };
-            mainDiv.appendChild(btnEl);
-            el.parentElement.insertBefore(mainDiv, el);
-        },
-    };
-    Survey.CustomWidgetCollection.Instance.add(widget);
+              }
+              question.contentQuestion.choices = res;
+              question.survey.render();
+            });
+          }
+        });
+      }
+    },
+  };
+  Survey.ComponentCollection.Instance.add(component);
 }
