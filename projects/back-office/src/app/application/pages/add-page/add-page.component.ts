@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
+import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-add-page',
@@ -132,6 +133,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           const id = res.data?.addForm.id || '';
           this.pageForm.controls.content.setValue(id);
+          this.snackBar.openSnackBar(notifications.objectCreated('page', value.name));
+
           this.onSubmit();
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

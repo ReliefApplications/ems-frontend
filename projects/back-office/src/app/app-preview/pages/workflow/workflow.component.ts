@@ -7,6 +7,7 @@ import { ContentType, Step, SafeSnackBarService, Workflow } from '@safe/builder'
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
+import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-workflow',
@@ -60,7 +61,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             this.stepChange({selectedIndex: 0});
           }
         } else {
-          this.snackBar.openSnackBar('No access provided to this workflow.', { error: true });
+          this.snackBar.openSnackBar(notifications.accessNotProvided('workflow'), { error: true });
         }
       },
         (err) => {

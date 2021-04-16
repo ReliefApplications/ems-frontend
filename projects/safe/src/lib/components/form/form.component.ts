@@ -13,6 +13,7 @@ import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
+import notifications from '../../const/notifications';
 
 @Component({
   selector: 'safe-form',
@@ -92,7 +93,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
-            this.snackBar.openSnackBar('Selected records do not match with any fields from this form', { error: true });
+            this.snackBar.openSnackBar(notifications.recordDoesNotMatch, { error: true });
           }
         }
       });

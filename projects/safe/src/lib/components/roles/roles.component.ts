@@ -18,6 +18,7 @@ import {
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import notifications from '../../const/notifications';
 
 @Component({
   selector: 'safe-roles',
@@ -109,7 +110,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               title: value.title
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(`${value.title} role created`);
+            this.snackBar.openSnackBar(notifications.objectCreated('role', value.title));
             this.getRoles();
           }, (err) => {
             console.log(err);
@@ -142,7 +143,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               channels: value.channels
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(`${role.title} role updated.`);
+            this.snackBar.openSnackBar(notifications.objectEdited('role', role.title));
             this.getRoles();
           });
         }
@@ -173,7 +174,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               id: item.id
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(`${item.title} role deleted.`);
+            this.snackBar.openSnackBar(notifications.objectDeleted(item.title));
             this.getRoles();
           });
         }

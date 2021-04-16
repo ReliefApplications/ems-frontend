@@ -4,6 +4,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DuplicateApplicationMutationResponse, DUPLICATE_APPLICATION} from '../../graphql/mutations';
 import { Application, SafeSnackBarService } from '@safe/builder';
+import notifications from 'projects/safe/src/lib/const/notifications';
 
 
 @Component({
@@ -42,9 +43,9 @@ export class DuplicateApplicationComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('App not duplicated: ' + res.errors[0].message);
+        this.snackBar.openSnackBar(notifications.objectNotDuplicated('App', res.errors[0].message));
       } else {
-        this.snackBar.openSnackBar('Successfully duplicated ' + this.currentApp.name);
+        this.snackBar.openSnackBar(notifications.objectDuplicated('App', this.currentApp.name));
         this.dialogRef.close(res.data?.duplicateApplication);
       }
     });

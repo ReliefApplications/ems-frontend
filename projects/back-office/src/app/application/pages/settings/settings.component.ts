@@ -9,6 +9,7 @@ import { DuplicateApplicationComponent } from '../../../components/duplicate-app
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-settings',
@@ -79,7 +80,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
+          this.snackBar.openSnackBar(notifications.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });

@@ -12,6 +12,7 @@ import {
   DeleteStepMutationResponse, DELETE_STEP,
   EditWorkflowMutationResponse, EDIT_WORKFLOW
 } from '../../../graphql/mutations';
+import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-workflow',
@@ -151,7 +152,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.data) {
-            this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+            this.snackBar.openSnackBar(notifications.objectDeleted('Step'), { duration: 1000 });
             this.steps = this.steps.filter(x => {
               return x.id !== res.data?.deleteStep.id;
             });
@@ -186,7 +187,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: this.steps.map(step => step.id)
         }
       }).subscribe(() => {
-        this.snackBar.openSnackBar('Steps reordered');
+        this.snackBar.openSnackBar(notifications.objectReordered('Step'));
       });
     }
   }
@@ -232,9 +233,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex = 0;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
-      this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
+      this.snackBar.openSnackBar(notifications.goToStep(this.steps[0].name));
     } else {
-      this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
+      this.snackBar.openSnackBar(notifications.cannotGoToNextStep, { error: true });
     }
   }
 
