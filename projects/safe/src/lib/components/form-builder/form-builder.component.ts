@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { FormService } from '../../services/form.service';
 
 /* Commented types are not yet implemented.
 */
@@ -51,8 +50,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
-    private formService: FormService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {

@@ -1,9 +1,4 @@
-import { SafeSurveyGridComponent } from '../../components/survey/survey-grid/survey-grid.component';
-import { DomService } from '../../services/dom.service';
-import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
-import { MatDialog } from '@angular/material/dialog';
-
-export function init(Survey: any, API_URL: string, domService: DomService, dialog: MatDialog): void {
+export function init(Survey: any, API_URL: string): void {
   const getFromServer = buildServerDispatcher(API_URL);
 
   let resourcesForms: any[] = [];
@@ -271,74 +266,6 @@ export function init(Survey: any, API_URL: string, domService: DomService, dialo
     },
   };
   Survey.ComponentCollection.Instance.add(component);
-  const gridWidget = {
-    name: 'displayAsGrid',
-    isFit: (question: any) => {
-      if (question.getType() === 'resources') {
-        return question.displayAsGrid || question.canAddNew;
-      } else {
-        return false;
-      }
-    },
-    isDefaultRender: true,
-    afterRender: (question: any, el: any) => {
-      if (question.resource) {
-        let instance: any;
-        if (question.displayAsGrid) {
-          const grid = domService.appendComponentToBody(SafeSurveyGridComponent, el.parentElement);
-          instance = grid.instance;
-          instance.fetchData(question.resource, question.displayField);
-          // subscribed grid data to add values to survey question.
-          instance.gridData.subscribe((value: any[]) => {
-            question.value = value.map(v => v.value);
-          });
-        }
-        const mainDiv = document.createElement('div');
-        mainDiv.id = 'addRecordDiv';
-        const btnEl = document.createElement('button');
-        btnEl.innerText = 'Add new record';
-        btnEl.style.width = '150px';
-        if (question.canAddNew && question.addTemplate) {
-          btnEl.onclick = () => {
-              const dialogRef = dialog.open(SafeFormModalComponent, {
-                data: {
-                  template: question.addTemplate,
-                  locale: question.resource
-                }
-              });
-              dialogRef.afterClosed().subscribe((response) => {
-                if (response) {
-                  if (question.displayAsGrid) {
-                    instance.allData.push({value: response.data.id, text: response.data.data[question.displayField]});
-                  } else {
-                    const e = new CustomEvent('saveResourceFromEmbed', {
-                      detail: {
-                        resource: response.data,
-                        template: response.template
-                      }
-                    });
-                    document.dispatchEvent(e);
-                  }
-                }
-              });
-          };
-        }
-        mainDiv.appendChild(btnEl);
-        el.parentElement.insertBefore(mainDiv, el);
-        mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-
-        question.registerFunctionOnPropertyValueChanged('addTemplate',
-          () => {
-            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-          });
-        question.registerFunctionOnPropertyValueChanged('canAddNew',
-          () => {
-            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-          });
-      }
-    },
-  };
-  Survey.CustomWidgetCollection.Instance.add(gridWidget);
 
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);

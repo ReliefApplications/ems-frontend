@@ -1,13 +1,11 @@
 import {Apollo} from 'apollo-angular';
-import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { FormService } from '../../services/form.service';
-import { SafeFormModalComponent } from '../form-modal/form-modal.component';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
@@ -49,7 +47,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService,
     private snackBar: SafeSnackBarService,
     private router: Router,
     private workflowService: SafeWorkflowService

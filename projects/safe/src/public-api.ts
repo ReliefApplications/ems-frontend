@@ -9,6 +9,7 @@ export * from './lib/services/grid.service';
 export * from './lib/services/application.service';
 export * from './lib/services/download.service';
 export * from './lib/services/workflow.service';
+export * from './lib/services/form.service';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';

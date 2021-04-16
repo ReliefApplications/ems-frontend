@@ -8,7 +8,6 @@ import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { FormService } from '../../services/form.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 
 @Component({
@@ -39,7 +38,6 @@ export class SafeFormModalComponent implements OnInit {
     },
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService,
     private snackBar: SafeSnackBarService,
   ) {
     this.containerId = uuidv4();

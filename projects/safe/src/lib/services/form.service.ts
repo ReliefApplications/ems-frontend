@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Injectable({
   providedIn: 'root'
 })
-export class FormService {
+export class SafeFormService {
 
   constructor(
     @Inject('environment') environment: any,
