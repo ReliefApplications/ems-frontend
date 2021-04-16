@@ -7,16 +7,21 @@ import {
 } from '../../graphql/queries';
 
 export function init(Survey: any, apollo: Apollo): void {
+  let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
   });
 
-  const getResourceById = (id: string) => apollo.query<GetResourceByIdQueryResponse>({
+  const getResourceById = (id: string, containsFilters?: any) => apollo.query<GetResourceByIdQueryResponse>({
     query: GET_RESOURCE_BY_ID,
     variables: {
-      id
+      id,
+      containsFilters
     }
   });
+
+  const hasUniqueRecord = ((id: string) =>
+    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   const component = {
     name: 'resource',
@@ -41,6 +46,7 @@ export function init(Survey: any, apollo: Apollo): void {
           getResources().subscribe(
             (response: any) => {
               const serverRes = response.data.resources;
+              resourcesForms = response.data.resources;
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -136,7 +142,7 @@ export function init(Survey: any, apollo: Apollo): void {
           if (!obj || !obj.resource) {
             return false;
           } else {
-            return true;
+            return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
@@ -144,18 +150,18 @@ export function init(Survey: any, apollo: Apollo): void {
       Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: 'canAddNew',
+        dependsOn: ['canAddNew', 'resource'],
         visibleIf: (obj: any) => {
           if (!obj || !obj.canAddNew) {
             return false;
           } else {
-            return true;
+            return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
-            getResourcesById(obj.resource).subscribe(response => {
+            getResourceById(obj.resource).subscribe(response => {
               const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
               res.push({ value: null });
@@ -176,18 +182,63 @@ export function init(Survey: any, apollo: Apollo): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
-      getResourceById(question.resource).subscribe(response => {
-        const serverRes = response.data.resource.records || [];
-        const res: any[] = [];
-        for (const item of serverRes) {
-          res.push({ value: item.id, text: item.data[question.displayField] });
+      if (question.resource) {
+        getResourceById(question.resource).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
+          }
+          if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
+            this.populateChoices(question);
+          }
+          question.survey.render();
+        });
+      }
+    },
+    onPropertyChanged(question: any, propertyName: string, newValue: any): void {
+      if (propertyName === 'resource') {
+        question.filterByQuestions = [];
+        question.displayField = null;
+        this.filters = [];
+        this.resourceFieldsName = [];
+        question.canAddNew = false;
+        question.addTemplate = null;
+      }
+    },
+    filtersAsString(): string {
+      if (this.filters.length < 1) {
+        return '[]';
+      }
+      let str = '[';
+      for (const filter of this.filters) {
+        str += '{';
+        for (const p in filter) {
+          if (filter.hasOwnProperty(p)) {
+            str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
+          }
         }
-        question.contentQuestion.choices = res;
-        if (!question.placeholder) {
-          question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
-        }
-        question.survey.render();
-      });
+        str += '},';
+      }
+      return str.substring(0, str.length - 1) + ']';
+    },
+    populateChoices(question: any): void {
+      if (question.resource) {
+        getResourceById(question.resource, this.filtersAsString()).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res: any[] = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+        });
+      } else {
+        question.contentQuestion.choices = [];
+      }
     },
     onAfterRender(question: any, el: any): void {
       if (question.filterByQuestions && question.filterByQuestions.length > 0) {
@@ -218,10 +269,10 @@ export function init(Survey: any, apollo: Apollo): void {
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
-          if (detail.template === question.addTemplate) {
+          if (detail.template === question.addTemplate && question.resource) {
             getResourceById(question.resource).subscribe(response => {
               const serverRes = response.data.resource.records || [];
-              const res: any[] = [];
+              const res = [];
               for (const item of serverRes) {
                 res.push({
                   value: item.id,

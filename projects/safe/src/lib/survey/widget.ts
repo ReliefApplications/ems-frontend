@@ -67,15 +67,17 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             }
             // Display of add button for resource question
             if (question.getType() === 'resource') {
+                const mainDiv = document.createElement('div');
+                mainDiv.id = 'addRecordDiv';
+                const btnEl = document.createElement('button');
+                btnEl.innerText = 'Add new record';
+                btnEl.style.width = '150px';
                 if (question.canAddNew && question.addTemplate) {
-                    const mainDiv = document.createElement('div');
-                    const btnEl = document.createElement('button');
-                    btnEl.innerText = 'Add';
-                    btnEl.style.width = '120px';
                     btnEl.onclick = () => {
                         const dialogRef = dialog.open(SafeFormModalComponent, {
                             data: {
                                 template: question.addTemplate,
+                                locale: question.resource
                             }
                         });
                         dialogRef.afterClosed().subscribe(res => {
@@ -86,9 +88,19 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                             }
                         });
                     };
-                    mainDiv.appendChild(btnEl);
-                    el.parentElement.insertBefore(mainDiv, el);
                 }
+                mainDiv.appendChild(btnEl);
+                el.parentElement.insertBefore(mainDiv, el);
+                mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+
+                question.registerFunctionOnPropertyValueChanged('addTemplate',
+                    () => {
+                        mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+                    });
+                question.registerFunctionOnPropertyValueChanged('canAddNew',
+                    () => {
+                        mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+                    });
             }
             // Display of add button | grid for resources question
             if (question.getType() === 'resources') {
@@ -116,15 +128,15 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                                     locale: question.resource
                                 }
                             });
-                            dialogRef.afterClosed().subscribe((response) => {
-                                if (response) {
+                            dialogRef.afterClosed().subscribe(res => {
+                                if (res) {
                                     if (question.displayAsGrid) {
-                                        instance.allData.push({ value: response.data.id, text: response.data.data[question.displayField] });
+                                        instance.allData.push({ value: res.data.id, text: res.data.data[question.displayField] });
                                     } else {
                                         const e = new CustomEvent('saveResourceFromEmbed', {
                                             detail: {
-                                                resource: response.data,
-                                                template: response.template
+                                                resource: res.data,
+                                                template: res.template
                                             }
                                         });
                                         document.dispatchEvent(e);

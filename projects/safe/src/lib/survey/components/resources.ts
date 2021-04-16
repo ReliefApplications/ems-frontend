@@ -1,24 +1,27 @@
+import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
   GET_RESOURCES,
   GetResourceByIdQueryResponse,
   GetResourcesQueryResponse
 } from '../../graphql/queries';
-import { Apollo } from 'apollo-angular';
 
 export function init(Survey: any, apollo: Apollo): void {
+  let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
   });
 
-  const getResourcesById = (id: string) => apollo.query<GetResourceByIdQueryResponse>({
+  const getResourceById = (id: string, containsFilters?: any) => apollo.query<GetResourceByIdQueryResponse>({
     query: GET_RESOURCE_BY_ID,
     variables: {
-      id
+      id,
+      containsFilters
     }
   });
 
-  let resourcesForms: any[] = [];
+  const hasUniqueRecord = ((id: string) =>
+    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   const component = {
     name: 'resources',
@@ -27,10 +30,12 @@ export function init(Survey: any, apollo: Apollo): void {
     questionJSON: {
       name: 'resources',
       type: 'tagbox',
-      optionsCaption: 'Select a resource...',
+      optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
-      choices: [],
+      choices: [] as any[],
     },
+    filters: [] as any[],
+    resourceFieldsName: [] as any[],
     onInit(): void {
       Survey.Serializer.addProperty('resources', {
         name: 'resource',
@@ -38,13 +43,13 @@ export function init(Survey: any, apollo: Apollo): void {
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-        getResources().subscribe((response) => {
+          getResources().subscribe((response) => {
             const serverRes = response.data.resources;
             resourcesForms = response.data.resources;
             const res = [];
-            res.push({value: null});
+            res.push({ value: null });
             for (const item of serverRes) {
-              res.push({value: item.id, text: item.name});
+              res.push({ value: item.id, text: item.name });
             }
             choicesCallback(res);
           });
@@ -65,15 +70,40 @@ export function init(Survey: any, apollo: Apollo): void {
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourcesById(obj.resource).subscribe((response) => {
+            getResourceById(obj.resource).subscribe((response) => {
               const serverRes = response.data.resource.fields;
               const res = [];
-              res.push({value: null});
+              res.push({ value: null });
               for (const item of serverRes) {
-                res.push({value: item.name});
+                res.push({ value: item.name });
               }
               choicesCallback(res);
             });
+          }
+        },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'filterByQuestions:multiplevalues',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayField'],
+        required: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayField) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj && obj.resource) {
+            const questions: any[] = [];
+            obj.survey.getAllQuestions().forEach((question: any) => {
+              if (question.id !== obj.id && this.resourceFieldsName.includes(question.name)) {
+                questions.push(question.name);
+              }
+            });
+            choicesCallback(questions);
           }
         },
       });
@@ -92,12 +122,12 @@ export function init(Survey: any, apollo: Apollo): void {
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourcesById(obj.resource).subscribe((response) => {
+            getResourceById(obj.resource).subscribe((response) => {
               const serverRes = response.data.resource.records || [];
               const res = [];
-              res.push({value: null});
+              res.push({ value: null });
               for (const item of serverRes) {
-                res.push({value: item.id, text: item.data[obj.displayField]});
+                res.push({ value: item.id, text: item.data[obj.displayField] });
               }
               choicesCallback(res);
             });
@@ -144,39 +174,111 @@ export function init(Survey: any, apollo: Apollo): void {
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
-            getResourcesById(obj.resource).subscribe((response) => {
+            getResourceById(obj.resource).subscribe((response) => {
               const serverRes = response.data.resource.forms || [];
               const res = [];
-              res.push({value: null});
+              res.push({ value: null });
               for (const item of serverRes) {
-                res.push({value: item.id, text: item.name});
+                res.push({ value: item.id, text: item.name });
               }
               choicesCallback(res);
             });
           }
         },
       });
+      Survey.Serializer.addProperty('resources', {
+        name: 'placeholder',
+        category: 'Custom Questions'
+      });
     },
     onLoaded(question: any): void {
-      getResourcesById(question.resource).subscribe((response) => {
-        const serverRes = response.data.resource.records || [];
-        const res = [];
-        for (const item of serverRes) {
-          res.push({value: item.id, text: item.data[question.displayField]});
-        }
-        // question.choices = res;
-        question.contentQuestion.choices = res;
-        // data = res;
-        question.survey.render();
-      });
+      if (question.placeholder) {
+        question.contentQuestion.optionsCaption = question.placeholder;
+      }
+      if (question.resource) {
+        getResourceById(question.resource).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
+          }
+          if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
+            this.populateChoices(question);
+          }
+          question.survey.render();
+        });
+      }
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resource') {
+        question.filterByQuestions = [];
+        question.displayField = null;
+        this.filters = [];
+        this.resourceFieldsName = [];
         question.canAddNew = false;
         question.addTemplate = null;
       }
     },
+    filtersAsString(): string {
+      if (this.filters.length < 1) {
+        return '[]';
+      }
+      let str = '[';
+      for (const filter of this.filters) {
+        str += '{';
+        for (const p in filter) {
+          if (filter.hasOwnProperty(p)) {
+            str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
+          }
+        }
+        str += '},';
+      }
+      return str.substring(0, str.length - 1) + ']';
+    },
+    populateChoices(question: any): void {
+      if (question.resource) {
+        getResourceById(question.resource, this.filtersAsString()).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res: any[] = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+        });
+      } else {
+        question.contentQuestion.choices = [];
+      }
+    },
     onAfterRender(question: any, el: any): void {
+      if (question.filterByQuestions && question.filterByQuestions.length > 0) {
+        question.filterByQuestions.forEach((questionName: string) => {
+          const value = question.survey.data[questionName];
+          if (value) {
+            this.filters.push({ name: questionName, value });
+          }
+          this.populateChoices(question);
+          const watchedQuestion = question.survey.getQuestionByName(questionName);
+          watchedQuestion.valueChangedCallback = () => {
+            if (!this.filters.some(x => x.name === questionName)) {
+              if (watchedQuestion.value) {
+                this.filters.push({ name: questionName, value: watchedQuestion.value });
+              }
+            } else {
+              this.filters = this.filters.map(x => {
+                if (x.name === questionName) {
+                  x.value = watchedQuestion.value;
+                }
+                return x;
+              });
+            }
+            this.populateChoices(question);
+          };
+        });
+      }
       if (question.displayAsGrid) {
         // hide tagbox if grid view is enable
         const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
@@ -185,8 +287,8 @@ export function init(Survey: any, apollo: Apollo): void {
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
-          if (detail.template === question.addTemplate) {
-            getResourcesById(question.resource).subscribe((response) => {
+          if (detail.template === question.addTemplate && question.resource) {
+            getResourceById(question.resource).subscribe((response) => {
               const serverRes = response.data.resource.records || [];
               const res = [];
               for (const item of serverRes) {
@@ -204,7 +306,4 @@ export function init(Survey: any, apollo: Apollo): void {
     },
   };
   Survey.ComponentCollection.Instance.add(component);
-
-  const hasUniqueRecord = ((id: string) =>
-    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 }
