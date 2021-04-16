@@ -24,7 +24,7 @@ import { environment } from '../environments/environment';
 import { MsalModule, MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration,
   MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService, MsalGuardConfiguration, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
-import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -110,7 +110,7 @@ export function provideApollo(httpLink: HttpLink): any {
   };
 }
 
-export function loggerCallback(logLevel: LogLevel, message: string) {
+export function loggerCallback(logLevel: LogLevel, message: string): any {
   console.log(message);
 }
 
@@ -126,7 +126,7 @@ export function provideMsal(): IPublicClientApplication {
       postLogoutRedirectUri: environment.postLogoutRedirectUri
     },
     cache: {
-      cacheLocation: 'localStorage',
+      cacheLocation: BrowserCacheLocation.LocalStorage,
       storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
     },
     system: {
