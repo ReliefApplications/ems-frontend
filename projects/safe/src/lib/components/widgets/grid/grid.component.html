@@ -36,7 +36,7 @@
     <ng-container *ngIf="fields.length > 0">
       <!-- ROW SELECTION -->
       <kendo-grid-checkbox-column
-        *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || settings.floatingButton.modifySelectedRows"
+        *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || (settings.floatingButton && settings.floatingButton.modifySelectedRows)"
         [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
         [columnMenu]="false" [showSelectAll]="true">
       </kendo-grid-checkbox-column>
@@ -221,7 +221,7 @@
         </kendo-grid-column-group>
       </ng-container>
       <!-- ROW DETAILS -->
-      <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
+      <kendo-grid-column [columnMenu]="false" [width]="56" title="Details" *ngIf="settings.details">
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
           <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
             (click)="onShowDetails(gridData.data[idx].id)"></button>

@@ -11,8 +11,8 @@
       <div class="form-group-title">Data set selection</div>
       <safe-query-builder [form]="$any(tileForm.controls.query)" [settings]="tile.settings"></safe-query-builder>
     </div>
+    <div class="form-group-title">Enabled actions</div>
     <div formGroupName="actions" class="form-group">
-      <div class="form-group-title">Enabled actions</div>
       <mat-slide-toggle formControlName="delete">
         Delete records
       </mat-slide-toggle>
@@ -26,6 +26,9 @@
         Update records
       </mat-slide-toggle>
     </div>
+    <mat-slide-toggle formControlName="details">
+      See details
+    </mat-slide-toggle>
     <div class="form-group">
       <div class="form-group-title">Quick action buttons</div>
       <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions below.</div>
