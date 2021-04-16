@@ -3,38 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "who-ems": {
+    "safe": {
       "projectType": "library",
-      "root": "projects/who-ems",
-      "sourceRoot": "projects/who-ems/src",
-      "prefix": "who",
+      "root": "projects/safe",
+      "sourceRoot": "projects/safe/src",
+      "prefix": "safe",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/who-ems/tsconfig.lib.json",
-            "project": "projects/who-ems/ng-package.json"
+            "tsConfig": "projects/safe/tsconfig.lib.json",
+            "project": "projects/safe/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/who-ems/tsconfig.lib.prod.json"
+              "tsConfig": "projects/safe/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/who-ems/src/test.ts",
-            "tsConfig": "projects/who-ems/tsconfig.spec.json",
-            "karmaConfig": "projects/who-ems/karma.conf.js"
+            "main": "projects/safe/src/test.ts",
+            "tsConfig": "projects/safe/tsconfig.spec.json",
+            "karmaConfig": "projects/safe/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/who-ems/tsconfig.lib.json",
-              "projects/who-ems/tsconfig.spec.json"
+              "projects/safe/tsconfig.lib.json",
+              "projects/safe/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -65,7 +65,8 @@
             "aot": true,
             "assets": [
               "projects/back-office/src/favicon.ico",
-              "projects/back-office/src/assets"
+              "projects/back-office/src/assets",
+              "projects/back-office/src/web.config"
             ],
             "styles": [
               {
@@ -73,7 +74,7 @@
                 "inject": true
               },
               "projects/back-office/src/styles.scss",
-              "projects/who-ems/src/lib/style/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
@@ -169,7 +170,8 @@
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
               "projects/back-office/src/favicon.ico",
-              "projects/back-office/src/assets"
+              "projects/back-office/src/assets",
+              "projects/back-office/src/web.config"
             ],
             "styles": [
               {
@@ -232,7 +234,8 @@
             "aot": true,
             "assets": [
               "projects/front-office/src/favicon.ico",
-              "projects/front-office/src/assets"
+              "projects/front-office/src/assets",
+              "projects/front-office/src/web.config"
             ],
             "styles": [
               {
@@ -240,7 +243,7 @@
                 "inject": true
               },
               "projects/front-office/src/styles.scss",
-              "projects/who-ems/src/lib/style/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css",
@@ -336,7 +339,8 @@
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
               "projects/front-office/src/favicon.ico",
-              "projects/front-office/src/assets"
+              "projects/front-office/src/assets",
+              "projects/front-office/src/web.config"
             ],
             "styles": [
               "projects/front-office/src/styles.scss",

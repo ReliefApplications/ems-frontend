@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, WhoApplicationService, WhoConfirmModalComponent} from '@who-ems/builder';
+import { Application, Channel, SafeApplicationService, SafeConfirmModalComponent} from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 
@@ -20,7 +20,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public dialog: MatDialog,
   ) { }
 
@@ -51,7 +51,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     If confirmed, the channel is removed from the system with all notifications linked to it.
   */
   onDelete(channel: Channel): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete channel',
         content: `Do you confirm the deletion of the channel ${channel.title} ?`,

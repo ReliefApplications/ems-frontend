@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Permission } from 'dist/who-ems/public-api';
 import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'

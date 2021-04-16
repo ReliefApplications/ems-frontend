@@ -1,6 +1,6 @@
 import { gql } from 'apollo-angular';
 import { Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@who-ems/builder';
+  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
