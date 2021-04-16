@@ -5,9 +5,9 @@
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@who-ems/builder": [
-        "dist/who-ems/who-ems",
-        "dist/who-ems"
+      "@safe/builder": [
+        "dist/safe/safe",
+        "dist/safe"
       ]
     },
     "strict": true,

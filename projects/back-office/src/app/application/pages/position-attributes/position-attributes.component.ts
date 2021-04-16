@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttribute } from '@who-ems/builder';
+import { PositionAttribute } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { GetPositionAttributesFromCategoryQueryResponse, GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from '../../../graphql/queries';
 

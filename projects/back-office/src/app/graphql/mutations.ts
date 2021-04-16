@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@safe/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`

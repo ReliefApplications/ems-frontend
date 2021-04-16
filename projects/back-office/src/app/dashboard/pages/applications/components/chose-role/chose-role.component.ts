@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { GetRolesQueryResponse, GET_ROLES } from '../../../../../graphql/queries';
-import { Role } from '@who-ems/builder';
+import { Role } from '@safe/builder';
 
 @Component({
   selector: 'app-chose-role',

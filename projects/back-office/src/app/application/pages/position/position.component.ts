@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, WhoApplicationService, PositionAttributeCategory, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Application, SafeApplicationService, PositionAttributeCategory, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 
@@ -19,7 +19,7 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    private applicationService: WhoApplicationService
+    private applicationService: SafeApplicationService
   ) { }
 
   ngOnInit(): void {
@@ -62,7 +62,7 @@ export class PositionComponent implements OnInit, OnDestroy {
   }
 
   onDelete(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete position attribute',
         content: `Do you confirm the deletion of the position attribute ${positionCategory.title} ?`,

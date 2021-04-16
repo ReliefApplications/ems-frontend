@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationToolbarComponent } from './application-toolbar.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { WhoConfirmModalModule } from '@who-ems/builder';
+import { SafeConfirmModalModule } from '@safe/builder';
 
 @NgModule({
   declarations: [ApplicationToolbarComponent],
@@ -11,7 +11,7 @@ import { WhoConfirmModalModule } from '@who-ems/builder';
     CommonModule,
     MatButtonModule,
     MatDividerModule,
-    WhoConfirmModalModule
+    SafeConfirmModalModule
   ],
   exports: [ApplicationToolbarComponent]
 })

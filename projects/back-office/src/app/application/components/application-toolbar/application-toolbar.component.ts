@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, WhoApplicationService, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
@@ -18,7 +18,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   public canPublish = false;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: MatDialog,
   ) { }
@@ -35,7 +35,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   }
 
   onPublish(): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: `Publish application`,
         content: `Do you confirm the publication of ${this.application?.name} ?`,

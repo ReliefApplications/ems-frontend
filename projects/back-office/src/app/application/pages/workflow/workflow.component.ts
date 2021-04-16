@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Workflow, Step, WhoSnackBarService, WhoConfirmModalComponent, ContentType, WhoApplicationService, WhoWorkflowService } from '@who-ems/builder';
+import { Workflow, Step, SafeSnackBarService, SafeConfirmModalComponent, ContentType, SafeApplicationService, SafeWorkflowService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse, EDIT_PAGE,
@@ -49,12 +49,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private workflowService: WhoWorkflowService,
-    private applicationService: WhoApplicationService,
+    private workflowService: SafeWorkflowService,
+    private applicationService: SafeApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -134,7 +134,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   deleteStep(step: Step, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete step',
         content: `Do you confirm the deletion of the step ${step.name} ?`,

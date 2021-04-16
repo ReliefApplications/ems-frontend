@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { PermissionsManagement, PermissionType, WhoAuthService, WhoSnackBarService } from '@who-ems/builder';
+import { PermissionsManagement, PermissionType, SafeAuthService, SafeSnackBarService } from '@safe/builder';
 import { DeleteDashboardMutationResponse, DELETE_DASHBOARD, AddDashboardMutationResponse, ADD_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardsQueryResponse, GET_DASHBOARDS } from '../../../graphql/queries';
 import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
@@ -29,8 +29,8 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
   ) { }
 
   /*  Load the data and check if user can add new dashboards.

@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Form, WhoFormComponent } from '@who-ems/builder';
+import { Form, SafeFormComponent } from '@safe/builder';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
@@ -12,8 +12,8 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queri
 })
 export class FormAnswerComponent implements OnInit {
 
-  @ViewChild(WhoFormComponent)
-  private formComponent?: WhoFormComponent;
+  @ViewChild(SafeFormComponent)
+  private formComponent?: SafeFormComponent;
 
   // === DATA ===
   public loading = true;

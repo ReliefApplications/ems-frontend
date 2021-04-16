@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { WhoAuthService } from '@who-ems/builder';
+import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,8 +17,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private broadcastService: BroadcastService,
-    private authService: WhoAuthService,
-    private msalService: MsalService
+    private authService: SafeAuthService,
+    private msalService: MsalService,
+    private formService: SafeFormService
   ) { }
 
   ngOnInit(): void {
