@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SafeFormService } from './form.service';
+import { DomService } from './dom.service';
 
-describe('SafeFormService', () => {
-  let service: SafeFormService;
+describe('DomService', () => {
+  let service: DomService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SafeFormService);
+    service = TestBed.inject(DomService);
   });
 
   it('should be created', () => {
