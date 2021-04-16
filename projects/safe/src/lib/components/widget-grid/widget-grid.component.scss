@@ -14,8 +14,8 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 2px 5px 0 rgba(219, 134, 134, .2);
-    border: 1px solid rgb(199, 199, 199);
-    padding: 4px;
+    // border: 1px solid rgb(199, 199, 199);
+    // padding: 4px;
     margin: 4px;
 }
 
@@ -73,10 +73,10 @@
     }
 }
 
-.grid-container {
-    padding: 4px;
-    box-sizing: border-box;
-}
+// .grid-container {
+//     padding: 4px;
+//     box-sizing: border-box;
+// }
 
 .button-add-widget {
     margin: auto;
