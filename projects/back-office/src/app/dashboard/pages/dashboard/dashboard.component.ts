@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.dashboard.step.workflow?.page?.application?.id : '';
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
           this.router.navigate(['/dashboards']);
         }
       },

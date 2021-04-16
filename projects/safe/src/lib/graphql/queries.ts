@@ -114,12 +114,12 @@ export interface GetRelatedFormsQueryResponse {
 // === GET RESOURCE BY ID ===
 
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filters: JSON, $containsFilters: JSON, $display: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
+    records(filters: $filters, containsFilters: $containsFilters) {
       id
       data(display: $display)
     }
@@ -198,6 +198,9 @@ export const GET_RESOURCES = gql`
     forms {
       id
       name
+    }
+    coreForm {
+      uniqueRecord { id }
     }
   }
 }`;

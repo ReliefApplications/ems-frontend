@@ -8,7 +8,7 @@ import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { FormService } from '../../services/form.service';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'safe-form-modal',
@@ -34,11 +34,11 @@ export class SafeFormModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       template?: string,
       recordId?: string | [],
-      locale?: string
+      locale?: string,
     },
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService
+    private snackBar: SafeSnackBarService,
   ) {
     this.containerId = uuidv4();
   }
@@ -83,6 +83,7 @@ export class SafeFormModalComponent implements OnInit {
         }).valueChanges.subscribe(res => {
           this.loading = res.loading;
           this.form = res.data.form;
+
           const survey = new Survey.Model(this.form.structure);
           survey.locale = this.data.locale ? this.data.locale : 'en';
           survey.render(this.containerId);
@@ -134,8 +135,11 @@ export class SafeFormModalComponent implements OnInit {
               display: true
             }
           }).subscribe(res => {
-            if (res.data) {
-              this.dialogRef.close({template: this.data.template, data: res.data.addRecord});
+            if (res.errors) {
+              this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
+              this.dialogRef.close();
+            } else {
+              this.dialogRef.close({template: this.data.template, data: res.data?.addRecord});
             }
           });
         }
