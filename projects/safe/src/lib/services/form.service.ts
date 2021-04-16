@@ -14,7 +14,7 @@ export class SafeFormService {
 
   constructor(
     @Inject('environment') environment: any,
-    private domService: DomService,
+    public domService: DomService,
     public dialog: MatDialog,
     public apollo: Apollo
   ) {
