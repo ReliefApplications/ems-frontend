@@ -65,7 +65,8 @@
             "aot": true,
             "assets": [
               "projects/back-office/src/favicon.ico",
-              "projects/back-office/src/assets"
+              "projects/back-office/src/assets",
+              "projects/back-office/src/web.config"
             ],
             "styles": [
               {
@@ -169,7 +170,8 @@
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
               "projects/back-office/src/favicon.ico",
-              "projects/back-office/src/assets"
+              "projects/back-office/src/assets",
+              "projects/back-office/src/web.config"
             ],
             "styles": [
               {
@@ -232,7 +234,8 @@
             "aot": true,
             "assets": [
               "projects/front-office/src/favicon.ico",
-              "projects/front-office/src/assets"
+              "projects/front-office/src/assets",
+              "projects/front-office/src/web.config"
             ],
             "styles": [
               {
@@ -336,7 +339,8 @@
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
               "projects/front-office/src/favicon.ico",
-              "projects/front-office/src/assets"
+              "projects/front-office/src/assets",
+              "projects/front-office/src/web.config"
             ],
             "styles": [
               "projects/front-office/src/styles.scss",
