@@ -1,8 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SafeSnackBarService } from '@safe/builder';
-import notifications from 'projects/safe/src/lib/const/notifications';
+import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
   selector: 'app-share-url',
@@ -29,7 +28,7 @@ export class ShareUrlComponent implements OnInit {
   */
   onCopy(): void {
     this.clipboard.copy(this.data.url);
-    this.snackBar.openSnackBar(notifications.copied, { duration: 500 });
+    this.snackBar.openSnackBar(NOTIFICATIONS.copied, { duration: 500 });
     this.dialogRef.close();
   }
 }

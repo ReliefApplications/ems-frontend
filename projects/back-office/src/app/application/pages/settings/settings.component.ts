@@ -2,14 +2,13 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-settings',
@@ -80,7 +79,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(notifications.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });

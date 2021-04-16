@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService } from '@safe/builder';
+import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -14,7 +14,6 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE
 } from '../../../graphql/mutations';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-form',
@@ -124,10 +123,10 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(notifications.objectNotUpdated('step', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message));
         } else {
           if (res.data) {
-            this.snackBar.openSnackBar(notifications.objectEdited('step', tabName));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
             this.step = { ...this.step, name: res.data.editStep.name };
             this.workflowService.updateStepName(res.data.editStep);
           }
@@ -142,10 +141,10 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(notifications.objectNotUpdated('page', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message));
         } else {
           if (res.data) {
-            this.snackBar.openSnackBar(notifications.objectEdited('page', tabName));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName));
             const newPage = { ...this.page, name: res.data.editPage.name };
             this.page = newPage;
             this.applicationService.updatePageName(res.data.editPage);

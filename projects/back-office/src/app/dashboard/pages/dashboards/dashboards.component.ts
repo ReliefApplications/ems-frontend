@@ -4,11 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { PermissionsManagement, PermissionType, SafeAuthService, SafeSnackBarService } from '@safe/builder';
+import { PermissionsManagement, PermissionType, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { DeleteDashboardMutationResponse, DELETE_DASHBOARD, AddDashboardMutationResponse, ADD_DASHBOARD } from '../../../graphql/mutations';
 import { GetDashboardsQueryResponse, GET_DASHBOARDS } from '../../../graphql/queries';
 import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-dashboards',
@@ -65,7 +64,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(notifications.objectDeleted('Dashboard'), { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'), { duration: 1000 });
         this.dashboards = this.dashboards.filter(x => {
           return x.id !== res.data?.deleteDashboard.id;
         });
@@ -86,7 +85,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
             name: value.name
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(notifications.objectCreated('dashboard', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('dashboard', value.name));
           const id = res.data?.addDashboard.id;
           this.router.navigate(['/dashboards', id]);
         });

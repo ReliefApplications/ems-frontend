@@ -1,6 +1,6 @@
 /*  Notifications
 */
-const notifications = {
+export const NOTIFICATIONS = {
     appPublished(name: any): string { return `Application ${name} published.`; } ,
     userInvalidActions(action: any): string  { return `User could not be ${action}.`; } ,
     accessNotProvided(type: any): string  { return `No access provided to this ${type}.`; } ,
@@ -26,5 +26,3 @@ const notifications = {
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
 };
-
-export default notifications;

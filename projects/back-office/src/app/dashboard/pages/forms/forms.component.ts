@@ -11,14 +11,14 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  Form
+  Form,
+  NOTIFICATIONS
 } from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 
 @Component({
@@ -123,7 +123,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(notifications.objectDeleted('Form'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
           this.dataSource.data = this.dataSource.data.filter(x => {
             return x.id !== element.id;
           });
@@ -152,7 +152,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           variables: data
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar(notifications.objectNotCreated('form', res.errors[0].message), { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('form', res.errors[0].message), { error: true });
           } else {
             if (res.data) {
               const { id } = res.data.addForm;

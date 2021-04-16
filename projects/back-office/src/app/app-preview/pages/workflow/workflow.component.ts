@@ -2,12 +2,11 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentType, Step, SafeSnackBarService, Workflow } from '@safe/builder';
+import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from '@safe/builder';
 
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-workflow',
@@ -61,7 +60,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             this.stepChange({selectedIndex: 0});
           }
         } else {
-          this.snackBar.openSnackBar(notifications.accessNotProvided('workflow'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('workflow'), { error: true });
         }
       },
         (err) => {

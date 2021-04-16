@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, User, SafeAuthService, SafeSnackBarService, SafeApplicationService, Permission, Permissions, ContentType } from '@safe/builder';
-import notifications from 'projects/safe/src/lib/const/notifications';
+import { Application, User, SafeAuthService, SafeSnackBarService, SafeApplicationService,
+  Permission, Permissions, ContentType, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.applicationService.loadApplication(applications[0].id || '');
           this.permissions = user.permissions || [];
         } else {
-          this.snackBar.openSnackBar(notifications.accessNotProvided('platform'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
         }
       }
     });

@@ -2,12 +2,11 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SafeDownloadService, SafeSnackBarService } from '@safe/builder';
+import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
 import { environment } from '../../../../environments/environment';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-resource',
@@ -56,7 +55,7 @@ export class ResourceComponent implements OnInit {
           this.setDisplayedColumns(false);
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar(notifications.accessNotProvided('resource'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
           this.router.navigate(['/resources']);
         }
       }, (err) => {
@@ -99,7 +98,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(notifications.objectDeleted('Record'), { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { duration: 1000 });
       this.dataSourceRecords = this.dataSourceRecords.filter(x => {
         return x.id !== id;
       });
@@ -116,7 +115,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(notifications.objectDeleted('Form'), { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
       this.dataSourceForms = this.dataSourceForms.filter(x => {
         return x.id !== id;
       });

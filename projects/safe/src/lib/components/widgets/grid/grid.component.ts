@@ -32,7 +32,7 @@ import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 import { SafeDownloadService } from '../../../services/download.service';
-import notifications from '../../../const/notifications';
+import { NOTIFICATIONS } from '../../../const/notifications';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -646,7 +646,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).subscribe((res) => {
           this.reloadData();
           this.layoutService.setRightSidenav(null);
-          this.snackBar.openSnackBar(notifications.dataRecovered);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
         });
 
       }
@@ -873,7 +873,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         if (res.data) {
           const record = res.data.editRecord;
           if (record) {
-            this.snackBar.openSnackBar(notifications.addRowsToRecord(selectedRecords.length, resourceField.name,
+            this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, resourceField.name,
               value.record.data[targetFormField]));
           }
         }

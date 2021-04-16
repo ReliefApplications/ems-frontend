@@ -12,7 +12,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
-import notifications from 'projects/safe/src/lib/const/notifications';
+import { NOTIFICATIONS } from '../../../../const/notifications';
 
 @Component({
   selector: 'safe-invite-user',
@@ -110,7 +110,7 @@ export class SafeInviteUserComponent implements OnInit {
         if (!this.data.users.find((user: any) => user.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
         } else {
-          this.snackBar.openSnackBar(notifications.objectAlreadyExists('application', value));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('application', value));
         }
       }
       this.inviteForm.get('email')?.setValue(this.emails);
@@ -165,7 +165,7 @@ export class SafeInviteUserComponent implements OnInit {
           }
         }
         if (emailRegistered) {
-          this.snackBar.openSnackBar(notifications.emailRegistered);
+          this.snackBar.openSnackBar(NOTIFICATIONS.emailRegistered);
         }
       };
 
@@ -175,7 +175,7 @@ export class SafeInviteUserComponent implements OnInit {
 
     } else {
       if (files.length > 0) {
-        this.snackBar.openSnackBar(notifications.isFormatValid, {error: true});
+        this.snackBar.openSnackBar(NOTIFICATIONS.isFormatValid, {error: true});
       }
       this.fileReset();
     }

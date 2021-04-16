@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService } from '@safe/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
@@ -16,7 +16,6 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-applications',
@@ -112,7 +111,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(notifications.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -136,13 +135,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           if (res.errors) {
             if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(notifications.objectAlreadyExists('app', value.name), { error: true });
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
 
             } else {
-              this.snackBar.openSnackBar(notifications.objectNotCreated('App', res.errors[0].message));
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
             }
           } else {
-            this.snackBar.openSnackBar(notifications.objectCreated(value.name, 'application'));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
             const id = res.data?.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
@@ -162,7 +161,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }).subscribe((res) => {
       if (res.data) {
-        this.snackBar.openSnackBar(notifications.objectEdited('access', element.name));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', element.name));
         const index = this.applications.data.findIndex(x => x.id === element.id);
         this.applications.data[index] = res.data.editApplication;
         this.applications.data = this.applications.data;

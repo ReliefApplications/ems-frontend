@@ -46,8 +46,7 @@ import {
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
-import notifications from '../const/notifications';
-import { R } from '@angular/cdk/keycodes';
+import { NOTIFICATIONS } from '../const/notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -92,9 +91,9 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(notifications.objectNotUpdated('app', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('app', res.errors[0].message));
         } else {
-          this.snackBar.openSnackBar(notifications.objectEdited('application', value.name, ));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name, ));
         }
       });
   }
@@ -118,12 +117,12 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.appPublished(res.data.editApplication.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.appPublished(res.data.editApplication.name));
           this.router.navigate(['/applications']);
         }
       });
     } else {
-      this.snackBar.openSnackBar(notifications.noObjectOpened('application'), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('application'), { error: true });
     }
   }
 
@@ -137,7 +136,7 @@ export class SafeApplicationService {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(notifications.objectDeleted('Page'));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
         const application = this._application.getValue();
         if (application) {
           const newApplication = { ...application, pages: application.pages?.filter(x => x.id !== res.data?.deletePage.id) };
@@ -159,7 +158,7 @@ export class SafeApplicationService {
         pages
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(notifications.objectReordered('Pages'));
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
     });
   }
 
@@ -193,7 +192,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectCreated(value.name, 'page'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
@@ -202,7 +201,7 @@ export class SafeApplicationService {
         }
       });
     } else {
-      this.snackBar.openSnackBar(notifications.noObjectOpened('application'), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('application'), { error: true });
     }
   }
 
@@ -219,7 +218,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectCreated(value.title, 'role'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'));
           const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
           this._application.next(newApplication);
         }
@@ -241,7 +240,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectEdited('role', role.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title));
           const newApplication: Application = { ...application,
             roles: application.roles?.map(x => {
               if (x.id === role.id) {
@@ -278,7 +277,7 @@ export class SafeApplicationService {
           id: role.id
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(notifications.objectDeleted(role.title));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
         const newApplication = { ...application, roles: application.roles?.filter(x => x.id !== role.id) };
         this._application.next(newApplication);
       });
@@ -299,11 +298,11 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
-          this.snackBar.openSnackBar(notifications.usersActions('deleted', deletedUsers.length), { duration: 3000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { duration: 3000 });
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
           this._application.next(newApplication);
         } else {
-          this.snackBar.openSnackBar(notifications.userInvalidActions('deleted'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
         }
         resolved();
       });
@@ -324,11 +323,11 @@ export class SafeApplicationService {
         }
       }).subscribe((res: any) => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.usersActions('invited', res.data.addRoleToUsers.length));
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
           const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
           this._application.next(newApplication);
         } else {
-          this.snackBar.openSnackBar(notifications.userInvalidActions('invited'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
         }
       });
     }
@@ -348,7 +347,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectEdited('roles', user.username));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
           const index = application.users?.indexOf(user);
           if (application.users && index) {
             application.users[index] = res.data.editUser;
@@ -372,7 +371,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectCreated(value.title, 'position category'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'position category'));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory]) };
           this._application.next(newApplication);
@@ -394,7 +393,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectDeleted(positionCategory.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(positionCategory.title));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
               x.id !== res.data?.deletePositionAttributeCategory.id) };
@@ -418,9 +417,9 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(notifications.objectAlreadyExists('position category', value.title), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('position category', value.title), { error: true });
         } else {
-          this.snackBar.openSnackBar(notifications.objectEdited('position category', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('position category', value.title));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.map(pos => {
               if (pos.title === positionCategory.title) {
@@ -448,7 +447,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectCreated('channel', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
           const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
           this._application.next(newApplication);
         }
@@ -468,7 +467,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectDeleted(channel.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(channel.title));
           const newApplication: Application = { ...application,
             channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id) };
           this._application.next(newApplication);
@@ -493,7 +492,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(notifications.objectCreated('subscription', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', value.title));
           const newApplication: Application = { ...application,
             subscriptions: application.subscriptions?.concat([res.data.addSubscription]) };
           this._application.next(newApplication);
@@ -515,7 +514,7 @@ export class SafeApplicationService {
           routingKey: value
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(notifications.objectDeleted('Subscription'));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'));
         const newApplication = {...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value)};
         this._application.next(newApplication);
       });
@@ -540,7 +539,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const subscription = res.data.editSubscription;
-          this.snackBar.openSnackBar(notifications.objectEdited('subscription', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('subscription', value.title));
           const newApplication = {...application, subscriptions: application.subscriptions?.map(sub => {
             if (sub.routingKey === previousSubscription) {
               sub = subscription;

@@ -4,9 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
-import { Dashboard, SafeSnackBarService } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import notifications from 'projects/safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-dashboard',
@@ -49,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar(notifications.accessNotProvided('dashboard'), { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
           this.router.navigate(['/dashboards']);
         }
       },
