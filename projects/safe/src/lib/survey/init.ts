@@ -7,6 +7,7 @@ import { init as initCountriesComponent } from './components/countries';
 import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initCustomWidget } from './widgets/customwidget';
+import addCustomFunctions from '../utils/custom-functions';
 
 /*  Execute all init methods of custom SurveyJS.
 */
@@ -17,4 +18,5 @@ export function initCustomWidgets(Survey: any, API_URL: string): void {
   initResourceComponent(Survey, API_URL);
   initResourcesComponent(Survey, API_URL);
   initCustomWidget(Survey);
+  addCustomFunctions(Survey);
 }

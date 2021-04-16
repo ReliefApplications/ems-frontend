@@ -9,6 +9,7 @@ import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { FormService } from '../../services/form.service';
+import addCustomFunctions from '../../utils/custom-functions';
 
 @Component({
   selector: 'safe-form-modal',
@@ -67,7 +68,7 @@ export class SafeFormModalComponent implements OnInit {
           this.form = record.form;
           this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
           this.loading = false;
-          this.formService.addCustomFunctions(record);
+          addCustomFunctions(Survey, record);
           const survey = new Survey.Model(this.form?.structure);
           survey.data = this.isMultiEdition ? null : record.data;
           survey.locale = this.data.locale ? this.data.locale : 'en';

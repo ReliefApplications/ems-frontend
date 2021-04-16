@@ -8,6 +8,7 @@ import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
+import addCustomFunctions from '../../utils/custom-functions';
 
 @Component({
   selector: 'safe-record-modal',
@@ -68,7 +69,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.modifiedAt = this.record.modifiedAt || null;
       this.form = this.record.form;
       this.loading = res.loading;
-      this.formService.addCustomFunctions(this.record);
+      addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';

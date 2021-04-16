@@ -13,6 +13,7 @@ import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
+import addCustomFunctions from '../../utils/custom-functions';
 
 @Component({
   selector: 'safe-form',
@@ -67,7 +68,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       .applyTheme();
 
     // Add custom functions for the expression question
-    this.formService.addCustomFunctions(this.record);
+    addCustomFunctions(Survey, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
