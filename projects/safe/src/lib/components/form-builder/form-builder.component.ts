@@ -94,6 +94,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
+
+    // Add custom functions for the expression question
+    this.formService.addCustomFunctions();
+    console.log(Survey.FunctionFactory.Instance.getAll());
   }
 
   ngOnChanges(): void {

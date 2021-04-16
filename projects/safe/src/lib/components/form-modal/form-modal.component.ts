@@ -67,6 +67,7 @@ export class SafeFormModalComponent implements OnInit {
           this.form = record.form;
           this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
           this.loading = false;
+          this.formService.addCustomFunctions(record);
           const survey = new Survey.Model(this.form?.structure);
           survey.data = this.isMultiEdition ? null : record.data;
           survey.locale = this.data.locale ? this.data.locale : 'en';

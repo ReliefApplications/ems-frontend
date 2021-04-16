@@ -66,6 +66,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       .StylesManager
       .applyTheme();
 
+    // Add custom functions for the expression question
+    this.formService.addCustomFunctions(this.record);
+
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
 
