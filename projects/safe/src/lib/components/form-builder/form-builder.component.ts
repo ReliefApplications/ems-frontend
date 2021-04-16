@@ -97,7 +97,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     // Add custom functions for the expression question
     this.formService.addCustomFunctions();
-    console.log(Survey.FunctionFactory.Instance.getAll());
   }
 
   ngOnChanges(): void {
