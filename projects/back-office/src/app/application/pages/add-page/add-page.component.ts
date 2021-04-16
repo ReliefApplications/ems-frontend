@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService } from '@safe/builder';
+import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
@@ -132,6 +132,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           const id = res.data?.addForm.id || '';
           this.pageForm.controls.content.setValue(id);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', value.name));
+
           this.onSubmit();
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

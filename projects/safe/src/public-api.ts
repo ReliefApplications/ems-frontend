@@ -11,6 +11,9 @@ export * from './lib/services/download.service';
 export * from './lib/services/workflow.service';
 export * from './lib/services/form.service';
 
+// === CONST ===
+export * from './lib/const/notifications';
+
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
 
