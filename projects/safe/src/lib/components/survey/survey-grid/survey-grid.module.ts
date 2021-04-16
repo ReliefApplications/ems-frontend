@@ -5,8 +5,6 @@ import { GridModule, GroupModule } from '@progress/kendo-angular-grid';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatGridListModule } from '@angular/material/grid-list';
-
 
 @NgModule({
   declarations: [SafeSurveyGridComponent],
@@ -16,8 +14,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
         GroupModule,
         ButtonModule,
         MatSelectModule,
-        MatDialogModule,
-        MatGridListModule
+        MatDialogModule
     ],
   exports: [SafeSurveyGridComponent]
 })

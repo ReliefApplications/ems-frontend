@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
