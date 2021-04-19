@@ -67,7 +67,7 @@ export class SafeGridSettingsComponent implements OnInit {
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update : true]
       }),
-      details: [tileSettings && tileSettings.details ? tileSettings.details : true],
+      details: [tileSettings ? tileSettings.details : true],
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
