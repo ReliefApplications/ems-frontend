@@ -46,6 +46,7 @@ import {
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
+import { NOTIFICATIONS } from '../const/notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -90,9 +91,9 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The App was not changed. ' + res.errors[0].message);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('app', res.errors[0].message));
         } else {
-          this.snackBar.openSnackBar('Application updated');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name, ));
         }
       });
   }
@@ -116,12 +117,12 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`Application ${res.data.editApplication.name} published`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.appPublished(res.data.editApplication.name));
           this.router.navigate(['/applications']);
         }
       });
     } else {
-      this.snackBar.openSnackBar('No opened application.', { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('application'), { error: true });
     }
   }
 
@@ -135,7 +136,7 @@ export class SafeApplicationService {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar('Page deleted');
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
         const application = this._application.getValue();
         if (application) {
           const newApplication = { ...application, pages: application.pages?.filter(x => x.id !== res.data?.deletePage.id) };
@@ -157,7 +158,7 @@ export class SafeApplicationService {
         pages
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Pages reordered');
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
     });
   }
 
@@ -191,7 +192,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${value.name} page created`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
@@ -200,7 +201,7 @@ export class SafeApplicationService {
         }
       });
     } else {
-      this.snackBar.openSnackBar('No opened application.', { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('application'), { error: true });
     }
   }
 
@@ -217,7 +218,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${value.title} role created`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'));
           const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
           this._application.next(newApplication);
         }
@@ -239,7 +240,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${role.title} role updated.`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title));
           const newApplication: Application = { ...application,
             roles: application.roles?.map(x => {
               if (x.id === role.id) {
@@ -276,7 +277,7 @@ export class SafeApplicationService {
           id: role.id
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(`${role.title} role deleted.`);
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
         const newApplication = { ...application, roles: application.roles?.filter(x => x.id !== role.id) };
         this._application.next(newApplication);
       });
@@ -297,12 +298,11 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
-          this.snackBar.openSnackBar(deletedUsers.length > 1 ? `${deletedUsers.length} users were deleted` : 'User was deleted',
-          { duration: 3000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { duration: 3000 });
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
           this._application.next(newApplication);
         } else {
-          this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
         }
         resolved();
       });
@@ -323,11 +323,11 @@ export class SafeApplicationService {
         }
       }).subscribe((res: any) => {
         if (res.data) {
-          this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
           const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
           this._application.next(newApplication);
         } else {
-          this.snackBar.openSnackBar('User could not be invited.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
         }
       });
     }
@@ -347,7 +347,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${user.username} roles updated.`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
           const index = application.users?.indexOf(user);
           if (application.users && index) {
             application.users[index] = res.data.editUser;
@@ -371,7 +371,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${value.title} position category created`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'position category'));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory]) };
           this._application.next(newApplication);
@@ -393,7 +393,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${positionCategory.title} position category deleted.`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(positionCategory.title));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
               x.id !== res.data?.deletePositionAttributeCategory.id) };
@@ -417,9 +417,9 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('Position category with this title already exists.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('position category', value.title), { error: true });
         } else {
-          this.snackBar.openSnackBar('Edited position category.');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('position category', value.title));
           const newApplication: Application = { ...application,
             positionAttributeCategories: application.positionAttributeCategories?.map(pos => {
               if (pos.title === positionCategory.title) {
@@ -447,7 +447,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${value.title} channel created.`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
           const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
           this._application.next(newApplication);
         }
@@ -467,7 +467,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${channel.title} channel deleted.`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(channel.title));
           const newApplication: Application = { ...application,
             channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id) };
           this._application.next(newApplication);
@@ -492,7 +492,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar('New subscription created.');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', value.title));
           const newApplication: Application = { ...application,
             subscriptions: application.subscriptions?.concat([res.data.addSubscription]) };
           this._application.next(newApplication);
@@ -514,7 +514,7 @@ export class SafeApplicationService {
           routingKey: value
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar('Subscription removed.');
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'));
         const newApplication = {...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value)};
         this._application.next(newApplication);
       });
@@ -539,7 +539,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const subscription = res.data.editSubscription;
-          this.snackBar.openSnackBar('Edited subscription.');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('subscription', value.title));
           const newApplication = {...application, subscriptions: application.subscriptions?.map(sub => {
             if (sub.routingKey === previousSubscription) {
               sub = subscription;

@@ -5,7 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Workflow, Step, SafeSnackBarService, SafeConfirmModalComponent, ContentType, SafeApplicationService, SafeWorkflowService } from '@safe/builder';
+import { Workflow, Step, SafeSnackBarService, SafeConfirmModalComponent, ContentType,
+  SafeApplicationService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse, EDIT_PAGE,
@@ -151,7 +152,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.data) {
-            this.snackBar.openSnackBar('Step deleted', { duration: 1000 });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'), { duration: 1000 });
             this.steps = this.steps.filter(x => {
               return x.id !== res.data?.deleteStep.id;
             });
@@ -186,7 +187,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: this.steps.map(step => step.id)
         }
       }).subscribe(() => {
-        this.snackBar.openSnackBar('Steps reordered');
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
       });
     }
   }
@@ -232,9 +233,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex = 0;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
-      this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
+      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
     } else {
-      this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
     }
   }
 

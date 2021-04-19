@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent } from '@safe/builder';
+import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
   selector: 'app-form-builder',
@@ -106,7 +106,7 @@ export class FormBuilderComponent implements OnInit {
             this.authService.canLogout.next(!this.hasChanges);
           }
         } else {
-          this.snackBar.openSnackBar('No access provided to this form.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('form'), { error: true });
           // redirect to default screen if error
           this.router.navigate(['/forms']);
         }
@@ -151,7 +151,7 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
-          this.snackBar.openSnackBar('Form updated');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name, ));
           this.form = res.data?.editForm;
           this.structure = structure; // Update current form to
           this.hasChanges = false;
@@ -183,10 +183,10 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('Unable to update the status: ' + res.errors[0].message);
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
         statusModal.close();
       } else {
-        this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value), { duration: 1000 });
         this.form = { ...this.form, status: res.data?.editForm.status };
         statusModal.close();
       }
@@ -245,10 +245,10 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('Unable to update the form: ' + res.errors[0].message);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar('Name updated', { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName), { duration: 1000 });
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
         }
@@ -273,9 +273,10 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('Unable to update the access: ' + res.errors[0].message);
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
         statusModal.close();
       } else {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
         this.form = res.data?.editForm;
         statusModal.close();
       }
