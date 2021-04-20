@@ -138,7 +138,8 @@ export class SafeGridSettingsComponent implements OnInit {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
-      goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
+      goToRelativeStep: [value && value.goToRelativeStep ? value.goToRelativeStep : false],
+      passDataToRelativeStep: [value && value.passDataToRelativeStep ? value.passDataToRelativeStep : 1],
       passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],

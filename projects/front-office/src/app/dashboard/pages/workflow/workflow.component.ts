@@ -76,8 +76,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Trigger step changes from grid widgets
   */
   onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
+    if (elementRef.goToRelativeStep) {
+      elementRef.goToRelativeStep.subscribe((event: any) => {
         if (event) {
           if (this.selectedIndex + 1 < this.steps.length) {
             stepper.next();

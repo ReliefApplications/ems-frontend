@@ -25,7 +25,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() addNewWidget: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter();
 
   get dashboardMenuRowSpan(): number {
     if (this.widgets && this.widgets.length > 0) {
@@ -110,8 +110,8 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
       },
       panelClass: 'expanded-widget-dialog'
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
-      this.goToNextStep.emit(event);
+    dialogRef.componentInstance.goToRelativeStep.subscribe((event: any) => {
+      this.goToRelativeStep.emit(event);
       dialogRef.close();
     });
   }

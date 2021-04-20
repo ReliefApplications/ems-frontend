@@ -11,7 +11,7 @@ export class SafeWidgetComponent implements OnInit {
   @Input() header = true;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter();
 
   constructor() { }
 

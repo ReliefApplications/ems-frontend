@@ -130,7 +130,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter(); // change name and type
 
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
@@ -804,8 +804,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.workflowService.storeRecords(records);
       }
     }
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+    if (options.goToRelativeStep) {
+      this.goToRelativeStep.emit(options.passDataToRelativeStep);
     } else {
       this.reloadData();
     }

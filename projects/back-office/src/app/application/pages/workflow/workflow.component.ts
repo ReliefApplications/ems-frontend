@@ -212,10 +212,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
+    if (elementRef.goToRelativeStep) {
+      elementRef.goToRelativeStep.subscribe((event: any) => {
         if (event) {
-          this.goToNextStep();
+          this.goToRelativeStep(event);
         }
       });
     }
@@ -223,16 +223,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Navigate to the next step if possible and change selected step / index consequently
   */
-  private goToNextStep(): void {
-    if (this.selectedStepIndex + 1 < this.steps.length) {
-      this.selectedStepIndex += 1;
+  private goToRelativeStep(event: any): void {
+    const value = parseInt(event, 10);
+    const relativeStepIndex = this.selectedStepIndex + value;
+    if (relativeStepIndex < this.steps.length && relativeStepIndex >= 0) {
+      this.selectedStepIndex += value;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
-    } else if (this.selectedStepIndex + 1 === this.steps.length) {
+    } else if (relativeStepIndex === this.steps.length) {
       this.selectedStepIndex = 0;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
       this.snackBar.openSnackBar(`Back to ${this.steps[0].name} step.`);
+    } else if (relativeStepIndex < 0) {
+      this.selectedStepIndex = this.steps.length - 1;
+      this.selectedStep = this.steps[this.selectedStepIndex];
+      this.navigateToSelectedStep();
     } else {
       this.snackBar.openSnackBar('Cannot go to next step.', { error: true });
     }

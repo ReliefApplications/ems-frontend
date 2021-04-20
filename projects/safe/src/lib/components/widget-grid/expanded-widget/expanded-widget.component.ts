@@ -11,7 +11,7 @@ export class SafeExpandedWidgetComponent implements OnInit {
   @Input() widget: any;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter();
 
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedWidgetComponent>,

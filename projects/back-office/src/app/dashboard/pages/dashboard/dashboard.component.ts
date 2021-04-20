@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter();
 
   constructor(
     private applicationService: SafeApplicationService,

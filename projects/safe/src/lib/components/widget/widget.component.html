@@ -5,7 +5,7 @@
     <safe-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></safe-scheduler>
 </ng-container>
 <ng-container *ngIf="widget.component === 'grid'">
-    <safe-grid class="widget-content" [header]="header" [settings]="widget.settings" (goToNextStep)="goToNextStep.emit($event)"></safe-grid>
+    <safe-grid class="widget-content" [header]="header" [settings]="widget.settings" (goToRelativeStep)="goToRelativeStep.emit($event)"></safe-grid>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
     <safe-map class="widget-content" [header]="header" [settings]="widget.settings"></safe-map>

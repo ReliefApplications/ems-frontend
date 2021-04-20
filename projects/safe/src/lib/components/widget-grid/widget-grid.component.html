@@ -8,7 +8,7 @@
                     cdkDragBoundary=".grid-container">
                     <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
                                            (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
-                    <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
+                    <safe-widget [widget]="widget" (goToRelativeStep)="goToRelativeStep.emit($event)"></safe-widget>
                     <button class="widget-handle" mat-icon-button cdkDragHandle *ngIf="canUpdate">
                         <mat-icon>drag_indicator</mat-icon>
                     </button>

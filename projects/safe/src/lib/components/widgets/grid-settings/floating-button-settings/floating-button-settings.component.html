@@ -13,8 +13,16 @@
           <mat-label>Button name</mat-label>
           <input matInput formControlName="name" type="string">
         </mat-form-field>
-        <mat-checkbox *ngIf="!isDashboard" formControlName="goToNextStep">Go to next step</mat-checkbox>
-        <span class="info-row" *ngIf="!isDashboard && buttonForm.value.goToNextStep && canPassData">
+        <div *ngIf="!isDashboard"  class="update-form">
+          <mat-checkbox formControlName="goToRelativeStep">Go to relative step</mat-checkbox>
+          <div *ngIf="buttonForm.value.goToRelativeStep" class="update-list">
+            <mat-form-field appearance="outline">
+              <mat-label>Step index</mat-label>
+              <input matInput formControlName="passDataToRelativeStep" type="number" />
+            </mat-form-field>          
+          </div>
+        </div>
+        <span class="info-row" *ngIf="!isDashboard && buttonForm.value.goToRelativeStep && canPassData">
           <mat-checkbox formControlName="passDataToNextStep">Prefill next step form with selected data</mat-checkbox>
           <mat-icon class="info-icon"
             matTooltip="When enabled, the next step should be a form containing some matching fields with this grid's records AND a 'Resources' question referring to this grid's records. The next step form will then be prefilled with values from selected records and the 'Resources' question will also be prefilled with selected records."
