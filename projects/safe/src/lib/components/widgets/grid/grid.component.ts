@@ -13,7 +13,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -33,6 +33,7 @@ import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
+import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -880,6 +881,45 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       });
     }
   }
+
+  /* Dialog to open if text or comment overlows
+  */
+  public onExpandComment(myCommentItem: any, rowTitle: any): void {
+    const mydata = {
+      textComment: myCommentItem[rowTitle],
+      titleComment: rowTitle
+    };
+    const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
+      data: {
+        comment: mydata
+      },
+      autoFocus: false,
+      position: {
+        bottom: '0',
+        right: '0'
+      },
+      panelClass: 'expanded-widget-dialog'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if ( result.data !== myCommentItem[rowTitle] ) {
+        this.gridData.data.find(x => x.id === myCommentItem.id)[rowTitle] = result.data;
+        this.items.find(x => x.id === myCommentItem.id)[rowTitle] = result.data;
+        if ( this.updatedItems.find( x => x.id === myCommentItem.id ) !== undefined ){
+          this.updatedItems.find( x => x.id === myCommentItem.id )[rowTitle] = result.data;
+        }
+        else {
+          this.updatedItems.push( { [rowTitle]: result.data, id: myCommentItem.id } );
+        }
+      }
+    });
+  }
+
+  /* Check if element overflows
+  */
+  isEllipsisActive( e: any ): boolean {
+    return ( e.offsetWidth < e.scrollWidth );
+  }
+
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {

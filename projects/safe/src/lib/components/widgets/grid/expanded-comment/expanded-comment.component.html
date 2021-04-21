@@ -1,0 +1,7 @@
+<button mat-icon-button mat-dialog-close (click)="onClose()" color="warn" class="close-settings">
+    <mat-icon>close</mat-icon>
+</button>
+<div mat-dialog-content class="mat-dialog-content">
+    <h1>{{data.comment.titleComment}}</h1>
+    <textarea id="newComment" [(ngModel)]="newComment" rows="15" class="inputMultiline"></textarea>
+</div>

@@ -8,7 +8,9 @@
     justify-content: space-between;
 }
 
-:host ::ng-deep .k-grid-content, .k-grid-content-locked, .k-pager-wrap {
+:host ::ng-deep .k-grid-content,
+.k-grid-content-locked,
+.k-pager-wrap {
     white-space: nowrap !important;
 }
 
@@ -29,4 +31,30 @@ textarea {
             width: 100%;
         }
     }
+}
+
+.elementContainer {
+    display: inline-block;
+    width: 100%;
+}
+
+.textLeft {
+    float: left;
+    max-width: calc(100% - 30px);
+    overflow: hidden;
+}
+
+.iconRight {
+    float: right;
+}
+
+.buttonIconExpand {
+    height: 20px !important;
+    width: 20px !important;
+    vertical-align: top;
+}
+
+.iconExpand {
+    font-size: 16px !important;
+    vertical-align: top;
 }
