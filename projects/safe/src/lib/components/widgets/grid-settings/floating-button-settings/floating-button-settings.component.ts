@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -6,15 +6,22 @@ import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
+import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 @Component({
   selector: 'safe-floating-button-settings',
   templateUrl: './floating-button-settings.component.html',
-  styleUrls: ['./floating-button-settings.component.scss']
+  styleUrls: ['./floating-button-settings.component.scss'],
+  providers: [
+    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE })}
+  ]
 })
-export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
+
+export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
   @Input() buttonForm: FormGroup = new FormGroup({});
@@ -30,6 +37,12 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   public canPassData = false;
   private workflowSubscription?: Subscription;
 
+  // Emails
+  readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  public emails: string[] = [];
+
+  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
+
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
   }
@@ -41,6 +54,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log('distribution list', this.buttonForm.get('distributionList')?.value);
     if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) {
       this.isDashboard = true;
     } else {
@@ -113,6 +127,17 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
       }
       this.buttonForm.get('targetFormField')?.updateValueAndValidity();
     });
+
+    this.buttonForm.get('sendMail')?.valueChanges.subscribe(value => {
+      console.log('sendEmail');
+      if (value) {
+        this.buttonForm.get('distributionList')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm.get('distributionList')?.clearValidators();
+      }
+      this.buttonForm.get('distributionList')?.updateValueAndValidity();
+    });
+    this.emails = [...this.buttonForm.get('distributionList')?.value];
   }
 
   compareFields(field1: any, field2: any): boolean {
@@ -151,6 +176,32 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
+  }
+
+  add(event: MatChipInputEvent | any): void {
+    // use setTimeout to prevent add input value on focusout
+    setTimeout(() => {
+      const input = event.type === 'focusout' ? this.emailInput?.nativeElement : event.input;
+      const value = event.type === 'focusout' ? this.emailInput?.nativeElement.value : event.value;
+
+      // Add the mail
+      if ((value || '').trim()) {
+        this.emails.push(value.trim());
+      }
+      this.buttonForm.get('distributionList')?.setValue(this.emails);
+      // Reset the input value
+      if (input) {
+        input.value = '';
+      }
+    }, event.type === 'focusout' ? 500 : 0);
+  }
+
+  remove(email: string): void {
+    const index = this.emails.indexOf(email);
+    if (index >= 0) {
+      this.emails.splice(index, 1);
+    }
+    this.buttonForm.get('distributionList')?.setValue(this.emails);
   }
 
   ngOnDestroy(): void {

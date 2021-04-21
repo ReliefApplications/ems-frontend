@@ -133,6 +133,35 @@
             </mat-select>
           </mat-form-field>
         </ng-container>
+        <mat-checkbox formControlName="sendMail">Send mail</mat-checkbox>
+        <ng-container *ngIf="buttonForm.value.sendMail">
+          <mat-form-field class="chip-list" appearance="outline">
+            <mat-label>Distribution list</mat-label>
+            <mat-chip-list #chipList aria-label="Emails chip list">
+              <mat-chip
+                *ngFor="let email of emails"
+                [selectable]="true"
+                [removable]="true"
+                (removed)="remove(email)">
+                {{email}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input
+                #emailInput
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (focusout)="add($event)"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+          </mat-form-field>
+          <!-- <mat-form-field appearance="outline">
+            <mat-label>Distribution list</mat-label>
+            <mat-select formControlName="distributionList" multiple>
+              <mat-option [value]="'pacome@reliefapplications.org'">pacome@reliefapplications.org</mat-option>
+              <mat-option [value]="'pacome.rivier@hotmail.fr'">pacome.rivier@hotmail.fr</mat-option>
+            </mat-select>
+          </mat-form-field> -->
+        </ng-container>
       </ng-container>
     </div>
   </form>
