@@ -5,6 +5,9 @@ import {
   GetResourceByIdQueryResponse,
   GetResourcesQueryResponse
 } from '../../graphql/queries';
+import { BehaviorSubject } from 'rxjs';
+
+export const resourcesFilterValues = new BehaviorSubject<{field: string, operator: string, value: string}>({field: '', operator: '', value: ''});
 
 const conditions = [
   {value: 'eq', text: 'equals'},
@@ -14,6 +17,7 @@ const conditions = [
   {value: 'gte', text: 'greater or equals'},
   {value: 'lte', text: 'less or equals'}
 ];
+
 
 export function init(Survey: any, apollo: Apollo): void {
   let resourcesForms: any[] = [];
@@ -249,6 +253,7 @@ export function init(Survey: any, apollo: Apollo): void {
       if (question.resource) {
         question.registerFunctionOnPropertyValueChanged('filterCondition',
           () => {
+            resourcesFilterValues.next({...resourcesFilterValues.getValue(), operator: question.filterCondition});
             advancedFilters.map((i: any) => {
               i.operator = question.filterCondition;
             });
@@ -271,14 +276,21 @@ export function init(Survey: any, apollo: Apollo): void {
       }
     },
     populateChoices(question: any): void {
-      getResourceById({id: question.resource, advancedFilters}).subscribe((response) => {
-        const serverRes = response.data.resource.records || [];
-        const res: any[] = [];
-        for (const item of serverRes) {
-          res.push({ value: item.id, text: item.data[question.displayField] });
+      if (question.displayAsGrid) {
+        const obj = advancedFilters.filter((i: any) => i.field === question.filterBy)[0];
+        if (obj) {
+          resourcesFilterValues.next(obj);
         }
-        question.contentQuestion.choices = res;
-      });
+      } else {
+        getResourceById({id: question.resource, advancedFilters}).subscribe((response) => {
+          const serverRes = response.data.resource.records || [];
+          const res: any[] = [];
+          for (const item of serverRes) {
+            res.push({value: item.id, text: item.data[question.displayField]});
+          }
+          question.contentQuestion.choices = res;
+        });
+      }
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resources') {
