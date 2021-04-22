@@ -794,16 +794,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        // promises.push(
-        //   this.apollo.mutate<SendMailMutationResponse>({
-        //   mutation: SEND_MAIL,
-        //   variables: {
-        //     ids: selectedRecords.map(x => x.id),
-        //     emails: options.distributionList,
-        //     subject: options.subject,
-        //     attachment: options.attachment
-        //   }
-        // }).toPromise());
+        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
+        this.onExportRecord(this.selectedRowsIndex);
       }
       if (promises.length > 0) {
         await Promise.all(promises);
