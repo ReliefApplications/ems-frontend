@@ -17,7 +17,7 @@ import { SafeFloatingOptionsComponent } from './floating-options/floating-option
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeTileDisplayComponent } from './floating-options/menu/tile-display/tile-display.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import {SafeDashboardMenuComponent} from './dashboard-menu/dashboard-menu.component';
+import { SafeDashboardMenuComponent } from './dashboard-menu/dashboard-menu.component';
 
 
 @NgModule({

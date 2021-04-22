@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { SafeAuthService } from '@safe/builder';
+import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 
@@ -19,7 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private broadcastService: BroadcastService,
     private authService: SafeAuthService,
-    private msalService: MsalService
+    private msalService: MsalService,
+    private formService: SafeFormService
   ) { }
 
   ngOnInit(): void {

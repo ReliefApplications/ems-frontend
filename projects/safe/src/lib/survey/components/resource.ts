@@ -1,4 +1,28 @@
-export function init(Survey: any, API_URL: string): void {
+import { Apollo } from 'apollo-angular';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_RESOURCES,
+  GetResourceByIdQueryResponse,
+  GetResourcesQueryResponse
+} from '../../graphql/queries';
+
+export function init(Survey: any, apollo: Apollo): void {
+  let resourcesForms: any[] = [];
+  const getResources = () => apollo.query<GetResourcesQueryResponse>({
+    query: GET_RESOURCES,
+  });
+
+  const getResourceById = (id: string, containsFilters?: any) => apollo.query<GetResourceByIdQueryResponse>({
+    query: GET_RESOURCE_BY_ID,
+    variables: {
+      id,
+      containsFilters
+    }
+  });
+
+  const hasUniqueRecord = ((id: string) =>
+    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
+
   const component = {
     name: 'resource',
     title: 'Resource',
@@ -8,8 +32,10 @@ export function init(Survey: any, API_URL: string): void {
       type: 'dropdown',
       optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
-      choices: [],
+      choices: [] as any[],
     },
+    filters: [] as any[],
+    resourceFieldsName: [] as any[],
     onInit(): void {
       Survey.Serializer.addProperty('resource', {
         name: 'resource',
@@ -17,32 +43,19 @@ export function init(Survey: any, API_URL: string): void {
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-          const xhr = new XMLHttpRequest();
-          const query = {
-            query: `{
-                            resources {
-                              id
-                              name
-                            }
-                          }`,
-          };
-          xhr.responseType = 'json';
-          xhr.open('POST', API_URL);
-          const token = localStorage.getItem('msal.idtoken');
-          // Apollo client doesn't intercept the request, so it has to be built 'manually'
-          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.onload = () => {
-            const serverRes = xhr.response.data.resources;
-            const res: any[] = [];
-            res.push({ value: null });
-            for (const item of serverRes) {
-              res.push({ value: item.id, text: item.name });
+          getResources().subscribe(
+            (response: any) => {
+              const serverRes = response.data.resources;
+              resourcesForms = response.data.resources;
+              const res = [];
+              res.push({ value: null });
+              for (const item of serverRes) {
+                res.push({ value: item.id, text: item.name });
+              }
+              choicesCallback(res);
             }
-            choicesCallback(res);
-          };
-          xhr.send(JSON.stringify(query));
-        },
+          );
+        }
       });
       Survey.Serializer.addProperty('resource', {
         name: 'displayField',
@@ -58,36 +71,39 @@ export function init(Survey: any, API_URL: string): void {
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        fields
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.fields;
-              const res: any[] = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.name });
+          getResourceById(obj.resource).subscribe(response => {
+            const serverRes = response.data.resource.fields;
+            const res = [];
+            res.push({ value: null });
+            for (const item of serverRes) {
+              res.push({ value: item.name });
+            }
+            choicesCallback(res);
+          });
+        },
+      });
+      Survey.Serializer.addProperty('resource', {
+        name: 'filterByQuestions:multiplevalues',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayField'],
+        required: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayField) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj && obj.resource) {
+            const questions: any[] = [];
+            obj.survey.getAllQuestions().forEach((question: any) => {
+              if (question.id !== obj.id && this.resourceFieldsName.includes(question.name)) {
+                questions.push(question.name);
               }
-              choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
+            });
+            choicesCallback(questions);
           }
         },
       });
@@ -106,38 +122,15 @@ export function init(Survey: any, API_URL: string): void {
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        records {
-                                            id
-                                            data
-                                        }
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.records;
-              const res: any[] = [];
+            getResourceById(obj.resource).subscribe(response => {
+              const serverRes = response.data.resource.records || [];
+              const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.data[obj.displayField] });
               }
               choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         },
       });
@@ -149,7 +142,7 @@ export function init(Survey: any, API_URL: string): void {
           if (!obj || !obj.resource) {
             return false;
           } else {
-            return true;
+            return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
@@ -157,49 +150,26 @@ export function init(Survey: any, API_URL: string): void {
       Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: 'canAddNew',
+        dependsOn: ['canAddNew', 'resource'],
         visibleIf: (obj: any) => {
           if (!obj || !obj.canAddNew) {
             return false;
           } else {
-            return true;
+            return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.canAddNew) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `
-                                  query GetResourceById($id: ID!) {
-                                    resource(id: $id) {
-                                        id
-                                        name
-                                        forms {
-                                            id
-                                            name
-                                        }
-                                      }
-                                  }`,
-              variables: {
-                id: obj.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.forms;
+            getResourceById(obj.resource).subscribe(response => {
+              const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
                 res.push({ value: item.id, text: item.name });
               }
               choicesCallback(res);
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         },
       });
@@ -212,71 +182,97 @@ export function init(Survey: any, API_URL: string): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
-      const xhr = new XMLHttpRequest();
-      const query = {
-        query: `query GetResourceById($id: ID!) {
-                    resource(id: $id) {
-                        id
-                        name
-                        records {
-                            id
-                            data
-                        }
-                    }
-                }`,
-        variables: {
-          id: question.resource,
-        },
-      };
-      xhr.responseType = 'json';
-      xhr.open('POST', API_URL);
-      const token = localStorage.getItem('msal.idtoken');
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = () => {
-        const serverRes = xhr.response.data.resource.records;
-        const res: any[] = [];
-        for (const item of serverRes) {
-          res.push({ value: item.id, text: item.data[question.displayField] });
+      if (question.resource) {
+        getResourceById(question.resource).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption = 'Select a record from ' + response.data.resource.name + '...';
+          }
+          if (!question.filterByQuestions || question.filterByQuestions.length < 1) {
+            this.populateChoices(question);
+          }
+          question.survey.render();
+        });
+      }
+    },
+    onPropertyChanged(question: any, propertyName: string, newValue: any): void {
+      if (propertyName === 'resource') {
+        question.filterByQuestions = [];
+        question.displayField = null;
+        this.filters = [];
+        this.resourceFieldsName = [];
+        question.canAddNew = false;
+        question.addTemplate = null;
+      }
+    },
+    filtersAsString(): string {
+      if (this.filters.length < 1) {
+        return '[]';
+      }
+      let str = '[';
+      for (const filter of this.filters) {
+        str += '{';
+        for (const p in filter) {
+          if (filter.hasOwnProperty(p)) {
+            str += p + ': ' + (typeof filter[p] === 'string' ? `"${filter[p]}"` : filter[p]) + ',\n';
+          }
         }
-        // question.choices = res;
-        question.contentQuestion.choices = res;
-        if (!question.placeholder) {
-          question.contentQuestion.optionsCaption = 'Select a record from ' + xhr.response.data.resource.name + '...';
-        }
-        question.survey.render();
-      };
-      xhr.send(JSON.stringify(query));
+        str += '},';
+      }
+      return str.substring(0, str.length - 1) + ']';
+    },
+    populateChoices(question: any): void {
+      if (question.resource) {
+        getResourceById(question.resource, this.filtersAsString()).subscribe(response => {
+          const serverRes = response.data.resource.records || [];
+          const res: any[] = [];
+          for (const item of serverRes) {
+            res.push({ value: item.id, text: item.data[question.displayField] });
+          }
+          question.contentQuestion.choices = res;
+        });
+      } else {
+        question.contentQuestion.choices = [];
+      }
     },
     onAfterRender(question: any, el: any): void {
+      if (question.filterByQuestions && question.filterByQuestions.length > 0) {
+        question.filterByQuestions.forEach((questionName: string) => {
+          const value = question.survey.data[questionName];
+          if (value) {
+            this.filters.push({ name: questionName, value });
+          }
+          this.populateChoices(question);
+          const watchedQuestion = question.survey.getQuestionByName(questionName);
+          watchedQuestion.valueChangedCallback = () => {
+            if (!this.filters.some(x => x.name === questionName)) {
+              if (watchedQuestion.value) {
+                this.filters.push({ name: questionName, value: watchedQuestion.value });
+              }
+            } else {
+              this.filters = this.filters.map(x => {
+                if (x.name === questionName) {
+                  x.value = watchedQuestion.value;
+                }
+                return x;
+              });
+            }
+            this.populateChoices(question);
+          };
+        });
+      }
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
-          if (detail.template === question.addTemplate) {
-            const xhr = new XMLHttpRequest();
-            const query = {
-              query: `query GetResourceById($id: ID!) {
-                                resource(id: $id) {
-                                    id
-                                    name
-                                    records {
-                                        id
-                                        data
-                                    }
-                                }
-                            }`,
-              variables: {
-                id: question.resource,
-              },
-            };
-            xhr.responseType = 'json';
-            xhr.open('POST', API_URL);
-            const token = localStorage.getItem('msal.idtoken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-              const serverRes = xhr.response.data.resource.records;
-              const res: any[] = [];
+          if (detail.template === question.addTemplate && question.resource) {
+            getResourceById(question.resource).subscribe(response => {
+              const serverRes = response.data.resource.records || [];
+              const res = [];
               for (const item of serverRes) {
                 res.push({
                   value: item.id,
@@ -285,38 +281,11 @@ export function init(Survey: any, API_URL: string): void {
               }
               question.contentQuestion.choices = res;
               question.survey.render();
-            };
-            xhr.send(JSON.stringify(query));
+            });
           }
         });
       }
     },
   };
   Survey.ComponentCollection.Instance.add(component);
-  const widget = {
-    name: 'addResource',
-    isFit: (question: any) => {
-      if (question.getType() === 'resource') {
-        return question.canAddNew && question.addTemplate;
-      } else {
-        return false;
-      }
-    },
-    isDefaultRender: true,
-    afterRender: (question: any, el: any) => {
-      const mainDiv = document.createElement('div');
-      const btnEl = document.createElement('button');
-      btnEl.innerText = 'Add';
-      btnEl.style.width = '120px';
-      btnEl.onclick = () => {
-        const event = new CustomEvent('openForm', {
-          detail: { template: question.addTemplate },
-        });
-        document.dispatchEvent(event);
-      };
-      mainDiv.appendChild(btnEl);
-      el.parentElement.insertBefore(mainDiv, el);
-    },
-  };
-  Survey.CustomWidgetCollection.Instance.add(widget);
 }

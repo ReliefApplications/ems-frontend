@@ -1,10 +1,8 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { SafeFormModalComponent } from '../form-modal/form-modal.component';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { FormService } from '../../services/form.service';
 
 /* Commented types are not yet implemented.
 */
@@ -52,8 +50,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
-    private formService: FormService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -94,9 +91,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
-
-    // Add custom functions for the expression question
-    this.formService.addCustomFunctions();
   }
 
   ngOnChanges(): void {
@@ -140,20 +134,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     })
     .catch((error) => {
       this.snackBar.openSnackBar(error.message, { error: true });
-    });
-  }
-
-  /*  Event listener to trigger embedded forms.
-  */
-  @HostListener('document:openForm', ['$event'])
-  onOpenEmbeddedForm(event: any): void {
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
-      data: {
-        template: event.detail.template,
-        locale: event.locale
-      }
-    });
-    dialogRef.afterClosed().subscribe(() => {
     });
   }
 

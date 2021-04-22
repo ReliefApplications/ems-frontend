@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Channel } from 'projects/safe/src/lib/models/channel.model';
-import { Form } from 'projects/safe/src/lib/models/form.model';
-import { ContentType } from 'projects/safe/src/lib/models/page.model';
+import { Channel } from '../../../../models/channel.model';
+import { Form } from '../../../../models/form.model';
+import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 

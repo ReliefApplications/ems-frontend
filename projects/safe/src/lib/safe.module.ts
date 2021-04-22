@@ -22,6 +22,7 @@ import { SafePreviousButtonModule } from './components/previous-button/previous-
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/public-api';
+import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
 
 @NgModule({
   exports: [
@@ -42,6 +43,7 @@ import { SafeRecordModalModule } from './components/record-modal/public-api';
     SafeWidgetModule,
     SafeWidgetGridModule,
     SafeConfirmModalModule,
+    SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,
     SafePreviousButtonModule,

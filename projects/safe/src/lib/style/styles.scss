@@ -365,6 +365,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.status-dialog {
+  mat-dialog-container {
+    box-shadow: none;
+    background: none;
+  }
+}
+
 .tile-settings-dialog, .expanded-widget-dialog {
   max-width: unset !important;
   width: 100%;
@@ -409,7 +416,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 // === SURVEYS ===
-.title-left {
-  width: 15%;
-  text-align: right;
-}
+// .title-left {
+//   width: 15%;
+//   text-align: right;
+// }
