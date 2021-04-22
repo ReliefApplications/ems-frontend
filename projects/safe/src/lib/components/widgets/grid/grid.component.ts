@@ -409,6 +409,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       case 'Int': {
         return 'numeric';
       }
+      case 'Float': {
+        return 'float';
+      }
       case 'Boolean': {
         return 'boolean';
       }
