@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -11,15 +11,21 @@ export class SafeExpandedCommentComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  public comment = '';
+
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedCommentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: {
+      title: string,
+      comment: string
+    }
   ) { }
 
-  newComment: string | undefined = this.data.comment.textComment;
+  ngOnInit(): void {
+    this.comment = this.data.comment;
+  }
 
-  ngOnInit(): void {}
   onClose(): void {
-    this.dialogRef.close({data: this.newComment});
+    this.dialogRef.close({data: this.comment});
   }
 }

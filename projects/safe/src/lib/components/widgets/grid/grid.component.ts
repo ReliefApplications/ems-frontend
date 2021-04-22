@@ -884,14 +884,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Dialog to open if text or comment overlows
   */
-  public onExpandComment(myCommentItem: any, rowTitle: any): void {
-    const mydata = {
-      textComment: myCommentItem[rowTitle],
-      titleComment: rowTitle
-    };
+  public onExpandComment(item: any, rowTitle: any): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
-        comment: mydata
+        title: item[rowTitle],
+        comment: rowTitle
       },
       autoFocus: false,
       position: {
@@ -901,14 +898,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       panelClass: 'expanded-widget-dialog'
     });
     dialogRef.afterClosed().subscribe(result => {
-      if ( result.data !== myCommentItem[rowTitle] ) {
-        this.gridData.data.find(x => x.id === myCommentItem.id)[rowTitle] = result.data;
-        this.items.find(x => x.id === myCommentItem.id)[rowTitle] = result.data;
-        if ( this.updatedItems.find( x => x.id === myCommentItem.id ) !== undefined ){
-          this.updatedItems.find( x => x.id === myCommentItem.id )[rowTitle] = result.data;
+      if ( result.data !== item[rowTitle] ) {
+        this.gridData.data.find(x => x.id === item.id)[rowTitle] = result.data;
+        this.items.find(x => x.id === item.id)[rowTitle] = result.data;
+        if ( this.updatedItems.find( x => x.id === item.id ) !== undefined ){
+          this.updatedItems.find( x => x.id === item.id )[rowTitle] = result.data;
         }
         else {
-          this.updatedItems.push( { [rowTitle]: result.data, id: myCommentItem.id } );
+          this.updatedItems.push( { [rowTitle]: result.data, id: item.id } );
         }
       }
     });
@@ -916,7 +913,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Check if element overflows
   */
-  isEllipsisActive( e: any ): boolean {
+  isEllipsisActive(e: any): boolean {
     return ( e.offsetWidth < e.scrollWidth );
   }
 
