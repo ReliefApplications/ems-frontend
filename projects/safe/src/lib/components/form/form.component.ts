@@ -11,6 +11,7 @@ import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
+import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 
 @Component({
@@ -63,6 +64,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     Survey
       .StylesManager
       .applyTheme();
+
+    // Add custom functions for the expression question
+    addCustomFunctions(Survey, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
