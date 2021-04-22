@@ -11,7 +11,7 @@
                 <input type="text" placeholder="Select a routing key" matInput formControlName="routingKey"
                     [matAutocomplete]="auto">
                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name">
+                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name || ''">
                         <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
                             {{channel.title}}
                         </mat-option>

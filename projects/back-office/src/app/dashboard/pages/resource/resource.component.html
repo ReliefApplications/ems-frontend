@@ -1,11 +1,17 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && resource">
     <div class="page-header">
-        <who-previous-button path="/resources"></who-previous-button>
+        <safe-previous-button path="/resources"></safe-previous-button>
         <h1 class="page-title">
             {{resource.name}}
         </h1>
-        <who-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></who-access>
+        <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></safe-access>
+        <div class="actions">
+            <button mat-flat-button color="primary" (click)="onDownload()">
+              <mat-icon>file_download</mat-icon>
+              Download records
+            </button>
+        </div>
     </div>
     <mat-tab-group dynamicHeight>
         <mat-tab>
@@ -25,7 +31,7 @@
                                 <mat-icon>more_vert</mat-icon>
                             </button>
                             <mat-menu #recMenu="matMenu">
-                                <button mat-menu-item [routerLink]="['/resources/update', element.id]">
+                                <button mat-menu-item [routerLink]="['./update', element.id]">
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>

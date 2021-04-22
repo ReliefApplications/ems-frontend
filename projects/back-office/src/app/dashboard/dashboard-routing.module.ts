@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WhoPermissionGuard } from '@who-ems/builder';
 import { DashboardComponent } from './dashboard.component';
 
 /*  Divide the dashboard module into three modules:
@@ -25,37 +24,41 @@ export const routes = [
                         path: '',
                         loadChildren: () => import('./pages/forms/forms.module')
                             .then(m => m.FormsModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: 'records/:id',
-                        loadChildren: () => import('./pages/form-records/form-records.module')
-                            .then(m => m.FormRecordsModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/form-records/form-records.module')
+                                    .then(m => m.FormRecordsModule),
+                            },
+                            {
+                                path: 'update/:id',
+                                loadChildren: () => import('./pages/update-record/update-record.module')
+                                    .then(m => m.UpdateRecordModule),
+                                // canActivate: [SafePermissionGuard]
+                            }
+                        ]
                     },
                     {
                         path: 'answer/:id',
                         loadChildren: () => import('./pages/form-answer/form-answer.module')
                             .then(m => m.FormAnswerModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: 'builder',
                         loadChildren: () => import('./pages/form-builder/form-builder.module')
                             .then(m => m.FormBuilderModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: 'builder/:id',
                         loadChildren: () => import('./pages/form-builder/form-builder.module')
                             .then(m => m.FormBuilderModule),
-                        // canActivate: [WhoPermissionGuard]
-                    },
-                    {
-                        path: 'update/:id',
-                        loadChildren: () => import('./pages/update-record/update-record.module')
-                            .then(m => m.UpdateRecordModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     }
                 ]
             },
@@ -66,19 +69,23 @@ export const routes = [
                         path: '',
                         loadChildren: () => import('./pages/resources/resources.module')
                             .then(m => m.ResourcesModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: ':id',
-                        loadChildren: () => import('./pages/resource/resource.module')
-                            .then(m => m.ResourceModule),
-                        // canActivate: [WhoPermissionGuard]
-                    },
-                    {
-                        path: 'update/:id',
-                        loadChildren: () => import('./pages/update-record/update-record.module')
-                            .then(m => m.UpdateRecordModule),
-                        // canActivate: [WhoPermissionGuard]
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/resource/resource.module')
+                                .then(m => m.ResourceModule)
+                            },
+                            {
+                                path: 'update/:id',
+                                loadChildren: () => import('./pages/update-record/update-record.module')
+                                    .then(m => m.UpdateRecordModule),
+                                // canActivate: [SafePermissionGuard]
+                            }
+                        ]
                     }
                 ]
             },
@@ -89,13 +96,13 @@ export const routes = [
                         path: '',
                         loadChildren: () => import('./pages/dashboards/dashboards.module')
                             .then(m => m.DashboardsModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: ':id',
                         loadChildren: () => import('./pages/dashboard/dashboard.module')
                             .then(m => m.DashboardModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     }
                 ]
             },
@@ -106,13 +113,13 @@ export const routes = [
                         path: '',
                         loadChildren: () => import('./pages/applications/applications.module')
                             .then(m => m.ApplicationsModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     // {
                     //     path: ':id',
                     //     loadChildren: () => import('../application/application.module')
                     //         .then(m => m.ApplicationModule),
-                    //     // canActivate: [WhoPermissionGuard]
+                    //     // canActivate: [SafePermissionGuard]
                     // }
                 ]
             },
@@ -123,13 +130,13 @@ export const routes = [
                         path: 'users',
                         loadChildren: () => import('./pages/users/users.module')
                             .then(m => m.UsersModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: 'roles',
                         loadChildren: () => import('./pages/roles/roles.module')
                             .then(m => m.RolesModule),
-                        // canActivate: [WhoPermissionGuard]
+                        // canActivate: [SafePermissionGuard]
                     },
                     {
                         path: '**',

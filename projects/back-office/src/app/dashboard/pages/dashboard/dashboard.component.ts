@@ -1,9 +1,10 @@
+import {Apollo} from 'apollo-angular';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { Dashboard, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
+
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -11,7 +12,6 @@ import {
   EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
-import { WorkflowService } from '../../../services/workflow.service';
 
 
 @Component({
@@ -22,32 +22,33 @@ import { WorkflowService } from '../../../services/workflow.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id: string;
+  public id = '';
+  public applicationId?: string;
   public loading = true;
-  public tiles = [];
-  public dashboard: Dashboard;
+  public tiles: any[] = [];
+  public dashboard?: Dashboard;
 
   // === GRID ===
-  private generatedTiles: number;
+  private generatedTiles = 0;
 
   // === DASHBOARD NAME EDITION ===
-  public formActive: boolean;
-  public dashboardNameForm: FormGroup;
+  public formActive = false;
+  public dashboardNameForm: FormGroup = new FormGroup({});
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    private applicationService: WhoApplicationService,
-    private workflowService: WorkflowService,
+    private applicationService: SafeApplicationService,
+    private workflowService: SafeWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -68,9 +69,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
           this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
           this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
+          this.applicationId = this.dashboard.page ? this.dashboard.page.application?.id : this.dashboard.step ?
+            this.dashboard.step.workflow?.page?.application?.id : '';
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar('No access provided to this dashboard.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
           this.router.navigate(['/dashboards']);
         }
       },
@@ -94,25 +97,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
     this.generatedTiles += 1;
-    this.tiles.push(tile);
+    this.tiles = [...this.tiles, tile];
     this.autoSaveChanges();
   }
 
   /*  Edit the settings or display of a widget.
   */
   onEditTile(e: any): void {
-    const tile = this.tiles.find(x => x.id === e.id);
     const options = e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
-          tile.defaultCols = options.cols;
-          tile.defaultRows = options.rows;
+          this.tiles = this.tiles.map(x => {
+            if (x.id === e.id) {
+              x = { ...x, defaultCols: options.cols, defaultRows: options.rows };
+            }
+            return x;
+          });
           this.autoSaveChanges();
           break;
         }
         case 'data': {
-          tile.settings = options;
+          this.tiles = this.tiles.map(x => {
+            if (x.id === e.id) {
+              x = { ...x, settings: options };
+            }
+            return x;
+          });
           this.autoSaveChanges();
           break;
         }
@@ -146,7 +157,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         structure: this.tiles
       }
     }).subscribe(res => {
-      this.tiles = res.data.editDashboard.structure;
+      this.tiles = res.data?.editDashboard.structure;
     });
   }
 
@@ -157,27 +168,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
-          id: this.dashboard.step.id,
+          id: this.dashboard?.step?.id,
           permissions: e
         }
       }).subscribe(res => {
-        this.dashboard.permissions = res.data.editStep.permissions;
+        this.dashboard = { ...this.dashboard, permissions: res.data?.editStep.permissions };
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,
         variables: {
-          id: this.dashboard.page.id,
+          id: this.dashboard?.page?.id,
           permissions: e
         }
       }).subscribe(res => {
-        this.dashboard.permissions = res.data.editPage.permissions;
+        this.dashboard = { ...this.dashboard, permissions: res.data?.editPage.permissions };
       });
     }
   }
 
   toggleFormActive(): void {
-    if (this.dashboard.page ? this.dashboard.page.canUpdate : this.dashboard.step.canUpdate) { this.formActive = !this.formActive; }
+    if (this.dashboard?.page ? this.dashboard.page.canUpdate : this.dashboard?.step?.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the dashboard and the step or page linked to it.
@@ -189,23 +200,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.apollo.mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP,
         variables: {
-          id: this.dashboard.step.id,
+          id: this.dashboard?.step?.id,
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard.name = res.data.editStep.name;
-        this.workflowService.updateStepName(res.data.editStep);
+        this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
+        if (res.data?.editStep) {
+          this.workflowService.updateStepName(res.data.editStep);
+        }
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,
         variables: {
-          id: this.dashboard.page.id,
+          id: this.dashboard?.page?.id,
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard.name = res.data.editPage.name;
-        this.applicationService.updatePageName(res.data.editPage);
+        this.dashboard = { ...this.dashboard, name: res.data?.editPage.name };
+        if (res.data?.editPage) {
+          this.applicationService.updatePageName(res.data.editPage);
+        }
       });
     }
   }

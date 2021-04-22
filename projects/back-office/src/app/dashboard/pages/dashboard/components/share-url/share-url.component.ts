@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { WhoSnackBarService } from '@who-ems/builder';
+import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
   selector: 'app-share-url',
@@ -13,7 +13,7 @@ import { WhoSnackBarService } from '@who-ems/builder';
 export class ShareUrlComponent implements OnInit {
 
   constructor(
-    public snackBar: WhoSnackBarService,
+    public snackBar: SafeSnackBarService,
     private clipboard: Clipboard,
     public dialogRef: MatDialogRef<ShareUrlComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -28,7 +28,7 @@ export class ShareUrlComponent implements OnInit {
   */
   onCopy(): void {
     this.clipboard.copy(this.data.url);
-    this.snackBar.openSnackBar('Copied !', { duration: 500 });
+    this.snackBar.openSnackBar(NOTIFICATIONS.copied, { duration: 500 });
     this.dialogRef.close();
   }
 }

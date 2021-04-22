@@ -1,8 +1,9 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
-import { Record } from '@who-ems/builder';
+import { Record } from '@safe/builder';
 
 @Component({
   selector: 'app-update-record',
@@ -13,16 +14,19 @@ export class UpdateRecordComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
-  public record: Record;
+  public id = '';
+  public record: Record = {};
+  public backPath = '';
 
   constructor(
     private apollo: Apollo,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
+    this.backPath = this.router.url.replace(`/update/${this.id}`, '');
     if (this.id !== null) {
       this.apollo.watchQuery<GetRecordByIdQueryResponse>({
         query: GET_RECORD_BY_ID,

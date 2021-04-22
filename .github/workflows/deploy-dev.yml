@@ -3,7 +3,7 @@ name: Front-end CD Azure
 on:
   push:
     branches:
-      - 'main'
+      - 'azure'
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
     - name:
       run: npm ci
     - name: Build Shared Library
-      run: npm run build who-ems
+      run: npm run build safe
     - name: Build Back-office
       run: npm run build:az
     - name: Build Front-office
@@ -61,7 +61,7 @@ jobs:
         inlineScript: |
           az storage blob delete-batch --source '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
           az storage blob upload-batch -s dist/back-office/ -d '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
-  
+
   deploy_front_office_azure:
     name: Deploy Front-office
     runs-on: ubuntu-latest

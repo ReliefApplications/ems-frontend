@@ -1,0 +1,17 @@
+<div *ngIf="form.uniqueRecord || record">
+  <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)"
+    *ngIf="survey.pages.length > 1">
+    <mat-tab *ngFor="let page of survey.pages" [label]="page.title"></mat-tab>
+  </mat-tab-group>
+</div>
+
+<span *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+<div class="survey-float" *ngIf="surveyActive">
+  <kendo-dropdownlist *ngIf="survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
+    [value]="surveyLanguage.nativeName.split(',')[0]" (selectionChange)="setLanguage($event)">
+    <ng-template kendoDropDownListValueTemplate let-dataItem style="text-transform: capitalize">
+      {{ dataItem }}
+    </ng-template>
+  </kendo-dropdownlist>
+</div>
+<div id="surveyContainer"></div>
