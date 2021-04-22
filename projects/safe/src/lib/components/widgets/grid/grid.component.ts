@@ -887,8 +887,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public onExpandComment(item: any, rowTitle: any): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
-        title: item[rowTitle],
-        comment: rowTitle
+        title: rowTitle,
+        comment: item[rowTitle]
       },
       autoFocus: false,
       position: {

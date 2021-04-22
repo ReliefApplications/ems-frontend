@@ -54,21 +54,27 @@
                     [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
-                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                        <div class="elementContainer">
-                            <div #refSpan class="textLeft">
-                                <span>
-                                    {{dataItem[field.name]}}
-                                </span>
+                    <!-- DISPLAY ( text / comment ) -->
+                    <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text'">
+                        <div class="textbox-container">
+                            <div #refSpan class="textbox">
+                                {{dataItem[field.name]}}
                             </div>
-                            <div class="iconRight" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="buttonIconExpand" (click)="onExpandComment(dataItem, field.name)"
+                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
+                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
                                     mat-icon-button>
-                                    <mat-icon class="iconExpand">launch</mat-icon>
+                                    <mat-icon class="expand-text-icon">launch</mat-icon>
                                 </button>
                             </div>
                         </div>
                     </ng-template>
+                    <!-- DISPLAY ( color ) -->
+                    <ng-container *ngIf="field.meta">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
+                            <!-- In order to display the div -->
+                            <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
+                        </ng-template>
+                    </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                         *ngIf="field.editor === 'text'">
@@ -109,13 +115,6 @@
                         <kendo-datetimepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
                             (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
                     </ng-template>
-                    <!-- DISPLAY ( color ) -->
-                    <ng-container *ngIf="field.meta">
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
-                            <!-- In order to display the div -->
-                            <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
-                        </ng-template>
-                    </ng-container>
                 </kendo-grid-column>
                 <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
                 <kendo-grid-column [title]="field.title"

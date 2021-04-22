@@ -33,28 +33,22 @@ textarea {
     }
 }
 
-.elementContainer {
-    display: inline-block;
-    width: 100%;
+.textbox-container {
+    display: flex;
 }
 
-.textLeft {
-    float: left;
-    max-width: calc(100% - 30px);
+.textbox {
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.iconRight {
-    float: right;
-}
-
-.buttonIconExpand {
+.expand-text-button {
     height: 20px !important;
     width: 20px !important;
     vertical-align: top;
 }
 
-.iconExpand {
+.expand-text-icon {
     font-size: 16px !important;
     vertical-align: top;
 }
