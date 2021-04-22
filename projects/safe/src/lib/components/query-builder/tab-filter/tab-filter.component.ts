@@ -19,7 +19,7 @@ export class SafeTabFilterComponent implements OnInit {
   }
 
   setCurrentDate(filterName: string): void {
-    this.form.controls[filterName].setValue('$today');
+    this.form.controls[filterName].setValue('today()');
   }
 
   onKey(e: any, filterName: string): void {
