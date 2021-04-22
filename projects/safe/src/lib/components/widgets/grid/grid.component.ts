@@ -476,12 +476,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup: any = {};
-    for (const field of this.fields.filter(x => !x.disabled)) {
+    this.fields.filter(x => !x.disabled).forEach((field, index) => {
       if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
         if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-            field.meta.choices = field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res;
+            this.fields[index] =  { ...field,
+              meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }};
           });
         }
       } else {
@@ -531,7 +532,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           formGroup[field.name] = this.formBuilder.array(fieldArray);
         }
       }
-    }
+    });
     return this.formBuilder.group(formGroup);
   }
 
