@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -12,17 +12,17 @@ export class SafeTabFilterComponent implements OnInit {
   @Input() filters: any[] = [];
 
   private inputs = '';
-  private isDateValid = true;
-  constructor(private elemRef: ElementRef) { }
+
+  constructor() { }
 
   ngOnInit(): void {
   }
 
-  setCurrentDate(filterName): void {
+  setCurrentDate(filterName: string): void {
     this.form.controls[filterName].setValue('$today');
   }
 
-  onKey(e, filterName): void {
+  onKey(e: any, filterName: string): void {
     if (e.target.value === '') { this.inputs = ''; }
     if (e.keyCode === 8) {
       this.inputs = this.inputs.slice(0, this.inputs.length - 1);
@@ -47,7 +47,6 @@ export class SafeTabFilterComponent implements OnInit {
       e.target.value = this.inputs;
     }
     if (this.inputs.length > 9 && !RegExp('\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])*').test(this.inputs)) {
-      this.isDateValid = false;
       this.form.controls[filterName].setErrors({incorrect: true});
     }
   }
