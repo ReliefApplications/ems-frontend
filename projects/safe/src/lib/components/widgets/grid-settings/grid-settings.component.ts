@@ -157,7 +157,11 @@ export class SafeGridSettingsComponent implements OnInit {
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-      value && value.publish ? Validators.required : null]
+      value && value.publish ? Validators.required : null],
+      sendMail: [value && value.sendMail ? value.sendMail : false],
+      distributionList: [value && value.distributionList ? value.distributionList : [], Validators.minLength(1)],
+      subject: [value && value.subject ? value.subject : '', Validators.required],
+      // attachment: [value && value.attachment ? value.attachment : false]
     });
     return buttonForm;
   }

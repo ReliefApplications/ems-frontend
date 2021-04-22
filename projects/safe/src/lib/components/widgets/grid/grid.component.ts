@@ -793,6 +793,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
+      if (options.sendMail) {
+        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
+        this.onExportRecord(this.selectedRowsIndex);
+      }
       if (promises.length > 0) {
         await Promise.all(promises);
       }
