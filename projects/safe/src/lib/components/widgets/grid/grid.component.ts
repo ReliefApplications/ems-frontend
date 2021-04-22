@@ -794,7 +794,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           mutation: SEND_MAIL,
           variables: {
             ids: selectedRecords.map(x => x.id),
-            emails: options.distributionList
+            emails: options.distributionList,
+            subject: options.subject,
+            attachment: options.attachment
           }
         }).toPromise());
       }

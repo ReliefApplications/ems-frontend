@@ -54,7 +54,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log('distribution list', this.buttonForm.get('distributionList')?.value);
     if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) {
       this.isDashboard = true;
     } else {
@@ -129,13 +128,15 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     });
 
     this.buttonForm.get('sendMail')?.valueChanges.subscribe(value => {
-      console.log('sendEmail');
       if (value) {
         this.buttonForm.get('distributionList')?.setValidators(Validators.required);
+        this.buttonForm.get('subject')?.setValidators(Validators.required);
       } else {
         this.buttonForm.get('distributionList')?.clearValidators();
+        this.buttonForm.get('subject')?.clearValidators();
       }
       this.buttonForm.get('distributionList')?.updateValueAndValidity();
+      this.buttonForm.get('subject')?.updateValueAndValidity();
     });
     this.emails = [...this.buttonForm.get('distributionList')?.value];
   }
@@ -189,6 +190,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.emails.push(value.trim());
       }
       this.buttonForm.get('distributionList')?.setValue(this.emails);
+      this.buttonForm.get('distributionList')?.updateValueAndValidity();
       // Reset the input value
       if (input) {
         input.value = '';
@@ -202,6 +204,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.emails.splice(index, 1);
     }
     this.buttonForm.get('distributionList')?.setValue(this.emails);
+    this.buttonForm.get('distributionList')?.updateValueAndValidity();
   }
 
   ngOnDestroy(): void {

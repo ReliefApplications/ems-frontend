@@ -25,7 +25,7 @@
         <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>
-          <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list">
+          <div *ngIf="buttonForm.value.modifySelectedRows" class="update-list sub-parameters">
             <form [formGroup]="$any(modification)" *ngFor="let modification of modificationsArray.controls; index as i"
               class="update-row">
               <mat-form-field appearance="outline">
@@ -69,7 +69,7 @@
             info
           </mat-icon>
         </span>
-        <ng-container *ngIf="buttonForm.value.attachToRecord">
+        <div *ngIf="buttonForm.value.attachToRecord" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>Target form</mat-label>
             <mat-select formControlName="targetForm" [compareWith]="compareFields">
@@ -79,18 +79,18 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </ng-container>
-        <ng-container *ngIf="buttonForm.value.targetForm">
-          <mat-form-field appearance="outline">
-            <mat-label>Display field</mat-label>
-            <mat-select formControlName="targetFormField">
-              <mat-option>-- None --</mat-option>
-              <mat-option *ngFor="let field of buttonForm.value.targetForm.fields" [value]="field.name">
-                {{field.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-container>
+          <ng-container *ngIf="buttonForm.value.targetForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Display field</mat-label>
+              <mat-select formControlName="targetFormField">
+                <mat-option>-- None --</mat-option>
+                <mat-option *ngFor="let field of buttonForm.value.targetForm.fields" [value]="field.name">
+                  {{field.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+        </div>
         <span class="info-row">
           <mat-checkbox formControlName="notify">Notify</mat-checkbox>
           <mat-icon class="info-icon"
@@ -99,7 +99,7 @@
             info
           </mat-icon>
         </span>
-        <ng-container *ngIf="buttonForm.value.notify">
+        <div *ngIf="buttonForm.value.notify" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>Channel</mat-label>
             <mat-select formControlName="notificationChannel">
@@ -113,7 +113,7 @@
             <mat-label>Message</mat-label>
             <input matInput formControlName="notificationMessage" type="string">
           </mat-form-field>
-        </ng-container>
+        </div>
         <span class="info-row">
           <mat-checkbox formControlName="publish">Publish</mat-checkbox>
           <mat-icon class="info-icon"
@@ -122,7 +122,7 @@
             info
           </mat-icon>
         </span>
-        <ng-container *ngIf="buttonForm.value.publish">
+        <div *ngIf="buttonForm.value.publish" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>Channel</mat-label>
             <mat-select formControlName="publicationChannel">
@@ -132,9 +132,9 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </ng-container>
+        </div>
         <mat-checkbox formControlName="sendMail">Send mail</mat-checkbox>
-        <ng-container *ngIf="buttonForm.value.sendMail">
+        <div *ngIf="buttonForm.value.sendMail" class="sub-parameters">
           <mat-form-field class="chip-list" appearance="outline">
             <mat-label>Distribution list</mat-label>
             <mat-chip-list #chipList aria-label="Emails chip list">
@@ -154,14 +154,18 @@
                 (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
           </mat-form-field>
-          <!-- <mat-form-field appearance="outline">
-            <mat-label>Distribution list</mat-label>
-            <mat-select formControlName="distributionList" multiple>
-              <mat-option [value]="'pacome@reliefapplications.org'">pacome@reliefapplications.org</mat-option>
-              <mat-option [value]="'pacome.rivier@hotmail.fr'">pacome.rivier@hotmail.fr</mat-option>
-            </mat-select>
-          </mat-form-field> -->
-        </ng-container>
+          <mat-form-field appearance="outline">
+            <mat-label>Subject</mat-label>
+            <input matInput formControlName="subject" type="string">
+          </mat-form-field>
+          <span class="radio-row">
+            <mat-radio-group formControlName="attachment">
+              Link records:
+              <mat-radio-button [value]="false">In body</mat-radio-button>
+              <mat-radio-button [value]="true">In attachment</mat-radio-button>
+            </mat-radio-group>
+          </span>
+        </div>
       </ng-container>
     </div>
   </form>

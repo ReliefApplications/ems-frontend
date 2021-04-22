@@ -558,8 +558,8 @@ export interface AddStepMutationResponse {
 
 // === SEND MAIL ===
 export const SEND_MAIL = gql`
-mutation sendEmail($ids: [ID]!, $emails: [String]!) {
-  sendMail(ids: $ids, emails: $emails)
+mutation sendEmail($ids: [ID]!, $emails: [String]!, $subject: String! $attachment: Boolean) {
+  sendMail(ids: $ids, emails: $emails, subject: $subject, attachment: $attachment)
 }`;
 
 export interface SendMailMutationResponse {
