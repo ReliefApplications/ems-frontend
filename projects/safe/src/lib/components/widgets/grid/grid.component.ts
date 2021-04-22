@@ -10,8 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   CONVERT_RECORD,
   ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse,
-  SendMailMutationResponse, SEND_MAIL
+  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { from, Subscription } from 'rxjs';
@@ -795,15 +794,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        promises.push(this.apollo.mutate<SendMailMutationResponse>({
-          mutation: SEND_MAIL,
-          variables: {
-            ids: selectedRecords.map(x => x.id),
-            emails: options.distributionList,
-            subject: options.subject,
-            attachment: options.attachment
-          }
-        }).toPromise());
+        // promises.push(
+        //   this.apollo.mutate<SendMailMutationResponse>({
+        //   mutation: SEND_MAIL,
+        //   variables: {
+        //     ids: selectedRecords.map(x => x.id),
+        //     emails: options.distributionList,
+        //     subject: options.subject,
+        //     attachment: options.attachment
+        //   }
+        // }).toPromise());
       }
       if (promises.length > 0) {
         await Promise.all(promises);
