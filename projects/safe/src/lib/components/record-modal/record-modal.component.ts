@@ -1,8 +1,6 @@
 import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-
-import { FormService } from '../../services/form.service';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,8 +37,7 @@ export class SafeRecordModalComponent implements OnInit {
       compareTo?: any
     },
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private formService: FormService
+    public dialog: MatDialog
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {

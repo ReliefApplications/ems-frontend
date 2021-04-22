@@ -13,7 +13,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -31,6 +31,9 @@ import { SafeRecordModalComponent } from '../../record-modal/record-modal.compon
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
+import { SafeDownloadService } from '../../../services/download.service';
+import { NOTIFICATIONS } from '../../../const/notifications';
+import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -151,7 +154,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
-    private workflowService: SafeWorkflowService
+    private workflowService: SafeWorkflowService,
+    private downloadService: SafeDownloadService
   ) {
   }
 
@@ -643,7 +647,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).subscribe((res) => {
           this.reloadData();
           this.layoutService.setRightSidenav(null);
-          this.snackBar.openSnackBar('The data has been recovered');
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
         });
 
       }
@@ -678,6 +682,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     });
+  }
+
+  /* Export selected records to a csv file
+  */
+  public onExportRecord(items: number[]): void {
+    const ids: any[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      ids.push(id);
+    }
+    const url = 'http://localhost:3000/download/records';
+    const fileName = `${this.settings.title}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
@@ -857,12 +874,49 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         if (res.data) {
           const record = res.data.editRecord;
           if (record) {
-            this.snackBar.openSnackBar(`Added ${selectedRecords.length} row${selectedRecords.length > 1 ? 's' : ''} to the field ${resourceField.name} in the record ${value.record.data[targetFormField]}.`);
+            this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, resourceField.name,
+              value.record.data[targetFormField]));
           }
         }
       });
     }
   }
+
+  /* Dialog to open if text or comment overlows
+  */
+  public onExpandComment(item: any, rowTitle: any): void {
+    const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
+      data: {
+        title: rowTitle,
+        comment: item[rowTitle]
+      },
+      autoFocus: false,
+      position: {
+        bottom: '0',
+        right: '0'
+      },
+      panelClass: 'expanded-widget-dialog'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if ( res !== item[rowTitle] ) {
+        this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
+        this.items.find(x => x.id === item.id)[rowTitle] = res;
+        if ( this.updatedItems.find( x => x.id === item.id ) !== undefined ){
+          this.updatedItems.find( x => x.id === item.id )[rowTitle] = res;
+        }
+        else {
+          this.updatedItems.push( { [rowTitle]: res, id: item.id } );
+        }
+      }
+    });
+  }
+
+  /* Check if element overflows
+  */
+  isEllipsisActive(e: any): boolean {
+    return ( e.offsetWidth < e.scrollWidth );
+  }
+
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {

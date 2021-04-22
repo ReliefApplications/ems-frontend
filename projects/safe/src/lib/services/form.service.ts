@@ -3,20 +3,28 @@ import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';
 import { initCustomWidgets } from '../survey/init';
-import { Record } from '../models/record.model';
+import { DomService } from './dom.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Apollo } from 'apollo-angular';
+
 @Injectable({
   providedIn: 'root'
 })
-export class FormService {
+export class SafeFormService {
 
-  constructor(@Inject('environment') environment: any) {
+  constructor(
+    @Inject('environment') environment: any,
+    public domService: DomService,
+    public dialog: MatDialog,
+    public apollo: Apollo
+  ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, `${environment.API_URL}/graphql`);
+    initCustomWidgets(SurveyKo, domService, dialog, apollo);
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
-    // === CUSTOM WIDGETS / COMPONENTS FOR SURVEY ===
-    initCustomWidgets(Survey, `${environment.API_URL}/graphql`);
+    // === CUSTOM WIDGETS / COMPONENTS ===
+    initCustomWidgets(Survey, domService, dialog, apollo);
   }
 }

@@ -1,19 +1,18 @@
 import {Apollo} from 'apollo-angular';
-import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { FormService } from '../../services/form.service';
-import { SafeFormModalComponent } from '../form-modal/form-modal.component';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
 import addCustomFunctions from '../../utils/custom-functions';
+import { NOTIFICATIONS } from '../../const/notifications';
 
 @Component({
   selector: 'safe-form',
@@ -50,7 +49,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formService: FormService,
     private snackBar: SafeSnackBarService,
     private router: Router,
     private workflowService: SafeWorkflowService
@@ -96,7 +94,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
-            this.snackBar.openSnackBar('Selected records do not match with any fields from this form', { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
           }
         }
       });
@@ -214,24 +212,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           this.selectedTabIndex = 0;
         }
         this.save.emit(true);
-      }
-    });
-  }
-
-  /*  Event listener to trigger embedded forms.
-  */
-  @HostListener('document:openForm', ['$event'])
-  onOpenEmbeddedForm(event: any): void {
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
-      data: {
-        template: event.detail.template,
-        locale: event.locale
-      }
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        const e = new CustomEvent('saveResourceFromEmbed', { detail: { resource: res.data, template: res.template } });
-        document.dispatchEvent(e);
       }
     });
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { User, SafeAuthService, SafeSnackBarService } from '@safe/builder';
+import { User, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map, skip } from 'rxjs/operators';
 
@@ -24,7 +24,7 @@ export class AccessGuard implements CanActivate {
             if (user.isAdmin) {
               return true;
             }
-            this.snackBar.openSnackBar('No access provided to this platform.', { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
             this.authService.logout();
             this.router.navigate(['/auth']);
             return false;
