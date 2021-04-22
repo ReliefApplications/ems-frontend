@@ -7,6 +7,7 @@ import { init as initCountryComponent } from './components/country';
 import { init as initCountriesComponent } from './components/countries';
 import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
+import addCustomFunctions from '../utils/custom-functions';
 import { init as initCustomWidget } from './widget';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,4 +22,5 @@ export function initCustomWidgets(Survey: any, domService: DomService, dialog: M
   initResourceComponent(Survey, apollo);
   initResourcesComponent(Survey, apollo);
   initCustomWidget(Survey, domService, dialog);
+  addCustomFunctions(Survey);
 }
