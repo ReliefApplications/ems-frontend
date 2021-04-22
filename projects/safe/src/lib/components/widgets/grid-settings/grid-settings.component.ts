@@ -161,7 +161,7 @@ export class SafeGridSettingsComponent implements OnInit {
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [value && value.distributionList ? value.distributionList : [], Validators.minLength(1)],
       subject: [value && value.subject ? value.subject : '', Validators.required],
-      attachment: [value && value.attachment ? value.attachment : false]
+      // attachment: [value && value.attachment ? value.attachment : false]
     });
     return buttonForm;
   }
