@@ -6,13 +6,14 @@ import { Router } from '@angular/router';
 import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
-  WhoSnackBarService,
-  WhoAuthService,
+  SafeSnackBarService,
+  SafeAuthService,
   PermissionsManagement,
   PermissionType,
-  WhoConfirmModalComponent,
-  Form
-} from '@who-ems/builder';
+  SafeConfirmModalComponent,
+  Form,
+  NOTIFICATIONS
+} from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -34,10 +35,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
@@ -48,16 +49,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
 
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
   ) { }
 
   /*  Load the forms.
@@ -92,7 +93,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -105,7 +106,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
         content: `Do you confirm the deletion of the form ${element.name} ?`,
@@ -122,7 +123,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
           this.dataSource.data = this.dataSource.data.filter(x => {
             return x.id !== element.id;
           });
@@ -151,10 +152,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           variables: data
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message, { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('form', res.errors[0].message), { error: true });
           } else {
-            const { id } = res.data.addForm;
-            this.router.navigate(['/forms/builder', id]);
+            if (res.data) {
+              const { id } = res.data.addForm;
+              this.router.navigate(['/forms/builder', id]);
+            }
           }
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

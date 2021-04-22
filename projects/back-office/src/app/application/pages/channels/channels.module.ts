@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { WhoConfirmModalModule } from '@who-ems/builder';
+import { SafeConfirmModalModule } from '@safe/builder';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 
 @NgModule({
@@ -31,7 +31,7 @@ import { AddChannelComponent } from './components/add-channel/add-channel.compon
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    WhoConfirmModalModule
+    SafeConfirmModalModule
   ]
 })
 export class ChannelsModule { }

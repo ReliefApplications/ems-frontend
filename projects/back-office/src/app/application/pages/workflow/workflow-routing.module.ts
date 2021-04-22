@@ -29,13 +29,13 @@ const routes: Routes = [
             path: '',
             loadChildren: () => import('../form/form.module')
               .then(m => m.FormModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           },
           {
             path: 'builder/:id',
             loadChildren: () => import('../../../dashboard/pages/form-builder/form-builder.module')
               .then(m => m.FormBuilderModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           }
         ]
       }

@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, WhoApplicationService, WhoConfirmModalComponent, WhoSnackBarService } from '@who-ems/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
@@ -19,21 +19,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
 
   public applications = new MatTableDataSource<Application>([]);
-  public settingsForm: FormGroup;
-  private applicationSubscription: Subscription;
-  public application: Application;
+  public settingsForm?: FormGroup;
+  private applicationSubscription?: Subscription;
+  public application?: Application;
 
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private applicationService: WhoApplicationService,
+    private snackBar: SafeSnackBarService,
+    private applicationService: SafeApplicationService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application){
         this.application = application;
         this.settingsForm = this.formBuilder.group(
@@ -48,21 +48,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.applicationService.editApplication(this.settingsForm.value);
-    this.settingsForm.markAsPristine();
+    this.applicationService.editApplication(this.settingsForm?.value);
+    this.settingsForm?.markAsPristine();
   }
 
   onDuplicate(): void {
     this.dialog.open(DuplicateApplicationComponent, {
       data: {
-        id: this.application.id,
-        name: this.application.name
+        id: this.application?.id,
+        name: this.application?.name
       }
     });
   }
 
   onDelete(): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
         content: `Do you confirm the deletion of this application ?`,
@@ -72,16 +72,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = this.application.id;
+        const id = this.application?.id;
         this.apollo.mutate<DeleteApplicationMutationResponse>({
           mutation: DELETE_APPLICATION,
           variables: {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data.deleteApplication.id;
+            return x.id !== res.data?.deleteApplication.id;
           });
         });
         this.router.navigate(['/applications']);

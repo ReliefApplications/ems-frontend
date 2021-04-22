@@ -21,7 +21,6 @@ import { environment } from '../environments/environment';
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
-import { WhoSnackBarService } from '@who-ems/builder';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
@@ -179,7 +178,7 @@ export class AppModule {
   ) {
     REFRESH.asObservable().subscribe((res) => {
       if (res) {
-        this.apollo.getClient().cache.reset().then(() => {
+        this.apollo.client.cache.reset().then(() => {
           console.log('Schema generated.');
         });
       }

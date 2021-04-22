@@ -10,7 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddDashboardComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  dashboardForm: FormGroup;
+  dashboardForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

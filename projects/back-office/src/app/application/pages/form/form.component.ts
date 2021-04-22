@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { Form, Page, Step, WhoFormComponent, WhoApplicationService, WhoSnackBarService, WhoWorkflowService } from '@who-ems/builder';
+import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import {
   GetFormByIdQueryResponse, GET_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -22,32 +22,33 @@ import {
 })
 export class FormComponent implements OnInit, OnDestroy {
 
-  @ViewChild(WhoFormComponent)
-  private formComponent: WhoFormComponent;
+  @ViewChild(SafeFormComponent)
+  private formComponent?: SafeFormComponent;
 
   // === DATA ===
   public loading = true;
-  public id: string;
-  public form: Form;
+  public id = '';
+  public applicationId = '';
+  public form?: Form;
   public completed = false;
 
   // === TAB NAME EDITION ===
-  public formActive: boolean;
-  public tabNameForm: FormGroup;
-  public page: Page;
-  public step: Step;
+  public formActive = false;
+  public tabNameForm: FormGroup = new FormGroup({});
+  public page?: Page;
+  public step?: Step;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
-  public isStep: boolean;
+  private routeSubscription?: Subscription;
+  public isStep = false;
 
   constructor(
-    private applicationService: WhoApplicationService,
-    private workflowService: WhoWorkflowService,
+    private applicationService: SafeApplicationService,
+    private workflowService: SafeWorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -72,8 +73,9 @@ export class FormComponent implements OnInit, OnDestroy {
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
             this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.step.name, Validators.required)
+              tabName: new FormControl(this.step?.name, Validators.required)
             });
+            this.applicationId = this.step?.workflow?.page?.application?.id || '';
             this.loading = res2.data.loading;
           });
         });
@@ -93,8 +95,9 @@ export class FormComponent implements OnInit, OnDestroy {
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
             this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.page.name, Validators.required)
+              tabName: new FormControl(this.page?.name, Validators.required)
             });
+            this.applicationId = this.page?.application?.id || '';
             this.loading = res2.data.loading;
           });
         });
@@ -103,7 +106,7 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   toggleFormActive(): void {
-    if (this.form.canUpdate) { this.formActive = !this.formActive; }
+    if (this.form?.canUpdate) { this.formActive = !this.formActive; }
   }
 
   /*  Update the name of the tab.
@@ -120,10 +123,13 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Step was not updated. ' + res.errors[0].message);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message));
         } else {
-          this.step.name = res.data.editStep.name;
-          this.workflowService.updateStepName(res.data.editStep);
+          if (res.data) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
+            this.step = { ...this.step, name: res.data.editStep.name };
+            this.workflowService.updateStepName(res.data.editStep);
+          }
         }
       });
     } else {
@@ -135,10 +141,14 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('The Page was not updated. ' + res.errors[0].message);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message));
         } else {
-          this.page.name = res.data.editPage.name;
-          this.applicationService.updatePageName(res.data.editPage);
+          if (res.data) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName));
+            const newPage = { ...this.page, name: res.data.editPage.name };
+            this.page = newPage;
+            this.applicationService.updatePageName(res.data.editPage);
+          }
         }
       });
     }
@@ -155,7 +165,7 @@ export class FormComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        this.form.permissions = res.data.editStep.permissions;
+        this.form = { ...this.form, permissions: res.data?.editStep.permissions };
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -165,7 +175,7 @@ export class FormComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        this.form.permissions = res.data.editPage.permissions;
+        this.form = { ...this.form, permissions: res.data?.editPage.permissions };
       });
     }
   }
@@ -175,14 +185,16 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   clearForm(): void {
-    this.formComponent.reset();
+    this.formComponent?.reset();
   }
 
   editForm(): void {
-    if (this.isStep) {
+    if (this.isStep && this.step) {
       this.router.navigate([`./builder/${this.step.content}`], { relativeTo: this.route });
     } else {
-      this.router.navigate([`./builder/${this.page.content}`], { relativeTo: this.route });
+      if (this.page) {
+        this.router.navigate([`./builder/${this.page.content}`], { relativeTo: this.route });
+      }
     }
   }
 

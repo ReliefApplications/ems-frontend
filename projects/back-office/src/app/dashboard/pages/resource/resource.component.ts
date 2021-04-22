@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { WhoDownloadService, WhoSnackBarService } from '@who-ems/builder';
+import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
@@ -16,29 +16,29 @@ export class ResourceComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public resource: any;
 
   // === RECORDS ASSOCIATED ===
   displayedColumnsRecords: string[] = [];
-  dataSourceRecords = [];
+  dataSourceRecords: any[] = [];
 
   // === FORMS ASSOCIATED ===
   displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', '_actions'];
-  dataSourceForms = [];
+  dataSourceForms: any[] = [];
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private downloadService: WhoDownloadService
+    private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
@@ -54,7 +54,7 @@ export class ResourceComponent implements OnInit {
           this.setDisplayedColumns(false);
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar('No access provided to this resource.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
           this.router.navigate(['/resources']);
         }
       }, (err) => {
@@ -71,7 +71,7 @@ export class ResourceComponent implements OnInit {
   private setDisplayedColumns(core: boolean): void {
     const columns = [];
     if (core) {
-      for (const field of this.resource.fields.filter(x => x.isRequired === true)) {
+      for (const field of this.resource.fields.filter((x: any) => x.isRequired === true)) {
         columns.push(field.name);
       }
     } else {
@@ -97,7 +97,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Record deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { duration: 1000 });
       this.dataSourceRecords = this.dataSourceRecords.filter(x => {
         return x.id !== id;
       });
@@ -114,7 +114,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
       this.dataSourceForms = this.dataSourceForms.filter(x => {
         return x.id !== id;
       });
@@ -131,7 +131,9 @@ export class ResourceComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.resource = res.data.editResource;
+      if (res.data) {
+        this.resource = res.data.editResource;
+      }
     });
   }
 

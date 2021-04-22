@@ -16,21 +16,21 @@ export class FormRecordsComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public form: any;
   displayedColumns: string[] = [];
-  dataSource = [];
+  dataSource: any[] = [];
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: WhoDownloadService
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load the records, using the form id passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -50,7 +50,7 @@ export class FormRecordsComponent implements OnInit {
   /*  Modify the list of columns.
   */
   private setDisplayedColumns(): void {
-    const columns = [];
+    const columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
     if (structure && structure.pages) {
       for (const page of JSON.parse(this.form.structure).pages) {

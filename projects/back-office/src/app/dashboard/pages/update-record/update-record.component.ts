@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
-import { Record } from '@who-ems/builder';
+import { Record } from '@safe/builder';
 
 @Component({
   selector: 'app-update-record',
@@ -14,9 +14,9 @@ export class UpdateRecordComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
-  public record: Record;
-  public backPath: string;
+  public id = '';
+  public record: Record = {};
+  public backPath = '';
 
   constructor(
     private apollo: Apollo,
@@ -25,7 +25,7 @@ export class UpdateRecordComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     this.backPath = this.router.url.replace(`/update/${this.id}`, '');
     if (this.id !== null) {
       this.apollo.watchQuery<GetRecordByIdQueryResponse>({

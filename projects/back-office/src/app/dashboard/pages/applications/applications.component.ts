@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  WhoAuthService, WhoConfirmModalComponent, WhoSnackBarService, WhoApplicationService } from '@who-ems/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
@@ -30,7 +30,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
@@ -38,20 +38,20 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public statusFilter = '';
   public showFilters = false;
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService,
-    private applicationService: WhoApplicationService,
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
     private previewService: PreviewService
   ) { }
 
@@ -81,7 +81,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.applications.sort = this.sort;
+    this.applications.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -92,9 +92,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e): void {
+  onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
         content: `Do you confirm the deletion of the application ${element.name} ?`,
@@ -111,9 +111,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data.deleteApplication.id;
+            return x.id !== res.data?.deleteApplication.id;
           });
         });
       }
@@ -135,13 +135,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           if (res.errors) {
             if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar('An App with this name already exists, please choose a different name.');
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
+
             } else {
-              this.snackBar.openSnackBar('The App was not created. ' + res.errors[0].message);
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
             }
           } else {
-            this.snackBar.openSnackBar(`${value.name} application created`);
-            const id = res.data.addApplication.id;
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
+            const id = res.data?.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
         });
@@ -159,10 +160,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         permissions: e
       }
     }).subscribe((res) => {
-      this.snackBar.openSnackBar(`${element.name} access edited.`);
-      const index = this.applications.data.findIndex(x => x.id === element.id);
-      this.applications.data[index] = res.data.editApplication;
-      this.applications.data = this.applications.data;
+      if (res.data) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', element.name));
+        const index = this.applications.data.findIndex(x => x.id === element.id);
+        this.applications.data[index] = res.data.editApplication;
+        this.applications.data = this.applications.data;
+      }
     });
   }
 
