@@ -16,12 +16,11 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { HttpClientModule } from '@angular/common/http';
 import { SafeRecordModalModule } from '../../record-modal/record-modal.module';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
-import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.module';
 
 @NgModule({
   declarations: [
-    SafeGridComponent,
-    SafeExpandedCommentComponent
+    SafeGridComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +41,8 @@ import { SafeExpandedCommentComponent } from './expanded-comment/expanded-commen
     DateInputsModule,
     DropDownsModule,
     SafeRecordModalModule,
-    SafeChooseRecordModalModule
+    SafeChooseRecordModalModule,
+    SafeExpandedCommentModule
   ],
   exports: [SafeGridComponent]
 })

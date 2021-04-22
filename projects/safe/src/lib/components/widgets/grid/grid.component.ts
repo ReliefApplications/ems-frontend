@@ -897,15 +897,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       },
       panelClass: 'expanded-widget-dialog'
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if ( result.data !== item[rowTitle] ) {
-        this.gridData.data.find(x => x.id === item.id)[rowTitle] = result.data;
-        this.items.find(x => x.id === item.id)[rowTitle] = result.data;
+    dialogRef.afterClosed().subscribe(res => {
+      if ( res !== item[rowTitle] ) {
+        this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
+        this.items.find(x => x.id === item.id)[rowTitle] = res;
         if ( this.updatedItems.find( x => x.id === item.id ) !== undefined ){
-          this.updatedItems.find( x => x.id === item.id )[rowTitle] = result.data;
+          this.updatedItems.find( x => x.id === item.id )[rowTitle] = res;
         }
         else {
-          this.updatedItems.push( { [rowTitle]: result.data, id: item.id } );
+          this.updatedItems.push( { [rowTitle]: res, id: item.id } );
         }
       }
     });

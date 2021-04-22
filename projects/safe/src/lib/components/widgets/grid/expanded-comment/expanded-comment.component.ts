@@ -25,7 +25,7 @@ export class SafeExpandedCommentComponent implements OnInit {
     this.comment = this.data.comment;
   }
 
-  onClose(): void {
-    this.dialogRef.close({data: this.comment});
-  }
+  // onClose(): void {
+  //   this.dialogRef.close({data: this.comment});
+  // }
 }
