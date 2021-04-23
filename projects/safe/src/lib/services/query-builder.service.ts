@@ -58,6 +58,9 @@ export class QueryBuilderService {
   private buildFilter(filter: any): any {
     return filter ? Object.keys(filter).reduce((o, key) => {
       if (filter[key] || filter[key] === false) {
+        if (filter[key] === 'today()') {
+          return { ...o, [key]: new Date().toISOString().substring(0, 10)};
+        }
         return { ...o, [key]: filter[key] };
       }
       return { ...o };
