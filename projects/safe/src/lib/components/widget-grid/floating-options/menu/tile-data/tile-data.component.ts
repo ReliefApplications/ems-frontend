@@ -13,7 +13,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class SafeTileDataComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm?: FormGroup;
 
   // === TEMPLATE REFERENCE ===
   @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
@@ -42,5 +42,11 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  /* Close the modal sending tile form value.
+  */
+  onSubmit(): void {
+    this.dialogRef.close(this.tileForm?.getRawValue());
   }
 }
