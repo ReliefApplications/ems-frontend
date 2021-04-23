@@ -10,7 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddChannelComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  channelForm: FormGroup;
+  channelForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

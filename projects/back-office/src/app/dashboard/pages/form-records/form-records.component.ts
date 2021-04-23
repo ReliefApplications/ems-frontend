@@ -1,9 +1,12 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Apollo } from 'apollo-angular';
+
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
+import { SafeDownloadService } from '@safe/builder';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-form-records',
@@ -14,20 +17,21 @@ export class FormRecordsComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
-  public id: string;
+  public id = '';
   public form: any;
   displayedColumns: string[] = [];
-  dataSource = [];
+  dataSource: any[] = [];
 
   constructor(
     private apollo: Apollo,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private downloadService: SafeDownloadService
   ) { }
 
   /*  Load the records, using the form id passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -47,15 +51,15 @@ export class FormRecordsComponent implements OnInit {
   /*  Modify the list of columns.
   */
   private setDisplayedColumns(): void {
-    const columns = [];
+    const columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
     if (structure && structure.pages) {
       for (const page of JSON.parse(this.form.structure).pages) {
         extractColumns(page, columns);
       }
     }
-    columns.push('actions');
-    columns.push('versions');
+    columns.push('_actions');
+    columns.push('_versions');
     this.displayedColumns = columns;
   }
 
@@ -73,5 +77,11 @@ export class FormRecordsComponent implements OnInit {
         return x.id !== id;
       });
     });
+  }
+
+  onDownload(): void {
+    const url = `${environment.API_URL}/download/form/records/${this.id}`;
+    const fileName = `${this.form.name}.csv`;
+    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
   }
 }

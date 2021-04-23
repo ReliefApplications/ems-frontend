@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Permission } from 'dist/who-ems/public-api';
 import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -7,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class PreviewService {
 
   // tslint:disable-next-line: variable-name
-  private _roleId = new BehaviorSubject<string>(null);
+  private _roleId = new BehaviorSubject<string>('');
 
   constructor() { }
 

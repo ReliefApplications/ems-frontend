@@ -13,8 +13,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { WhoConfirmModalModule } from '@who-ems/builder';
-import { AddPositionComponent } from './components/add-position/add-position.component';
+import { SafeConfirmModalModule } from '@safe/builder';
+import { AddPositionComponent } from './components/position-modal/position-modal.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { AddPositionComponent } from './components/add-position/add-position.com
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    WhoConfirmModalModule
+    SafeConfirmModalModule
   ],
   exports: [PositionComponent]
 })

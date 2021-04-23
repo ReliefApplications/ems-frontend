@@ -23,7 +23,7 @@ jobs:
     - name:
       run: npm ci
     - name: Build Shared Library
-      run: npm run build who-ems
+      run: npm run build safe
     - name: Build Back-office
       run: npm run build:ci
     - name: Build Front-office
@@ -49,7 +49,6 @@ jobs:
     #     name: deploy_coverage
     #     path: coverage
 
-
   deploy_back_office:
     name: Deploy Back-office
     runs-on: ubuntu-latest
@@ -71,7 +70,6 @@ jobs:
       run: ./CI/deploy-back-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
-
 
   deploy_front_office:
     name: Deploy Front-office

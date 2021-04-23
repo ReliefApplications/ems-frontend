@@ -1,5 +1,6 @@
-import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { gql } from 'apollo-angular';
+import { Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -227,12 +228,19 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     }
     canCreate
     canUpdate
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
   }
 }`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
+  errors: any;
 }
 
 // === GET RECORD BY ID ===
@@ -240,7 +248,10 @@ export const GET_RECORD_BY_ID = gql`
 query GetRecordById($id: ID!) {
   record(id: $id) {
     id
+    createdAt
+    modifiedAt
     data
+    modifiedAt
     form {
       id
       structure
@@ -597,4 +608,21 @@ query GetRoutingKeys {
 export interface GetRoutingKeysQueryResponse{
   loading: boolean;
   applications: Application[];
+}
+
+// === GET POSITION ATTRIBUTES FORM CATEGORY ===
+export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
+query GetPositionAttributesFromCategory($id: ID!) {
+  positionAttributes(category: $id) {
+    value
+    category {
+      title
+    }
+    usersCount
+  }
+}`;
+
+export interface GetPositionAttributesFromCategoryQueryResponse {
+  loading: boolean;
+  positionAttributes: PositionAttribute[];
 }

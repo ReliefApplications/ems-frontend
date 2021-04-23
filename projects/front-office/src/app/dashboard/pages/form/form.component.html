@@ -1,7 +1,7 @@
 <h1>Answer the form</h1>
-<ng-container *ngIf="!loading">
-    <who-form [form]="form" (save)="onComplete($event)"></who-form>
-</ng-container>
-<ng-container *ngIf="completed">
-    <button mat-flat-button (click)="clearForm()">New record</button>
+<ng-container *ngIf="!loading && form">
+    <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+    <ng-container *ngIf="completed && !form.uniqueRecord">
+        <button mat-flat-button (click)="clearForm()">New record</button>
+    </ng-container>
 </ng-container>

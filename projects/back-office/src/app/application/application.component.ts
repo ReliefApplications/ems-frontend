@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, WhoConfirmModalComponent, ContentType, WhoApplicationService } from '@who-ems/builder';
+import { Application, SafeConfirmModalComponent, ContentType, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -13,20 +13,20 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
 
-  public title: string;
+  public title = '';
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [];
+  public navGroups: any[] = [];
 
   // === APPLICATION ===
-  public application: Application;
-  private applicationSubscription: Subscription;
+  public application?: Application;
+  private applicationSubscription?: Subscription;
 
   // === ROUTE ===
-  private routeSubscription: Subscription;
+  private routeSubscription?: Subscription;
 
   constructor(
-    private applicationService: WhoApplicationService,
+    private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog
@@ -36,20 +36,21 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.applicationService.loadApplication(params.id);
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.title = application.name;
+        this.title = application.name || '';
+        const navItems: any[] = [];
         this.navGroups = [
           {
             name: 'Display',
-            callback: (event) => this.onReorder(event),
-            navItems: []
-            .concat(application.pages.filter(x => x.content).map(x => {
+            callback: (event: any) => this.onReorder(event),
+            navItems: navItems
+            .concat(application.pages?.filter(x => x.content).map(x => {
               return {
                 id: x.id,
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type),
+                icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
                 action: {
@@ -106,12 +107,14 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           }
         ];
         if (!this.application || application.id !== this.application.id) {
-          const { pages: [firstPage, ..._]} = application;
-          if (firstPage) {
-            this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+          const [firstPage, ..._] = application.pages || [];
+          if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
-          } else {
-            this.router.navigate([`./`], { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;
@@ -134,7 +137,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete page',
         content: `Do you confirm the deletion of the page ${item.name} ?`,
@@ -143,16 +146,22 @@ export class ApplicationComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe(value => {
-      if ( value ) { this.applicationService.deletePage(item.id); }
+      if ( value ) {
+        this.applicationService.deletePage(item.id);
+      }
     });
   }
 
   onReorder(event: any): void {
-    this.applicationService.reorderPages(event.filter(x => x.id).map(x => x.id));
+    this.applicationService.reorderPages(event.filter((x: any) => x.id).map((x: any) => x.id));
   }
 
   ngOnDestroy(): void {
-    this.applicationSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 }

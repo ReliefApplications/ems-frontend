@@ -1,0 +1,27 @@
+<form [formGroup]="form">
+    <ng-container *ngFor="let filter of filters">
+        <mat-form-field appearance="outline">
+            <mat-label>{{filter.name}}</mat-label>
+            <ng-container *ngIf="filter.type.name === 'Int'">
+                <input matInput [formControlName]="filter.name" type="number" />
+            </ng-container>
+            <ng-container *ngIf="filter.type.name === 'Boolean'">
+                <mat-select [formControlName]="filter.name">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option [value]="true">True</mat-option>
+                    <mat-option [value]="false">False</mat-option>
+                </mat-select>
+            </ng-container>
+            <ng-container
+                *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean' && filter.type.name !== 'DateTime'">
+                <input matInput [formControlName]="filter.name" type="string" />
+            </ng-container>
+            <ng-container *ngIf="filter.type.name === 'DateTime'">
+                <input matInput matTooltip="First enter the year then month and day" [matTooltipPosition]="'above'"
+                    maxlength="10" [formControlName]="filter.name" type="text" (keyup)="onKey($event, filter.name)" />
+            </ng-container>
+            <mat-icon *ngIf="filter.type.name === 'DateTime'" color="primary" matSuffix matTooltip="Always update to today's date"
+                [matTooltipPosition]="'above'" (click)="setCurrentDate(filter.name)">calendar_today</mat-icon>
+        </mat-form-field>
+    </ng-container>
+</form>

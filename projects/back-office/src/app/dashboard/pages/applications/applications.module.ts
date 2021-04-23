@@ -14,11 +14,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
-import { WhoAccessModule, WhoConfirmModalModule } from '@who-ems/builder';
+import { SafeAccessModule, SafeConfirmModalModule } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
@@ -38,9 +40,11 @@ import { DuplicateApplicationModule } from '../../../components/duplicate-applic
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    WhoConfirmModalModule,
-    WhoAccessModule,
-    DuplicateApplicationModule
+    SafeConfirmModalModule,
+    SafeAccessModule,
+    DuplicateApplicationModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   exports: [ApplicationsComponent]
 })

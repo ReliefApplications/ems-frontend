@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
+
 import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../graphql/queries';
 
 @Component({
@@ -12,7 +13,7 @@ import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse,
 export class AddFormComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  addForm: FormGroup;
+  addForm: FormGroup = new FormGroup({});
 
   // === DATA ===
   resources: any[] = [];
@@ -52,7 +53,7 @@ export class AddFormComponent implements OnInit {
         id: e.value
       }
     }).subscribe(res => {
-      this.templates = res.data.resource.forms;
+      this.templates = res.data.resource.forms || [];
     });
   }
 
