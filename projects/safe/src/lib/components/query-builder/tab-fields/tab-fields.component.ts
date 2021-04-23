@@ -18,7 +18,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
-  public fieldForm?: FormGroup;
+  public fieldForm: FormGroup | null = null;
 
   constructor(private queryBuilder: QueryBuilderService) { }
 
@@ -59,7 +59,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   }
 
   public onCloseField(): void {
-    this.fieldForm = new FormGroup({});
+    this.fieldForm = null;
   }
 
   public onEdit(index: number): void {
