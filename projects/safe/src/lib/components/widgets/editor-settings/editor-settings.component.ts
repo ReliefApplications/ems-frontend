@@ -11,7 +11,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm: FormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -39,7 +39,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   /*  Detect the form changes to emit the new configuration.
   */
   ngAfterViewInit(): void {
-    this.tileForm.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
   }
@@ -47,7 +47,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   /*  Update the text of the editor.
   */
   updateText(): void {
-    this.tileForm.setValue({...this.tileForm.value, text: this.editor.value});
+    this.tileForm?.setValue({...this.tileForm?.value, text: this.editor.value});
   }
 
 }
