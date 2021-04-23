@@ -219,7 +219,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     items.map(x => {
       for (const [key, value] of Object.entries(x)) {
         if (dateFields.includes(key)) {
-          x[key] = new Date(x[key]);
+          x[key] = x[key] && new Date(x[key]);
         }
       }
     });
