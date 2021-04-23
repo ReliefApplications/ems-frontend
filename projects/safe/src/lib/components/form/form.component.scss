@@ -34,3 +34,11 @@
 mat-tab-group {
   margin-bottom: 1rem;
 }
+
+.clear-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
+  text-align: end;
+  margin-left: auto;
+}

@@ -46,6 +46,11 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   private isStep = false;
   private recordsSubscription?: Subscription;
 
+  // === LOCALE STORAGE ===
+  private storageId: string = '';
+  public storageDate: Date = new Date();
+  public isFromCacheData = false;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -81,8 +86,11 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     }
 
     // Fetch cached data from local storage
-    const storedData = localStorage.getItem(`record:${this.form.id}`);
-    let cachedData = storedData ? JSON.parse(storedData) : null;
+    this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
+    const storedData = localStorage.getItem(this.storageId);
+    let cachedData = storedData ? JSON.parse(storedData).data : null;
+    this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
+    this.isFromCacheData = !(!cachedData);
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
@@ -153,7 +161,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   }
 
   public valueChange(): void {
-    localStorage.setItem(`record:${this.form.id}`, JSON.stringify(this.survey.data));
+    localStorage.setItem(this.storageId, JSON.stringify({ data: this.survey.data, date: new Date() }));
   }
 
   /*  Custom SurveyJS method, save a new record or edit existing one.
@@ -195,7 +203,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
-        localStorage.removeItem(`record:${this.form.id}`);
+        localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, true);
           if (res.data.addRecord) {
@@ -230,10 +238,18 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onClear(): void {
+    this.survey.clear();
+    localStorage.removeItem(this.storageId);
+    this.isFromCacheData = false;
+    this.survey.render();
+  }
+
   ngOnDestroy(): void {
     if (this.recordsSubscription) {
       this.recordsSubscription.unsubscribe();
       this.workflowService.storeRecords([]);
     }
+    localStorage.removeItem(this.storageId);
   }
 }
