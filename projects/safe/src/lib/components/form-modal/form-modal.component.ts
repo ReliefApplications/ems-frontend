@@ -8,6 +8,7 @@ import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 
 @Component({
@@ -67,6 +68,7 @@ export class SafeFormModalComponent implements OnInit {
           this.form = record.form;
           this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
           this.loading = false;
+          addCustomFunctions(Survey, record);
           const survey = new Survey.Model(this.form?.structure);
           survey.data = this.isMultiEdition ? null : record.data;
           survey.locale = this.data.locale ? this.data.locale : 'en';

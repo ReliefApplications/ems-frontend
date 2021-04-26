@@ -3,9 +3,9 @@
 
   <form [formGroup]="inviteForm">
         <div class="form-group">
-            <label class="invite-label">Select existing users, invite new users or import csv list
-              <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
-            </label>
+          <label class="invite-label">Select existing users, invite new users or import csv list
+            <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
+          </label>
           <mat-form-field class="chip-list">
             <mat-chip-list #chipList aria-label="Email invitation">
               <mat-chip

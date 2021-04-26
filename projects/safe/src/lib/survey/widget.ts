@@ -24,6 +24,14 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 name: 'tooltip:text',
                 category: 'general'
             });
+            Survey.Serializer.removeProperty('expression', 'readOnly');
+            Survey.Serializer.addProperty('expression', {
+                name: 'readOnly:boolean',
+                type: 'boolean',
+                default: false,
+                category: 'general',
+                required: true,
+            });
         },
         isDefaultRender: true,
         afterRender(question: any, el: any): void {

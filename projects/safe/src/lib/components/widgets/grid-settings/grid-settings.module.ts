@@ -13,11 +13,12 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FloatingButtonSettingsComponent } from './floating-button-settings/floating-button-settings.component';
+import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/floating-button-settings.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
-  declarations: [SafeGridSettingsComponent, FloatingButtonSettingsComponent],
+  declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -33,7 +34,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatSlideToggleModule,
     MatCheckboxModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    MatChipsModule,
   ],
   exports: [SafeGridSettingsComponent]
 })
