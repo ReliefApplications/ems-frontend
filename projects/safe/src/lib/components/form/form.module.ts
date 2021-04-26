@@ -6,6 +6,8 @@ import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeSurveyGridModule } from '../survey/survey-grid/survey-grid.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [SafeFormComponent],
@@ -15,7 +17,9 @@ import { SafeSurveyGridModule } from '../survey/survey-grid/survey-grid.module';
     MatDialogModule,
     DropDownListModule,
     MatTabsModule,
-    SafeSurveyGridModule
+    SafeSurveyGridModule,
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [SafeFormComponent]
 })
