@@ -47,7 +47,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   private recordsSubscription?: Subscription;
 
   // === LOCALE STORAGE ===
-  private storageId: string = '';
+  private storageId = '';
   public storageDate: Date = new Date();
   public isFromCacheData = false;
 
@@ -91,6 +91,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     let cachedData = storedData ? JSON.parse(storedData).data : null;
     this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
     this.isFromCacheData = !(!cachedData);
+    if (this.isFromCacheData) {
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
+    }
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
