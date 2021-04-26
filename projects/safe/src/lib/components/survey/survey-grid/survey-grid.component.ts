@@ -48,7 +48,7 @@ export class SafeSurveyGridComponent implements OnInit{
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.id,
-          advancedFilters: resourcesFilterValues.getValue()[0].operator ? resourcesFilterValues.getValue() : null
+          filters: resourcesFilterValues.getValue()[0].operator ? resourcesFilterValues.getValue() : null
         }
       }).valueChanges.subscribe((res) => {
         if (res.data.resource) {

@@ -15,19 +15,17 @@ export function init(Survey: any, apollo: Apollo): void {
   });
 
   const getResourceById = (data: {
-    id: string, containsFilters?: any, advancedFilters?:
+    id: string, filters?:
       { field: string, operator: string, value: string }[]
   }) => apollo.query<GetResourceByIdQueryResponse>({
     query: GET_RESOURCE_BY_ID,
     variables: {
       id: data.id,
-      containsFilters: data.containsFilters,
-      advancedFilters: data.advancedFilters
+      filters: data.filters
     }
   });
 
-  let advancedFilters: { field: string, operator: string, value: string }[] = [{field: '', operator: '', value: ''}];
-
+  let filters: { field: string, operator: string, value: string }[] = [{field: '', operator: '', value: ''}];
 
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
@@ -298,16 +296,16 @@ export function init(Survey: any, apollo: Apollo): void {
       }
       if (question.resource) {
         if (question.selectQuestion) {
-          advancedFilters[0].operator = question.filterCondition;
-          advancedFilters[0].field = question.filterBy;
+          filters[0].operator = question.filterCondition;
+          filters[0].field = question.filterBy;
           if (question.selectQuestion) {
             question.registerFunctionOnPropertyValueChanged('filterCondition',
               () => {
-                advancedFilters.map((i: any) => {
+                filters.map((i: any) => {
                   i.operator = question.filterCondition;
                 });
               });
-            console.log('BLA', advancedFilters);
+            console.log('BLA', filters);
           }
         }
         getResourceById({id: question.resource}).subscribe(response => {
@@ -335,7 +333,7 @@ export function init(Survey: any, apollo: Apollo): void {
             watchedQuestion.valueChangedCallback = () => {
               setAdvanceFilter(watchedQuestion.value, question);
               if (question.displayAsGrid) {
-                resourcesFilterValues.next(advancedFilters);
+                resourcesFilterValues.next(filters);
               } else {
                 this.populateChoices(question);
               }
@@ -355,7 +353,7 @@ export function init(Survey: any, apollo: Apollo): void {
                 };
               }
             }
-            advancedFilters = obj;
+            filters = obj;
             this.populateChoices(question);
           }
         }
@@ -373,8 +371,8 @@ export function init(Survey: any, apollo: Apollo): void {
     },
     populateChoices(question: any): void {
       if (question.resource) {
-        console.log('ADvance filters', advancedFilters);
-        getResourceById({id: question.resource, advancedFilters}).subscribe((response) => {
+        console.log('ADvance filters', filters);
+        getResourceById({id: question.resource, filters}).subscribe((response) => {
           const serverRes = response.data.resource.records || [];
           const res: any[] = [];
           for (const item of serverRes) {
@@ -437,10 +435,10 @@ export function init(Survey: any, apollo: Apollo): void {
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
-    if (!advancedFilters.some((x: any) => x.field === field)) {
-      advancedFilters.push({field: question.filterBy, operator: question.filterCondition, value});
+    if (!filters.some((x: any) => x.field === field)) {
+      filters.push({field: question.filterBy, operator: question.filterCondition, value});
     } else {
-      advancedFilters.map((x: any) => {
+      filters.map((x: any) => {
         if (x.field === field) {
           x.value = value;
         }
