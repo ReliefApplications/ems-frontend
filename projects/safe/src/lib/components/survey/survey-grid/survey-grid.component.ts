@@ -48,7 +48,7 @@ export class SafeSurveyGridComponent implements OnInit{
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.id,
-          advancedFilters: resourcesFilterValues.getValue().operator ? [resourcesFilterValues.getValue()] : null
+          advancedFilters: resourcesFilterValues.getValue()[0].operator ? resourcesFilterValues.getValue() : null
         }
       }).valueChanges.subscribe((res) => {
         if (res.data.resource) {
@@ -87,7 +87,6 @@ export class SafeSurveyGridComponent implements OnInit{
     const value = this.availableRecords.filter(d => d.value === event.value)[0];
     if (value) {
       const elements: any[] = this.gridData.getValue();
-      console.log(value);
       elements.push(value);
       this.availableRecords = this.availableRecords.filter(d => d.value !== value.value);
       this.gridData.next(elements);
@@ -107,7 +106,7 @@ export class SafeSurveyGridComponent implements OnInit{
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        if (resourcesFilterValues.getValue().value.trim().length > 0) {
+        if (resourcesFilterValues.getValue()[0].value.trim().length > 0) {
           this.fetchData();
         } else {
           items.forEach(i => this.availableRecords.push(this.gridData.getValue()[i]));
