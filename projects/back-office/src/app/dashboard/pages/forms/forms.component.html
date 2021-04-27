@@ -110,13 +110,13 @@
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="versions">
+    <ng-container matColumnDef="versionsCount">
       <th mat-header-cell *matHeaderCellDef>
             <span class="headerTitle" mat-sort-header>
               History
             </span>
       </th>
-      <td mat-cell *matCellDef="let element">{{ element.versions.length }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
     </ng-container>
 
     <ng-container matColumnDef="recordsCount">
@@ -152,7 +152,7 @@
             <mat-icon>edit</mat-icon>
             Edit
           </button>
-          <ng-container *ngIf="element.recordsCount > 0">
+          <ng-container *ngIf="element.canSee && element.recordsCount > 0">
             <button mat-menu-item [routerLink]="['/forms/records', element.id]">
               <mat-icon>plagiarism</mat-icon>
               View

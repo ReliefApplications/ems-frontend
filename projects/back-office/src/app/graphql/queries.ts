@@ -1,6 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Dashboard, Form, Permission, Resource, Role, User, Record,
   Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@safe/builder';
+import { BasicForm } from "../../../../safe/src/lib/models/basicForm.model";
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -78,27 +79,34 @@ export interface GetDashboardsQueryResponse {
 }
 
 // === GET FORMS ===
-export const GET_FORMS = gql`
-{
-  forms {
-    id
-    name
-    createdAt
-    status
-    versions {
+export const GET_NAME_ID_FORMS = gql`
+  {
+    basicForms {
       id
+      name
     }
-    recordsCount
-    core
-    canCreate
-    canUpdate
-    canDelete
-  }
-}`;
+  }`;
 
-export interface GetFormsQueryResponse {
+export const GET_BASIC_FORMS = gql`
+  {
+    basicForms {
+      id
+      name
+      createdAt
+      status
+      versionsCount
+      recordsCount
+      core
+      canSee
+      canCreate
+      canUpdate
+      canDelete
+    }
+  }`;
+
+export interface GetBasicFormsQueryResponse {
   loading: boolean;
-  forms: Form[];
+  forms: BasicForm[];
 }
 
 // === GET RESOURCE BY ID ===

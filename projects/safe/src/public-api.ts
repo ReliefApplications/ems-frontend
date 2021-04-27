@@ -20,6 +20,7 @@ export * from './lib/guards/permission.guard';
 // === MODELS ===
 export * from './lib/models/dashboard.model';
 export * from './lib/models/form.model';
+export * from './lib/models/basicForm.model';
 export * from './lib/models/record.model';
 export * from './lib/models/resource.model';
 export * from './lib/models/user.model';
