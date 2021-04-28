@@ -135,7 +135,7 @@ export class SafeGridSettingsComponent implements OnInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
-    const buttonForm = this.formBuilder.group({
+    return this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
@@ -153,17 +153,18 @@ export class SafeGridSettingsComponent implements OnInit {
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-      value && value.notify ? Validators.required : null],
+        value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
       value && value.publish ? Validators.required : null],
       sendMail: [value && value.sendMail ? value.sendMail : false],
-      distributionList: [value && value.distributionList ? value.distributionList : [], Validators.minLength(1)],
-      subject: [value && value.subject ? value.subject : '', Validators.required],
+      distributionList: [value && value.distributionList ? value.distributionList : [],
+        value && value.sendMail ? Validators.required : null],
+      subject: [value && value.subject ? value.subject : '',
+      value && value.sendMail ? Validators.required : null],
       // attachment: [value && value.attachment ? value.attachment : false]
     });
-    return buttonForm;
   }
 
   public addFloatingButton(): void {
