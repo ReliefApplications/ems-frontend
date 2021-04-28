@@ -119,7 +119,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                         instance = grid.instance;
                         instance.setID(question.resource);
                         instance.setField(question.displayField);
-                        // instance.fetchData(question.resource, question.displayField);
                         // subscribed grid data to add values to survey question.
                         instance.gridData.subscribe((value: any[]) => {
                             question.value = value.map(v => v.value);
@@ -141,7 +140,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                             dialogRef.afterClosed().subscribe(res => {
                                 if (res) {
                                     if (question.displayAsGrid) {
-                                        instance.allData.push({ value: res.data.id, text: res.data.data[question.displayField] });
+                                        instance.availableRecords.push({ value: res.data.id, text: res.data.data[question.displayField] });
                                     } else {
                                         const e = new CustomEvent('saveResourceFromEmbed', {
                                             detail: {
