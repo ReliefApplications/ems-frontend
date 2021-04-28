@@ -98,6 +98,32 @@ export interface GetRelatedFormsQueryResponse {
 
 // === GET RESOURCE BY ID ===
 
+export const GET_BASIC_RESOURCE_BY_ID = gql`
+  query GetBasicResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+    resource(id: $id) {
+      id
+      name
+      createdAt
+      records(filters: $filters) {
+        id
+        data(display: $display)
+      }
+      fields
+      forms {
+        id
+        name
+        status
+        createdAt
+        recordsCount
+        core
+        canCreate
+        canUpdate
+        canDelete
+      }
+    }
+  }`;
+
+
 export const GET_RESOURCE_BY_ID = gql`
 query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
   resource(id: $id) {

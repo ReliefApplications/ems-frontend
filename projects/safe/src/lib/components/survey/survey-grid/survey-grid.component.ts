@@ -6,7 +6,7 @@ import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select'
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE_BY_ID, GetResourceByIdQueryResponse } from '../../../graphql/queries';
+import { GET_BASIC_RESOURCE_BY_ID, GetResourceByIdQueryResponse } from '../../../graphql/queries';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { resourcesFilterValues } from '../../../survey/components/resources';
@@ -45,7 +45,7 @@ export class SafeSurveyGridComponent implements OnInit{
   fetchData(): void {
     if (this.id && this.field) {
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
+        query: GET_BASIC_RESOURCE_BY_ID,
         variables: {
           id: this.id,
           filters: resourcesFilterValues.getValue()[0].operator ? resourcesFilterValues.getValue() : null

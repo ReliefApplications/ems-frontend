@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import {
-  GET_RESOURCE_BY_ID,
+  GET_BASIC_RESOURCE_BY_ID,
   GET_RESOURCES,
   GetResourceByIdQueryResponse,
   GetResourcesQueryResponse
@@ -18,7 +18,7 @@ export function init(Survey: any, apollo: Apollo): void {
     id: string, filters?:
       { field: string, operator: string, value: string }[]
   }) => apollo.query<GetResourceByIdQueryResponse>({
-    query: GET_RESOURCE_BY_ID,
+    query: GET_BASIC_RESOURCE_BY_ID,
     variables: {
       id: data.id,
       filters: data.filters
