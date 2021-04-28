@@ -31,6 +31,7 @@ export interface User {
     permissions?: Permission[];
     oid?: string;
     applications?: Application[];
+    favoriteApp?: Application;
 }
 
 /*  Enum of admin permissions.

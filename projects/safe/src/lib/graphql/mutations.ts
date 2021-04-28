@@ -108,8 +108,8 @@ export interface EditFormMutationResponse {
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
-mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
-  editUser(id: $id, roles: $roles, application: $application) {
+mutation editUser($id: ID!, $roles: [ID]!, $application: ID, $data: JSON) {
+  editUser(id: $id, roles: $roles, application: $application, data: $data) {
     id
     username
     name
@@ -121,6 +121,9 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
       }
     }
     oid
+    favoriteApp {
+      id
+    }
   }
 }`;
 

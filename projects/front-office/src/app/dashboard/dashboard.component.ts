@@ -38,7 +38,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const applications = user.applications || [];
         if (applications.length > 0) {
           this.applications = applications;
-          this.applicationService.loadApplication(applications[0].id || '');
+          if (user.favoriteApp) {
+            this.applicationService.loadApplication(user.favoriteApp.toString());
+          } else {
+            this.applicationService.loadApplication(applications[0].id || '');
+          }
           this.permissions = user.permissions || [];
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
