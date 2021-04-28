@@ -145,7 +145,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     await object.pages.forEach((page: any) => {
       if (page.elements) {
         page.elements.forEach((element: any) => {
-          this.checkQuestion(element, page);
+          this.setQuestionNames(element, page);
         });
       }
     });
@@ -160,10 +160,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     return text.match(/^[a-z]+[a-z0-9_]+$/);
   }
 
-  private checkQuestion(element: any, page: any): void {
+  /*  Recursively set the question names of the form.
+  */
+  private setQuestionNames(element: any, page: any): void {
     if (element.type === 'panel') {
       for (const el of element.elements) {
-        this.checkQuestion(el, page);
+        this.setQuestionNames(el, page);
       }
     } else {
       if (!element.valueName) {
