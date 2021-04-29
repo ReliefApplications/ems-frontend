@@ -3,17 +3,29 @@
         <button mat-icon-button (click)="onCloseField()" *ngIf="isField">
             <mat-icon>arrow_back</mat-icon>
         </button>
-        <mat-form-field appearance="outline" *ngIf="!isField">
+
+        <!-- <mat-form-field appearance="outline" *ngIf="!isField">
             <mat-label>Select a data set</mat-label>
             <mat-select formControlName="name">
                 <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
                     {{type.name}}
                 </mat-option>
             </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field class="example-full-width">
+            <mat-label>Number</mat-label>
+            <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let option of filteredAvailableQueries | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
+
         <mat-form-field appearance="outline" *ngIf="isField">
             <mat-label>Field name</mat-label>
-            <input matInput formControlName="name" type="text"/>
+            <input matInput formControlName="name" type="text" />
         </mat-form-field>
         <button class="form-error" mat-icon-button *ngIf="form.invalid">
             <mat-icon>error</mat-icon>
