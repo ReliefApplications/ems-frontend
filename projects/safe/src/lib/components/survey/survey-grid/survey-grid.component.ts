@@ -10,6 +10,7 @@ import { GET_RESOURCE_BY_ID, GetResourceByIdQueryResponse } from '../../../graph
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { resourcesFilterValues } from '../../../survey/components/resources';
+import { PopupService } from '@progress/kendo-angular-popup';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return () => overlay.scrollStrategies.block();
@@ -26,12 +27,17 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
   templateUrl: './survey-grid.component.html',
   styleUrls: ['./survey-grid.component.scss'],
   providers: [
+    PopupService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
 export class SafeSurveyGridComponent implements OnInit{
 
-  constructor(private apollo: Apollo, public dialog: MatDialog, private snackBar: SafeSnackBarService) { }
+  constructor(
+    private apollo: Apollo,
+    public dialog: MatDialog,
+    private snackBar: SafeSnackBarService
+  ) { }
 
   public selectableSettings = SELECTABLE_SETTINGS;
 
