@@ -305,7 +305,6 @@ export function init(Survey: any, apollo: Apollo): void {
                   i.operator = question.filterCondition;
                 });
               });
-            console.log('BLA', filters);
           }
         }
         getResourceById({id: question.resource}).subscribe(response => {
@@ -371,7 +370,6 @@ export function init(Survey: any, apollo: Apollo): void {
     },
     populateChoices(question: any): void {
       if (question.resource) {
-        console.log('ADvance filters', filters);
         getResourceById({id: question.resource, filters}).subscribe((response) => {
           const serverRes = response.data.resource.records || [];
           const res: any[] = [];
@@ -385,31 +383,6 @@ export function init(Survey: any, apollo: Apollo): void {
       }
     },
     onAfterRender(question: any, el: any): void {
-      if (question.filterBy && question.filterBy.length > 0) {
-        question.filterBy.forEach((questionName: string) => {
-          const value = question.survey.data[questionName];
-          if (value) {
-            this.filters.push({name: questionName, value});
-          }
-          this.populateChoices(question);
-          const watchedQuestion = question.survey.getQuestionByName(questionName);
-          watchedQuestion.valueChangedCallback = () => {
-            if (!this.filters.some(x => x.name === questionName)) {
-              if (watchedQuestion.value) {
-                this.filters.push({name: questionName, value: watchedQuestion.value});
-              }
-            } else {
-              this.filters = this.filters.map(x => {
-                if (x.name === questionName) {
-                  x.value = watchedQuestion.value;
-                }
-                return x;
-              });
-            }
-            this.populateChoices(question);
-          };
-        });
-      }
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {
           const detail = e.detail;
