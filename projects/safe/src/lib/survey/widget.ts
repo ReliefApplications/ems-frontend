@@ -112,7 +112,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             }
             // Display of add button | grid for resources question
             if (question.getType() === 'resources') {
-                console.log(question);
                 if (question.resource) {
                     let instance: SafeSurveyGridComponent;
                     if (question.displayAsGrid) {
@@ -129,7 +128,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                             question.value = value;
                         });
                         instance.selectedIds.next(selectedIds);
-                        console.log(instance);
                     }
                     if (question.survey.mode !== 'display') {
                         const mainDiv = document.createElement('div');
