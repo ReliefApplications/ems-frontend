@@ -112,6 +112,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             }
             // Display of add button | grid for resources question
             if (question.getType() === 'resources') {
+                console.log(question);
                 if (question.resource) {
                     let instance: SafeSurveyGridComponent;
                     if (question.displayAsGrid) {
@@ -123,55 +124,60 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                         instance = grid.instance;
                         instance.id = question.resource;
                         instance.field = question.displayField;
+                        instance.readOnly = (question.survey.mode === 'display');
                         instance.selectedIds.subscribe((value: any[]) => {
-                            console.log(value);
                             question.value = value;
                         });
                         instance.selectedIds.next(selectedIds);
                         console.log(instance);
                     }
-                    const mainDiv = document.createElement('div');
-                    mainDiv.id = 'addRecordDiv';
-                    const btnEl = document.createElement('button');
-                    btnEl.innerText = 'Add new record';
-                    btnEl.style.width = '150px';
-                    if (question.canAddNew && question.addTemplate) {
-                        btnEl.onclick = () => {
-                            const dialogRef = dialog.open(SafeFormModalComponent, {
-                                data: {
-                                    template: question.addTemplate,
-                                    locale: question.resource
-                                }
-                            });
-                            dialogRef.afterClosed().subscribe(res => {
-                                if (res) {
-                                    if (question.displayAsGrid) {
-                                        instance.availableRecords.push({ value: res.data.id, text: res.data.data[question.displayField] });
-                                    } else {
-                                        const e = new CustomEvent('saveResourceFromEmbed', {
-                                            detail: {
-                                                resource: res.data,
-                                                template: res.template
-                                            }
-                                        });
-                                        document.dispatchEvent(e);
+                    if (question.survey.mode !== 'display') {
+                        const mainDiv = document.createElement('div');
+                        mainDiv.id = 'addRecordDiv';
+                        const btnEl = document.createElement('button');
+                        btnEl.innerText = 'Add new record';
+                        btnEl.style.width = '150px';
+                        if (question.canAddNew && question.addTemplate) {
+                            btnEl.onclick = () => {
+                                const dialogRef = dialog.open(SafeFormModalComponent, {
+                                    data: {
+                                        template: question.addTemplate,
+                                        locale: question.resource
                                     }
-                                }
-                            });
-                        };
-                    }
-                    mainDiv.appendChild(btnEl);
-                    el.parentElement.insertBefore(mainDiv, el);
-                    mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+                                });
+                                dialogRef.afterClosed().subscribe(res => {
+                                    if (res) {
+                                        if (question.displayAsGrid) {
+                                            instance.availableRecords.push({
+                                                value: res.data.id,
+                                                text: res.data.data[question.displayField]
+                                            });
+                                        } else {
+                                            const e = new CustomEvent('saveResourceFromEmbed', {
+                                                detail: {
+                                                    resource: res.data,
+                                                    template: res.template
+                                                }
+                                            });
+                                            document.dispatchEvent(e);
+                                        }
+                                    }
+                                });
+                            };
+                        }
+                        mainDiv.appendChild(btnEl);
+                        el.parentElement.insertBefore(mainDiv, el);
+                        mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
 
-                    question.registerFunctionOnPropertyValueChanged('addTemplate',
-                        () => {
-                            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-                        });
-                    question.registerFunctionOnPropertyValueChanged('canAddNew',
-                        () => {
-                            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-                        });
+                        question.registerFunctionOnPropertyValueChanged('addTemplate',
+                            () => {
+                                mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+                            });
+                        question.registerFunctionOnPropertyValueChanged('canAddNew',
+                            () => {
+                                mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+                            });
+                    }
                 }
             }
         }

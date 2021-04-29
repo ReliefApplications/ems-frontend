@@ -37,6 +37,7 @@ export class SafeSurveyGridComponent implements OnInit{
   public id = '';
   public field = '';
   public selectedIds: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
+  public readOnly = false;
 
   // === DATA ===
   public gridData: GridDataResult = { data: [], total: 0};
