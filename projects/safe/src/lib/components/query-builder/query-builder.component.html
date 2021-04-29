@@ -6,8 +6,8 @@
 
         <mat-form-field appearance="outline" *ngIf="!isField">
             <mat-label>Select a data set</mat-label>
-            <input type="text" placeholder="Pick one" aria-label="Query" matInput [formControl]="search" [matAutocomplete]="auto">
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                 <mat-option *ngFor="let option of filteredQueries" [value]="option">
                     {{option}}
                 </mat-option>
@@ -16,7 +16,7 @@
 
         <mat-form-field appearance="outline" *ngIf="isField">
             <mat-label>Field name</mat-label>
-            <input matInput formControlName="name" type="text" />
+            <input matInput formControlName="name" type="text"/>
         </mat-form-field>
         <button class="form-error" mat-icon-button *ngIf="form.invalid">
             <mat-icon>error</mat-icon>

@@ -49,6 +49,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.form.value);
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
     if (this.form.value.type) {
       this.isField = true;
@@ -71,22 +72,28 @@ export class SafeQueryBuilderComponent implements OnInit {
         }
       });
       this.form.controls.name.valueChanges.subscribe((res) => {
-        this.availableFields = this.queryBuilder.getFields(res);
-        this.availableFilters = this.queryBuilder.getFilter(res);
-        this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
-        this.form.setControl('fields', this.formBuilder.array([]));
-        this.form.setControl('sort', this.formBuilder.group({
-          field: [''],
-          order: ['asc']
-        }));
+        if (this.allQueries.find(x => x === res)) {
+          this.availableFields = this.queryBuilder.getFields(res);
+          this.availableFilters = this.queryBuilder.getFilter(res);
+          this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
+          this.form.setControl('fields', this.formBuilder.array([]));
+          this.form.setControl('sort', this.formBuilder.group({
+            field: [''],
+            order: ['asc']
+          }));
+        } else {
+          this.availableFields = [];
+          this.availableFilters = [];
+          this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
+          this.form.setControl('fields', this.formBuilder.array([]));
+          this.form.setControl('sort', this.formBuilder.group({
+            field: [''],
+            order: ['asc']
+          }));
+        }
+        this.filteredQueries = this.filterQueries(res);
       });
     }
-    this.search.valueChanges.subscribe(value => {
-      if (this.allQueries.find(x => x === value)) {
-        this.form.get('name')?.setValue(String(value));
-      }
-      this.filteredQueries = this.filterQueries(value);
-    });
   }
 
   onCloseField(): void {
