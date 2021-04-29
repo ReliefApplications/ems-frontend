@@ -189,16 +189,16 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue',
+        dependsOn: ['resource', 'selectQuestion',  'displayField'],
+        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resource', {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({id: obj.resource}).subscribe((response) => {
@@ -217,8 +217,8 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
           choicesCallback(resourceConditions);
         },
@@ -229,8 +229,8 @@ export function init(Survey: any, apollo: Apollo): void {
           type: 'selectResourceText',
           name: 'selectResourceText',
           displayName: 'Select a resource',
-          dependsOn: ['resource', 'selectQuestion'],
-          visibleIf: (obj: any) => !obj.resource,
+          dependsOn: ['resource', 'displayField'],
+          visibleIf: (obj: any) => !obj.resource || !obj.displayField,
           visibleIndex: 3
         }
       );

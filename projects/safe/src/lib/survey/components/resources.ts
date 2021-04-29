@@ -215,8 +215,8 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue',
+        dependsOn: ['resource', 'selectQuestion',  'displayField'],
+        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
