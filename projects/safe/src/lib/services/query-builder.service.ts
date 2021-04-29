@@ -1,4 +1,4 @@
-import {Apollo, gql, QueryRef} from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
@@ -59,7 +59,7 @@ export class QueryBuilderService {
     return filter ? Object.keys(filter).reduce((o, key) => {
       if (filter[key] || filter[key] === false) {
         if (filter[key] === 'today()') {
-          return { ...o, [key]: new Date().toISOString().substring(0, 10)};
+          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
         }
         return { ...o, [key]: filter[key] };
       }
@@ -180,7 +180,7 @@ export class QueryBuilderService {
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
       }),
-      filter: this.createFilterGroup(value ? value.filter : {} , null)
+      filter: this.createFilterGroup(value ? value.filter : {}, null)
     });
   }
 
@@ -235,16 +235,21 @@ export class QueryBuilderService {
   }
 
   public sourceQuery(queryName: string): any {
-    const query = gql`
-        query GetCustomSourceQuery {
-          _${queryName}Meta {
-            _source
-          }
+    const queries = this.__availableQueries.getValue().map(x => x.name);
+    if (queries.includes(queryName)) {
+      const query = gql`
+      query GetCustomSourceQuery {
+        _${queryName}Meta {
+          _source
         }
-      `;
-    return this.apollo.query<any>({
-      query,
-      variables: {}
-    });
+      }
+    `;
+      return this.apollo.query<any>({
+        query,
+        variables: {}
+      });
+    } else {
+      return null;
+    }
   }
 }
