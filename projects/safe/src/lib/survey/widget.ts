@@ -117,8 +117,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                     if (question.displayAsGrid) {
                         const grid = domService.appendComponentToBody(SafeSurveyGridComponent, el.parentElement);
                         instance = grid.instance;
-                        instance.setID(question.resource);
-                        instance.setField(question.displayField);
+                        instance.id = question.resource;
+                        instance.field = question.displayField;
                         // instance.fetchData(question.resource, question.displayField);
                         // subscribed grid data to add values to survey question.
                         instance.gridData.subscribe((value: any[]) => {

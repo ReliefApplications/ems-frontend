@@ -132,12 +132,4 @@ export class SafeSurveyGridComponent implements OnInit{
     });
   }
 
-  setID(id: string): void {
-    this.id = id;
-  }
-
-  setField(field: string): void {
-    this.field = field;
-  }
-
 }
