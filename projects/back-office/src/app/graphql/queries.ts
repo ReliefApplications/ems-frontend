@@ -326,14 +326,6 @@ export const GET_APPLICATIONS = gql`
     createdAt
     modifiedAt
     status
-    pages {
-      id
-      name
-      createdAt
-      type
-      content
-    }
-    settings
     permissions {
       canSee {
         id
