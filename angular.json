@@ -85,6 +85,15 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/select2/dist/js/select2.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "minimatch",
+              "hammerjs",
+              "survey-creator",
+              "survey-knockout",
+              "surveyjs-widgets",
+              "subscriptions-transport-ws",
+              "zen-observable"
             ]
           },
           "configurations": {
@@ -254,6 +263,15 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/select2/dist/js/select2.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "minimatch",
+              "hammerjs",
+              "survey-creator",
+              "survey-knockout",
+              "surveyjs-widgets",
+              "subscriptions-transport-ws",
+              "zen-observable"
             ]
           },
           "configurations": {

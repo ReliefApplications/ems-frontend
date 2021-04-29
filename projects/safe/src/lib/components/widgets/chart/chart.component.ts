@@ -74,6 +74,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         this.series = res.data.recordsAggregation;
       }
       this.loading = res.loading;
+      this.dataSubscription?.unsubscribe();
     });
   }
 
