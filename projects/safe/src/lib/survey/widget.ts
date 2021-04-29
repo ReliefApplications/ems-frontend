@@ -113,17 +113,22 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             // Display of add button | grid for resources question
             if (question.getType() === 'resources') {
                 if (question.resource) {
-                    let instance: any;
+                    let instance: SafeSurveyGridComponent;
                     if (question.displayAsGrid) {
+                        const selectedIds: string[] = [];
+                        for (const item of question.value) {
+                            selectedIds.push(item);
+                        }
                         const grid = domService.appendComponentToBody(SafeSurveyGridComponent, el.parentElement);
                         instance = grid.instance;
                         instance.id = question.resource;
                         instance.field = question.displayField;
-                        // instance.fetchData(question.resource, question.displayField);
-                        // subscribed grid data to add values to survey question.
-                        instance.gridData.subscribe((value: any[]) => {
-                            question.value = value.map(v => v.value);
+                        instance.selectedIds.subscribe((value: any[]) => {
+                            console.log(value);
+                            question.value = value;
                         });
+                        instance.selectedIds.next(selectedIds);
+                        console.log(instance);
                     }
                     const mainDiv = document.createElement('div');
                     mainDiv.id = 'addRecordDiv';
@@ -141,7 +146,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                             dialogRef.afterClosed().subscribe(res => {
                                 if (res) {
                                     if (question.displayAsGrid) {
-                                        instance.allData.push({ value: res.data.id, text: res.data.data[question.displayField] });
+                                        instance.availableRecords.push({ value: res.data.id, text: res.data.data[question.displayField] });
                                     } else {
                                         const e = new CustomEvent('saveResourceFromEmbed', {
                                             detail: {

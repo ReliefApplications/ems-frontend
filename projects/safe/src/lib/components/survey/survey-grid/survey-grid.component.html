@@ -1,4 +1,4 @@
-<kendo-grid [data]="gridData.getValue()" [autoSize]="false" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">
+<kendo-grid [data]="gridData" [autoSize]="false" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">
   <ng-template kendoGridToolbarTemplate position="top">
     <mat-form-field *ngIf="availableRecords.length > 0">
       <mat-select (selectionChange)="onAdd($event)" placeholder="Add record...">

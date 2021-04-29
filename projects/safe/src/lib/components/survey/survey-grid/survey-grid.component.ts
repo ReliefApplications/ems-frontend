@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
+import { GridDataResult, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
@@ -33,20 +33,31 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
 })
 export class SafeSurveyGridComponent implements OnInit{
 
+  // === INPUTS ===
+  public id = '';
+  public field = '';
+  public selectedIds: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
+
+  // === DATA ===
+  public gridData: GridDataResult = { data: [], total: 0};
+  public availableRecords: any[] = [];
+  public canDeleteSelectedRows = false;
+
+  // === ACTIONS ON SELECTION ===
+  public selectedRowsIndex: number[] = [];
+  public selectableSettings = SELECTABLE_SETTINGS;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService
   ) { }
 
-  public selectableSettings = SELECTABLE_SETTINGS;
-
-  public gridData: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
-  public availableRecords: any[] = [];
-  public selectedRowsIndex: number[] = [];
-  public canDeleteSelectedRows = false;
-  public id = '';
-  public field = '';
+  ngOnInit(): void {
+    resourcesFilterValues.subscribe((data) => {
+      this.fetchData();
+    });
+  }
 
   fetchData(): void {
     if (this.id && this.field) {
@@ -60,11 +71,24 @@ export class SafeSurveyGridComponent implements OnInit{
         if (res.data.resource) {
           const records = res.data.resource.records || [];
           this.availableRecords = [];
-          for (const record of records) {
-            if (this.gridData.getValue().length === 0 || this.gridData.getValue().every((d: any) => d.value !== record.id)) {
-              this.availableRecords.push({value: record.id, text: record.data[this.field]});
-            }
-          }
+          const selectedIds = this.selectedIds.getValue();
+          // const value = this.availableRecords.filter(d => d.value === event.value)[0];
+          const selectedRecords = records.filter(x => selectedIds.includes(x.id)).map(x => {
+            return {
+              value: x.id,
+              text: x.data[this.field]
+            };
+          });
+          this.gridData = {
+            data: selectedRecords,
+            total: selectedRecords.length
+          };
+          this.availableRecords = records.filter(x => !selectedIds.includes(x.id)).map(x => {
+            return {
+              value: x.id,
+              text: x.data[this.field]
+            };
+          });
         } else {
           this.snackBar.openSnackBar('No access provided to this resource.', {error: true});
         }
@@ -92,10 +116,14 @@ export class SafeSurveyGridComponent implements OnInit{
     matSelect.writeValue(null);
     const value = this.availableRecords.filter(d => d.value === event.value)[0];
     if (value) {
-      const elements: any[] = this.gridData.getValue();
-      elements.push(value);
+      const selectedRecords: any[] = this.gridData.data;
+      selectedRecords.push(value);
+      this.selectedIds.next(selectedRecords.map(x => x.value));
+      this.gridData = {
+        data: selectedRecords,
+        total: selectedRecords.length
+      };
       this.availableRecords = this.availableRecords.filter(d => d.value !== value.value);
-      this.gridData.next(elements);
     }
   }
 
@@ -115,10 +143,14 @@ export class SafeSurveyGridComponent implements OnInit{
         if (resourcesFilterValues.getValue()[0].value.trim().length > 0) {
           this.fetchData();
         } else {
-          items.forEach(i => this.availableRecords.push(this.gridData.getValue()[i]));
+          items.forEach(i => this.availableRecords.push(this.gridData.data[i]));
         }
-        const elements = this.gridData.getValue().filter((d, index) => !items.includes(index));
-        this.gridData.next(elements);
+        const selectedRecords: any[] = this.gridData.data.filter((_, index) => !items.includes(index));
+        this.selectedIds.next(selectedRecords.map(x => x.value));
+        this.gridData = {
+          data: selectedRecords,
+          total: selectedRecords.length
+        };
         this.selectedRowsIndex = [];
       }
     });
@@ -127,15 +159,8 @@ export class SafeSurveyGridComponent implements OnInit{
   public onShowDetails(index: number): void {
     this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: this.gridData.getValue()[index].value,
+        recordId: this.gridData.data[index].value,
       }
     });
   }
-
-  ngOnInit(): void {
-    resourcesFilterValues.subscribe((data) => {
-      this.fetchData();
-    });
-  }
-
 }
