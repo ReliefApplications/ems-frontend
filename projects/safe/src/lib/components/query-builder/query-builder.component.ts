@@ -26,7 +26,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   public availableFilters: any[] = [];
   public factory?: ComponentFactory<any>;
 
-  public search = new FormControl();
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
 
@@ -49,7 +48,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.form.value);
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
     if (this.form.value.type) {
       this.isField = true;
@@ -65,7 +63,7 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries.subscribe((res) => {
         if (res) {
           this.allQueries = res.map(x => x.name);
-          this.filteredQueries = this.filterQueries(this.search.value);
+          this.filteredQueries = this.filterQueries(this.form.value.name);
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);
           this.availableFilters = this.queryBuilder.getFilter(this.form.value.name);
           this.form.setControl('filter', this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
@@ -104,9 +102,4 @@ export class SafeQueryBuilderComponent implements OnInit {
     const filterValue = value.toLowerCase();
     return this.allQueries.filter(x => x.toLowerCase().includes(filterValue));
   }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    console.log(event);
-  }
-
 }
