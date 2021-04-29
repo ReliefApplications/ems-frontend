@@ -370,7 +370,6 @@ export function init(Survey: any, apollo: Apollo): void {
     },
     populateChoices(question: any): void {
       if (question.resource) {
-        console.log('ADvance filters', filters);
         getResourceById({id: question.resource, filters}).subscribe((response) => {
           const serverRes = response.data.resource.records || [];
           const res: any[] = [];
