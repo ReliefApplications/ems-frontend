@@ -74,7 +74,6 @@ export class SafeRecordModalComponent implements OnInit {
       this.survey.showNavigationButtons = 'none';
       this.survey.showProgressBar = 'off';
       this.survey.render(this.containerId);
-      console.log(this.survey);
 
       if (this.data.compareTo) {
         this.surveyNext = new Survey.Model(this.form?.structure);
