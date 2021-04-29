@@ -81,6 +81,7 @@ export function init(Survey: any, apollo: Apollo): void {
         dependsOn: 'resource',
         required: true,
         visibleIf: (obj: any) => {
+          obj.displayField = null;
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -160,10 +161,14 @@ export function init(Survey: any, apollo: Apollo): void {
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj || !obj.canAddNew) {
+          if (!obj.resource || !obj.canAddNew) {
             return false;
           } else {
-            return !hasUniqueRecord(obj.resource);
+            const uniqueRecord = hasUniqueRecord(obj.resource);
+            if (uniqueRecord) {
+              obj.canAddNew = false;
+            }
+            return !uniqueRecord;
           }
         },
         visibleIndex: 3,
@@ -218,8 +223,8 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({id: obj.resource}).subscribe((response) => {
@@ -238,8 +243,8 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
           choicesCallback(resourceConditions);
         },
@@ -250,8 +255,8 @@ export function init(Survey: any, apollo: Apollo): void {
           type: 'selectResourceText',
           name: 'selectResourceText',
           displayName: 'Select a resource',
-          dependsOn: ['resource', 'selectQuestion'],
-          visibleIf: (obj: any) => !obj.resource,
+          dependsOn: ['resource', 'displayField'],
+          visibleIf: (obj: any) => !obj.resource || !obj.displayField,
           visibleIndex: 3
         }
       );
@@ -259,7 +264,7 @@ export function init(Survey: any, apollo: Apollo): void {
       const selectResourceText = {
         render: (editor: any, htmlElement: any): void => {
           const text = document.createElement('div');
-          text.innerHTML = 'First you have to select a resource before set filters';
+          text.innerHTML = 'First you have to select a resource and select display field before set filters';
           htmlElement.appendChild(text);
         }
       };
