@@ -81,7 +81,6 @@ export function init(Survey: any, apollo: Apollo): void {
         dependsOn: 'resource',
         required: true,
         visibleIf: (obj: any) => {
-          obj.displayField = null;
           if (!obj || !obj.resource) {
             return false;
           } else {
@@ -423,7 +422,7 @@ export function init(Survey: any, apollo: Apollo): void {
       }
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
-      if (propertyName === 'resources') {
+      if (propertyName === 'resource') {
         question.displayField = null;
         filters = [];
         this.resourceFieldsName = [];
