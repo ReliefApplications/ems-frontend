@@ -215,7 +215,7 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion',  'displayField'],
+        dependsOn: ['resource', 'selectQuestion', 'displayField'],
         visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
@@ -360,15 +360,18 @@ export function init(Survey: any, apollo: Apollo): void {
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
-            const watchedQuestion = question.survey.getQuestionByName(question.selectQuestion);
-            watchedQuestion.valueChangedCallback = () => {
-              setAdvanceFilter(watchedQuestion.value, question);
-              if (question.displayAsGrid) {
-                resourcesFilterValues.next(filters);
-              } else {
-                this.populateChoices(question);
+            question.survey.onValueChanged.add((survey: any, options: any) => {
+              if (options.name === question.selectQuestion) {
+                if (typeof options.value === 'string') {
+                  setAdvanceFilter(options.value, question);
+                  if (question.displayAsGrid) {
+                    resourcesFilterValues.next(filters);
+                  } else {
+                    this.populateChoices(question);
+                  }
+                }
               }
-            };
+            });
           }
         } else if (!question.selectQuestion && question.customFilter && question.customFilter.trim().length > 0) {
           const obj = JSON.parse(question.customFilter);
@@ -377,11 +380,18 @@ export function init(Survey: any, apollo: Apollo): void {
               if (objElement.value.match(/^{*.*}$/)) {
                 const quest = objElement.value.substr(1, objElement.value.length - 2);
                 objElement.value = '';
-                const watchedQuestion = question.survey.getQuestionByName(quest);
-                watchedQuestion.valueChangedCallback = () => {
-                  setAdvanceFilter(watchedQuestion.value, objElement.field);
-                  this.populateChoices(question, objElement.field);
-                };
+                question.survey.onValueChanged.add((survey: any, options: any) => {
+                  if (options.name === quest) {
+                    if (typeof options.value === 'string') {
+                      setAdvanceFilter(options.value, objElement.field);
+                      if (question.displayAsGrid) {
+                        resourcesFilterValues.next(filters);
+                      } else {
+                        this.populateChoices(question, objElement.field);
+                      }
+                    }
+                  }
+                });
               }
             }
             filters = obj;
