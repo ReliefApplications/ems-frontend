@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
-import { EditUserMutationResponse, EDIT_USER } from '../../graphql/mutations';
+import { EditUserProfileMutationResponse, EDIT_USER_PROFILE } from '../../graphql/mutations';
 import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -38,7 +38,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         this.userForm = this.formBuilder.group(
           {
             name: user.name,
-            username: user.username,
+            username: [{ value: user.username, disabled: true }],
           }
         );
       }
@@ -50,44 +50,38 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     this.user?.roles?.forEach((e: any) => {
         roles.push(e.id);
       });
-    this.apollo.mutate<EditUserMutationResponse>({
-      mutation: EDIT_USER,
+    this.apollo.mutate<EditUserProfileMutationResponse>({
+      mutation: EDIT_USER_PROFILE,
       variables: {
-        id: this.user?.id,
-        roles,
-        data: {
-          username: this.userForm?.value.username,
+        profile: {
           name: this.userForm?.value.name
         }
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('settings', this.user?.name));
-        this.user.name = res.data.editUser.name;
-        this.user.username = res.data.editUser.username;
-        }
+        this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+        this.user.name = res.data.editUserProfile.name;
+      }
     });
   }
 
-  onFavorite(element: any): void {
+  onSelectFavorite(element: any): void {
     if (element) {
       const roles: any[] = [];
       this.user?.roles?.forEach((e: any) => {
         roles.push(e.id);
       });
-      this.apollo.mutate<EditUserMutationResponse>({
-        mutation: EDIT_USER,
+      this.apollo.mutate<EditUserProfileMutationResponse>({
+        mutation: EDIT_USER_PROFILE,
         variables: {
-          id: this.user?.id,
-          roles,
-          data: {
+          profile: {
             favoriteApp: element.id
           }
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('favorite app', this.user?.name));
-          this.user.favoriteApp = res.data.editUser.favoriteApp;
+          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+          this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }
       });
     }

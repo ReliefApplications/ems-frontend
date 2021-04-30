@@ -40,9 +40,7 @@ export const GET_PROFILE = gql`
       }
     }
     oid
-    favoriteApp {
-      id
-    }
+    favoriteApp
   }
 }`;
 

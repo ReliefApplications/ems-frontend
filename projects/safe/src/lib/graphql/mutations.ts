@@ -108,8 +108,8 @@ export interface EditFormMutationResponse {
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
-mutation editUser($id: ID!, $roles: [ID]!, $application: ID, $data: JSON) {
-  editUser(id: $id, roles: $roles, application: $application, data: $data) {
+mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+  editUser(id: $id, roles: $roles, application: $application) {
     id
     username
     name
@@ -121,15 +121,36 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID, $data: JSON) {
       }
     }
     oid
-    favoriteApp {
-      id
-    }
   }
 }`;
 
 export interface EditUserMutationResponse {
   loading: boolean;
   editUser: User;
+}
+
+// === EDIT USER PROFILE ===
+export const EDIT_USER_PROFILE = gql`
+mutation editUserProfile($profile: UserProfileInputType!) {
+  editUserProfile(profile: $profile) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+    favoriteApp
+  }
+}`;
+
+export interface EditUserProfileMutationResponse {
+  loading: boolean;
+  editUserProfile: User;
 }
 
 // === ADD PAGE ===

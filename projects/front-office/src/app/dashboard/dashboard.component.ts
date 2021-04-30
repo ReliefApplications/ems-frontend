@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (applications.length > 0) {
           this.applications = applications;
           if (user.favoriteApp) {
-            this.applicationService.loadApplication(user.favoriteApp.toString());
+            this.applicationService.loadApplication(user.favoriteApp);
           } else {
             this.applicationService.loadApplication(applications[0].id || '');
           }
