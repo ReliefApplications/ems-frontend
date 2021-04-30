@@ -2,11 +2,21 @@ import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, In
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
+import { MatAutocompleteSelectedEvent, MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import {FormControl} from '@angular/forms';
+
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+  return () => overlay.scrollStrategies.block();
+}
 
 @Component({
   selector: 'safe-query-builder',
   templateUrl: './query-builder.component.html',
-  styleUrls: ['./query-builder.component.scss']
+  styleUrls: ['./query-builder.component.scss'],
+  providers: [
+    { provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
+  ]
 })
 export class SafeQueryBuilderComponent implements OnInit {
 
@@ -15,6 +25,9 @@ export class SafeQueryBuilderComponent implements OnInit {
   public availableFields: any[] = [];
   public availableFilters: any[] = [];
   public factory?: ComponentFactory<any>;
+
+  public allQueries: any[] = [];
+  public filteredQueries: any[] = [];
 
   get availableScalarFields(): any[] {
     return this.availableFields.filter(x => x.type.kind === 'SCALAR');
@@ -49,25 +62,44 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries;
       this.availableQueries.subscribe((res) => {
         if (res) {
+          this.allQueries = res.map(x => x.name);
+          this.filteredQueries = this.filterQueries(this.form.value.name);
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);
           this.availableFilters = this.queryBuilder.getFilter(this.form.value.name);
           this.form.setControl('filter', this.queryBuilder.createFilterGroup(this.form.value.filter, this.availableFilters));
         }
       });
       this.form.controls.name.valueChanges.subscribe((res) => {
-        this.availableFields = this.queryBuilder.getFields(res);
-        this.availableFilters = this.queryBuilder.getFilter(res);
-        this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
-        this.form.setControl('fields', this.formBuilder.array([]));
-        this.form.setControl('sort', this.formBuilder.group({
-          field: [''],
-          order: ['asc']
-        }));
+        if (this.allQueries.find(x => x === res)) {
+          this.availableFields = this.queryBuilder.getFields(res);
+          this.availableFilters = this.queryBuilder.getFilter(res);
+          this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
+          this.form.setControl('fields', this.formBuilder.array([]));
+          this.form.setControl('sort', this.formBuilder.group({
+            field: [''],
+            order: ['asc']
+          }));
+        } else {
+          this.availableFields = [];
+          this.availableFilters = [];
+          this.form.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableFilters));
+          this.form.setControl('fields', this.formBuilder.array([]));
+          this.form.setControl('sort', this.formBuilder.group({
+            field: [''],
+            order: ['asc']
+          }));
+        }
+        this.filteredQueries = this.filterQueries(res);
       });
     }
   }
 
   onCloseField(): void {
     this.closeField.emit(true);
+  }
+
+  private filterQueries(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allQueries.filter(x => x.toLowerCase().includes(filterValue));
   }
 }

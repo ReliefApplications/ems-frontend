@@ -1,0 +1,834 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ems-front documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Interfaces</li>
+  <li>DeleteFormMutationResponse</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/back-office/src/app/graphql/mutations.ts</code>
+        </p>
+
+
+
+        <section>
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#deleteForm">deleteForm</a>
+                                </li>
+                                <li>
+                                        <a href="#loading">loading</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="deleteForm"></a>
+                                        <span class="name"><b>deleteForm</b><a href="#deleteForm"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>deleteForm:         <code><a href="https://angular.io/api/forms/Form" target="_blank" >Form</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://angular.io/api/forms/Form" target="_blank" >Form</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="loading"></a>
+                                        <span class="name"><b>loading</b><a href="#loading"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>loading:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {gql} from &#x27;apollo-angular&#x27;;
+
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from &#x27;@safe/builder&#x27;;
+
+// &#x3D;&#x3D;&#x3D; EDIT USER &#x3D;&#x3D;&#x3D;
+export const EDIT_USER &#x3D; gql&#x60;
+mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+  editUser(id: $id, roles: $roles, application: $application) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
+  }
+}&#x60;;
+
+export interface EditUserMutationResponse {
+  loading: boolean;
+  editUser: User;
+}
+
+// &#x3D;&#x3D;&#x3D; ADD ROLE &#x3D;&#x3D;&#x3D;
+export const ADD_ROLE &#x3D; gql&#x60;
+mutation addRole($title: String!, $application: ID) {
+  addRole(title: $title, application: $application) {
+    id
+    title
+    permissions {
+      id
+      type
+    }
+    usersCount
+  }
+}&#x60;;
+
+export interface AddRoleMutationResponse {
+  loading: boolean;
+  addRole: Role;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT ROLE &#x3D;&#x3D;&#x3D;
+export const EDIT_ROLE &#x3D; gql&#x60;
+mutation editRole($id: ID!, $permissions: [ID]!) {
+  editRole(id: $id, permissions: $permissions) {
+    id
+    title
+    usersCount
+  }
+}&#x60;;
+
+export interface EditRoleMutationResponse {
+  loading: boolean;
+  editRole: Role;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE ROLE &#x3D;&#x3D;&#x3D;
+export const DELETE_ROLE &#x3D; gql&#x60;
+mutation deleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    id
+  }
+}&#x60;;
+
+export interface DeleteRoleMutationResponse {
+  loading: boolean;
+  deleteRole: Role;
+}
+
+
+
+// &#x3D;&#x3D;&#x3D; ADD DASHBOARD &#x3D;&#x3D;&#x3D;
+export const ADD_DASHBOARD &#x3D; gql&#x60;
+mutation addDashboard($name: String!) {
+  addDashboard(name: $name){
+    id
+    name
+    structure
+    createdAt
+  }
+}&#x60;;
+
+export interface AddDashboardMutationResponse {
+  loading: boolean;
+  addDashboard: Dashboard;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE DASHBOARD &#x3D;&#x3D;&#x3D;
+export const DELETE_DASHBOARD &#x3D; gql&#x60;
+mutation deleteDashboard($id: ID!) {
+  deleteDashboard(id: $id){
+    id
+    name
+  }
+}&#x60;;
+
+export interface DeleteDashboardMutationResponse {
+  loading: boolean;
+  deleteDashboard: Dashboard;
+}
+
+// &#x3D;&#x3D;&#x3D; ADD FORM &#x3D;&#x3D;&#x3D;
+export const ADD_FORM &#x3D; gql&#x60;
+mutation addForm($name: String!, $newResource: Boolean, $resource: ID, $template: ID) {
+  addForm(name: $name, newResource: $newResource, resource: $resource, template: $template) {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+    }
+  }
+}&#x60;;
+
+export interface AddFormMutationResponse {
+  loading: boolean;
+  addForm: Form;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE FORM &#x3D;&#x3D;&#x3D;
+export const DELETE_FORM &#x3D; gql&#x60;
+mutation deleteForm($id: ID!) {
+  deleteForm(id: $id) {
+    id
+  }
+}&#x60;;
+
+export interface DeleteFormMutationResponse {
+  loading: boolean;
+  deleteForm: Form;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT RESOURCE &#x3D;&#x3D;&#x3D;
+export const EDIT_RESOURCE &#x3D; gql&#x60;
+mutation editResource($id: ID!, $permissions: JSON) {
+  editResource(id: $id, permissions: $permissions) {
+    id
+    name
+    createdAt
+    records {
+      id
+      data(display: true)
+    }
+    fields
+    forms {
+      id
+      name
+      status
+      createdAt
+      recordsCount
+      core
+      canCreate
+      canUpdate
+      canDelete
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}&#x60;;
+
+export interface EditResourceMutationResponse {
+  loading: boolean;
+  editResource: Resource;
+}
+
+
+// &#x3D;&#x3D; DELETE RESOURCE &#x3D;&#x3D;
+
+export const DELETE_RESOURCE &#x3D; gql&#x60;
+mutation deleteResource($id: ID!){
+  deleteResource(id: $id){
+    id
+  }
+}&#x60;;
+
+export interface DeleteResourceMutationResponse{
+  loading: boolean;
+  deletedResource: Resource;
+}
+
+
+// &#x3D;&#x3D;&#x3D; DELETE RECORD &#x3D;&#x3D;&#x3D;
+export const DELETE_RECORD &#x3D; gql&#x60;
+mutation deleteRecord($id: ID!) {
+  deleteRecord(id: $id) {
+    id
+  }
+}&#x60;;
+
+export interface DeleteRecordMutationResponse {
+  loading: boolean;
+  deleteRecord: Record;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT FORM &#x3D;&#x3D;&#x3D;
+export const EDIT_FORM_STRUCTURE &#x3D; gql&#x60;
+mutation editForm($id: ID!, $structure: JSON!) {
+  editForm(id: $id, structure: $structure) {
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}&#x60;;
+
+export const EDIT_FORM_STATUS &#x3D; gql&#x60;
+mutation editForm($id: ID!, $status: String!) {
+  editForm(id: $id, status: $status) {
+    status
+  }
+}&#x60;;
+
+export const EDIT_FORM_NAME &#x3D; gql&#x60;
+mutation editForm($id: ID!, $name: String!){
+  editForm(id: $id, name: $name){
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}&#x60;;
+
+export const EDIT_FORM_PERMISSIONS &#x3D; gql&#x60;
+mutation editForm($id: ID!, $permissions: JSON!){
+  editForm(id: $id, permissions: $permissions){
+    id
+    name
+    createdAt
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}&#x60;;
+
+
+export interface EditFormMutationResponse {
+  loading: boolean;
+  editForm: Form;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT DASHBOARD &#x3D;&#x3D;&#x3D;
+export const EDIT_DASHBOARD &#x3D; gql&#x60;
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
+    id
+    name
+    structure
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    page {
+      id
+      name
+      application {
+        id
+      }
+    }
+  }
+}&#x60;;
+
+export interface EditDashboardMutationResponse {
+  loading: boolean;
+  editDashboard: Dashboard;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE APPLICATION &#x3D;&#x3D;&#x3D;
+export const DELETE_APPLICATION &#x3D; gql&#x60;
+mutation deleteApplication($id: ID!) {
+  deleteApplication(id: $id){
+    id
+    name
+  }
+}&#x60;;
+
+export interface DeleteApplicationMutationResponse {
+  loading: boolean;
+  deleteApplication: Application;
+}
+
+// &#x3D;&#x3D;&#x3D; ADD APPLICATION &#x3D;&#x3D;&#x3D;
+export const ADD_APPLICATION &#x3D; gql&#x60;
+mutation addApplication($name: String!) {
+  addApplication(name: $name){
+    id
+    name
+    pages {
+      id
+      name
+      createdAt
+      type
+      content
+    }
+    createdAt
+  }
+}&#x60;;
+
+export interface AddApplicationMutationResponse {
+  loading: boolean;
+  addApplication: Application;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT APPLICATION &#x3D;&#x3D;&#x3D;
+export const EDIT_APPLICATION &#x3D; gql&#x60;
+mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
+    id
+    description
+    name
+    createdAt
+    modifiedAt
+    status
+    pages {
+      id
+      name
+      createdAt
+      type
+      content
+    }
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}&#x60;;
+
+export interface EditApplicationMutationResponse {
+  loading: boolean;
+  editApplication: Application;
+}
+
+// &#x3D;&#x3D;&#x3D; DUPLICATE APPLICATION &#x3D;&#x3D;&#x3D;
+export const DUPLICATE_APPLICATION &#x3D; gql&#x60;
+mutation duplicateApplication($name: String!, $application: ID! ) {
+  duplicateApplication(name: $name, application: $application){
+    id
+    name
+    createdAt
+    status
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+    usersCount
+  }
+}&#x60;;
+// in () input parameters, in {} return values
+
+export interface DuplicateApplicationMutationResponse {
+  loading: boolean;
+  duplicateApplication: Application;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE PAGE &#x3D;&#x3D;&#x3D;
+export const DELETE_PAGE &#x3D; gql&#x60;
+mutation deletePage($id: ID!) {
+  deletePage(id: $id){
+    id
+  }
+}&#x60;;
+
+export interface DeletePageMutationResponse {
+  loading: boolean;
+  deletePage: Page;
+}
+
+// &#x3D;&#x3D;&#x3D; ADD PAGE &#x3D;&#x3D;&#x3D;
+export const ADD_PAGE &#x3D; gql&#x60;
+mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+  addPage(name: $name, type: $type, content: $content, application: $application){
+    id
+    name
+    type
+    content
+    createdAt
+    canSee
+    canUpdate
+    canDelete
+  }
+}&#x60;;
+
+export interface AddPageMutationResponse {
+  loading: boolean;
+  addPage: Page;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT PAGE &#x3D;&#x3D;&#x3D;
+export const EDIT_PAGE &#x3D; gql&#x60;
+mutation editPage($id: ID!, $name: String, $permissions: JSON) {
+  editPage(id: $id, name: $name, permissions: $permissions){
+    id
+    name
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+  }
+}&#x60;;
+
+export interface EditPageMutationResponse {
+  loading: boolean;
+  editPage: Page;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT WORKFLOW &#x3D;&#x3D;&#x3D;
+export const EDIT_WORKFLOW &#x3D; gql&#x60;
+mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
+  editWorkflow(id: $id, name: $name, steps: $steps){
+    id
+    name
+  }
+}&#x60;;
+
+export interface EditWorkflowMutationResponse {
+  loading: boolean;
+  editWorkflow: Workflow;
+}
+
+// &#x3D;&#x3D;&#x3D; DELETE STEP &#x3D;&#x3D;&#x3D;
+export const DELETE_STEP &#x3D; gql&#x60;
+mutation deleteStep($id: ID!) {
+  deleteStep(id: $id){
+    id
+    name
+  }
+}&#x60;;
+
+export interface DeleteStepMutationResponse {
+  loading: boolean;
+  deleteStep: Step;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT STEP &#x3D;&#x3D;&#x3D;
+export const EDIT_STEP &#x3D; gql&#x60;
+mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
+  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
+    id
+    name
+    type
+    content
+    createdAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+  }
+}&#x60;;
+
+export interface EditStepMutationResponse {
+  loading: boolean;
+  editStep: Step;
+}
+</code></pre>
+    </div>
+</div>
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'DeleteFormMutationResponse.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
