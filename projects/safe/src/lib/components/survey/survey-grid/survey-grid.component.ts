@@ -73,7 +73,6 @@ export class SafeSurveyGridComponent implements OnInit{
           const records = res.data.resource.records || [];
           this.availableRecords = [];
           const selectedIds = this.selectedIds.getValue();
-          // const value = this.availableRecords.filter(d => d.value === event.value)[0];
           const selectedRecords = records.filter(x => selectedIds.includes(x.id)).map(x => {
             return {
               value: x.id,
@@ -81,7 +80,7 @@ export class SafeSurveyGridComponent implements OnInit{
             };
           });
           this.gridData = {
-            data: selectedRecords,
+            data: Object.assign(this.gridData.data, selectedRecords),
             total: selectedRecords.length
           };
           this.availableRecords = records.filter(x => !selectedIds.includes(x.id)).map(x => {
