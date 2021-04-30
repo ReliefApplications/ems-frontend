@@ -189,6 +189,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  onOpenProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
   }

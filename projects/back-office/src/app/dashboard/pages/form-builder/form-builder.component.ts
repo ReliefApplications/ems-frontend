@@ -153,7 +153,8 @@ export class FormBuilderComponent implements OnInit {
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
           this.form = res.data?.editForm;
-          this.structure = structure; // Update current form to
+          this.structure = structure;
+          localStorage.removeItem(`form:${this.id}`);
           this.hasChanges = false;
           this.authService.canLogout.next(true);
         }

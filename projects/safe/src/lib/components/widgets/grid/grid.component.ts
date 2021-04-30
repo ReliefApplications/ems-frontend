@@ -13,7 +13,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { from, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -23,7 +23,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { LayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter
+  ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -118,8 +118,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
 
-  // === EXCEL ===
+  // === DOWNLOAD ===
   public excelFileName = '';
+  private apiUrl = '';
 
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
@@ -145,6 +146,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public factory?: ComponentFactory<any>;
 
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private http: HttpClient,
     public dialog: MatDialog,
@@ -157,6 +159,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
   ) {
+    this.apiUrl = environment.API_URL;
   }
 
   ngOnInit(): void {
@@ -696,7 +699,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const id = this.gridData.data[index].id;
       ids.push(id);
     }
-    const url = 'http://localhost:3000/download/records';
+    const url = `${this.apiUrl}/download/records`;
     const fileName = `${this.settings.title}.csv`;
     this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
   }

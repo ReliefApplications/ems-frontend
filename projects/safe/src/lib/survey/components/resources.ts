@@ -326,10 +326,10 @@ export function init(Survey: any, apollo: Apollo): void {
           if (question.selectQuestion) {
             question.registerFunctionOnPropertyValueChanged('filterCondition',
               () => {
-                const resourceFilters = resourcesFilterValues.getValue();
-                resourceFilters[0].operator = question.filterCondition;
-                resourcesFilterValues.next(resourceFilters);
-                resourceFilters.map((i: any) => {
+                const resourcesFilters = resourcesFilterValues.getValue();
+                resourcesFilters[0].operator = question.filterCondition;
+                resourcesFilterValues.next(resourcesFilters);
+                resourcesFilters.map((i: any) => {
                   i.operator = question.filterCondition;
                 });
               });
