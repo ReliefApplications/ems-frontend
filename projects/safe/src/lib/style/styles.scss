@@ -102,6 +102,14 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   .primary {
     color: mat-color($primary);
   }
+
+  .accent {
+    color: mat-color($accent);
+  }
+
+  .warn {
+    color: mat-color($warn);
+  }
 }
 
 @mixin chip($theme) {

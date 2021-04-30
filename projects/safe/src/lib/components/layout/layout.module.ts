@@ -10,6 +10,7 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
     MatListModule,
     DragDropModule,
     MatBadgeModule,
+    MatDividerModule,
     SafeConfirmModalModule
   ],
   exports: [SafeLayoutComponent]

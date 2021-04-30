@@ -31,9 +31,16 @@ export const GET_PROFILE = gql`
     }
     applications {
       id
+      positionAttributes {
+        value
+      }
       name
+      role {
+        title
+      }
     }
     oid
+    favoriteApp
   }
 }`;
 

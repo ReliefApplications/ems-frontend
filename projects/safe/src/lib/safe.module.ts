@@ -23,6 +23,7 @@ import { SafeConvertModalModule } from './components/convert-modal/convert-modal
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/public-api';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
+import { SafeProfileModule } from './pages/profile/profile.module';
 
 @NgModule({
   exports: [
@@ -49,7 +50,8 @@ import { SafeStatusModalModule } from './components/status-modal/status-modal.mo
     SafePreviousButtonModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,
-    SafeRecordModalModule
+    SafeRecordModalModule,
+    SafeProfileModule
   ]
 })
 export class SafeModule { }

@@ -129,6 +129,30 @@ export interface EditUserMutationResponse {
   editUser: User;
 }
 
+// === EDIT USER PROFILE ===
+export const EDIT_USER_PROFILE = gql`
+mutation editUserProfile($profile: UserProfileInputType!) {
+  editUserProfile(profile: $profile) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+    favoriteApp
+  }
+}`;
+
+export interface EditUserProfileMutationResponse {
+  loading: boolean;
+  editUserProfile: User;
+}
+
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
 mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
