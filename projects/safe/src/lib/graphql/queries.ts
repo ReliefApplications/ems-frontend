@@ -50,7 +50,7 @@ export interface GetProfileQueryResponse {
 }
 
 // === GET FORM BY ID ===
-export const GET_ID_STRUCTURE_FORM_BY_ID = gql`
+export const GET_FORM_STRUCTURE = gql`
   query GetFormById($id: ID!) {
     form(id: $id) {
       id

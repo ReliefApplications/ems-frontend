@@ -6,7 +6,7 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GET_ID_STRUCTURE_FORM_BY_ID
+  GET_FORM_STRUCTURE
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
@@ -83,7 +83,7 @@ export class SafeFormModalComponent implements OnInit {
         });
       } else {
         this.apollo.watchQuery<GetFormByIdQueryResponse>({
-          query: GET_ID_STRUCTURE_FORM_BY_ID,
+          query: GET_FORM_STRUCTURE,
           variables: {
             id: this.data.template
           }
