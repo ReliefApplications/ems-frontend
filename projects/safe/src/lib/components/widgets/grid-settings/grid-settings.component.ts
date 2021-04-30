@@ -94,11 +94,11 @@ export class SafeGridSettingsComponent implements OnInit {
       }
     });
 
-    // Fetch related forms with a question referring to the current form displayed in the grid
-    // this.queryName = this.tileForm.get('query')?.value.name;
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
+        // Check if the query changed to clean modifications in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
