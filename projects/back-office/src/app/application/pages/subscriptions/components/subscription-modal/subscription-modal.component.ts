@@ -5,7 +5,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Application, Channel, Form, Subscription } from '@safe/builder';
 import { Observable } from 'rxjs';
-import { GetFormsQueryResponse, GetRoutingKeysQueryResponse, GET_FORMS, GET_ROUTING_KEYS } from '../../../../../graphql/queries';
+import {
+  GetRoutingKeysQueryResponse,
+  GET_ROUTING_KEYS,
+  GET_FORM_NAMES, GetFormsQueryResponse
+} from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -50,8 +54,8 @@ export class SubscriptionModalComponent implements OnInit {
       channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS
-    }).valueChanges.subscribe(res => {
+      query: GET_FORM_NAMES
+    }).valueChanges.subscribe((res: any) => {
       this.forms = res.data.forms;
     });
     this.apollo.watchQuery<GetRoutingKeysQueryResponse>({

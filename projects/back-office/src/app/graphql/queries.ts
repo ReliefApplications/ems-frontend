@@ -1,6 +1,8 @@
 import { gql } from 'apollo-angular';
-import { Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from '@safe/builder';
+import {
+  Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttribute
+} from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -78,18 +80,25 @@ export interface GetDashboardsQueryResponse {
 }
 
 // === GET FORMS ===
-export const GET_FORMS = gql`
-{
+export const GET_FORM_NAMES = gql`
+query GetFormNames {
+  forms {
+    id
+    name
+  }
+}`;
+
+export const GET_SHORT_FORMS = gql`
+query GetShortForms {
   forms {
     id
     name
     createdAt
     status
-    versions {
-      id
-    }
+    versionsCount
     recordsCount
     core
+    canSee
     canCreate
     canUpdate
     canDelete
@@ -99,6 +108,54 @@ export const GET_FORMS = gql`
 export interface GetFormsQueryResponse {
   loading: boolean;
   forms: Form[];
+}
+
+// === GET FORM BY ID ===
+export const GET_SHORT_FORM_BY_ID = gql`
+query GetShortFormById($id: ID!) {
+  form(id: $id) {
+    id
+    name
+    structure
+    fields
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
+  }
+}`;
+
+export const GET_FORM_BY_ID = gql`
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    fields
+    versions {
+      id
+      createdAt
+      data
+    }
+    records(filters: $filters) {
+      id
+      data(display: $display)
+      versions {
+        id
+        createdAt
+        data
+      }
+    }
+  }
+}`;
+
+export interface GetFormByIdQueryResponse {
+  loading: boolean;
+  form: Form;
+  errors: any;
 }
 
 // === GET RESOURCE BY ID ===
@@ -178,69 +235,6 @@ export const GET_RESOURCES_EXTENDED = gql`
 export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: Resource[];
-}
-
-// === GET FORM BY ID ===
-
-export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
-  form(id: $id) {
-    id
-    name
-    createdAt
-    structure
-    status
-    fields
-    versions {
-      id
-      createdAt
-      data
-    }
-    records(filters: $filters) {
-      id
-      data(display: $display)
-      versions {
-        id
-        createdAt
-        data
-      }
-    }
-    resource{
-      id
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canCreate
-    canUpdate
-    canCreateRecords
-    uniqueRecord {
-      id
-      modifiedAt
-      data
-    }
-  }
-}`;
-
-export interface GetFormByIdQueryResponse {
-  loading: boolean;
-  form: Form;
-  errors: any;
 }
 
 // === GET RECORD BY ID ===
@@ -330,14 +324,6 @@ export const GET_APPLICATIONS = gql`
     createdAt
     modifiedAt
     status
-    pages {
-      id
-      name
-      createdAt
-      type
-      content
-    }
-    settings
     permissions {
       canSee {
         id
@@ -605,7 +591,7 @@ query GetRoutingKeys {
   }
 }`;
 
-export interface GetRoutingKeysQueryResponse{
+export interface GetRoutingKeysQueryResponse {
   loading: boolean;
   applications: Application[];
 }
