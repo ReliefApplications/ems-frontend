@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
-import { GetFormByIdQueryResponse, GET_BASIC_FORM_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
@@ -88,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_BASIC_FORM_BY_ID,
+        query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id
         }
@@ -198,7 +198,7 @@ export class FormBuilderComponent implements OnInit {
   */
   setTemplate(id: string): void {
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_BASIC_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }

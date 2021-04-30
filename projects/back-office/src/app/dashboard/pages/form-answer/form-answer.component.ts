@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Form, SafeFormComponent } from '@safe/builder';
-import { GetFormByIdQueryResponse, GET_BASIC_FORM_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-form-answer',
@@ -30,7 +30,7 @@ export class FormAnswerComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_BASIC_FORM_BY_ID,
+        query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id
         }

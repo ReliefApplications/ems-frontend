@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
-import { GET_BASIC_FORMS, GetBasicFormsQueryResponse } from '../../../graphql/queries';
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
@@ -11,8 +11,8 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  BasicForm,
-  NOTIFICATIONS
+  NOTIFICATIONS,
+  Form
 } from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
@@ -31,7 +31,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
   displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'actions'];
-  dataSource = new MatTableDataSource<BasicForm>([]);
+  dataSource = new MatTableDataSource<Form>([]);
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -66,10 +66,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   */
   ngOnInit(): void {
 
-    this.apollo.watchQuery<GetBasicFormsQueryResponse>({
-      query: GET_BASIC_FORMS,
+    this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_SHORT_FORMS,
     }).valueChanges.subscribe((res: any) => {
-      this.dataSource.data = res.data.basicForms;
+      this.dataSource.data = res.data.forms;
       this.loading = res.loading;
       this.filterPredicate();
     });

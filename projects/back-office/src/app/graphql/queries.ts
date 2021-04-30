@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, BasicForm
+  Application, Page, Workflow, Step, PositionAttribute
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -80,79 +80,77 @@ export interface GetDashboardsQueryResponse {
 }
 
 // === GET FORMS ===
-export const GET_NAME_ID_FORMS = gql`
-  {
-    basicForms {
-      id
-      name
-    }
-  }`;
+export const GET_FORM_NAMES = gql`
+query GetFormNames {
+  forms {
+    id
+    name
+  }
+}`;
 
-export const GET_BASIC_FORMS = gql`
-  {
-    basicForms {
-      id
-      name
-      createdAt
-      status
-      versionsCount
-      recordsCount
-      core
-      canSee
-      canCreate
-      canUpdate
-      canDelete
-    }
-  }`;
+export const GET_SHORT_FORMS = gql`
+query GetShortForms {
+  forms {
+    id
+    name
+    createdAt
+    status
+    versionsCount
+    recordsCount
+    core
+    canSee
+    canCreate
+    canUpdate
+    canDelete
+  }
+}`;
 
-export interface GetBasicFormsQueryResponse {
+export interface GetFormsQueryResponse {
   loading: boolean;
-  forms: BasicForm[];
+  forms: Form[];
 }
 
 // === GET FORM BY ID ===
-
-export const GET_BASIC_FORM_BY_ID = gql`
-  query GetBasicFormById($id: ID!) {
-    form(id: $id) {
+export const GET_SHORT_FORM_BY_ID = gql`
+query GetShortFormById($id: ID!) {
+  form(id: $id) {
+    id
+    name
+    structure
+    fields
+    canCreateRecords
+    uniqueRecord {
       id
-      name
-      structure
-      fields
-      canCreateRecords
-      uniqueRecord {
-        id
-        modifiedAt
-        data
-      }
+      modifiedAt
+      data
     }
-  }`;
-
+  }
+}`;
 
 export const GET_FORM_BY_ID = gql`
-  query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
-    form(id: $id) {
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    fields
+    versions {
       id
-      name
       createdAt
-      structure
-      fields
+      data
+    }
+    records(filters: $filters) {
+      id
+      data(display: $display)
       versions {
         id
         createdAt
         data
       }
-      records(filters: $filters) {
-        id
-        data(display: $display)
-        versions {
-          id
-          createdAt
-          data
-        }
-      }
     }
-  }`;
+  }
+}`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
@@ -593,7 +591,7 @@ query GetRoutingKeys {
   }
 }`;
 
-export interface GetRoutingKeysQueryResponse{
+export interface GetRoutingKeysQueryResponse {
   loading: boolean;
   applications: Application[];
 }

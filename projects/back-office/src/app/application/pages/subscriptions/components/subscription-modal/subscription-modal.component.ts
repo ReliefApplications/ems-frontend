@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
-  GET_NAME_ID_FORMS, GetBasicFormsQueryResponse
+  GET_FORM_NAMES, GetFormsQueryResponse
 } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 
@@ -53,10 +53,10 @@ export class SubscriptionModalComponent implements OnInit {
       convertTo: [( this.data.subscription && this.data.subscription.convertTo ) ? this.data.subscription.convertTo.id : ''],
       channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
     });
-    this.apollo.watchQuery<GetBasicFormsQueryResponse>({
-      query: GET_NAME_ID_FORMS
+    this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORM_NAMES
     }).valueChanges.subscribe((res: any) => {
-      this.forms = res.data.basicForms;
+      this.forms = res.data.forms;
     });
     this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
       query: GET_ROUTING_KEYS
