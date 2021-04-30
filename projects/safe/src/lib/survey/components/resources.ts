@@ -42,7 +42,7 @@ export function init(Survey: any, apollo: Apollo): void {
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
-  let filters: { field: string, operator: string, value: string }[] = [{field: '', operator: '', value: ''}];
+  let filters: { field: string, operator: string, value: string, type: string }[] = [{field: '', operator: '', value: '', type: 'text'}];
 
   const component = {
     name: 'resources',
@@ -324,6 +324,7 @@ export function init(Survey: any, apollo: Apollo): void {
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
+          filters[0].type = question.survey.getQuestionByName(question.selectQuestion).inputType;
           if (question.displayAsGrid) {
             resourcesFilterValues.next(filters);
           }
@@ -356,13 +357,14 @@ export function init(Survey: any, apollo: Apollo): void {
         });
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
-            setAdvanceFilter(question.staticValue, question);
+            setAdvanceFilter(question.staticValue, question, 'text');
             this.populateChoices(question);
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (typeof options.value === 'string') {
-                  setAdvanceFilter(options.value, question);
+                  const valueType = question.survey.getQuestionByName(question.selectQuestion).inputType;
+                  setAdvanceFilter(options.value, question, valueType);
                   if (question.displayAsGrid) {
                     resourcesFilterValues.next(filters);
                   } else {
@@ -382,7 +384,8 @@ export function init(Survey: any, apollo: Apollo): void {
                 question.survey.onValueChanged.add((survey: any, options: any) => {
                   if (options.name === quest) {
                     if (typeof options.value === 'string') {
-                      setAdvanceFilter(options.value, objElement.field);
+                      const valueType = question.survey.getQuestionByName(quest).inputType;
+                      setAdvanceFilter(options.value, objElement.field, valueType);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
@@ -460,10 +463,10 @@ export function init(Survey: any, apollo: Apollo): void {
   };
   Survey.ComponentCollection.Instance.add(component);
 
-  const setAdvanceFilter = (value: string, question: string | any) => {
+  const setAdvanceFilter = (value: string, question: string | any, type: string) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
     if (!filters.some((x: any) => x.field === field)) {
-      filters.push({field: question.filterBy, operator: question.filterCondition, value});
+      filters.push({field: question.filterBy, operator: question.filterCondition, value, type});
     } else {
       filters.map((x: any) => {
         if (x.field === field) {
