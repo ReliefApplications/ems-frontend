@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
+import { SafeDownloadService } from '../../services/download.service';
 
 @Component({
   selector: 'safe-record-modal',
@@ -26,6 +27,8 @@ export class SafeRecordModalComponent implements OnInit {
   public containerId: string;
   public containerNextId = '';
 
+  private temporaryFilesStorage: any = {};
+
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
@@ -37,7 +40,8 @@ export class SafeRecordModalComponent implements OnInit {
       compareTo?: any
     },
     private apollo: Apollo,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private downloadService: SafeDownloadService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -68,6 +72,25 @@ export class SafeRecordModalComponent implements OnInit {
       this.loading = res.loading;
       addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
+      this.survey.onDownloadFile.add((survey, options) => {
+        if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+          options.callback('success', options.content);
+          return;
+        }
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+        xhr.onloadstart = (ev) => {
+          xhr.responseType = 'blob';
+        };
+        xhr.onload = () => {
+          const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        };
+      });
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
       this.survey.mode = 'display';

@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeDownloadService } from '../../services/download.service';
 
 @Component({
   selector: 'safe-form-modal',
@@ -33,6 +34,7 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
 
   private survey?: Survey.Model;
+  private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -47,6 +49,7 @@ export class SafeFormModalComponent implements OnInit {
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService
   ) {
     this.containerId = uuidv4();
   }
@@ -64,46 +67,145 @@ export class SafeFormModalComponent implements OnInit {
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     if (this.data.recordId) {
-        const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
-        this.apollo.watchQuery<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id
-          }
-        }).valueChanges.subscribe(res => {
-          const record = res.data.record;
-          this.form = record.form;
-          this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
-          this.loading = false;
-          addCustomFunctions(Survey, record);
-          this.survey = new Survey.Model(this.form?.structure);
-          this.survey.data = this.isMultiEdition ? null : record.data;
-          this.survey.locale = this.data.locale ? this.data.locale : 'en';
-          this.survey.showCompletedPage = false;
-          this.survey.render(this.containerId);
-          this.survey.onComplete.add(this.completeMySurvey);
-          this.survey.onUploadFiles.add((survey, options) => {
-            console.log('files');
-          });
-          this.survey.onDownloadFile.add((survey, options) => {
-            console.log('files');
-          });
+      const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
+      this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id
+        }
+      }).valueChanges.subscribe(res => {
+        const record = res.data.record;
+        this.form = record.form;
+        this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
+        this.loading = false;
+        addCustomFunctions(Survey, record);
+        this.survey = new Survey.Model(this.form?.structure);
+
+        this.survey.data = this.isMultiEdition ? null : record.data;
+        this.survey.locale = this.data.locale ? this.data.locale : 'en';
+        this.survey.showCompletedPage = false;
+        this.survey.render(this.containerId);
+        this.survey.onComplete.add(this.completeMySurvey);
+        this.survey.onClearFiles.add((survey, options) => {
+          options.callback('success');
         });
-      } else {
-        this.apollo.watchQuery<GetFormByIdQueryResponse>({
-          query: GET_FORM_STRUCTURE,
-          variables: {
-            id: this.data.template
+        this.survey.onUploadFiles.add((survey, options) => {
+          if (this.temporaryFilesStorage[options.name] !== undefined) {
+            this.temporaryFilesStorage[options.name].concat(options.files);
+          } else {
+            this.temporaryFilesStorage[options.name] = options.files;
           }
-        }).valueChanges.subscribe(res => {
-          this.loading = res.loading;
-          this.form = res.data.form;
-          this.survey = new Survey.Model(this.form.structure);
-          this.survey.locale = this.data.locale ? this.data.locale : 'en';
-          this.survey.render(this.containerId);
-          this.survey.onComplete.add(this.completeMySurvey);
+          const question = survey.getQuestionByName(options.name);
+          let content: any[] = [];
+          options
+            .files
+            .forEach((file: any) => {
+              const fileReader = new FileReader();
+              fileReader.onload = (e) => {
+                content = content.concat([
+                  {
+                    name: file.name,
+                    type: file.type,
+                    content: fileReader.result,
+                    file
+                  }
+                ]);
+                if (content.length === options.files.length) {
+                  options.callback('success', content.map((fileContent) => {
+                    return { file: fileContent.file, content: fileContent.content };
+                  }));
+                }
+              };
+              fileReader.readAsDataURL(file);
+            });
         });
-      }
+        this.survey.onDownloadFile.add((survey, options) => {
+          if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+            options.callback('success', options.content);
+            return;
+          }
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+          xhr.onloadstart = (ev) => {
+            xhr.responseType = 'blob';
+          };
+          xhr.onload = () => {
+            const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              options.callback('success', e.target?.result);
+            };
+            reader.readAsDataURL(file);
+          };
+        });
+      });
+    } else {
+      this.apollo.watchQuery<GetFormByIdQueryResponse>({
+        query: GET_FORM_STRUCTURE,
+        variables: {
+          id: this.data.template
+        }
+      }).valueChanges.subscribe(res => {
+        this.loading = res.loading;
+        this.form = res.data.form;
+        this.survey = new Survey.Model(this.form.structure);
+        this.survey.locale = this.data.locale ? this.data.locale : 'en';
+        this.survey.render(this.containerId);
+        this.survey.onComplete.add(this.completeMySurvey);
+        this.survey.onClearFiles.add((survey, options) => {
+          options.callback('success');
+        });
+        this.survey.onUploadFiles.add((survey, options) => {
+          if (this.temporaryFilesStorage[options.name] !== undefined) {
+            this.temporaryFilesStorage[options.name].concat(options.files);
+          } else {
+            this.temporaryFilesStorage[options.name] = options.files;
+          }
+          const question = survey.getQuestionByName(options.name);
+          let content: any[] = [];
+          options
+            .files
+            .forEach((file: any) => {
+              const fileReader = new FileReader();
+              fileReader.onload = (e) => {
+                content = content.concat([
+                  {
+                    name: file.name,
+                    type: file.type,
+                    content: fileReader.result,
+                    file
+                  }
+                ]);
+                if (content.length === options.files.length) {
+                  options.callback('success', content.map((fileContent) => {
+                    return { file: fileContent.file, content: fileContent.content };
+                  }));
+                }
+              };
+              fileReader.readAsDataURL(file);
+            });
+        });
+        this.survey.onDownloadFile.add((survey, options) => {
+          if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+            options.callback('success', options.content);
+            return;
+          }
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+          xhr.onloadstart = (ev) => {
+            xhr.responseType = 'blob';
+          };
+          xhr.onload = () => {
+            const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              options.callback('success', e.target?.result);
+            };
+            reader.readAsDataURL(file);
+          };
+        });
+      });
+    }
   }
 
   /*  Create the record, or update it if provided.
@@ -153,7 +255,7 @@ export class SafeFormModalComponent implements OnInit {
               this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
               this.dialogRef.close();
             } else {
-              this.dialogRef.close({template: this.data.template, data: res.data?.addRecord});
+              this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
             }
           });
         }
@@ -173,7 +275,7 @@ export class SafeFormModalComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.dialogRef.close({template: this.form?.id, data: res.data.editRecord});
+        this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
       }
     });
   }

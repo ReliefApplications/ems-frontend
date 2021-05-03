@@ -92,12 +92,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
-    // Files
-    this.surveyCreator.onUploadFile.add((survey, option) => {
-      option.files.forEach((file: any) => {
-        console.log(file.name);
-      });
-    });
   }
 
   ngOnChanges(): void {
