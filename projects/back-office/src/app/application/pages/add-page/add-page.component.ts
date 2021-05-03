@@ -7,7 +7,7 @@ import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
+import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-add-page',
@@ -49,8 +49,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
-          query: GET_FORMS,
-        }).valueChanges.subscribe((res) => {
+          query: GET_FORM_NAMES,
+        }).valueChanges.subscribe((res: any) => {
           this.forms = res.data.forms;
           contentControl.setValidators([Validators.required]);
           contentControl.updateValueAndValidity();

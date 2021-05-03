@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
+import { Component, OnInit } from '@angular/core';
+import { GridDataResult, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
@@ -9,6 +9,8 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE_BY_ID, GetResourceByIdQueryResponse } from '../../../graphql/queries';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
+import { resourcesFilterValues } from '../../../survey/components/resources';
+import { PopupService } from '@progress/kendo-angular-popup';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return () => overlay.scrollStrategies.block();
@@ -25,39 +27,76 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
   templateUrl: './survey-grid.component.html',
   styleUrls: ['./survey-grid.component.scss'],
   providers: [
+    PopupService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
-export class SafeSurveyGridComponent {
+export class SafeSurveyGridComponent implements OnInit{
 
-  constructor(private apollo: Apollo, public dialog: MatDialog, private snackBar: SafeSnackBarService) { }
+  // === INPUTS ===
+  public id = '';
+  public field = '';
+  public selectedIds: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
+  public readOnly = false;
 
-  public selectableSettings = SELECTABLE_SETTINGS;
-
-  public allData: any[] = [];
-  public gridData: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
-  public selectedRowsIndex: number[] = [];
+  // === DATA ===
+  public gridData: GridDataResult = { data: [], total: 0};
+  public availableRecords: any[] = [];
   public canDeleteSelectedRows = false;
 
-  fetchData(id: string, field: string): void {
-    this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
-      variables: {
-        id,
-        display: true
-      }
-    }).valueChanges.subscribe((res) => {
-      if (res.data.resource) {
-        const records = res.data.resource.records || [];
-        for (const record of records) {
-          this.allData.push({value: record.id, text: record.data[field]});
-        }
-      } else {
-        this.snackBar.openSnackBar('No access provided to this resource.', { error: true });
-      }
-    }, (err) => {
-       this.snackBar.openSnackBar(err.message, { error: true });
+  // === ACTIONS ON SELECTION ===
+  public selectedRowsIndex: number[] = [];
+  public selectableSettings = SELECTABLE_SETTINGS;
+
+  constructor(
+    private apollo: Apollo,
+    public dialog: MatDialog,
+    private snackBar: SafeSnackBarService
+  ) { }
+
+  ngOnInit(): void {
+    resourcesFilterValues.subscribe((data) => {
+      this.fetchData();
     });
+  }
+
+  fetchData(): void {
+    if (this.id && this.field) {
+      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE_BY_ID,
+        variables: {
+          id: this.id,
+          filters: resourcesFilterValues.getValue()[0].operator ? resourcesFilterValues.getValue() : null
+        }
+      }).valueChanges.subscribe((res) => {
+        if (res.data.resource) {
+          const records = res.data.resource.records || [];
+          this.availableRecords = [];
+          const selectedIds = this.selectedIds.getValue();
+          // const value = this.availableRecords.filter(d => d.value === event.value)[0];
+          const selectedRecords = records.filter(x => selectedIds.includes(x.id)).map(x => {
+            return {
+              value: x.id,
+              text: x.data[this.field]
+            };
+          });
+          this.gridData = {
+            data: selectedRecords,
+            total: selectedRecords.length
+          };
+          this.availableRecords = records.filter(x => !selectedIds.includes(x.id)).map(x => {
+            return {
+              value: x.id,
+              text: x.data[this.field]
+            };
+          });
+        } else {
+          this.snackBar.openSnackBar('No access provided to this resource.', {error: true});
+        }
+      }, (err) => {
+        this.snackBar.openSnackBar(err.message, {error: true});
+      });
+    }
   }
 
   selectionChange(selection: SelectionEvent): void {
@@ -76,11 +115,16 @@ export class SafeSurveyGridComponent {
   onAdd(event: any): void {
     const matSelect: MatSelect = event.source;
     matSelect.writeValue(null);
-    const value = this.allData.filter(d => d.value === event.value)[0];
+    const value = this.availableRecords.filter(d => d.value === event.value)[0];
     if (value) {
-      const elements: any[] = this.gridData.getValue();
-      elements.push(value);
-      this.gridData.next(elements);
+      const selectedRecords: any[] = this.gridData.data;
+      selectedRecords.push(value);
+      this.selectedIds.next(selectedRecords.map(x => x.value));
+      this.gridData = {
+        data: selectedRecords,
+        total: selectedRecords.length
+      };
+      this.availableRecords = this.availableRecords.filter(d => d.value !== value.value);
     }
   }
 
@@ -97,8 +141,17 @@ export class SafeSurveyGridComponent {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const elements = this.gridData.getValue().filter((d, index) => !items.includes(index));
-        this.gridData.next(elements);
+        if (resourcesFilterValues.getValue()[0].value.trim().length > 0) {
+          this.fetchData();
+        } else {
+          items.forEach(i => this.availableRecords.push(this.gridData.data[i]));
+        }
+        const selectedRecords: any[] = this.gridData.data.filter((_, index) => !items.includes(index));
+        this.selectedIds.next(selectedRecords.map(x => x.value));
+        this.gridData = {
+          data: selectedRecords,
+          total: selectedRecords.length
+        };
         this.selectedRowsIndex = [];
       }
     });
@@ -107,13 +160,8 @@ export class SafeSurveyGridComponent {
   public onShowDetails(index: number): void {
     this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: this.gridData.getValue()[index].value,
+        recordId: this.gridData.data[index].value,
       }
     });
   }
-
-  getAvailableRecords(): any[] {
-    return this.allData.filter(d => !this.gridData.getValue().includes(d));
-  }
-
 }

@@ -15,6 +15,7 @@ export const NOTIFICATIONS = {
     objectNotCreated(type: any, error: any): string  { return `The ${type} was not created. ${error}`; },
     objectDeleted(value: any): string  { return `${value} deleted.`; },
     objectReordered(type: any): string  { return `${type} reordered.`; },
+    objectLoadedFromCache(type: string): string { return `${type} loaded from cache.`; },
     goToStep(step: any): string  { return `Back to ${step} step.`; },
     statusUpdated(status: any): string  { return `Status updated to ${status}.`; },
     noObjectOpened(value: any): string  { return `No opened ${value}.`; },
@@ -25,4 +26,5 @@ export const NOTIFICATIONS = {
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
+    profileSaved: 'Preferences saved.'
 };

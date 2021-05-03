@@ -19,7 +19,7 @@ import { Form } from '../../../models/form.model';
 export class SafeGridSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm: FormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -38,7 +38,7 @@ export class SafeGridSettingsComponent implements OnInit {
   public tabIndex = 0;
 
   get floatingButtons(): FormArray {
-    return this.tileForm.controls.floatingButtons as FormArray;
+    return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
 
   constructor(
@@ -94,40 +94,44 @@ export class SafeGridSettingsComponent implements OnInit {
       }
     });
 
-    // Fetch related forms with a question referring to the current form displayed in the grid
-    // this.queryName = this.tileForm.get('query')?.value.name;
-
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
+        // Check if the query changed to clean modifications in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
-          const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+          const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
-            this.tileForm.get('floatingButton.modifySelectedRows')?.setValue(false);
+            this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
-        this.queryBuilder.sourceQuery(this.queryName).subscribe((res1: { data: any }) => {
-          const source = res1.data[`_${this.queryName}Meta`]._source;
-          this.tileForm.get('resource')?.setValue(source);
-          if (source) {
-            this.apollo.query<GetRelatedFormsQueryResponse>({
-              query: GET_RELATED_FORMS,
-              variables: {
-                resource: source
-              }
-            }).subscribe(res2 => {
-              if (res2.errors) {
-                this.relatedForms = [];
-              } else {
-                this.relatedForms = res2.data.resource.relatedForms || [];
-              }
-            });
-          }
-        });
+        const query = this.queryBuilder.sourceQuery(this.queryName);
+        if (query) {
+          query.subscribe((res1: { data: any }) => {
+            const source = res1.data[`_${this.queryName}Meta`]._source;
+            this.tileForm?.get('resource')?.setValue(source);
+            if (source) {
+              this.apollo.query<GetRelatedFormsQueryResponse>({
+                query: GET_RELATED_FORMS,
+                variables: {
+                  resource: source
+                }
+              }).subscribe(res2 => {
+                if (res2.errors) {
+                  this.relatedForms = [];
+                } else {
+                  this.relatedForms = res2.data.resource.relatedForms || [];
+                }
+              });
+            }
+          });
+        } else {
+          this.relatedForms = [];
+        }
       } else {
         this.fields = [];
       }
@@ -135,7 +139,7 @@ export class SafeGridSettingsComponent implements OnInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
-    const buttonForm = this.formBuilder.group({
+    return this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
@@ -153,23 +157,28 @@ export class SafeGridSettingsComponent implements OnInit {
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-      value && value.notify ? Validators.required : null],
+        value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-      value && value.publish ? Validators.required : null]
+      value && value.publish ? Validators.required : null],
+      sendMail: [value && value.sendMail ? value.sendMail : false],
+      distributionList: [value && value.distributionList ? value.distributionList : [],
+        value && value.sendMail ? Validators.required : null],
+      subject: [value && value.subject ? value.subject : '',
+      value && value.sendMail ? Validators.required : null],
+      // attachment: [value && value.attachment ? value.attachment : false]
     });
-    return buttonForm;
   }
 
   public addFloatingButton(): void {
-    const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.push(this.createFloatingButtonForm({ show: true }));
     this.tabIndex = floatingButtons.length - 1;
   }
 
   public deleteFloatingButton(): void {
-    const floatingButtons = this.tileForm.get('floatingButtons') as FormArray;
+    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
   }

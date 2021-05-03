@@ -1,10 +1,10 @@
-import {Apollo} from 'apollo-angular';
-import {Component, OnInit} from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
@@ -60,7 +60,7 @@ export class FormBuilderComponent implements OnInit {
 
   /* Shows modal confirmation before leave the page if has changes on form
   */
-  canDeactivate(): Observable<boolean> | boolean{
+  canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
@@ -88,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
+        query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id
         }
@@ -151,9 +151,10 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name, ));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
           this.form = res.data?.editForm;
-          this.structure = structure; // Update current form to
+          this.structure = structure;
+          localStorage.removeItem(`form:${this.id}`);
           this.hasChanges = false;
           this.authService.canLogout.next(true);
         }
@@ -197,7 +198,7 @@ export class FormBuilderComponent implements OnInit {
   */
   setTemplate(id: string): void {
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }
@@ -252,7 +253,7 @@ export class FormBuilderComponent implements OnInit {
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
         }
-    });
+      });
   }
 
   /*  Edit the permissions layer.

@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../../../graphql/queries';
+import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../../../graphql/queries';
 import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
 
 @Component({
@@ -51,8 +51,8 @@ export class AddStepComponent implements OnInit, OnDestroy {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
-          query: GET_FORMS,
-        }).valueChanges.subscribe((res) => {
+          query: GET_FORM_NAMES,
+        }).valueChanges.subscribe((res: any) => {
           this.forms = res.data.forms;
           contentControl.setValidators([Validators.required]);
           contentControl.updateValueAndValidity();

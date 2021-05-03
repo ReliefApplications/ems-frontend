@@ -1,8 +1,8 @@
-<kendo-grid [data]="gridData.getValue()" [autoSize]="false" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">
-  <ng-template kendoGridToolbarTemplate position="top">
-    <mat-form-field *ngIf="getAvailableRecords().length > 0">
+<kendo-grid [data]="gridData" [autoSize]="false" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">
+  <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
+    <mat-form-field *ngIf="availableRecords.length > 0">
       <mat-select (selectionChange)="onAdd($event)" placeholder="Add record...">
-        <mat-option *ngFor="let data of getAvailableRecords()" [value]="data.value">{{data.text}}</mat-option>
+        <mat-option *ngFor="let data of availableRecords" [value]="data.value">{{data.text}}</mat-option>
       </mat-select>
     </mat-form-field>
     <ng-container *ngIf="selectedRowsIndex.length > 0">
@@ -20,7 +20,7 @@
     <ng-template kendoGridCellTemplate let-idx="rowIndex">
       <button (click)="onShowDetails(idx)" kendoButton [icon]="'detail-section'" [look]="'flat'">
       </button>
-      <button (click)="onDeleteRow([idx])"  kendoButton [icon]="'delete'" [look]="'flat'">
+      <button (click)="onDeleteRow([idx])"  kendoButton [icon]="'delete'" [look]="'flat'" *ngIf="!readOnly">
       </button>
     </ng-template>
   </kendo-grid-column>

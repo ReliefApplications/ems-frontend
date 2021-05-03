@@ -110,7 +110,7 @@ export class SafeInviteUserComponent implements OnInit {
         if (!this.data.users.find((user: any) => user.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('application', value));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('user', value));
         }
       }
       this.inviteForm.get('email')?.setValue(this.emails);

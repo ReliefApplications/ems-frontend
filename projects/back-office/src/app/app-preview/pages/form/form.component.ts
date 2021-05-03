@@ -3,7 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
-import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_SHORT_FORM_BY_ID, GET_PAGE_BY_ID,
+  GET_STEP_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -50,7 +51,7 @@ export class FormComponent implements OnInit {
         }).valueChanges.subscribe((res) => {
           this.step = res.data.step;
           this.apollo.watchQuery<GetFormByIdQueryResponse>({
-            query: GET_FORM_BY_ID,
+            query: GET_SHORT_FORM_BY_ID,
             variables: {
               id: this.step.content
             }
@@ -68,7 +69,7 @@ export class FormComponent implements OnInit {
         }).valueChanges.subscribe((res) => {
           this.page = res.data.page;
           this.apollo.watchQuery<GetFormByIdQueryResponse>({
-            query: GET_FORM_BY_ID,
+            query: GET_SHORT_FORM_BY_ID,
             variables: {
               id: this.page.content
             }

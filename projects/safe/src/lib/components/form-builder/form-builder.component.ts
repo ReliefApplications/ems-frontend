@@ -51,7 +51,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   constructor(
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     const options = {
@@ -138,9 +139,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.validateValueNames().then(() => {
       this.save.emit(this.surveyCreator.text);
     })
-    .catch((error) => {
-      this.snackBar.openSnackBar(error.message, { error: true });
-    });
+      .catch((error) => {
+        this.snackBar.openSnackBar(error.message, {error: true});
+      });
   }
 
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
@@ -150,64 +151,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     await object.pages.forEach((page: any) => {
       if (page.elements) {
         page.elements.forEach((element: any) => {
-          if (!element.valueName) {
-            if (element.title) {
-              element.valueName = this.toSnakeCase(element.title);
-              if (!this.isSnakeCase(element.valueName)) {
-               throw new Error('The value name ' + element.valueName + ' on page '
-                + page.name + ' is invalid. Please conform to snake_case.');
-              }
-            } else {
-              throw new Error('Missing value name for an element on page '
-                + page.name + '. Please provide a valid data value name (snake_case) to save the form.');
-            }
-          } else {
-            if (!this.isSnakeCase(element.valueName)) {
-              throw new Error('The value name ' + element.valueName + ' on page '
-                + page.name + ' is invalid. Please conform to snake_case.');
-            }
-          }
-          if (element.type === 'multipletext') {
-            element.items = element.items.map((e: any) => {
-              if (!e.name && !e.title) {
-                throw new Error(`Please provide name or title for each text of question: ${element.valueName}`);
-              }
-              return {
-                name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
-                title: e.title ? e.title : null
-              };
-            });
-          }
-          if (element.type === 'matrix') {
-            element.columns = element.columns.map((x: any) => {
-              return {
-                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
-                text: x.text ? x.text : x
-              };
-            });
-            element.rows = element.rows.map((x: any) => {
-              return {
-                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
-                text: x.text ? x.text : x
-              };
-            });
-          }
-          if (element.type === 'matrixdropdown') {
-            element.columns = element.columns.map((x: any) => {
-              return {
-                name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
-                title: x.title ? x.title : (x.name ? x.name : x),
-                ...x.cellType && { cellType: x.cellType },
-                ...x.isRequired && { isRequired: true }
-              };
-            });
-            element.rows = element.rows.map((x: any) => {
-              return {
-                value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
-                text: x.text ? x.text : x
-              };
-            });
-          }
+          this.setQuestionNames(element, page);
         });
       }
     });
@@ -220,5 +164,74 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   private isSnakeCase(text: string): any {
     return text.match(/^[a-z]+[a-z0-9_]+$/);
+  }
+
+  /*  Recursively set the question names of the form.
+  */
+  private setQuestionNames(element: any, page: any): void {
+    if (element.type === 'panel') {
+      for (const el of element.elements) {
+        this.setQuestionNames(el, page);
+      }
+    } else {
+      if (!element.valueName) {
+        if (element.title) {
+          element.valueName = this.toSnakeCase(element.title);
+          if (!this.isSnakeCase(element.valueName)) {
+            throw new Error('The value name ' + element.valueName + ' on page '
+              + page.name + ' is invalid. Please conform to snake_case.');
+          }
+        } else {
+          throw new Error('Missing value name for an element on page '
+            + page.name + '. Please provide a valid data value name (snake_case) to save the form.');
+        }
+      } else {
+        if (!this.isSnakeCase(element.valueName)) {
+          throw new Error('The value name ' + element.valueName + ' on page '
+            + page.name + ' is invalid. Please conform to snake_case.');
+        }
+      }
+      if (element.type === 'multipletext') {
+        element.items = element.items.map((e: any) => {
+          if (!e.name && !e.title) {
+            throw new Error(`Please provide name or title for each text of question: ${element.valueName}`);
+          }
+          return {
+            name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
+            title: e.title ? e.title : null
+          };
+        });
+      }
+      if (element.type === 'matrix') {
+        element.columns = element.columns.map((x: any) => {
+          return {
+            value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+            text: x.text ? x.text : x
+          };
+        });
+        element.rows = element.rows.map((x: any) => {
+          return {
+            value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+            text: x.text ? x.text : x
+          };
+        });
+      }
+      if (element.type === 'matrixdropdown') {
+        element.columns = element.columns.map((x: any) => {
+          return {
+            name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
+            title: x.title ? x.title : (x.name ? x.name : x),
+            ...x.cellType && {cellType: x.cellType},
+            ...x.isRequired && {isRequired: true}
+          };
+        });
+        element.rows = element.rows.map((x: any) => {
+          return {
+            value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
+            text: x.text ? x.text : x
+          };
+        });
+      }
+    }
   }
 }

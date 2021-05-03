@@ -12,7 +12,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 export class SafeMapSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm: FormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -43,19 +43,19 @@ export class SafeMapSettingsComponent implements OnInit {
       centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]]
     });
     this.change.emit(this.tileForm);
-    this.tileForm.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
 
-    if (this.tileForm.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm.value.query.fields);
+    if (this.tileForm?.value.query.name) {
+      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
 
     queryForm.controls.name.valueChanges.subscribe(() => {
-      this.tileForm.controls.latitude.setValue('');
-      this.tileForm.controls.longitude.setValue('');
+      this.tileForm?.controls.latitude.setValue('');
+      this.tileForm?.controls.longitude.setValue('');
     });
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);

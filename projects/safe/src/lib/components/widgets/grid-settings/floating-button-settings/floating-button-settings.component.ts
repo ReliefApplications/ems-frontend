@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -6,18 +6,25 @@ import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
+import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 @Component({
   selector: 'safe-floating-button-settings',
   templateUrl: './floating-button-settings.component.html',
-  styleUrls: ['./floating-button-settings.component.scss']
+  styleUrls: ['./floating-button-settings.component.scss'],
+  providers: [
+    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE })}
+  ]
 })
-export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
+
+export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() buttonForm: FormGroup = new FormGroup({});
+  @Input() buttonForm?: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() forms: Form[] = [];
@@ -29,6 +36,12 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
   private workflowSubscription?: Subscription;
+
+  // Emails
+  readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  public emails: string[] = [];
+
+  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
   get scalarFields(): any[] {
     return this.fields.filter(x => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name));
@@ -59,60 +72,73 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.buttonForm.get('notify')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('notify')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('notificationChannel')?.setValidators(Validators.required);
-        this.buttonForm.get('notificationMessage')?.setValidators(Validators.required);
+        this.buttonForm?.get('notificationChannel')?.setValidators(Validators.required);
+        this.buttonForm?.get('notificationMessage')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('notificationChannel')?.clearValidators();
-        this.buttonForm.get('notificationMessage')?.clearValidators();
+        this.buttonForm?.get('notificationChannel')?.clearValidators();
+        this.buttonForm?.get('notificationMessage')?.clearValidators();
       }
-      this.buttonForm.get('notificationChannel')?.updateValueAndValidity();
-      this.buttonForm.get('notificationMessage')?.updateValueAndValidity();
+      this.buttonForm?.get('notificationChannel')?.updateValueAndValidity();
+      this.buttonForm?.get('notificationMessage')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('publish')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('publish')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('publicationChannel')?.setValidators(Validators.required);
+        this.buttonForm?.get('publicationChannel')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('publicationChannel')?.clearValidators();
+        this.buttonForm?.get('publicationChannel')?.clearValidators();
       }
-      this.buttonForm.get('publicationChannel')?.updateValueAndValidity();
+      this.buttonForm?.get('publicationChannel')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('show')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('show')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
-        this.buttonForm.controls.notify.setValue(false);
-        this.buttonForm.controls.publish.setValue(false);
+        this.buttonForm?.controls.notify.setValue(false);
+        this.buttonForm?.controls.publish.setValue(false);
       }
     });
 
-    this.buttonForm.get('modifySelectedRows')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('modifySelectedRows')?.valueChanges.subscribe(value => {
       if (!value) {
         this.deleteInvalidModifications();
       }
     });
 
-    this.buttonForm.get('attachToRecord')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('attachToRecord')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('targetForm')?.setValidators(Validators.required);
+        this.buttonForm?.get('targetForm')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('targetForm')?.clearValidators();
-        this.buttonForm.get('targetForm')?.setValue(null);
+        this.buttonForm?.get('targetForm')?.clearValidators();
+        this.buttonForm?.get('targetForm')?.setValue(null);
       }
-      this.buttonForm.get('targetForm')?.updateValueAndValidity();
+      this.buttonForm?.get('targetForm')?.updateValueAndValidity();
     });
 
-    this.buttonForm.get('targetForm')?.valueChanges.subscribe(value => {
+    this.buttonForm?.get('targetForm')?.valueChanges.subscribe(value => {
       if (value) {
-        this.buttonForm.get('targetFormField')?.setValidators(Validators.required);
+        this.buttonForm?.get('targetFormField')?.setValidators(Validators.required);
       } else {
-        this.buttonForm.get('targetFormField')?.clearValidators();
-        this.buttonForm.get('targetFormField')?.setValue(null);
+        this.buttonForm?.get('targetFormField')?.clearValidators();
+        this.buttonForm?.get('targetFormField')?.setValue(null);
       }
-      this.buttonForm.get('targetFormField')?.updateValueAndValidity();
+      this.buttonForm?.get('targetFormField')?.updateValueAndValidity();
     });
+
+    this.buttonForm?.get('sendMail')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm?.get('distributionList')?.setValidators(Validators.required);
+        this.buttonForm?.get('subject')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm?.get('distributionList')?.clearValidators();
+        this.buttonForm?.get('subject')?.clearValidators();
+      }
+      this.buttonForm?.get('distributionList')?.updateValueAndValidity();
+      this.buttonForm?.get('subject')?.updateValueAndValidity();
+    });
+    this.emails = [...this.buttonForm?.get('distributionList')?.value];
   }
 
   compareFields(field1: any, field2: any): boolean {
@@ -124,7 +150,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   }
 
   get modificationsArray(): FormArray {
-    return this.buttonForm.get('modifications') as FormArray;
+    return this.buttonForm?.get('modifications') as FormArray;
   }
 
   onDeleteModification(index: number): void {
@@ -139,7 +165,7 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
   }
 
   private deleteInvalidModifications(): void {
-    const modifications = this.buttonForm.get('modifications') as FormArray;
+    const modifications = this.buttonForm?.get('modifications') as FormArray;
     for (let i = 0; i < modifications.value.length; i ++) {
       const modification = modifications.at(i);
       if (modification.invalid) {
@@ -151,6 +177,34 @@ export class FloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
+  }
+
+  add(event: MatChipInputEvent | any): void {
+    // use setTimeout to prevent add input value on focusout
+    setTimeout(() => {
+      const input = event.type === 'focusout' ? this.emailInput?.nativeElement : event.input;
+      const value = event.type === 'focusout' ? this.emailInput?.nativeElement.value : event.value;
+
+      // Add the mail
+      if ((value || '').trim()) {
+        this.emails.push(value.trim());
+      }
+      this.buttonForm?.get('distributionList')?.setValue(this.emails);
+      this.buttonForm?.get('distributionList')?.updateValueAndValidity();
+      // Reset the input value
+      if (input) {
+        input.value = '';
+      }
+    }, event.type === 'focusout' ? 500 : 0);
+  }
+
+  remove(email: string): void {
+    const index = this.emails.indexOf(email);
+    if (index >= 0) {
+      this.emails.splice(index, 1);
+    }
+    this.buttonForm?.get('distributionList')?.setValue(this.emails);
+    this.buttonForm?.get('distributionList')?.updateValueAndValidity();
   }
 
   ngOnDestroy(): void {

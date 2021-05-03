@@ -1,3 +1,10 @@
+<div *ngIf="!record && isFromCacheData" class='clear-button'>
+  <button mat-flat-button color="primary" (click)="onClear()">
+    <mat-icon>restart_alt</mat-icon>
+    Clear cache
+  </button>
+</div>
+
 <div *ngIf="form.uniqueRecord || record">
   <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)"
     *ngIf="survey.pages.length > 1">
@@ -5,9 +12,10 @@
   </mat-tab-group>
 </div>
 
-<span *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+<span *ngIf="modifiedAt && !isFromCacheData" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+<span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
 <div class="survey-float" *ngIf="surveyActive">
-  <kendo-dropdownlist *ngIf="survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
+  <kendo-dropdownlist *ngIf="!!survey && survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
     [value]="surveyLanguage.nativeName.split(',')[0]" (selectionChange)="setLanguage($event)">
     <ng-template kendoDropDownListValueTemplate let-dataItem style="text-transform: capitalize">
       {{ dataItem }}

@@ -2,7 +2,12 @@ import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
-import { GetFormByIdQueryResponse, GetRecordByIdQueryResponse, GET_FORM_BY_ID, GET_RECORD_BY_ID } from '../../graphql/queries';
+import {
+  GetFormByIdQueryResponse,
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+  GET_FORM_STRUCTURE
+} from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
 import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
@@ -86,7 +91,7 @@ export class SafeFormModalComponent implements OnInit {
         });
       } else {
         this.apollo.watchQuery<GetFormByIdQueryResponse>({
-          query: GET_FORM_BY_ID,
+          query: GET_FORM_STRUCTURE,
           variables: {
             id: this.data.template
           }

@@ -12,9 +12,16 @@
                     <mat-option [value]="false">False</mat-option>
                 </mat-select>
             </ng-container>
-            <ng-container *ngIf="filter.type.name !== 'Int' && filter.type.name !== 'Boolean'">
+            <ng-container
+                *ngIf="!['DateTime', 'Date', 'Int', 'Boolean'].includes(filter.type.name)">
                 <input matInput [formControlName]="filter.name" type="string" />
             </ng-container>
+            <ng-container *ngIf="['Date', 'DateTime'].includes(filter.type.name)">
+                <input matInput matTooltip="First enter the year then month and day" [matTooltipPosition]="'above'"
+                    maxlength="10" [formControlName]="filter.name" type="text" (keyup)="onKey($event, filter.name)" />
+            </ng-container>
+            <mat-icon *ngIf="['Date', 'DateTime'].includes(filter.type.name)" color="primary" matSuffix matTooltip="Always update to today's date"
+                [matTooltipPosition]="'above'" (click)="setCurrentDate(filter.name)">calendar_today</mat-icon>
         </mat-form-field>
     </ng-container>
 </form>

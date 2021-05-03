@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FloatingButtonSettingsComponent } from './floating-button-settings.component';
+import { SafeFloatingButtonSettingsComponent } from './floating-button-settings.component';
 
-describe('FloatingButtonSettingsComponent', () => {
-  let component: FloatingButtonSettingsComponent;
-  let fixture: ComponentFixture<FloatingButtonSettingsComponent>;
+describe('SafeFloatingButtonSettingsComponent', () => {
+  let component: SafeFloatingButtonSettingsComponent;
+  let fixture: ComponentFixture<SafeFloatingButtonSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FloatingButtonSettingsComponent ]
+      declarations: [ SafeFloatingButtonSettingsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FloatingButtonSettingsComponent);
+    fixture = TestBed.createComponent(SafeFloatingButtonSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
