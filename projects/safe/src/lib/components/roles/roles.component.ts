@@ -140,7 +140,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             variables: {
               id: role.id,
               permissions: value.permissions,
-              channels: value.channels
+              channels: value.channels,
+              title: value.title,
             }
           }).subscribe(res => {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title));

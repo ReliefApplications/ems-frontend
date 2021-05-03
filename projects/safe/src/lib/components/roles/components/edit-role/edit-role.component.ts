@@ -52,6 +52,7 @@ export class SafeEditRoleComponent implements OnInit {
       this.channels = res.data.channels;
     });
     this.roleForm = this.formBuilder.group({
+      title: this.data.role.title,
       permissions: [this.data.role.permissions ? this.data.role.permissions.map(x => x.id) : null],
       channels: [this.data.role.channels ? this.data.role.channels.map(x => x.id) : null]
     });
