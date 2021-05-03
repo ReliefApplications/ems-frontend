@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'safe-layout',
@@ -50,6 +51,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public showSidenav = false;
 
+  public user: any;
+  public otherOffice = '';
+
   constructor(
     private router: Router,
     private authService: SafeAuthService,
@@ -62,7 +66,15 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authService.user.subscribe(() => {
+    this.authService.user.subscribe((user) => {
+      if (user) {
+        this.user = { ...user};
+        if (this.router.url.includes('backoffice')) {
+          this.otherOffice = 'front offfice';
+        } else {
+          this.otherOffice = 'back office';
+        }
+      }
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {
@@ -191,6 +203,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onOpenProfile(): void {
     this.router.navigate(['/profile']);
+  }
+
+  onSwitchOffice(): void {
+    if (this.router.url.includes('backoffice')) {
+      window.location.href = environment.frontOffice;
+    } else {
+      window.location.href = environment.backOffice;
+    }
   }
 
   onMarkAllNotificationsAsRead(): void {

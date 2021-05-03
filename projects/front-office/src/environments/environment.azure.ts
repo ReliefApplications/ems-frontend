@@ -5,5 +5,7 @@ export const environment = {
     clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
     authority: 'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590',
     redirectUrl: 'https://ems-safe-test.who.int',
-    postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth'
+    postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
+    frontOffice: 'https://ems-safe-test.who.int/api',
+    backOffice: 'https://ems-safe-test.whot.int/backoffice',
 };
