@@ -93,7 +93,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     });
     // Files
     this.surveyCreator.onUploadFile.add((survey, option) => {
-      option.files.forEach(file => {
+      option.files.forEach((file: any) => {
         console.log(file.name);
       });
     });

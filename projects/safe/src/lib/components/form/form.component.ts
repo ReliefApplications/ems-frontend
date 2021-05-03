@@ -234,6 +234,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         }).toPromise();
         if (res.errors) {
           this.snackBar.openSnackBar('Upload failed.', { error: true });
+          return;
         } else {
           data[name][index].content = res.data?.uploadFile;
         }

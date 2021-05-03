@@ -9,7 +9,7 @@ export class SafeDownloadService {
   public baseUrl: string;
 
   constructor(
-    @Inject('environment') environment,
+    @Inject('environment') environment: any,
     private http: HttpClient
   ) {
     this.baseUrl = environment.API_URL;
