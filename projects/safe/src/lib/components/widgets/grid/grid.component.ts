@@ -29,16 +29,11 @@ import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
-<<<<<<< HEAD:projects/who-ems/src/lib/components/widgets/grid/grid.component.ts
-import { WhoWorkflowService } from '../../../services/workflow.service';
-import { WhoDownloadService } from '../../../services/download.service';
-=======
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
->>>>>>> dev:projects/safe/src/lib/components/widgets/grid/grid.component.ts
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -158,15 +153,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private layoutService: LayoutService,
     private resolver: ComponentFactoryResolver,
-<<<<<<< HEAD:projects/who-ems/src/lib/components/widgets/grid/grid.component.ts
-    private snackBar: WhoSnackBarService,
-    private workflowService: WhoWorkflowService,
-    private downloadService: WhoDownloadService
-=======
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
->>>>>>> dev:projects/safe/src/lib/components/widgets/grid/grid.component.ts
   ) {
   }
 
@@ -852,7 +841,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return promises;
   }
 
-<<<<<<< HEAD:projects/who-ems/src/lib/components/widgets/grid/grid.component.ts
   /* Download the file.
   */
   public onDownload(record: any, file: any): void {
@@ -860,7 +848,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.downloadService.getFile(path, file.type, file.name);
   }
 
-=======
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
@@ -942,7 +929,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
->>>>>>> dev:projects/safe/src/lib/components/widgets/grid/grid.component.ts
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

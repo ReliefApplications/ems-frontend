@@ -27,7 +27,7 @@ export class SafeFormModalComponent implements OnInit {
 
   private isMultiEdition = false;
 
-  private survey: Survey.Model;
+  private survey?: Survey.Model;
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
@@ -70,8 +70,8 @@ export class SafeFormModalComponent implements OnInit {
           this.form = record.form;
           this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
           this.loading = false;
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form-modal/form-modal.component.ts
-          this.survey = new Survey.Model(this.form.structure);
+          addCustomFunctions(Survey, record);
+          this.survey = new Survey.Model(this.form?.structure);
           this.survey.data = this.isMultiEdition ? null : record.data;
           this.survey.locale = this.data.locale ? this.data.locale : 'en';
           this.survey.showCompletedPage = false;
@@ -83,15 +83,6 @@ export class SafeFormModalComponent implements OnInit {
           this.survey.onDownloadFile.add((survey, options) => {
             console.log('files');
           });
-=======
-          addCustomFunctions(Survey, record);
-          const survey = new Survey.Model(this.form?.structure);
-          survey.data = this.isMultiEdition ? null : record.data;
-          survey.locale = this.data.locale ? this.data.locale : 'en';
-          survey.showCompletedPage = false;
-          survey.render(this.containerId);
-          survey.onComplete.add(this.completeMySurvey);
->>>>>>> dev:projects/safe/src/lib/components/form-modal/form-modal.component.ts
         });
       } else {
         this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -102,18 +93,10 @@ export class SafeFormModalComponent implements OnInit {
         }).valueChanges.subscribe(res => {
           this.loading = res.loading;
           this.form = res.data.form;
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form-modal/form-modal.component.ts
           this.survey = new Survey.Model(this.form.structure);
           this.survey.locale = this.data.locale ? this.data.locale : 'en';
           this.survey.render(this.containerId);
           this.survey.onComplete.add(this.completeMySurvey);
-=======
-
-          const survey = new Survey.Model(this.form.structure);
-          survey.locale = this.data.locale ? this.data.locale : 'en';
-          survey.render(this.containerId);
-          survey.onComplete.add(this.completeMySurvey);
->>>>>>> dev:projects/safe/src/lib/components/form-modal/form-modal.component.ts
         });
       }
   }

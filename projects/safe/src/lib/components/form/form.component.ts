@@ -1,10 +1,5 @@
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form/form.component.ts
 import { Apollo } from 'apollo-angular';
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-=======
-import {Apollo} from 'apollo-angular';
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
->>>>>>> dev:projects/safe/src/lib/components/form/form.component.ts
 import { MatDialog } from '@angular/material/dialog';
 
 import * as Survey from 'survey-angular';
@@ -15,14 +10,10 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form/form.component.ts
-import { WhoWorkflowService } from '../../services/workflow.service';
-import { WhoDownloadService } from '../../services/download.service';
-=======
 import { SafeWorkflowService } from '../../services/workflow.service';
+import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
->>>>>>> dev:projects/safe/src/lib/components/form/form.component.ts
 
 @Component({
   selector: 'safe-form',
@@ -44,12 +35,8 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   public usedLocales: Array<{ text: string, value: string }> = [];
   public dropdownLocales: any[] = [];
   public surveyActive = true;
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form/form.component.ts
-  public selectedTabIndex: number;
-  private temporaryFilesStorage = {};
-=======
   public selectedTabIndex = 0;
->>>>>>> dev:projects/safe/src/lib/components/form/form.component.ts
+  private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -66,14 +53,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private router: Router,
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form/form.component.ts
-    private workflowService: WhoWorkflowService,
-    private downloadService: WhoDownloadService
-  ) { }
-=======
-    private workflowService: SafeWorkflowService
+    private workflowService: SafeWorkflowService,
+    private downloadService: SafeDownloadService
   ) {}
->>>>>>> dev:projects/safe/src/lib/components/form/form.component.ts
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -101,10 +83,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         this.temporaryFilesStorage[options.name] = options.files;
       }
       const question = survey.getQuestionByName(options.name);
-      let content = [];
+      let content: any[] = [];
       options
         .files
-        .forEach((file) => {
+        .forEach((file: any) => {
           const fileReader = new FileReader();
           fileReader.onload = (e) => {
             content = content.concat([
@@ -138,7 +120,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
         const reader = new FileReader();
         reader.onload = (e) => {
-          options.callback('success', e.target.result);
+          options.callback('success', e.target?.result);
         };
         reader.readAsDataURL(file);
       };
@@ -189,13 +171,8 @@ export class SafeFormComponent implements OnInit, OnDestroy {
 
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
-<<<<<<< HEAD:projects/who-ems/src/lib/components/form/form.component.ts
-        const nativeName = LANGUAGES[lang].nativeName.split(',')[0];
-        this.usedLocales.push({ value: lang, text: nativeName });
-=======
         const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
         this.usedLocales.push({value: lang, text: nativeName});
->>>>>>> dev:projects/safe/src/lib/components/form/form.component.ts
         this.dropdownLocales.push(nativeName);
       });
     }
@@ -258,7 +235,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         if (res.errors) {
           this.snackBar.openSnackBar('Upload failed.', { error: true });
         } else {
-          data[name][index].content = res.data.uploadFile;
+          data[name][index].content = res.data?.uploadFile;
         }
       }
     }

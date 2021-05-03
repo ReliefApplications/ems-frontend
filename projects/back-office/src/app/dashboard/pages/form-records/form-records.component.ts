@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
-import { WhoDownloadService } from '@who-ems/builder';
+import { SafeDownloadService } from '@safe/builder';
 
 @Component({
   selector: 'app-form-records',
