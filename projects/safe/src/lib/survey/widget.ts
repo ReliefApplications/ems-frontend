@@ -24,7 +24,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 name: 'tooltip:text',
                 category: 'general'
             });
-            Survey.Serializer.addProperty('question', {
+            Survey.Serializer.addProperty('comment', {
                 name: 'allowEdition:boolean',
                 type: 'boolean',
                 default: false,
@@ -67,25 +67,23 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 el.value = question.value;
             }
             // Display of edit button for comment question
-            if (question.getType() === 'comment') {
-                if (question.allowEdition) {
-                    question.survey.mode = 'display';
-                    const mainDiv = document.createElement('div');
-                    mainDiv.id = 'editComment';
-                    const btnEl = document.createElement('button');
-                    btnEl.innerText = 'Edit';
-                    btnEl.style.width = '50px';
-                    mainDiv.appendChild(btnEl);
-                    el.parentElement.insertBefore(mainDiv, el);
-                    mainDiv.style.display = !question.allowEdition ? 'none' : '';
-                    question.registerFunctionOnPropertyValueChanged('allowEdition',
-                        () => {
-                            mainDiv.style.display = !question.allowEdition  ? 'none' : '';
-                        });
-                    btnEl.onclick = () => {
-                        question.survey.mode = 'edit';
-                    };
-                }
+            if (question.getType() === 'comment' && question.allowEdition) {
+                question.survey.mode = 'display';
+                const mainDiv = document.createElement('div');
+                mainDiv.id = 'editComment';
+                const btnEl = document.createElement('button');
+                btnEl.innerText = 'Edit';
+                btnEl.style.width = '50px';
+                mainDiv.appendChild(btnEl);
+                el.parentElement.insertBefore(mainDiv, el);
+                mainDiv.style.display = !question.allowEdition ? 'none' : '';
+                question.registerFunctionOnPropertyValueChanged('allowEdition',
+                    () => {
+                        mainDiv.style.display = !question.allowEdition  ? 'none' : '';
+                    });
+                btnEl.onclick = () => {
+                    question.survey.mode = 'edit';
+                };
             }
             // Display of tooltip
             if (question.tooltip) {
