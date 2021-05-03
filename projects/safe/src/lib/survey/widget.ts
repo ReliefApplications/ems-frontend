@@ -24,6 +24,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 name: 'tooltip:text',
                 category: 'general'
             });
+            Survey.Serializer.addProperty('question', {
+                name: 'allowEdition:boolean',
+                type: 'boolean',
+                default: false,
+                category: 'general'
+            });
             Survey.Serializer.removeProperty('expression', 'readOnly');
             Survey.Serializer.addProperty('expression', {
                 name: 'readOnly:boolean',
@@ -59,6 +65,27 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                         break;
                 }
                 el.value = question.value;
+            }
+            // Display of edit button for comment question
+            if (question.getType() === 'comment') {
+                if (question.allowEdition) {
+                    question.survey.mode = 'display';
+                    const mainDiv = document.createElement('div');
+                    mainDiv.id = 'editComment';
+                    const btnEl = document.createElement('button');
+                    btnEl.innerText = 'Edit';
+                    btnEl.style.width = '50px';
+                    mainDiv.appendChild(btnEl);
+                    el.parentElement.insertBefore(mainDiv, el);
+                    mainDiv.style.display = !question.allowEdition ? 'none' : '';
+                    question.registerFunctionOnPropertyValueChanged('allowEdition',
+                        () => {
+                            mainDiv.style.display = !question.allowEdition  ? 'none' : '';
+                        });
+                    btnEl.onclick = () => {
+                        question.survey.mode = 'edit';
+                    };
+                }
             }
             // Display of tooltip
             if (question.tooltip) {
