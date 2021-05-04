@@ -231,6 +231,8 @@ export function init(Survey: any, apollo: Apollo): void {
           const questionByName = obj.survey.getQuestionByName(obj.selectQuestion);
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
+          } else if (questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
+            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
           }
@@ -311,7 +313,10 @@ export function init(Survey: any, apollo: Apollo): void {
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
-          filters[0].type = question.survey.getQuestionByName(question.selectQuestion).inputType;
+          const type = !!question.survey.getQuestionByName(question.selectQuestion) ?
+            question.survey.getQuestionByName(question.selectQuestion).inputType :
+            question.customQuestion.name;
+          filters[0].type = type;
           if (question.selectQuestion) {
             question.registerFunctionOnPropertyValueChanged('filterCondition',
               () => {
@@ -344,8 +349,8 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string' || options.name === 'countries') {
-                  const valueType = options.name === 'countries' ? 'countries' :
+                if (typeof options.value === 'string' || (options.question.customQuestion && options.question.customQuestion.name === 'countries')) {
+                  const valueType = options.question.customQuestion ? options.question.customQuestion.name :
                     question.survey.getQuestionByName(question.selectQuestion).inputType;
                   const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
                   setAdvanceFilter(value, question, valueType);
@@ -364,8 +369,9 @@ export function init(Survey: any, apollo: Apollo): void {
                 question.survey.onValueChanged.add((survey: any, options: any) => {
                   if (options.name === quest) {
                     console.log(options.name, options.value);
-                    if (typeof options.value === 'string' || options.name === 'countries') {
-                      const valueType = options.name === 'countries' ? 'countries' : question.survey.getQuestionByName(quest).inputType;
+                    if (typeof options.value === 'string' || (options.question.customQuestion && options.question.customQuestion.name === 'countries')) {
+                      const valueType = options.question.customQuestion ? options.question.customQuestion.name
+                        : question.survey.getQuestionByName(quest).inputType;
                       const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
                       setAdvanceFilter(value, question, valueType);
                       this.populateChoices(question);
