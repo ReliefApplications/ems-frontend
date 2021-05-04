@@ -250,10 +250,11 @@ export function init(Survey: any, apollo: Apollo): void {
         dependsOn: ['resource', 'displayField', 'selectQuestion'],
         visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
-          const questionByName = obj.survey.getQuestionByName(obj.selectQuestion);
+          const questionByName = !!obj.survey.getQuestionByName(obj.selectQuestion) ?
+            obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
-          } else if (questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
+          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
             choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
@@ -377,7 +378,7 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string' || (options.question.customQuestion && options.question.customQuestion.name === 'countries')) {
+                if (typeof options.value === 'string' || options.question.customQuestion) {
                   const valueType = options.question.customQuestion ? options.question.customQuestion.name :
                     question.survey.getQuestionByName(question.selectQuestion).inputType;
                   const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
@@ -400,7 +401,7 @@ export function init(Survey: any, apollo: Apollo): void {
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
                   if (options.name === quest) {
-                    if (typeof options.value === 'string' || (options.question.customQuestion && options.question.customQuestion.name === 'countries')) {
+                    if (typeof options.value === 'string' || options.question.customQuestion) {
                       const valueType = options.question.customQuestion ? options.question.customQuestion.name
                         : question.survey.getQuestionByName(quest).inputType;
                       const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
