@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-
 import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
@@ -80,63 +79,12 @@ export class SafeFormModalComponent implements OnInit {
         this.loading = false;
         addCustomFunctions(Survey, record);
         this.survey = new Survey.Model(this.form?.structure);
+        this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
+        this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
+        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
         this.survey.data = this.isMultiEdition ? null : record.data;
         this.survey.locale = this.data.locale ? this.data.locale : 'en';
         this.survey.showCompletedPage = false;
-        this.survey.onClearFiles.add((survey, options) => {
-          options.callback('success');
-        });
-        this.survey.onUploadFiles.add((survey, options) => {
-          console.log('upload');
-          if (this.temporaryFilesStorage[options.name] !== undefined) {
-            this.temporaryFilesStorage[options.name].concat(options.files);
-          } else {
-            this.temporaryFilesStorage[options.name] = options.files;
-          }
-          const question = survey.getQuestionByName(options.name);
-          let content: any[] = [];
-          options
-            .files
-            .forEach((file: any) => {
-              const fileReader = new FileReader();
-              fileReader.onload = (e) => {
-                content = content.concat([
-                  {
-                    name: file.name,
-                    type: file.type,
-                    content: fileReader.result,
-                    file
-                  }
-                ]);
-                if (content.length === options.files.length) {
-                  options.callback('success', content.map((fileContent) => {
-                    return { file: fileContent.file, content: fileContent.content };
-                  }));
-                }
-              };
-              fileReader.readAsDataURL(file);
-            });
-        });
-        this.survey.onDownloadFile.add((survey, options) => {
-          console.log('download');
-          if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
-            options.callback('success', options.content);
-            return;
-          }
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-          xhr.onloadstart = (ev) => {
-            xhr.responseType = 'blob';
-          };
-          xhr.onload = () => {
-            const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              options.callback('success', e.target?.result);
-            };
-            reader.readAsDataURL(file);
-          };
-        });
         this.survey.render(this.containerId);
         this.survey.onComplete.add(this.completeMySurvey);
       });
@@ -150,61 +98,12 @@ export class SafeFormModalComponent implements OnInit {
         this.loading = res.loading;
         this.form = res.data.form;
         this.survey = new Survey.Model(this.form.structure);
+        this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
+        this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
+        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
         this.survey.locale = this.data.locale ? this.data.locale : 'en';
         this.survey.render(this.containerId);
         this.survey.onComplete.add(this.completeMySurvey);
-        this.survey.onClearFiles.add((survey, options) => {
-          options.callback('success');
-        });
-        this.survey.onUploadFiles.add((survey, options) => {
-          if (this.temporaryFilesStorage[options.name] !== undefined) {
-            this.temporaryFilesStorage[options.name].concat(options.files);
-          } else {
-            this.temporaryFilesStorage[options.name] = options.files;
-          }
-          const question = survey.getQuestionByName(options.name);
-          let content: any[] = [];
-          options
-            .files
-            .forEach((file: any) => {
-              const fileReader = new FileReader();
-              fileReader.onload = (e) => {
-                content = content.concat([
-                  {
-                    name: file.name,
-                    type: file.type,
-                    content: fileReader.result,
-                    file
-                  }
-                ]);
-                if (content.length === options.files.length) {
-                  options.callback('success', content.map((fileContent) => {
-                    return { file: fileContent.file, content: fileContent.content };
-                  }));
-                }
-              };
-              fileReader.readAsDataURL(file);
-            });
-        });
-        this.survey.onDownloadFile.add((survey, options) => {
-          if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
-            options.callback('success', options.content);
-            return;
-          }
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-          xhr.onloadstart = (ev) => {
-            xhr.responseType = 'blob';
-          };
-          xhr.onload = () => {
-            const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              options.callback('success', e.target?.result);
-            };
-            reader.readAsDataURL(file);
-          };
-        });
       });
     }
   }
@@ -279,5 +178,62 @@ export class SafeFormModalComponent implements OnInit {
         this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
       }
     });
+  }
+
+  private onClearFiles(survey: Survey.SurveyModel, options: any): void {
+    options.callback('success');
+  }
+
+  private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
+    if (this.temporaryFilesStorage[options.name] !== undefined) {
+      this.temporaryFilesStorage[options.name].concat(options.files);
+    } else {
+      this.temporaryFilesStorage[options.name] = options.files;
+    }
+    let content: any[] = [];
+    options
+      .files
+      .forEach((file: any) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          content = content.concat([
+            {
+              name: file.name,
+              type: file.type,
+              content: fileReader.result,
+              file
+            }
+          ]);
+          if (content.length === options.files.length) {
+            options.callback('success', content.map((fileContent) => {
+              return { file: fileContent.file, content: fileContent.content };
+            }));
+          }
+        };
+        fileReader.readAsDataURL(file);
+      });
+  }
+
+  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
+    if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+      options.callback('success', options.content);
+      return;
+    } else {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+      xhr.onloadstart = () => {
+        xhr.responseType = 'blob';
+      };
+      xhr.onload = () => {
+        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          options.callback('success', e.target?.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      xhr.send();
+    }
   }
 }

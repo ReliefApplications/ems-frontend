@@ -72,26 +72,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.loading = res.loading;
       addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
-      this.survey.onClearFiles.add((survey, options) => {
-        options.callback('success');
-      });
-      this.survey.onDownloadFile.add((survey, options) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
-        xhr.onloadstart = () => {
-          xhr.responseType = 'blob';
-        };
-        xhr.onload = () => {
-          const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            options.callback('success', e.target?.result);
-          };
-          reader.readAsDataURL(file);
-        };
-        xhr.send();
-      });
+      this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
       this.survey.mode = 'display';
@@ -101,6 +82,7 @@ export class SafeRecordModalComponent implements OnInit {
 
       if (this.data.compareTo) {
         this.surveyNext = new Survey.Model(this.form?.structure);
+        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
         this.surveyNext.data = this.data.compareTo.data;
         this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
         this.surveyNext.mode = 'display';
@@ -116,6 +98,26 @@ export class SafeRecordModalComponent implements OnInit {
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }
+  }
+
+  /* Download the file.
+  */
+  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+    xhr.onloadstart = () => {
+      xhr.responseType = 'blob';
+    };
+    xhr.onload = () => {
+      const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        options.callback('success', e.target?.result);
+      };
+      reader.readAsDataURL(file);
+    };
+    xhr.send();
   }
 
   /* Close the modal without sending any data.

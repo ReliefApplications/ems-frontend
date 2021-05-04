@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
 import * as Survey from 'survey-angular';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
@@ -78,61 +77,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
-    this.survey.onClearFiles.add((survey, options) => {
-      options.callback('success');
-    });
-    this.survey.onUploadFiles.add((survey, options) => {
-      if (this.temporaryFilesStorage[options.name] !== undefined) {
-        this.temporaryFilesStorage[options.name].concat(options.files);
-      } else {
-        this.temporaryFilesStorage[options.name] = options.files;
-      }
-      let content: any[] = [];
-      options
-        .files
-        .forEach((file: any) => {
-          const fileReader = new FileReader();
-          fileReader.onload = (e) => {
-            content = content.concat([
-              {
-                name: file.name,
-                type: file.type,
-                content: fileReader.result,
-                file
-              }
-            ]);
-            if (content.length === options.files.length) {
-              options.callback('success', content.map((fileContent) => {
-                return { file: fileContent.file, content: fileContent.content };
-              }));
-            }
-          };
-          fileReader.readAsDataURL(file);
-        });
-    });
-    this.survey.onDownloadFile.add((survey, options) => {
-      if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
-        options.callback('success', options.content);
-        return;
-      } else {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
-        xhr.onloadstart = () => {
-          xhr.responseType = 'blob';
-        };
-        xhr.onload = () => {
-          const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            options.callback('success', e.target?.result);
-          };
-          reader.readAsDataURL(file);
-        };
-        xhr.send();
-      }
-    });
-
+    this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
+    this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
+    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       this.form.fields?.forEach(field => {
@@ -313,6 +260,63 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
   }
 
+  private onClearFiles(survey: Survey.SurveyModel, options: any): void {
+    options.callback('success');
+  }
+
+  private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
+    if (this.temporaryFilesStorage[options.name] !== undefined) {
+      this.temporaryFilesStorage[options.name].concat(options.files);
+    } else {
+      this.temporaryFilesStorage[options.name] = options.files;
+    }
+    let content: any[] = [];
+    options
+      .files
+      .forEach((file: any) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          content = content.concat([
+            {
+              name: file.name,
+              type: file.type,
+              content: fileReader.result,
+              file
+            }
+          ]);
+          if (content.length === options.files.length) {
+            options.callback('success', content.map((fileContent) => {
+              return { file: fileContent.file, content: fileContent.content };
+            }));
+          }
+        };
+        fileReader.readAsDataURL(file);
+      });
+  }
+
+  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
+    if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
+      options.callback('success', options.content);
+      return;
+    } else {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+      xhr.onloadstart = () => {
+        xhr.responseType = 'blob';
+      };
+      xhr.onload = () => {
+        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          options.callback('success', e.target?.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      xhr.send();
+    }
+  }
+
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
     this.selectedTabIndex = i;
@@ -323,6 +327,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
 
   public onClear(): void {
     this.survey.clear();
+    this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
     this.survey.render();
