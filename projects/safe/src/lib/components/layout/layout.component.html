@@ -32,7 +32,10 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">Profile</button>
-    <button *ngIf="this.user.isAdmin" mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+    <ng-container *ngIf="this.user.isAdmin">
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+    </ng-container>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout()" class="warn">Logout</button>
   </mat-menu>

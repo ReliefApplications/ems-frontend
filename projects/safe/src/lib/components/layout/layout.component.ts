@@ -1,4 +1,4 @@
-import { Component, ComponentRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy,
+import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy,
   OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeAuthService } from '../../services/auth.service';
 import { LayoutService } from '../../services/layout.service';
@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'safe-layout',
@@ -53,8 +52,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public user: any;
   public otherOffice = '';
+  private environment: any;
 
   constructor(
+    @Inject('environment') environment: any,
     private router: Router,
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
@@ -63,6 +64,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
+    this.environment = environment;
   }
 
   ngOnInit(): void {
@@ -70,7 +72,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       if (user) {
         this.user = { ...user};
         if (this.router.url.includes('backoffice')) {
-          this.otherOffice = 'front offfice';
+          this.otherOffice = 'front office';
         } else {
           this.otherOffice = 'back office';
         }
@@ -207,9 +209,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onSwitchOffice(): void {
     if (this.router.url.includes('backoffice')) {
-      window.location.href = environment.frontOffice;
+      window.location.href = this.environment.frontOffice;
     } else {
-      window.location.href = environment.backOffice;
+      window.location.href = this.environment.backOffice;
     }
   }
 
