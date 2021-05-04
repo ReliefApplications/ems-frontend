@@ -850,8 +850,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Download the file.
   */
-  public onDownload(record: any, file: any): void {
-    const path = `download/record/${record.id}/file/${0}`;
+  public onDownload(file: any): void {
+    const path = `download/file/${file.content}`;
     this.downloadService.getFile(path, file.type, file.name);
   }
 

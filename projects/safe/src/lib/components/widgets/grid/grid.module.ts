@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SafeRecordModalModule } from '../../record-modal/record-modal.module';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.m
     DropDownsModule,
     SafeRecordModalModule,
     SafeChooseRecordModalModule,
-    SafeExpandedCommentModule
+    SafeExpandedCommentModule,
+    MatTooltipModule
   ],
   exports: [SafeGridComponent]
 })
