@@ -236,7 +236,8 @@ export class SafeApplicationService {
         variables: {
           id: role.id,
           permissions: value.permissions,
-          channels: value.channels
+          channels: value.channels,
+          title: value.title
         }
       }).subscribe(res => {
         if (res.data) {

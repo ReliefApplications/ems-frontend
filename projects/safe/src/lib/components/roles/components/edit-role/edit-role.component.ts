@@ -1,6 +1,6 @@
 import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Channel } from '../../../../models/channel.model';
@@ -52,7 +52,7 @@ export class SafeEditRoleComponent implements OnInit {
       this.channels = res.data.channels;
     });
     this.roleForm = this.formBuilder.group({
-      title: this.data.role.title,
+      title: [this.data.role.title, Validators.required],
       permissions: [this.data.role.permissions ? this.data.role.permissions.map(x => x.id) : null],
       channels: [this.data.role.channels ? this.data.role.channels.map(x => x.id) : null]
     });
