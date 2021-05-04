@@ -334,9 +334,11 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string') {
-                  const valueType = question.survey.getQuestionByName(question.selectQuestion).inputType;
-                  setAdvanceFilter(options.value, question, valueType);
+                if (typeof options.value === 'string' || options.name === 'countries') {
+                  const valueType = options.name === 'countries' ? 'countries' :
+                    question.survey.getQuestionByName(question.selectQuestion).inputType;
+                  const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
+                  setAdvanceFilter(value, question, valueType);
                   this.populateChoices(question);
                 }
               }
@@ -351,9 +353,11 @@ export function init(Survey: any, apollo: Apollo): void {
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
                   if (options.name === quest) {
-                    if (typeof options.value === 'string') {
-                      const valueType = question.survey.getQuestionByName(quest).inputType;
-                      setAdvanceFilter(options.value, question, valueType);
+                    console.log(options.name, options.value);
+                    if (typeof options.value === 'string' || options.name === 'countries') {
+                      const valueType = options.name === 'countries' ? 'countries' : question.survey.getQuestionByName(quest).inputType;
+                      const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
+                      setAdvanceFilter(value, question, valueType);
                       this.populateChoices(question);
                     }
                   }
@@ -422,6 +426,9 @@ export function init(Survey: any, apollo: Apollo): void {
       filters.map((x: any) => {
         if (x.field === field) {
           x.value = value;
+          if (!x.type) {
+            x.type = type;
+          }
         }
       });
     }
