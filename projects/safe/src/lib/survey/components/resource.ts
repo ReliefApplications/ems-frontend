@@ -25,7 +25,12 @@ export function init(Survey: any, apollo: Apollo): void {
     }
   });
 
-  let filters: { field: string, operator: string, value: string, type: string }[] = [{field: '', operator: '', value: '', type: 'text'}];
+  let filters: { field: string, operator: string, value: string, type: string }[] = [{
+    field: '',
+    operator: '',
+    value: '',
+    type: 'text'
+  }];
 
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
@@ -223,7 +228,12 @@ export function init(Survey: any, apollo: Apollo): void {
         dependsOn: ['resource', 'displayField', 'selectQuestion'],
         visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
-          choicesCallback(resourceConditions);
+          const questionByName = obj.survey.getQuestionByName(obj.selectQuestion);
+          if (questionByName && questionByName.inputType === 'date') {
+            choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
+          } else {
+            choicesCallback(resourceConditions);
+          }
         },
         visibleIndex: 3
       });

@@ -245,8 +245,12 @@ export function init(Survey: any, apollo: Apollo): void {
         dependsOn: ['resource', 'displayField', 'selectQuestion'],
         visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
-          choicesCallback(resourceConditions);
-        },
+          const questionByName = obj.survey.getQuestionByName(obj.selectQuestion);
+          if (questionByName && questionByName.inputType === 'date') {
+            choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
+          } else {
+            choicesCallback(resourceConditions);
+          }        },
         visibleIndex: 3
       });
       Survey.Serializer.addProperty('resources', {
