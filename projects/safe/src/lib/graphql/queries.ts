@@ -236,7 +236,6 @@ export interface GetRecordByIdQueryResponse {
 }
 
 // === GET RECORD DETAILS ===
-
 export const GET_RECORD_DETAILS = gql`
 query GetRecordDetails($id: ID!) {
   record(id: $id) {

@@ -37,8 +37,3 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="['./update', row.id]"></tr>
     </table>
 </ng-container>
-<mat-sidenav-container>
-    <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
-        <ng-template #rightSidenav></ng-template>
-    </mat-sidenav>
-</mat-sidenav-container>

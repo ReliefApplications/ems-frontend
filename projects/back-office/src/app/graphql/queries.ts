@@ -612,3 +612,35 @@ export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
   positionAttributes: PositionAttribute[];
 }
+
+// === GET RECORD DETAILS ===
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}

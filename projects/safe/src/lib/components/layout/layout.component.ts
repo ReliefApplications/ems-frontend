@@ -1,7 +1,7 @@
 import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy,
   OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeAuthService } from '../../services/auth.service';
-import { LayoutService } from '../../services/layout.service';
+import { SafeLayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
@@ -59,7 +59,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
-    private layoutService: LayoutService,
+    private layoutService: SafeLayoutService,
     public dialog: MatDialog,
   ) {
     this.largeDevice = (window.innerWidth > 1024);

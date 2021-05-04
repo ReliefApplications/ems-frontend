@@ -20,7 +20,7 @@ import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.com
 import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { LayoutService } from '../../../services/layout.service';
+import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter, Inject
@@ -153,7 +153,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
@@ -600,14 +600,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Opens the history of the record on the right side of the screen.
   */
   public onViewHistory(id: string): void {
-    console.log("id = ", id);
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
         id
       }
     }).subscribe(res => {
-      console.log("res = ", res);
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {

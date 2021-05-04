@@ -1,15 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { SafeGridComponent } from 'projects/safe/src/public-api';
-
+import { SafeRecordHistoryModule } from '@safe/builder';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -20,9 +17,8 @@ import { SafeGridComponent } from 'projects/safe/src/public-api';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatSidenavModule
+    SafeRecordHistoryModule
   ],
-  exports: [FormRecordsComponent],
-  providers: [SafeGridComponent]
+  exports: [FormRecordsComponent]
 })
 export class FormRecordsModule { }
