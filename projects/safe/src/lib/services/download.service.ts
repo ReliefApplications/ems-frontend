@@ -1,14 +1,22 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SafeDownloadService {
 
-  constructor(private http: HttpClient) { }
+  public baseUrl: string;
 
-  getFile(url: string, type: string, fileName: string, options?: any): void {
+  constructor(
+    @Inject('environment') environment: any,
+    private http: HttpClient
+  ) {
+    this.baseUrl = environment.API_URL;
+  }
+
+  getFile(path: string, type: string, fileName: string, options?: any): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -20,7 +28,7 @@ export class SafeDownloadService {
     });
   }
 
-  saveFile(fileName: string, blob: Blob): void {
+  private saveFile(fileName: string, blob: Blob): void {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;

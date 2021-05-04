@@ -55,7 +55,8 @@
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
                     <!-- DISPLAY ( text / comment ) -->
-                    <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text'">
+                    <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
+                        *ngIf="field.meta.type === 'text'">
                         <div class="textbox-container">
                             <div #refSpan class="textbox">
                                 {{dataItem[field.name]}}
@@ -132,10 +133,19 @@
                         </kendo-multiselect>
                     </ng-template>
                 </kendo-grid-column>
+                <!-- FILE -->
+                <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
+                    [columnMenu]="false" [editable]="false" [width]="field.title.length * 7 + 50"
+                    [minResizableWidth]="50">
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        <button kendoButton icon="file-data" *ngFor="let file of dataItem[field.name]" [look]="'flat'"
+                            [matTooltip]="file.name" (click)="onDownload(file)"></button>
+                    </ng-template>
+                </kendo-grid-column>
                 <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
                 <kendo-grid-column-group [title]="field.title"
-                    *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type)">
-                    <ng-container *ngIf="field.meta.type !== 'multipletext' && field.meta.type !== 'matrixdynamic'">
+                    *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type) && field.meta.type !== 'file'">
+                    <ng-container *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)">
                         <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
                         <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50"
                             [minResizableWidth]="50" [editable]="!field.disabled">
