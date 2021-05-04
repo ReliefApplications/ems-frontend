@@ -72,6 +72,40 @@ export class SafeRecordModalComponent implements OnInit {
       this.loading = res.loading;
       addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
+      this.survey.onClearFiles.add((survey, options) => {
+        options.callback('success');
+      });
+      this.survey.onUploadFiles.add((survey, options) => {
+        console.log('upload');
+        if (this.temporaryFilesStorage[options.name] !== undefined) {
+          this.temporaryFilesStorage[options.name].concat(options.files);
+        } else {
+          this.temporaryFilesStorage[options.name] = options.files;
+        }
+        const question = survey.getQuestionByName(options.name);
+        let content: any[] = [];
+        options
+          .files
+          .forEach((file: any) => {
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+              content = content.concat([
+                {
+                  name: file.name,
+                  type: file.type,
+                  content: fileReader.result,
+                  file
+                }
+              ]);
+              if (content.length === options.files.length) {
+                options.callback('success', content.map((fileContent) => {
+                  return { file: fileContent.file, content: fileContent.content };
+                }));
+              }
+            };
+            fileReader.readAsDataURL(file);
+          });
+      });
       this.survey.onDownloadFile.add((survey, options) => {
         if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
           options.callback('success', options.content);

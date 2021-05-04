@@ -80,16 +80,14 @@ export class SafeFormModalComponent implements OnInit {
         this.loading = false;
         addCustomFunctions(Survey, record);
         this.survey = new Survey.Model(this.form?.structure);
-
         this.survey.data = this.isMultiEdition ? null : record.data;
         this.survey.locale = this.data.locale ? this.data.locale : 'en';
         this.survey.showCompletedPage = false;
-        this.survey.render(this.containerId);
-        this.survey.onComplete.add(this.completeMySurvey);
         this.survey.onClearFiles.add((survey, options) => {
           options.callback('success');
         });
         this.survey.onUploadFiles.add((survey, options) => {
+          console.log('upload');
           if (this.temporaryFilesStorage[options.name] !== undefined) {
             this.temporaryFilesStorage[options.name].concat(options.files);
           } else {
@@ -120,6 +118,7 @@ export class SafeFormModalComponent implements OnInit {
             });
         });
         this.survey.onDownloadFile.add((survey, options) => {
+          console.log('download');
           if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
             options.callback('success', options.content);
             return;
@@ -138,6 +137,8 @@ export class SafeFormModalComponent implements OnInit {
             reader.readAsDataURL(file);
           };
         });
+        this.survey.render(this.containerId);
+        this.survey.onComplete.add(this.completeMySurvey);
       });
     } else {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({

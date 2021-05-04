@@ -79,6 +79,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
     this.survey.onClearFiles.add((survey, options) => {
+      console.log(options);
       options.callback('success');
     });
     this.survey.onUploadFiles.add((survey, options) => {
@@ -112,23 +113,27 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         });
     });
     this.survey.onDownloadFile.add((survey, options) => {
+      console.log(options);
       if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
         options.callback('success', options.content);
         return;
-      }
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-      xhr.onloadstart = (ev) => {
-        xhr.responseType = 'blob';
-      };
-      xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
+      } else {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
+        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+        xhr.onloadstart = (ev) => {
+          xhr.responseType = 'blob';
         };
-        reader.readAsDataURL(file);
-      };
+        xhr.onload = () => {
+          const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        };
+        xhr.send();
+      }
     });
 
     // Unset readOnly fields if it's the record creation
