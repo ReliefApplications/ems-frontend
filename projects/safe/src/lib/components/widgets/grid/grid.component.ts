@@ -600,12 +600,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Opens the history of the record on the right side of the screen.
   */
   public onViewHistory(id: string): void {
+    console.log("id = ", id);
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
         id
       }
     }).subscribe(res => {
+      console.log("res = ", res);
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {
