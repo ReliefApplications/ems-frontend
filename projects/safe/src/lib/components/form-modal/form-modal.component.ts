@@ -9,7 +9,7 @@ import {
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
-import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD } from '../../graphql/mutations';
+import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
@@ -132,9 +132,10 @@ export class SafeFormModalComponent implements OnInit {
         confirmColor: 'primary'
       }
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe(async value => {
       if (value) {
         if (this.data.recordId) {
+          await this.uploadFiles(survey);
           if (this.isMultiEdition) {
             for (const id of this.data.recordId) {
               this.updateData(id, survey);
@@ -143,6 +144,7 @@ export class SafeFormModalComponent implements OnInit {
             this.updateData(this.data.recordId, survey);
           }
         } else {
+          await this.uploadFiles(survey);
           this.apollo.mutate<AddRecordMutationResponse>({
             mutation: ADD_RECORD,
             variables: {
@@ -178,6 +180,32 @@ export class SafeFormModalComponent implements OnInit {
         this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
       }
     });
+  }
+
+  private async uploadFiles(survey: any): Promise<void> {
+    const data = survey.data;
+    const questionsToUpload = Object.keys(this.temporaryFilesStorage);
+    for (const name of questionsToUpload) {
+      const files = this.temporaryFilesStorage[name];
+      for (const [index, file] of files.entries()) {
+        const res = await this.apollo.mutate<UploadFileMutationResponse>({
+          mutation: UPLOAD_FILE,
+          variables: {
+            file,
+            form: this.form?.id
+          },
+          context: {
+            useMultipart: true
+          }
+        }).toPromise();
+        if (res.errors) {
+          this.snackBar.openSnackBar('Upload failed.', { error: true });
+          return;
+        } else {
+          data[name][index].content = res.data?.uploadFile;
+        }
+      }
+    }
   }
 
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {
