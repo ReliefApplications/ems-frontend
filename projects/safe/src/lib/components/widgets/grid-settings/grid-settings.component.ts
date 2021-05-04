@@ -94,12 +94,11 @@ export class SafeGridSettingsComponent implements OnInit {
       }
     });
 
-    // Fetch related forms with a question referring to the current form displayed in the grid
-    // this.queryName = this.tileForm.get('query')?.value.name;
-
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
+        // Check if the query changed to clean modifications in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
@@ -110,24 +109,29 @@ export class SafeGridSettingsComponent implements OnInit {
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
-        this.queryBuilder.sourceQuery(this.queryName).subscribe((res1: { data: any }) => {
-          const source = res1.data[`_${this.queryName}Meta`]._source;
-          this.tileForm?.get('resource')?.setValue(source);
-          if (source) {
-            this.apollo.query<GetRelatedFormsQueryResponse>({
-              query: GET_RELATED_FORMS,
-              variables: {
-                resource: source
-              }
-            }).subscribe(res2 => {
-              if (res2.errors) {
-                this.relatedForms = [];
-              } else {
-                this.relatedForms = res2.data.resource.relatedForms || [];
-              }
-            });
-          }
-        });
+        const query = this.queryBuilder.sourceQuery(this.queryName);
+        if (query) {
+          query.subscribe((res1: { data: any }) => {
+            const source = res1.data[`_${this.queryName}Meta`]._source;
+            this.tileForm?.get('resource')?.setValue(source);
+            if (source) {
+              this.apollo.query<GetRelatedFormsQueryResponse>({
+                query: GET_RELATED_FORMS,
+                variables: {
+                  resource: source
+                }
+              }).subscribe(res2 => {
+                if (res2.errors) {
+                  this.relatedForms = [];
+                } else {
+                  this.relatedForms = res2.data.resource.relatedForms || [];
+                }
+              });
+            }
+          });
+        } else {
+          this.relatedForms = [];
+        }
       } else {
         this.fields = [];
       }

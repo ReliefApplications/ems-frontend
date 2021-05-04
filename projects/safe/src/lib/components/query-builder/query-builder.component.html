@@ -3,14 +3,17 @@
         <button mat-icon-button (click)="onCloseField()" *ngIf="isField">
             <mat-icon>arrow_back</mat-icon>
         </button>
+
         <mat-form-field appearance="outline" *ngIf="!isField">
             <mat-label>Select a data set</mat-label>
-            <mat-select formControlName="name">
-                <mat-option *ngFor="let type of availableQueries | async" [value]="type.name">
-                    {{type.name}}
+            <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredQueries" [value]="option">
+                    {{option}}
                 </mat-option>
-            </mat-select>
+            </mat-autocomplete>
         </mat-form-field>
+
         <mat-form-field appearance="outline" *ngIf="isField">
             <mat-label>Field name</mat-label>
             <input matInput formControlName="name" type="text"/>

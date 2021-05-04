@@ -31,7 +31,13 @@
       notifications</mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="logout()">Logout</button>
+    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
+    <ng-container *ngIf="this.user.isAdmin">
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+    </ng-container>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()" class="warn">Logout</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
