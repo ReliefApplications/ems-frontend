@@ -1,13 +1,12 @@
 import {Apollo} from 'apollo-angular';
-import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { GetFormByIdQueryResponse, GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
-import { SafeDownloadService, SafeRecordHistoryComponent } from '@safe/builder';
+import { SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService } from '@safe/builder';
 import { environment } from '../../../../environments/environment';
-import { SafeLayoutService } from '@safe/builder';
 
 @Component({
   selector: 'app-form-records',
