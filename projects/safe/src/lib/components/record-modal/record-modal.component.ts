@@ -75,45 +75,11 @@ export class SafeRecordModalComponent implements OnInit {
       this.survey.onClearFiles.add((survey, options) => {
         options.callback('success');
       });
-      this.survey.onUploadFiles.add((survey, options) => {
-        console.log('upload');
-        if (this.temporaryFilesStorage[options.name] !== undefined) {
-          this.temporaryFilesStorage[options.name].concat(options.files);
-        } else {
-          this.temporaryFilesStorage[options.name] = options.files;
-        }
-        const question = survey.getQuestionByName(options.name);
-        let content: any[] = [];
-        options
-          .files
-          .forEach((file: any) => {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-              content = content.concat([
-                {
-                  name: file.name,
-                  type: file.type,
-                  content: fileReader.result,
-                  file
-                }
-              ]);
-              if (content.length === options.files.length) {
-                options.callback('success', content.map((fileContent) => {
-                  return { file: fileContent.file, content: fileContent.content };
-                }));
-              }
-            };
-            fileReader.readAsDataURL(file);
-          });
-      });
       this.survey.onDownloadFile.add((survey, options) => {
-        if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
-          options.callback('success', options.content);
-          return;
-        }
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-        xhr.onloadstart = (ev) => {
+        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+        xhr.onloadstart = () => {
           xhr.responseType = 'blob';
         };
         xhr.onload = () => {
@@ -124,6 +90,7 @@ export class SafeRecordModalComponent implements OnInit {
           };
           reader.readAsDataURL(file);
         };
+        xhr.send();
       });
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';

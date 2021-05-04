@@ -79,7 +79,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
     this.survey.onClearFiles.add((survey, options) => {
-      console.log(options);
       options.callback('success');
     });
     this.survey.onUploadFiles.add((survey, options) => {
@@ -88,7 +87,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       } else {
         this.temporaryFilesStorage[options.name] = options.files;
       }
-      const question = survey.getQuestionByName(options.name);
       let content: any[] = [];
       options
         .files
@@ -113,7 +111,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         });
     });
     this.survey.onDownloadFile.add((survey, options) => {
-      console.log(options);
       if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
         options.callback('success', options.content);
         return;
@@ -121,7 +118,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
         xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
-        xhr.onloadstart = (ev) => {
+        xhr.onloadstart = () => {
           xhr.responseType = 'blob';
         };
         xhr.onload = () => {
