@@ -118,6 +118,7 @@ query GetShortFormById($id: ID!) {
     name
     structure
     fields
+    status
     canCreateRecords
     uniqueRecord {
       id
@@ -135,6 +136,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     createdAt
     structure
     fields
+    status
     versions {
       id
       createdAt
