@@ -23,6 +23,7 @@ import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { schemaStatus } from "./utils/schemaStatus";
 
 
 
@@ -178,6 +179,7 @@ export class AppModule {
   ) {
     REFRESH.asObservable().subscribe((res) => {
       console.log('Schema generated without cache reloading.');
+      schemaStatus.next(true);
       // if (res) {
       //   this.apollo.client.cache.reset().then(() => {
       //     console.log('Schema generated.');
