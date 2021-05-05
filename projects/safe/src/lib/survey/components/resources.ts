@@ -12,12 +12,13 @@ export const resourcesFilterValues =
   new BehaviorSubject<{ field: string, operator: string, value: string }[]>([{field: '', operator: '', value: ''}]);
 
 export const resourceConditions = [
-  {value: 'eq', text: 'equals'},
+  {value: '=', text: 'equals'},
+  {value: '!=', text: 'not equals'},
   {value: 'contains', text: 'contains'},
-  {value: 'gt', text: 'greater'},
-  {value: 'lt', text: 'less'},
-  {value: 'gte', text: 'greater or equals'},
-  {value: 'lte', text: 'less or equals'}
+  {value: '>', text: 'greater'},
+  {value: '<', text: 'less'},
+  {value: '>=', text: 'greater or equals'},
+  {value: '<=', text: 'less or equals'}
 ];
 
 export function init(Survey: any, apollo: Apollo): void {
@@ -42,11 +43,10 @@ export function init(Survey: any, apollo: Apollo): void {
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
-  let filters: { field: string, operator: string, value: string, type: string }[] = [{
+  let filters: { field: string, operator: string, value: string }[] = [{
     field: '',
     operator: '',
-    value: '',
-    type: 'text'
+    value: ''
   }];
 
   const component = {
@@ -298,7 +298,7 @@ export function init(Survey: any, apollo: Apollo): void {
           const text = document.createElement('div');
           text.innerHTML = 'You can use curly brackets to get access to the question values.' +
             '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, eq, gt, gte, lt, lte' +
+            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
             '<br><b>value:</b> {question1} or static value' +
             '<br><b>Example:</b>' +
             '<br>[{' +
@@ -337,10 +337,6 @@ export function init(Survey: any, apollo: Apollo): void {
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
-          const type = !!question.survey.getQuestionByName(question.selectQuestion) ?
-            question.survey.getQuestionByName(question.selectQuestion).inputType :
-            question.customQuestion.name;
-          filters[0].type = type;
           if (question.displayAsGrid) {
             resourcesFilterValues.next(filters);
           }
@@ -373,7 +369,7 @@ export function init(Survey: any, apollo: Apollo): void {
         });
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
-            setAdvanceFilter(question.staticValue, question, 'text');
+            setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
@@ -382,7 +378,7 @@ export function init(Survey: any, apollo: Apollo): void {
                   const valueType = options.question.customQuestion ? options.question.customQuestion.name :
                     question.survey.getQuestionByName(question.selectQuestion).inputType;
                   const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
-                  setAdvanceFilter(value, question, valueType);
+                  setAdvanceFilter(value, question);
                   if (question.displayAsGrid) {
                     resourcesFilterValues.next(filters);
                   } else {
@@ -396,16 +392,14 @@ export function init(Survey: any, apollo: Apollo): void {
           const obj = JSON.parse(question.customFilter);
           if (obj) {
             for (const objElement of obj) {
-              if (objElement.value.match(/^{*.*}$/)) {
-                const quest = objElement.value.substr(1, objElement.value.length - 2);
+              const value = objElement.value;
+              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
+                const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
                   if (options.name === quest) {
                     if (typeof options.value === 'string' || options.question.customQuestion) {
-                      const valueType = options.question.customQuestion ? options.question.customQuestion.name
-                        : question.survey.getQuestionByName(quest).inputType;
-                      const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
-                      setAdvanceFilter(value, objElement.field, valueType);
+                      setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
@@ -483,17 +477,14 @@ export function init(Survey: any, apollo: Apollo): void {
   };
   Survey.ComponentCollection.Instance.add(component);
 
-  const setAdvanceFilter = (value: string, question: string | any, type: string) => {
+  const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
     if (!filters.some((x: any) => x.field === field)) {
-      filters.push({field: question.filterBy, operator: question.filterCondition, value, type});
+      filters.push({field: question.filterBy, operator: question.filterCondition, value});
     } else {
       filters.map((x: any) => {
         if (x.field === field) {
           x.value = value;
-          if (!x.type) {
-            x.type = type;
-          }
         }
       });
     }
