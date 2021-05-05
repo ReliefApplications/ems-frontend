@@ -848,6 +848,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return promises;
   }
 
+  /* Download the file.
+  */
+  public onDownload(file: any): void {
+    const path = `download/file/${file.content}`;
+    this.downloadService.getFile(path, file.type, file.name);
+  }
+
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {

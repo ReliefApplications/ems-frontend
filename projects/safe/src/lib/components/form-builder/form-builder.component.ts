@@ -20,7 +20,7 @@ const QUESTION_TYPES = [
   'html',
   // 'signaturepad',
   'expression',
-  // 'file',
+  'file',
   'matrix',
   'matrixdropdown',
   'matrixdynamic',

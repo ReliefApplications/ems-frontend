@@ -6,6 +6,7 @@ export const environment = {
     authority: 'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590',
     redirectUrl: 'https://ems-safe-test.who.int/backoffice',
     postLogoutRedirectUri: 'https://ems-safe-test.who.int/backoffice/auth',
-    frontOffice: 'https://ems-safe-test.who.int/',
-    backOffice: 'https://ems-safe-test.whot.int/backoffice/',
+    frontOfficeUri: 'https://ems-safe-test.who.int/',
+    backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
+    module: 'backoffice'
 };

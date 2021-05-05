@@ -8,7 +8,6 @@ import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mu
 import { extractColumns } from '../../../utils/extractColumns';
 import { SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
   NOTIFICATIONS, SafeSnackBarService } from '@safe/builder';
-import { environment } from '../../../../environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -140,8 +139,8 @@ export class FormRecordsComponent implements OnInit {
   }
 
   onDownload(): void {
-    const url = `${environment.API_URL}/download/form/records/${this.id}`;
+    const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
+    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
   }
 }
