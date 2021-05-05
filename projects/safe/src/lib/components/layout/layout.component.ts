@@ -71,7 +71,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.authService.user.subscribe((user) => {
       if (user) {
         this.user = { ...user};
-        if (this.router.url.includes('backoffice')) {
+        if (this.environment.module === 'backoffice') {
           this.otherOffice = 'front office';
         } else {
           this.otherOffice = 'back office';
@@ -208,10 +208,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSwitchOffice(): void {
-    if (this.router.url.includes('backoffice')) {
-      window.location.href = this.environment.frontOffice;
+    if (this.environment.module === 'backoffice') {
+      window.location.href = this.environment.frontOfficeUri;
     } else {
-      window.location.href = this.environment.backOffice;
+      window.location.href = this.environment.backOfficeUri;
     }
   }
 
