@@ -2,11 +2,12 @@ import {Apollo} from 'apollo-angular';
 import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { GetFormByIdQueryResponse, GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS } from '../../../graphql/queries';
+import { EditRecordMutationResponse, EDIT_RECORD, GetFormByIdQueryResponse, GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
-import { SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService } from '@safe/builder';
+import { SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent, NOTIFICATIONS, SafeSnackBarService } from '@safe/builder';
 import { environment } from '../../../../environments/environment';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-form-records',
@@ -32,6 +33,8 @@ export class FormRecordsComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private resolver: ComponentFactoryResolver,
     private layoutService: SafeLayoutService,
+    public dialog: MatDialog,
+    private snackBar: SafeSnackBarService,
   ) { }
 
   /*  Load the records, using the form id passed as a parameter.
@@ -85,6 +88,34 @@ export class FormRecordsComponent implements OnInit {
     });
   }
 
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+        });
+
+      }
+    });
+  }
+
    /* Opens the history of the record on the right side of the screen.
   */
    public onViewHistory(id: string): void {
@@ -99,7 +130,7 @@ export class FormRecordsComponent implements OnInit {
         inputs: {
           record: res.data.record,
           revert: (item: any, dialog: any) => {
-            console.log('action !');
+            this.confirmRevertDialog(res.data.record, item);
           }
         },
       });

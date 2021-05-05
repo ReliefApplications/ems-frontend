@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeRecordHistoryModule } from '@safe/builder';
+import { MatDialog } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [FormRecordsComponent],

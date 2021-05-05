@@ -644,3 +644,19 @@ export interface GetRecordDetailsQueryResponse {
   loading: boolean;
   record: Record;
 }
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
+}
