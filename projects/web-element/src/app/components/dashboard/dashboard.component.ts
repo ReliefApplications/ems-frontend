@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.id);
     this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
       query: GET_DASHBOARD_BY_ID,
       variables: {

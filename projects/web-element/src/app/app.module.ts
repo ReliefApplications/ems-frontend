@@ -25,6 +25,8 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 localStorage.setItem('loaded', 'false');
 
@@ -116,7 +118,9 @@ export function provideApollo(httpLink: HttpLink): any {
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {
