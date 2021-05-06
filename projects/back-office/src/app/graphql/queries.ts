@@ -125,6 +125,7 @@ query GetShortFormById($id: ID!) {
       modifiedAt
       data
     }
+    canUpdate
   }
 }`;
 
