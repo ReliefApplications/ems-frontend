@@ -1,7 +1,7 @@
 import { ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeWidgetGridModule } from '@safe/builder';
+import { SafeFormService, SafeWidgetGridModule } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -141,7 +141,8 @@ export function provideApollo(httpLink: HttpLink): any {
 })
 export class AppModule {
   constructor(
-    private injector: Injector
+    private injector: Injector,
+    private formService: SafeFormService
   ) { }
 
   ngDoBootstrap(): void {
