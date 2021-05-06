@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UsersRoutingModule } from './users-routing.module';
 import { UsersComponent } from './users.component';
-import { WhoUsersModule } from '@who-ems/builder';
+import { SafeUsersModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
@@ -13,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     UsersRoutingModule,
     MatProgressSpinnerModule,
-    WhoUsersModule
+    SafeUsersModule
   ],
   exports: [UsersComponent]
 })

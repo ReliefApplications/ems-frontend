@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { WhoAccessModule, WhoRecordHistoryModule, WhoWidgetGridModule } from '@who-ems/builder';
+import { SafeAccessModule, SafeRecordHistoryModule, SafeWidgetGridModule } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
-import { FloatingMenuComponent } from './components/floating-menu/floating-menu.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,14 +20,13 @@ import { MatInputModule } from '@angular/material/input';
 @NgModule({
   declarations: [
     DashboardComponent,
-    ShareUrlComponent,
-    FloatingMenuComponent
+    ShareUrlComponent
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    WhoAccessModule,
-    WhoWidgetGridModule,
+    SafeAccessModule,
+    SafeWidgetGridModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -41,7 +39,7 @@ import { MatInputModule } from '@angular/material/input';
     MatTooltipModule,
     MatMenuModule,
     ClipboardModule,
-    WhoRecordHistoryModule
+    SafeRecordHistoryModule
   ],
   exports: [DashboardComponent]
 })

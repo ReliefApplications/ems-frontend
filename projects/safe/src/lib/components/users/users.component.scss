@@ -1,0 +1,31 @@
+.actions {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.searchbar {
+  float: left;
+
+  .filters-toggle {
+    margin-left: 12px;
+  }
+}
+
+.filters {
+  margin-left: -12px;
+  padding-top: 30px;
+
+  .mat-form-field {
+    margin-left: 12px;
+  }
+}
+
+.mat-checkbox {
+  margin-right: 12px;
+}
+
+.move-right {
+  float: right;
+}

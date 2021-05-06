@@ -1,5 +1,8 @@
-import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { gql } from 'apollo-angular';
+import {
+  Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttribute
+} from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -77,18 +80,25 @@ export interface GetDashboardsQueryResponse {
 }
 
 // === GET FORMS ===
-export const GET_FORMS = gql`
-{
+export const GET_FORM_NAMES = gql`
+query GetFormNames {
+  forms {
+    id
+    name
+  }
+}`;
+
+export const GET_SHORT_FORMS = gql`
+query GetShortForms {
   forms {
     id
     name
     createdAt
     status
-    versions {
-      id
-    }
+    versionsCount
     recordsCount
     core
+    canSee
     canCreate
     canUpdate
     canDelete
@@ -98,6 +108,57 @@ export const GET_FORMS = gql`
 export interface GetFormsQueryResponse {
   loading: boolean;
   forms: Form[];
+}
+
+// === GET FORM BY ID ===
+export const GET_SHORT_FORM_BY_ID = gql`
+query GetShortFormById($id: ID!) {
+  form(id: $id) {
+    id
+    name
+    structure
+    fields
+    status
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
+    canUpdate
+  }
+}`;
+
+export const GET_FORM_BY_ID = gql`
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    fields
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    records(filters: $filters) {
+      id
+      data(display: $display)
+      versions {
+        id
+        createdAt
+        data
+      }
+    }
+  }
+}`;
+
+export interface GetFormByIdQueryResponse {
+  loading: boolean;
+  form: Form;
+  errors: any;
 }
 
 // === GET RESOURCE BY ID ===
@@ -179,68 +240,15 @@ export interface GetResourcesQueryResponse {
   resources: Resource[];
 }
 
-// === GET FORM BY ID ===
-
-export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
-  form(id: $id) {
-    id
-    name
-    createdAt
-    structure
-    status
-    fields
-    versions {
-      id
-      createdAt
-      data
-    }
-    records(filters: $filters) {
-      id
-      data(display: $display)
-      versions {
-        id
-        createdAt
-        data
-      }
-    }
-    resource{
-      id
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canCreate
-    canUpdate
-  }
-}`;
-
-export interface GetFormByIdQueryResponse {
-  loading: boolean;
-  form: Form;
-}
-
 // === GET RECORD BY ID ===
 export const GET_RECORD_BY_ID = gql`
 query GetRecordById($id: ID!) {
   record(id: $id) {
     id
+    createdAt
+    modifiedAt
     data
+    modifiedAt
     form {
       id
       structure
@@ -319,14 +327,6 @@ export const GET_APPLICATIONS = gql`
     createdAt
     modifiedAt
     status
-    pages {
-      id
-      name
-      createdAt
-      type
-      content
-    }
-    settings
     permissions {
       canSee {
         id
@@ -594,7 +594,72 @@ query GetRoutingKeys {
   }
 }`;
 
-export interface GetRoutingKeysQueryResponse{
+export interface GetRoutingKeysQueryResponse {
   loading: boolean;
   applications: Application[];
+}
+
+// === GET POSITION ATTRIBUTES FORM CATEGORY ===
+export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
+query GetPositionAttributesFromCategory($id: ID!) {
+  positionAttributes(category: $id) {
+    value
+    category {
+      title
+    }
+    usersCount
+  }
+}`;
+
+export interface GetPositionAttributesFromCategoryQueryResponse {
+  loading: boolean;
+  positionAttributes: PositionAttribute[];
+}
+
+// === GET RECORD DETAILS ===
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
 }

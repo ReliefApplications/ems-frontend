@@ -1,4 +1,4 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-  <who-users [users]="users" [roles]="roles" [applicationService]="applicationService"></who-users>
+  <safe-users [users]="users" [roles]="roles" [positionAttributeCategories]="positionAttributeCategories" [applicationService]="applicationService"></safe-users>
 </ng-container>

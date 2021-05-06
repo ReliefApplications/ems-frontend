@@ -1,3 +1,11 @@
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end !important;
+    text-align: end;
+    margin-left: auto;
+}
+
 .table-column {
     padding: 0px 4px;
 }

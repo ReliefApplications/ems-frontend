@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
-import { WhoAccessModule } from '@who-ems/builder';
+import { SafeAccessModule } from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -26,7 +26,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule,
     WorkflowRoutingModule,
-    WhoAccessModule,
+    SafeAccessModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,

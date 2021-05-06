@@ -2,10 +2,10 @@
 <ng-container *ngIf="!loading && form">
     <div class="tab-name-container">
         <ng-container *ngIf="!formActive">
-            <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
-            <who-access [access]="page ? page.permissions : step ? step.permissions : null"
-                [application]="page ? page.application.id : step ? step.workflow.page.application.id : null"
-                (save)="saveAccess($event)" *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></who-access>
+            <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step ? step.name : ''}}</h1>
+            <safe-access [access]="page ? page.permissions : step ? step.permissions : null"
+                         [application]="applicationId" (save)="saveAccess($event)"
+                         *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></safe-access>
             <button mat-flat-button color="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
                 <mat-icon>edit</mat-icon>
                 Edit form
@@ -26,8 +26,8 @@
             </form>
         </ng-container>
     </div>
-    <who-form [form]="form" (save)="onComplete($event)"></who-form>
-</ng-container>
-<ng-container *ngIf="completed">
-    <button mat-flat-button (click)="clearForm()">New record</button>
+    <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+    <ng-container *ngIf="completed && !form.uniqueRecord">
+        <button mat-flat-button (click)="clearForm()">New record</button>
+    </ng-container>
 </ng-container>
