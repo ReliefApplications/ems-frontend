@@ -425,7 +425,7 @@
                 "inject": true
               },
               "projects/web-element/src/styles.scss",
-              "projects/who-ems/src/lib/style/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",

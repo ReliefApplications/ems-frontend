@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Dashboard } from '@who-ems/builder';
+import { Dashboard } from '@safe/builder';
 
 // === GET DASHBOARD BY ID ===
 export const GET_DASHBOARD_BY_ID = gql`
