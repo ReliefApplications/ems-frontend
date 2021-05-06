@@ -112,12 +112,12 @@ npm publish ./projects/safe
 
 We first need to generate the elements, using this command:
 ```
-ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk
+npm run build:elem
 ```
 
 Then, a bundle can be generated from the files using this command:
 ```
-cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js > dist/web-element.js
+npm run bundle:elem
 ```
 
 ## Running unit tests

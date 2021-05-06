@@ -1,6 +1,6 @@
 {
   "name": "ems-front",
-  "version": "0.0.0",
+  "version": "0.1.3-alpha",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,6 +8,8 @@
     "build:ci": "ng build --prod --sourceMap=false",
     "build:az:front": "ng build --configuration=azure --sourceMap=false --project=front-office",
     "build:az:back": "ng build --configuration=azure --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
+    "build:elem": "ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk",
+    "bundle:elem": "cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js > dist/web-element.js",
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
     "compodoc:back": "npx compodoc -p tsconfig.json projects/back-office/src -d documentation/back-office",
     "compodoc:safe": "npx compodoc -p tsconfig.json projects/safe/src -d documentation/safe",
