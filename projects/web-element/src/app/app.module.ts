@@ -23,7 +23,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -107,7 +106,7 @@ export function provideApollo(httpLink: HttpLink): any {
 }
 
 @NgModule({
-  declarations: [DashboardComponent, AppComponent],
+  declarations: [DashboardComponent],
   imports: [
     BrowserModule,
     SafeWidgetGridModule,
@@ -141,7 +140,7 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: []
 })
 export class AppModule {
   constructor(
