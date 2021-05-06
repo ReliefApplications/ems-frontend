@@ -1,4 +1,4 @@
-import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Dashboard, SafeLayoutService } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../graphql/queries';
@@ -8,9 +8,9 @@ import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../graphq
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnChanges {
 
-  @Input() id: string = '';
+  @Input() id = '';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
 
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
     this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
       query: GET_DASHBOARD_BY_ID,
       variables: {
-        id: this.dashboard
+        id: this.id
       }
     }).valueChanges.subscribe((res) => {
       if (res.data.dashboard) {

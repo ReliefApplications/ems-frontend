@@ -136,7 +136,7 @@ export function provideApollo(httpLink: HttpLink): any {
     {
       provide: POPUP_CONTAINER,
       useFactory: () => {
-        //return the container ElementRef, where the popup will be injected
+        // return the container ElementRef, where the popup will be injected
         return { nativeElement: document.body } as ElementRef;
       }
     }
