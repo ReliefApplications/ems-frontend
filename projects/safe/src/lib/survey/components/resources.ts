@@ -293,30 +293,6 @@ export function init(Survey: any, apollo: Apollo): void {
         }
       );
 
-      const customFilterElements = {
-        render: (editor: any, htmlElement: any): void => {
-          const text = document.createElement('div');
-          text.innerHTML = 'You can use curly brackets to get access to the question values.' +
-            '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
-            '<br><b>value:</b> {question1} or static value' +
-            '<br><b>Example:</b>' +
-            '<br>[{' +
-            '<br>"field": "name",' +
-            '<br>"operator":"contains",' +
-            '<br>"value": "Laura"' +
-            '<br>},' +
-            '<br>{' +
-            '<br>"field":"age",' +
-            '<br>"operator": "gt",' +
-            '<br>"value": "{question1}"' +
-            '<br>}]';
-          htmlElement.appendChild(text);
-        }
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor('customFilter', customFilterElements);
-
       Survey.Serializer.addProperty('resources', {
           category: 'Filter by Questions',
           type: 'text',
@@ -335,6 +311,13 @@ export function init(Survey: any, apollo: Apollo): void {
       }
       if (question.resource) {
         if (question.selectQuestion) {
+          if (filters.length === 0) {
+            filters = [{
+              field: '',
+              operator: '',
+              value: ''
+            }];
+          }
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
           if (question.displayAsGrid) {
