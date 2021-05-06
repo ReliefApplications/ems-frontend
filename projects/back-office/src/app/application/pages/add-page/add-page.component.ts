@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-add-page',
@@ -29,6 +30,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
+    // === ASSETS ===
+    public assetsPath = '';
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -36,7 +40,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
-  ) { }
+  ) {
+    this.assetsPath = `${environment.backOfficeUri}assets`;
+  }
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({

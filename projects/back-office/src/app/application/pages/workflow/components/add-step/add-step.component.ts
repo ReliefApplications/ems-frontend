@@ -4,11 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentType, Form, Permissions, SafeAuthService, SafeSnackBarService, SafeWorkflowService } from '@safe/builder';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { Subscription } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
 import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../../../graphql/queries';
 import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-add-step',
@@ -30,6 +30,9 @@ export class AddStepComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
+  // === ASSETS ===
+  public assetsPath = '';
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -39,7 +42,9 @@ export class AddStepComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private apollo: Apollo,
     private workflowServive: SafeWorkflowService,
-  ) { }
+  ) {
+    this.assetsPath = `${environment.backOfficeUri}assets`;
+  }
 
   ngOnInit(): void {
     this.stepForm = this.formBuilder.group({
