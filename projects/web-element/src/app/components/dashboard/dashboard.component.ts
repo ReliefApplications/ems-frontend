@@ -10,7 +10,7 @@ import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../graphq
 })
 export class DashboardComponent implements OnInit {
 
-  @Input() id = '';
+  @Input() id: string = '';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
 

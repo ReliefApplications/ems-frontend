@@ -115,7 +115,8 @@ export function provideApollo(httpLink: HttpLink): any {
     MatSnackBarModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
-    MatSidenavModule
+    MatSidenavModule,
+    RouterModule.forRoot([])
   ],
   providers: [
     {
