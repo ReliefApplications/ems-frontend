@@ -22,6 +22,7 @@ The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - safe, a library shared by both other projects
+- web-element, an application to genereate the web components
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
@@ -106,6 +107,18 @@ ng build --project=safe
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
 npm publish ./projects/safe
+```
+
+## Build the web components
+
+We first need to generate the elements, using this command:
+```
+npm run build:elem
+```
+
+Then, a bundle can be generated from the files using this command:
+```
+npm run bundle:elem
 ```
 
 ## Running unit tests
