@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClientModule } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
 import { getMainDefinition } from '@apollo/client/utilities';
@@ -23,6 +23,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { AppComponent } from './app.component';
+import { RouterModule } from '@angular/router';
 
 localStorage.setItem('loaded', 'false');
 
@@ -103,7 +105,7 @@ export function provideApollo(httpLink: HttpLink): any {
 }
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, AppComponent],
   imports: [
     BrowserModule,
     SafeWidgetGridModule,
@@ -113,7 +115,7 @@ export function provideApollo(httpLink: HttpLink): any {
     MatSnackBarModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
-    MatSidenavModule,
+    MatSidenavModule
   ],
   providers: [
     {
@@ -134,7 +136,7 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   ],
-  bootstrap: []
+  bootstrap: [AppComponent]
 })
 export class AppModule {
   constructor(
