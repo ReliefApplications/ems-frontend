@@ -354,6 +354,7 @@ export function init(Survey: any, apollo: Apollo): void {
           }
         } else if (!question.selectQuestion && question.customFilter && question.customFilter.trim().length > 0) {
           const obj = JSON.parse(question.customFilter);
+          console.log('OBJ', obj);
           if (obj) {
             for (const objElement of obj) {
               const value = objElement.value;
@@ -361,9 +362,11 @@ export function init(Survey: any, apollo: Apollo): void {
                 const quest = objElement.value.substr(1, objElement.value.length - 2);
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
+                  console.log('question', options.name, quest);
                   if (options.name === quest) {
                     if (typeof options.value === 'string' || options.question.customQuestion) {
-                      setAdvanceFilter(options.value, question);
+                      console.log('value', options.value, question);
+                      setAdvanceFilter(options.value, objElement.field);
                       this.populateChoices(question);
                     }
                   }
@@ -378,7 +381,6 @@ export function init(Survey: any, apollo: Apollo): void {
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resource') {
-        // question.filterBy = [];
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
@@ -426,10 +428,12 @@ export function init(Survey: any, apollo: Apollo): void {
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
+    console.log('field', field);
     if (!filters.some((x: any) => x.field === field)) {
       filters.push({field: question.filterBy, operator: question.filterCondition, value});
     } else {
       filters.map((x: any) => {
+        console.log('field', x.field, field);
         if (x.field === field) {
           x.value = value;
         }
