@@ -80,7 +80,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.displayFields = this.settings.query.fields.map((f: any) => f.name);
+    this.displayFields = this.settings.query?.fields.map((f: any) => f.name) || [];
 
     this.map.setMaxBounds(this.bounds);
     this.map.setZoom(this.settings.zoom);
@@ -151,7 +151,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         let data = '';
         for (const key of Object.keys(item)) {
           if (this.displayFields.includes(key)) {
-            data += `<div>${key}: ${item[key]}</div>`;
+            data += `<div><b>${key}:</b> ${item[key]}</div>`;
           }
         }
         const obj = {id: item.id, data};
