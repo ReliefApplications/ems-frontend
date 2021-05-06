@@ -6,7 +6,7 @@ import {
   GetResourcesQueryResponse
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
-import { resourceConditions, resourcesFilterValues } from './resources';
+import { resourceConditions } from './resources';
 
 export function init(Survey: any, apollo: Apollo): void {
   let resourcesForms: any[] = [];
@@ -345,7 +345,7 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string' || options.question.customQuestion && options.question.customQuestion.name) {
+                if (!!options.value || options.question.customQuestion && options.question.customQuestion.name) {
                   setAdvanceFilter(options.value, question);
                   this.populateChoices(question);
                 }
@@ -361,8 +361,8 @@ export function init(Survey: any, apollo: Apollo): void {
                 const quest = objElement.value.substr(1, objElement.value.length - 2);
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
-                  if (options.name === quest) {
-                    if (typeof options.value === 'string' || options.question.customQuestion) {
+                  if (options.question.name === quest) {
+                    if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       this.populateChoices(question);
                     }

@@ -374,7 +374,7 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string' || options.question.customQuestion) {
+                if (!!options.value || options.question.customQuestion) {
                   const valueType = options.question.customQuestion ? options.question.customQuestion.name :
                     question.survey.getQuestionByName(question.selectQuestion).inputType;
                   const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
@@ -397,8 +397,8 @@ export function init(Survey: any, apollo: Apollo): void {
                 const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
-                  if (options.name === quest) {
-                    if (typeof options.value === 'string' || options.question.customQuestion) {
+                  if (options.question.name === quest) {
+                    if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
