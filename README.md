@@ -49,7 +49,7 @@ npm install -g webpack-bundle-analyzer
 
 You can then run, for both back and front office:
 ```
-ng build --stats-json.
+ng build --stats-json
 ```
 This will create an additional find stats.json in your ./dist folder of each project.
 
