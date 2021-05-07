@@ -1,36 +1,41 @@
-<div class="searchbar">
-  <mat-form-field appearance="outline">
-    <mat-icon matPrefix>search</mat-icon>
-    <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
-  </mat-form-field>
-  <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-    <mat-icon>filter_list</mat-icon>
-    Filter
-  </button>
+<div>
+  <div class="searchbar">
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
+             placeholder="Search...">
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </div>
+  <div class="filters" [style.display]="!showFilters ? 'none' : ''">
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter('role', $event)">
+        <mat-option>-</mat-option>
+        <mat-option [value]="role.title" *ngFor="let role of roles">
+          {{ role.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
+  </div>
 </div>
-<div class="actions">
-  <button mat-flat-button color="primary" (click)="onInvite()">
-    <mat-icon>send</mat-icon>
-    Invite users
-  </button>
-</div>
-<div class="actions move-right" *ngIf="selection.selected.length > 0">
-  <button mat-flat-button color="warn" (click)="onDelete(selection.selected)">
-    <mat-icon>delete</mat-icon>
-    Delete selected users
-  </button>
-</div>
-<div class="filters" [style.display]="!showFilters ? 'none' : ''">
-  <mat-form-field appearance="outline">
-    <mat-label>Role</mat-label>
-    <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter('role', $event)">
-      <mat-option>-</mat-option>
-      <mat-option [value]="role.title" *ngFor="let role of roles">
-        {{ role.title }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
+<div>
+  <div class="actions">
+    <button mat-flat-button color="primary" (click)="onInvite()">
+      <mat-icon>send</mat-icon>
+      Invite users
+    </button>
+  </div>
+  <div class="actions" *ngIf="selection.selected.length > 0">
+    <button mat-flat-button color="warn" (click)="onDelete(selection.selected)">
+      <mat-icon>delete</mat-icon>
+      Delete selected users
+    </button>
+  </div>
 </div>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
