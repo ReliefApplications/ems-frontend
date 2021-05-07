@@ -694,14 +694,27 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Export selected records to a csv file
   */
   public onExportRecord(items: number[]): void {
-    const ids: any[] = [];
-    for (const index of items) {
-      const id = this.gridData.data[index].id;
-      ids.push(id);
-    }
-    const url = `${this.apiUrl}/download/records`;
-    const fileName = `${this.settings.title}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Export as`,
+        content: 'Which format do you want to export the file ?',
+        confirmText: '.xlsx',
+        cancelText: '.csv'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value !== undefined) {
+        const ids: any[] = [];
+        for (const index of items) {
+          const id = this.gridData.data[index].id;
+          ids.push(id);
+        }
+        const extension = value ? 'xlsx' : 'csv';
+        const url = `${this.apiUrl}/download/records/${extension}`;
+        const fileName = `${this.settings.title}.${extension}`;
+        this.downloadService.getFile(url, `text/${extension};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
+      }
+    });
   }
 
   /* Open a dialog component which provide tools to convert the selected record

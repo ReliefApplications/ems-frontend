@@ -137,9 +137,9 @@ export class ResourceComponent implements OnInit {
     });
   }
 
-  onDownload(): void {
-    const path = `download/resource/records/${this.id}`;
-    const fileName = `${this.resource.name}.csv`;
-    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
+  onDownload(extension: string): void {
+    const path = `download/resource/records/${this.id}/${extension}`;
+    const fileName = `${this.resource.name}.${extension}`;
+    this.downloadService.getFile(path, `text/${extension};charset=utf-8;`, fileName);
   }
 }

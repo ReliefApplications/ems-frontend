@@ -138,9 +138,9 @@ export class FormRecordsComponent implements OnInit {
     });
   }
 
-  onDownload(): void {
-    const path = `download/form/records/${this.id}`;
-    const fileName = `${this.form.name}.csv`;
-    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
+  onDownload(extension: string): void {
+    const path = `download/form/records/${this.id}/${extension}`;
+    const fileName = `${this.form.name}.${extension}`;
+    this.downloadService.getFile(path, `text/${extension};charset=utf-8;`, fileName);
   }
 }
