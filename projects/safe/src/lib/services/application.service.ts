@@ -42,7 +42,9 @@ import {
   DeletePositionAttributeCategoryMutationResponse,
   DELETE_POSITION_ATTRIBUTE_CATEGORY,
   EditPositionAttributeCategoryMutationResponse,
-  EDIT_POSITION_ATTRIBUTE_CATEGORY
+  EDIT_POSITION_ATTRIBUTE_CATEGORY,
+  EditChannelMutationResponse,
+  EDIT_CHANNEL
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
@@ -454,6 +456,31 @@ export class SafeApplicationService {
         }
       });
     }
+  }
+  /* Edit a channel's title
+    */
+  editChannel(channel: Channel, title: string): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditChannelMutationResponse>({
+      mutation: EDIT_CHANNEL,
+      variables: {
+        id: channel.id,
+        title
+      }
+      }).subscribe(res => {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title));
+          const newApplication: Application = { ...application,
+            channels: application?.channels?.map(pos => {
+              if (pos.title === title) {
+                pos = { ...pos, title: res.data?.editChannel.title };
+              }
+              return pos;
+            })
+          };
+          this._application.next(newApplication);
+        }
+      });
   }
 
   /* Remove a channel from the system with all notifications linked to it

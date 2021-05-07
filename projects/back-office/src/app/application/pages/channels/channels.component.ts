@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, SafeApplicationService, SafeConfirmModalComponent} from '@safe/builder';
+import { Application, Channel, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
+import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
 
 @Component({
   selector: 'app-channels',
@@ -15,6 +16,9 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   public channels: Channel[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
+  public applications: any[] = [];
+  public lastEntry: any[] = [];
+  public application: any;
 
   // === SUBSCRIPTIONS ===
   private applicationSubscription?: Subscription;
@@ -32,6 +36,26 @@ export class ChannelsComponent implements OnInit, OnDestroy {
       } else {
         this.channels = [];
       }
+      // store all application name with unicity
+      this.channels.forEach(channel => {
+        channel.subscribedRoles?.forEach(role => {
+          if (!this.lastEntry.includes(role.application?.name)) {
+            this.applications.push({ name: role.application?.name, roles: [] });
+            this.lastEntry.push(role.application?.name);
+          }
+        });
+      });
+      // store roles linked to applications
+      this.applications.forEach(app => {
+        this.channels.forEach(channel => {
+          channel.subscribedRoles?.forEach(role => {
+            if (!this.lastEntry.includes(role.id) && role.application?.name === app.name) {
+              app.roles.push(role);
+              this.lastEntry.push(role.id);
+            }
+          });
+        });
+      });
     });
   }
 
@@ -43,6 +67,19 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((value: {title: string}) => {
       if (value) {
         this.applicationService.addChannel(value);
+      }
+    });
+  }
+
+  onEdit(channel: Channel): void {
+    const dialogRef = this.dialog.open(EditChannelComponent, {
+      data: {
+        channel
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+          this.applicationService.editChannel(channel, value.title);
       }
     });
   }

@@ -38,6 +38,9 @@ query GetRoles($all: Boolean, $application: ID) {
       type
     }
     usersCount
+    application {
+      name
+    }
   }
 }`;
 

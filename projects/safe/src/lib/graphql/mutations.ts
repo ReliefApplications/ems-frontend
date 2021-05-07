@@ -450,6 +450,20 @@ export interface AddChannelMutationResponse {
   addChannel: Channel;
 }
 
+// === EDIT CHANNEL ===
+export const EDIT_CHANNEL = gql`
+mutation editChannel($id: ID!, $title: String!) {
+  editChannel(id: $id, title: $title){
+    id
+    title
+  }
+}`;
+
+export interface EditChannelMutationResponse {
+  loading: boolean;
+  editChannel: Channel;
+}
+
 // === DELETE CHANNEL ===
 export const DELETE_CHANNEL = gql`
 mutation deleteChannel($id: ID!) {
