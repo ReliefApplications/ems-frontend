@@ -105,11 +105,13 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   /*  Remove a form if authorized.
   */
   onDelete(element: any, e: any): void {
+    console.log('FORM', {element});
+    const coreText = 'As core form if you delete it also will delete recursively linked forms and resources';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ?`,
+        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? coreText : null}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
