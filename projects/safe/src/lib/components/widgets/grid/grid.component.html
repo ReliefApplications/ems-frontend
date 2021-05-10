@@ -35,9 +35,9 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <button class='k-button' (click)="onExportRecord(selectedRowsIndex)" style="float: right">Export
-                    selected
-                </button>
+                <kendo-dropdownbutton [data]="exportData"  style="float: right">
+                    Export selected
+                </kendo-dropdownbutton>
             </ng-container>
         </ng-template>
         <ng-container *ngIf="fields.length > 0">

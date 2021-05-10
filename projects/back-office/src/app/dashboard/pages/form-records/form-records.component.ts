@@ -1,7 +1,6 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { EditRecordMutationResponse, EDIT_RECORD, GetFormByIdQueryResponse,
   GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
@@ -138,9 +137,10 @@ export class FormRecordsComponent implements OnInit {
     });
   }
 
-  onDownload(): void {
+  onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
-    const fileName = `${this.form.name}.csv`;
-    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
+    const fileName = `${this.form.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
