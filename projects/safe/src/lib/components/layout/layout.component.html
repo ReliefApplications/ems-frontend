@@ -80,9 +80,9 @@
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                  <button mat-icon-button class="nav-action" *ngIf="item.action"
+                    <button mat-icon-button class="nav-action" *ngIf="item.action" 
                     (click)="onClick(item.action.callback, $event)">
-                    <mat-icon>{{ item.action.icon }}</mat-icon>
+                    <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
                   </button>
                   <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
                     <mat-icon>drag_indicator</mat-icon>
