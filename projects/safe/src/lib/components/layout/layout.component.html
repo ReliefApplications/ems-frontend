@@ -6,7 +6,7 @@
     <mat-icon>keyboard_backspace</mat-icon>
   </button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1>{{title}}</h1>
+    <h1 class="application-title">{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -19,8 +19,8 @@
     </mat-menu>
   </ng-container>
   <div class="account-container">
-    <div class="account-property">{{account ? account.name : ''}}</div>
-    <div class="account-property">{{account ? account.userName : ''}}</div>
+    <div class="account-property" *ngIf="accountVisible">{{account ? account.name : ''}}</div>
+    <div class="account-property" *ngIf="accountVisible">{{account ? account.userName : ''}}</div>
   </div>
   <button mat-icon-button [matMenuTriggerFor]="accountMenu">
     <mat-icon>account_circle</mat-icon>
