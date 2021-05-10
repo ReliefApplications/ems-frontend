@@ -118,10 +118,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
 
-  // === DOWNLOAD ===
-  public excelFileName = '';
-  private apiUrl = '';
-
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public hasEnabledActions = false;
@@ -144,6 +140,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
+
+  // === DOWNLOAD ===
+  public excelFileName = '';
+  private apiUrl = '';
+  public exportData: Array<any> = [
+    {
+      text: '.csv',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'csv')
+    },
+    {
+      text: '.xlsx',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
+    }
+  ];
 
   constructor(
     @Inject('environment') environment: any,
@@ -693,28 +703,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Export selected records to a csv file
   */
-  public onExportRecord(items: number[]): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Export as`,
-        content: 'Which format do you want to export the file ?',
-        confirmText: '.xlsx',
-        cancelText: '.csv'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value !== undefined) {
-        const ids: any[] = [];
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
-          ids.push(id);
-        }
-        const extension = value ? 'xlsx' : 'csv';
-        const url = `${this.apiUrl}/download/records/${extension}`;
-        const fileName = `${this.settings.title}.${extension}`;
-        this.downloadService.getFile(url, `text/${extension};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
-      }
-    });
+  public onExportRecord(items: number[], type: string): void {
+    const ids: any[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      ids.push(id);
+    }
+    const url = `${this.apiUrl}/download/records`;
+    const fileName = `${this.settings.title}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
@@ -811,7 +809,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (options.sendMail) {
         window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
-        this.onExportRecord(this.selectedRowsIndex);
+        this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
         await Promise.all(promises);
