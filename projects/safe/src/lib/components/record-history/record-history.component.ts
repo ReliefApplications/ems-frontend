@@ -128,7 +128,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       return '<p> <span  class="remove-field">Remove field</span> <b>' + key +
       '</b> with value <span class="remove-field">' + current[key]  + '</span> </p>';
     } else {
-      return '<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <span class="remove-field">' + 
+      return '<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <span class="remove-field">' +
       current[key] + '</span> to <span class="add-field">' + after[key] + '</span> </p>';
     }
   }
