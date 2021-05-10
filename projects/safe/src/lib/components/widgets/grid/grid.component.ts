@@ -20,7 +20,7 @@ import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.com
 import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { LayoutService } from '../../../services/layout.service';
+import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter, Inject
@@ -118,10 +118,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
 
-  // === DOWNLOAD ===
-  public excelFileName = '';
-  private apiUrl = '';
-
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public hasEnabledActions = false;
@@ -145,6 +141,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
+  // === DOWNLOAD ===
+  public excelFileName = '';
+  private apiUrl = '';
+  public exportData: Array<any> = [
+    {
+      text: '.csv',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'csv')
+    },
+    {
+      text: '.xlsx',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
+    }
+  ];
+
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -153,7 +163,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
@@ -693,15 +703,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Export selected records to a csv file
   */
-  public onExportRecord(items: number[]): void {
+  public onExportRecord(items: number[], type: string): void {
     const ids: any[] = [];
     for (const index of items) {
       const id = this.gridData.data[index].id;
       ids.push(id);
     }
     const url = `${this.apiUrl}/download/records`;
-    const fileName = `${this.settings.title}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
+    const fileName = `${this.settings.title}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
@@ -798,7 +809,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (options.sendMail) {
         window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
-        this.onExportRecord(this.selectedRowsIndex);
+        this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
         await Promise.all(promises);

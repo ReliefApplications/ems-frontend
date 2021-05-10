@@ -118,12 +118,14 @@ query GetShortFormById($id: ID!) {
     name
     structure
     fields
+    status
     canCreateRecords
     uniqueRecord {
       id
       modifiedAt
       data
     }
+    canUpdate
   }
 }`;
 
@@ -135,6 +137,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     createdAt
     structure
     fields
+    status
     versions {
       id
       createdAt
@@ -611,4 +614,52 @@ query GetPositionAttributesFromCategory($id: ID!) {
 export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
   positionAttributes: PositionAttribute[];
+}
+
+// === GET RECORD DETAILS ===
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
 }

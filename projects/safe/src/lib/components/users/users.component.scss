@@ -1,8 +1,6 @@
 .actions {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  text-align: right;
+  margin: 10px 0 16px;
 }
 
 .searchbar {
@@ -11,9 +9,15 @@
   .filters-toggle {
     margin-left: 12px;
   }
+
+  button {
+    margin-bottom: 10px;
+  }
 }
 
 .filters {
+  clear: both;
+  float: left;
   margin-left: -12px;
   padding-top: 30px;
 
