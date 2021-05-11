@@ -21,6 +21,8 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
@@ -44,7 +46,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     SafeAccessModule,
     DuplicateApplicationModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ScrollingModule,
+    TableVirtualScrollModule
   ],
   exports: [ApplicationsComponent]
 })

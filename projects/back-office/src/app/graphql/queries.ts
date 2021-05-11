@@ -317,33 +317,33 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    createdAt
-    modifiedAt
-    status
-    permissions {
-      canSee {
-        id
-        title
+  query GetApplications($page: Int, $perPage: Int){
+    applications(page: $page, perPage: $perPage){
+      id
+      name
+      createdAt
+      modifiedAt
+      status
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      canSee
+      canUpdate
+      canDelete
+      usersCount
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
-  }
-}`;
+  }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;

@@ -8,9 +8,16 @@
     flex: 1;
 }
 
+.mat-sidenav-content {
+    max-height: 100%;
+    display: flex;
+    overflow: hidden;
+}
 .sidenav-content {
-    min-height: calc(100% - 64px);
+    max-height: 100%;
+    display: flex;
     padding: 32px 24px;
+    width: 100%;
 }
 
 .account-container {

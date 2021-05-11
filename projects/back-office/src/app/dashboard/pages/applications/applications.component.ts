@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import {Apollo, QueryRef} from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -16,11 +16,18 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
+import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
+import { EmptyObject } from 'apollo-angular/types';
 
+// CONSTS
+const PER_PAGE = 15;
+const SCROLL_DELAY = 500;
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  styleUrls: ['./applications.component.scss'],
+  styles: ['max-height: 100px']
 })
 export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -28,6 +35,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+  public onTableScroll: DebouncedFunc<(event: any) => void> = _throttle(this.onCheckScroll, SCROLL_DELAY);
+  private querySubscription: any;
+  public loadMoreData = false;
+  private page = 0;
+  private noMoreData = false;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -56,11 +68,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.apollo.watchQuery<GetApplicationsQueryResponse>({
-      query: GET_APPLICATIONS
+    this.querySubscription = this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      query: GET_APPLICATIONS,
+      variables: {
+        page: this.page,
+        perPage: PER_PAGE
+      }
     }).valueChanges.subscribe(res => {
       this.applications.data = res.data.applications;
       this.loading = res.loading;
+      this.page ++;
       this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
@@ -224,5 +241,42 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchText = '';
     this.statusFilter = '';
     this.clearDateFilter();
+  }
+
+  private onCheckScroll(event: any): void {
+    if (!this.loadMoreData && !this.noMoreData) {
+      const tableViewHeight = event.target.offsetHeight; // viewport: ~500px
+      const tableScrollHeight = event.target.scrollHeight; // length of all table
+      const scrollLocation = event.target.scrollTop; // how far user scrolled
+
+      // If the user has scrolled within 200px of the bottom, add more data
+      const buffer = 10;
+      const limit = tableScrollHeight - tableViewHeight - buffer;
+      if (scrollLocation > limit) {
+        if (this.querySubscription) {
+          this.querySubscription.unsubscribe();
+        }
+        this.loadMoreData = true;
+        this.querySubscription = this.apollo.watchQuery<GetApplicationsQueryResponse>({
+          query: GET_APPLICATIONS,
+          variables: {
+            page: this.page,
+            perPage: PER_PAGE
+          }
+        }).valueChanges.subscribe(res => {
+          if (res.data.applications.length > 0) {
+            this.applications.data = this.applications.data.concat(res.data.applications);
+            this.page ++;
+            this.loadMoreData = res.loading;
+            this.filterPredicate();
+            if (res.data.applications.length !== PER_PAGE) {
+              this.noMoreData = true;
+            }
+          } else {
+            this.noMoreData = true;
+          }
+        });
+      }
+    }
   }
 }
