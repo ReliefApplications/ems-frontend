@@ -102,6 +102,9 @@ query GetShortForms {
     canCreate
     canUpdate
     canDelete
+    resource {
+      id
+    }
   }
 }`;
 

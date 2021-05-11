@@ -30,4 +30,5 @@ export interface Form {
     canDelete?: boolean;
     canCreateRecords?: boolean;
     uniqueRecord?: Record;
+    parentForm?: string;
 }

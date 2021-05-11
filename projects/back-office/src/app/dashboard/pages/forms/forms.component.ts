@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -30,7 +30,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === DATA ===
   public loading = true;
-  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'actions'];
+  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
   dataSource = new MatTableDataSource<Form>([]);
 
   // === PERMISSIONS ===
@@ -48,9 +48,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   public coreFilter = '';
 
 
-
-  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
+  @ViewChild('startDate', {read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', {read: MatEndDate}) endDate!: MatEndDate<string>;
 
 
   constructor(
@@ -59,7 +58,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
-  ) { }
+  ) {
+  }
 
   /*  Load the forms.
     Check user permission to add new forms.
@@ -69,13 +69,25 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_SHORT_FORMS,
     }).valueChanges.subscribe((res: any) => {
-      this.dataSource.data = res.data.forms;
+      this.dataSource.data = this.buildParentForm(res.data.forms);
       this.loading = res.loading;
       this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  private buildParentForm(result: Form[]): Form[] {
+    const data: Form[] = [];
+    result.forEach((r: any) => {
+      const aux = result.find((d: any) => d.id !== r.id && d.resource?.id === r.resource?.id && d.core === true);
+      if (!!aux) {
+        r = {...r, parentForm: aux.name};
+      }
+      data.push(r);
+    });
+    return data;
   }
 
   private filterPredicate(): void {
@@ -123,7 +135,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), {duration: 1000});
           this.dataSource.data = this.dataSource.data.filter(x => {
             return x.id !== element.id;
           });
@@ -141,26 +153,26 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const data = { name: value.name };
+        const data = {name: value.name};
         Object.assign(data,
-          value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
-          (value.binding === 'fromResource' && value.template) && { template: value.template }
+          value.binding === 'newResource' && {newResource: true},
+          (value.binding === 'fromResource' && value.resource) && {resource: value.resource},
+          (value.binding === 'fromResource' && value.template) && {template: value.template}
         );
         this.apollo.mutate<AddFormMutationResponse>({
           mutation: ADD_FORM,
           variables: data
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('form', res.errors[0].message), { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('form', res.errors[0].message), {error: true});
           } else {
             if (res.data) {
-              const { id } = res.data.addForm;
+              const {id} = res.data.addForm;
               this.router.navigate(['/forms/builder', id]);
             }
           }
         }, (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+          this.snackBar.openSnackBar(err.message, {error: true});
         });
       }
     });
@@ -171,7 +183,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else if (column === 'core') {
       this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else{
+    } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.dataSource.filter = '##';
