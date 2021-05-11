@@ -65,6 +65,7 @@ export class SafeApplicationService {
   /*  Get the application from the database, using GraphQL.
   */
   loadApplication(id: string, asRole?: string): void {
+    console.log('loading new app : ' + id);
     this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
