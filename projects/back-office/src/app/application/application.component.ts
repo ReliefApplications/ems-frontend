@@ -55,6 +55,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 orderable: true,
                 action: {
                   icon: 'delete',
+                  toolTip: 'Delete the page',
                   callback: () => this.onDelete(x)
                 }
               };
