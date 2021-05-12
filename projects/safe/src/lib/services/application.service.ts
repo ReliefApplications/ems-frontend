@@ -68,6 +68,7 @@ export class SafeApplicationService implements OnDestroy {
   loadApplication(id: string, asRole?: string): void {
     if (this.querySubscription) {
       this.querySubscription.unsubscribe();
+      this._application.next(null);
     }
     this.querySubscription = this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
