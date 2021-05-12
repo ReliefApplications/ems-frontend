@@ -5,14 +5,14 @@
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
         <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          placeholder="Search...">
+               placeholder="Search...">
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
         <mat-icon>filter_list</mat-icon>
         Filter
       </button>
     </div>
-    <div class="actions">
+    <div *ngIf="!loading" class="actions">
       <button mat-flat-button color="primary" (click)="onAdd()" *ngIf="canAdd">
         <mat-icon>add</mat-icon>
         Create an application
@@ -51,7 +51,7 @@
     </mat-form-field>
     <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
   </div>
-  <div class="scroll-container" (scroll)="onTableScroll($event)">
+  <div *ngIf="!loading" class="scroll-container" (scroll)="onTableScroll($event)">
     <table mat-table [dataSource]="applications" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -113,7 +113,7 @@
               Preview
             </button>
             <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
-                        *ngIf="element.canUpdate"></safe-access>
+                         *ngIf="element.canUpdate"></safe-access>
             <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
               <mat-icon>file_copy</mat-icon>
               Duplicate
@@ -128,7 +128,11 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
-        [routerLink]="['/applications', row.id]"></tr>
+          [routerLink]="['/applications', row.id]"></tr>
     </table>
+    <div *ngIf="loadMoreData"
+         style="display: flex; justify-content: center; align-items: center; background: white; margin-top: 5px">
+      <mat-spinner diameter="35" class="page-loader" ></mat-spinner>
+    </div>
   </div>
 </ng-container>

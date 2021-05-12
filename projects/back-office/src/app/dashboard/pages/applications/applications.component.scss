@@ -30,10 +30,8 @@
 }
 
 .scroll-container {
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  overflow-y: scroll;
+  height: 800px;
 }
 
 :host {

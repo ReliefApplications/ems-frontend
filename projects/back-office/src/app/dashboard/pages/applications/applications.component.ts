@@ -21,7 +21,7 @@ import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
 import { EmptyObject } from 'apollo-angular/types';
 
 // CONSTS
-const PER_PAGE = 15;
+const PER_PAGE = 20;
 const SCROLL_DELAY = 500;
 @Component({
   selector: 'app-applications',
