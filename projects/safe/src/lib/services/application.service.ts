@@ -1,5 +1,5 @@
 import {Apollo} from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -51,10 +51,11 @@ import { NOTIFICATIONS } from '../const/notifications';
 @Injectable({
   providedIn: 'root'
 })
-export class SafeApplicationService {
+export class SafeApplicationService implements OnDestroy {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application | null>(null);
+  public querySubscription: any;
 
   constructor(
     private apollo: Apollo,
@@ -65,8 +66,11 @@ export class SafeApplicationService {
   /*  Get the application from the database, using GraphQL.
   */
   loadApplication(id: string, asRole?: string): void {
-    console.log('loading new app : ' + id);
-    this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+      this._application.next(null);
+    }
+    this.querySubscription = this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
@@ -551,6 +555,12 @@ export class SafeApplicationService {
           this._application.next(newApplication);
         }
       });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
     }
   }
 }
