@@ -1,18 +1,17 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
   <div>
-    <div class="searchbar" *ngIf="!loading">
+    <div class="searchbar">
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-               placeholder="Search...">
+        <input id="custom-search" matInput [formControl]="name" type="search"
+               placeholder="Search by name...">
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
         <mat-icon>filter_list</mat-icon>
         Filter
       </button>
     </div>
-    <div *ngIf="!loading" class="actions">
+    <div class="actions">
       <button mat-flat-button color="primary" (click)="onAdd()" *ngIf="canAdd">
         <mat-icon>add</mat-icon>
         Create an application
@@ -30,7 +29,7 @@
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
           <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
-          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter('createdAt', null)">
+          <button mat-raised-button color="primary" matDateRangePickerApply (click)="search()">
             Apply
           </button>
         </mat-date-range-picker-actions>
@@ -39,7 +38,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
-      <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+      <mat-select [formControl]="statusFilter">
         <mat-option>-</mat-option>
         <mat-option value="active">
           Active
@@ -51,8 +50,9 @@
     </mat-form-field>
     <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
   </div>
-  <div *ngIf="!loading" class="scroll-container" (scroll)="onTableScroll($event)">
-    <table mat-table [dataSource]="applications" matSort>
+  <div class="scroll-container" (scroll)="onTableScroll($event)">
+    <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+    <table *ngIf="!loading" mat-table [dataSource]="applications" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
@@ -130,9 +130,9 @@
       <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
           [routerLink]="['/applications', row.id]"></tr>
     </table>
-    <div *ngIf="loadMoreData"
+    <div [style.visibility]="loadMoreData ? 'visible' : 'hidden'"
          style="display: flex; justify-content: center; align-items: center; background: white; margin-top: 5px">
-      <mat-spinner diameter="35" class="page-loader" ></mat-spinner>
+      <mat-spinner diameter="35" class="page-loader"></mat-spinner>
     </div>
   </div>
 </ng-container>

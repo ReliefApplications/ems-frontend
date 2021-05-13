@@ -1,14 +1,18 @@
-import {Apollo, QueryRef} from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { Application, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS } from '@safe/builder';
+import {
+  Application, PermissionsManagement, PermissionType,
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS
+} from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
-import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
-  ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
+import {
+  DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
+  ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION
+} from '../../../graphql/mutations';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,28 +20,27 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
-import { EmptyObject } from 'apollo-angular/types';
+import { FormControl } from '@angular/forms';
+import { delay, take } from 'rxjs/operators';
 
 // CONSTS
 const PER_PAGE = 20;
 const SCROLL_DELAY = 500;
+
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss'],
-  styles: ['max-height: 100px']
+  styleUrls: ['./applications.component.scss']
 })
 export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
+  public loadMoreData = false;
   public applications = new MatTableDataSource<Application>([]);
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
   public onTableScroll: DebouncedFunc<(event: any) => void> = _throttle(this.onCheckScroll, SCROLL_DELAY);
-  private querySubscription: any;
-  public loadMoreData = false;
   private page = 0;
   private noMoreData = false;
 
@@ -46,12 +49,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
-  public searchText = '';
-  public statusFilter = '';
   public showFilters = false;
+  public name = new FormControl('');
+  public statusFilter = new FormControl('');
 
-  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
+  @ViewChild('startDate', {read: MatStartDate}) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', {read: MatEndDate}) endDate!: MatEndDate<string>;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -65,36 +68,19 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
     private previewService: PreviewService
-  ) { }
-
-  ngOnInit(): void {
-    this.querySubscription = this.apollo.watchQuery<GetApplicationsQueryResponse>({
-      query: GET_APPLICATIONS,
-      variables: {
-        page: this.page,
-        perPage: PER_PAGE
-      }
-    }).valueChanges.subscribe(res => {
-      this.applications.data = res.data.applications;
-      this.loading = res.loading;
-      this.page ++;
-      this.filterPredicate();
-    });
-    this.authSubscription = this.authService.user.subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
-    });
+  ) {
   }
 
-  private filterPredicate(): void {
-    this.applications.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
-    };
+  ngOnInit(): void {
+    this.name.valueChanges.pipe(delay(500)).subscribe(value => {
+      if (this.name.value === value) {
+        this.search();
+      }
+    });
+    this.statusFilter.valueChanges.subscribe(value => {
+      this.search();
+    });
+    this.search();
   }
 
   ngAfterViewInit(): void {
@@ -128,7 +114,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), {duration: 1000});
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -152,7 +138,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           if (res.errors) {
             if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), {error: true});
 
             } else {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
@@ -219,28 +205,19 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.applications.filter = '##';
-  }
-
   clearDateFilter(): void {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
     // ignore that error
     this.startDate.value = '';
     this.endDate.value = '';
-    this.applyFilter('createdAt', '');
   }
 
   clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
+    this.name.setValue('', {emitEvent: false});
+    this.statusFilter.setValue('', {emitEvent: false});
     this.clearDateFilter();
+    this.search();
   }
 
   private onCheckScroll(event: any): void {
@@ -253,22 +230,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       const buffer = 10;
       const limit = tableScrollHeight - tableViewHeight - buffer;
       if (scrollLocation > limit) {
-        if (this.querySubscription) {
-          this.querySubscription.unsubscribe();
-        }
         this.loadMoreData = true;
-        this.querySubscription = this.apollo.watchQuery<GetApplicationsQueryResponse>({
-          query: GET_APPLICATIONS,
-          variables: {
-            page: this.page,
-            perPage: PER_PAGE
-          }
-        }).valueChanges.subscribe(res => {
+        this.getApplications(this.page).subscribe((res: any) => {
           if (res.data.applications.length > 0) {
             this.applications.data = this.applications.data.concat(res.data.applications);
-            this.page ++;
+            this.page++;
             this.loadMoreData = res.loading;
-            this.filterPredicate();
             if (res.data.applications.length !== PER_PAGE) {
               this.noMoreData = true;
             }
@@ -278,5 +245,45 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
     }
+  }
+
+  search(): void {
+    this.loading = true;
+    this.noMoreData = false;
+    this.loadMoreData = false;
+    this.page = 0;
+    this.getApplications().subscribe((res: any) => {
+      this.applications.data = res.data.applications;
+      this.loading = res.loading;
+      this.page++;
+      if (res.data.applications.length !== PER_PAGE) {
+        this.noMoreData = true;
+      }
+    });
+    this.authSubscription = this.authService.user.subscribe(() => {
+      this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
+    });
+  }
+
+  private getApplications(page = 0): any {
+    return this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      query: GET_APPLICATIONS,
+      variables: {
+        page,
+        perPage: PER_PAGE,
+        filters: this.buildFilters()
+      }
+    }).valueChanges.pipe(take(1));
+  }
+
+  private buildFilters(): object {
+    return {
+      name: this.name.value,
+      dateRange: {
+        start: this.filtersDate.startDate,
+        end: this.filtersDate.endDate
+      },
+      status: this.statusFilter.value
+    };
   }
 }
