@@ -52,7 +52,8 @@
   </div>
   <div class="scroll-container" (scroll)="onTableScroll($event)">
     <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-    <table *ngIf="!loading" mat-table [dataSource]="applications" matSort>
+    <table *ngIf="!loading" mat-table [dataSource]="applications" matSort [matSortActive]="sortActive"
+           [matSortDirection]="sortDirection" (matSortChange)="sortData($event)">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>

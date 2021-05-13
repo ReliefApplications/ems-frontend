@@ -317,8 +317,8 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-  query GetApplications($page: Int, $perPage: Int, $filters: JSON){
-    applications(page: $page, perPage: $perPage, filters: $filters){
+  query GetApplications($page: Int, $perPage: Int, $filters: JSON, $sort: JSON){
+    applications(page: $page, perPage: $perPage, filters: $filters, sort: $sort){
       id
       name
       createdAt

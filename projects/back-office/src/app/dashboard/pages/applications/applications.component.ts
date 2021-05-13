@@ -1,8 +1,7 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import { Subscription } from 'rxjs';
 import {
   Application, PermissionsManagement, PermissionType,
@@ -16,7 +15,7 @@ import {
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
@@ -33,7 +32,7 @@ const SCROLL_DELAY = 500;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss']
 })
-export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ApplicationsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
@@ -46,6 +45,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
+  sortActive = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   // === FILTERS ===
   public filtersDate = {startDate: '', endDate: ''};
@@ -81,10 +82,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.search();
     });
     this.search();
-  }
-
-  ngAfterViewInit(): void {
-    this.applications.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -271,7 +268,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       variables: {
         page,
         perPage: PER_PAGE,
-        filters: this.buildFilters()
+        filters: this.buildFilters(),
+        sort: this.buildSort()
       }
     }).valueChanges.pipe(take(1));
   }
@@ -285,5 +283,20 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       status: this.statusFilter.value
     };
+  }
+
+  sortData(event: Sort): void {
+    this.sortDirection = event.direction === '' ? 'asc' : event.direction;
+    this.sortActive = event.active;
+    this.search();
+  }
+
+  buildSort(): object {
+    const field = this.sortActive;
+    const direction = this.sortDirection === 'desc' ? -1 : 1;
+    if (field.trim().length === 0) {
+      return {createdAt: 1};
+    }
+    return JSON.parse(`{"${field}": "${direction}"}`);
   }
 }
