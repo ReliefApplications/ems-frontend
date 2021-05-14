@@ -24,16 +24,6 @@
   }
 }
 
-.mat-table {
-  overflow: auto;
-  max-height: 500px;
-}
-
-.scroll-container {
-  overflow-y: auto;
-  height: 800px;
-}
-
 :host {
   display: flex;
   flex-direction: column;

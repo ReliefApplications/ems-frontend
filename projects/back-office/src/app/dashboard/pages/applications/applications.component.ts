@@ -37,14 +37,12 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public loadMoreData = false;
-  public applications = new MatTableDataSource<Application>([]);
+  public noMoreData = false;
+  public applications: MatTableDataSource<Application> = new MatTableDataSource<Application>([]);
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
-  public onTableScroll: DebouncedFunc<(event: any) => void> = _throttle(this.onCheckScroll, SCROLL_DELAY);
   private page = 0;
-  private noMoreData = false;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
   sortActive = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -92,8 +90,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e: any): void {
-    e.stopPropagation();
+  onDelete(element: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
@@ -217,31 +214,18 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     this.search();
   }
 
-  private onCheckScroll(event: any): void {
-    if (!this.loadMoreData && !this.noMoreData) {
-      const tableViewHeight = event.target.offsetHeight; // viewport: ~500px
-      const tableScrollHeight = event.target.scrollHeight; // length of all table
-      const scrollLocation = event.target.scrollTop; // how far user scrolled
-
-      // If the user has scrolled within 200px of the bottom, add more data
-      const buffer = 10;
-      const limit = tableScrollHeight - tableViewHeight - buffer;
-      if (scrollLocation > limit) {
-        this.loadMoreData = true;
-        this.getApplications(this.page).subscribe((res: any) => {
-          if (res.data.applications.length > 0) {
-            this.applications.data = this.applications.data.concat(res.data.applications);
-            this.page++;
-            this.loadMoreData = res.loading;
-            if (res.data.applications.length !== PER_PAGE) {
-              this.noMoreData = true;
-            }
-          } else {
-            this.noMoreData = true;
-          }
-        });
+  public onCheckScroll(): void {
+    this.loadMoreData = true;
+    this.getApplications(this.page).subscribe((res: any) => {
+      if (res.data.applications.length > 0) {
+        this.applications.data = this.applications.data.concat(res.data.applications);
+        this.loadMoreData = res.loading;
+        this.setPaginationData(res.data.applications.length);
+      } else {
+        this.noMoreData = true;
+        this.loadMoreData = false;
       }
-    }
+    });
   }
 
   search(): void {
@@ -252,14 +236,18 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     this.getApplications().subscribe((res: any) => {
       this.applications.data = res.data.applications;
       this.loading = res.loading;
-      this.page++;
-      if (res.data.applications.length !== PER_PAGE) {
-        this.noMoreData = true;
-      }
+      this.setPaginationData(res.data.applications.length);
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  private setPaginationData(applicationsLength: number): void {
+    this.page++;
+    if (applicationsLength !== PER_PAGE) {
+      this.noMoreData = true;
+    }
   }
 
   private getApplications(page = 0): any {
@@ -286,7 +274,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   }
 
   sortData(event: Sort): void {
-    this.sortDirection = event.direction === '' ? 'asc' : event.direction;
+    this.sortDirection = event.direction === 'asc' && event.direction !== this.sortDirection ? 'asc' : 'desc';
     this.sortActive = event.active;
     this.search();
   }
