@@ -31,7 +31,6 @@ export class SafeRecordHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
     this.filterHistory = this.history;
-    console.log('filterHistory = ', this.filterHistory);
     this.loading = false;
   }
 
@@ -87,7 +86,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     keysAfter.forEach(key => {
       if (typeof after[key] === 'boolean') {
         if ((!current || current[key]) === null && after[key] !== null) {
-          changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <span class="add-field">' + after[key] + '</span> </p>');
+          changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
         }
       } else if ((!current || current[key] === null) && !Array.isArray(after[key]) && after[key] instanceof Object) {
         const element = this.addObject(after, key);
@@ -96,7 +95,7 @@ export class SafeRecordHistoryComponent implements OnInit {
         }
       }
       else if ((!current || current[key] === null) && after[key]) {
-        changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <span class="add-field">' + after[key] + '</span> </p>');
+        changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
       }
     });
     return changes;
@@ -113,23 +112,23 @@ export class SafeRecordHistoryComponent implements OnInit {
       } else {
         currentValues = current[key][k];
       }
-      currentValuesHTML += `<span class="add-field">${k} ( ${currentValues} )</span> `;
+      currentValuesHTML += `<b>${k} ( ${currentValues} )</b> `;
     });
     element += `${currentValuesHTML} </p>`;
     return element;
   }
 
   private addField(key: string, current: any): string {
-    return '<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <span class="add-field">' + current[key] + '</span> </p>';
+    return '<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + current[key] + '</b> </p>';
   }
 
   private modifyField(key: string, after: any, current: any): string {
     if (after[key] === null) {
-      return '<p> <span  class="remove-field">Remove field</span> <b>' + key +
-      '</b> with value <span class="remove-field">' + current[key]  + '</span> </p>';
+      return '<p> <span  class="remove-field">Remove field</span> <b>' + key + '</b> with value <b>' + current[key] +
+        '</b> </p>';
     } else {
-      return '<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <span class="remove-field">' +
-      current[key] + '</span> to <span class="add-field">' + after[key] + '</span> </p>';
+      return '<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <b>' + current[key] +
+        '</b> to <b>' + after[key] + '</b> </p>';
     }
   }
 

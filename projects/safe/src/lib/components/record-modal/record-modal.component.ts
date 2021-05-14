@@ -88,6 +88,25 @@ export class SafeRecordModalComponent implements OnInit {
         this.surveyNext.mode = 'display';
         this.surveyNext.showNavigationButtons = 'none';
         this.surveyNext.showProgressBar = 'off';
+        /* if the question names are the same but the values are different
+        */
+        for (const questionOldSurvey of Object.keys(this.surveyNext.data)) {
+          for (const questionActualSurvey of Object.keys(this.survey.data)) {
+            if (questionActualSurvey === questionOldSurvey &&
+              this.surveyNext.data[questionOldSurvey] !== this.survey.data[questionActualSurvey]) {
+              this.survey.onAfterRenderQuestion.add((survey, options): void => {
+                if (options.question.valueName === questionActualSurvey) {
+                  options.htmlElement.style.background = '#b2ebbf';
+                }
+              });
+              this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
+                if (options.question.valueName === questionActualSurvey) {
+                  options.htmlElement.style.background = '#EBB2B2';
+                }
+              });
+            }
+          }
+        }
         this.surveyNext.render(this.containerNextId);
       }
     });
