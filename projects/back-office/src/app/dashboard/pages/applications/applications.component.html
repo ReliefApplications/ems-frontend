@@ -50,7 +50,7 @@
     </mat-form-field>
     <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
   </div>
-  <app-infinite-scroll-wrapper (checkScroll)="onCheckScroll()">
+  <safe-infinite-scroll-wrapper [noMoreData]="noMoreData" [loadMoreData]="loadMoreData" (checkScroll)="onCheckScroll()">
     <app-applications-table
       infinite-scroll-child
       [dataSource]="applications"
@@ -64,5 +64,5 @@
       (delete)="onDelete($event)"
     >
     </app-applications-table>
-  </app-infinite-scroll-wrapper>
+  </safe-infinite-scroll-wrapper>
 </ng-container>

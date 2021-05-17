@@ -25,7 +25,6 @@ import { delay, take } from 'rxjs/operators';
 
 // CONSTS
 const PER_PAGE = 20;
-const SCROLL_DELAY = 500;
 
 @Component({
   selector: 'app-applications',
@@ -39,7 +38,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   public loadMoreData = false;
   public noMoreData = false;
   public applications: MatTableDataSource<Application> = new MatTableDataSource<Application>([]);
-  public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
   private page = 0;
 
   // === SORTING ===

@@ -89,8 +89,8 @@ query GetFormNames {
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms {
-  forms {
+query GetShortForms($page: Int, $perPage: Int, $filters: JSON, $sort: JSON) {
+  forms(page: $page, perPage: $perPage, filters: $filters, sort: $sort) {
     id
     name
     createdAt

@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeConfirmModalModule } from '@safe/builder';
+import { SafeConfirmModalModule, SafeInfiniteScrollWrapperModule, SafeModule } from '@safe/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,10 +17,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule as AngularFormsModule } from '@angular/forms';
+import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsTableComponent } from "./compontents/forms-table/forms-table.component";
 
 @NgModule({
-  declarations: [FormsComponent],
+  declarations: [FormsComponent, FormsTableComponent],
   imports: [
     CommonModule,
     FormsRoutingModule,
@@ -39,7 +40,9 @@ import { FormsModule as AngularFormsModule } from '@angular/forms';
     MatNativeDateModule,
     MatInputModule,
     MatSelectModule,
-    AngularFormsModule
+    AngularFormsModule,
+    SafeInfiniteScrollWrapperModule,
+    ReactiveFormsModule
   ],
   exports: [FormsComponent]
 })

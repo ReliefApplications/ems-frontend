@@ -1,14 +1,14 @@
-import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
 
 const SCROLL_DELAY = 500;
 
 @Component({
-  selector: 'app-infinite-scroll-wrapper',
-  templateUrl: './infinite-scroll-wrapper.component.html',
-  styleUrls: ['./infinite-scroll-wrapper.component.scss']
+  selector: 'safe-infinite-scroll-wrapper',
+  templateUrl: './safe-infinite-scroll-wrapper.component.html',
+  styleUrls: ['./safe-infinite-scroll-wrapper.component.scss']
 })
-export class InfiniteScrollWrapperComponent {
+export class SafeInfiniteScrollWrapperComponent {
 
   @Input()
   loadMoreData = false;
