@@ -23,6 +23,7 @@ export class SafeRecordModalComponent implements OnInit {
   public modifiedAt: Date | null = null;
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
+  public formPages: any[] = [];
 
   public containerId: string;
   public containerNextId = '';
@@ -72,6 +73,11 @@ export class SafeRecordModalComponent implements OnInit {
       this.loading = res.loading;
       addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          this.formPages.push(page);
+        }
+      }
       this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
