@@ -88,25 +88,30 @@ export class SafeRecordModalComponent implements OnInit {
         this.surveyNext.mode = 'display';
         this.surveyNext.showNavigationButtons = 'none';
         this.surveyNext.showProgressBar = 'off';
-        /* if the question names are the same but the values are different
-        */
-        for (const questionOldSurvey of Object.keys(this.surveyNext.data)) {
-          for (const questionActualSurvey of Object.keys(this.survey.data)) {
-            if (questionActualSurvey === questionOldSurvey &&
-              this.surveyNext.data[questionOldSurvey] !== this.survey.data[questionActualSurvey]) {
-              this.survey.onAfterRenderQuestion.add((survey, options): void => {
-                if (options.question.valueName === questionActualSurvey) {
-                  options.htmlElement.style.background = '#b2ebbf';
-                }
-              });
-              this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
-                if (options.question.valueName === questionActualSurvey) {
-                  options.htmlElement.style.background = '#EBB2B2';
-                }
-              });
+        // Set list of updated questions
+        const updatedQuestions: string[] = [];
+        const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
+        for (const question of allQuestions) {
+          const valueNext = this.surveyNext.data[question];
+          const value = this.survey.data[question];
+          if (!valueNext && !value) {
+            continue;
+          } else {
+            if (valueNext !== value) {
+              updatedQuestions.push(question);
             }
           }
         }
+        this.survey.onAfterRenderQuestion.add((survey, options): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
+        });
+        this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#EBB2B2';
+          }
+        });
         this.surveyNext.render(this.containerNextId);
       }
     });
