@@ -223,8 +223,8 @@ export const GET_RESOURCES = gql`
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-{
-  resources {
+query GetResourcesExtended($page: Int, $perPage: Int, $filters: JSON, $sort: JSON) {
+  resources(page: $page, perPage: $perPage, filters: $filters, sort: $sort) {
     id
     name
     createdAt

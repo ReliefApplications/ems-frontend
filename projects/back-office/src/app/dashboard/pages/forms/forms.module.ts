@@ -18,7 +18,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormsTableComponent } from "./compontents/forms-table/forms-table.component";
+import { FormsTableComponent } from './compontents/forms-table/forms-table.component';
 
 @NgModule({
   declarations: [FormsComponent, FormsTableComponent],

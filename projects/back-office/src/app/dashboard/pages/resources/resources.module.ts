@@ -13,10 +13,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ResourcesTableComponent } from './compontents/resources-table/resources-table.component';
+import { SafeInfiniteScrollWrapperModule } from '@safe/builder';
 
 @NgModule({
-  declarations: [ResourcesComponent],
+    declarations: [ResourcesComponent, ResourcesTableComponent],
   imports: [
     CommonModule,
     ResourcesRoutingModule,
@@ -31,7 +33,9 @@ import { FormsModule } from '@angular/forms';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    SafeInfiniteScrollWrapperModule,
+    ReactiveFormsModule
   ],
   exports: [ResourcesComponent]
 })

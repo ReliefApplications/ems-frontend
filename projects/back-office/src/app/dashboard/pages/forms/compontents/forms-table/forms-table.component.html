@@ -1,5 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive"
+<table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort
+       [matSortActive]="sortActive"
        [matSortDirection]="sortDirection"
        (matSortChange)="sortTable.emit($event)">
   <ng-container matColumnDef="name">
@@ -43,7 +44,7 @@
 
   <ng-container matColumnDef="versionsCount">
     <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+            <span class="headerTitle">
               History
             </span>
     </th>
@@ -52,7 +53,7 @@
 
   <ng-container matColumnDef="recordsCount">
     <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+            <span class="headerTitle">
               Records
             </span>
     </th>
