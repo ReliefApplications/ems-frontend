@@ -1,5 +1,5 @@
 import {Apollo} from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -65,14 +65,13 @@ export class SafeApplicationService {
   /*  Get the application from the database, using GraphQL.
   */
   loadApplication(id: string, asRole?: string): void {
-    console.log('loading new app : ' + id);
-    this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
+    this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
         asRole
       }
-    }).valueChanges.subscribe(res => {
+    }).subscribe(res => {
       this._application.next(res.data.application);
     });
   }
