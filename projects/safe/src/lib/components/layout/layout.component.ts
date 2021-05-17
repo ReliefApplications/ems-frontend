@@ -53,7 +53,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public user: any;
   public otherOffice = '';
   private environment: any;
-  public accountVisible = false;
 
   constructor(
     @Inject('environment') environment: any,
@@ -161,7 +160,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.largeDevice = (event.target.innerWidth > 1024);
-    this.accountVisible = (event.target.innerWidth > 600);
   }
 
   /* Emit the application to open
