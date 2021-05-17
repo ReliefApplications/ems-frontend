@@ -22,10 +22,13 @@
     margin-left: auto;
 
     .account-property {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: normal;
+        @media only screen and (max-width: 600px) {
+            display: none;
+        }
     }
 }
 
@@ -102,4 +105,9 @@
             padding-left: 10px;
         }
     }
+}
+
+.application-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
