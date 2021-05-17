@@ -293,30 +293,6 @@ export function init(Survey: any, apollo: Apollo): void {
         }
       );
 
-      const customFilterElements = {
-        render: (editor: any, htmlElement: any): void => {
-          const text = document.createElement('div');
-          text.innerHTML = 'You can use curly brackets to get access to the question values.' +
-            '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
-            '<br><b>value:</b> {question1} or static value' +
-            '<br><b>Example:</b>' +
-            '<br>[{' +
-            '<br>"field": "name",' +
-            '<br>"operator":"contains",' +
-            '<br>"value": "Laura"' +
-            '<br>},' +
-            '<br>{' +
-            '<br>"field":"age",' +
-            '<br>"operator": "gt",' +
-            '<br>"value": "{question1}"' +
-            '<br>}]';
-          htmlElement.appendChild(text);
-        }
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor('customFilter', customFilterElements);
-
       Survey.Serializer.addProperty('resources', {
           category: 'Filter by Questions',
           type: 'text',
@@ -335,6 +311,13 @@ export function init(Survey: any, apollo: Apollo): void {
       }
       if (question.resource) {
         if (question.selectQuestion) {
+          if (filters.length === 0) {
+            filters = [{
+              field: '',
+              operator: '',
+              value: ''
+            }];
+          }
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
           if (question.displayAsGrid) {
@@ -374,7 +357,7 @@ export function init(Survey: any, apollo: Apollo): void {
           } else {
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
-                if (typeof options.value === 'string' || options.question.customQuestion) {
+                if (!!options.value || options.question.customQuestion) {
                   const valueType = options.question.customQuestion ? options.question.customQuestion.name :
                     question.survey.getQuestionByName(question.selectQuestion).inputType;
                   const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
@@ -397,8 +380,8 @@ export function init(Survey: any, apollo: Apollo): void {
                 const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
                 question.survey.onValueChanged.add((survey: any, options: any) => {
-                  if (options.name === quest) {
-                    if (typeof options.value === 'string' || options.question.customQuestion) {
+                  if (options.question.name === quest) {
+                    if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);

@@ -15,6 +15,13 @@ export class SafeDownloadService {
     this.baseUrl = environment.API_URL;
   }
 
+  /**
+   * Download file from the server
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param options (optional) request options
+   */
   getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');

@@ -32,7 +32,7 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">Profile</button>
-    <ng-container *ngIf="this.user.isAdmin">
+    <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
     </ng-container>
@@ -80,9 +80,9 @@
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                  <button mat-icon-button class="nav-action" *ngIf="item.action"
+                    <button mat-icon-button class="nav-action" *ngIf="item.action" 
                     (click)="onClick(item.action.callback, $event)">
-                    <mat-icon>{{ item.action.icon }}</mat-icon>
+                    <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
                   </button>
                   <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
                     <mat-icon>drag_indicator</mat-icon>

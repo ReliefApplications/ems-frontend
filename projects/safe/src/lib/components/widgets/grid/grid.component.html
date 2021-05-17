@@ -35,9 +35,9 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <button class='k-button' (click)="onExportRecord(selectedRowsIndex)" style="float: right">Export
-                    selected
-                </button>
+                <kendo-dropdownbutton [data]="exportData"  style="float: right">
+                    Export selected
+                </kendo-dropdownbutton>
             </ng-container>
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
@@ -62,9 +62,9 @@
                                 {{dataItem[field.name]}}
                             </div>
                             <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon">launch</mat-icon>
+                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)" 
+                                mat-icon-button>
+                                    <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -268,8 +268,8 @@
             <!-- ROW DETAILS -->
             <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
                 <ng-template kendoGridCellTemplate let-idx="rowIndex">
-                    <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                        (click)="onShowDetails(gridData.data[idx].id)"></button>
+                    <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'" 
+                    (click)="onShowDetails(gridData.data[idx].id)" matTooltip="Open detail"></button>
                 </ng-template>
             </kendo-grid-column>
             <!-- ROW ACTIONS -->

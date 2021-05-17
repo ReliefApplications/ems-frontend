@@ -1,6 +1,6 @@
 SAFE Front-end
 =======
-[![GitHub version](https://badge.fury.io/gh/ReliefApplications%2Femrs-safe-frontend.svg)](https://badge.fury.io/gh/ReliefApplications%2Femrs-safe-frontend)
+[![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
