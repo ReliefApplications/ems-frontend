@@ -103,12 +103,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   /*  Remove a form if authorized.
   */
   onDelete(element: any, e: any): void {
-    const coreText = 'As core form if you delete it also will delete recursively linked forms and resources';
+    const warning = 'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? coreText : null}`,
+        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : null}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
@@ -122,10 +122,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             id
           }
         }).subscribe((res: any) => {
-          const deletedForms = res.data.deleteForm.map((r: any) => r.id);
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
           this.dataSource.data = this.dataSource.data.filter(x => {
-            return !deletedForms.includes(x.id);
+            return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
           });
         });
       }

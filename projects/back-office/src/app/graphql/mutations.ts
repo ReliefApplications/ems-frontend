@@ -130,7 +130,7 @@ mutation deleteForm($id: ID!) {
 
 export interface DeleteFormMutationResponse {
   loading: boolean;
-  deleteForm: Form[];
+  deleteForm: Form;
 }
 
 // === EDIT RESOURCE ===
