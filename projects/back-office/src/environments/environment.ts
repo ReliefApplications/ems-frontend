@@ -6,6 +6,7 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f',
   redirectUrl: 'http://localhost:4200',
   postLogoutRedirectUri: 'http://localhost:4200/auth',
-  frontOffice: 'http://localhost:4200/',
-  backOffice: 'http://localhost:4200/',
+  frontOfficeUri: 'http://localhost:4200/',
+  backOfficeUri: 'http://localhost:4200/',
+  module: 'backoffice'
 };

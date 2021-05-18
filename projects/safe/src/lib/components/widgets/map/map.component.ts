@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -43,6 +43,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private dataQuery: any;
   private dataSubscription?: Subscription;
 
+  private displayFields: string[] = [];
+
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
@@ -70,7 +72,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /*  Once template is ready, build the map.
   */
   ngAfterViewInit(): void {
-
     this.drawMap();
 
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
@@ -78,6 +79,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     if (this.dataQuery) {
       this.getData();
     }
+
+    this.displayFields = this.settings.query?.fields.map((f: any) => f.name) || [];
 
     this.map.setMaxBounds(this.bounds);
     this.map.setZoom(this.settings.zoom);
@@ -91,7 +94,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
-    this.map = L.map(this.mapId, { zoomControl: false }).setView([centerLat, centerLong], this.settings.zoom || 3);
+    this.map = L.map(this.mapId, {zoomControl: false}).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     L.control.zoom({
       position: 'bottomleft'
@@ -108,13 +111,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
-        .setContent(JSON.stringify(this.selectedItem))
+        .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
 
     });
 
-    this.markersLayer = L.markerClusterGroup({
-    }).addTo(this.markersLayerGroup);
+    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
   /*  Load the data, using widget parameters.
@@ -146,9 +148,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-        this.data.push(item);
+        let data = '';
+        for (const key of Object.keys(item)) {
+          if (this.displayFields.includes(key)) {
+            data += `<div><b>${key}:</b> ${item[key]}</div>`;
+          }
+        }
+        const obj = {id: item.id, data};
+        this.data.push(obj);
         const options = MARKER_OPTIONS;
-        Object.assign(options, { id: item.id });
+        Object.assign(options, {id: item.id});
         const marker = L.circleMarker(
           [
             latitude,

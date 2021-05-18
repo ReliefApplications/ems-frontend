@@ -3,8 +3,7 @@
     <div class="searchbar">
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [formControl]="name" type="search"
-               placeholder="Search by name...">
+        <input id="custom-search" matInput [formControl]="name" type="search" placeholder="Search by name...">
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
         <mat-icon>filter_list</mat-icon>
@@ -51,18 +50,10 @@
     <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
   </div>
   <app-infinite-scroll-wrapper (checkScroll)="onCheckScroll()">
-    <app-applications-table
-      infinite-scroll-child
-      [dataSource]="applications"
-      [loading]="loading"
-      [loadMoreData]="loadMoreData"
-      [noMoreData]="noMoreData"
-      (sortTable)="sortData($event)"
-      (preview)="onPreview($event)"
-      (duplicate)="onDuplicate($event)"
-      (save)="saveAccess($event.permission, $event.application)"
-      (delete)="onDelete($event)"
-    >
+    <app-applications-table infinite-scroll-child [dataSource]="applications" [loading]="loading"
+      [loadMoreData]="loadMoreData" [noMoreData]="noMoreData" (sortTable)="sortData($event)"
+      (preview)="onPreview($event)" (duplicate)="onDuplicate($event)"
+      (save)="saveAccess($event.permission, $event.application)" (delete)="onDelete($event)">
     </app-applications-table>
   </app-infinite-scroll-wrapper>
 </ng-container>
