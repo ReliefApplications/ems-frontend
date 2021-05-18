@@ -24,6 +24,7 @@ import { SafeRecordHistoryModule } from './components/record-history/record-hist
 import { SafeRecordModalModule } from './components/record-modal/public-api';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
 import { SafeProfileModule } from './pages/profile/profile.module';
+import { SafeIntersectionObserverModule } from './components/intersection-observer/intersection-observer.module';
 
 @NgModule({
   exports: [
@@ -51,7 +52,8 @@ import { SafeProfileModule } from './pages/profile/profile.module';
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
-    SafeProfileModule
+    SafeProfileModule,
+    SafeIntersectionObserverModule
   ]
 })
 export class SafeModule { }

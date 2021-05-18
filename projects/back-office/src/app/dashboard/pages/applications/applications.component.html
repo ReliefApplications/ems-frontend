@@ -1,7 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
   <div>
-
     <div class="searchbar" *ngIf="!loading">
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
@@ -133,4 +132,5 @@
     <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
         [routerLink]="['/applications', row.id]"></tr>
   </table>
+  <safe-intersection-observer [loading]="loading"></safe-intersection-observer>
 </ng-container>

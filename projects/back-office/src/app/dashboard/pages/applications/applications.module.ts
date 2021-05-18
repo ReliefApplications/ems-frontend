@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
-import { SafeAccessModule, SafeConfirmModalModule } from '@safe/builder';
+import { SafeAccessModule, SafeConfirmModalModule, SafeIntersectionObserverModule } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -44,7 +44,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     SafeAccessModule,
     DuplicateApplicationModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    SafeIntersectionObserverModule
   ],
   exports: [ApplicationsComponent]
 })
