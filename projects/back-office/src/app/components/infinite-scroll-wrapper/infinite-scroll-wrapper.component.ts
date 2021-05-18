@@ -1,8 +1,11 @@
-import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
 
 const SCROLL_DELAY = 500;
 
+/**
+ * Pagination component, using virtual scrolling.
+ */
 @Component({
   selector: 'app-infinite-scroll-wrapper',
   templateUrl: './infinite-scroll-wrapper.component.html',
@@ -21,8 +24,7 @@ export class InfiniteScrollWrapperComponent {
 
   public onTableScroll: DebouncedFunc<(event: any) => void> = _throttle(this.onCheckScroll, SCROLL_DELAY);
 
-  constructor() {
-  }
+  constructor() {}
 
   private onCheckScroll(event: any): void {
     if (!this.loadMoreData && !this.noMoreData) {
@@ -38,6 +40,4 @@ export class InfiniteScrollWrapperComponent {
       }
     }
   }
-
-
 }

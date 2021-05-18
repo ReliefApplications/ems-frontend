@@ -15,17 +15,15 @@ import {
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { DebouncedFunc, throttle as _throttle } from 'lodash-es';
+import { throttle as _throttle } from 'lodash-es';
 import { FormControl } from '@angular/forms';
 import { delay, take } from 'rxjs/operators';
 
-// CONSTS
-const PER_PAGE = 20;
-const SCROLL_DELAY = 500;
+const PER_PAGE = 5;
 
 @Component({
   selector: 'app-applications',
@@ -47,13 +45,13 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
+  public filtersDate = { startDate: '', endDate: '' };
   public showFilters = false;
   public name = new FormControl('');
   public statusFilter = new FormControl('');
 
-  @ViewChild('startDate', {read: MatStartDate}) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', {read: MatEndDate}) endDate!: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -108,7 +106,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), {duration: 1000});
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -132,7 +130,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           if (res.errors) {
             if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), {error: true});
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
 
             } else {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
@@ -208,8 +206,8 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   }
 
   clearAllFilters(): void {
-    this.name.setValue('', {emitEvent: false});
-    this.statusFilter.setValue('', {emitEvent: false});
+    this.name.setValue('', { emitEvent: false });
+    this.statusFilter.setValue('', { emitEvent: false });
     this.clearDateFilter();
     this.search();
   }
@@ -283,7 +281,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     const field = this.sortActive;
     const direction = this.sortDirection === 'desc' ? -1 : 1;
     if (field.trim().length === 0) {
-      return {createdAt: 1};
+      return { createdAt: 1 };
     }
     return JSON.parse(`{"${field}": "${direction}"}`);
   }
