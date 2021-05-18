@@ -6,7 +6,7 @@
     <mat-icon>keyboard_backspace</mat-icon>
   </button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1>{{title}}</h1>
+    <h1 class="application-title">{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -32,7 +32,7 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">Profile</button>
-    <ng-container *ngIf="this.user.isAdmin">
+    <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
     </ng-container>
