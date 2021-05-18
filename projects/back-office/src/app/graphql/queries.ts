@@ -104,6 +104,10 @@ query GetShortForms {
     canDelete
     resource {
       id
+      coreForm {
+        id
+        name
+      }
     }
   }
 }`;
