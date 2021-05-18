@@ -23,6 +23,7 @@ export class SafeRecordModalComponent implements OnInit {
   public modifiedAt: Date | null = null;
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
+  public formPages: any[] = [];
 
   public containerId: string;
   public containerNextId = '';
@@ -72,6 +73,11 @@ export class SafeRecordModalComponent implements OnInit {
       this.loading = res.loading;
       addCustomFunctions(Survey, this.record);
       this.survey = new Survey.Model(this.form?.structure);
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          this.formPages.push(page);
+        }
+      }
       this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
       this.survey.data = this.record.data;
       this.survey.locale = this.data.locale ? this.data.locale : 'en';
@@ -88,6 +94,30 @@ export class SafeRecordModalComponent implements OnInit {
         this.surveyNext.mode = 'display';
         this.surveyNext.showNavigationButtons = 'none';
         this.surveyNext.showProgressBar = 'off';
+        // Set list of updated questions
+        const updatedQuestions: string[] = [];
+        const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
+        for (const question of allQuestions) {
+          const valueNext = this.surveyNext.data[question];
+          const value = this.survey.data[question];
+          if (!valueNext && !value) {
+            continue;
+          } else {
+            if (valueNext !== value) {
+              updatedQuestions.push(question);
+            }
+          }
+        }
+        this.survey.onAfterRenderQuestion.add((survey, options): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
+        });
+        this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#EBB2B2';
+          }
+        });
         this.surveyNext.render(this.containerNextId);
       }
     });

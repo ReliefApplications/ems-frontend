@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -30,7 +30,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === DATA ===
   public loading = true;
-  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'actions'];
+  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
   dataSource = new MatTableDataSource<Form>([]);
 
   // === PERMISSIONS ===
@@ -41,16 +41,15 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
+  public filtersDate = { startDate: '', endDate: '' };
   public showFilters = false;
   public searchText = '';
   public statusFilter = '';
   public coreFilter = '';
 
 
-
-  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
 
   constructor(
@@ -59,13 +58,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
-  ) { }
+  ) {}
 
   /*  Load the forms.
     Check user permission to add new forms.
   */
   ngOnInit(): void {
-
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_SHORT_FORMS,
     }).valueChanges.subscribe((res: any) => {
@@ -173,7 +171,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else if (column === 'core') {
       this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else{
+    } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.dataSource.filter = '##';

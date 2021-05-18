@@ -1,7 +1,6 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
@@ -137,9 +136,10 @@ export class ResourceComponent implements OnInit {
     });
   }
 
-  onDownload(): void {
+  onDownload(type: string): void {
     const path = `download/resource/records/${this.id}`;
-    const fileName = `${this.resource.name}.csv`;
-    this.downloadService.getFile(path, 'text/csv;charset=utf-8;', fileName);
+    const fileName = `${this.resource.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
