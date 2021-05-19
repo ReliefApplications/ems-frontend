@@ -9,5 +9,4 @@ export function initCreatorSettings(survey: any): void {
     survey.Serializer.findProperty('question', 'valueName').isRequired = true;
     survey.Serializer.findProperty('file', 'storeDataAsText').defaultValue = false;
     survey.Serializer.findProperty('file', 'storeDataAsText').readOnly = true;
-    survey.Serializer.findProperty('file', 'storeDataAsText').visible = false;
 }
