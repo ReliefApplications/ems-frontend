@@ -64,6 +64,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
+    this.fieldForm?.patchValue({
+      label: this.transformGridTitle(this.fieldForm.value.label)
+    });
     if (this.fieldForm.value.kind !== 'SCALAR') {
       if (this.childTemplate && this.factory) {
         const componentRef = this.childTemplate.createComponent(this.factory);
@@ -75,5 +78,13 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         });
       }
     }
+  }
+
+  /* Pretify grid default title
+  */
+  public transformGridTitle(myValue: string): string {
+    myValue = myValue.replace('_', ' ');
+    myValue = myValue.charAt(0).toUpperCase() + myValue.slice(1);
+    return myValue;
   }
 }
