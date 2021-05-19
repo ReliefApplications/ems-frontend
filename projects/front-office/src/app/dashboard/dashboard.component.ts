@@ -24,6 +24,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private permissions: Permission[] = [];
   public navGroups: any[] = [];
 
+  private firstLoad = true;
+
   constructor(
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
@@ -38,10 +40,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const applications = user.applications || [];
         if (applications.length > 0) {
           this.applications = applications;
-          if (user.favoriteApp) {
-            this.applicationService.loadApplication(user.favoriteApp);
-          } else {
-            this.applicationService.loadApplication(applications[0].id || '');
+          if (this.firstLoad) {
+            this.firstLoad = false;
+            if (user.favoriteApp) {
+              this.applicationService.loadApplication(user.favoriteApp);
+            } else {
+              this.applicationService.loadApplication(applications[0].id || '');
+            }
           }
           this.permissions = user.permissions || [];
         } else {
