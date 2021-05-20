@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import * as SurveyCreator from 'survey-creator';
 
 export function init(Survey: any, http: HttpClient): void {
 
@@ -14,8 +15,9 @@ export function init(Survey: any, http: HttpClient): void {
   }
 
   const component = {
-    name: 'Multi-level dropdown',
+    name: 'multi-level dropdown',
     title: 'Multi-level dropdown',
+    type: 'panel',
     category: 'Custom Questions',
     elementsJSON: [
       {
@@ -25,12 +27,6 @@ export function init(Survey: any, http: HttpClient): void {
         optionsCaption: 'Select...',
         choices: [] as any[]
       },
-      {
-        name: 'filteredData',
-        title: 'Filtered data',
-        type: 'text',
-        readOnly: true
-      }
     ],
     onInit(): void {
       buildQuestionProperties();
@@ -47,17 +43,24 @@ export function init(Survey: any, http: HttpClient): void {
         });
 
         question.survey.onValueChanged.add((survey: any, options: any) => {
-          const result: any[] = [];
-          question.contentPanel.getQuestionByName('sourceData').choices.filter((r: any) => {
-            if (r.value[question.filterBy] === options.value.sourceData[question.filterBy]) {
-              result.push(r.value[question.displayFilteredField]);
-            }
-          });
-          question.contentPanel.getQuestionByName('filteredData').value = Array.from(new Set(result)).toString();
+          if (question.name === options.question.name) {
+            const result: any[] = [];
+            question.contentPanel.getQuestionByName('sourceData').choices.filter((r: any) => {
+              if (r.value[question.filterBy] === options.value.sourceData[question.filterBy]) {
+                result.push(r.value[question.displayFilteredField]);
+              }
+            });
+            question.survey.getQuestionByName('filteredData').value = Array.from(new Set(result)).toString();
+          }
         });
-
       }
     },
+    onAfterRender: (question: any, element: any) => {
+      if (!question.survey.getQuestionByName('filteredData')) {
+        question.survey.pages[question.survey.currentPageNo].addNewQuestion('text', 'filteredData');
+        question.survey.getQuestionByName('filteredData').readOnly = true;
+      }
+    }
   };
 
   function buildQuestionProperties(): void {
