@@ -15,13 +15,14 @@
         [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
-        filterable="menu" [filter]="filter" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
         [resizable]="true">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
+            <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
                     (click)="onDeleteRow(selectedRowsIndex)" style="float: right"

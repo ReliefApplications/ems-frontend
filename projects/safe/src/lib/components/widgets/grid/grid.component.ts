@@ -62,7 +62,6 @@ const GRADIENT_SETTINGS: GradientSettings = {
 };
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
-
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -110,6 +109,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FILTER ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  public showFilter = false;
 
   // === SETTINGS ===
   @Input() header = true;
@@ -134,10 +134,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
 
-  get hasChanges(): boolean {
-    return this.updatedItems.length > 0;
-  }
-
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -154,6 +150,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
+
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
 
   constructor(
     @Inject('environment') environment: any,
@@ -182,7 +182,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
@@ -944,6 +943,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   isEllipsisActive(e: any): boolean {
     return ( e.offsetWidth < e.scrollWidth );
+  }
+
+  /**
+   * Toggle quick filter visibility
+   */
+  public onToggleFilter(): void {
+    this.showFilter = !this.showFilter;
   }
 
   ngOnDestroy(): void {
