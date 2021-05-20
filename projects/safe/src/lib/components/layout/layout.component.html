@@ -6,7 +6,7 @@
     <mat-icon>keyboard_backspace</mat-icon>
   </button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1>{{title}}</h1>
+    <h1 class="application-title">{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
