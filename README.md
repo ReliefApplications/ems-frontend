@@ -47,7 +47,7 @@ First, install globally the bundle analyzer:
 npm install -g webpack-bundle-analyzer
 ```
 
-You can then run, for both back and front office:
+You can then run, for both back, front office and web element projects:
 ```
 ng build --stats-json
 ```
