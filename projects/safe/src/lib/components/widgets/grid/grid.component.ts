@@ -946,15 +946,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return ( e.offsetWidth < e.scrollWidth );
   }
 
-  /* Pretify grid default title
-  */
-  public transformGridTitle(myValue: string): string {
-      myValue = myValue.replace('_', ' ');
-      myValue = myValue.charAt(0).toUpperCase() + myValue.slice(1);
-      return myValue;
-  }
-
-
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

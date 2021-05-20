@@ -50,7 +50,7 @@
             <!-- FIELDS -->
             <ng-container *ngFor="let field of fields">
                 <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
-                <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="transformGridTitle(field.title)"
+                <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"
                     [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
