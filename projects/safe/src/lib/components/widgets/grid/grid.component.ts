@@ -1,9 +1,9 @@
 import {Apollo} from 'apollo-angular';
 
-import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor, State } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings, DataStateChangeEvent
+  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -71,27 +71,6 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 */
 export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
-  get hasChanges(): boolean {
-    return this.updatedItems.length > 0;
-  }
-
-  constructor(
-    @Inject('environment') environment: any,
-    private apollo: Apollo,
-    private http: HttpClient,
-    public dialog: MatDialog,
-    private formBuilder: FormBuilder,
-    private renderer: Renderer2,
-    private queryBuilder: QueryBuilderService,
-    private layoutService: SafeLayoutService,
-    private resolver: ComponentFactoryResolver,
-    private snackBar: SafeSnackBarService,
-    private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
-  ) {
-    this.apiUrl = environment.API_URL;
-  }
-
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -130,6 +109,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FILTER ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  public showFilter = false;
 
   // === SETTINGS ===
   @Input() header = true;
@@ -170,16 +150,27 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
-  public state: State = {
-    skip: 0,
-    take: 5,
 
-    // Initial filter descriptor
-    filter: {
-      logic: 'and',
-      filters: [{ field: 'ProductName', operator: 'contains', value: 'Chef' }],
-    },
-  };
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
+
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private http: HttpClient,
+    public dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private renderer: Renderer2,
+    private queryBuilder: QueryBuilderService,
+    private layoutService: SafeLayoutService,
+    private resolver: ComponentFactoryResolver,
+    private snackBar: SafeSnackBarService,
+    private workflowService: SafeWorkflowService,
+    private downloadService: SafeDownloadService
+  ) {
+    this.apiUrl = environment.API_URL;
+  }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
@@ -952,6 +943,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   isEllipsisActive(e: any): boolean {
     return ( e.offsetWidth < e.scrollWidth );
+  }
+
+  /**
+   * Toggle quick filter visibility
+   */
+  public onToggleFilter(): void {
+    this.showFilter = !this.showFilter;
   }
 
   ngOnDestroy(): void {
