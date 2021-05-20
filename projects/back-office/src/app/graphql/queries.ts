@@ -102,6 +102,13 @@ query GetShortForms {
     canCreate
     canUpdate
     canDelete
+    resource {
+      id
+      coreForm {
+        id
+        name
+      }
+    }
   }
 }`;
 

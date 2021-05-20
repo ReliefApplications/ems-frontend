@@ -954,7 +954,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return ( e.offsetWidth < e.scrollWidth );
   }
 
-
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
