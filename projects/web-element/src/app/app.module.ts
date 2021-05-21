@@ -1,7 +1,7 @@
 import { ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeFormService, SafeWidgetGridModule } from '@safe/builder';
+import { SafeFormModule, SafeFormService, SafeWidgetGridModule } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,13 +19,19 @@ import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { AppComponent } from './app.component';
+
+// Elements
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FormComponent } from './components/form/form.component';
+import { WorkflowComponent } from './components/workflow/workflow.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 localStorage.setItem('loaded', 'false');
 
@@ -106,10 +112,14 @@ export function provideApollo(httpLink: HttpLink): any {
 }
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [
+    DashboardComponent,
+    AppComponent,
+    FormComponent,
+    WorkflowComponent
+  ],
   imports: [
     BrowserModule,
-    SafeWidgetGridModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -119,7 +129,11 @@ export function provideApollo(httpLink: HttpLink): any {
     MatSidenavModule,
     RouterModule.forRoot([]),
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatStepperModule,
+    SafeWidgetGridModule,
+    SafeFormModule
   ],
   providers: [
     {
@@ -140,7 +154,9 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   ],
-  bootstrap: []
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {
   constructor(
@@ -149,12 +165,16 @@ export class AppModule {
   ) { }
 
   ngDoBootstrap(): void {
-    // const safeWidgetGrid = createCustomElement(SafeWidgetGridComponent, { injector: this.injector });
-
-    // customElements.define('safe-widget-grid', SafeWidgetGrid);
-
+    // Dashboard web element
     const safeDashboard = createCustomElement(DashboardComponent, { injector: this.injector });
-
     customElements.define('safe-dashboard', safeDashboard);
+
+    // Form web element
+    const safeForm = createCustomElement(FormComponent, { injector: this.injector });
+    customElements.define('safe-form', safeForm);
+
+    // Workflow web element
+    const safeWorkflow = createCustomElement(WorkflowComponent, { injector: this.injector });
+    customElements.define('safe-workflow', safeWorkflow);
   }
 }

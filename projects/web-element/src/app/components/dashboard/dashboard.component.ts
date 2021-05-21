@@ -1,4 +1,4 @@
-import { Component, ComponentRef, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Dashboard, SafeLayoutService } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../graphql/queries';
@@ -21,6 +21,9 @@ export class DashboardComponent implements OnInit, OnChanges {
 
   // === DISPLAY ===
   public showSidenav = false;
+
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private apollo: Apollo,

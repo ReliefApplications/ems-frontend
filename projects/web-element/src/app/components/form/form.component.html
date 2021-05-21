@@ -2,8 +2,11 @@
     <mat-sidenav-content>
         <div class="sidenav-content">
             <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-            <ng-container *ngIf="!loading && dashboard">
-                <safe-widget-grid [widgets]="tiles" (goToNextStep)="goToNextStep.emit($event)"></safe-widget-grid>
+            <ng-container *ngIf="!loading && form">
+                <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+                <ng-container *ngIf="completed && !form.uniqueRecord">
+                    <button mat-flat-button color="primary" (click)="clearForm()">New record</button>
+                </ng-container>
             </ng-container>
         </div>
     </mat-sidenav-content>
