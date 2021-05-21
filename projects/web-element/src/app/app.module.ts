@@ -30,6 +30,8 @@ import { AppComponent } from './app.component';
 // Elements
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormComponent } from './components/form/form.component';
+import { WorkflowComponent } from './components/workflow/workflow.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 localStorage.setItem('loaded', 'false');
 
@@ -113,7 +115,8 @@ export function provideApollo(httpLink: HttpLink): any {
   declarations: [
     DashboardComponent,
     AppComponent,
-    FormComponent
+    FormComponent,
+    WorkflowComponent
   ],
   imports: [
     BrowserModule,
@@ -127,6 +130,8 @@ export function provideApollo(httpLink: HttpLink): any {
     RouterModule.forRoot([]),
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatStepperModule,
     SafeWidgetGridModule,
     SafeFormModule
   ],
@@ -167,5 +172,9 @@ export class AppModule {
     // Form web element
     const safeForm = createCustomElement(FormComponent, { injector: this.injector });
     customElements.define('safe-form', safeForm);
+
+    // Workflow web element
+    const safeWorkflow = createCustomElement(WorkflowComponent, { injector: this.injector });
+    customElements.define('safe-workflow', safeWorkflow);
   }
 }
