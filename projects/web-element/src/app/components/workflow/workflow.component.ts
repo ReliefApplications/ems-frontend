@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
-import { Workflow, Step, ContentType } from '@safe/builder';
+import { Workflow, Step } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../graphql/queries';
 
@@ -54,29 +54,18 @@ export class WorkflowComponent implements OnInit {
   stepChange(e: any): void {
     this.selectedStep = this.steps[e.selectedIndex];
     this.selectedIndex = e.selectedIndex;
-    if (this.selectedStep.type === ContentType.form) {
-      // this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
-    } else {
-      // this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
-    }
   }
 
   /* Trigger step changes from grid widgets
   */
-  onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
-          if (this.selectedIndex + 1 < this.steps.length) {
-            stepper.next();
-          } else if (this.selectedIndex + 1 === this.steps.length) {
-            stepper.selectedIndex = 0;
-            // this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
-          } else {
-            // this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
-          }
-        }
-      });
+  onActivate(e: any, stepper: MatHorizontalStepper): void {
+    if (this.selectedIndex + 1 < this.steps.length) {
+      stepper.next();
+    } else if (this.selectedIndex + 1 === this.steps.length) {
+      stepper.selectedIndex = 0;
+      // this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+    } else {
+      // this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
     }
   }
 }

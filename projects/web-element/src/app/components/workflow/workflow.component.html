@@ -6,7 +6,7 @@
                 <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper>
                     <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
                         <ng-container *ngIf="step.type === 'dashboard'">
-                            <app-dashboard [id]="step.content!"></app-dashboard>
+                            <app-dashboard [id]="step.content!" (goToNextStep)="onActivate($event, stepper)"></app-dashboard>
                         </ng-container>
                         <ng-container *ngIf="step.type === 'form'">
                             <app-form [id]="step.content!"></app-form>
