@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
 
 @Injectable({

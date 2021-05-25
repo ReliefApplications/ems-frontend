@@ -271,7 +271,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
