@@ -17,13 +17,13 @@ import { HttpClient } from '@angular/common/http';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey: any, domService: DomService, dialog: MatDialog, apollo: Apollo, http: HttpClient): void {
+export function initCustomWidgets(Survey: any, domService: DomService, dialog: MatDialog, apollo: Apollo): void {
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, apollo);
   initResourcesComponent(Survey, apollo);
   initCustomWidget(Survey, domService, dialog);
-  initMultiLevelDropdownsComponent(Survey, http);
+  initMultiLevelDropdownsComponent(Survey);
   addCustomFunctions(Survey);
 }

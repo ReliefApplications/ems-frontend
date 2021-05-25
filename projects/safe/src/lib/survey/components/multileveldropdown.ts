@@ -1,23 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import * as SurveyCreator from 'survey-creator';
 
-export function init(Survey: any, http: HttpClient): void {
+export function init(Survey: any): void {
 
-  function getSourceFields(obj: any, choicesCallback: any): void {
-    if (obj.choicesByUrl) {
-      http.get<any>(obj.choicesByUrl).subscribe((res: any) => {
-        choicesCallback(!res || !res[0] ? [] : Object.keys(res[0]));
-      }, _ => choicesCallback([]));
-    } else {
-      choicesCallback([]);
+  function getSourceFields(obj: any): any[] {
+    if (obj.choicesByJson) {
+      const jsonObj = JSON.parse(obj.choicesByJson);
+      if (jsonObj) {
+        return !jsonObj[0] ? [] : Object.keys(jsonObj[0]);
+      }
     }
-    choicesCallback([]);
+    return [];
   }
 
   const component = {
     name: 'multi-level dropdown',
     title: 'Multi-level dropdown',
-    type: 'panel',
     category: 'Custom Questions',
     elementsJSON: [
       {
@@ -26,72 +24,80 @@ export function init(Survey: any, http: HttpClient): void {
         type: 'dropdown',
         optionsCaption: 'Select...',
         choices: [] as any[]
-      },
+      }
     ],
     onInit(): void {
       buildQuestionProperties();
     },
     onLoaded(question: any): void {
-      question.choicesByUrl = 'https://restcountries.eu/rest/v2/all';
       if (question.displaySourceField && question.filterBy && question.displayFilteredField) {
-        http.get<any>(question.choicesByUrl).subscribe((res: any) => {
-          const items: any = [];
-          res.map((r: any) => {
-            items.push({value: r, text: r[question.displaySourceField]});
-          });
-          question.contentPanel.getQuestionByName('sourceData').choices = items;
-        });
-
-        question.survey.onValueChanged.add((survey: any, options: any) => {
-          if (question.name === options.question.name) {
-            const result: any[] = [];
-            question.contentPanel.getQuestionByName('sourceData').choices.filter((r: any) => {
-              if (r.value[question.filterBy] === options.value.sourceData[question.filterBy]) {
-                result.push(r.value[question.displayFilteredField]);
-              }
-            });
-            question.survey.getQuestionByName('filteredData').value = Array.from(new Set(result)).toString();
+        const items: any = [];
+        if (question.choicesByJson) {
+          const jsonObj = JSON.parse(question.choicesByJson);
+          if (jsonObj) {
+            jsonObj.map((r: any) => items.push({value: r, text: r[question.displaySourceField].toString()}));
           }
-        });
+        }
+        question.contentPanel.getQuestionByName('sourceData').choices = items;
+
+        if (question.survey) {
+          question.survey.onValueChanged.add((survey: any, options: any) => {
+            if (question.name === options.question.name) {
+              const result: any[] = [];
+              question.contentPanel.getQuestionByName('sourceData').choices.filter((r: any) => {
+                if (r.value[question.filterBy].toString() === options.value.sourceData[question.filterBy].toString()) {
+                  result.push(r.value[question.displayFilteredField].toString());
+                }
+              });
+              question.survey.getQuestionByValueName(`${question.name}_filtered_data`).value = Array.from(new Set(result)).toString();
+            }
+          });
+        }
       }
     },
     onAfterRender: (question: any, element: any) => {
-      if (!question.survey.getQuestionByName('filteredData')) {
-        question.survey.pages[question.survey.currentPageNo].addNewQuestion('text', 'filteredData');
-        question.survey.getQuestionByName('filteredData').readOnly = true;
+      const valueName = `${question.name}_filtered_data`;
+      const questionName = `${question.name} filtered data`;
+      if (!question.survey.getQuestionByValueName(valueName)) {
+        question.survey.pages[question.survey.currentPageNo].addNewQuestion('text', questionName);
+        const newQuestion = question.survey.getQuestionByName(questionName);
+        newQuestion.readOnly = true;
+        newQuestion.valueName = valueName;
+        newQuestion.title = questionName;
       }
     }
   };
 
   function buildQuestionProperties(): void {
     Survey.Serializer.addProperty('multi-level dropdown', {
-      name: 'choicesByUrl',
-      title: 'Source data by url',
-      category: 'Choices',
-    });
+        category: 'Choices',
+        type: 'text',
+        name: 'choicesByJson',
+      }
+    );
     Survey.Serializer.addProperty('multi-level dropdown', {
+      category: 'Choices',
       name: 'displaySourceField',
       type: 'dropdown',
-      category: 'Choices',
-      dependsOn: 'choicesByUrl',
-      visibleIf: (obj: any) => !!obj && !!obj.choicesByUrl,
-      choices: (obj: any, choicesCallback: any) => getSourceFields(obj, choicesCallback)
+      dependsOn: ['choicesByJson'],
+      visibleIf: (obj: any) => !!obj && !!obj.choicesByJson,
+      choices: (obj: any) => getSourceFields(obj)
     });
     Survey.Serializer.addProperty('multi-level dropdown', {
+      category: 'Choices',
       name: 'filterBy',
       type: 'dropdown',
-      category: 'Choices',
-      dependsOn: 'choicesByUrl',
-      visibleIf: (obj: any) => !!obj && !!obj.choicesByUrl,
-      choices: (obj: any, choicesCallback: any) => getSourceFields(obj, choicesCallback)
+      dependsOn: ['choicesByJson'],
+      visibleIf: (obj: any) => !!obj && !!obj.choicesByJson,
+      choices: (obj: any) => getSourceFields(obj)
     });
     Survey.Serializer.addProperty('multi-level dropdown', {
+      category: 'Choices',
       name: 'displayFilteredField',
       type: 'dropdown',
-      category: 'Choices',
-      dependsOn: 'choicesByUrl',
-      visibleIf: (obj: any) => !!obj && !!obj.choicesByUrl,
-      choices: (obj: any, choicesCallback: any) => getSourceFields(obj, choicesCallback)
+      dependsOn: ['choicesByJson'],
+      visibleIf: (obj: any) => !!obj && !!obj.choicesByJson,
+      choices: (obj: any) => getSourceFields(obj)
     });
   }
 

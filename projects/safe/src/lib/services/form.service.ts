@@ -17,16 +17,15 @@ export class SafeFormService {
     @Inject('environment') environment: any,
     public domService: DomService,
     public dialog: MatDialog,
-    public apollo: Apollo,
-    public http: HttpClient
+    public apollo: Apollo
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, domService, dialog, apollo, http);
+    initCustomWidgets(SurveyKo, domService, dialog, apollo);
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(Survey, domService, dialog, apollo, http);
+    initCustomWidgets(Survey, domService, dialog, apollo);
   }
 }
