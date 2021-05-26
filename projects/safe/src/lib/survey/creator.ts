@@ -9,6 +9,10 @@ export function initCreatorSettings(survey: any): void {
   survey.Serializer.findProperty('question', 'valueName').isRequired = true;
 
   // needs to hide valueName to don't give access to change it filteredData question.
-  survey.Serializer.findProperty('text', 'valueName').visibleIf = ((obj: any) =>
-    !obj.valueName || obj.valueName && !obj.valueName.match(/filtered_data$/));
+  survey.Serializer.findProperty('text', 'valueName').visibleIf =
+    ((obj: any) => obj.getType() !== 'multi-level dropdown' && (!obj.valueName || obj.valueName && !obj.valueName.match(/filtered_data$/)));
+
+  // // needs to hide valueName to don't give access to change it filteredData question.
+  survey.Serializer.findProperty('multi-level dropdown', 'valueName').visibleIf =
+    ((obj: any) => obj.getType() !== 'multi-level dropdown' && (!obj.valueName || obj.valueName && !obj.valueName.match(/filtered_data$/)));
 }

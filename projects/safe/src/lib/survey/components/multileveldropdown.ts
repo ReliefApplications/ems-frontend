@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import * as SurveyCreator from 'survey-creator';
-
 export function init(Survey: any): void {
+
+  const multiLevelMap = new Map([]);
 
   function getSourceFields(obj: any): any[] {
     if (obj.choicesByJson) {
@@ -16,6 +15,7 @@ export function init(Survey: any): void {
   const component = {
     name: 'multi-level dropdown',
     title: 'Multi-level dropdown',
+    type: 'multi-level dropdown',
     category: 'Custom Questions',
     elementsJSON: [
       {
@@ -30,6 +30,19 @@ export function init(Survey: any): void {
       buildQuestionProperties();
     },
     onLoaded(question: any): void {
+      if (question.survey) {
+        const allQuestions = question.survey.getAllQuestions();
+        allQuestions.map((q: any) => {
+          if (q.getType() === 'multi-level dropdown') {
+            const filteredQuestion = allQuestions.filter((f: any) => `${q.valueName}_filtered_data` === f.valueName);
+            if (filteredQuestion.length > 0 && !multiLevelMap.get(q.valueName)) {
+              multiLevelMap.set(q.valueName, filteredQuestion[0]);
+            }
+          }
+        });
+
+      }
+
       if (question.displaySourceField && question.filterBy && question.displayFilteredField) {
         const items: any = [];
         if (question.choicesByJson) {
@@ -45,7 +58,8 @@ export function init(Survey: any): void {
             if (question.name === options.question.name) {
               const result: any[] = [];
               question.contentPanel.getQuestionByName('sourceData').choices.filter((r: any) => {
-                if (r.value[question.filterBy].toString() === options.value.sourceData[question.filterBy].toString()) {
+                if (options.value.sourceData &&
+                  r.value[question.filterBy].toString() === options.value.sourceData[question.filterBy].toString()) {
                   result.push(r.value[question.displayFilteredField].toString());
                 }
               });
@@ -56,15 +70,30 @@ export function init(Survey: any): void {
       }
     },
     onAfterRender: (question: any, element: any) => {
-      const valueName = `${question.name}_filtered_data`;
-      const questionName = `${question.name} filtered data`;
-      if (!question.survey.getQuestionByValueName(valueName)) {
+      question.valueName = question.valueName ? question.valueName : question.name;
+
+      if (question.survey) {
+        question.survey.onQuestionRemoved.add((survey: any, options: any) => {
+          const filteredQuestion: any = multiLevelMap.get(options.question.valueName);
+          if (filteredQuestion) {
+            multiLevelMap.delete(options.question.valueName);
+            question.survey.pages[question.survey.currentPageNo].removeElement(filteredQuestion);
+          }
+        });
+      }
+
+      if (question.getType() === 'multi-level dropdown' && !multiLevelMap.get(question.valueName)) {
+        // create filtered data question
+        const valueName = `${question.valueName}_filtered_data`;
+        const questionName = `${question.valueName} filtered data`;
         question.survey.pages[question.survey.currentPageNo].addNewQuestion('text', questionName);
         const newQuestion = question.survey.getQuestionByName(questionName);
         newQuestion.readOnly = true;
         newQuestion.valueName = valueName;
         newQuestion.title = questionName;
+        multiLevelMap.set(question.valueName, newQuestion);
       }
+
     }
   };
 
@@ -101,5 +130,6 @@ export function init(Survey: any): void {
     });
   }
 
-  Survey.ComponentCollection.Instance.add(component);
+
+  return Survey.ComponentCollection.Instance.add(component);
 }

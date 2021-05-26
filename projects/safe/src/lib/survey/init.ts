@@ -13,7 +13,6 @@ import { init as initMultiLevelDropdownsComponent } from './components/multileve
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { DomService } from '../services/dom.service';
-import { HttpClient } from '@angular/common/http';
 
 /*  Execute all init methods of custom SurveyJS.
 */
