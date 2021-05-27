@@ -78,6 +78,14 @@ export function init(Survey: any): void {
           if (filteredQuestion) {
             multiLevelMap.delete(options.question.valueName);
             question.survey.pages[question.survey.currentPageNo].removeElement(filteredQuestion);
+          } else {
+            multiLevelMap.forEach((value: any, key: any) => {
+              if (value.valueName === options.question.valueName) {
+                multiLevelMap.delete(key);
+                const sourceQuestion = question.survey.getQuestionByValueName(key);
+                question.survey.pages[question.survey.currentPageNo].removeElement(sourceQuestion);
+              }
+            });
           }
         });
       }
