@@ -51,7 +51,7 @@
             <!-- FIELDS -->
             <ng-container *ngFor="let field of fields">
                 <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
-                <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"
+                <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.linkedRecord ? field.linkedRecord : field.title"
                     [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
@@ -77,6 +77,15 @@
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
+                        </ng-template>
+                        <!-- DISPLAY ( resource ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'resource'">
+                            <div *ngIf="dataItem[field.name]" class="textbox-container">
+                                <div #refSpan class="textbox">
+                                    <!-- {{dataItem[field.name]}} -->
+                                    <span class="record-link" matTooltip="Open the record details" (click)="onShowDetails(dataItem[field.name])">{{dataItem[field.name]}}</span>
+                                </div>
+                            </div>
                         </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->

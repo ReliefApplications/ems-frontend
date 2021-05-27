@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
-                    <button mat-icon-button (click)="onEdit(index)">
+                    <button mat-icon-button (click)="onEdit(index, field)">
                         <mat-icon>edit</mat-icon>
                     </button>
                 </div>
@@ -45,6 +45,15 @@
                     <mat-label>Label</mat-label>
                     <input matInput formControlName="label" type="text"/>
                 </mat-form-field>
+                <mat-form-field *ngIf="canLinkRecord === true" appearance="outline" 
+                matTooltip="Create a view for the linked record">
+                    <mat-label>Select a field</mat-label>
+                    <mat-select formControlName="linkedRecord">
+                        <mat-option *ngFor="let field of fieldsFromType" [value]="field.name">
+                          {{field.name}}
+                        </mat-option>
+                    </mat-select>
+                  </mat-form-field>
             </form>
         </ng-container>
         <ng-container *ngIf="fieldForm.value.kind !== 'SCALAR'" [ngTemplateOutlet]="childTemplate"></ng-container>
