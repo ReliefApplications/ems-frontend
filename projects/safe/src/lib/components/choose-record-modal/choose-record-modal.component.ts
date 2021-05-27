@@ -5,6 +5,8 @@ import { Apollo } from 'apollo-angular';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
+import { SafeFormModalComponent } from '../form-modal/form-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'safe-choose-record-modal',
@@ -29,7 +31,8 @@ export class SafeChooseRecordModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       targetForm: Form,
       targetFormField: string
-    }
+    },
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -53,5 +56,16 @@ export class SafeChooseRecordModalComponent implements OnInit {
   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  /* Open new dialog with the new data
+  */
+  openDataDialog(): void {
+    const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      data: {
+        recordId: this.chooseRecordForm.value.record.id,
+        locale: 'en'
+      }
+    });
   }
 }

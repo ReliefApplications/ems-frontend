@@ -35,6 +35,7 @@ export class SafeFormModalComponent implements OnInit {
   private survey?: Survey.Model;
   private temporaryFilesStorage: any = {};
 
+  public initialRecord: any = {};
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
@@ -87,6 +88,7 @@ export class SafeFormModalComponent implements OnInit {
         this.survey.showCompletedPage = false;
         this.survey.render(this.containerId);
         this.survey.onComplete.add(this.completeMySurvey);
+        this.initialRecord = record.data;
       });
     } else {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -124,48 +126,53 @@ export class SafeFormModalComponent implements OnInit {
       }
     }
     survey.data = data;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
-    });
-    dialogRef.afterClosed().subscribe(async value => {
-      if (value) {
-        if (this.data.recordId) {
-          await this.uploadFiles(survey);
-          if (this.isMultiEdition) {
-            for (const id of this.data.recordId) {
-              this.updateData(id, survey);
+    if ( JSON.stringify( this.initialRecord ) !== JSON.stringify( data ) ) {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
+          content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
+        }
+      });
+      dialogRef.afterClosed().subscribe(async value => {
+        if (value) {
+          if (this.data.recordId) {
+            await this.uploadFiles(survey);
+            if (this.isMultiEdition) {
+              for (const id of this.data.recordId) {
+                this.updateData(id, survey);
+              }
+            } else {
+              this.updateData(this.data.recordId, survey);
             }
           } else {
-            this.updateData(this.data.recordId, survey);
+            await this.uploadFiles(survey);
+            this.apollo.mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.data.template,
+                data: survey.data,
+                display: true
+              }
+            }).subscribe(res => {
+              if (res.errors) {
+                this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
+                this.dialogRef.close();
+              } else {
+                this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
+              }
+            });
           }
+          survey.showCompletedPage = true;
         } else {
-          await this.uploadFiles(survey);
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.data.template,
-              data: survey.data,
-              display: true
-            }
-          }).subscribe(res => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
-              this.dialogRef.close();
-            } else {
-              this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
-            }
-          });
+          this.dialogRef.close();
         }
-        survey.showCompletedPage = true;
-      } else {
-        this.dialogRef.close();
-      }
-    });
+      });
+    }
+    else {
+      this.dialogRef.close();
+    }
   }
 
   public updateData(id: any, survey: any): void {
