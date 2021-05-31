@@ -18,7 +18,6 @@ import { SafeRecordModalModule } from '../../record-modal/record-modal.module';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     GroupModule,
     ButtonModule,
     MatCheckboxModule,
-    MatSlideToggleModule,
     InputsModule,
     DateInputsModule,
     DropDownsModule,
