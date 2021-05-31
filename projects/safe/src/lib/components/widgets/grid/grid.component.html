@@ -73,11 +73,24 @@
                                 </div>
                             </div>
                         </ng-template>
+                        <!-- DISPLAY ( boolean ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled/>
+                        </ng-template>
                         <!-- DISPLAY ( color ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
                         </ng-template>
+                        <!-- DISPLAY ( resource ) -->
+                        <!-- <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'resource'">
+                            <div *ngIf="dataItem[field.name]" class="textbox-container">
+                                <div #refSpan class="textbox">
+                                    {{dataItem[field.name]}}
+                                    <span class="record-link" matTooltip="Open the record details" (click)="onShowDetails(dataItem[field.name])">{{dataItem[field.name]}}</span>
+                                </div>
+                            </div>
+                        </ng-template> -->
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
