@@ -210,22 +210,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         case 'OBJECT': {
           return this.getFields(f.fields, f.name, true);
         }
-        case 'SCALAR': {
-          return {
-            name: prefix ? `${prefix}.${f.name}` : f.name,
-            title: f.label ? f.label : f.name,
-            type: f.type,
-            format: this.getFormat(f.type),
-            editor: this.getEditor(f.type),
-            filter: this.getFilter(f.type),
-            meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly,
-            linkedRecord: f.linkedRecord ? f.linkedRecord : ''
-          }
-        }
         default: {
           return {
             name: prefix ? `${prefix}.${f.name}` : f.name,
+            openOnClick: f.openOnClick,
             title: f.label ? f.label : f.name,
             type: f.type,
             format: this.getFormat(f.type),
@@ -284,6 +272,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
+              console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -969,5 +958,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  openOnClick(item: any, field: any): void {
+    const path = field.name.split('.').slice(0, -1).concat('id');
+    try {
+      const id = path.reduce((o: any, i: any) => o[i], item);
+      this.onShowDetails(id);
+    } catch {}
   }
 }

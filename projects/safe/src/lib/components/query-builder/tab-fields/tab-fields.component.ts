@@ -19,9 +19,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
-  public canLinkRecord: boolean = false;
-  public typeName: string = '';
-  public fieldsFromType: any[] = [];
 
   constructor(private queryBuilder: QueryBuilderService) { }
 
@@ -65,19 +62,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     this.fieldForm = null;
   }
 
-  public onEdit(index: number, field?: any): void {
-    if (field.name.endsWith("_id") && field.type.name === "ID") {
-      this.canLinkRecord = true;
-    } else {
-      this.canLinkRecord = false;
-    }
-    const camelized = field.name.replace('id', '').replaceAll('_', '');
-    for (let availableField of this.availableFields) {
-      if (availableField.name.toUpperCase() == camelized.toUpperCase()) {
-        this.typeName = availableField.type.name;
-      }
-    }
-    this.fieldsFromType = this.queryBuilder.getFieldsFromType(this.typeName);
+  public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
       if (this.childTemplate && this.factory) {
@@ -91,8 +76,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       }
     } else {
       this.fieldForm?.patchValue({
-        label: this.prettifyLabel(this.fieldForm.value.label),
-        linkedRecord: this.fieldForm.value.linkedRecord ? this.fieldForm.value.linkedRecord : '',
+        label: this.prettifyLabel(this.fieldForm.value.label)
       });
     }
   }

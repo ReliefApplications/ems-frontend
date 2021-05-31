@@ -224,22 +224,13 @@ export class QueryBuilderService {
         });
       }
       default: {
-        if (field.type.name !== "ID" && !field.name.endsWith("_id")) {
-          return this.formBuilder.group({
-            name: [{ value: field.name, disabled: true }],
-            type: [{ value: newField ? field.type.name : field.type, disabled: true }],
-            kind: [newField ? field.type.kind : field.kind],
-            label: [field.label ? field.label : field.name, Validators.required]
-          });
-        } else {
-          return this.formBuilder.group({
-            name: [{ value: field.name, disabled: true }],
-            type: [{ value: newField ? field.type.name : field.type, disabled: true }],
-            kind: [newField ? field.type.kind : field.kind],
-            label: [field.label ? field.label : field.name, Validators.required],
-            linkedRecord: [field.linkedRecord ? field.linkedRecord : '' ]
-          });
-        }
+        return this.formBuilder.group({
+          name: [{ value: field.name, disabled: true }],
+          type: [{ value: newField ? field.type.name : field.type, disabled: true }],
+          kind: [newField ? field.type.kind : field.kind],
+          label: [field.label ? field.label : field.name, Validators.required],
+          openOnClick: [field.openOnClick ? field.openOnClick : false]
+        });
       }
     }
   }
