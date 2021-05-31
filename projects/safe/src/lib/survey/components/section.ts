@@ -17,4 +17,3 @@ export function init(Survey: any): void {
     };
     Survey.ComponentCollection.Instance.add(component);
   }
-  
