@@ -12,13 +12,14 @@
     </div>
     <!-- GRID HEADER -->
     <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-        [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true"
+        [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
         [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [resizable]="true">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
+            <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
@@ -313,7 +314,6 @@
                             Update
                         </button>
                     </mat-menu>
-
                 </ng-template>
             </kendo-grid-column>
         </ng-container>
