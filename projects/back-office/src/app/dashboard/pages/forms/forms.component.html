@@ -179,6 +179,10 @@
             <mat-icon>delete</mat-icon>
             Delete
           </button>
+          <button mat-menu-item (click)="onExport(element, $event)">
+            <mat-icon>get_app</mat-icon>
+            Export
+          </button>
         </mat-menu>
       </td>
     </ng-container>

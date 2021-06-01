@@ -191,4 +191,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.coreFilter = '';
     this.clearDateFilter();
   }
+
+  onExport(element: any, e: any): void {
+    console.log(element);
+  }
 }
