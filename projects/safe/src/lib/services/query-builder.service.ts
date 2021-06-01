@@ -5,7 +5,7 @@ import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
-const DISABLED_FIELDS = ['createdBy', 'canUpdate', 'canDelete'];
+const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,7 @@ export class QueryBuilderService {
 
   // tslint:disable-next-line: variable-name
   public __availableQueries = new BehaviorSubject<any[]>([]);
+  private userFields = [];
 
   get availableQueries(): Observable<any> {
     return this.__availableQueries.asObservable();
@@ -27,6 +28,8 @@ export class QueryBuilderService {
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
       this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
+      this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
+                          .type.ofType.fields;
     });
   }
 
@@ -36,6 +39,9 @@ export class QueryBuilderService {
   }
 
   public getFieldsFromType(typeName: string): any[] {
+    if (typeName === 'User') {
+      return this.userFields;
+    }
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
     return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
   }
