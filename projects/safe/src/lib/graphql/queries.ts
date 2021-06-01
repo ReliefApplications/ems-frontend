@@ -23,6 +23,9 @@ export const GET_PROFILE = gql`
       application {
         id
       }
+      permissions {
+        id
+      }
     }
     permissions {
       id
