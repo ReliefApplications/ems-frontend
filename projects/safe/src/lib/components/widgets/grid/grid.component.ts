@@ -878,20 +878,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (value) {
       const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
       let data = value.record.data;
-      Object.keys(value.record.data).forEach(key => {
-        if (key === resourceField.name) {
-          if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0].id };
-          } else {
-            if (data[key]) {
-              const ids = selectedRecords.map(x => x.id);
-              data = { ...data, [key]: data[key].concat(ids) };
-            } else {
-              data = { ...data, [key]: selectedRecords.map(x => x.id) };
-            }
-          }
+      const key = resourceField.name;
+      if (resourceField.type === 'resource') {
+        data = { ...data, [key]: selectedRecords[0].id };
+      } else {
+        if (data[key]) {
+          const ids = selectedRecords.map(x => x.id);
+          data = { ...data, [key]: data[key].concat(ids) };
+        } else {
+          data = { ...data, [key]: selectedRecords.map(x => x.id) };
         }
-      }, this);
+      }
       this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
