@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
+const USER_FIELDS = ['id', 'name', 'username'];
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class QueryBuilderService {
     }).valueChanges.subscribe((res) => {
       this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
       this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
-                          .type.ofType.fields;
+        .type.ofType.fields.filter((x: any) => USER_FIELDS.includes(x.name));
     });
   }
 
