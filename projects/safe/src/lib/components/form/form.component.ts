@@ -337,15 +337,11 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     const data: any = {};
     // Loop on source fields
     for (const inputField of records[0].form?.fields || []) {
-
       // If source field match with target field
       if (this.form.fields?.some(x => x.name === inputField.name)) {
         const targetField = this.form.fields?.find(x => x.name === inputField.name);
-        console.log(inputField);
-
         // If source field got choices
         if (inputField.choices || inputField.choicesByUrl) {
-
           // If the target has multiple choices we concatenate all the source values
           if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
             if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
@@ -357,7 +353,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
               data[inputField.name] = records.map(x => x.data[inputField.name]);
             }
           }
-
           // If the target has single choice we we put the common choice if any or leave it empty
           else {
             if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
@@ -365,15 +360,12 @@ export class SafeFormComponent implements OnInit, OnDestroy {
             }
           }
         }
-
         // If source field is a free input and types are matching between source and target field
         else if (inputField.type === targetField.type) {
-
           // If type is text just put the text of the first record
           if (inputField.type === 'text') {
             data[inputField.name] = records[0].data[inputField.name];
           }
-
           // If type is different from text and there is a common value, put it. Otherwise leave empty
           else {
             if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
