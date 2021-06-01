@@ -12,13 +12,14 @@
     </div>
     <!-- GRID HEADER -->
     <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-        [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true"
+        [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
         [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [resizable]="true">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
+            <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
@@ -73,11 +74,24 @@
                                 </div>
                             </div>
                         </ng-template>
+                        <!-- DISPLAY ( boolean ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled/>
+                        </ng-template>
                         <!-- DISPLAY ( color ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
                         </ng-template>
+                        <!-- DISPLAY ( resource ) -->
+                        <!-- <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'resource'">
+                            <div *ngIf="dataItem[field.name]" class="textbox-container">
+                                <div #refSpan class="textbox">
+                                    {{dataItem[field.name]}}
+                                    <span class="record-link" matTooltip="Open the record details" (click)="onShowDetails(dataItem[field.name])">{{dataItem[field.name]}}</span>
+                                </div>
+                            </div>
+                        </ng-template> -->
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
@@ -300,7 +314,6 @@
                             Update
                         </button>
                     </mat-menu>
-
                 </ng-template>
             </kendo-grid-column>
         </ng-container>
