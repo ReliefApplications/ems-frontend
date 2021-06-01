@@ -901,6 +901,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           if (record) {
             this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, resourceField.name,
               value.record.data[targetFormField]));
+            this.dialog.open(SafeFormModalComponent, {
+              data: {
+                recordId: record.id,
+                locale: 'en'
+              }
+            });
           }
         }
       });
