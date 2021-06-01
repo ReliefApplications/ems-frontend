@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Search {{resourceName}}</h2>
+<mat-dialog-content>
+  <safe-resource-grid
+    [multiSelect]="multiSelect">
+  </safe-resource-grid>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Apply</button>
+</mat-dialog-actions>

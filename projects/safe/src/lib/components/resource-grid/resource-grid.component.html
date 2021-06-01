@@ -1,0 +1,36 @@
+<kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [height]="410" [selectable]="selectableSettings"
+            (selectionChange)="selectionChange($event)">
+  <ng-template kendoGridToolbarTemplate>
+    <input
+      placeholder="Search in all columns..."
+      kendoTextBox
+      (input)="onFilter($event.target)"
+    />
+  </ng-template>
+  <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
+    <mat-form-field *ngIf="availableRecords.length > 0">
+      <mat-select (selectionChange)="onAdd($event)" placeholder="Add record...">
+        <mat-option *ngFor="let data of availableRecords" [value]="data.value">{{data.text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="selectedRowsIndex.length > 0">
+      <button class='k-button' (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete selected rows
+      </button>
+    </ng-container>
+  </ng-template>
+  <kendo-grid-checkbox-column
+    [width]="41" [resizable]="false"
+    [columnMenu]="false" [showSelectAll]="multiSelect">
+  </kendo-grid-checkbox-column>
+  <ng-container *ngFor="let field of fields">
+    <safe-grid-column [field]="field.name" [customField]="field" (expandComment)="onExpandComment($event)"></safe-grid-column>
+  </ng-container>
+  <kendo-grid-column [columnMenu]="false" [width]="112">
+    <ng-template kendoGridCellTemplate let-idx="rowIndex">
+      <button (click)="onShowDetails(idx)" kendoButton [icon]="'detail-section'" [look]="'flat'">
+      </button>
+      <button (click)="onDeleteRow([idx])" kendoButton [icon]="'delete'" [look]="'flat'" *ngIf="!readOnly">
+      </button>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
