@@ -1,0 +1,22 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav-content>
+        <div class="sidenav-content">
+            <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+            <ng-container *ngIf="!loading && workflow">
+                <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper>
+                    <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
+                        <ng-container *ngIf="step.type === 'dashboard'">
+                            <app-dashboard [id]="step.content!" (goToNextStep)="onActivate($event, stepper)"></app-dashboard>
+                        </ng-container>
+                        <ng-container *ngIf="step.type === 'form'">
+                            <app-form [id]="step.content!"></app-form>
+                        </ng-container>
+                    </mat-step>
+                </mat-horizontal-stepper>
+            </ng-container>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
+        <ng-template #rightSidenav></ng-template>
+    </mat-sidenav>
+</mat-sidenav-container>
