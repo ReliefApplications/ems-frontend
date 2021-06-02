@@ -144,6 +144,12 @@ export const routes = [
                         // canActivate: [SafePermissionGuard]
                     },
                     {
+                        path: 'clients',
+                        loadChildren: () => import('./pages/clients/clients.module')
+                            .then(m => m.ClientsModule),
+                        // canActivate: [SafePermissionGuard]
+                    },
+                    {
                         path: '**',
                         pathMatch: 'full',
                         redirectTo: 'users'
