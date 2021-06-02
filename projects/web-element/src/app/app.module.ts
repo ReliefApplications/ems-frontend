@@ -33,6 +33,10 @@ import { FormComponent } from './components/form/form.component';
 import { WorkflowComponent } from './components/workflow/workflow.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ApplicationComponent } from './components/application/application.component';
+import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.component';
+import { WebFormComponent } from './elements/web-form/web-form.component';
+import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
+import { WebApplicationComponent } from './elements/web-application/web-application.component';
 
 localStorage.setItem('loaded', 'false');
 
@@ -118,7 +122,11 @@ export function provideApollo(httpLink: HttpLink): any {
     AppComponent,
     FormComponent,
     WorkflowComponent,
-    ApplicationComponent
+    ApplicationComponent,
+    WebWorkflowComponent,
+    WebFormComponent,
+    WebDashboardComponent,
+    WebApplicationComponent
   ],
   imports: [
     BrowserModule,

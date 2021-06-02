@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { Workflow, Step } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
@@ -13,8 +13,6 @@ export class WorkflowComponent implements OnInit {
 
   @Input() id = '';
 
-  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
-
   // === DATA ===
   public loading = true;
   public workflow?: Workflow;
@@ -23,9 +21,6 @@ export class WorkflowComponent implements OnInit {
   // === SELECTED STEP ===
   public selectedStep?: Step;
   public selectedIndex = 0;
-
-  // === DISPLAY ===
-  public showSidenav = false;
 
   constructor(
     private apollo: Apollo
