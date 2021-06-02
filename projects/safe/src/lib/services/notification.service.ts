@@ -38,6 +38,7 @@ export class SafeNotificationService {
       this.apollo.subscribe<NotificationSubscriptionResponse>({
         query: NOTIFICATION_SUBSCRIPTION
       }).subscribe(res => {
+        console.log("j'ai une notif");
         if (res.data && res.data.notification) {
           const notifications = this._notifications.getValue();
           if (notifications) {

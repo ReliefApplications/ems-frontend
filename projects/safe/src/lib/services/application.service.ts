@@ -47,6 +47,7 @@ import {
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import { NOTIFICATIONS } from '../const/notifications';
+import { ApplicationEditedSubscriptionResponse, APPLICATION_EDITED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 @Injectable({
   providedIn: 'root'
@@ -74,12 +75,19 @@ export class SafeApplicationService {
     }).subscribe(res => {
       this._application.next(res.data.application);
     });
+    console.log("j'ai load app");
+    this.apollo.subscribe<ApplicationEditedSubscriptionResponse>({
+      query: APPLICATION_EDITED_SUBSCRIPTION
+    }).subscribe(res => {
+      console.log("res = ", res);
+    });
   }
 
   /*
     Edit Application
   */
   editApplication(value: any): void {
+    console.log("je passe ici");
     const application = this._application.getValue();
     this.apollo.mutate<EditApplicationMutationResponse>(
       {
