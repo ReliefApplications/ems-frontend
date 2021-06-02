@@ -19,6 +19,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import {SafeDownloadService} from '../../../../../../safe/src/lib/services/download.service';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private downloadService: SafeDownloadService
   ) {}
 
   /*  Load the forms.
@@ -194,5 +196,18 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onExport(element: any, e: any): void {
     console.log(element);
+    this.downloadForm(element);
+  }
+
+  downloadForm(element: any): void {
+    const type = 'xlsx';
+    const path = `download/forms/form/${element.id}`;
+    const fileName = `${element.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    console.log('downloadService.getFile');
+    console.log(`${path}?${queryString}`);
+    console.log(`text/${type};charset=utf-8;`);
+    console.log(fileName);
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
