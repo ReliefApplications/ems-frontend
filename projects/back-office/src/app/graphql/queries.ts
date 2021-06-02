@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute
+  Application, Page, Workflow, Step, PositionAttribute, Client
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -655,18 +655,17 @@ export interface GetRecordDetailsQueryResponse {
   record: Record;
 }
 
-// === EDIT RECORD ===
-export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
-  editRecord(id: $id, data: $data, version: $version) {
+// === GET CLIENTS ===
+export const GET_CLIENTS = gql`
+query GetClients {
+  clients {
     id
-    data(display: $display)
+    name
     createdAt
-    modifiedAt
   }
 }`;
 
-export interface EditRecordMutationResponse {
+export interface GetClientsQueryResponse {
   loading: boolean;
-  editRecord: Record;
+  clients: Client[];
 }
