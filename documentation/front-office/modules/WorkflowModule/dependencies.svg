@@ -24,59 +24,59 @@
 <title>cluster_WorkflowModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="70,-70 70,-268 426,-268 426,-70 70,-70"/>
 </g>
+<g id="clust2" class="cluster">
+<title>cluster_WorkflowModule_declarations</title>
+<polygon fill="none" stroke="black" points="264,-78 264,-130 418,-130 418,-78 264,-78"/>
+</g>
 <g id="clust5" class="cluster">
 <title>cluster_WorkflowModule_exports</title>
-<polygon fill="none" stroke="black" points="164,-208 164,-260 322,-260 322,-208 164,-208"/>
+<polygon fill="none" stroke="black" points="174,-208 174,-260 332,-260 332,-208 174,-208"/>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_WorkflowModule_imports</title>
-<polygon fill="none" stroke="black" points="240,-78 240,-130 418,-130 418,-78 240,-78"/>
-</g>
-<g id="clust2" class="cluster">
-<title>cluster_WorkflowModule_declarations</title>
-<polygon fill="none" stroke="black" points="78,-78 78,-130 232,-130 232,-78 78,-78"/>
+<polygon fill="none" stroke="black" points="78,-78 78,-130 256,-130 256,-78 78,-78"/>
 </g>
 <!-- WorkflowComponent -->
 <g id="node1" class="node">
 <title>WorkflowComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="224.37,-122 85.63,-122 85.63,-86 224.37,-86 224.37,-122"/>
-<text text-anchor="middle" x="155" y="-99.8" font-family="Times,serif" font-size="14.00">WorkflowComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="410.37,-122 271.63,-122 271.63,-86 410.37,-86 410.37,-122"/>
+<text text-anchor="middle" x="341" y="-99.8" font-family="Times,serif" font-size="14.00">WorkflowComponent</text>
 </g>
 <!-- WorkflowModule -->
 <g id="node2" class="node">
 <title>WorkflowModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="301.58,-187 298.58,-191 277.58,-191 274.58,-187 184.42,-187 184.42,-151 301.58,-151 301.58,-187"/>
-<text text-anchor="middle" x="243" y="-164.8" font-family="Times,serif" font-size="14.00">WorkflowModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="311.58,-187 308.58,-191 287.58,-191 284.58,-187 194.42,-187 194.42,-151 311.58,-151 311.58,-187"/>
+<text text-anchor="middle" x="253" y="-164.8" font-family="Times,serif" font-size="14.00">WorkflowModule</text>
 </g>
 <!-- WorkflowComponent&#45;&gt;WorkflowModule -->
 <g id="edge1" class="edge">
 <title>WorkflowComponent&#45;&gt;WorkflowModule</title>
-<path fill="none" stroke="black" d="M204.45,-122.11C204.45,-122.11 204.45,-140.99 204.45,-140.99"/>
-<polygon fill="black" stroke="black" points="200.95,-140.99 204.45,-150.99 207.95,-140.99 200.95,-140.99"/>
+<path fill="none" stroke="black" d="M291.55,-122.11C291.55,-122.11 291.55,-140.99 291.55,-140.99"/>
+<polygon fill="black" stroke="black" points="288.05,-140.99 291.55,-150.99 295.05,-140.99 288.05,-140.99"/>
 </g>
 <!-- WorkflowComponent  -->
 <g id="node4" class="node">
 <title>WorkflowComponent </title>
-<polygon fill="#fb8072" stroke="black" points="314.37,-252 171.63,-252 171.63,-216 314.37,-216 314.37,-252"/>
-<text text-anchor="middle" x="243" y="-229.8" font-family="Times,serif" font-size="14.00">WorkflowComponent </text>
+<polygon fill="#fb8072" stroke="black" points="324.37,-252 181.63,-252 181.63,-216 324.37,-216 324.37,-252"/>
+<text text-anchor="middle" x="253" y="-229.8" font-family="Times,serif" font-size="14.00">WorkflowComponent </text>
 </g>
 <!-- WorkflowModule&#45;&gt;WorkflowComponent  -->
 <g id="edge3" class="edge">
 <title>WorkflowModule&#45;&gt;WorkflowComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M243,-187.11C243,-187.11 243,-205.99 243,-205.99"/>
-<polygon fill="black" stroke="black" points="239.5,-205.99 243,-215.99 246.5,-205.99 239.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M253,-187.11C253,-187.11 253,-205.99 253,-205.99"/>
+<polygon fill="black" stroke="black" points="249.5,-205.99 253,-215.99 256.5,-205.99 249.5,-205.99"/>
 </g>
 <!-- WorkflowRoutingModule -->
 <g id="node3" class="node">
 <title>WorkflowRoutingModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="410.2,-122 407.2,-126 386.2,-126 383.2,-122 247.8,-122 247.8,-86 410.2,-86 410.2,-122"/>
-<text text-anchor="middle" x="329" y="-99.8" font-family="Times,serif" font-size="14.00">WorkflowRoutingModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="248.2,-122 245.2,-126 224.2,-126 221.2,-122 85.8,-122 85.8,-86 248.2,-86 248.2,-122"/>
+<text text-anchor="middle" x="167" y="-99.8" font-family="Times,serif" font-size="14.00">WorkflowRoutingModule</text>
 </g>
 <!-- WorkflowRoutingModule&#45;&gt;WorkflowModule -->
 <g id="edge2" class="edge">
 <title>WorkflowRoutingModule&#45;&gt;WorkflowModule</title>
-<path fill="none" stroke="black" d="M274.72,-122.11C274.72,-122.11 274.72,-140.99 274.72,-140.99"/>
-<polygon fill="black" stroke="black" points="271.22,-140.99 274.72,-150.99 278.22,-140.99 271.22,-140.99"/>
+<path fill="none" stroke="black" d="M221.28,-122.11C221.28,-122.11 221.28,-140.99 221.28,-140.99"/>
+<polygon fill="black" stroke="black" points="217.78,-140.99 221.28,-150.99 224.78,-140.99 217.78,-140.99"/>
 </g>
 </g>
 </svg>

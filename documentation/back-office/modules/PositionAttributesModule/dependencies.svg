@@ -28,13 +28,13 @@
 <title>cluster_PositionAttributesModule_declarations</title>
 <polygon fill="none" stroke="black" points="263,-78 263,-130 463,-130 463,-78 263,-78"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_PositionAttributesModule_imports</title>
-<polygon fill="none" stroke="black" points="33,-78 33,-130 255,-130 255,-78 33,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_PositionAttributesModule_exports</title>
 <polygon fill="none" stroke="black" points="152,-208 152,-260 354,-260 354,-208 152,-208"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_PositionAttributesModule_imports</title>
+<polygon fill="none" stroke="black" points="33,-78 33,-130 255,-130 255,-78 33,-78"/>
 </g>
 <!-- PositionAttributesComponent -->
 <g id="node1" class="node">

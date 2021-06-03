@@ -24,71 +24,71 @@
 <title>cluster_FormsModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="25,-70 25,-268 471,-268 471,-70 25,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_FormsModule_declarations</title>
-<polygon fill="none" stroke="black" points="329,-78 329,-130 463,-130 463,-78 329,-78"/>
-</g>
 <g id="clust4" class="cluster">
 <title>cluster_FormsModule_imports</title>
-<polygon fill="none" stroke="black" points="33,-78 33,-130 321,-130 321,-78 33,-78"/>
+<polygon fill="none" stroke="black" points="175,-78 175,-130 463,-130 463,-78 175,-78"/>
 </g>
 <g id="clust5" class="cluster">
 <title>cluster_FormsModule_exports</title>
-<polygon fill="none" stroke="black" points="188,-208 188,-260 324,-260 324,-208 188,-208"/>
+<polygon fill="none" stroke="black" points="185,-208 185,-260 321,-260 321,-208 185,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_FormsModule_declarations</title>
+<polygon fill="none" stroke="black" points="33,-78 33,-130 167,-130 167,-78 33,-78"/>
 </g>
 <!-- FormsComponent -->
 <g id="node1" class="node">
 <title>FormsComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="454.61,-122 337.39,-122 337.39,-86 454.61,-86 454.61,-122"/>
-<text text-anchor="middle" x="396" y="-99.8" font-family="Times,serif" font-size="14.00">FormsComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="158.61,-122 41.39,-122 41.39,-86 158.61,-86 158.61,-122"/>
+<text text-anchor="middle" x="100" y="-99.8" font-family="Times,serif" font-size="14.00">FormsComponent</text>
 </g>
 <!-- FormsModule -->
 <g id="node2" class="node">
 <title>FormsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="303.83,-187 300.83,-191 279.83,-191 276.83,-187 208.17,-187 208.17,-151 303.83,-151 303.83,-187"/>
-<text text-anchor="middle" x="256" y="-164.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="300.83,-187 297.83,-191 276.83,-191 273.83,-187 205.17,-187 205.17,-151 300.83,-151 300.83,-187"/>
+<text text-anchor="middle" x="253" y="-164.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
 </g>
 <!-- FormsComponent&#45;&gt;FormsModule -->
 <g id="edge1" class="edge">
 <title>FormsComponent&#45;&gt;FormsModule</title>
-<path fill="none" stroke="black" d="M396,-122.11C396,-141.34 396,-169 396,-169 396,-169 313.79,-169 313.79,-169"/>
-<polygon fill="black" stroke="black" points="313.79,-165.5 303.79,-169 313.79,-172.5 313.79,-165.5"/>
+<path fill="none" stroke="black" d="M100,-122.11C100,-141.34 100,-169 100,-169 100,-169 195.01,-169 195.01,-169"/>
+<polygon fill="black" stroke="black" points="195.01,-172.5 205.01,-169 195.01,-165.5 195.01,-172.5"/>
 </g>
 <!-- FormsComponent  -->
 <g id="node5" class="node">
 <title>FormsComponent </title>
-<polygon fill="#fb8072" stroke="black" points="316.11,-252 195.89,-252 195.89,-216 316.11,-216 316.11,-252"/>
-<text text-anchor="middle" x="256" y="-229.8" font-family="Times,serif" font-size="14.00">FormsComponent </text>
+<polygon fill="#fb8072" stroke="black" points="313.11,-252 192.89,-252 192.89,-216 313.11,-216 313.11,-252"/>
+<text text-anchor="middle" x="253" y="-229.8" font-family="Times,serif" font-size="14.00">FormsComponent </text>
 </g>
 <!-- FormsModule&#45;&gt;FormsComponent  -->
 <g id="edge4" class="edge">
 <title>FormsModule&#45;&gt;FormsComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M256,-187.11C256,-187.11 256,-205.99 256,-205.99"/>
-<polygon fill="black" stroke="black" points="252.5,-205.99 256,-215.99 259.5,-205.99 252.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M253,-187.11C253,-187.11 253,-205.99 253,-205.99"/>
+<polygon fill="black" stroke="black" points="249.5,-205.99 253,-215.99 256.5,-205.99 249.5,-205.99"/>
 </g>
 <!-- AddFormModule -->
 <g id="node3" class="node">
 <title>AddFormModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="312.99,-122 309.99,-126 288.99,-126 285.99,-122 199.01,-122 199.01,-86 312.99,-86 312.99,-122"/>
-<text text-anchor="middle" x="256" y="-99.8" font-family="Times,serif" font-size="14.00">AddFormModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="454.99,-122 451.99,-126 430.99,-126 427.99,-122 341.01,-122 341.01,-86 454.99,-86 454.99,-122"/>
+<text text-anchor="middle" x="398" y="-99.8" font-family="Times,serif" font-size="14.00">AddFormModule</text>
 </g>
 <!-- AddFormModule&#45;&gt;FormsModule -->
 <g id="edge2" class="edge">
 <title>AddFormModule&#45;&gt;FormsModule</title>
-<path fill="none" stroke="black" d="M256,-122.11C256,-122.11 256,-140.99 256,-140.99"/>
-<polygon fill="black" stroke="black" points="252.5,-140.99 256,-150.99 259.5,-140.99 252.5,-140.99"/>
+<path fill="none" stroke="black" d="M398,-122.11C398,-141.34 398,-169 398,-169 398,-169 310.88,-169 310.88,-169"/>
+<polygon fill="black" stroke="black" points="310.88,-165.5 300.88,-169 310.88,-172.5 310.88,-165.5"/>
 </g>
 <!-- FormsRoutingModule -->
 <g id="node4" class="node">
 <title>FormsRoutingModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="181.45,-122 178.45,-126 157.45,-126 154.45,-122 40.55,-122 40.55,-86 181.45,-86 181.45,-122"/>
-<text text-anchor="middle" x="111" y="-99.8" font-family="Times,serif" font-size="14.00">FormsRoutingModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="323.45,-122 320.45,-126 299.45,-126 296.45,-122 182.55,-122 182.55,-86 323.45,-86 323.45,-122"/>
+<text text-anchor="middle" x="253" y="-99.8" font-family="Times,serif" font-size="14.00">FormsRoutingModule</text>
 </g>
 <!-- FormsRoutingModule&#45;&gt;FormsModule -->
 <g id="edge3" class="edge">
 <title>FormsRoutingModule&#45;&gt;FormsModule</title>
-<path fill="none" stroke="black" d="M111,-122.11C111,-141.34 111,-169 111,-169 111,-169 198.12,-169 198.12,-169"/>
-<polygon fill="black" stroke="black" points="198.12,-172.5 208.12,-169 198.12,-165.5 198.12,-172.5"/>
+<path fill="none" stroke="black" d="M253,-122.11C253,-122.11 253,-140.99 253,-140.99"/>
+<polygon fill="black" stroke="black" points="249.5,-140.99 253,-150.99 256.5,-140.99 249.5,-140.99"/>
 </g>
 </g>
 </svg>

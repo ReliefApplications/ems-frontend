@@ -24,13 +24,13 @@
 <title>cluster_SafeChooseRecordModalModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="118,-70 118,-268 378,-268 378,-70 118,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_SafeChooseRecordModalModule_declarations</title>
-<polygon fill="none" stroke="black" points="127,-78 127,-130 369,-130 369,-78 127,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_SafeChooseRecordModalModule_exports</title>
 <polygon fill="none" stroke="black" points="126,-208 126,-260 370,-260 370,-208 126,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_SafeChooseRecordModalModule_declarations</title>
+<polygon fill="none" stroke="black" points="127,-78 127,-130 369,-130 369,-78 127,-78"/>
 </g>
 <!-- SafeChooseRecordModalComponent -->
 <g id="node1" class="node">

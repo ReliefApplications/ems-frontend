@@ -24,13 +24,13 @@
 <title>cluster_ApplicationToolbarModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="134,-70 134,-268 362,-268 362,-70 134,-70"/>
 </g>
-<g id="clust5" class="cluster">
-<title>cluster_ApplicationToolbarModule_exports</title>
-<polygon fill="none" stroke="black" points="142,-208 142,-260 354,-260 354,-208 142,-208"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_ApplicationToolbarModule_declarations</title>
 <polygon fill="none" stroke="black" points="144,-78 144,-130 352,-130 352,-78 144,-78"/>
+</g>
+<g id="clust5" class="cluster">
+<title>cluster_ApplicationToolbarModule_exports</title>
+<polygon fill="none" stroke="black" points="142,-208 142,-260 354,-260 354,-208 142,-208"/>
 </g>
 <!-- ApplicationToolbarComponent -->
 <g id="node1" class="node">

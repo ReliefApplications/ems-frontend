@@ -70,13 +70,13 @@
                             <a href="#EDIT_USER" title="projects/front-office/src/app/graphql/mutations.ts"><b>EDIT_USER</b>&nbsp;&nbsp;&nbsp;(projects/.../mutations.ts)</a>
                         </li>
                         <li>
+                            <a href="#environment" title="projects/front-office/src/environments/environment.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(projects/.../environment.ts)</a>
+                        </li>
+                        <li>
                             <a href="#environment" title="projects/front-office/src/environments/environment.azure.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(projects/.../environment.azure.ts)</a>
                         </li>
                         <li>
                             <a href="#environment" title="projects/front-office/src/environments/environment.prod.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(projects/.../environment.prod.ts)</a>
-                        </li>
-                        <li>
-                            <a href="#environment" title="projects/front-office/src/environments/environment.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(projects/.../environment.ts)</a>
                         </li>
                         <li>
                             <a href="#GET_APPLICATION_BY_ID" title="projects/front-office/src/app/graphql/queries.ts"><b>GET_APPLICATION_BY_ID</b>&nbsp;&nbsp;&nbsp;(projects/.../queries.ts)</a>
@@ -109,10 +109,10 @@
                             <a href="#require" title="projects/front-office/src/test.ts"><b>require</b>&nbsp;&nbsp;&nbsp;(projects/.../test.ts)</a>
                         </li>
                         <li>
-                            <a href="#routes" title="projects/front-office/src/app/auth/auth-routing.module.ts"><b>routes</b>&nbsp;&nbsp;&nbsp;(projects/.../auth-routing.module.ts)</a>
+                            <a href="#routes" title="projects/front-office/src/app/dashboard/dashboard-routing.module.ts"><b>routes</b>&nbsp;&nbsp;&nbsp;(projects/.../dashboard-routing.module.ts)</a>
                         </li>
                         <li>
-                            <a href="#routes" title="projects/front-office/src/app/dashboard/dashboard-routing.module.ts"><b>routes</b>&nbsp;&nbsp;&nbsp;(projects/.../dashboard-routing.module.ts)</a>
+                            <a href="#routes" title="projects/front-office/src/app/auth/auth-routing.module.ts"><b>routes</b>&nbsp;&nbsp;&nbsp;(projects/.../auth-routing.module.ts)</a>
                         </li>
                     </ul>
                 </td>
@@ -266,6 +266,47 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
             </tbody>
         </table>
 </section>
+    <h3>projects/front-office/src/environments/environment.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="environment"></a>
+                        <span class="name">
+                            <b>
+                            environment</b>
+                            <a href="#environment"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>{
+  production: false,
+  API_URL: &#x27;http://localhost:3000&#x27;,
+  SUBSCRIPTION_API_URL: &#x27;ws://localhost:3000&#x27;,
+  clientId: &#x27;d62083d8-fdc0-4a6a-8618-652380eebdb9&#x27;,
+  authority: &#x27;https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f&#x27;,
+  redirectUrl: &#x27;http://localhost:4200&#x27;,
+  postLogoutRedirectUri: &#x27;http://localhost:4200/auth&#x27;,
+  frontOfficeUri: &#x27;http://localhost:4200/&#x27;,
+  backOfficeUri: &#x27;http://localhost:4200/&#x27;,
+  module: &#x27;frontoffice&#x27;
+}</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
     <h3>projects/front-office/src/environments/environment.azure.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
@@ -339,47 +380,6 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
   postLogoutRedirectUri: &#x27;https://safe.development.humanitarian.tech/auth&#x27;,
   frontOfficeUri: &#x27;https://safe.development.humanitarian.tech/&#x27;,
   backOfficeUri: &#x27;https://safe-backoffice.development.humanitarian.tech/&#x27;,
-  module: &#x27;frontoffice&#x27;
-}</code>
-                        </td>
-                    </tr>
-
-
-            </tbody>
-        </table>
-</section>
-    <h3>projects/front-office/src/environments/environment.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="environment"></a>
-                        <span class="name">
-                            <b>
-                            environment</b>
-                            <a href="#environment"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Default value : </i><code>{
-  production: false,
-  API_URL: &#x27;http://localhost:3000&#x27;,
-  SUBSCRIPTION_API_URL: &#x27;ws://localhost:3000&#x27;,
-  clientId: &#x27;d62083d8-fdc0-4a6a-8618-652380eebdb9&#x27;,
-  authority: &#x27;https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f&#x27;,
-  redirectUrl: &#x27;http://localhost:4200&#x27;,
-  postLogoutRedirectUri: &#x27;http://localhost:4200/auth&#x27;,
-  frontOfficeUri: &#x27;http://localhost:4200/&#x27;,
-  backOfficeUri: &#x27;http://localhost:4200/&#x27;,
   module: &#x27;frontoffice&#x27;
 }</code>
                         </td>
@@ -742,51 +742,6 @@ query GetPermissions($application: Boolean) {
             </tbody>
         </table>
 </section>
-    <h3>projects/front-office/src/app/auth/auth-routing.module.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="routes"></a>
-                        <span class="name">
-                            <b>
-                            routes</b>
-                            <a href="#routes"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>    <code>[]</code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Default value : </i><code>[
-    {
-        path: &#x27;&#x27;,
-        children: [
-            {
-                path: &#x27;&#x27;,
-                loadChildren: () &#x3D;&gt; import(&#x27;./pages/login/login.module&#x27;)
-                .then(m &#x3D;&gt; m.LoginModule),
-            },
-            {
-                path: &#x27;login&#x27;,
-                redirectTo: &#x27;&#x27;
-            },
-        ]
-    }
-]</code>
-                        </td>
-                    </tr>
-
-
-            </tbody>
-        </table>
-</section>
     <h3>projects/front-office/src/app/dashboard/dashboard-routing.module.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
@@ -853,6 +808,51 @@ query GetPermissions($application: Boolean) {
       }
     ]
   }
+]</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>projects/front-office/src/app/auth/auth-routing.module.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="routes"></a>
+                        <span class="name">
+                            <b>
+                            routes</b>
+                            <a href="#routes"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>[]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[
+    {
+        path: &#x27;&#x27;,
+        children: [
+            {
+                path: &#x27;&#x27;,
+                loadChildren: () &#x3D;&gt; import(&#x27;./pages/login/login.module&#x27;)
+                .then(m &#x3D;&gt; m.LoginModule),
+            },
+            {
+                path: &#x27;login&#x27;,
+                redirectTo: &#x27;&#x27;
+            },
+        ]
+    }
 ]</code>
                         </td>
                     </tr>

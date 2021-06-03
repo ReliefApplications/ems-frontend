@@ -24,13 +24,13 @@
 <title>cluster_SafeProfileModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="158,-70 158,-268 338,-268 338,-70 158,-70"/>
 </g>
-<g id="clust5" class="cluster">
-<title>cluster_SafeProfileModule_exports</title>
-<polygon fill="none" stroke="black" points="166,-208 166,-260 330,-260 330,-208 166,-208"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_SafeProfileModule_declarations</title>
 <polygon fill="none" stroke="black" points="168,-78 168,-130 328,-130 328,-78 168,-78"/>
+</g>
+<g id="clust5" class="cluster">
+<title>cluster_SafeProfileModule_exports</title>
+<polygon fill="none" stroke="black" points="166,-208 166,-260 330,-260 330,-208 166,-208"/>
 </g>
 <!-- SafeProfileComponent -->
 <g id="node1" class="node">

@@ -65,6 +65,14 @@
 <p>Finally, run:</p>
 <div><pre class="line-numbers"><code class="language-none">webpack-bundle-analyzer ./dist/&lt;project-name&gt;/stats.json</code></pre></div><p>and your browser will pop up the page at localhost:8888.</p>
 <h1 id="useful-commands">Useful commands</h1>
+<h2 id="compodoc">Compodoc</h2>
+<p>The package.json contains commands to generate Angular documentation.</p>
+<p>Commands have to be executed once per project, and executed again after any modification of the related code.</p>
+<p>Subsequent command will generate the documentation:</p>
+<div><pre class="line-numbers"><code class="language-none">npm run compodoc:&lt;project&gt;</code></pre></div><p>If the command fails, check that compodoc is installed on your computer.
+You can execute following command for that:</p>
+<div><pre class="line-numbers"><code class="language-none">npm i -g compodoc</code></pre></div><p>A subfolder should be generated under <em>documentation</em> folder.</p>
+<p>You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project.</p>
 <h2 id="development-server">Development server</h2>
 <p>Run <code>ng serve</code> for a dev server. Navigate to <code>http://localhost:4200/</code>. The app will automatically reload if you change any of the source files.</p>
 <p>It is needed to use the <code>--project</code> flag in order to serve a specific project.</p>

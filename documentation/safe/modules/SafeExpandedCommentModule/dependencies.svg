@@ -24,13 +24,13 @@
 <title>cluster_SafeExpandedCommentModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="122,-70 122,-268 374,-268 374,-70 122,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_SafeExpandedCommentModule_declarations</title>
-<polygon fill="none" stroke="black" points="131,-78 131,-130 365,-130 365,-78 131,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_SafeExpandedCommentModule_exports</title>
 <polygon fill="none" stroke="black" points="130,-208 130,-260 366,-260 366,-208 130,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_SafeExpandedCommentModule_declarations</title>
+<polygon fill="none" stroke="black" points="131,-78 131,-130 365,-130 365,-78 131,-78"/>
 </g>
 <!-- SafeExpandedCommentComponent -->
 <g id="node1" class="node">

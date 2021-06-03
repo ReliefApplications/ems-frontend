@@ -28,13 +28,13 @@
 <title>cluster_SafeLayoutModule_declarations</title>
 <polygon fill="none" stroke="black" points="263,-78 263,-130 425,-130 425,-78 263,-78"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_SafeLayoutModule_imports</title>
-<polygon fill="none" stroke="black" points="71,-78 71,-130 255,-130 255,-78 71,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_SafeLayoutModule_exports</title>
 <polygon fill="none" stroke="black" points="169,-208 169,-260 335,-260 335,-208 169,-208"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_SafeLayoutModule_imports</title>
+<polygon fill="none" stroke="black" points="71,-78 71,-130 255,-130 255,-78 71,-78"/>
 </g>
 <!-- SafeLayoutComponent -->
 <g id="node1" class="node">

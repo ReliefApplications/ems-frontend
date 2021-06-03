@@ -24,13 +24,13 @@
 <title>cluster_PreviewToolbarModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="144,-70 144,-268 352,-268 352,-70 144,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_PreviewToolbarModule_declarations</title>
-<polygon fill="none" stroke="black" points="154,-78 154,-130 342,-130 342,-78 154,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_PreviewToolbarModule_exports</title>
 <polygon fill="none" stroke="black" points="152,-208 152,-260 344,-260 344,-208 152,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_PreviewToolbarModule_declarations</title>
+<polygon fill="none" stroke="black" points="154,-78 154,-130 342,-130 342,-78 154,-78"/>
 </g>
 <!-- PreviewToolbarComponent -->
 <g id="node1" class="node">

@@ -287,7 +287,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-DashboardModule-9d4f32bef0025eb125fedb9fdac3d2b4-1"' :
                                             'id="xs-components-links-module-DashboardModule-9d4f32bef0025eb125fedb9fdac3d2b4-1"' }>
                                             <li class="link">
-                                                <a href="components/DashboardComponent-1.html"
+                                                <a href="components/DashboardComponent.html"
                                                     data-type="entity-link" data-context="sub-entity" data-context-id="modules">DashboardComponent</a>
                                             </li>
                                         </ul>
@@ -305,7 +305,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-DashboardModule-dfb0d1494670593771c8d8fc045bf5d3-2"' :
                                             'id="xs-components-links-module-DashboardModule-dfb0d1494670593771c8d8fc045bf5d3-2"' }>
                                             <li class="link">
-                                                <a href="components/DashboardComponent-1.html"
+                                                <a href="components/DashboardComponent-2.html"
                                                     data-type="entity-link" data-context="sub-entity" data-context-id="modules">DashboardComponent</a>
                                             </li>
                                             <li class="link">
@@ -717,6 +717,10 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-RolesModule-88ec110a0aac99c3a22ae281e3e00f21-1"' :
                                             'id="xs-components-links-module-RolesModule-88ec110a0aac99c3a22ae281e3e00f21-1"' }>
                                             <li class="link">
+                                                <a href="components/RolesComponent-1.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">RolesComponent</a>
+                                            </li>
+                                            <li class="link">
                                                 <a href="components/RolesComponent.html"
                                                     data-type="entity-link" data-context="sub-entity" data-context-id="modules">RolesComponent</a>
                                             </li>
@@ -937,10 +941,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         </div>
                         <ul class="links collapse " ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
                             <li class="link">
-                                <a href="components/DashboardComponent-2.html" data-type="entity-link">DashboardComponent</a>
-                            </li>
-                            <li class="link">
-                                <a href="components/RolesComponent-1.html" data-type="entity-link">RolesComponent</a>
+                                <a href="components/DashboardComponent-1.html" data-type="entity-link">DashboardComponent</a>
                             </li>
                         </ul>
                     </li>

@@ -24,23 +24,23 @@
 <title>cluster_DuplicateApplicationModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="71,-70 71,-268 425,-268 425,-70 71,-70"/>
 </g>
+<g id="clust2" class="cluster">
+<title>cluster_DuplicateApplicationModule_declarations</title>
+<polygon fill="none" stroke="black" points="199,-78 199,-130 417,-130 417,-78 199,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_DuplicateApplicationModule_imports</title>
+<polygon fill="none" stroke="black" points="79,-78 79,-130 191,-130 191,-78 79,-78"/>
+</g>
 <g id="clust5" class="cluster">
 <title>cluster_DuplicateApplicationModule_exports</title>
 <polygon fill="none" stroke="black" points="137,-208 137,-260 359,-260 359,-208 137,-208"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_DuplicateApplicationModule_imports</title>
-<polygon fill="none" stroke="black" points="305,-78 305,-130 417,-130 417,-78 305,-78"/>
-</g>
-<g id="clust2" class="cluster">
-<title>cluster_DuplicateApplicationModule_declarations</title>
-<polygon fill="none" stroke="black" points="79,-78 79,-130 297,-130 297,-78 79,-78"/>
-</g>
 <!-- DuplicateApplicationComponent -->
 <g id="node1" class="node">
 <title>DuplicateApplicationComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="288.85,-122 87.15,-122 87.15,-86 288.85,-86 288.85,-122"/>
-<text text-anchor="middle" x="188" y="-99.8" font-family="Times,serif" font-size="14.00">DuplicateApplicationComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="408.85,-122 207.15,-122 207.15,-86 408.85,-86 408.85,-122"/>
+<text text-anchor="middle" x="308" y="-99.8" font-family="Times,serif" font-size="14.00">DuplicateApplicationComponent</text>
 </g>
 <!-- DuplicateApplicationModule -->
 <g id="node2" class="node">
@@ -51,8 +51,8 @@
 <!-- DuplicateApplicationComponent&#45;&gt;DuplicateApplicationModule -->
 <g id="edge1" class="edge">
 <title>DuplicateApplicationComponent&#45;&gt;DuplicateApplicationModule</title>
-<path fill="none" stroke="black" d="M223.45,-122.11C223.45,-122.11 223.45,-140.99 223.45,-140.99"/>
-<polygon fill="black" stroke="black" points="219.95,-140.99 223.45,-150.99 226.95,-140.99 219.95,-140.99"/>
+<path fill="none" stroke="black" d="M272.55,-122.11C272.55,-122.11 272.55,-140.99 272.55,-140.99"/>
+<polygon fill="black" stroke="black" points="269.05,-140.99 272.55,-150.99 276.05,-140.99 269.05,-140.99"/>
 </g>
 <!-- DuplicateApplicationComponent  -->
 <g id="node4" class="node">
@@ -69,14 +69,14 @@
 <!-- FormsModule -->
 <g id="node3" class="node">
 <title>FormsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="408.83,-122 405.83,-126 384.83,-126 381.83,-122 313.17,-122 313.17,-86 408.83,-86 408.83,-122"/>
-<text text-anchor="middle" x="361" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="182.83,-122 179.83,-126 158.83,-126 155.83,-122 87.17,-122 87.17,-86 182.83,-86 182.83,-122"/>
+<text text-anchor="middle" x="135" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
 </g>
 <!-- FormsModule&#45;&gt;DuplicateApplicationModule -->
 <g id="edge2" class="edge">
 <title>FormsModule&#45;&gt;DuplicateApplicationModule</title>
-<path fill="none" stroke="black" d="M325.69,-122.11C325.69,-122.11 325.69,-140.99 325.69,-140.99"/>
-<polygon fill="black" stroke="black" points="322.19,-140.99 325.69,-150.99 329.19,-140.99 322.19,-140.99"/>
+<path fill="none" stroke="black" d="M170.31,-122.11C170.31,-122.11 170.31,-140.99 170.31,-140.99"/>
+<polygon fill="black" stroke="black" points="166.81,-140.99 170.31,-150.99 173.81,-140.99 166.81,-140.99"/>
 </g>
 </g>
 </svg>
