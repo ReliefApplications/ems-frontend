@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -160,6 +160,9 @@
                             <a href="#EDIT_USER" title="projects/safe/src/lib/graphql/mutations.ts"><b>EDIT_USER</b>&nbsp;&nbsp;&nbsp;(projects/.../mutations.ts)</a>
                         </li>
                         <li>
+                            <a href="#EDIT_USER_PROFILE" title="projects/safe/src/lib/graphql/mutations.ts"><b>EDIT_USER_PROFILE</b>&nbsp;&nbsp;&nbsp;(projects/.../mutations.ts)</a>
+                        </li>
+                        <li>
                             <a href="#GET_APPLICATION_BY_ID" title="projects/safe/src/lib/graphql/queries.ts"><b>GET_APPLICATION_BY_ID</b>&nbsp;&nbsp;&nbsp;(projects/.../queries.ts)</a>
                         </li>
                         <li>
@@ -167,6 +170,9 @@
                         </li>
                         <li>
                             <a href="#GET_FORM_BY_ID" title="projects/safe/src/lib/graphql/queries.ts"><b>GET_FORM_BY_ID</b>&nbsp;&nbsp;&nbsp;(projects/.../queries.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GET_FORM_STRUCTURE" title="projects/safe/src/lib/graphql/queries.ts"><b>GET_FORM_STRUCTURE</b>&nbsp;&nbsp;&nbsp;(projects/.../queries.ts)</a>
                         </li>
                         <li>
                             <a href="#GET_FORMS" title="projects/safe/src/lib/graphql/queries.ts"><b>GET_FORMS</b>&nbsp;&nbsp;&nbsp;(projects/.../queries.ts)</a>
@@ -281,6 +287,12 @@
                         </li>
                         <li>
                             <a href="#TITLE_POSITIONS" title="projects/safe/src/lib/components/widgets/chart-settings/constants.ts"><b>TITLE_POSITIONS</b>&nbsp;&nbsp;&nbsp;(projects/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UPLOAD_FILE" title="projects/safe/src/lib/graphql/mutations.ts"><b>UPLOAD_FILE</b>&nbsp;&nbsp;&nbsp;(projects/.../mutations.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#USER_FIELDS" title="projects/safe/src/lib/services/query-builder.service.ts"><b>USER_FIELDS</b>&nbsp;&nbsp;&nbsp;(projects/.../query-builder.service.ts)</a>
                         </li>
                     </ul>
                 </td>
@@ -975,8 +987,8 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>gql&#x60;
-mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
-  editRole(id: $id, permissions: $permissions, channels: $channels) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID], $title: String) {
+  editRole(id: $id, permissions: $permissions, channels: $channels, title: $title) {
     id
     title
     permissions {
@@ -1063,6 +1075,43 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
       }
     }
     oid
+  }
+}&#x60;</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="EDIT_USER_PROFILE"></a>
+                        <span class="name">
+                            <b>
+                            EDIT_USER_PROFILE</b>
+                            <a href="#EDIT_USER_PROFILE"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>gql&#x60;
+mutation editUserProfile($profile: UserProfileInputType!) {
+  editUserProfile(profile: $profile) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+    favoriteApp
   }
 }&#x60;</code>
                         </td>
@@ -1193,6 +1242,30 @@ mutation seeNotification($id: ID!) {
                             <i>Default value : </i><code>gql&#x60;
 mutation seeNotifications($ids: [ID]!) {
   seeNotifications(ids: $ids)
+}&#x60;</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="UPLOAD_FILE"></a>
+                        <span class="name">
+                            <b>
+                            UPLOAD_FILE</b>
+                            <a href="#UPLOAD_FILE"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>gql&#x60;
+mutation uploadFile($file: Upload!, $form: ID!) {
+  uploadFile(file: $file, form: $form)
 }&#x60;</code>
                         </td>
                     </tr>
@@ -1794,7 +1867,7 @@ mutation seeNotifications($ids: [ID]!) {
                     </tr>
                     <tr>
                         <td class="col-md-4">
-                            <i>Default value : </i><code>[&#x27;id&#x27;, &#x27;createdAt&#x27;, &#x27;createdBy&#x27;, &#x27;modifiedAt&#x27;, &#x27;canUpdate&#x27;, &#x27;canDelete&#x27;]</code>
+                            <i>Default value : </i><code>[&#x27;id&#x27;, &#x27;createdAt&#x27;, &#x27;createdBy&#x27;, &#x27;lastUpdatedBy&#x27;, &#x27;modifiedAt&#x27;, &#x27;canUpdate&#x27;, &#x27;canDelete&#x27;]</code>
                         </td>
                     </tr>
 
@@ -1821,7 +1894,34 @@ mutation seeNotifications($ids: [ID]!) {
                     </tr>
                     <tr>
                         <td class="col-md-4">
-                            <i>Default value : </i><code>[&#x27;createdBy&#x27;, &#x27;canUpdate&#x27;, &#x27;canDelete&#x27;]</code>
+                            <i>Default value : </i><code>[&#x27;canUpdate&#x27;, &#x27;canDelete&#x27;]</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="USER_FIELDS"></a>
+                        <span class="name">
+                            <b>
+                            USER_FIELDS</b>
+                            <a href="#USER_FIELDS"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>[]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[&#x27;id&#x27;, &#x27;name&#x27;, &#x27;username&#x27;]</code>
                         </td>
                     </tr>
 
@@ -2094,11 +2194,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     structure
     status
     fields
-    versions {
-      id
-      createdAt
-      data
-    }
     records(filters: $filters) {
       id
       data(display: $display)
@@ -2106,28 +2201,37 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     resource{
       id
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
     canCreate
     canUpdate
   }
 }&#x60;</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="GET_FORM_STRUCTURE"></a>
+                        <span class="name">
+                            <b>
+                            GET_FORM_STRUCTURE</b>
+                            <a href="#GET_FORM_STRUCTURE"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>gql&#x60;
+  query GetFormById($id: ID!) {
+    form(id: $id) {
+      id
+      structure
+    }
+  }&#x60;</code>
                         </td>
                     </tr>
 
@@ -2266,6 +2370,9 @@ query GetPermissions($application: Boolean) {
       application {
         id
       }
+      permissions {
+        id
+      }
     }
     permissions {
       id
@@ -2274,9 +2381,16 @@ query GetPermissions($application: Boolean) {
     }
     applications {
       id
+      positionAttributes {
+        value
+      }
       name
+      role {
+        title
+      }
     }
     oid
+    favoriteApp
   }
 }&#x60;</code>
                         </td>
@@ -3710,6 +3824,7 @@ subscription RecordAddedSubscription($resource: ID, $form: ID) {
     emailRegistered: &#x27;Some emails are already part of the application and will not be invited.&#x27;,
     isFormatValid: &#x27;Please import valid .csv file.&#x27;,
     dataRecovered: &#x27;The data has been recovered&#x27;,
+    profileSaved: &#x27;Preferences saved.&#x27;
 }</code>
                         </td>
                     </tr>
@@ -3754,7 +3869,7 @@ subscription RecordAddedSubscription($resource: ID, $form: ID) {
   &#x27;html&#x27;,
   // &#x27;signaturepad&#x27;,
   &#x27;expression&#x27;,
-  // &#x27;file&#x27;,
+  &#x27;file&#x27;,
   &#x27;matrix&#x27;,
   &#x27;matrixdropdown&#x27;,
   &#x27;matrixdynamic&#x27;,
@@ -3793,12 +3908,13 @@ subscription RecordAddedSubscription($resource: ID, $form: ID) {
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>[
-  {value: &#x27;eq&#x27;, text: &#x27;equals&#x27;},
+  {value: &#x27;&#x3D;&#x27;, text: &#x27;equals&#x27;},
+  {value: &#x27;!&#x3D;&#x27;, text: &#x27;not equals&#x27;},
   {value: &#x27;contains&#x27;, text: &#x27;contains&#x27;},
-  {value: &#x27;gt&#x27;, text: &#x27;greater&#x27;},
-  {value: &#x27;lt&#x27;, text: &#x27;less&#x27;},
-  {value: &#x27;gte&#x27;, text: &#x27;greater or equals&#x27;},
-  {value: &#x27;lte&#x27;, text: &#x27;less or equals&#x27;}
+  {value: &#x27;&gt;&#x27;, text: &#x27;greater&#x27;},
+  {value: &#x27;&lt;&#x27;, text: &#x27;less&#x27;},
+  {value: &#x27;&gt;&#x3D;&#x27;, text: &#x27;greater or equals&#x27;},
+  {value: &#x27;&lt;&#x3D;&#x27;, text: &#x27;less or equals&#x27;}
 ]</code>
                         </td>
                     </tr>

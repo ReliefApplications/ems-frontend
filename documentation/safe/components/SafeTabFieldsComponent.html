@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -174,6 +174,10 @@
                             <li>
                                     <span class="modifier">Public</span>
                                 <a href="#onEdit">onEdit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#prettifyLabel">prettifyLabel</a>
                             </li>
                         </ul>
                     </td>
@@ -601,6 +605,80 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="prettifyLabel"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Private</span>
+                            prettifyLabel
+                        </b>
+                        <a href="#prettifyLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>prettifyLabel(label: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="87"
+                            class="link-to-prism">projects/safe/src/lib/components/query-builder/tab-fields/tab-fields.component.ts:87</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Prettify grid label</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>label</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>
     <section>
     
@@ -825,7 +903,20 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           componentRef.destroy();
         });
       }
+    } else {
+      this.fieldForm?.patchValue({
+        label: this.prettifyLabel(this.fieldForm.value.label)
+      });
     }
+  }
+
+  /**
+   * Prettify grid label
+   */
+  private prettifyLabel(label: string): string {
+    label &#x3D; label.replace(&#x27;_&#x27;, &#x27; &#x27;).replace(/([a-z])([A-Z])/g, &#x27;$1 $2&#x27;);
+    label &#x3D; label.charAt(0).toUpperCase() + label.slice(1);
+    return label;
   }
 }
 </code></pre>
@@ -1002,7 +1093,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><div class="info-text">Select data points below and drag them to \'selected fields\' on the right</div><div cdkDropListGroup class="field-wrapper">    <div class="field-container" *ngIf="!fieldForm">        <h2>Available fields</h2>        <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled            (cdkDropListDropped)="drop($event)">            <div class="field-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span                    class="field-type" *ngIf="field.type.kind !== \'SCALAR\'">{{ field.type.kind }}</span></div>        </div>    </div>    <div class="field-container" *ngIf="!fieldForm">        <h2>Selected fields</h2>        <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">            <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>                <div>                    <span>{{ field.name }}</span>                    <button class="field-error" mat-icon-button (click)="onEdit(index)" *ngIf="form.at(index).invalid">                        <mat-icon>error</mat-icon>                    </button>                </div>                <div>                    <span class="field-type" *ngIf="field.type.kind !== \'SCALAR\'">{{ field.type.kind }}</span>                    <button mat-icon-button (click)="onEdit(index)">                        <mat-icon>edit</mat-icon>                    </button>                </div>            </div>        </div>    </div>    <div class="field-container" *ngIf="fieldForm">        <ng-container *ngIf="fieldForm.value.kind === \'SCALAR\'">            <form [formGroup]="fieldForm" class="field-form">                <button mat-icon-button (click)="onCloseField()">                    <mat-icon>arrow_back</mat-icon>                </button>                <mat-form-field appearance="outline">                    <mat-label>Field name</mat-label>                    <input matInput formControlName="name" type="text" [disabled]="true"/>                </mat-form-field>                <mat-form-field appearance="outline">                    <mat-label>Label</mat-label>                    <input matInput formControlName="label" type="text"/>                </mat-form-field>            </form>        </ng-container>        <ng-container *ngIf="fieldForm.value.kind !== \'SCALAR\'" [ngTemplateOutlet]="childTemplate"></ng-container>    </div></div><ng-template #childTemplate></ng-template></div>'
-    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
+    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeProfileComponent', 'selector': 'safe-profile'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SafeTabFieldsComponent'};
 </script>

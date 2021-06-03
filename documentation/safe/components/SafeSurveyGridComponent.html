@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -402,8 +402,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="115"
-                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:115</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="114"
+                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:114</a></div>
                 </td>
             </tr>
 
@@ -474,8 +474,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="131"
-                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:131</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="130"
+                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:130</a></div>
                 </td>
             </tr>
 
@@ -546,8 +546,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="160"
-                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:160</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="159"
+                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:159</a></div>
                 </td>
             </tr>
 
@@ -616,8 +616,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="102"
-                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:102</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="101"
+                            class="link-to-prism">projects/safe/src/lib/components/survey/survey-grid/survey-grid.component.ts:101</a></div>
                 </td>
             </tr>
 
@@ -1058,7 +1058,6 @@ export class SafeSurveyGridComponent implements OnInit{
           const records &#x3D; res.data.resource.records || [];
           this.availableRecords &#x3D; [];
           const selectedIds &#x3D; this.selectedIds.getValue();
-          // const value &#x3D; this.availableRecords.filter(d &#x3D;&gt; d.value &#x3D;&#x3D;&#x3D; event.value)[0];
           const selectedRecords &#x3D; records.filter(x &#x3D;&gt; selectedIds.includes(x.id)).map(x &#x3D;&gt; {
             return {
               value: x.id,
@@ -1066,7 +1065,7 @@ export class SafeSurveyGridComponent implements OnInit{
             };
           });
           this.gridData &#x3D; {
-            data: selectedRecords,
+            data: Object.assign(this.gridData.data, selectedRecords),
             total: selectedRecords.length
           };
           this.availableRecords &#x3D; records.filter(x &#x3D;&gt; !selectedIds.includes(x.id)).map(x &#x3D;&gt; {
@@ -1223,7 +1222,7 @@ export class SafeSurveyGridComponent implements OnInit{
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><kendo-grid [data]="gridData" [autoSize]="false" [height]="410" [selectable]="selectableSettings" (selectionChange)="selectionChange($event)">  <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">    <mat-form-field *ngIf="availableRecords.length > 0">      <mat-select (selectionChange)="onAdd($event)" placeholder="Add record...">        <mat-option *ngFor="let data of availableRecords" [value]="data.value">{{data.text}}</mat-option>      </mat-select>    </mat-form-field>    <ng-container *ngIf="selectedRowsIndex.length > 0">      <button class=\'k-button\' (click)="onDeleteRow(selectedRowsIndex)" style="float: right">Delete selected rows      </button>    </ng-container>  </ng-template>  <kendo-grid-checkbox-column    [width]="41" [resizable]="false"    [columnMenu]="false" [showSelectAll]="true">  </kendo-grid-checkbox-column>  <kendo-grid-column field="text" title="Name" [width]="250">  </kendo-grid-column>  <kendo-grid-column [columnMenu]="false" [width]="112">    <ng-template kendoGridCellTemplate let-idx="rowIndex">      <button (click)="onShowDetails(idx)" kendoButton [icon]="\'detail-section\'" [look]="\'flat\'">      </button>      <button (click)="onDeleteRow([idx])"  kendoButton [icon]="\'delete\'" [look]="\'flat\'" *ngIf="!readOnly">      </button>    </ng-template>  </kendo-grid-column></kendo-grid></div>'
-    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
+    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeProfileComponent', 'selector': 'safe-profile'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SafeSurveyGridComponent'};
 </script>

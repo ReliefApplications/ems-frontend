@@ -24,71 +24,71 @@
 <title>cluster_ResourcesModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="13,-70 13,-268 483,-268 483,-70 13,-70"/>
 </g>
-<g id="clust5" class="cluster">
-<title>cluster_ResourcesModule_exports</title>
-<polygon fill="none" stroke="black" points="193,-208 193,-260 351,-260 351,-208 193,-208"/>
+<g id="clust2" class="cluster">
+<title>cluster_ResourcesModule_declarations</title>
+<polygon fill="none" stroke="black" points="321,-78 321,-130 475,-130 475,-78 321,-78"/>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_ResourcesModule_imports</title>
-<polygon fill="none" stroke="black" points="183,-78 183,-130 475,-130 475,-78 183,-78"/>
+<polygon fill="none" stroke="black" points="21,-78 21,-130 313,-130 313,-78 21,-78"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_ResourcesModule_declarations</title>
-<polygon fill="none" stroke="black" points="21,-78 21,-130 175,-130 175,-78 21,-78"/>
+<g id="clust5" class="cluster">
+<title>cluster_ResourcesModule_exports</title>
+<polygon fill="none" stroke="black" points="178,-208 178,-260 336,-260 336,-208 178,-208"/>
 </g>
 <!-- ResourcesComponent -->
 <g id="node1" class="node">
 <title>ResourcesComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="167.36,-122 28.64,-122 28.64,-86 167.36,-86 167.36,-122"/>
-<text text-anchor="middle" x="98" y="-99.8" font-family="Times,serif" font-size="14.00">ResourcesComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="467.36,-122 328.64,-122 328.64,-86 467.36,-86 467.36,-122"/>
+<text text-anchor="middle" x="398" y="-99.8" font-family="Times,serif" font-size="14.00">ResourcesComponent</text>
 </g>
 <!-- ResourcesModule -->
 <g id="node2" class="node">
 <title>ResourcesModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="330.58,-187 327.58,-191 306.58,-191 303.58,-187 213.42,-187 213.42,-151 330.58,-151 330.58,-187"/>
-<text text-anchor="middle" x="272" y="-164.8" font-family="Times,serif" font-size="14.00">ResourcesModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="315.58,-187 312.58,-191 291.58,-191 288.58,-187 198.42,-187 198.42,-151 315.58,-151 315.58,-187"/>
+<text text-anchor="middle" x="257" y="-164.8" font-family="Times,serif" font-size="14.00">ResourcesModule</text>
 </g>
 <!-- ResourcesComponent&#45;&gt;ResourcesModule -->
 <g id="edge1" class="edge">
 <title>ResourcesComponent&#45;&gt;ResourcesModule</title>
-<path fill="none" stroke="black" d="M98,-122.11C98,-141.34 98,-169 98,-169 98,-169 203.09,-169 203.09,-169"/>
-<polygon fill="black" stroke="black" points="203.09,-172.5 213.09,-169 203.09,-165.5 203.09,-172.5"/>
+<path fill="none" stroke="black" d="M328.31,-104C317.65,-104 310.1,-104 310.1,-104 310.1,-104 310.1,-140.89 310.1,-140.89"/>
+<polygon fill="black" stroke="black" points="306.6,-140.89 310.1,-150.89 313.6,-140.89 306.6,-140.89"/>
 </g>
 <!-- ResourcesComponent  -->
 <g id="node5" class="node">
 <title>ResourcesComponent </title>
-<polygon fill="#fb8072" stroke="black" points="343.36,-252 200.64,-252 200.64,-216 343.36,-216 343.36,-252"/>
-<text text-anchor="middle" x="272" y="-229.8" font-family="Times,serif" font-size="14.00">ResourcesComponent </text>
+<polygon fill="#fb8072" stroke="black" points="328.36,-252 185.64,-252 185.64,-216 328.36,-216 328.36,-252"/>
+<text text-anchor="middle" x="257" y="-229.8" font-family="Times,serif" font-size="14.00">ResourcesComponent </text>
 </g>
 <!-- ResourcesModule&#45;&gt;ResourcesComponent  -->
 <g id="edge4" class="edge">
 <title>ResourcesModule&#45;&gt;ResourcesComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M272,-187.11C272,-187.11 272,-205.99 272,-205.99"/>
-<polygon fill="black" stroke="black" points="268.5,-205.99 272,-215.99 275.5,-205.99 268.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M257,-187.11C257,-187.11 257,-205.99 257,-205.99"/>
+<polygon fill="black" stroke="black" points="253.5,-205.99 257,-215.99 260.5,-205.99 253.5,-205.99"/>
 </g>
 <!-- FormsModule -->
 <g id="node3" class="node">
 <title>FormsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="466.83,-122 463.83,-126 442.83,-126 439.83,-122 371.17,-122 371.17,-86 466.83,-86 466.83,-122"/>
-<text text-anchor="middle" x="419" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="304.83,-122 301.83,-126 280.83,-126 277.83,-122 209.17,-122 209.17,-86 304.83,-86 304.83,-122"/>
+<text text-anchor="middle" x="257" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
 </g>
 <!-- FormsModule&#45;&gt;ResourcesModule -->
 <g id="edge2" class="edge">
 <title>FormsModule&#45;&gt;ResourcesModule</title>
-<path fill="none" stroke="black" d="M419,-122.11C419,-141.34 419,-169 419,-169 419,-169 340.94,-169 340.94,-169"/>
-<polygon fill="black" stroke="black" points="340.94,-165.5 330.94,-169 340.94,-172.5 340.94,-165.5"/>
+<path fill="none" stroke="black" d="M257,-122.11C257,-122.11 257,-140.99 257,-140.99"/>
+<polygon fill="black" stroke="black" points="253.5,-140.99 257,-150.99 260.5,-140.99 253.5,-140.99"/>
 </g>
 <!-- ResourcesRoutingModule -->
 <g id="node4" class="node">
 <title>ResourcesRoutingModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="353.2,-122 350.2,-126 329.2,-126 326.2,-122 190.8,-122 190.8,-86 353.2,-86 353.2,-122"/>
-<text text-anchor="middle" x="272" y="-99.8" font-family="Times,serif" font-size="14.00">ResourcesRoutingModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="191.2,-122 188.2,-126 167.2,-126 164.2,-122 28.8,-122 28.8,-86 191.2,-86 191.2,-122"/>
+<text text-anchor="middle" x="110" y="-99.8" font-family="Times,serif" font-size="14.00">ResourcesRoutingModule</text>
 </g>
 <!-- ResourcesRoutingModule&#45;&gt;ResourcesModule -->
 <g id="edge3" class="edge">
 <title>ResourcesRoutingModule&#45;&gt;ResourcesModule</title>
-<path fill="none" stroke="black" d="M272,-122.11C272,-122.11 272,-140.99 272,-140.99"/>
-<polygon fill="black" stroke="black" points="268.5,-140.99 272,-150.99 275.5,-140.99 268.5,-140.99"/>
+<path fill="none" stroke="black" d="M191.23,-104C198.91,-104 203.9,-104 203.9,-104 203.9,-104 203.9,-140.89 203.9,-140.89"/>
+<polygon fill="black" stroke="black" points="200.4,-140.89 203.9,-150.89 207.4,-140.89 200.4,-140.89"/>
 </g>
 </g>
 </svg>

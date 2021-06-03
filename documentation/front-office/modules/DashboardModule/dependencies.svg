@@ -24,43 +24,43 @@
 <title>cluster_DashboardModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="66,-70 66,-195 430,-195 430,-70 66,-70"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_DashboardModule_imports</title>
-<polygon fill="none" stroke="black" points="240,-78 240,-130 422,-130 422,-78 240,-78"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_DashboardModule_declarations</title>
-<polygon fill="none" stroke="black" points="74,-78 74,-130 232,-130 232,-78 74,-78"/>
+<polygon fill="none" stroke="black" points="264,-78 264,-130 422,-130 422,-78 264,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_DashboardModule_imports</title>
+<polygon fill="none" stroke="black" points="74,-78 74,-130 256,-130 256,-78 74,-78"/>
 </g>
 <!-- DashboardComponent -->
 <g id="node1" class="node">
 <title>DashboardComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="223.97,-122 82.03,-122 82.03,-86 223.97,-86 223.97,-122"/>
-<text text-anchor="middle" x="153" y="-99.8" font-family="Times,serif" font-size="14.00">DashboardComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="413.97,-122 272.03,-122 272.03,-86 413.97,-86 413.97,-122"/>
+<text text-anchor="middle" x="343" y="-99.8" font-family="Times,serif" font-size="14.00">DashboardComponent</text>
 </g>
 <!-- DashboardModule -->
 <g id="node2" class="node">
 <title>DashboardModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="302.19,-187 299.19,-191 278.19,-191 275.19,-187 181.81,-187 181.81,-151 302.19,-151 302.19,-187"/>
-<text text-anchor="middle" x="242" y="-164.8" font-family="Times,serif" font-size="14.00">DashboardModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="314.19,-187 311.19,-191 290.19,-191 287.19,-187 193.81,-187 193.81,-151 314.19,-151 314.19,-187"/>
+<text text-anchor="middle" x="254" y="-164.8" font-family="Times,serif" font-size="14.00">DashboardModule</text>
 </g>
 <!-- DashboardComponent&#45;&gt;DashboardModule -->
 <g id="edge1" class="edge">
 <title>DashboardComponent&#45;&gt;DashboardModule</title>
-<path fill="none" stroke="black" d="M202.95,-122.11C202.95,-122.11 202.95,-140.99 202.95,-140.99"/>
-<polygon fill="black" stroke="black" points="199.45,-140.99 202.95,-150.99 206.45,-140.99 199.45,-140.99"/>
+<path fill="none" stroke="black" d="M293.05,-122.11C293.05,-122.11 293.05,-140.99 293.05,-140.99"/>
+<polygon fill="black" stroke="black" points="289.55,-140.99 293.05,-150.99 296.55,-140.99 289.55,-140.99"/>
 </g>
 <!-- DashboardRoutingModule -->
 <g id="node3" class="node">
 <title>DashboardRoutingModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="413.81,-122 410.81,-126 389.81,-126 386.81,-122 248.19,-122 248.19,-86 413.81,-86 413.81,-122"/>
-<text text-anchor="middle" x="331" y="-99.8" font-family="Times,serif" font-size="14.00">DashboardRoutingModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="247.81,-122 244.81,-126 223.81,-126 220.81,-122 82.19,-122 82.19,-86 247.81,-86 247.81,-122"/>
+<text text-anchor="middle" x="165" y="-99.8" font-family="Times,serif" font-size="14.00">DashboardRoutingModule</text>
 </g>
 <!-- DashboardRoutingModule&#45;&gt;DashboardModule -->
 <g id="edge2" class="edge">
 <title>DashboardRoutingModule&#45;&gt;DashboardModule</title>
-<path fill="none" stroke="black" d="M275.22,-122.11C275.22,-122.11 275.22,-140.99 275.22,-140.99"/>
-<polygon fill="black" stroke="black" points="271.72,-140.99 275.22,-150.99 278.72,-140.99 271.72,-140.99"/>
+<path fill="none" stroke="black" d="M220.78,-122.11C220.78,-122.11 220.78,-140.99 220.78,-140.99"/>
+<polygon fill="black" stroke="black" points="217.28,-140.99 220.78,-150.99 224.28,-140.99 217.28,-140.99"/>
 </g>
 </g>
 </svg>

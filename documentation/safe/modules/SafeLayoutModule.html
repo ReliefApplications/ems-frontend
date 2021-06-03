@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -204,7 +204,9 @@ import { MatListModule } from &#x27;@angular/material/list&#x27;;
 import { RouterModule } from &#x27;@angular/router&#x27;;
 import { DragDropModule } from &#x27;@angular/cdk/drag-drop&#x27;;
 import { MatBadgeModule } from &#x27;@angular/material/badge&#x27;;
+import { MatDividerModule } from &#x27;@angular/material/divider&#x27;;
 import { SafeConfirmModalModule } from &#x27;../confirm-modal/confirm-modal.module&#x27;;
+import { MatTooltipModule } from &#x27;@angular/material/tooltip&#x27;;
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -219,7 +221,9 @@ import { SafeConfirmModalModule } from &#x27;../confirm-modal/confirm-modal.modu
     MatListModule,
     DragDropModule,
     MatBadgeModule,
-    SafeConfirmModalModule
+    MatDividerModule,
+    SafeConfirmModalModule,
+    MatTooltipModule
   ],
   exports: [SafeLayoutComponent]
 })

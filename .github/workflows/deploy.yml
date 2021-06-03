@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [15.x]
 
     steps:
     - name: Checkout
@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name:
-      run: npm ci
+      run: npm i
     - name: Build Shared Library
       run: npm run build safe
     - name: Build Back-office

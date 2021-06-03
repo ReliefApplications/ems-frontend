@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -415,8 +415,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="286"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:286</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="287"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:287</a></div>
                 </td>
             </tr>
 
@@ -526,8 +526,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="211"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:211</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="212"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:212</a></div>
                 </td>
             </tr>
 
@@ -670,8 +670,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="220"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:220</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="221"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:221</a></div>
                 </td>
             </tr>
 
@@ -709,8 +709,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="260"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:260</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="261"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:261</a></div>
                 </td>
             </tr>
 
@@ -781,8 +781,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="229"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:229</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="230"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:230</a></div>
                 </td>
             </tr>
 
@@ -820,8 +820,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="198"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:198</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="199"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:199</a></div>
                 </td>
             </tr>
 
@@ -931,8 +931,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="170"
-                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:170</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="171"
+                            class="link-to-prism">projects/back-office/src/app/dashboard/pages/form-builder/form-builder.component.ts:171</a></div>
                 </td>
             </tr>
 
@@ -1333,7 +1333,7 @@ import { FormControl, FormGroup, Validators } from &#x27;@angular/forms&#x27;;
 import { ActivatedRoute, Router } from &#x27;@angular/router&#x27;;
 
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from &#x27;../../../graphql/mutations&#x27;;
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from &#x27;../../../graphql/queries&#x27;;
+import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from &#x27;../../../graphql/queries&#x27;;
 import { MatDialog } from &#x27;@angular/material/dialog&#x27;;
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from &#x27;@safe/builder&#x27;;
 import { Observable } from &#x27;rxjs&#x27;;
@@ -1417,7 +1417,7 @@ export class FormBuilderComponent implements OnInit {
     this.id &#x3D; this.route.snapshot.paramMap.get(&#x27;id&#x27;) || &#x27;&#x27;;
     if (this.id !&#x3D;&#x3D; null) {
       this.apollo.watchQuery&lt;GetFormByIdQueryResponse&gt;({
-        query: GET_FORM_BY_ID,
+        query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id
         }
@@ -1482,7 +1482,8 @@ export class FormBuilderComponent implements OnInit {
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited(&#x27;form&#x27;, this.form?.name));
           this.form &#x3D; res.data?.editForm;
-          this.structure &#x3D; structure; // Update current form to
+          this.structure &#x3D; structure;
+          localStorage.removeItem(&#x60;form:${this.id}&#x60;);
           this.hasChanges &#x3D; false;
           this.authService.canLogout.next(true);
         }
@@ -1526,7 +1527,7 @@ export class FormBuilderComponent implements OnInit {
   */
   setTemplate(id: string): void {
     this.apollo.watchQuery&lt;GetFormByIdQueryResponse&gt;({
-      query: GET_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }
@@ -1705,7 +1706,7 @@ export class FormBuilderComponent implements OnInit {
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><ng-container *ngIf="form">    <div class="page-header">        <ng-container *ngIf="!formActive">            <h1 class="page-title" (click)="toggleFormActive()">{{form.name}} {{ activeVersion ? activeVersion.id : \'\' }}</h1>        </ng-container>        <ng-container *ngIf="formActive">            <form [formGroup]="nameForm" (ngSubmit)="saveName()">                <mat-form-field>                    <mat-label>Name</mat-label>                    <input matInput formControlName="formName" type="string">                </mat-form-field>                <button type="submit" mat-icon-button color="primary" [disabled]="!nameForm.valid">                    <mat-icon>save</mat-icon>                </button>                <button mat-icon-button color="warn" (click)="toggleFormActive()">                    <mat-icon>close</mat-icon>                </button>            </form>        </ng-container>        <span class="flex-spacer"></span>        <safe-access [access]="form.permissions" (save)="saveAccess($event)" *ngIf="form.canUpdate"></safe-access>    </div>    <div class="form-actions">        <mat-button-toggle-group appearance="legacy" [value]="form.status" (change)="updateStatus($event)">            <mat-button-toggle *ngFor="let status of statuses" [value]="status.value" [className]="\'toggle-\' + status.value">{{status.text}}</mat-button-toggle>        </mat-button-toggle-group>    </div>    <app-history *ngIf="activeVersions" [dataSource]="form.versions || []" (open)="onOpenVersion($event)"></app-history>    <safe-form-builder [structure]="structure" (save)="onSave($event)" (formChange)="formStructureChange($event)"></safe-form-builder></ng-container></div>'
-    var COMPONENTS = [{'name': 'AddApplicationComponent', 'selector': 'app-add-application'},{'name': 'AddChannelComponent', 'selector': 'app-add-channel'},{'name': 'AddDashboardComponent', 'selector': 'app-add-dashboard'},{'name': 'AddFormComponent', 'selector': 'app-add-form'},{'name': 'AddPageComponent', 'selector': 'app-add-page'},{'name': 'AddPositionComponent', 'selector': 'app-position-modal'},{'name': 'AddStepComponent', 'selector': 'app-add-step'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationComponent', 'selector': 'app-application'},{'name': 'ApplicationsComponent', 'selector': 'app-applications'},{'name': 'ApplicationToolbarComponent', 'selector': 'app-application-toolbar'},{'name': 'AppPreviewComponent', 'selector': 'app-app-preview'},{'name': 'ChannelsComponent', 'selector': 'app-channels'},{'name': 'ChoseRoleComponent', 'selector': 'app-chose-role'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardsComponent', 'selector': 'app-dashboards'},{'name': 'DuplicateApplicationComponent', 'selector': 'app-duplicate-application'},{'name': 'FormAnswerComponent', 'selector': 'app-form-answer'},{'name': 'FormBuilderComponent', 'selector': 'app-form-builder'},{'name': 'FormComponent', 'selector': 'app-form'},{'name': 'FormComponent', 'selector': 'app-form'},{'name': 'FormRecordsComponent', 'selector': 'app-form-records'},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'HistoryComponent', 'selector': 'app-history'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'PositionAttributesComponent', 'selector': 'app-position'},{'name': 'PositionComponent', 'selector': 'app-position'},{'name': 'PreviewToolbarComponent', 'selector': 'app-preview-toolbar'},{'name': 'ResourceComponent', 'selector': 'app-resource'},{'name': 'ResourcesComponent', 'selector': 'app-resources'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'ShareUrlComponent', 'selector': 'app-share-url'},{'name': 'SubscriptionModalComponent', 'selector': 'app-subscription-modal'},{'name': 'SubscriptionsComponent', 'selector': 'app-subscriptions'},{'name': 'UpdateRecordComponent', 'selector': 'app-update-record'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'WorkflowComponent', 'selector': 'app-workflow'},{'name': 'WorkflowComponent', 'selector': 'app-workflow'}];
+    var COMPONENTS = [{'name': 'AddApplicationComponent', 'selector': 'app-add-application'},{'name': 'AddChannelComponent', 'selector': 'app-add-channel'},{'name': 'AddDashboardComponent', 'selector': 'app-add-dashboard'},{'name': 'AddFormComponent', 'selector': 'app-add-form'},{'name': 'AddPageComponent', 'selector': 'app-add-page'},{'name': 'AddPositionComponent', 'selector': 'app-position-modal'},{'name': 'AddStepComponent', 'selector': 'app-add-step'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationComponent', 'selector': 'app-application'},{'name': 'ApplicationsComponent', 'selector': 'app-applications'},{'name': 'ApplicationToolbarComponent', 'selector': 'app-application-toolbar'},{'name': 'AppPreviewComponent', 'selector': 'app-app-preview'},{'name': 'ChannelsComponent', 'selector': 'app-channels'},{'name': 'ChoseRoleComponent', 'selector': 'app-chose-role'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DashboardsComponent', 'selector': 'app-dashboards'},{'name': 'DuplicateApplicationComponent', 'selector': 'app-duplicate-application'},{'name': 'FormAnswerComponent', 'selector': 'app-form-answer'},{'name': 'FormBuilderComponent', 'selector': 'app-form-builder'},{'name': 'FormComponent', 'selector': 'app-form'},{'name': 'FormComponent', 'selector': 'app-form'},{'name': 'FormRecordsComponent', 'selector': 'app-form-records'},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'HistoryComponent', 'selector': 'app-history'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'PositionAttributesComponent', 'selector': 'app-position'},{'name': 'PositionComponent', 'selector': 'app-position'},{'name': 'PreviewToolbarComponent', 'selector': 'app-preview-toolbar'},{'name': 'ProfileComponent', 'selector': 'app-profile'},{'name': 'ResourceComponent', 'selector': 'app-resource'},{'name': 'ResourcesComponent', 'selector': 'app-resources'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'RolesComponent', 'selector': 'app-roles'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'ShareUrlComponent', 'selector': 'app-share-url'},{'name': 'SubscriptionModalComponent', 'selector': 'app-subscription-modal'},{'name': 'SubscriptionsComponent', 'selector': 'app-subscriptions'},{'name': 'UpdateRecordComponent', 'selector': 'app-update-record'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'UsersComponent', 'selector': 'app-users'},{'name': 'WorkflowComponent', 'selector': 'app-workflow'},{'name': 'WorkflowComponent', 'selector': 'app-workflow'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'FormBuilderComponent'};
 </script>

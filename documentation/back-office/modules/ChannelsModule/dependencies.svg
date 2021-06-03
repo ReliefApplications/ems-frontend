@@ -24,67 +24,67 @@
 <title>cluster_ChannelsModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-195 638,-195 638,-70 8,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_ChannelsModule_declarations</title>
-<polygon fill="none" stroke="black" points="310,-78 310,-130 630,-130 630,-78 310,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_ChannelsModule_imports</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 302,-130 302,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="344,-78 344,-130 630,-130 630,-78 344,-78"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_ChannelsModule_declarations</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 336,-130 336,-78 16,-78"/>
 </g>
 <!-- AddChannelComponent -->
 <g id="node1" class="node">
 <title>AddChannelComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="622.1,-122 469.9,-122 469.9,-86 622.1,-86 622.1,-122"/>
-<text text-anchor="middle" x="546" y="-99.8" font-family="Times,serif" font-size="14.00">AddChannelComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="328.1,-122 175.9,-122 175.9,-86 328.1,-86 328.1,-122"/>
+<text text-anchor="middle" x="252" y="-99.8" font-family="Times,serif" font-size="14.00">AddChannelComponent</text>
 </g>
 <!-- ChannelsModule -->
 <g id="node3" class="node">
 <title>ChannelsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="355.65,-187 352.65,-191 331.65,-191 328.65,-187 244.35,-187 244.35,-151 355.65,-151 355.65,-187"/>
-<text text-anchor="middle" x="300" y="-164.8" font-family="Times,serif" font-size="14.00">ChannelsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="381.65,-187 378.65,-191 357.65,-191 354.65,-187 270.35,-187 270.35,-151 381.65,-151 381.65,-187"/>
+<text text-anchor="middle" x="326" y="-164.8" font-family="Times,serif" font-size="14.00">ChannelsModule</text>
 </g>
 <!-- AddChannelComponent&#45;&gt;ChannelsModule -->
 <g id="edge1" class="edge">
 <title>AddChannelComponent&#45;&gt;ChannelsModule</title>
-<path fill="none" stroke="black" d="M546,-122.11C546,-141.34 546,-169 546,-169 546,-169 365.82,-169 365.82,-169"/>
-<polygon fill="black" stroke="black" points="365.82,-165.5 355.82,-169 365.82,-172.5 365.82,-165.5"/>
+<path fill="none" stroke="black" d="M299.11,-122.11C299.11,-122.11 299.11,-140.99 299.11,-140.99"/>
+<polygon fill="black" stroke="black" points="295.61,-140.99 299.11,-150.99 302.61,-140.99 295.61,-140.99"/>
 </g>
 <!-- ChannelsComponent -->
 <g id="node2" class="node">
 <title>ChannelsComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="451.93,-122 318.07,-122 318.07,-86 451.93,-86 451.93,-122"/>
-<text text-anchor="middle" x="385" y="-99.8" font-family="Times,serif" font-size="14.00">ChannelsComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="157.93,-122 24.07,-122 24.07,-86 157.93,-86 157.93,-122"/>
+<text text-anchor="middle" x="91" y="-99.8" font-family="Times,serif" font-size="14.00">ChannelsComponent</text>
 </g>
 <!-- ChannelsComponent&#45;&gt;ChannelsModule -->
 <g id="edge2" class="edge">
 <title>ChannelsComponent&#45;&gt;ChannelsModule</title>
-<path fill="none" stroke="black" d="M337.05,-122.11C337.05,-122.11 337.05,-140.99 337.05,-140.99"/>
-<polygon fill="black" stroke="black" points="333.55,-140.99 337.05,-150.99 340.55,-140.99 333.55,-140.99"/>
+<path fill="none" stroke="black" d="M91,-122.11C91,-141.34 91,-169 91,-169 91,-169 260.31,-169 260.31,-169"/>
+<polygon fill="black" stroke="black" points="260.31,-172.5 270.31,-169 260.31,-165.5 260.31,-172.5"/>
 </g>
 <!-- ChannelsRoutingModule -->
 <g id="node4" class="node">
 <title>ChannelsRoutingModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="294.27,-122 291.27,-126 270.27,-126 267.27,-122 137.73,-122 137.73,-86 294.27,-86 294.27,-122"/>
-<text text-anchor="middle" x="216" y="-99.8" font-family="Times,serif" font-size="14.00">ChannelsRoutingModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="622.27,-122 619.27,-126 598.27,-126 595.27,-122 465.73,-122 465.73,-86 622.27,-86 622.27,-122"/>
+<text text-anchor="middle" x="544" y="-99.8" font-family="Times,serif" font-size="14.00">ChannelsRoutingModule</text>
 </g>
 <!-- ChannelsRoutingModule&#45;&gt;ChannelsModule -->
 <g id="edge3" class="edge">
 <title>ChannelsRoutingModule&#45;&gt;ChannelsModule</title>
-<path fill="none" stroke="black" d="M269.28,-122.11C269.28,-122.11 269.28,-140.99 269.28,-140.99"/>
-<polygon fill="black" stroke="black" points="265.78,-140.99 269.28,-150.99 272.78,-140.99 265.78,-140.99"/>
+<path fill="none" stroke="black" d="M544,-122.11C544,-141.34 544,-169 544,-169 544,-169 391.86,-169 391.86,-169"/>
+<polygon fill="black" stroke="black" points="391.86,-165.5 381.86,-169 391.86,-172.5 391.86,-165.5"/>
 </g>
 <!-- FormsModule -->
 <g id="node5" class="node">
 <title>FormsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="119.83,-122 116.83,-126 95.83,-126 92.83,-122 24.17,-122 24.17,-86 119.83,-86 119.83,-122"/>
-<text text-anchor="middle" x="72" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="447.83,-122 444.83,-126 423.83,-126 420.83,-122 352.17,-122 352.17,-86 447.83,-86 447.83,-122"/>
+<text text-anchor="middle" x="400" y="-99.8" font-family="Times,serif" font-size="14.00">FormsModule</text>
 </g>
 <!-- FormsModule&#45;&gt;ChannelsModule -->
 <g id="edge4" class="edge">
 <title>FormsModule&#45;&gt;ChannelsModule</title>
-<path fill="none" stroke="black" d="M72,-122.11C72,-141.34 72,-169 72,-169 72,-169 234.22,-169 234.22,-169"/>
-<polygon fill="black" stroke="black" points="234.22,-172.5 244.22,-169 234.22,-165.5 234.22,-172.5"/>
+<path fill="none" stroke="black" d="M367.08,-122.11C367.08,-122.11 367.08,-140.99 367.08,-140.99"/>
+<polygon fill="black" stroke="black" points="363.58,-140.99 367.08,-150.99 370.58,-140.99 363.58,-140.99"/>
 </g>
 </g>
 </svg>

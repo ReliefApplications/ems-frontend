@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="./" class="navbar-brand">ems-front documentation</a>
+            <a href="./" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -31,6 +31,7 @@
                    <div class="content-data">
 
 <h1 id="safe-front-end">SAFE Front-end</h1>
+<p><a href="https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend"><img src="https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend" alt="GitHub version" class="img-responsive"></a></p>
 <p>This front-end was made using <a href="https://angular.io/">Angular</a>. It uses multiple external packages, but the relevant ones are:</p>
 <ul>
 <li><a href="https://material.angular.io/">Material Angular</a>, for the UI</li>
@@ -50,6 +51,7 @@
 <li>back-office, an application accessible to administrators</li>
 <li>front-office, an application that would depend on the logged user</li>
 <li>safe, a library shared by both other projects</li>
+<li>web-element, an application to genereate the web components</li>
 </ul>
 <p>Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.</p>
 <h1 id="azure-configuration">Azure configuration</h1>
@@ -58,8 +60,8 @@
 <div><pre class="line-numbers"><code class="language-none">ng build --configuration azure</code></pre></div><p>The compiled code can be found there in ./dist/back-office folder.</p>
 <h1 id="bundle-analysis">Bundle Analysis</h1>
 <p>First, install globally the bundle analyzer:</p>
-<div><pre class="line-numbers"><code class="language-none">npm install -g webpack-bundle-analyzer</code></pre></div><p>You can then run, for both back and front office:</p>
-<div><pre class="line-numbers"><code class="language-none">ng build --stats-json.</code></pre></div><p>This will create an additional find stats.json in your ./dist folder of each project.</p>
+<div><pre class="line-numbers"><code class="language-none">npm install -g webpack-bundle-analyzer</code></pre></div><p>You can then run, for both back, front office and web element projects:</p>
+<div><pre class="line-numbers"><code class="language-none">ng build --stats-json</code></pre></div><p>This will create an additional find stats.json in your ./dist folder of each project.</p>
 <p>Finally, run:</p>
 <div><pre class="line-numbers"><code class="language-none">webpack-bundle-analyzer ./dist/&lt;project-name&gt;/stats.json</code></pre></div><p>and your browser will pop up the page at localhost:8888.</p>
 <h1 id="useful-commands">Useful commands</h1>
@@ -84,7 +86,10 @@
 <li><p>Deploy the package ( subsequent command can be executed if you&#39;re at the root of the project. Otherwise, change the path ):</p>
 <div><pre class="line-numbers"><code class="language-none">npm publish ./projects/safe</code></pre></div></li>
 </ul>
-<h2 id="running-unit-tests">Running unit tests</h2>
+<h2 id="build-the-web-components">Build the web components</h2>
+<p>We first need to generate the elements, using this command:</p>
+<div><pre class="line-numbers"><code class="language-none">npm run build:elem</code></pre></div><p>Then, a bundle can be generated from the files using this command:</p>
+<div><pre class="line-numbers"><code class="language-none">npm run bundle:elem</code></pre></div><h2 id="running-unit-tests">Running unit tests</h2>
 <p>Run <code>ng test</code> to execute the unit tests via <a href="https://karma-runner.github.io">Karma</a>.</p>
 <h2 id="running-end-to-end-tests">Running end-to-end tests</h2>
 <p>Run <code>ng e2e</code> to execute the end-to-end tests via <a href="http://www.protractortest.org/">Protractor</a>.</p>

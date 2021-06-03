@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -191,8 +191,10 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { gql } from &#x27;apollo-angular&#x27;;
-import { Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttributeCategory, PositionAttribute } from &#x27;@safe/builder&#x27;;
+import {
+  Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttribute
+} from &#x27;@safe/builder&#x27;;
 
 // &#x3D;&#x3D;&#x3D; GET USERS &#x3D;&#x3D;&#x3D;
 export const GET_USERS &#x3D; gql&#x60;
@@ -270,27 +272,92 @@ export interface GetDashboardsQueryResponse {
 }
 
 // &#x3D;&#x3D;&#x3D; GET FORMS &#x3D;&#x3D;&#x3D;
-export const GET_FORMS &#x3D; gql&#x60;
-{
+export const GET_FORM_NAMES &#x3D; gql&#x60;
+query GetFormNames {
+  forms {
+    id
+    name
+  }
+}&#x60;;
+
+export const GET_SHORT_FORMS &#x3D; gql&#x60;
+query GetShortForms {
   forms {
     id
     name
     createdAt
     status
-    versions {
-      id
-    }
+    versionsCount
     recordsCount
     core
+    canSee
     canCreate
     canUpdate
     canDelete
+    resource {
+      id
+      coreForm {
+        id
+        name
+      }
+    }
   }
 }&#x60;;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
   forms: Form[];
+}
+
+// &#x3D;&#x3D;&#x3D; GET FORM BY ID &#x3D;&#x3D;&#x3D;
+export const GET_SHORT_FORM_BY_ID &#x3D; gql&#x60;
+query GetShortFormById($id: ID!) {
+  form(id: $id) {
+    id
+    name
+    structure
+    fields
+    status
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
+    canUpdate
+  }
+}&#x60;;
+
+export const GET_FORM_BY_ID &#x3D; gql&#x60;
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    fields
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    records(filters: $filters) {
+      id
+      data(display: $display)
+      versions {
+        id
+        createdAt
+        data
+      }
+    }
+  }
+}&#x60;;
+
+export interface GetFormByIdQueryResponse {
+  loading: boolean;
+  form: Form;
+  errors: any;
 }
 
 // &#x3D;&#x3D;&#x3D; GET RESOURCE BY ID &#x3D;&#x3D;&#x3D;
@@ -370,69 +437,6 @@ export const GET_RESOURCES_EXTENDED &#x3D; gql&#x60;
 export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: Resource[];
-}
-
-// &#x3D;&#x3D;&#x3D; GET FORM BY ID &#x3D;&#x3D;&#x3D;
-
-export const GET_FORM_BY_ID &#x3D; gql&#x60;
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
-  form(id: $id) {
-    id
-    name
-    createdAt
-    structure
-    status
-    fields
-    versions {
-      id
-      createdAt
-      data
-    }
-    records(filters: $filters) {
-      id
-      data(display: $display)
-      versions {
-        id
-        createdAt
-        data
-      }
-    }
-    resource{
-      id
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canCreate
-    canUpdate
-    canCreateRecords
-    uniqueRecord {
-      id
-      modifiedAt
-      data
-    }
-  }
-}&#x60;;
-
-export interface GetFormByIdQueryResponse {
-  loading: boolean;
-  form: Form;
-  errors: any;
 }
 
 // &#x3D;&#x3D;&#x3D; GET RECORD BY ID &#x3D;&#x3D;&#x3D;
@@ -522,14 +526,6 @@ export const GET_APPLICATIONS &#x3D; gql&#x60;
     createdAt
     modifiedAt
     status
-    pages {
-      id
-      name
-      createdAt
-      type
-      content
-    }
-    settings
     permissions {
       canSee {
         id
@@ -797,7 +793,7 @@ query GetRoutingKeys {
   }
 }&#x60;;
 
-export interface GetRoutingKeysQueryResponse{
+export interface GetRoutingKeysQueryResponse {
   loading: boolean;
   applications: Application[];
 }
@@ -817,6 +813,54 @@ query GetPositionAttributesFromCategory($id: ID!) {
 export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
   positionAttributes: PositionAttribute[];
+}
+
+// &#x3D;&#x3D;&#x3D; GET RECORD DETAILS &#x3D;&#x3D;&#x3D;
+export const GET_RECORD_DETAILS &#x3D; gql&#x60;
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}&#x60;;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
+// &#x3D;&#x3D;&#x3D; EDIT RECORD &#x3D;&#x3D;&#x3D;
+export const EDIT_RECORD &#x3D; gql&#x60;
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}&#x60;;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
 }
 </code></pre>
     </div>

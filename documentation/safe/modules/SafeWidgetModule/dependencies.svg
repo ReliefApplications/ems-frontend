@@ -28,13 +28,13 @@
 <title>cluster_SafeWidgetModule_imports</title>
 <polygon fill="none" stroke="black" points="188,-78 188,-130 871,-130 871,-78 188,-78"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_SafeWidgetModule_declarations</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 180,-130 180,-78 16,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_SafeWidgetModule_exports</title>
 <polygon fill="none" stroke="black" points="390,-208 390,-260 556,-260 556,-208 390,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_SafeWidgetModule_declarations</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 180,-130 180,-78 16,-78"/>
 </g>
 <!-- SafeWidgetComponent -->
 <g id="node1" class="node">

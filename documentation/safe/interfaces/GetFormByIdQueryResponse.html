@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -183,6 +183,9 @@ export const GET_PROFILE &#x3D; gql&#x60;
       application {
         id
       }
+      permissions {
+        id
+      }
     }
     permissions {
       id
@@ -191,9 +194,16 @@ export const GET_PROFILE &#x3D; gql&#x60;
     }
     applications {
       id
+      positionAttributes {
+        value
+      }
       name
+      role {
+        title
+      }
     }
     oid
+    favoriteApp
   }
 }&#x60;;
 
@@ -203,6 +213,14 @@ export interface GetProfileQueryResponse {
 }
 
 // &#x3D;&#x3D;&#x3D; GET FORM BY ID &#x3D;&#x3D;&#x3D;
+export const GET_FORM_STRUCTURE &#x3D; gql&#x60;
+  query GetFormById($id: ID!) {
+    form(id: $id) {
+      id
+      structure
+    }
+  }&#x60;;
+
 
 export const GET_FORM_BY_ID &#x3D; gql&#x60;
 query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
@@ -213,35 +231,12 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     structure
     status
     fields
-    versions {
-      id
-      createdAt
-      data
-    }
     records(filters: $filters) {
       id
       data(display: $display)
     }
     resource{
       id
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
     }
     canCreate
     canUpdate
@@ -272,7 +267,6 @@ export interface GetRelatedFormsQueryResponse {
 }
 
 // &#x3D;&#x3D;&#x3D; GET RESOURCE BY ID &#x3D;&#x3D;&#x3D;
-
 export const GET_RESOURCE_BY_ID &#x3D; gql&#x60;
 query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
   resource(id: $id) {
@@ -405,7 +399,6 @@ export interface GetRecordByIdQueryResponse {
 }
 
 // &#x3D;&#x3D;&#x3D; GET RECORD DETAILS &#x3D;&#x3D;&#x3D;
-
 export const GET_RECORD_DETAILS &#x3D; gql&#x60;
 query GetRecordDetails($id: ID!) {
   record(id: $id) {

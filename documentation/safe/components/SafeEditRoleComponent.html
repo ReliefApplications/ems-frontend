@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -333,8 +333,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="62"
-                            class="link-to-prism">projects/safe/src/lib/components/roles/components/edit-role/edit-role.component.ts:62</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="63"
+                            class="link-to-prism">projects/safe/src/lib/components/roles/components/edit-role/edit-role.component.ts:63</a></div>
                 </td>
             </tr>
 
@@ -527,7 +527,7 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Apollo} from &#x27;apollo-angular&#x27;;
 import { Component, OnInit, Inject } from &#x27;@angular/core&#x27;;
-import { FormBuilder, FormGroup } from &#x27;@angular/forms&#x27;;
+import { FormBuilder, FormGroup, Validators } from &#x27;@angular/forms&#x27;;
 import { MatDialogRef, MAT_DIALOG_DATA } from &#x27;@angular/material/dialog&#x27;;
 
 import { Channel } from &#x27;../../../../models/channel.model&#x27;;
@@ -579,6 +579,7 @@ export class SafeEditRoleComponent implements OnInit {
       this.channels &#x3D; res.data.channels;
     });
     this.roleForm &#x3D; this.formBuilder.group({
+      title: [this.data.role.title, Validators.required],
       permissions: [this.data.role.permissions ? this.data.role.permissions.map(x &#x3D;&gt; x.id) : null],
       channels: [this.data.role.channels ? this.data.role.channels.map(x &#x3D;&gt; x.id) : null]
     });
@@ -597,28 +598,34 @@ export class SafeEditRoleComponent implements OnInit {
         <pre class="line-numbers"><code class="language-html">&lt;h1 mat-dialog-title&gt;Update role permissions and channels&lt;/h1&gt;
 &lt;div mat-dialog-content&gt;
     &lt;form [formGroup]&#x3D;&quot;roleForm&quot;&gt;
-        &lt;mat-form-field&gt;
-            &lt;mat-label&gt;Permissions&lt;/mat-label&gt;
-            &lt;mat-select formControlName&#x3D;&quot;permissions&quot; multiple&gt;
-                &lt;mat-option *ngFor&#x3D;&quot;let permission of permissions&quot; [value]&#x3D;&quot;permission.id&quot;&gt;
-                    {{permission.type}}
-                &lt;/mat-option&gt;
-            &lt;/mat-select&gt;
-        &lt;/mat-form-field&gt;
-        &lt;mat-form-field&gt;
-            &lt;mat-label&gt;Channels&lt;/mat-label&gt;
-            &lt;mat-select formControlName&#x3D;&quot;channels&quot; multiple&gt;
-                &lt;mat-option *ngFor&#x3D;&quot;let channel of channels&quot; [value]&#x3D;&quot;channel.id&quot;&gt;
-                    &lt;span&gt;{{channel.title}}&lt;/span&gt;
-                    &lt;span *ngIf&#x3D;&quot;channel.application&quot;&gt; [{{channel.application.name}}]&lt;/span&gt;
-                &lt;/mat-option&gt;
-            &lt;/mat-select&gt;
-        &lt;/mat-form-field&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+            &lt;mat-form-field&gt;
+                &lt;mat-label&gt;Title&lt;/mat-label&gt;
+                &lt;input matInput formControlName&#x3D;&quot;title&quot; type&#x3D;&#x27;text&#x27; /&gt;
+            &lt;/mat-form-field&gt;
+            &lt;mat-form-field&gt;
+                &lt;mat-label&gt;Permissions&lt;/mat-label&gt;
+                &lt;mat-select formControlName&#x3D;&quot;permissions&quot; multiple&gt;
+                    &lt;mat-option *ngFor&#x3D;&quot;let permission of permissions&quot; [value]&#x3D;&quot;permission.id&quot;&gt;
+                        {{permission.type}}
+                    &lt;/mat-option&gt;
+                &lt;/mat-select&gt;
+            &lt;/mat-form-field&gt;
+            &lt;mat-form-field&gt;
+                &lt;mat-label&gt;Channels&lt;/mat-label&gt;
+                &lt;mat-select formControlName&#x3D;&quot;channels&quot; multiple&gt;
+                    &lt;mat-option *ngFor&#x3D;&quot;let channel of channels&quot; [value]&#x3D;&quot;channel.id&quot;&gt;
+                        &lt;span&gt;{{channel.title}}&lt;/span&gt;
+                        &lt;span *ngIf&#x3D;&quot;channel.application&quot;&gt; [{{channel.application.name}}]&lt;/span&gt;
+                    &lt;/mat-option&gt;
+                &lt;/mat-select&gt;
+            &lt;/mat-form-field&gt;
+        &lt;/div&gt;
     &lt;/form&gt;
 &lt;/div&gt;
 &lt;div mat-dialog-actions align&#x3D;&quot;end&quot;&gt;
     &lt;button mat-button (click)&#x3D;&quot;onClose()&quot;&gt;Close&lt;/button&gt;
-    &lt;button mat-flat-button [mat-dialog-close]&#x3D;&quot;roleForm.value&quot; cdkFocusInitial color&#x3D;&quot;primary&quot; [disabled]&#x3D;&quot;!roleForm.valid&quot;&gt;Update permissions&lt;/button&gt;
+    &lt;button mat-flat-button [mat-dialog-close]&#x3D;&quot;roleForm.value&quot; cdkFocusInitial color&#x3D;&quot;primary&quot; [disabled]&#x3D;&quot;!roleForm.valid&quot;&gt;Update role&lt;/button&gt;
 &lt;/div&gt;</code></pre>
     </div>
 
@@ -654,8 +661,8 @@ export class SafeEditRoleComponent implements OnInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><h1 mat-dialog-title>Update role permissions and channels</h1><div mat-dialog-content>    <form [formGroup]="roleForm">        <mat-form-field>            <mat-label>Permissions</mat-label>            <mat-select formControlName="permissions" multiple>                <mat-option *ngFor="let permission of permissions" [value]="permission.id">                    {{permission.type}}                </mat-option>            </mat-select>        </mat-form-field>        <mat-form-field>            <mat-label>Channels</mat-label>            <mat-select formControlName="channels" multiple>                <mat-option *ngFor="let channel of channels" [value]="channel.id">                    <span>{{channel.title}}</span>                    <span *ngIf="channel.application"> [{{channel.application.name}}]</span>                </mat-option>            </mat-select>        </mat-form-field>    </form></div><div mat-dialog-actions align="end">    <button mat-button (click)="onClose()">Close</button>    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update permissions</button></div></div>'
-    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
+        var COMPONENT_TEMPLATE = '<div><h1 mat-dialog-title>Update role permissions and channels</h1><div mat-dialog-content>    <form [formGroup]="roleForm">        <div class="form-group">            <mat-form-field>                <mat-label>Title</mat-label>                <input matInput formControlName="title" type=\'text\' />            </mat-form-field>            <mat-form-field>                <mat-label>Permissions</mat-label>                <mat-select formControlName="permissions" multiple>                    <mat-option *ngFor="let permission of permissions" [value]="permission.id">                        {{permission.type}}                    </mat-option>                </mat-select>            </mat-form-field>            <mat-form-field>                <mat-label>Channels</mat-label>                <mat-select formControlName="channels" multiple>                    <mat-option *ngFor="let channel of channels" [value]="channel.id">                        <span>{{channel.title}}</span>                        <span *ngIf="channel.application"> [{{channel.application.name}}]</span>                    </mat-option>                </mat-select>            </mat-form-field>        </div>    </form></div><div mat-dialog-actions align="end">    <button mat-button (click)="onClose()">Close</button>    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update role</button></div></div>'
+    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeProfileComponent', 'selector': 'safe-profile'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SafeEditRoleComponent'};
 </script>

@@ -28,13 +28,13 @@
 <title>cluster_DashboardsModule_imports</title>
 <polygon fill="none" stroke="black" points="372,-78 372,-130 672,-130 672,-78 372,-78"/>
 </g>
-<g id="clust6" class="cluster">
-<title>cluster_DashboardsModule_exports</title>
-<polygon fill="none" stroke="black" points="267,-208 267,-260 433,-260 433,-208 267,-208"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_DashboardsModule_declarations</title>
 <polygon fill="none" stroke="black" points="16,-78 16,-130 364,-130 364,-78 16,-78"/>
+</g>
+<g id="clust6" class="cluster">
+<title>cluster_DashboardsModule_exports</title>
+<polygon fill="none" stroke="black" points="267,-208 267,-260 433,-260 433,-208 267,-208"/>
 </g>
 <!-- AddDashboardComponent -->
 <g id="node1" class="node">

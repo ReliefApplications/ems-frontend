@@ -16,7 +16,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <nav>
             <ul class="list">
                 <li class="title">
-                    <a href="index.html" data-type="index-link">ems-front documentation</a>
+                    <a href="index.html" data-type="index-link">safe-front documentation</a>
                 </li>
 
                 <li class="divider"></li>
@@ -166,6 +166,27 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="modules/LoginRoutingModule.html" data-type="entity-link">LoginRoutingModule</a>
+                            </li>
+                            <li class="link">
+                                <a href="modules/ProfileModule.html" data-type="entity-link">ProfileModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                            'data-target="#components-links-module-ProfileModule-d2e11855bece9eebcc1509aa17243c00"' : 'data-target="#xs-components-links-module-ProfileModule-d2e11855bece9eebcc1509aa17243c00"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ProfileModule-d2e11855bece9eebcc1509aa17243c00"' :
+                                            'id="xs-components-links-module-ProfileModule-d2e11855bece9eebcc1509aa17243c00"' }>
+                                            <li class="link">
+                                                <a href="components/ProfileComponent.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">ProfileComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                            </li>
+                            <li class="link">
+                                <a href="modules/ProfileRoutingModule.html" data-type="entity-link">ProfileRoutingModule</a>
                             </li>
                             <li class="link">
                                 <a href="modules/RolesModule.html" data-type="entity-link">RolesModule</a>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -379,8 +379,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="189"
-                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:189</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="190"
+                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:190</a></div>
                 </td>
             </tr>
 
@@ -461,8 +461,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="200"
-                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:200</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="201"
+                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:201</a></div>
                 </td>
             </tr>
 
@@ -582,8 +582,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="185"
-                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:185</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="186"
+                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:186</a></div>
                 </td>
             </tr>
 
@@ -738,8 +738,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="157"
-                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:157</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="158"
+                            class="link-to-prism">projects/safe/src/lib/components/roles/roles.component.ts:158</a></div>
                 </td>
             </tr>
 
@@ -1322,7 +1322,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             variables: {
               id: role.id,
               permissions: value.permissions,
-              channels: value.channels
+              channels: value.channels,
+              title: value.title,
             }
           }).subscribe(res &#x3D;&gt; {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited(&#x27;role&#x27;, role.title));
@@ -1397,10 +1398,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
       &lt;input id&#x3D;&quot;custom-search&quot; matInput [ngModel]&#x3D;&quot;searchText&quot; (keyup)&#x3D;&quot;applyFilter(&#x27;&#x27;, $event)&quot; type&#x3D;&quot;search&quot;
         placeholder&#x3D;&quot;Search...&quot;&gt;
     &lt;/mat-form-field&gt;
-    &lt;!-- &lt;button mat-flat-button (click)&#x3D;&quot;showFilters &#x3D; !showFilters&quot; class&#x3D;&quot;filters-toggle&quot;&gt;
-      &lt;mat-icon&gt;filter_list&lt;/mat-icon&gt;
-      Filter
-    &lt;/button&gt; --&gt;
   &lt;/div&gt;
   &lt;div class&#x3D;&quot;actions&quot;&gt;
     &lt;button mat-flat-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;onAdd()&quot;&gt;
@@ -1408,13 +1405,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
       Create a role
     &lt;/button&gt;
   &lt;/div&gt;
-  &lt;!-- &lt;div class&#x3D;&quot;filters&quot; [style.display]&#x3D;&quot;!showFilters ? &#x27;none&#x27; : &#x27;&#x27;&quot;&gt;
-    &lt;mat-form-field appearance&#x3D;&quot;outline&quot;&gt;
-      &lt;input [ngModel]&#x3D;&quot;usersFilter&quot; matInput (keyup)&#x3D;&quot;applyFilter(&#x27;usersCount&#x27;, $event)&quot; type&#x3D;&quot;number&quot;
-        placeholder&#x3D;&quot;Users&quot;&gt;
-    &lt;/mat-form-field&gt;
-    &lt;button mat-button color&#x3D;&quot;warn&quot; (click)&#x3D;&quot;clearAllFilters()&quot;&gt;Clear Filters&lt;/button&gt;
-  &lt;/div&gt; --&gt;
   &lt;table mat-table [dataSource]&#x3D;&quot;roles&quot; matSort&gt;
     &lt;ng-container matColumnDef&#x3D;&quot;title&quot;&gt;
       &lt;th mat-header-cell *matHeaderCellDef&gt;
@@ -1456,7 +1446,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     &lt;tr mat-header-row *matHeaderRowDef&#x3D;&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
     &lt;tr mat-row *matRowDef&#x3D;&quot;let row; columns: displayedColumns&quot;&gt;&lt;/tr&gt;
   &lt;/table&gt;
-&lt;/ng-container&gt;</code></pre>
+&lt;/ng-container&gt;
+</code></pre>
     </div>
 
     <div class="tab-pane fade " id="c-styleData">
@@ -1464,10 +1455,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
                     <code>./roles.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss">.actions {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  margin: 10px 0 16px;
+  text-align: right;
 }
 
 .searchbar {
@@ -1485,7 +1474,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   .mat-form-field {
     margin-left: 12px;
   }
-}</code></pre>
+}
+</code></pre>
     </div>
 
     <div class="tab-pane fade " id="c-tree">
@@ -1513,8 +1503,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner><ng-container>  <div class="searchbar" *ngIf="!loading">    <mat-form-field appearance="outline">      <mat-icon matPrefix>search</mat-icon>      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter(\'\', $event)" type="search"        placeholder="Search...">    </mat-form-field>    <!-- <button mat-flat-button (click)="showFilters = !showFilters" class="filters-toggle">      <mat-icon>filter_list</mat-icon>      Filter    </button> -->  </div>  <div class="actions">    <button mat-flat-button color="primary" (click)="onAdd()">      <mat-icon>add</mat-icon>      Create a role    </button>  </div>  <!-- <div class="filters" [style.display]="!showFilters ? \'none\' : \'\'">    <mat-form-field appearance="outline">      <input [ngModel]="usersFilter" matInput (keyup)="applyFilter(\'usersCount\', $event)" type="number"        placeholder="Users">    </mat-form-field>    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>  </div> -->  <table mat-table [dataSource]="roles" matSort>    <ng-container matColumnDef="title">      <th mat-header-cell *matHeaderCellDef>        <span class="headerTitle" mat-sort-header>          Title        </span>      </th>      <td mat-cell *matCellDef="let element">{{ element.title }}</td>    </ng-container>    <ng-container matColumnDef="usersCount">      <th mat-header-cell *matHeaderCellDef>        <span class="headerTitle" mat-sort-header>          Users        </span>      </th>      <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>    </ng-container>    <ng-container matColumnDef="actions">      <th mat-header-cell *matHeaderCellDef></th>      <td mat-cell *matCellDef="let element">        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">          <mat-icon>more_vert</mat-icon>        </button>        <mat-menu #menu="matMenu">          <button mat-menu-item (click)="onEdit(element)">            <mat-icon>edit</mat-icon>            Edit          </button>          <button mat-menu-item color="warn" (click)="onDelete(element)">            <mat-icon>delete</mat-icon>            Delete          </button>        </mat-menu>      </td>    </ng-container>    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>  </table></ng-container></div>'
-    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
+        var COMPONENT_TEMPLATE = '<div><mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner><ng-container>  <div class="searchbar" *ngIf="!loading">    <mat-form-field appearance="outline">      <mat-icon matPrefix>search</mat-icon>      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter(\'\', $event)" type="search"        placeholder="Search...">    </mat-form-field>  </div>  <div class="actions">    <button mat-flat-button color="primary" (click)="onAdd()">      <mat-icon>add</mat-icon>      Create a role    </button>  </div>  <table mat-table [dataSource]="roles" matSort>    <ng-container matColumnDef="title">      <th mat-header-cell *matHeaderCellDef>        <span class="headerTitle" mat-sort-header>          Title        </span>      </th>      <td mat-cell *matCellDef="let element">{{ element.title }}</td>    </ng-container>    <ng-container matColumnDef="usersCount">      <th mat-header-cell *matHeaderCellDef>        <span class="headerTitle" mat-sort-header>          Users        </span>      </th>      <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>    </ng-container>    <ng-container matColumnDef="actions">      <th mat-header-cell *matHeaderCellDef></th>      <td mat-cell *matCellDef="let element">        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">          <mat-icon>more_vert</mat-icon>        </button>        <mat-menu #menu="matMenu">          <button mat-menu-item (click)="onEdit(element)">            <mat-icon>edit</mat-icon>            Edit          </button>          <button mat-menu-item color="warn" (click)="onDelete(element)">            <mat-icon>delete</mat-icon>            Delete          </button>        </mat-menu>      </td>    </ng-container>    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>  </table></ng-container></div>'
+    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeProfileComponent', 'selector': 'safe-profile'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SafeRolesComponent'};
 </script>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -65,13 +65,13 @@
 <title>cluster_SafeGridModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-268 962,-268 962,-70 8,-70"/>
 </g>
-<g id="clust5" class="cluster">
-<title>cluster_SafeGridModule_exports</title>
-<polygon fill="none" stroke="black" points="394,-208 394,-260 546,-260 546,-208 394,-208"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_SafeGridModule_declarations</title>
 <polygon fill="none" stroke="black" points="806,-78 806,-130 954,-130 954,-78 806,-78"/>
+</g>
+<g id="clust5" class="cluster">
+<title>cluster_SafeGridModule_exports</title>
+<polygon fill="none" stroke="black" points="394,-208 394,-260 546,-260 546,-208 394,-208"/>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_SafeGridModule_imports</title>
@@ -247,7 +247,7 @@ import { MatTableModule } from &#x27;@angular/material/table&#x27;;
 import { MatButtonModule } from &#x27;@angular/material/button&#x27;;
 import { MatIconModule } from &#x27;@angular/material/icon&#x27;;
 import { MatMenuModule } from &#x27;@angular/material/menu&#x27;;
-import { ButtonModule } from &#x27;@progress/kendo-angular-buttons&#x27;;
+import { ButtonModule, ButtonsModule } from &#x27;@progress/kendo-angular-buttons&#x27;;
 import { MatCheckboxModule } from &#x27;@angular/material/checkbox&#x27;;
 import { DateInputsModule } from &#x27;@progress/kendo-angular-dateinputs&#x27;;
 import { InputsModule } from &#x27;@progress/kendo-angular-inputs&#x27;;
@@ -256,6 +256,7 @@ import { HttpClientModule } from &#x27;@angular/common/http&#x27;;
 import { SafeRecordModalModule } from &#x27;../../record-modal/record-modal.module&#x27;;
 import { SafeChooseRecordModalModule } from &#x27;../../choose-record-modal/choose-record-modal.module&#x27;;
 import { SafeExpandedCommentModule } from &#x27;./expanded-comment/expanded-comment.module&#x27;;
+import { MatTooltipModule } from &#x27;@angular/material/tooltip&#x27;;
 
 @NgModule({
   declarations: [
@@ -281,7 +282,9 @@ import { SafeExpandedCommentModule } from &#x27;./expanded-comment/expanded-comm
     DropDownsModule,
     SafeRecordModalModule,
     SafeChooseRecordModalModule,
-    SafeExpandedCommentModule
+    SafeExpandedCommentModule,
+    MatTooltipModule,
+    ButtonsModule
   ],
   exports: [SafeGridComponent]
 })

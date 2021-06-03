@@ -28,13 +28,13 @@
 <title>cluster_SafeRolesModule_imports</title>
 <polygon fill="none" stroke="black" points="526,-78 526,-130 710,-130 710,-78 526,-78"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_SafeRolesModule_declarations</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 518,-130 518,-78 16,-78"/>
-</g>
 <g id="clust7" class="cluster">
 <title>cluster_SafeRolesModule_exports</title>
 <polygon fill="none" stroke="black" points="266,-208 266,-260 424,-260 424,-208 266,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_SafeRolesModule_declarations</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 518,-130 518,-78 16,-78"/>
 </g>
 <!-- SafeAddRoleComponent -->
 <g id="node1" class="node">

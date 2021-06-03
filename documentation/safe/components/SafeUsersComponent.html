@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -1422,39 +1422,44 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     </div>
 
     <div class="tab-pane fade " id="c-templateData">
-        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;searchbar&quot;&gt;
-  &lt;mat-form-field appearance&#x3D;&quot;outline&quot;&gt;
-    &lt;mat-icon matPrefix&gt;search&lt;/mat-icon&gt;
-    &lt;input id&#x3D;&quot;custom-search&quot; matInput [ngModel]&#x3D;&quot;searchText&quot; (keyup)&#x3D;&quot;applyFilter(&#x27;&#x27;, $event)&quot; type&#x3D;&quot;search&quot; placeholder&#x3D;&quot;Search...&quot;&gt;
-  &lt;/mat-form-field&gt;
-  &lt;button mat-stroked-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;showFilters &#x3D; !showFilters&quot; class&#x3D;&quot;filters-toggle&quot;&gt;
-    &lt;mat-icon&gt;filter_list&lt;/mat-icon&gt;
-    Filter
-  &lt;/button&gt;
+        <pre class="line-numbers"><code class="language-html">&lt;div&gt;
+  &lt;div class&#x3D;&quot;searchbar&quot;&gt;
+    &lt;mat-form-field appearance&#x3D;&quot;outline&quot;&gt;
+      &lt;mat-icon matPrefix&gt;search&lt;/mat-icon&gt;
+      &lt;input id&#x3D;&quot;custom-search&quot; matInput [ngModel]&#x3D;&quot;searchText&quot; (keyup)&#x3D;&quot;applyFilter(&#x27;&#x27;, $event)&quot; type&#x3D;&quot;search&quot;
+             placeholder&#x3D;&quot;Search...&quot;&gt;
+    &lt;/mat-form-field&gt;
+    &lt;button mat-stroked-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;showFilters &#x3D; !showFilters&quot; class&#x3D;&quot;filters-toggle&quot;&gt;
+      &lt;mat-icon&gt;filter_list&lt;/mat-icon&gt;
+      Filter
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;filters&quot; [style.display]&#x3D;&quot;!showFilters ? &#x27;none&#x27; : &#x27;&#x27;&quot;&gt;
+    &lt;mat-form-field appearance&#x3D;&quot;outline&quot;&gt;
+      &lt;mat-label&gt;Role&lt;/mat-label&gt;
+      &lt;mat-select [ngModel]&#x3D;&quot;roleFilter&quot; (selectionChange)&#x3D;&quot;applyFilter(&#x27;role&#x27;, $event)&quot;&gt;
+        &lt;mat-option&gt;-&lt;/mat-option&gt;
+        &lt;mat-option [value]&#x3D;&quot;role.title&quot; *ngFor&#x3D;&quot;let role of roles&quot;&gt;
+          {{ role.title }}
+        &lt;/mat-option&gt;
+      &lt;/mat-select&gt;
+    &lt;/mat-form-field&gt;
+    &lt;button mat-button color&#x3D;&quot;warn&quot; (click)&#x3D;&quot;clearAllFilters()&quot;&gt;Clear Filters&lt;/button&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class&#x3D;&quot;actions&quot;&gt;
-  &lt;button mat-flat-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;onInvite()&quot;&gt;
-    &lt;mat-icon&gt;send&lt;/mat-icon&gt;
-    Invite users
-  &lt;/button&gt;
-&lt;/div&gt;
-&lt;div class&#x3D;&quot;actions move-right&quot; *ngIf&#x3D;&quot;selection.selected.length &gt; 0&quot;&gt;
-  &lt;button mat-flat-button color&#x3D;&quot;warn&quot; (click)&#x3D;&quot;onDelete(selection.selected)&quot;&gt;
-    &lt;mat-icon&gt;delete&lt;/mat-icon&gt;
-    Delete selected users
-  &lt;/button&gt;
-&lt;/div&gt;
-&lt;div class&#x3D;&quot;filters&quot; [style.display]&#x3D;&quot;!showFilters ? &#x27;none&#x27; : &#x27;&#x27;&quot;&gt;
-  &lt;mat-form-field appearance&#x3D;&quot;outline&quot;&gt;
-    &lt;mat-label&gt;Role&lt;/mat-label&gt;
-    &lt;mat-select [ngModel]&#x3D;&quot;roleFilter&quot; (selectionChange)&#x3D;&quot;applyFilter(&#x27;role&#x27;, $event)&quot;&gt;
-      &lt;mat-option&gt;-&lt;/mat-option&gt;
-      &lt;mat-option [value]&#x3D;&quot;role.title&quot; *ngFor&#x3D;&quot;let role of roles&quot;&gt;
-        {{ role.title }}
-      &lt;/mat-option&gt;
-    &lt;/mat-select&gt;
-  &lt;/mat-form-field&gt;
-  &lt;button mat-button color&#x3D;&quot;warn&quot; (click)&#x3D;&quot;clearAllFilters()&quot;&gt;Clear Filters&lt;/button&gt;
+&lt;div&gt;
+  &lt;div class&#x3D;&quot;actions&quot;&gt;
+    &lt;button mat-flat-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;onInvite()&quot;&gt;
+      &lt;mat-icon&gt;send&lt;/mat-icon&gt;
+      Invite users
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;actions&quot; *ngIf&#x3D;&quot;selection.selected.length &gt; 0&quot;&gt;
+    &lt;button mat-flat-button color&#x3D;&quot;warn&quot; (click)&#x3D;&quot;onDelete(selection.selected)&quot;&gt;
+      &lt;mat-icon&gt;delete&lt;/mat-icon&gt;
+      Delete selected users
+    &lt;/button&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
 &lt;mat-spinner diameter&#x3D;&quot;45&quot; class&#x3D;&quot;page-loader&quot; *ngIf&#x3D;&quot;loading&quot;&gt;&lt;/mat-spinner&gt;
 &lt;table *ngIf&#x3D;&quot;!loading&quot; mat-table [dataSource]&#x3D;&quot;users&quot; matSort&gt;
@@ -1552,10 +1557,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                     <code>./users.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss">.actions {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  text-align: right;
+  margin: 10px 0 16px;
 }
 
 .searchbar {
@@ -1564,9 +1567,15 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   .filters-toggle {
     margin-left: 12px;
   }
+
+  button {
+    margin-bottom: 10px;
+  }
 }
 
 .filters {
+  clear: both;
+  float: left;
   margin-left: -12px;
   padding-top: 30px;
 
@@ -1610,8 +1619,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div class="searchbar">  <mat-form-field appearance="outline">    <mat-icon matPrefix>search</mat-icon>    <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter(\'\', $event)" type="search" placeholder="Search...">  </mat-form-field>  <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">    <mat-icon>filter_list</mat-icon>    Filter  </button></div><div class="actions">  <button mat-flat-button color="primary" (click)="onInvite()">    <mat-icon>send</mat-icon>    Invite users  </button></div><div class="actions move-right" *ngIf="selection.selected.length > 0">  <button mat-flat-button color="warn" (click)="onDelete(selection.selected)">    <mat-icon>delete</mat-icon>    Delete selected users  </button></div><div class="filters" [style.display]="!showFilters ? \'none\' : \'\'">  <mat-form-field appearance="outline">    <mat-label>Role</mat-label>    <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter(\'role\', $event)">      <mat-option>-</mat-option>      <mat-option [value]="role.title" *ngFor="let role of roles">        {{ role.title }}      </mat-option>    </mat-select>  </mat-form-field>  <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button></div><mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner><table *ngIf="!loading" mat-table [dataSource]="users" matSort>  <!-- Checkbox Column -->  <ng-container matColumnDef="select">    <th mat-header-cell *matHeaderCellDef>      <mat-checkbox (change)="$event ? masterToggle() : null"                    [checked]="selection.hasValue() && isAllSelected()"                    [indeterminate]="selection.hasValue() && !isAllSelected()"                    [aria-label]="checkboxLabel()">      </mat-checkbox>    </th>    <td mat-cell *matCellDef="let row">      <mat-checkbox (click)="$event.stopPropagation()"                    (change)="$event ? selection.toggle(row) : null"                    [checked]="selection.isSelected(row)"                    [aria-label]="checkboxLabel(row)">      </mat-checkbox>    </td>  </ng-container>  <ng-container matColumnDef="username">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Username      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.username }}</td>  </ng-container>  <ng-container matColumnDef="name">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Name      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.name }}</td>  </ng-container>  <ng-container matColumnDef="roles" *ngIf="applicationService">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Role      </span>    </th>    <td mat-cell *matCellDef="let element">{{element.roles[0] ? element.roles[0].title : \'-\'}}</td>  </ng-container>  <ng-container matColumnDef="roles" *ngIf="!applicationService">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Role      </span>    </th>    <td mat-cell *matCellDef="let element">      <span *ngFor="let role of element.roles"> {{role.title}},</span>    </td>  </ng-container>  <ng-container matColumnDef="oid">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Azure      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.oid }}</td>  </ng-container>  <ng-container matColumnDef="actions">    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>    <td mat-cell *matCellDef="let element">      <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">        <mat-icon>more_vert</mat-icon>      </button>      <mat-menu #menu="matMenu">        <button mat-menu-item (click)="onEdit(element)">          <mat-icon>edit</mat-icon>          Edit        </button>        <button mat-menu-item (click)="onDelete([element])">          <mat-icon>delete</mat-icon>          Delete        </button>      </mat-menu>    </td>  </ng-container>  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr></table></div>'
-    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
+        var COMPONENT_TEMPLATE = '<div><div>  <div class="searchbar">    <mat-form-field appearance="outline">      <mat-icon matPrefix>search</mat-icon>      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter(\'\', $event)" type="search"             placeholder="Search...">    </mat-form-field>    <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">      <mat-icon>filter_list</mat-icon>      Filter    </button>  </div>  <div class="filters" [style.display]="!showFilters ? \'none\' : \'\'">    <mat-form-field appearance="outline">      <mat-label>Role</mat-label>      <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter(\'role\', $event)">        <mat-option>-</mat-option>        <mat-option [value]="role.title" *ngFor="let role of roles">          {{ role.title }}        </mat-option>      </mat-select>    </mat-form-field>    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>  </div></div><div>  <div class="actions">    <button mat-flat-button color="primary" (click)="onInvite()">      <mat-icon>send</mat-icon>      Invite users    </button>  </div>  <div class="actions" *ngIf="selection.selected.length > 0">    <button mat-flat-button color="warn" (click)="onDelete(selection.selected)">      <mat-icon>delete</mat-icon>      Delete selected users    </button>  </div></div><mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner><table *ngIf="!loading" mat-table [dataSource]="users" matSort>  <!-- Checkbox Column -->  <ng-container matColumnDef="select">    <th mat-header-cell *matHeaderCellDef>      <mat-checkbox (change)="$event ? masterToggle() : null"                    [checked]="selection.hasValue() && isAllSelected()"                    [indeterminate]="selection.hasValue() && !isAllSelected()"                    [aria-label]="checkboxLabel()">      </mat-checkbox>    </th>    <td mat-cell *matCellDef="let row">      <mat-checkbox (click)="$event.stopPropagation()"                    (change)="$event ? selection.toggle(row) : null"                    [checked]="selection.isSelected(row)"                    [aria-label]="checkboxLabel(row)">      </mat-checkbox>    </td>  </ng-container>  <ng-container matColumnDef="username">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Username      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.username }}</td>  </ng-container>  <ng-container matColumnDef="name">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Name      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.name }}</td>  </ng-container>  <ng-container matColumnDef="roles" *ngIf="applicationService">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Role      </span>    </th>    <td mat-cell *matCellDef="let element">{{element.roles[0] ? element.roles[0].title : \'-\'}}</td>  </ng-container>  <ng-container matColumnDef="roles" *ngIf="!applicationService">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Role      </span>    </th>    <td mat-cell *matCellDef="let element">      <span *ngFor="let role of element.roles"> {{role.title}},</span>    </td>  </ng-container>  <ng-container matColumnDef="oid">    <th mat-header-cell *matHeaderCellDef>      <span class="headerTitle" mat-sort-header>        Azure      </span>    </th>    <td mat-cell *matCellDef="let element">{{ element.oid }}</td>  </ng-container>  <ng-container matColumnDef="actions">    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>    <td mat-cell *matCellDef="let element">      <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">        <mat-icon>more_vert</mat-icon>      </button>      <mat-menu #menu="matMenu">        <button mat-menu-item (click)="onEdit(element)">          <mat-icon>edit</mat-icon>          Edit        </button>        <button mat-menu-item (click)="onDelete([element])">          <mat-icon>delete</mat-icon>          Delete        </button>      </mat-menu>    </td>  </ng-container>  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr></table></div>'
+    var COMPONENTS = [{'name': 'SafeAccessComponent', 'selector': 'safe-access'},{'name': 'SafeAddRoleComponent', 'selector': 'safe-add-role'},{'name': 'SafeChartComponent', 'selector': 'safe-chart'},{'name': 'SafeChartSettingsComponent', 'selector': 'safe-chart-settings'},{'name': 'SafeChooseRecordModalComponent', 'selector': 'safe-choose-record-modal'},{'name': 'SafeConfirmModalComponent', 'selector': 'safe-confirm-modal'},{'name': 'SafeConvertModalComponent', 'selector': 'safe-convert-modal'},{'name': 'SafeDashboardMenuComponent', 'selector': 'safe-dashboard-menu'},{'name': 'SafeEditAccessComponent', 'selector': 'safe-edit-access'},{'name': 'SafeEditorComponent', 'selector': 'safe-editor'},{'name': 'SafeEditorSettingsComponent', 'selector': 'safe-editor-settings'},{'name': 'SafeEditRoleComponent', 'selector': 'safe-edit-role'},{'name': 'SafeEditUserComponent', 'selector': 'safe-edit-user'},{'name': 'SafeExpandedCommentComponent', 'selector': 'safe-expanded-comment'},{'name': 'SafeExpandedWidgetComponent', 'selector': 'safe-expanded-widget'},{'name': 'SafeFloatingButtonSettingsComponent', 'selector': 'safe-floating-button-settings'},{'name': 'SafeFloatingOptionsComponent', 'selector': 'safe-floating-options'},{'name': 'SafeFormBuilderComponent', 'selector': 'safe-form-builder'},{'name': 'SafeFormComponent', 'selector': 'safe-form'},{'name': 'SafeFormModalComponent', 'selector': 'safe-form-modal'},{'name': 'SafeGridComponent', 'selector': 'safe-grid'},{'name': 'SafeGridSettingsComponent', 'selector': 'safe-grid-settings'},{'name': 'SafeInviteUserComponent', 'selector': 'safe-invite-user'},{'name': 'SafeLayoutComponent', 'selector': 'safe-layout'},{'name': 'SafeMapComponent', 'selector': 'safe-map'},{'name': 'SafeMapSettingsComponent', 'selector': 'safe-map-settings'},{'name': 'SafePreviousButtonComponent', 'selector': 'safe-previous-button'},{'name': 'SafeProfileComponent', 'selector': 'safe-profile'},{'name': 'SafeQueryBuilderComponent', 'selector': 'safe-query-builder'},{'name': 'SafeRecordHistoryComponent', 'selector': 'safe-record-history'},{'name': 'SafeRecordModalComponent', 'selector': 'safe-record-modal'},{'name': 'SafeRolesComponent', 'selector': 'safe-roles'},{'name': 'SafeSchedulerComponent', 'selector': 'safe-scheduler'},{'name': 'SafeSchedulerSettingsComponent', 'selector': 'safe-scheduler-settings'},{'name': 'SafeStatusModalComponent', 'selector': 'safe-status-modal'},{'name': 'SafeSurveyGridComponent', 'selector': 'safe-survey-grid'},{'name': 'SafeTabFieldsComponent', 'selector': 'safe-tab-fields'},{'name': 'SafeTabFilterComponent', 'selector': 'safe-tab-filter'},{'name': 'SafeTabSortComponent', 'selector': 'safe-tab-sort'},{'name': 'SafeTileDataComponent', 'selector': 'safe-tile-data'},{'name': 'SafeTileDisplayComponent', 'selector': 'safe-tile-display'},{'name': 'SafeUsersComponent', 'selector': 'safe-users'},{'name': 'SafeWidgetComponent', 'selector': 'safe-widget'},{'name': 'SafeWidgetGridComponent', 'selector': 'safe-widget-grid'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SafeUsersComponent'};
 </script>

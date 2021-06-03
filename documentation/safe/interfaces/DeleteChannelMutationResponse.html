@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>ems-front documentation</title>
+        <title>safe-front documentation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,7 +13,7 @@
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="../" class="navbar-brand">ems-front documentation</a>
+            <a href="../" class="navbar-brand">safe-front documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
 
@@ -203,7 +203,6 @@ export interface ConvertRecordMutationResponse {
 }
 
 // &#x3D;&#x3D;&#x3D; ADD RECORD &#x3D;&#x3D;&#x3D;
-
 export const ADD_RECORD &#x3D; gql&#x60;
 mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
   addRecord(form: $form, data: $data) {
@@ -224,6 +223,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
 export interface AddRecordMutationResponse {
   loading: boolean;
   addRecord: Record;
+}
+
+// &#x3D;&#x3D;&#x3D; UPLOAD FILE &#x3D;&#x3D;&#x3D;
+export const UPLOAD_FILE &#x3D; gql&#x60;
+mutation uploadFile($file: Upload!, $form: ID!) {
+  uploadFile(file: $file, form: $form)
+}&#x60;;
+
+export interface UploadFileMutationResponse {
+  loading: boolean;
+  uploadFile: string;
 }
 
 // &#x3D;&#x3D;&#x3D; EDIT FORM &#x3D;&#x3D;&#x3D;
@@ -289,6 +299,30 @@ export interface EditUserMutationResponse {
   editUser: User;
 }
 
+// &#x3D;&#x3D;&#x3D; EDIT USER PROFILE &#x3D;&#x3D;&#x3D;
+export const EDIT_USER_PROFILE &#x3D; gql&#x60;
+mutation editUserProfile($profile: UserProfileInputType!) {
+  editUserProfile(profile: $profile) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+    favoriteApp
+  }
+}&#x60;;
+
+export interface EditUserProfileMutationResponse {
+  loading: boolean;
+  editUserProfile: User;
+}
+
 // &#x3D;&#x3D;&#x3D; ADD PAGE &#x3D;&#x3D;&#x3D;
 export const ADD_PAGE &#x3D; gql&#x60;
 mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
@@ -349,8 +383,8 @@ export interface AddRoleToUsersMutationResponse {
 
 // &#x3D;&#x3D;&#x3D; EDIT ROLE &#x3D;&#x3D;&#x3D;
 export const EDIT_ROLE &#x3D; gql&#x60;
-mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
-  editRole(id: $id, permissions: $permissions, channels: $channels) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID], $title: String) {
+  editRole(id: $id, permissions: $permissions, channels: $channels, title: $title) {
     id
     title
     permissions {
