@@ -42,8 +42,8 @@ export interface RecordAddedSubscriptionResponse {
 }
 
 export const APPLICATION_EDITED_SUBSCRIPTION = gql`
-  subscription applicationEdited{
-    applicationEdited{
+  subscription applicationEdited($id: ID!){
+    applicationEdited(id: $id){
       id
       name
       description

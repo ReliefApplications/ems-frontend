@@ -26,5 +26,6 @@ export const NOTIFICATIONS = {
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
-    profileSaved: 'Preferences saved.'
+    profileSaved: 'Preferences saved.',
+    appEdited: 'This application has been updated by another users.'
 };

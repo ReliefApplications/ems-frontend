@@ -75,11 +75,13 @@ export class SafeApplicationService {
     }).subscribe(res => {
       this._application.next(res.data.application);
     });
-    console.log("j'ai load app");
     this.apollo.subscribe<ApplicationEditedSubscriptionResponse>({
-      query: APPLICATION_EDITED_SUBSCRIPTION
+      query: APPLICATION_EDITED_SUBSCRIPTION,
+      variables: {
+        id
+      }
     }).subscribe(res => {
-      console.log("res = ", res);
+      this.snackBar.openSnackBar(NOTIFICATIONS.appEdited);
     });
   }
 
@@ -87,7 +89,6 @@ export class SafeApplicationService {
     Edit Application
   */
   editApplication(value: any): void {
-    console.log("je passe ici");
     const application = this._application.getValue();
     this.apollo.mutate<EditApplicationMutationResponse>(
       {
