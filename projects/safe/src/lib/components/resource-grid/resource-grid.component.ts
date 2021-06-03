@@ -138,7 +138,6 @@ export class SafeResourceGridComponent implements OnInit {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              console.log('FIELDS*******', this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -146,7 +145,6 @@ export class SafeResourceGridComponent implements OnInit {
               if (this.detailsField) {
                 this.detailsField = {...this.detailsField, actions: this.settings.actions};
               }
-              console.log('ITEMS*******', this.items);
               this.gridData = {
                 data: this.items,
                 total: this.items.length
@@ -327,7 +325,6 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   public onShowDetails(index: number): void {
-    console.log('ASD', this.gridData.data[index]);
     this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.gridData.data[index].id,

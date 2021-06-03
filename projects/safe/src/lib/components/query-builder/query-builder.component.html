@@ -26,7 +26,7 @@
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
       <mat-tab label="Fields">
         <ng-template matTabContent>
-          <safe-tab-fields [form]="$any(form.controls.fields)" [fields]="availableFields"
+          <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)" [fields]="availableFields"
                            [factory]="factory"></safe-tab-fields>
         </ng-template>
       </mat-tab>

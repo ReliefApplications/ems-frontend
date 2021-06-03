@@ -68,7 +68,7 @@ export class SafeQueryBuilderComponent implements OnInit {
     } else {
       this.availableQueries = this.queryBuilder.availableQueries;
       this.availableQueries.subscribe((res) => {
-        if (res) {
+        if (res.length > 0) {
           this.allQueries = res.map(x => x.name);
           this.filteredQueries = this.filterQueries(this.form.value.name);
           this.availableFields = this.queryBuilder.getFields(this.form.value.name);

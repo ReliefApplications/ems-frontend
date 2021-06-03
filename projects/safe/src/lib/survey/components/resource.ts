@@ -448,8 +448,6 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
   };
 
   function buildDisplayGridFields(question: any): void {
-    console.log('** Question Name **', question.name);
-
     Survey
       .JsonObject
       .metaData
