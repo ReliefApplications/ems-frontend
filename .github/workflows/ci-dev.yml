@@ -77,6 +77,7 @@ jobs:
         with:
           token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
           repository-name: ReliefApplications/ReliefApplications.github.io
-          branch: master # The branch the action should deploy to.
-          folder: emrs-safe-backend/@safe # The folder the action should deploy.
-          clean: true # Automatically remove deleted files from the deploy branch
+          branch: master
+          folder: doc_safe
+          target-folder: emrs-safe-frontend/@safe
+          clean: true
