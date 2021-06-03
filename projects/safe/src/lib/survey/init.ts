@@ -19,7 +19,7 @@ export function initCustomWidgets(Survey: any, domService: DomService, dialog: M
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
-  initResourceComponent(Survey, apollo);
+  initResourceComponent(Survey, apollo, dialog);
   initResourcesComponent(Survey, apollo);
   initCustomWidget(Survey, domService, dialog);
   addCustomFunctions(Survey);

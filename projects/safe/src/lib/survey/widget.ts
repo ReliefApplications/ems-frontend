@@ -2,7 +2,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeFormModalComponent } from '../components/form-modal/form-modal.component';
 import { SafeSurveyGridComponent } from '../components/survey/survey-grid/survey-grid.component';
 import { DomService } from '../services/dom.service';
-import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/resource-grid-modal.component';
+import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
+import { FormGroup } from '@angular/forms';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -76,12 +77,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
-        // console.log('QUESTION', question.resource);
-        // console.log('VALUE NAME', question.valueName);
-        // TODO we need to retrieve the name of the chosen item
-        // console.log('CHOICES', question.survey.getQuestionByValueName(question.valueName).getProperty('resource'));
-
-        const searchBtn = buildSearchButton(question.resource, false);
+        const searchBtn = buildSearchButton(question.resource, false, question.gridFieldsSettings);
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
         const btnEl = document.createElement('button');
@@ -189,7 +185,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
     }
   };
 
-  function buildSearchButton(resourceId: string, multiselect: boolean): any {
+  function buildSearchButton(resourceId: string, multiselect: boolean, fieldsSettingsForm: FormGroup): any {
+    console.log('buildSearchButton-SETTINGS FORM', fieldsSettingsForm);
     const mainDiv = document.createElement('div');
     if (resourceId) {
       mainDiv.id = 'searchDiv';
@@ -197,7 +194,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       btnEl.innerText = 'Search';
       btnEl.style.width = '100px';
       btnEl.onclick = () => {
-        console.log('ID', resourceId);
+        // TODO we need to retrieve the name of the chosen item
         const dialogRef = dialog.open(SafeResourceGridModalComponent, {
           data: {
             id: resourceId,
@@ -206,11 +203,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         });
         dialogRef.afterClosed().subscribe(res => {
           console.log('CLOSE');
-          // if (res) {
-          //   const e = new CustomEvent('saveResourceFromEmbed',
-          //     {detail: {resource: res.data, template: res.template}});
-          //   document.dispatchEvent(e);
-          // }
         });
       };
 

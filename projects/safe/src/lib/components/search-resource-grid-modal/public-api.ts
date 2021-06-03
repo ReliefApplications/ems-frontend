@@ -1,2 +1,2 @@
-export * from './resource-grid-modal.component';
-export * from './resource-grid-modal.module';
+export * from './search-resource-grid-modal.component';
+export * from './search-resource-grid-modal.module';

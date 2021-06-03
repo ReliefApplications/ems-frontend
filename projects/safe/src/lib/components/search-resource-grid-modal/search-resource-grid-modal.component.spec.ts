@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeResourceGridModalComponent } from './resource-grid-modal.component';
+import { SafeResourceGridModalComponent } from './search-resource-grid-modal.component';
 
 describe('ResourceTableModalComponent', () => {
   let component: SafeResourceGridModalComponent;

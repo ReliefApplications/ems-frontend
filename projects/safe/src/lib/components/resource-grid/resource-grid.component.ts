@@ -65,6 +65,8 @@ export class SafeResourceGridComponent implements OnInit {
 
   public fields: any[] = [];
 
+  public fieldForms: any[] = [];
+
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public selectableSettings: SelectableSettings = {
@@ -82,9 +84,7 @@ export class SafeResourceGridComponent implements OnInit {
 
   ngOnInit(): void {
     const queryName = this.queryBuilder.getQueryNameFromResourceName('CoreForm');
-    console.log('QUERY NAME', queryName);
     const fields = this.queryBuilder.getFields(queryName);
-    console.log('FIELDS', fields);
     const firstField = this.queryBuilder.addNewField(fields[0], true);
     const obj: any = {};
     Object.keys(firstField.controls).map((f: any) => {

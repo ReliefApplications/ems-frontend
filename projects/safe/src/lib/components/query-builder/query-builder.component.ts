@@ -1,10 +1,17 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
-import { MatAutocompleteSelectedEvent, MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import {FormControl} from '@angular/forms';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return () => overlay.scrollStrategies.block();
@@ -34,8 +41,8 @@ export class SafeQueryBuilderComponent implements OnInit {
   }
 
   @Input() form: FormGroup = new FormGroup({});
-  @Input() settings: any;
   @Input() canExpand = true;
+  @Input() canSelectDataSet = true;
 
   // === FIELD EDITION ===
   public isField = false;

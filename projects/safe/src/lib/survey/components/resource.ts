@@ -7,8 +7,11 @@ import {
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
+import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { FormGroup } from '@angular/forms';
 
-export function init(Survey: any, apollo: Apollo): void {
+export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
   let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
@@ -31,6 +34,7 @@ export function init(Survey: any, apollo: Apollo): void {
     value: ''
   }];
 
+  // let gridFieldsSettings: FormGroup = new FormGroup({});
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
@@ -247,7 +251,13 @@ export function init(Survey: any, apollo: Apollo): void {
           dependsOn: ['resource', 'displayField'],
           visibleIf: (obj: any) => !obj.resource || !obj.displayField,
           visibleIndex: 3
-        }
+        },
+        Survey.Serializer.addProperty('resource', {
+            name: 'gridFieldsSettings',
+            default: () => new FormGroup({}).getRawValue(),
+            visibleIf: () => false
+          }
+        )
       );
 
       const selectResourceText = {
@@ -306,6 +316,7 @@ export function init(Survey: any, apollo: Apollo): void {
       );
     },
     onLoaded(question: any): void {
+      buildDisplayGridFields(question);
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -435,4 +446,48 @@ export function init(Survey: any, apollo: Apollo): void {
       });
     }
   };
+
+  function buildDisplayGridFields(question: any): void {
+    console.log('** Question Name **', question.name);
+
+    Survey
+      .JsonObject
+      .metaData
+      .addProperty('question', {
+        name: 'Search resource table',
+        type: 'availableFieldsBn',
+        isRequired: true,
+        category: 'Custom Questions',
+        // visibleIndex: 3
+      });
+
+    const setGridFieldsBtn = {
+      render: (editor: any, htmlElement: any) => {
+        console.log('****** render setGridFieldsBtn', question.name);
+        const btn = document.createElement('button');
+        btn.innerText = 'Available grid fields';
+        btn.style.width = '100%';
+        btn.style.border = 'none';
+        btn.style.padding = '10px';
+        btn.id = question.name;
+        htmlElement.appendChild(btn);
+        btn.onclick = (ev: any) => {
+          console.log('EVENT MOUSE', ev.target?.id);
+          console.log('QUESTION GRID FIELDS', question.survey.getQuestionByName(ev.target?.id).gridFieldsSettings);
+          const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
+            data: {form: question.survey.getQuestionByName(ev.target?.id).gridFieldsSettings}
+          });
+          dialogRef.afterClosed().subscribe((res: any) => {
+            if (res && res.value.fields) {
+              question.survey.getQuestionByName(question.name).gridFieldsSettings = res.getRawValue();
+              question.gridFieldsSettings = res.getRawValue();
+            }
+          });
+        };
+      }
+    };
+    SurveyCreator
+      .SurveyPropertyEditorFactory
+      .registerCustomEditor('availableFieldsBn', setGridFieldsBtn);
+  }
 }
