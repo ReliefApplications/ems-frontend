@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name:
-      run: npm i
+      run: npm ci
     - name: Build Shared Library
       run: npm run build safe
     - name: Build Back-office
