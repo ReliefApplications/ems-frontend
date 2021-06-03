@@ -78,6 +78,6 @@ jobs:
           token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
-          folder: doc_safe
+          folder: documentation/safe
           target-folder: emrs-safe-frontend/@safe
           clean: true
