@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SafeFormComponent, Form, Page, Step } from '@safe/builder';
 import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../graphql/queries';
@@ -11,8 +11,6 @@ import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../graphql/qu
 export class FormComponent implements OnInit {
 
   @Input() id = '';
-
-  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
 
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
@@ -28,9 +26,6 @@ export class FormComponent implements OnInit {
 
   // === ROUTE ===
   public isStep = false;
-
-  // === DISPLAY ===
-  public showSidenav = false;
 
   constructor(
     private apollo: Apollo
@@ -57,5 +52,4 @@ export class FormComponent implements OnInit {
   clearForm(): void {
     this.formComponent?.reset();
   }
-
 }
