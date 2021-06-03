@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name:
+    - name: Install Dependencies
       run: npm ci
     - name: Build Shared Library
       run: npm run build safe
@@ -50,7 +50,7 @@ jobs:
     #     path: coverage
 
   deploy_back_office:
-    name: Deploy Back-office
+    name: Deploy Back-office 🚀
     runs-on: ubuntu-latest
     needs: build
 
@@ -72,7 +72,7 @@ jobs:
         SSH_PASS: ${{ secrets.SSH_PASS }}
 
   deploy_front_office:
-    name: Deploy Front-office
+    name: Deploy Front-office 🚀
     runs-on: ubuntu-latest
     needs: build
 
