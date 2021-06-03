@@ -3,7 +3,7 @@ name: DEV CI
 on:
   push:
     branches:
-      - 'SAFE-372'
+      - 'dev'
 
 jobs:
   build:
@@ -60,7 +60,7 @@ jobs:
       #     path: documentation/front-office
 
   deploy_safe_documentation:
-    name : Deploy SAFE documentation 🚀
+    name : Deploy @SAFE documentation 🚀
     runs-on: ubuntu-latest
     needs: build
   
@@ -73,9 +73,10 @@ jobs:
           name: doc_safe
           path: documentation/safe
       - name: Deploy to github pages
-        uses: JamesIves/github-pages-deploy-action@3.6.2
+        uses: JamesIves/github-pages-deploy-action@master
         with:
-          GITHUB_TOKEN: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: documentation/safe # The folder the action should deploy.
-          CLEAN: true # Automatically remove deleted files from the deploy branch
+          token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
+          repository-name: ReliefApplications/ReliefApplications.github.io
+          branch: master # The branch the action should deploy to.
+          folder: emrs-safe-backend/@safe # The folder the action should deploy.
+          clean: true # Automatically remove deleted files from the deploy branch
