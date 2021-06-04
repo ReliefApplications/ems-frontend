@@ -11,6 +11,7 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
+  ImportRecordModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -58,7 +59,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private importPopup: MatDialog
   ) {}
 
   /*  Load the forms.
@@ -197,5 +199,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     const path = `download/form/kobo/${element.id}`;
     const fileName = `${element.name}.xlsx`;
     this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
+  }
+
+  onImportRecord(element: any, e: any): void {
+    console.log(element);
+    this.importPopup.open(ImportRecordModalComponent);
   }
 }
