@@ -49,53 +49,6 @@ export const APPLICATION_EDITED_SUBSCRIPTION = gql`
       description
       createdAt
       status
-      pages {
-        id
-        name
-        type
-        content
-        createdAt
-        canSee
-        canUpdate
-        canDelete
-      }
-      roles {
-        id
-        title
-        permissions {
-          id
-          type
-        }
-        usersCount
-      }
-      users {
-        id
-        username
-        name
-        roles {
-          id
-          title
-        }
-        oid
-      }
-      permissions {
-        canSee {
-          id
-          title
-        }
-        canCreate {
-          id
-          title
-        }
-        canUpdate {
-          id
-          title
-        }
-        canDelete {
-          id
-          title
-        }
-      }
       canSee
       canUpdate
     }

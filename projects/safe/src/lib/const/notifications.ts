@@ -27,5 +27,5 @@ export const NOTIFICATIONS = {
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
     profileSaved: 'Preferences saved.',
-    appEdited: 'This application has been updated by another users.'
+    appEdited: 'This application has been updated by someone else.'
 };

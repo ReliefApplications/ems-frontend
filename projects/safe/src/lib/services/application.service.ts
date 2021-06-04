@@ -80,7 +80,7 @@ export class SafeApplicationService {
       variables: {
         id
       }
-    }).subscribe(res => {
+    }).subscribe(() => {
       this.snackBar.openSnackBar(NOTIFICATIONS.appEdited);
     });
   }
