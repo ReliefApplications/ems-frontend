@@ -12,15 +12,14 @@ import {
   PermissionType,
   SafeConfirmModalComponent,
   NOTIFICATIONS,
-  Form
+  Form,
+  SafeDownloadService
 } from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import {SafeDownloadService} from '../../../../../../safe/src/lib/services/download.service';
-
 
 @Component({
   selector: 'app-forms',
@@ -194,15 +193,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.clearDateFilter();
   }
 
-  onExport(element: any, e: any): void {
-    this.downloadForm(element);
-  }
-
-  downloadForm(element: any): void {
-    const type = 'xlsx';
-    const path = `download/forms/form/${element.id}`;
-    const fileName = `${element.name}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+  onExportForKobo(element: any, e: any): void {
+    const path = `download/form/kobo/${element.id}`;
+    const fileName = `${element.name}.xlsx`;
+    this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
   }
 }
