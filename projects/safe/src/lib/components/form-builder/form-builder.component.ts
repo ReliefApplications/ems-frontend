@@ -14,7 +14,7 @@ const QUESTION_TYPES = [
   'comment',
   // 'rating',
   // 'ranking',
-  'imagepicker',
+  // 'imagepicker',
   'boolean',
   'image',
   'html',

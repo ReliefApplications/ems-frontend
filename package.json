@@ -13,6 +13,7 @@
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
     "compodoc:back": "npx compodoc -p tsconfig.json projects/back-office/src -d documentation/back-office",
     "compodoc:safe": "npx compodoc -p tsconfig.json projects/safe/src -d documentation/safe",
+    "compodoc:elem": "npx compodoc -p tsconfig.json projects/web-element/src -d documentation/web-element",
     "test": "ng test",
     "test:ci": "ng test",
     "lint": "ng lint",
