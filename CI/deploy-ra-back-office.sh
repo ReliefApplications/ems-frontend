@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REMOTE_PATH=/var/www/html/ems-back-office
-OUT=dist/back-office
+REMOTE_PATH=/var/www/html/ra-safe-bo
+OUT=dist/ra-back-office
 CONNECTION=reliefapps@92.243.25.191
 
 set -e

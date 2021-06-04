@@ -1,7 +1,8 @@
 #!/bin/bash
 
-REMOTE_PATH=/var/www/html/ems-back-office
-OUT=dist/back-office
+# Remove files
+REMOTE_PATH=/var/www/html/ra-safe-fo
+OUT=dist/ra-front-office
 CONNECTION=reliefapps@92.243.25.191
 
 set -e

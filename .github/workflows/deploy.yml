@@ -91,6 +91,10 @@ jobs:
       run: ./CI/deploy-back-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
+    - name: Deploy RA
+      run: ./CI/deploy-ra-back-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_PASS }}
 
   deploy_front_office:
     name: Deploy Front-office 🚀
@@ -118,3 +122,8 @@ jobs:
       run: ./CI/deploy-front-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
+    - name: Deploy RA
+      run: ./CI/deploy-ra-front-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+
