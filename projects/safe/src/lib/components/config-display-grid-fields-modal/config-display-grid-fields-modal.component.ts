@@ -13,18 +13,21 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   public form: FormGroup = new FormGroup({});
   public loading = true;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { form: any }, private queryBuilder: QueryBuilderService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string }, private queryBuilder: QueryBuilderService) {
   }
 
   ngOnInit(): void {
     this.queryBuilder.availableQueries.subscribe((res) => {
       if (res) {
+        console.log('CONFIG DATA', this.data.resourceName);
         const hasDataForm = this.data.form.fields && this.data.form.fields.length > 0;
-        const queryName = hasDataForm ? this.data.form.name : this.queryBuilder.getQueryNameFromResourceName('CoreForm');
+        const queryName = hasDataForm ? this.data.form.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
         this.form = this.queryBuilder.createQueryForm({
           name: queryName,
           fields: hasDataForm ? this.data.form.fields : []
         });
+        console.log('QUERY NAME', queryName);
+        console.log('FORM', this.form);
         this.loading = false;
       }
     });

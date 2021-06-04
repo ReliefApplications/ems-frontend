@@ -105,11 +105,13 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
       Survey
         .JsonObject
         .metaData
-        .addProperty('question', {
+        .addProperty('resource', {
           name: 'Search resource table',
           type: 'availableFieldsBn',
           isRequired: true,
           category: 'Custom Questions',
+          dependsOn: ['resource'],
+          visibleIf: (obj: any) => !!obj && !!obj.resource,
           visibleIndex: 4
         });
 
@@ -124,14 +126,21 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
           btn.onclick = (ev: any) => {
             const currentQuestion = editor.object;
             console.log('QUESTION', currentQuestion);
-            const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
-              data: {form: currentQuestion.gridFieldsSettings}
-            });
-            dialogRef.afterClosed().subscribe((res: any) => {
-              if (res && res.value.fields) {
-                currentQuestion.gridFieldsSettings = res.getRawValue();
+            getResourceById({id: currentQuestion.resource}).subscribe(response => {
+              console.log('CURRENT QUESTIOn', currentQuestion.gridFieldsSettings);
+              if (response.data.resource && response.data.resource.name) {
+                const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
+                const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
+                  data: {form: currentQuestion.gridFieldsSettings, resourceName: nameTrimmed}
+                });
+                dialogRef.afterClosed().subscribe((res: any) => {
+                  if (res && res.value.fields) {
+                    currentQuestion.gridFieldsSettings = res.getRawValue();
+                  }
+                });
               }
             });
+
           };
         }
       };
@@ -294,8 +303,12 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
         },
         Survey.Serializer.addProperty('resource', {
             name: 'gridFieldsSettings',
-            default: () => new FormGroup({}).getRawValue(),
-            visibleIf: () => false
+            dependsOn: ['resource'],
+            visibleIf: (obj: any) => {
+              console.log('CHANGE', obj.resource);
+              obj.gridFieldsSettings = new FormGroup({}).getRawValue();
+              return false;
+            }
           }
         )
       );
