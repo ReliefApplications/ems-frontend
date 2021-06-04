@@ -62,6 +62,27 @@ and your browser will pop up the page at localhost:8888.
 
 # Useful commands
 
+## Compodoc
+
+The package.json contains commands to generate Angular documentation.
+
+Commands have to be executed once per project, and executed again after any modification of the related code.
+
+Subsequent command will generate the documentation:
+```
+npm run compodoc:<project>
+```
+
+If the command fails, check that compodoc is installed on your computer.
+You can execute following command for that:
+```
+npm i -g compodoc
+```
+
+A subfolder should be generated under *documentation* folder.
+
+You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
