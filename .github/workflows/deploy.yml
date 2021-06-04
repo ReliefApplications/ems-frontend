@@ -48,6 +48,22 @@ jobs:
     #   with:
     #     name: deploy_coverage
     #     path: coverage
+    - name: Build RA Back-office
+      run: npm run build:ci:ra
+    - name: Build RA Front-office
+      run: npm run build:ci:ra front-office
+    - name: Archive build RA Back-office
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: deploy_dist_ra_back_office
+        path: dist/back-office
+    - name: Archive build RA Front-office
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: deploy_dist_ra_front_office
+        path: dist/front-office
 
   deploy_back_office:
     name: Deploy Back-office 🚀
@@ -62,6 +78,11 @@ jobs:
       with:
         name: deploy_dist_back_office
         path: dist/back-office
+    - name: Download RA build
+      uses: actions/download-artifact@v1
+      with:
+        name: deploy_dist_ra_back_office
+        path: dist/ra-back-office
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
@@ -84,6 +105,11 @@ jobs:
       with:
         name: deploy_dist_front_office
         path: dist/front-office
+    - name: Download RA build
+      uses: actions/download-artifact@v1
+      with:
+        name: deploy_dist_ra_front_office
+        path: dist/ra-front-office
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
