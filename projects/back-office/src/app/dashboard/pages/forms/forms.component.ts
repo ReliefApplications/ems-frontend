@@ -12,14 +12,14 @@ import {
   PermissionType,
   SafeConfirmModalComponent,
   NOTIFICATIONS,
-  Form
+  Form,
+  SafeDownloadService
 } from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-
 
 @Component({
   selector: 'app-forms',
@@ -57,7 +57,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private downloadService: SafeDownloadService
   ) {}
 
   /*  Load the forms.
@@ -190,5 +191,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.statusFilter = '';
     this.coreFilter = '';
     this.clearDateFilter();
+  }
+
+  onExportForKobo(element: any, e: any): void {
+    const path = `download/form/kobo/${element.id}`;
+    const fileName = `${element.name}.xlsx`;
+    this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
   }
 }
