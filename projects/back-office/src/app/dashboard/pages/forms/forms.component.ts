@@ -195,7 +195,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExport(element: any, e: any): void {
-    console.log(element);
     this.downloadForm(element);
   }
 
@@ -204,10 +203,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     const path = `download/forms/form/${element.id}`;
     const fileName = `${element.name}.${type}`;
     const queryString = new URLSearchParams({ type }).toString();
-    console.log('downloadService.getFile');
-    console.log(`${path}?${queryString}`);
-    console.log(`text/${type};charset=utf-8;`);
-    console.log(fileName);
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
