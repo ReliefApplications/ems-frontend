@@ -1,1 +1,7 @@
-<p>import-record-modal works!</p>
+<ngx-dropzone (change)="onSelect($event)" id="dropzoneCont">
+  <ngx-dropzone-label>Drop your record here</ngx-dropzone-label>
+  <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+    <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+  </ngx-dropzone-preview>
+</ngx-dropzone>
+<button mat-flat-button color="primary" id="buttonImport" (click)="sendFiles($event)"> Done </button>
