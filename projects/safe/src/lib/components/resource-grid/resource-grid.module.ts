@@ -5,7 +5,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeResourceGridComponent } from './resource-grid.component';
-import { SafeGridColumnModule } from "../grid-column/grid-column.module";
+import { SafeGridColumnModule } from '../grid-column/grid-column.module';
 
 @NgModule({
   declarations: [SafeResourceGridComponent],

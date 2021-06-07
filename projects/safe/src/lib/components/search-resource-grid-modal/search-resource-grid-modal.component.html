@@ -1,10 +1,14 @@
-<h2 mat-dialog-title>Search {{resourceName}}</h2>
+<h2 mat-dialog-title>Search</h2>
 <mat-dialog-content>
   <safe-resource-grid
-    [multiSelect]="multiSelect">
+    [settings]="gridSettings"
+    [multiSelect]="multiSelect"
+    [selectedRows]="selectedRows"
+    (rowSelected)="onRowSelected($event)"
+  >
   </safe-resource-grid>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Apply</button>
+  <button mat-button matDialogClose (click)="closeModal(false)">Cancel</button>
+  <button mat-button matDialogClose (click)="closeModal()">Apply</button>
 </mat-dialog-actions>

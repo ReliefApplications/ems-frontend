@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GridDataResult, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
-import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
@@ -33,8 +33,16 @@ export class SafeResourceGridComponent implements OnInit {
   @Input()
   multiSelect = false;
 
+  @Input()
+  settings: any = {};
+
+  @Input()
+  selectedRows: string[] = [];
+
+  @Output()
+  rowSelected: EventEmitter<any> = new EventEmitter<any>();
+
   public queryForm: any;
-  public settings: any;
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -42,7 +50,6 @@ export class SafeResourceGridComponent implements OnInit {
   // === INPUTS ===
   public id = '';
   public field = '';
-  public selectedIds: BehaviorSubject<any[]> = new BehaviorSubject([] as any[]);
   public readOnly = false;
 
   // === DATA ===
@@ -83,15 +90,6 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const queryName = this.queryBuilder.getQueryNameFromResourceName('CoreForm');
-    const fields = this.queryBuilder.getFields(queryName);
-    const firstField = this.queryBuilder.addNewField(fields[0], true);
-    const obj: any = {};
-    Object.keys(firstField.controls).map((f: any) => {
-      console.log(firstField.controls[f].value);
-      obj[f] = firstField.controls[f].value;
-    });
-    this.settings = {query: {name: queryName, fields: [obj]}};
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -149,7 +147,7 @@ export class SafeResourceGridComponent implements OnInit {
                 data: this.items,
                 total: this.items.length
               };
-              // this.setGridData.emit(this.gridData);
+              this.getSelectedRows();
             }
           }
         },
@@ -158,6 +156,16 @@ export class SafeResourceGridComponent implements OnInit {
       this.loading = false;
     }
     // }
+  }
+
+  private getSelectedRows(): void {
+    if (this.selectedRows.length > 0) {
+      this.gridData.data.forEach((row: any, index: number) => {
+        if (this.selectedRows.includes(row.id)) {
+          this.selectedRowsIndex.push(index);
+        }
+      });
+    }
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
@@ -267,16 +275,7 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   selectionChange(selection: SelectionEvent): void {
-    // const deselectedRows = selection.deselectedRows || [];
-    // const selectedRows = selection.selectedRows || [];
-    // if (deselectedRows.length > 0) {
-    //   const deselectIndex = deselectedRows.map((item => item.index));
-    //   this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
-    // }
-    // if (selectedRows.length > 0) {
-    //   const selectedItems = selectedRows.map((item) => item.index);
-    //   this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
-    // }
+    this.rowSelected.emit(selection.selectedRows);
   }
 
   onAdd(event: any): void {
@@ -293,35 +292,6 @@ export class SafeResourceGridComponent implements OnInit {
     //   };
     //   this.availableRecords = this.availableRecords.filter(d => d.value !== value.value);
     // }
-  }
-
-  public onDeleteRow(items: number[]): void {
-    // const rowsSelected = items.length;
-    // const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-    //   data: {
-    //     title: `Delete row${rowsSelected > 1 ? 's' : ''}`,
-    //     content: `Do you confirm the deletion of ${rowsSelected > 1 ?
-    //       'these ' + rowsSelected : 'this'} row${rowsSelected > 1 ? 's' : ''} ?`,
-    //     confirmText: 'Delete',
-    //     confirmColor: 'warn'
-    //   }
-    // });
-    // dialogRef.afterClosed().subscribe(value => {
-    //   if (value) {
-    //     if (resourcesFilterValues.getValue()[0].value.trim().length > 0) {
-    //       this.fetchData();
-    //     } else {
-    //       items.forEach(i => this.availableRecords.push(this.gridData.data[i]));
-    //     }
-    //     const selectedRecords: any[] = this.gridData.data.filter((_, index) => !items.includes(index));
-    //     this.selectedIds.next(selectedRecords.map(x => x.value));
-    //     this.gridData = {
-    //       data: selectedRecords,
-    //       total: selectedRecords.length
-    //     };
-    //     this.selectedRowsIndex = [];
-    //   }
-    // });
   }
 
   public onShowDetails(index: number): void {

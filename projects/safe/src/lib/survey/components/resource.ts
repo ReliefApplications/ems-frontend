@@ -34,7 +34,6 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
     value: ''
   }];
 
-  // let gridFieldsSettings: FormGroup = new FormGroup({});
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
@@ -125,9 +124,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
           htmlElement.appendChild(btn);
           btn.onclick = (ev: any) => {
             const currentQuestion = editor.object;
-            console.log('QUESTION', currentQuestion);
             getResourceById({id: currentQuestion.resource}).subscribe(response => {
-              console.log('CURRENT QUESTIOn', currentQuestion.gridFieldsSettings);
               if (response.data.resource && response.data.resource.name) {
                 const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
                 const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
@@ -305,8 +302,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
             name: 'gridFieldsSettings',
             dependsOn: ['resource'],
             visibleIf: (obj: any) => {
-              console.log('CHANGE', obj.resource);
-              obj.gridFieldsSettings = new FormGroup({}).getRawValue();
+              obj.gridFieldsSettings = obj.resource ? obj.gridFieldsSettings : new FormGroup({}).getRawValue();
               return false;
             }
           }

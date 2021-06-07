@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'safe-search-resource-grid-modal',
@@ -8,24 +8,39 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class SafeResourceGridModalComponent implements OnInit {
 
-  public resourceName = '';
   public multiSelect = false;
-  public records: any[] = [];
-  public gridFields: any[] = [];
+  public gridSettings = {};
+
+  public selectedRows: any [] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
-      id: string,
-      name: string,
-      multiselect: boolean
+      gridSettings: {},
+      multiselect: boolean,
+      selectedRows: string[]
     },
+    public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
+    private ref: ApplicationRef
   ) {
-    console.log('NAME', name);
     this.multiSelect = data.multiselect;
-    // this.getResourceById(data.id);
+    this.gridSettings = {query: this.data.gridSettings};
+    if (this.data.selectedRows) {
+      this.selectedRows = this.data.selectedRows;
+    }
+    this.ref.tick();
   }
 
   ngOnInit(): void {
   }
 
+  onRowSelected(rows: any): void {
+    this.selectedRows = rows;
+  }
+
+  closeModal(saveChanges: boolean = true): void {
+    this.ref.tick();
+    if (saveChanges) {
+      this.dialogRef.close(this.selectedRows);
+    }
+  }
 }

@@ -77,7 +77,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
-        const searchBtn = buildSearchButton(question.resource, false, question.gridFieldsSettings);
+        const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
         const btnEl = document.createElement('button');
@@ -185,24 +185,27 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
     }
   };
 
-  function buildSearchButton(resourceId: string, multiselect: boolean, fieldsSettingsForm: FormGroup): any {
-    console.log('buildSearchButton-SETTINGS FORM', fieldsSettingsForm);
+  function buildSearchButton(question: any, fieldsSettingsForm: FormGroup, multiselect: boolean): any {
     const mainDiv = document.createElement('div');
-    if (resourceId) {
-      mainDiv.id = 'searchDiv';
+    mainDiv.id = 'searchDiv';
+    if (fieldsSettingsForm) {
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Search';
       btnEl.style.width = '100px';
       btnEl.onclick = () => {
-        // TODO we need to retrieve the name of the chosen item
         const dialogRef = dialog.open(SafeResourceGridModalComponent, {
           data: {
-            id: resourceId,
-            multiSelect: multiselect
+            multiSelect: multiselect,
+            gridSettings: fieldsSettingsForm,
+            selectedRows: question.value ? [question.value] : []
           }
         });
-        dialogRef.afterClosed().subscribe(res => {
-          console.log('CLOSE');
+        dialogRef.afterClosed().subscribe((row: any[]) => {
+          if (row.length > 0) {
+            question.value = row[0].dataItem.id;
+          } else {
+            question.value = null;
+          }
         });
       };
 
