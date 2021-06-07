@@ -201,6 +201,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           }
         });
         dialogRef.afterClosed().subscribe((row: any[]) => {
+          if (!row) { return; }
           if (row.length > 0) {
             question.value = row[0].dataItem.id;
           } else {
