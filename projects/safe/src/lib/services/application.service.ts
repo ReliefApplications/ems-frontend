@@ -81,7 +81,11 @@ export class SafeApplicationService {
         id
       }
     }).subscribe(() => {
-      this.snackBar.openSnackBar(NOTIFICATIONS.appEdited);
+      const snackBar = this.snackBar.openSnackBar(NOTIFICATIONS.appEdited, {
+        action: 'Reload',
+        expires: false
+      });
+      snackBar.onAction().subscribe(() => window.location.reload());
     });
   }
 
