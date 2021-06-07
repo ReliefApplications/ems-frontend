@@ -348,8 +348,8 @@ export interface DeletePageMutationResponse {
 }
 
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
-  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
+mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String, $isLocked: Boolean, $isLockedBy: ID) {
+  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description, isLocked: $isLocked, isLockedBy: $isLockedBy) {
     id
     description
     name
@@ -381,6 +381,11 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     canSee
     canUpdate
     canDelete
+    isLocked
+    isLockedBy {
+      id
+      name
+    }
   }
 }`;
 

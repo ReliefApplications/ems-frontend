@@ -1,5 +1,6 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
+        <button mat-button color="primary" (click)="onLock()">{{ isLocked ? (isLockedByActualUser ? 'Unlock' : 'Ask to unlock') : 'Lock'}} edition</button>
         <button mat-button color="warn" (click)="onClose()">Cancel</button>
         <button mat-flat-button class="success-button" (click)="onPublish()" [disabled]="!canPublish">Publish</button>
     </div>
