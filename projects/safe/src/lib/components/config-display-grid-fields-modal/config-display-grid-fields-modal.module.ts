@@ -6,18 +6,20 @@ import { ConfigDisplayGridFieldsModalComponent } from './config-display-grid-fie
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [ConfigDisplayGridFieldsModalComponent],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    SafeQueryBuilderModule,
-  ],
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatProgressSpinnerModule,
+        SafeQueryBuilderModule,
+        MatButtonModule,
+    ],
   exports: [ConfigDisplayGridFieldsModalComponent]
 })
 export class ConfigDisplayGridFieldsModalModule { }
