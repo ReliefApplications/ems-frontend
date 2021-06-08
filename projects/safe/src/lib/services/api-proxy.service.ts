@@ -23,7 +23,6 @@ export class SafeApiProxyService {
     if (apiConfiguration) {
       const pingUrl = 'HelloAzureService';
       const url = `${this.baseUrl}/${apiConfiguration.name}/${pingUrl}`;
-      // const url = `${this.baseUrl}/auth/EIOS`
       const token = localStorage.getItem('msal.idtoken');
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
