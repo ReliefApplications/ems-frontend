@@ -20,6 +20,8 @@ export interface ApiConfiguration {
     name?: string;
     status?: status;
     authType?: authType;
+    endpoint?: string;
+    pingUrl?: string;
     settings?: any;
     permissions?: any;
     canSee?: boolean;

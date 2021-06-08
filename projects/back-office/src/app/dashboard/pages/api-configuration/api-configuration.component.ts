@@ -51,6 +51,8 @@ export class ApiConfigurationComponent implements OnInit {
               name: [this.apiConfiguration?.name, Validators.required],
               status: [this.apiConfiguration?.status, Validators.required],
               authType: [this.apiConfiguration?.authType, Validators.required],
+              endpoint: [this.apiConfiguration?.endpoint, Validators.required],
+              pingUrl: [this.apiConfiguration?.pingUrl],
               settings: this.buildSettingsForm(this.apiConfiguration?.authType || '')
             }
           );
@@ -123,6 +125,8 @@ export class ApiConfigurationComponent implements OnInit {
         name: this.apiForm.value.name,
         status: this.apiForm.value.status,
         authType: this.apiForm.value.authType,
+        endpoint: this.apiForm.value.endpoint,
+        pingUrl: this.apiForm.value.pingUrl,
         settings: this.apiForm.controls.settings.value // Fix problem if we pass ●●●●●●●●●●●●●
       }
     }).subscribe(res => {
@@ -138,7 +142,7 @@ export class ApiConfigurationComponent implements OnInit {
   /*  Send a ping request to test the configuration
   */
   onPing(): void {
-    this.apiProxy.buildPingRequest(this.apiConfiguration)?.subscribe((res: any) => {
+    this.apiProxy.buildPingRequest(this.apiConfiguration?.name, this.apiForm.value.pingUrl)?.subscribe((res: any) => {
       if (res) {
         if (res.access_token) {
           this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseAuthToken);

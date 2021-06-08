@@ -6,9 +6,6 @@
           {{apiConfiguration?.name}}
       </h1>
       <safe-access [access]="apiConfiguration?.permissions" (save)="saveAccess($event)" *ngIf="apiConfiguration?.canUpdate"></safe-access>
-      <button mat-flat-button color="primary" (click)="onPing()">
-        <mat-icon>online_prediction</mat-icon>
-      </button>
     </div>
     <form [formGroup]="apiForm" *ngIf="apiForm">
         <h1>General</h1>
@@ -39,8 +36,33 @@
                 </mat-select>
               </mat-form-field>
           </div>
+
+          <h1>Endpoint</h1>
+          <div class="form-group-row">
+            <mat-form-field appearance="outline" style="flex: 2;">
+              <mat-label>
+                Main endpoint
+              </mat-label>
+              <input matInput formControlName="endpoint" type='text' placeholder="Base URL for the API" />
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>
+                Ping extension
+              </mat-label>
+              <input matInput formControlName="pingUrl" type='text' placeholder="Ping extension URL" />
+            </mat-form-field>
+
+            <div class="ping-button-container">
+              <button mat-flat-button color="primary" (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
+                Send ping request
+                <mat-icon>online_prediction</mat-icon>
+              </button>
+            </div>
+
+          </div>
           
-          <h1>API connection settings</h1>
+          <h1>API authentication settings</h1>
           <ng-container *ngIf="apiForm.value.authType === 'service-to-service'">
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">

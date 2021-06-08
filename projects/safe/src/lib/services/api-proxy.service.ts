@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { ApiConfiguration } from '../models/apiConfiguration.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +16,11 @@ export class SafeApiProxyService {
   }
 
   /**
-   * Send a ping request using the passed ApiConfiguration
+   * Send a ping request using the passed arguments
    */
-  public buildPingRequest(apiConfiguration: ApiConfiguration | undefined): any {
-    if (apiConfiguration) {
-      const pingUrl = 'HelloAzureService';
-      const url = `${this.baseUrl}/${apiConfiguration.name}/${pingUrl}`;
+  public buildPingRequest(name: string | undefined, pingUrl: string): any {
+    if (name) {
+      const url = `${this.baseUrl}/${name}${pingUrl}`;
       const token = localStorage.getItem('msal.idtoken');
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',

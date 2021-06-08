@@ -637,6 +637,8 @@ mutation addApiConfiguration($name: String!) {
     name
     status
     authType
+    endpoint
+    pingUrl
     settings
     permissions {
       canSee {
@@ -682,12 +684,14 @@ export interface DeleteApiConfigurationMutationResponse {
 
 // === EDIT API CONFIGURATION ===
 export const EDIT_API_CONFIGURATIION = gql`
-mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: String, $settings: JSON, $permissions: JSON) {
-  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, settings: $settings, permissions: $permissions) {
+mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: String, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
+  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
     id
     name
     status
     authType
+    endpoint
+    pingUrl
     settings
     permissions {
       canSee {

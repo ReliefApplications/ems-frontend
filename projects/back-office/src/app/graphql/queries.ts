@@ -663,6 +663,8 @@ query GetApiConfigurations {
     name
     status
     authType
+    endpoint
+    pingUrl
     settings
     permissions {
       canSee {
@@ -701,6 +703,8 @@ query GetApiConfiguration($id: ID!) {
     name
     status
     authType
+    endpoint
+    pingUrl
     settings
     permissions {
       canSee {
