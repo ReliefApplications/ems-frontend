@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiConfiguration, authType, NOTIFICATIONS, SafeSnackBarService } from '@safe/builder';
@@ -13,7 +13,7 @@ import { GetApiConfigurationQueryResponse, GET_API_CONFIGURATION } from '../../.
   templateUrl: './api-configuration.component.html',
   styleUrls: ['./api-configuration.component.scss']
 })
-export class ApiConfigurationComponent implements OnInit {
+export class ApiConfigurationComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
@@ -70,6 +70,14 @@ export class ApiConfigurationComponent implements OnInit {
     this.apiForm.get('authType')?.valueChanges.subscribe(value => {
       this.apiForm.controls.settings = this.buildSettingsForm(value);
     });
+  }
+
+  /*  Unsubscribe from the apollo subscription if needed
+  */
+  ngOnDestroy(): void {
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
+    }
   }
 
   /*  Create the settings form depending on the authType
