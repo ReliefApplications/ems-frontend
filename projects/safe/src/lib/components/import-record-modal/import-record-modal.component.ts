@@ -36,7 +36,8 @@ export class ImportRecordModalComponent implements OnInit {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`
     });
 
@@ -49,6 +50,7 @@ export class ImportRecordModalComponent implements OnInit {
     //   console.log(testData);
     //   this.formDataFile.push(testData);
     // }
+    console.log(this.files[0]);
     testData = new FormData();
     testData.append('file_upload', this.files[0], this.files[0].name);
 

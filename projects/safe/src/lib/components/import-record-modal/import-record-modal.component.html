@@ -1,7 +1,11 @@
-<ngx-dropzone (change)="onSelect($event)" id="dropzoneCont">
+<ngx-dropzone (change)="onSelect($event)" id="dropzone-cont">
   <ngx-dropzone-label>Drop your record here</ngx-dropzone-label>
   <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
     <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
   </ngx-dropzone-preview>
 </ngx-dropzone>
-<button mat-flat-button color="primary" id="buttonImport" (click)="sendFiles($event)"> Done </button>
+<!--<form method="POST" action="http://localhost:3000/upload/records/add" enctype="multipart/form-data" header="">-->
+<!--  <input type="file" name="file"/>-->
+<!--  <input type="submit" value="upload"/>-->
+<!--</form>-->
+<button mat-flat-button color="primary" id="button-import" (click)="sendFiles($event)"> Done </button>
