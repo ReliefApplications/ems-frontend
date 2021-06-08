@@ -138,9 +138,13 @@ export class ApiConfigurationComponent implements OnInit {
   /*  Send a ping request to test the configuration
   */
   onPing(): void {
-    this.apiProxy.buildPingRequest(this.apiConfiguration)?.subscribe(res => {
+    this.apiProxy.buildPingRequest(this.apiConfiguration)?.subscribe((res: any) => {
       if (res) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseReceived);
+        if (res.access_token) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseAuthToken);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseReceived);
+        }
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseError, {error: true});
       }
