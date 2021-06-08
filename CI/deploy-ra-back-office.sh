@@ -1,8 +1,8 @@
 #!/bin/bash
 
-REMOTE_PATH=/var/www/html/ra-safe-bo
+REMOTE_PATH=/var/www/html/safe-backoffice
 OUT=dist/ra-back-office
-CONNECTION=reliefapps@92.243.25.191
+CONNECTION=bob@92.243.24.59
 
 set -e
 

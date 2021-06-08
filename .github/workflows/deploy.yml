@@ -91,10 +91,14 @@ jobs:
       run: ./CI/deploy-back-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
+    - name: Setup SSH Keys and known_hosts
+      uses: webfactory/ssh-agent@v0.4.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
     - name: Deploy RA
       run: ./CI/deploy-ra-back-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_PASS }}
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
 
   deploy_front_office:
     name: Deploy Front-office 🚀
@@ -122,8 +126,12 @@ jobs:
       run: ./CI/deploy-front-office.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
+    - name: Setup SSH Keys and known_hosts
+      uses: webfactory/ssh-agent@v0.4.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
     - name: Deploy RA
       run: ./CI/deploy-ra-front-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_PASS }}
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
 
