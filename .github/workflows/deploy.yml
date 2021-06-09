@@ -20,75 +20,140 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name:
+    - name: Install Dependencies
       run: npm ci
     - name: Build Shared Library
       run: npm run build safe
-    - name: Build Back-office
-      run: npm run build:ci
-    - name: Build Front-office
-      run: npm run build:ci front-office
+    # - name: Build Back-office
+    #   run: npm run build:ci
+    # - name: Build Front-office
+    #   run: npm run build:ci front-office
     # - name: Test
     #   run: npm run test:ci
-    - name: Archive build Back-office
-      if: success()
-      uses: actions/upload-artifact@v2
-      with:
-        name: deploy_dist_back_office
-        path: dist/back-office
-    - name: Archive build Front-office
-      if: success()
-      uses: actions/upload-artifact@v2
-      with:
-        name: deploy_dist_front_office
-        path: dist/front-office
+    # - name: Archive build Back-office
+    #   if: success()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: deploy_dist_back_office
+    #     path: dist/back-office
+    # - name: Archive build Front-office
+    #   if: success()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: deploy_dist_front_office
+    #     path: dist/front-office
     # - name: Archive code coverage result
     #   if: success()
     #   uses: actions/upload-artifact@v2
     #   with:
     #     name: deploy_coverage
     #     path: coverage
-
-  deploy_back_office:
-    name: Deploy Back-office
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Download build
-      uses: actions/download-artifact@v1
+    - name: Build RA Back-office
+      run: npm run build:ci:ra
+    - name: Build RA Front-office
+      run: npm run build:ci:ra front-office
+    - name: Archive build RA Back-office
+      if: success()
+      uses: actions/upload-artifact@v2
       with:
-        name: deploy_dist_back_office
+        name: deploy_dist_ra_back_office
         path: dist/back-office
-    - name: Setup SSH Keys and known_hosts
-      uses: webfactory/ssh-agent@v0.4.1
+    - name: Archive build RA Front-office
+      if: success()
+      uses: actions/upload-artifact@v2
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Deploy
-      run: ./CI/deploy-back-office.sh
-      env:
-        SSH_PASS: ${{ secrets.SSH_PASS }}
+        name: deploy_dist_ra_front_office
+        path: dist/front-office
 
-  deploy_front_office:
-    name: Deploy Front-office
+
+  # deploy_dev_back_office:
+  #   name: Deploy DEV Back-office 🚀
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+  #   - name: Download build
+  #     uses: actions/download-artifact@v1
+  #     with:
+  #       name: deploy_dist_back_office
+  #       path: dist/back-office
+  #   - name: Setup SSH Keys and known_hosts
+  #     uses: webfactory/ssh-agent@v0.4.1
+  #     with:
+  #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #   - name: Deploy
+  #     run: ./CI/deploy-back-office.sh
+  #     env:
+  #       SSH_PASS: ${{ secrets.SSH_PASS }}
+
+
+  deploy_stage_back_office:
+    name: Deploy STAGE Back-office 🚀
     runs-on: ubuntu-latest
     needs: build
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Download build
       uses: actions/download-artifact@v1
       with:
-        name: deploy_dist_front_office
-        path: dist/front-office
+        name: deploy_dist_ra_back_office
+        path: dist/ra-back-office
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
     - name: Deploy
-      run: ./CI/deploy-front-office.sh
+      run: ./CI/deploy-ra-back-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_PASS }}
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
+
+
+  # deploy_dev_front_office:
+  #   name: Deploy DEV Front-office 🚀
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+  #   - name: Download build
+  #     uses: actions/download-artifact@v1
+  #     with:
+  #       name: deploy_dist_front_office
+  #       path: dist/front-office
+  #   - name: Download RA build
+  #     uses: actions/download-artifact@v1
+  #     with:
+  #       name: deploy_dist_ra_front_office
+  #       path: dist/ra-front-office
+  #   - name: Setup SSH Keys and known_hosts
+  #     uses: webfactory/ssh-agent@v0.4.1
+  #     with:
+  #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #   - name: Deploy
+  #     run: ./CI/deploy-front-office.sh
+  #     env:
+  #       SSH_PASS: ${{ secrets.SSH_PASS }}
+
+
+  deploy_stage_front_office:
+    name: Deploy STAGE Front-office 🚀
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Download build
+      uses: actions/download-artifact@v1
+      with:
+        name: deploy_dist_ra_front_office
+        path: dist/ra-front-office
+    - name: Setup SSH Keys and known_hosts
+      uses: webfactory/ssh-agent@v0.4.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+    - name: Deploy
+      run: ./CI/deploy-ra-front-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
