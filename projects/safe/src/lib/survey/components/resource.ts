@@ -9,9 +9,9 @@ import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
-export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
+export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
   let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
@@ -128,7 +128,10 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
               if (response.data.resource && response.data.resource.name) {
                 const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
                 const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
-                  data: {form: currentQuestion.gridFieldsSettings, resourceName: nameTrimmed}
+                  data: {
+                    form: this.convertFromRawToFormGroup(currentQuestion.gridFieldsSettings),
+                    resourceName: nameTrimmed
+                  }
                 });
                 dialogRef.afterClosed().subscribe((res: any) => {
                   if (res && res.value.fields) {
@@ -479,6 +482,11 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog): void {
           }
         });
       }
+    },
+    convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup {
+      const auxForm = formBuilder.group(gridSettingsRaw);
+      auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+      return auxForm;
     }
   };
   Survey.ComponentCollection.Instance.add(component);

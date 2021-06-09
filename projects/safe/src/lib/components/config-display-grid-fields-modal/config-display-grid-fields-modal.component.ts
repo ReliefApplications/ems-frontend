@@ -1,32 +1,51 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, Inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder.service';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
+import { Overlay } from '@angular/cdk/overlay';
+import { scrollFactory } from '../survey/survey-grid/survey-grid.component';
 
 @Component({
   selector: 'safe-config-display-grid-fields-modal',
   templateUrl: './config-display-grid-fields-modal.component.html',
-  styleUrls: ['./config-display-grid-fields-modal.component.css']
+  styleUrls: ['./config-display-grid-fields-modal.component.css'],
+  providers: [
+    PopupService,
+    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+  ]
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
 
   public form: FormGroup = new FormGroup({});
   public loading = true;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string }, private queryBuilder: QueryBuilderService) {
+  @ViewChild('settingsContainer', {read: ViewContainerRef}) settingsContainer: any;
+
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    @Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string },
+    private queryBuilder: QueryBuilderService,
+    private formBuilder: FormBuilder
+  ) {
   }
 
-  ngOnInit(): void {
+  ngOnInit()
+    :
+    void {
     this.queryBuilder.availableQueries.subscribe((res) => {
       if (res.length > 0) {
-        const hasDataForm = this.data.form && this.data.form.fields && this.data.form.fields.length > 0;
-        const queryName = hasDataForm ? this.data.form.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
+        const hasDataForm = this.data.form.value !== null;
+        const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
         this.form = this.queryBuilder.createQueryForm({
           name: queryName,
-          fields: hasDataForm ? this.data.form.fields : []
+          fields: hasDataForm ? this.data.form.value.fields : [],
+          sort: hasDataForm ? this.data.form.value.sort : {}
         });
         this.loading = false;
       }
     });
   }
+
 }
