@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@safe/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, ApiConfiguration } from '@safe/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -616,4 +616,113 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
 export interface EditStepMutationResponse {
   loading: boolean;
   editStep: Step;
+}
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
+}
+
+// === ADD API CONFIGURATION ===
+export const ADD_API_CONFIGURATIION = gql`
+mutation addApiConfiguration($name: String!) {
+  addApiConfiguration(name: $name) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface AddApiConfigurationMutationResponse {
+  loading: boolean;
+  addApiConfiguration: ApiConfiguration;
+}
+
+// === DELETE API CONFIGURATION ===
+export const DELETE_API_CONFIGURATIION = gql`
+mutation deleteApiConfiguration($id: ID!) {
+  deleteApiConfiguration(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteApiConfigurationMutationResponse {
+  loading: boolean;
+  deleteApiConfiguration: ApiConfiguration;
+}
+
+// === EDIT API CONFIGURATION ===
+export const EDIT_API_CONFIGURATIION = gql`
+mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: String, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
+  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface EditApiConfigurationMutationResponse {
+  loading: boolean;
+  editApiConfiguration: ApiConfiguration;
 }

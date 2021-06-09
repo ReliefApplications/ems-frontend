@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:ci": "ng build --prod --sourceMap=false",
+    "build:ci:ra": "ng build --prod --sourceMap=false --configuration=ra",
     "build:az:front": "ng build --configuration=azure --sourceMap=false --project=front-office",
     "build:az:back": "ng build --configuration=azure --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:elem": "ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk",
