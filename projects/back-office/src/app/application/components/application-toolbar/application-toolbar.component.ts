@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
 import { Apollo } from 'apollo-angular';
+import { ApplicationUnlockedSubscriptionResponse, APPLICATION_UNLOCKED_SUBSCRIPTION } from 'projects/safe/src/lib/graphql/subscriptions';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -66,6 +67,17 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        if (this.isLocked) {
+          this.apollo.subscribe<ApplicationUnlockedSubscriptionResponse>({
+            query: APPLICATION_UNLOCKED_SUBSCRIPTION,
+            variables: {
+              application: this.application?.id,
+              lockedByID: this.application?.isLockedBy.id
+            }
+          }).subscribe(() => {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectUnlocked(this.application?.name));
+          });
+        }
         this.apollo.mutate<EditApplicationMutationResponse>(
           {
             mutation: EDIT_APPLICATION,
@@ -76,7 +88,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
             }
           }).subscribe(res => {
             if (res.data) {
-              this.applicationService.loadApplication(res.data.editApplication.id)
+              this.applicationService.loadApplication(res.data.editApplication.id);
             }
         });
       }

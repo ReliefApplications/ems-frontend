@@ -132,7 +132,7 @@ export class SafeApplicationService {
   */
   publish(): void {
     const application = this._application.getValue();
-      if (application) {
+    if (application) {
         if (application?.isLocked && !this.isLockedByActualUser) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
         } else {
@@ -157,10 +157,10 @@ export class SafeApplicationService {
   /* Delete a page and the associated content.
   */
   deletePage(id: string): void {
-    const application = this._application.getValue();
-    if (application) {
-      if (application?.isLocked && !this.isLockedByActualUser) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
+    const app = this._application.getValue();
+    if (app) {
+      if (app?.isLocked && !this.isLockedByActualUser) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(app.name));
       } else {
         this.apollo.mutate<DeletePageMutationResponse>({
           mutation: DELETE_PAGE,
@@ -226,7 +226,6 @@ export class SafeApplicationService {
   */
   addPage(value: any): void {
     const application = this._application.getValue();
-    console.log("application = ", application)
     if (application) {
       if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
@@ -245,8 +244,9 @@ export class SafeApplicationService {
             const content = res.data.addPage.content;
             const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
             this._application.next(newApplication);
-            this.router.navigate([(value.type === ContentType.form) ? `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
-              `/applications/${application.id}/${value.type}/${content}`]);
+            this.router.navigate([(value.type === ContentType.form) ?
+            `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
+            `/applications/${application.id}/${value.type}/${content}`]);
           }
         });
       }

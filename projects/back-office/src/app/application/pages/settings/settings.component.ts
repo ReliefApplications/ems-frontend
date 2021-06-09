@@ -69,7 +69,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDuplicate(): void {
-    if(this.application?.isLocked && !this.isLockedByActualUser) {
+    if (this.application?.isLocked && !this.isLockedByActualUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
     } else {
       this.dialog.open(DuplicateApplicationComponent, {
@@ -82,7 +82,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    if(this.application?.isLocked && !this.isLockedByActualUser) {
+    if (this.application?.isLocked && !this.isLockedByActualUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
