@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
@@ -47,6 +47,7 @@ import {
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import { NOTIFICATIONS } from '../const/notifications';
+import { SafeAuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,16 +56,25 @@ export class SafeApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application | null>(null);
+  private authSubscription?: Subscription;
+  public isLockedByActualUser: boolean | undefined = undefined;
+  public user: any;
 
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router
+    private router: Router,
+    private authService: SafeAuthService,
   ) { }
 
   /*  Get the application from the database, using GraphQL.
   */
-  loadApplication(id: string, asRole?: string): void {
+  loadApplication(id: any, asRole?: string): void {
+    this.authSubscription = this.authService.user.subscribe((user) => {
+      if (user) {
+        this.user = { ...user};
+      }
+    });
     this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
@@ -73,10 +83,15 @@ export class SafeApplicationService {
       }
     }).subscribe(res => {
       this._application.next(res.data.application);
+      const application = this._application.getValue();
       if (res.data.application.isLocked) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
+        if (this.user.id === application?.isLockedBy?.id) {
+          this.isLockedByActualUser = true;
+        } else {
+          this.isLockedByActualUser = false;
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
+        }
       }
-      // TESTER TOUTES LES EDITIONS POSSIBLES
     });
   }
 
@@ -86,7 +101,7 @@ export class SafeApplicationService {
   editApplication(value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditApplicationMutationResponse>({
@@ -118,7 +133,7 @@ export class SafeApplicationService {
   publish(): void {
     const application = this._application.getValue();
       if (application) {
-        if (application?.isLocked) {
+        if (application?.isLocked && !this.isLockedByActualUser) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
         } else {
         this.apollo.mutate<EditApplicationMutationResponse>({
@@ -144,7 +159,7 @@ export class SafeApplicationService {
   deletePage(id: string): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeletePageMutationResponse>({
@@ -172,7 +187,7 @@ export class SafeApplicationService {
   reorderPages(pages: string[]): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditApplicationMutationResponse>({
@@ -193,7 +208,7 @@ export class SafeApplicationService {
   updatePageName(page: Page): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         const newApplication = { ...application, pages: application.pages?.map(x => {
@@ -211,8 +226,9 @@ export class SafeApplicationService {
   */
   addPage(value: any): void {
     const application = this._application.getValue();
+    console.log("application = ", application)
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddPageMutationResponse>({
@@ -244,7 +260,7 @@ export class SafeApplicationService {
   addRole(value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddRoleMutationResponse>({
@@ -269,7 +285,7 @@ export class SafeApplicationService {
   editRole(role: Role, value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditRoleMutationResponse>({
@@ -314,7 +330,7 @@ export class SafeApplicationService {
   deleteRole(role: Role): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeleteRoleMutationResponse>({
@@ -336,7 +352,7 @@ export class SafeApplicationService {
   deleteUsersFromApplication(ids: any[], resolved: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
@@ -365,7 +381,7 @@ export class SafeApplicationService {
   inviteUser(value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddRoleToUsersMutationResponse>({
@@ -393,7 +409,7 @@ export class SafeApplicationService {
   editUser(user: User, value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditUserMutationResponse>({
@@ -422,7 +438,7 @@ export class SafeApplicationService {
   addPositionAttributeCategory(value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddPositionAttributeCategoryMutationResponse>({
@@ -448,7 +464,7 @@ export class SafeApplicationService {
   deletePositionAttributeCategory(positionCategory: PositionAttributeCategory): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeletePositionAttributeCategoryMutationResponse>({
@@ -475,7 +491,7 @@ export class SafeApplicationService {
   editPositionAttributeCategory(value: any, positionCategory: PositionAttributeCategory): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditPositionAttributeCategoryMutationResponse>({
@@ -510,7 +526,7 @@ export class SafeApplicationService {
   addChannel(value: { title: string }): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddChannelMutationResponse>({
@@ -535,7 +551,7 @@ export class SafeApplicationService {
   deleteChannel(channel: Channel): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeleteChannelMutationResponse>({
@@ -560,7 +576,7 @@ export class SafeApplicationService {
   addSubscription(value: { routingKey: string, title: string, convertTo: string, channel: string }): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<AddSubscriptionMutationResponse>({
@@ -590,7 +606,7 @@ export class SafeApplicationService {
   deleteSubscription(value: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<DeleteSubscriptionMutationResponse>({
@@ -613,7 +629,7 @@ export class SafeApplicationService {
   editSubscription(value: any, previousSubscription: any): void {
     const application = this._application.getValue();
     if (application) {
-      if (application?.isLocked) {
+      if (application?.isLocked && !this.isLockedByActualUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
       } else {
         this.apollo.mutate<EditSubscriptionMutationResponse>({

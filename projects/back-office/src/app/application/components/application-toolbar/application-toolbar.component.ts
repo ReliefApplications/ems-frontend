@@ -37,10 +37,8 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         this.user = { ...user};
       }
     });
-    console.log("this user = ", this.user);
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       this.application = application;
-      console.log("this application = ", this.application);
       this.isLocked = this.application?.isLocked;
       if (this.isLocked) {
         if (this.user.id === this.application?.isLockedBy?.id) {
@@ -74,17 +72,11 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
             variables: {
               id: this.application?.id,
               name: this.application?.name,
-              isLocked: (this.isLocked ? !this.isLocked : true),
-              isLockedBy: (!this.isLocked ? this.user.id : null),
+              isLocked: (this.isLocked ? !this.isLocked : true)
             }
           }).subscribe(res => {
             if (res.data) {
-              this.isLocked = res.data.editApplication.isLocked;
-              if (this.user.id === res.data.editApplication.isLockedBy?.id && this.isLocked) {
-                this.isLockedByActualUser = true;
-              } else {
-                this.isLockedByActualUser = this.isLocked ? true : false;
-              }
+              this.applicationService.loadApplication(res.data.editApplication.id)
             }
         });
       }
@@ -92,7 +84,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   }
 
   onPublish(): void {
-    if (this.isLocked) {
+    if (this.isLocked && !this.isLockedByActualUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
