@@ -193,13 +193,14 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           }
         }).toPromise();
         if (res.errors) {
-          this.snackBar.openSnackBar('Upload failed.', { error: true });
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
           data[name][index].content = res.data?.uploadFile;
         }
       }
     }
+    console.log('ho');
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
