@@ -91,7 +91,9 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
-                res.push({value: item.name});
+                if (item.type !== 'matrix') {
+                  res.push({value: item.name});
+                }
               }
               choicesCallback(res);
             });
