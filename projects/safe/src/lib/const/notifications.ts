@@ -26,5 +26,8 @@ export const NOTIFICATIONS = {
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
-    profileSaved: 'Preferences saved.'
+    profileSaved: 'Preferences saved.',
+    pingResponseAuthToken: 'Authentication token fetched, ping again to get the actual response.',
+    pingResponseReceived: 'Received positive response from ping request.',
+    pingResponseError: 'ERROR during the PING request.'
 };

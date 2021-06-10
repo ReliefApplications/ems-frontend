@@ -103,10 +103,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     if (this.isStep) {
       this.recordsSubscription = this.workflowService.records.subscribe(records => {
         if (records.length > 0) {
-          const mergedRecord = records[0];
-          cachedData = mergedRecord.data;
+          const mergedData = this.mergedData(records);
+          cachedData = Object.assign({}, mergedData);
           const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
+          if (resourcesField && resourcesField.resource === records[0].form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
@@ -193,13 +193,14 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           }
         }).toPromise();
         if (res.errors) {
-          this.snackBar.openSnackBar('Upload failed.', { error: true });
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
           data[name][index].content = res.data?.uploadFile;
         }
       }
     }
+    console.log('ho');
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
@@ -331,6 +332,51 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
     this.survey.render();
+  }
+
+  private mergedData(records: Record[]): any {
+    const data: any = {};
+    // Loop on source fields
+    for (const inputField of records[0].form?.fields || []) {
+      // If source field match with target field
+      if (this.form.fields?.some(x => x.name === inputField.name)) {
+        const targetField = this.form.fields?.find(x => x.name === inputField.name);
+        // If source field got choices
+        if (inputField.choices || inputField.choicesByUrl) {
+          // If the target has multiple choices we concatenate all the source values
+          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
+            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
+              data[inputField.name] = records.reduce((o: string[], record: Record) => {
+                o = o.concat(record.data[inputField.name]);
+                return o;
+              }, []);
+            } else {
+              data[inputField.name] = records.map(x => x.data[inputField.name]);
+            }
+          }
+          // If the target has single choice we we put the common choice if any or leave it empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+        // If source field is a free input and types are matching between source and target field
+        else if (inputField.type === targetField.type) {
+          // If type is text just put the text of the first record
+          if (inputField.type === 'text') {
+            data[inputField.name] = records[0].data[inputField.name];
+          }
+          // If type is different from text and there is a common value, put it. Otherwise leave empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+      }
+    }
+    return data;
   }
 
   ngOnDestroy(): void {
