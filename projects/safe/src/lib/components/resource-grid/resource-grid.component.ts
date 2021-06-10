@@ -8,6 +8,8 @@ import { Apollo } from 'apollo-angular';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { QueryBuilderService } from '../../services/query-builder.service';
+import { SafeDownloadService } from '../../services/download.service';
+import { GradientSettings } from '@progress/kendo-angular-inputs';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -18,6 +20,11 @@ const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return () => overlay.scrollStrategies.block();
 }
+
+
+const GRADIENT_SETTINGS: GradientSettings = {
+  opacity: false
+};
 
 @Component({
   selector: 'safe-resource-grid',
@@ -38,6 +45,9 @@ export class SafeResourceGridComponent implements OnInit {
 
   @Input()
   selectedRows: string[] = [];
+
+  // === PARENT DATA FOR CHILDREN-GRID ===
+  @Input() parent: any;
 
   @Output()
   rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -81,10 +91,14 @@ export class SafeResourceGridComponent implements OnInit {
     drag: false
   };
 
+  public gradientSettings = GRADIENT_SETTINGS;
+  public editionActive = false;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private downloadService: SafeDownloadService
   ) {
   }
 
@@ -107,53 +121,52 @@ export class SafeResourceGridComponent implements OnInit {
     this.loading = true;
 
     // Child grid
-    // if (!!this.parent) {
-    //   this.items = this.parent[this.settings.name];
-    //   if (this.items.length > 0) {
-    //     this.fields = this.getFields(this.settings.fields);
-    //     this.convertDateFields(this.items);
-    //     this.originalItems = cloneData(this.items);
-    //     this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
-    //   } else {
-    //     this.originalItems = [];
-    //     this.fields = [];
-    //     this.detailsField = '';
-    //   }
-    //   this.gridData = {
-    //     data: this.items,
-    //     total: this.items.length
-    //   };
-    //   this.loading = false;
-
-    // Parent grid
-    // } else {
-    if (this.dataQuery) {
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-          const fields = this.settings.query.fields;
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.loading = false;
-              this.fields = this.getFields(fields);
-              this.items = cloneData(res.data[field] ? res.data[field] : []);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
-              if (this.detailsField) {
-                this.detailsField = {...this.detailsField, actions: this.settings.actions};
-              }
-              this.gridData = {
-                data: this.items,
-                total: this.items.length
-              };
-              this.getSelectedRows();
-            }
-          }
-        },
-        () => this.loading = false);
-    } else {
+    if (!!this.parent) {
+      this.items = this.parent[this.settings.name];
+      if (this.items.length > 0) {
+        this.fields = this.getFields(this.settings.fields);
+        this.convertDateFields(this.items);
+        this.originalItems = cloneData(this.items);
+        this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
+      } else {
+        this.originalItems = [];
+        this.fields = [];
+        this.detailsField = '';
+      }
+      this.gridData = {
+        data: this.items,
+        total: this.items.length
+      };
       this.loading = false;
+      // Parent grid
+    } else {
+      if (this.dataQuery) {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+            const fields = this.settings.query.fields;
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                this.loading = false;
+                this.fields = this.getFields(fields);
+                this.items = cloneData(res.data[field] ? res.data[field] : []);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
+                this.detailsField = fields.find((x: any) => x.kind === 'LIST');
+                if (this.detailsField) {
+                  this.detailsField = {...this.detailsField, actions: this.settings.actions};
+                }
+                this.gridData = {
+                  data: this.items,
+                  total: this.items.length
+                };
+                this.getSelectedRows();
+              }
+            }
+          },
+          () => this.loading = false);
+      } else {
+        this.loading = false;
+      }
     }
-    // }
   }
 
   private getSelectedRows(): void {
@@ -301,13 +314,15 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   onFilter(value: any): void {
+    this.selectedRowsIndex = [];
+    this.selectedRows = [];
     const filteredData: any[] = [];
     this.items.forEach((data: any) => {
       const auxData = data;
       delete auxData.canDelete;
       delete auxData.canUpdate;
       delete auxData.__typename;
-      if (Object.values(auxData).filter((o: any) => o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
+      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
         filteredData.push(data);
       }
     });
@@ -317,7 +332,23 @@ export class SafeResourceGridComponent implements OnInit {
     };
   }
 
-  onExpandComment(value: any): void {
-    console.log('onExpandComment', value);
+  /* Dialog to open if text or comment overlows
+  */
+  public onExpandComment(item: any, rowTitle: any): void {
+    // this.expandComment.emit({item, rowTitle});
   }
+
+  /* Check if element overflows
+  */
+  isEllipsisActive(e: any): boolean {
+    return (e.offsetWidth < e.scrollWidth);
+  }
+
+  /* Download the file.
+*/
+  public onDownload(file: any): void {
+    const path = `download/file/${file.content}`;
+    this.downloadService.getFile(path, file.type, file.name);
+  }
+
 }

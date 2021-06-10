@@ -5,19 +5,35 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeResourceGridComponent } from './resource-grid.component';
-import { SafeGridColumnModule } from '../grid-column/grid-column.module';
+import { ColorPickerModule, TextBoxModule } from '@progress/kendo-angular-inputs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DropDownListModule, MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DatePickerModule, DateTimePickerModule, TimePickerModule } from '@progress/kendo-angular-dateinputs';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [SafeResourceGridComponent],
-    imports: [
-        CommonModule,
-        GridModule,
-        GroupModule,
-        ButtonModule,
-        MatSelectModule,
-        MatDialogModule,
-        SafeGridColumnModule,
-    ],
+  imports: [
+    CommonModule,
+    GridModule,
+    GroupModule,
+    ButtonModule,
+    MatSelectModule,
+    MatDialogModule,
+    TextBoxModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MultiSelectModule,
+    DropDownListModule,
+    MatTooltipModule,
+    DateTimePickerModule,
+    TimePickerModule,
+    ColorPickerModule,
+    MatIconModule,
+    DatePickerModule
+  ],
   exports: [SafeResourceGridComponent]
 })
-export class SafeResourceGridModule { }
+export class SafeResourceGridModule {
+}
