@@ -131,7 +131,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                 const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
                 const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
                   data: {
-                    form: this.convertFromRawToFormGroup(currentQuestion.gridFieldsSettings),
+                    form: !currentQuestion.gridFieldsSettings ? null :
+                      this.convertFromRawToFormGroup(currentQuestion.gridFieldsSettings),
                     resourceName: nameTrimmed
                   }
                 });
@@ -485,7 +486,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
         });
       }
     },
-    convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup {
+    convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
+      console.log(gridSettingsRaw);
       const auxForm = formBuilder.group(gridSettingsRaw);
       auxForm.controls.fields.setValue(gridSettingsRaw.fields);
       return auxForm;

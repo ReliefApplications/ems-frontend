@@ -6,7 +6,7 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../survey/survey-grid/survey-grid.component';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from "@angular/material/tooltip";
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
 @Component({
   selector: 'safe-config-display-grid-fields-modal',
@@ -28,17 +28,13 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     @Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string },
-    private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder
-  ) {
+    private queryBuilder: QueryBuilderService) {
   }
 
-  ngOnInit()
-    :
-    void {
+  ngOnInit(): void {
     this.queryBuilder.availableQueries.subscribe((res) => {
       if (res.length > 0) {
-        const hasDataForm = this.data.form.value !== null;
+        const hasDataForm = this.data.form !== null;
         const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
         this.form = this.queryBuilder.createQueryForm({
           name: queryName,
