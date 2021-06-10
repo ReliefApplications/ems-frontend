@@ -6,6 +6,7 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../survey/survey-grid/survey-grid.component';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from "@angular/material/tooltip";
 
 @Component({
   selector: 'safe-config-display-grid-fields-modal',
@@ -13,7 +14,8 @@ import { scrollFactory } from '../survey/survey-grid/survey-grid.component';
   styleUrls: ['./config-display-grid-fields-modal.component.css'],
   providers: [
     PopupService,
-    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]},
+    {provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
   ]
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
@@ -41,7 +43,8 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
         this.form = this.queryBuilder.createQueryForm({
           name: queryName,
           fields: hasDataForm ? this.data.form.value.fields : [],
-          sort: hasDataForm ? this.data.form.value.sort : {}
+          sort: hasDataForm ? this.data.form.value.sort : {},
+          filter: hasDataForm ? this.data.form.value.filter : {}
         });
         this.loading = false;
       }
