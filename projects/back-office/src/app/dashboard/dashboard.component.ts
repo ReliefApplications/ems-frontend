@@ -60,6 +60,11 @@ export class DashboardComponent implements OnInit {
           name: 'Clients',
           path: '/settings/clients',
           icon: 'connect_without_contact'
+        },
+        {
+          name: 'API Configurations',
+          path: '/settings/apiconfigurations',
+          icon: 'settings_input_composite'
         }
       ]
     }

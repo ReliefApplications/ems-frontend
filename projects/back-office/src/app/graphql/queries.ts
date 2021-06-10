@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, Client
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration, Client
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -668,4 +668,82 @@ query GetClients {
 export interface GetClientsQueryResponse {
   loading: boolean;
   clients: Client[];
+// === GET API CONFIGURATIONS ===
+export const GET_API_CONFIGURATIONS = gql`
+query GetApiConfigurations {
+  apiConfigurations {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationsQueryResponse {
+  loading: boolean;
+  apiConfigurations: ApiConfiguration[];
+}
+
+// === GET API CONFIGURATION ===
+export const GET_API_CONFIGURATION = gql`
+query GetApiConfiguration($id: ID!) {
+  apiConfiguration(id: $id) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationQueryResponse {
+  loading: boolean;
+  apiConfiguration: ApiConfiguration;
 }
