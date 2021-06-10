@@ -6,7 +6,7 @@ import { initCustomWidgets } from '../survey/init';
 import { DomService } from './dom.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'

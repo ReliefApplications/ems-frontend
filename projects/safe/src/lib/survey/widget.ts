@@ -82,6 +82,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         mainDiv.id = 'addRecordDiv';
         const btnEl = document.createElement('button');
         btnEl.innerText = 'Add new record';
+        btnEl.style.float = 'left';
         btnEl.style.width = '150px';
         if (question.canAddNew && question.addTemplate) {
           btnEl.onclick = () => {
@@ -101,8 +102,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           };
         }
         mainDiv.appendChild(btnEl);
-        el.parentElement.insertBefore(mainDiv, el);
         el.parentElement.insertBefore(searchBtn, el);
+        el.parentElement.insertBefore(mainDiv, el);
         mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
 
         question.registerFunctionOnPropertyValueChanged('addTemplate',
@@ -117,22 +118,25 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       // Display of add button | grid for resources question
       if (question.getType() === 'resources') {
         if (question.resource) {
-          let instance: SafeSurveyGridComponent;
-          if (question.displayAsGrid) {
-            const selectedIds: string[] = [];
-            for (const item of question.value) {
-              selectedIds.push(item);
-            }
-            const grid = domService.appendComponentToBody(SafeSurveyGridComponent, el.parentElement);
-            instance = grid.instance;
-            instance.id = question.resource;
-            instance.field = question.displayField;
-            instance.readOnly = (question.survey.mode === 'display');
-            instance.selectedIds.subscribe((value: any[]) => {
-              question.value = value;
-            });
-            instance.selectedIds.next(selectedIds);
-          }
+          const searchBtn = buildSearchButton(question, question.gridFieldsSettings, true);
+          el.parentElement.insertBefore(searchBtn, el);
+
+          // let instance: SafeSurveyGridComponent;
+          // if (question.displayAsGrid) {
+          //   const selectedIds: string[] = [];
+          //   for (const item of question.value) {
+          //     selectedIds.push(item);
+          //   }
+          //   const grid = domService.appendComponentToBody(SafeSurveyGridComponent, el.parentElement);
+          //   instance = grid.instance;
+          //   instance.id = question.resource;
+          //   instance.field = question.displayField;
+          //   instance.readOnly = (question.survey.mode === 'display');
+          //   instance.selectedIds.subscribe((value: any[]) => {
+          //     question.value = value;
+          //   });
+          //   instance.selectedIds.next(selectedIds);
+          // }
           if (question.survey.mode !== 'display') {
             const mainDiv = document.createElement('div');
             mainDiv.id = 'addRecordDiv';
@@ -149,21 +153,21 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 });
                 dialogRef.afterClosed().subscribe(res => {
                   if (res) {
-                    if (question.displayAsGrid) {
-                      instance.availableRecords.push({
-                        value: res.data.id,
-                        text: res.data.data[question.displayField]
-                      });
-                    } else {
-                      const e = new CustomEvent('saveResourceFromEmbed', {
-                        detail: {
-                          resource: res.data,
-                          template: res.template
-                        }
-                      });
-                      document.dispatchEvent(e);
-                    }
+                    // if (question.displayAsGrid) {
+                    //   instance.availableRecords.push({
+                    //     value: res.data.id,
+                    //     text: res.data.data[question.displayField]
+                    //   });
+                    // } else {
+                    const e = new CustomEvent('saveResourceFromEmbed', {
+                      detail: {
+                        resource: res.data,
+                        template: res.template
+                      }
+                    });
+                    document.dispatchEvent(e);
                   }
+                  // }
                 });
               };
             }
@@ -189,27 +193,36 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
     const mainDiv = document.createElement('div');
     mainDiv.id = 'searchDiv';
     if (fieldsSettingsForm) {
+      console.log('FIELDS SETTINGSS', multiselect);
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Search';
       btnEl.style.width = '100px';
+      btnEl.style.float = 'left';
+      btnEl.style.marginRight = '5px';
       btnEl.onclick = () => {
         const dialogRef = dialog.open(SafeResourceGridModalComponent, {
           data: {
-            multiSelect: multiselect,
+            multiselect,
             gridSettings: fieldsSettingsForm,
-            selectedRows: question.value ? [question.value] : []
+            selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : []
           }
         });
         dialogRef.afterClosed().subscribe((row: any[]) => {
-          if (!row) { return; }
+          console.log('RESULT', row);
+          if (!row) {
+            return;
+          }
           if (row.length > 0) {
-            question.value = row[0].dataItem.id;
+            if (row.length === 1) {
+              question.value = row[0].dataItem.id;
+            } else {
+              question.value = row.map(r => r.dataItem ? r.dataItem.id : r);
+            }
           } else {
             question.value = null;
           }
         });
       };
-
       mainDiv.appendChild(btnEl);
     }
     return mainDiv;

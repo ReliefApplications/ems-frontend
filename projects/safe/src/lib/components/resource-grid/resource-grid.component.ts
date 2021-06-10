@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { Subscription } from 'rxjs';
-import { Apollo } from 'apollo-angular';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -95,7 +94,6 @@ export class SafeResourceGridComponent implements OnInit {
   public editionActive = false;
 
   constructor(
-    private apollo: Apollo,
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService
@@ -103,6 +101,7 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -286,7 +285,7 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   selectionChange(selection: SelectionEvent): void {
-    this.rowSelected.emit(selection.selectedRows);
+    this.rowSelected.emit(selection);
   }
 
   onAdd(event: any): void {

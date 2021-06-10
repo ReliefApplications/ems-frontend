@@ -21,7 +21,7 @@ export function initCustomWidgets(Survey: any, domService: DomService, dialog: M
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, apollo, dialog, formBuilder);
-  initResourcesComponent(Survey, apollo);
+  initResourcesComponent(Survey, apollo, dialog, formBuilder);
   initCustomWidget(Survey, domService, dialog);
   addCustomFunctions(Survey);
 }

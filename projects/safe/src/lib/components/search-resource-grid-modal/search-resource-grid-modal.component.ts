@@ -15,14 +15,17 @@ export class SafeResourceGridModalComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
-      gridSettings: {},
+      gridSettings: any,
       multiselect: boolean,
       selectedRows: string[]
     },
     public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
-    private ref: ApplicationRef
+    private ref: ApplicationRef,
   ) {
-    this.multiSelect = data.multiselect;
+    this.multiSelect = this.data.multiselect;
+    if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
+      delete this.data.gridSettings.sort;
+    }
     this.gridSettings = {query: this.data.gridSettings};
     if (this.data.selectedRows) {
       this.selectedRows = this.data.selectedRows;
@@ -30,11 +33,20 @@ export class SafeResourceGridModalComponent implements OnInit {
     this.ref.tick();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   onRowSelected(rows: any): void {
-    this.selectedRows = rows;
+    if (this.multiSelect) {
+      if (rows.selectedRows.length > 0) {
+        this.selectedRows = this.selectedRows.concat(rows.selectedRows);
+      }
+      if (rows.deselectedRows.length > 0) {
+        const deselectedRows = rows.deselectedRows.map((r: any) => r.dataItem.id);
+        this.selectedRows = this.selectedRows.filter((r: any) => !deselectedRows.includes(r));
+      }
+    } else {
+      this.selectedRows = rows.selectedRows;
+    }
   }
 
   closeModal(saveChanges: boolean = true): void {

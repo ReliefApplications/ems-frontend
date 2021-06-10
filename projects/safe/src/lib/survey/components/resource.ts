@@ -487,7 +487,9 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
       }
     },
     convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
-      console.log(gridSettingsRaw);
+      if (!gridSettingsRaw.fields) {
+        return null;
+      }
       const auxForm = formBuilder.group(gridSettingsRaw);
       auxForm.controls.fields.setValue(gridSettingsRaw.fields);
       return auxForm;
