@@ -58,7 +58,6 @@ export class SafeResourceGridComponent implements OnInit {
   public canDeleteSelectedRows = false;
 
   private items: any[] = [];
-  private updatedItems: any[] = [];
 
   private metaQuery: any;
   private metaFields: any;
@@ -106,7 +105,6 @@ export class SafeResourceGridComponent implements OnInit {
 
   private getRecords(): void {
     this.loading = true;
-    this.updatedItems = [];
 
     // Child grid
     // if (!!this.parent) {
@@ -303,7 +301,20 @@ export class SafeResourceGridComponent implements OnInit {
   }
 
   onFilter(value: any): void {
-    console.log(value);
+    const filteredData: any[] = [];
+    this.items.forEach((data: any) => {
+      const auxData = data;
+      delete auxData.canDelete;
+      delete auxData.canUpdate;
+      delete auxData.__typename;
+      if (Object.values(auxData).filter((o: any) => o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
+        filteredData.push(data);
+      }
+    });
+    this.gridData = {
+      data: filteredData,
+      total: filteredData.length
+    };
   }
 
   onExpandComment(value: any): void {
