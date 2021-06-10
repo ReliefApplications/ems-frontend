@@ -200,7 +200,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('ho');
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
