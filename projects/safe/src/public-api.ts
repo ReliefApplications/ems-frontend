@@ -11,6 +11,7 @@ export * from './lib/services/download.service';
 export * from './lib/services/workflow.service';
 export * from './lib/services/form.service';
 export * from './lib/services/layout.service';
+export * from './lib/services/api-proxy.service';
 
 // === CONST ===
 export * from './lib/const/notifications';
@@ -33,6 +34,7 @@ export * from './lib/models/channel.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
+export * from './lib/models/apiConfiguration.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';

@@ -27,5 +27,8 @@ export const NOTIFICATIONS = {
     isFormatValid: 'Please import valid .csv file.',
     dataRecovered: 'The data has been recovered',
     profileSaved: 'Preferences saved.',
-    appEdited: 'This application has been updated by someone else.'
+    appEdited: 'This application has been updated by someone else.',
+    pingResponseAuthToken: 'Authentication token fetched, ping again to get the actual response.',
+    pingResponseReceived: 'Received positive response from ping request.',
+    pingResponseError: 'ERROR during the PING request.'
 };

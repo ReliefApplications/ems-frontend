@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -655,18 +655,82 @@ export interface GetRecordDetailsQueryResponse {
   record: Record;
 }
 
-// === EDIT RECORD ===
-export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
-  editRecord(id: $id, data: $data, version: $version) {
+// === GET API CONFIGURATIONS ===
+export const GET_API_CONFIGURATIONS = gql`
+query GetApiConfigurations {
+  apiConfigurations {
     id
-    data(display: $display)
-    createdAt
-    modifiedAt
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
   }
 }`;
 
-export interface EditRecordMutationResponse {
+export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
-  editRecord: Record;
+  apiConfigurations: ApiConfiguration[];
+}
+
+// === GET API CONFIGURATION ===
+export const GET_API_CONFIGURATION = gql`
+query GetApiConfiguration($id: ID!) {
+  apiConfiguration(id: $id) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationQueryResponse {
+  loading: boolean;
+  apiConfiguration: ApiConfiguration;
 }
