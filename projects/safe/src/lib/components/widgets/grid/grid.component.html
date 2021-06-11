@@ -108,10 +108,14 @@
                         </ng-container>
                         <!-- EDITION ( dropdown / radiogroup ) -->
                         <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-                            <kendo-dropdownlist [data]="field.meta.choices"
-                                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
-                                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
+                            <kendo-dropdownlist *ngIf="!field.meta.choicesByUrl" [data]="field.meta.choices"
+                                [textField]="'text'"
+                                [valueField]="'value'"
                                 [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
+                            <kendo-dropdownlist *ngIf="field.meta.choicesByUrl" [data]="field.meta.choices"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : null"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : null"
+                            [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
                         </ng-container>
                     </ng-template>
                     <!-- EDITION ( date ) -->
