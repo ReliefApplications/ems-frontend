@@ -24,9 +24,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
-    private apollo: Apollo,
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -42,32 +40,17 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/applications']);
   }
 
-  onLock(): void {
+  onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: (this.locked ? 'Unlock' : 'Lock') + ' edition',
-        content: `Do you want to ` + (this.locked ? 'unlock' : 'lock') + ` ${this.application?.name}'s edition ?`,
+        title: 'Unlock edition',
+        content: `Do you want to unlock ${this.application?.name}'s edition ?`,
         confirmText: 'Confirm',
         confirmColor: 'primary'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
-      // THERE WE NEED TO PUT LOCK / UNLOCK
-      // if (value) {
-      //   this.apollo.mutate<EditApplicationMutationResponse>(
-      //     {
-      //       mutation: EDIT_APPLICATION,
-      //       variables: {
-      //         id: this.application?.id,
-      //         name: this.application?.name,
-      //         isLocked: (this.isLocked ? !this.isLocked : true)
-      //       }
-      //     }).subscribe(res => {
-      //       if (res.data) {
-      //         this.applicationService.loadApplication(res.data.editApplication.id);
-      //       }
-      //   });
-      // }
+      this.applicationService.lockApplication();
     });
   }
 

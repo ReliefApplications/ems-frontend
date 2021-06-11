@@ -45,16 +45,8 @@ export const APPLICATION_UNLOCKED_SUBSCRIPTION = gql`
   subscription applicationUnlocked($id: ID!){
     applicationUnlocked(id: $id){
         id
-        name
-        description
-        createdAt
-        status
-        canSee
-        canUpdate
-        lockedBy {
-            id
-            name
-        }
+        locked
+        lockedByUser
     }
   }
 `;

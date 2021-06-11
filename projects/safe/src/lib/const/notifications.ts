@@ -6,7 +6,7 @@ export const NOTIFICATIONS = {
     accessNotProvided(type: any): string  { return `No access provided to this ${type}.`; } ,
     userRolesUpdated(username: any): string  { return `${username} roles updated.`; },
     usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; }, //
-    objectNotUpdated(type: any, error: any): string  { return `The ${type} was not updated. ${error}`; },
+    objectNotUpdated(type: any, error: any): string  { return `${type} is locked for edition. ${error}`; },
     objectEdited(type: any, name: any): string  { return `${name} ${type} edited.`; }, //
     objectDuplicated(type: any, name: any): string  { return `The ${type} ${name} was successfully  duplicated.`; },
     objectNotDuplicated(type: any, error: any): string  { return `The ${type} was not duplicated. ${error}`; },

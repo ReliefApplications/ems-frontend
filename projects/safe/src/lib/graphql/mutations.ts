@@ -591,3 +591,18 @@ export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
 }
+
+// === TOGGLE APPLICATION LOCK ===
+export const TOGGLE_APPLICATION_LOCK = gql`
+mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
+  toggleApplicationLock(id: $id, lock: $lock) {
+    id
+    locked
+    lockedByUser
+  }
+}`;
+
+export interface ToggleApplicationLockMutationResponse {
+  loading: boolean;
+  toggleApplicationLock: Application;
+}
