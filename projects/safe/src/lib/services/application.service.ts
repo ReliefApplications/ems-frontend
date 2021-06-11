@@ -667,4 +667,15 @@ export class SafeApplicationService {
       }
     }
   }
+
+  isUnlocked(): boolean {
+    const application = this._application.getValue();
+    if (application) {
+      if (application?.locked && !application.lockedByUser) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
+        return true;
+      }
+    }
+    return false;
+  }
 }

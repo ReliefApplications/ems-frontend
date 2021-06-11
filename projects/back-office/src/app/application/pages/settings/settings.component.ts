@@ -20,11 +20,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public applications = new MatTableDataSource<Application>([]);
   public settingsForm?: FormGroup;
-  private authSubscription?: Subscription;
   private applicationSubscription?: Subscription;
   public application?: Application;
   public user: any;
-  public isLockedByActualUser: boolean | undefined = undefined;
+  public locked: boolean  | undefined = undefined;
+  public lockedByUser: boolean | undefined = undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -37,11 +37,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user.subscribe((user) => {
-      if (user) {
-        this.user = { ...user};
-      }
-    });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application){
         this.application = application;
@@ -52,13 +47,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
             description: [application.description]
           }
         );
-        if (this.application?.isLocked) {
-          if (this.user.id === this.application?.isLockedBy?.id) {
-            this.isLockedByActualUser = true;
-          } else {
-            this.isLockedByActualUser = false;
-          }
-        }
+        this.locked = this.application?.locked;
+        this.lockedByUser = this.application?.lockedByUser;
       }
     });
   }
@@ -69,7 +59,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDuplicate(): void {
-    if (this.application?.isLocked && !this.isLockedByActualUser) {
+    if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
     } else {
       this.dialog.open(DuplicateApplicationComponent, {
@@ -82,7 +72,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    if (this.application?.isLocked && !this.isLockedByActualUser) {
+    if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {

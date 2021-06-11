@@ -409,19 +409,16 @@ export interface AddApplicationMutationResponse {
 
 // === EDIT APPLICATION ===
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String, $isLocked: Boolean) {
-  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description, isLocked: $isLocked) {
+mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
     name
     createdAt
     modifiedAt
     status
-    isLocked
-    isLockedBy {
-      id
-      name
-    }
+    locked
+    lockedByUser
     pages {
       id
       name

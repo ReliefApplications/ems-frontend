@@ -26,6 +26,6 @@ export interface Application {
     subscriptions?: Subscription[];
     positionAttributeCategories?: PositionAttributeCategory[];
     locked?: boolean;
-    lockedBy?: any;
+    lockedBy?: User;
     lockedByUser?: boolean;
 }
