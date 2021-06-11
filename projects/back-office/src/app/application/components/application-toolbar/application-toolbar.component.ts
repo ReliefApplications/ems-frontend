@@ -71,8 +71,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
           this.apollo.subscribe<ApplicationUnlockedSubscriptionResponse>({
             query: APPLICATION_UNLOCKED_SUBSCRIPTION,
             variables: {
-              application: this.application?.id,
-              lockedByID: this.application?.isLockedBy.id
+              id: this.application?.id
             }
           }).subscribe(() => {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectUnlocked(this.application?.name));
