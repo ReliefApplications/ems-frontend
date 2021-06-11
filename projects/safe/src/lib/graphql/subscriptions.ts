@@ -1,6 +1,6 @@
-import {gql} from 'apollo-angular';
+import { gql } from 'apollo-angular';
 
-import { Notification } from '../models/notification.model';
+import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
 import { Application } from '../models/application.model';
 
@@ -42,24 +42,44 @@ export interface RecordAddedSubscriptionResponse {
 }
 
 export const APPLICATION_UNLOCKED_SUBSCRIPTION = gql`
-  subscription applicationUnlocked($application: ID!, $lockedByID: ID!){
-    applicationUnlocked(application: $application, lockedByID: $lockedByID){
-      id
-      name
-      description
-      createdAt
-      status
-      canSee
-      canUpdate
-      isLocked
-      isLockedBy {
+  subscription applicationUnlocked($id: ID!){
+    applicationUnlocked(id: $id){
         id
         name
-      }
+        description
+        createdAt
+        status
+        canSee
+        canUpdate
+        lockedBy {
+            id
+            name
+        }
+    }
+  }
+`;
+
+export const APPLICATION_EDITED_SUBSCRIPTION = gql`
+  subscription applicationEdited($id: ID!){
+    applicationEdited(id: $id){
+        id
+        name
+        description
+        createdAt
+        status
+        canSee
+        canUpdate
+        lockedBy {
+            id
+            name
+        }
     }
   }
 `;
 
 export interface ApplicationUnlockedSubscriptionResponse {
     applicationUnlocked: Application;
+}
+export interface ApplicationEditedSubscriptionResponse {
+    applicationEdited: Application;
 }

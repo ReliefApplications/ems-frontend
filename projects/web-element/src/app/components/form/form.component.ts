@@ -19,6 +19,7 @@ export class FormComponent implements OnInit {
   public loading = true;
   public form?: Form;
   public completed = false;
+  public hideNewRecord = false;
 
   // === ROUTER ===
   public page?: Page;
@@ -45,8 +46,9 @@ export class FormComponent implements OnInit {
     });
   }
 
-  onComplete(e: any): void {
-    this.completed = e;
+  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+    this.completed = e.completed;
+    this.hideNewRecord = e.hideNewRecord || false;
   }
 
   clearForm(): void {
