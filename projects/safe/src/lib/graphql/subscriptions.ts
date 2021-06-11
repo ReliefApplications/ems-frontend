@@ -2,6 +2,7 @@ import {gql} from 'apollo-angular';
 
 import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
+import { Application } from '../models/application.model';
 
 export const NOTIFICATION_SUBSCRIPTION = gql`
 subscription NotificationSubscription {
@@ -38,4 +39,22 @@ subscription RecordAddedSubscription($resource: ID, $form: ID) {
 
 export interface RecordAddedSubscriptionResponse {
     recordAdded: Record;
+}
+
+export const APPLICATION_EDITED_SUBSCRIPTION = gql`
+  subscription applicationEdited($id: ID!){
+    applicationEdited(id: $id){
+      id
+      name
+      description
+      createdAt
+      status
+      canSee
+      canUpdate
+    }
+  }
+`;
+
+export interface ApplicationEditedSubscriptionResponse {
+    applicationEdited: Application;
 }
