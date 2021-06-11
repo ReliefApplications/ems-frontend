@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
@@ -56,6 +56,8 @@ export class SafeApplicationService {
 
   // tslint:disable-next-line: variable-name
   private _application = new BehaviorSubject<Application | null>(null);
+  private applicationSubscription?: Subscription;
+  private notificationSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -66,7 +68,7 @@ export class SafeApplicationService {
   /*  Get the application from the database, using GraphQL.
   */
   loadApplication(id: string, asRole?: string): void {
-    this.apollo.query<GetApplicationByIdQueryResponse>({
+    this.applicationSubscription = this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
@@ -75,7 +77,7 @@ export class SafeApplicationService {
     }).subscribe(res => {
       this._application.next(res.data.application);
     });
-    this.apollo.subscribe<ApplicationEditedSubscriptionResponse>({
+    this.notificationSubscription = this.apollo.subscribe<ApplicationEditedSubscriptionResponse>({
       query: APPLICATION_EDITED_SUBSCRIPTION,
       variables: {
         id
@@ -87,6 +89,14 @@ export class SafeApplicationService {
       });
       snackBar.onAction().subscribe(() => window.location.reload());
     });
+  }
+
+  /*
+    Leave application and unsubscribe to application changes.
+  */
+  leaveApplication(): void {
+    this.applicationSubscription?.unsubscribe();
+    this.notificationSubscription?.unsubscribe();
   }
 
   /*
