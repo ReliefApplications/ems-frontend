@@ -25,4 +25,7 @@ export interface Application {
     canDelete?: boolean;
     subscriptions?: Subscription[];
     positionAttributeCategories?: PositionAttributeCategory[];
+    locked?: boolean;
+    lockedBy?: User;
+    lockedByUser?: boolean;
 }
