@@ -31,6 +31,7 @@ export class SafeInviteUserComponent implements OnInit {
   public emails: any[] = [];
   public formValues: any;
   public csvRecords: any[] = [];
+  public userArray: any[] = [];
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvReader') csvReader: any;
@@ -139,7 +140,6 @@ export class SafeInviteUserComponent implements OnInit {
   }
 
   uploadListener($event: any): void {
-
     const files = $event.target.files;
 
     if (files[0] && this.isValidCSVFile(files[0])) {
@@ -153,6 +153,12 @@ export class SafeInviteUserComponent implements OnInit {
         const csvData = reader.result || '';
         const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
 
+        for (let index = 1; index < csvRecordsArray.length - 1; index++) {
+          let row = csvRecordsArray[index].split(",");
+          console.log("row = ", row); // 
+          this.userArray.push(parseInt( row[0], 10), row[1], row[2].trim());
+        }
+        console.log(this.userArray);
         this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray);
         for (const record of this.csvRecords) {
           if (record.trim()) {

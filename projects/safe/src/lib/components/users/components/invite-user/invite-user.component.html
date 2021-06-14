@@ -2,36 +2,28 @@
 <div mat-dialog-content>
 
   <form [formGroup]="inviteForm">
-        <div class="form-group">
+        <div class="form-group" >
           <label class="invite-label">Select existing users, invite new users or import csv list
             <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
           </label>
-          <mat-form-field class="chip-list">
-            <mat-chip-list #chipList aria-label="Email invitation">
-              <mat-chip
-                *ngFor="let email of emails"
-                [selectable]="true"
-                [removable]="true"
-                (removed)="remove(email)">
-                {{email}}
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input
-                placeholder="Emails..."
-                #emailInput
-                formControlName="email"
-                [matAutocomplete]="auto"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (focusout)="add($event)"
-                (matChipInputTokenEnd)="add($event)">
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-              <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
-                {{user.username}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+            <mat-form-field class="chip-list">
+              <mat-chip-list #chipList aria-label="Email invitation">
+                <mat-chip
+                  *ngFor="let email of emails" [selectable]="true" [removable]="true" (removed)="remove(email)">
+                  {{email}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                  placeholder="Emails..." #emailInput formControlName="email" [matAutocomplete]="auto"
+                  [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (focusout)="add($event)"
+                  (matChipInputTokenEnd)="add($event)">
+              </mat-chip-list>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
+                  {{user.username}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
             <label class="invite-label">Select the role to assign</label>
             <mat-form-field appearance="outline">
                 <mat-label>Role</mat-label>
@@ -49,6 +41,7 @@
                 </ng-container>
             </ng-container>
         </div>
+        <!-- <div *ngIf="emails.length > 1">bonjour</div> -->
     </form>
 </div>
 <div mat-dialog-actions align="end">
