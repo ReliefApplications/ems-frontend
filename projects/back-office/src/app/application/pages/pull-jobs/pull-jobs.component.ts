@@ -84,6 +84,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           if (res.data?.addPullJob) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name));
             this.pullJobs = this.pullJobs.concat([res.data?.addPullJob]);
+            this.applicationService.updatePullJobs(this.pullJobs);
           }
         });
       }
@@ -112,6 +113,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             if (res.data?.deletePullJob) {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'));
               this.pullJobs = this.pullJobs.filter(x => x.id !== res.data?.deletePullJob.id);
+              this.applicationService.updatePullJobs(this.pullJobs);
             }
           });
         }
@@ -162,6 +164,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               }
               return pullJob;
             });
+            this.applicationService.updatePullJobs(this.pullJobs);
           }
         });
       }
