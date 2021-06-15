@@ -27,4 +27,7 @@ export interface Application {
     subscriptions?: Subscription[];
     pullJobs?: PullJob[];
     positionAttributeCategories?: PositionAttributeCategory[];
+    locked?: boolean;
+    lockedBy?: User;
+    lockedByUser?: boolean;
 }

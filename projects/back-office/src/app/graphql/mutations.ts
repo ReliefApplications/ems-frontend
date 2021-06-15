@@ -417,6 +417,8 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     createdAt
     modifiedAt
     status
+    locked
+    lockedByUser
     pages {
       id
       name
