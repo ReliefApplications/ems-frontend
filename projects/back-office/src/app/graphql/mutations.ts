@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, ApiConfiguration } from '@safe/builder';
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, ApiConfiguration, PullJob } from '@safe/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -722,4 +722,75 @@ mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authTyp
 export interface EditApiConfigurationMutationResponse {
   loading: boolean;
   editApiConfiguration: ApiConfiguration;
+}
+
+// === ADD PULL JOB ===
+export const ADD_PULL_JOB = gql`
+mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $channel: ID) {
+  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, channel: $channel) {
+    id
+    name
+    status
+    apiConfiguration {
+      id
+      name
+    }
+    schedule
+    convertTo {
+      id
+      name
+    }
+    mapping
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface AddPullJobMutationResponse {
+  loading: boolean;
+  addPullJob: PullJob;
+}
+
+// === DELETE PULL JOB ===
+export const DELETE_PULL_JOB = gql`
+mutation deletePullJob($application: ID!, $id: ID!) {
+  deletePullJob(application: $application, id: $id) {
+    id
+  }
+}`;
+
+export interface DeletePullJobMutationResponse {
+  loading: boolean;
+  deletePullJob: PullJob;
+}
+
+// === EDIT PULL JOB ===
+export const EDIT_PULL_JOB = gql`
+mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $channel: ID) {
+  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, channel: $channel) {
+    id
+    name
+    status
+    apiConfiguration {
+      id
+      name
+    }
+    schedule
+    convertTo {
+      id
+      name
+    }
+    mapping
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface EditPullJobMutationResponse {
+  loading: boolean;
+  editPullJob: PullJob;
 }
