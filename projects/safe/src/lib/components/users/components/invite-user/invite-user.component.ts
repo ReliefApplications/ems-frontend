@@ -13,6 +13,7 @@ import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
+import { forEach } from '@angular-devkit/schematics';
 
 @Component({
   selector: 'safe-invite-user',
@@ -23,6 +24,7 @@ export class SafeInviteUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
   inviteForm: FormGroup = new FormGroup({});
+  multipleInviteForm: FormGroup = new FormGroup({});
 
   // === DATA ===
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
@@ -32,6 +34,9 @@ export class SafeInviteUserComponent implements OnInit {
   public formValues: any;
   public csvRecords: any[] = [];
   public userArray: any[] = [];
+  public emailsList: any[] = [];
+  public rolesList: any[] = [];
+  public positionAttributesList: any[] = [];
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvReader') csvReader: any;
@@ -67,6 +72,19 @@ export class SafeInviteUserComponent implements OnInit {
     this.inviteForm = this.formBuilder.group({
       email: [[], Validators.minLength(1)],
       role: ['', Validators.required],
+      ...this.data.positionAttributeCategories &&
+      {
+        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
+          return this.formBuilder.group({
+            value: [''],
+            category: [x.id, Validators.required]
+          });
+        }))
+      }
+    });
+    this.multipleInviteForm = this.formBuilder.group({
+      email: [[], Validators.minLength(1)],
+      role: [[], Validators.required],
       ...this.data.positionAttributeCategories &&
       {
         positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
@@ -152,13 +170,48 @@ export class SafeInviteUserComponent implements OnInit {
       reader.onload = () => {
         const csvData = reader.result || '';
         const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
-
+        const header = csvRecordsArray[0].split(",");
         for (let index = 1; index < csvRecordsArray.length - 1; index++) {
+          let update: any = {};
           let row = csvRecordsArray[index].split(",");
-          console.log("row = ", row); // 
-          this.userArray.push(parseInt( row[0], 10), row[1], row[2].trim());
+          for (let column in row) {
+            update[header[column]] = row[column];
+          }
+          this.userArray.push(update);
         }
-        console.log(this.userArray);
+        this.userArray.forEach((user) => {
+          let update : any= {};
+          for (let e in user) {
+            if (e === 'Email') {
+              this.emailsList.push(user[e])
+            } else if (e === 'Role') {
+              this.rolesList.push(user[e])
+            } else {
+              update[e] = user[e];
+            }
+          }
+          this.positionAttributesList.push(update);
+        });
+        for (const e of this.emailsList) {
+          if (e.trim()) {
+            if (!this.data.users.find((email: any) => email.username.toLowerCase() === e.toLocaleString())) {
+              this.emails.push(e.trim());
+              this.multipleInviteForm.get('email')?.setValue(this.emailsList);
+            } else {
+              this.snackBar.openSnackBar(NOTIFICATIONS.emailRegistered);
+            }
+          }
+        }
+        if (this.rolesList) {
+          this.multipleInviteForm.get('role')?.setValue(this.rolesList);
+        }
+        if (this.positionAttributesList) {
+          this.multipleInviteForm.get('positionAttributes')?.setValue(this.positionAttributesList);
+        }
+        console.log("emaillist = ", this.emailsList);
+        console.log("rolesList = ", this.rolesList);
+        console.log("positionAttributesList = ", this.positionAttributesList);
+        console.log("userArray = ", this.userArray);
         this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray);
         for (const record of this.csvRecords) {
           if (record.trim()) {
