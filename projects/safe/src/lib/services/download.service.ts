@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import {ADD_RECORD, AddRecordMutationResponse} from '../graphql/mutations';
+import {Apollo} from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class SafeDownloadService {
 
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
+    private apollo: Apollo
   ) {
     this.baseUrl = environment.API_URL;
   }
@@ -44,7 +47,7 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  updateRecords(path: string): void {
+  updateRecords(path: string, idForm: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
@@ -53,6 +56,45 @@ export class SafeDownloadService {
     });
     this.http.get(url, {headers}).subscribe(res => {
       console.log(res);
+      let records: any = [];
+      records = res;
+
+      for (const r of records){
+        console.log(r);
+        const mutation = this.apollo.mutate<AddRecordMutationResponse>({
+          mutation: ADD_RECORD,
+          variables: {
+            form: idForm,
+            data: r
+          }
+        });
+        mutation.subscribe((resAdd: any) => {
+          if (resAdd.errors) {
+            console.log('*** ERROR ***');
+            console.log(resAdd.errors);
+          } else {
+            console.log('*** WORK ***');
+            console.log(res);
+          }
+        });
+      }
+
+      // const mutation = this.apollo.mutate<AddRecordMutationResponse>({
+      //       mutation: ADD_RECORD,
+      //       variables: {
+      //         form: idForm,
+      //         data: records
+      //       }
+      // });
+      // mutation.subscribe((resAdd: any) => {
+      //   if (resAdd.errors) {
+      //     console.log('*** ERROR ***');
+      //     console.log(resAdd.errors);
+      //   } else {
+      //     console.log('*** WORK ***');
+      //     console.log(res);
+      //   }
+      // });
     });
   }
 }
