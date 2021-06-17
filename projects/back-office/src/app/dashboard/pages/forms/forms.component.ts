@@ -206,6 +206,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(element);
     // this.importPopup.open(ImportRecordModalComponent);
     const path = `upload/records/update/${element.id}`;
-    this.downloadService.updateRecords(path, element.id);
+    this.downloadService.updateRecords(path);
   }
 }
