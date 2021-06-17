@@ -221,6 +221,25 @@ export interface AddRoleToUsersMutationResponse {
   addRoleToUsers: User[];
 }
 
+export const ADD_MULTIPLE_USERS = gql`
+mutation addMultipleUsers($users: JSON!) {
+  addMultipleUsers(users: $users) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+    }
+    oid
+  }
+}`;
+
+export interface AddMultipleUsersMutationResponse {
+  loading: boolean;
+  addMultipleUsers: User[];
+}
+
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID], $channels: [ID], $title: String) {

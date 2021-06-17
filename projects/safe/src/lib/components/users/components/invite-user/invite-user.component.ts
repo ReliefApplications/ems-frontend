@@ -1,6 +1,6 @@
 import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Role, User } from '../../../../models/user.model';
@@ -13,7 +13,7 @@ import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
-import { forEach } from '@angular-devkit/schematics';
+import { validate } from 'graphql';
 
 @Component({
   selector: 'safe-invite-user',
@@ -24,7 +24,7 @@ export class SafeInviteUserComponent implements OnInit {
 
   // === REACTIVE FORM ===
   inviteForm: FormGroup = new FormGroup({});
-  multipleInviteForm: FormGroup = new FormGroup({});
+  multipleInviteForm: FormArray = new FormArray([]);
 
   // === DATA ===
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
@@ -37,6 +37,7 @@ export class SafeInviteUserComponent implements OnInit {
   public emailsList: any[] = [];
   public rolesList: any[] = [];
   public positionAttributesList: any[] = [];
+  public allowMultipleInvites = false;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvReader') csvReader: any;
@@ -51,6 +52,22 @@ export class SafeInviteUserComponent implements OnInit {
 
   get positionAttributes(): FormArray | null {
     return this.inviteForm.get('positionAttributes') ? this.inviteForm.get('positionAttributes') as FormArray : null;
+  }
+
+  getRoles(i: number): FormArray | null {
+    return this.multipleInviteForm.at(i).get('role') ? this.multipleInviteForm.at(i).get('role') as FormArray : null;
+  }
+
+  getCategories(i: number): FormArray | null {
+    return this.multipleInviteForm.at(i).get('categories') ? this.multipleInviteForm.at(i).get('categories') as FormArray : null;
+  }
+
+  getMultipleInviteForm(i: number): FormGroup {
+    return this.multipleInviteForm.at(i) as FormGroup;
+  }
+
+  removeUserForm(i: number): any {
+    this.multipleInviteForm.removeAt(i);
   }
 
   constructor(
@@ -72,19 +89,6 @@ export class SafeInviteUserComponent implements OnInit {
     this.inviteForm = this.formBuilder.group({
       email: [[], Validators.minLength(1)],
       role: ['', Validators.required],
-      ...this.data.positionAttributeCategories &&
-      {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
-          return this.formBuilder.group({
-            value: [''],
-            category: [x.id, Validators.required]
-          });
-        }))
-      }
-    });
-    this.multipleInviteForm = this.formBuilder.group({
-      email: [[], Validators.minLength(1)],
-      role: [[], Validators.required],
       ...this.data.positionAttributeCategories &&
       {
         positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
@@ -170,48 +174,66 @@ export class SafeInviteUserComponent implements OnInit {
       reader.onload = () => {
         const csvData = reader.result || '';
         const csvRecordsArray = csvData.toString().split(/\r\n|\n/);
-        const header = csvRecordsArray[0].split(",");
+        const header = csvRecordsArray[0].split(',');
         for (let index = 1; index < csvRecordsArray.length - 1; index++) {
-          let update: any = {};
-          let row = csvRecordsArray[index].split(",");
-          for (let column in row) {
-            update[header[column]] = row[column];
+          const update: any = {};
+          const row = csvRecordsArray[index].split(',');
+          for (const column in row) {
+            if (row[column]) { update[header[column]] = row[column]; }
           }
           this.userArray.push(update);
         }
-        this.userArray.forEach((user) => {
-          let update : any= {};
-          for (let e in user) {
-            if (e === 'Email') {
-              this.emailsList.push(user[e])
-            } else if (e === 'Role') {
-              this.rolesList.push(user[e])
+        this.userArray.forEach((e) => {
+          const user: any = {
+            category : [],
+            role: []
+          };
+          for (const el in e) {
+            if (el === 'email') {
+              if (e[el].trim()) {
+                if (!this.data.users.find((email: any) => email.username.toLowerCase() === e[el].toLocaleString())) {
+                  user[el] = e[el];
+                  emailRegistered = false;
+                } else {
+                  emailRegistered = true;
+                  this.snackBar.openSnackBar(NOTIFICATIONS.emailRegistered);
+                }
+              }
+            } else if (el === 'role') {
+              this.allowMultipleInvites = true;
+              this.data.roles?.map(x => {
+                if (x.title?.toLowerCase() === e[el].toLowerCase()) {
+                  user.role.push({ title: e[el], id: x.id});
+                }
+              });
             } else {
-              update[e] = user[e];
+              this.data.positionAttributeCategories?.map(x => {
+                if (x.title?.toLowerCase() === el.toLowerCase()) {
+                  user.category.push({ title: el, value: e[el], id: x.id});
+                }
+              });
             }
           }
-          this.positionAttributesList.push(update);
+          if (!emailRegistered) {
+            const userForm = this.formBuilder.group({
+              email: [user.email, Validators.minLength(1)],
+              role: this.formBuilder.array(user.role.map((x: any) => {
+                return this.formBuilder.group({
+                  title: [x.title],
+                  id: [x.id, Validators.required],
+                });
+              })),
+              categories: this.formBuilder.array(user.category.map((x: any) => {
+                return this.formBuilder.group({
+                  title: [x.title],
+                  value: [x.value],
+                  id: [x.id, Validators.required],
+                });
+              }))
+            });
+            this.multipleInviteForm.push(userForm);
+          }
         });
-        for (const e of this.emailsList) {
-          if (e.trim()) {
-            if (!this.data.users.find((email: any) => email.username.toLowerCase() === e.toLocaleString())) {
-              this.emails.push(e.trim());
-              this.multipleInviteForm.get('email')?.setValue(this.emailsList);
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.emailRegistered);
-            }
-          }
-        }
-        if (this.rolesList) {
-          this.multipleInviteForm.get('role')?.setValue(this.rolesList);
-        }
-        if (this.positionAttributesList) {
-          this.multipleInviteForm.get('positionAttributes')?.setValue(this.positionAttributesList);
-        }
-        console.log("emaillist = ", this.emailsList);
-        console.log("rolesList = ", this.rolesList);
-        console.log("positionAttributesList = ", this.positionAttributesList);
-        console.log("userArray = ", this.userArray);
         this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray);
         for (const record of this.csvRecords) {
           if (record.trim()) {
