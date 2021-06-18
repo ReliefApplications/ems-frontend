@@ -22,18 +22,8 @@ export class ImportRecordsTokensModalComponent implements OnInit {
   }
 
   importRecords(accesToken: string, formId: string): void {
-    // console.log(this.accesToken);
-    // console.log(this.formId);
-    console.log(accesToken);
-    console.log(formId);
     this.data.accessToken = accesToken;
     this.data.formId = formId;
-
-    console.log(this.data);
-
     return this.dialogRef.close(this.data);
-
-    // const path = `upload/records/update/${element.id}`;
-    // this.downloadService.updateRecords(path);
   }
 }

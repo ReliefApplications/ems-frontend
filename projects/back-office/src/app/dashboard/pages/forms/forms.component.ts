@@ -11,7 +11,6 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  ImportRecordModalComponent,
   ImportRecordsTokensModalComponent,
   NOTIFICATIONS,
   Form,
@@ -22,7 +21,6 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import {HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-forms',
@@ -207,24 +205,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(element);
     const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
     dialogRef.afterClosed().subscribe(data => {
-        console.log('*** DIALOG CLOSED ***');
-        console.log(data);
-        const path = `upload/records/update/${element.id}`;
-        this.downloadService.updateRecords(path, data);
+        if (data !== undefined){
+          const path = `upload/records/update/${element.id}`;
+          this.downloadService.updateRecords(path, data);
+        }
     });
-    // this.importPopup._getAfterAllClosed().subscribe(data => {
-    //   console.log('*** DIALOG CLOSED ***');
-    //   console.log(data);
-    // });
-    // this.importPopup.afterAllClosed.subscribe(data => {
-    //   // Do stuff after the dialog has closed
-    //   console.log('*** DIALOG CLOSED ***');
-    //   console.log(data);
-    //   // console.log(data['accesToken']);
-    //   dataToSend = data;
-    //
-    //   // const path = `upload/records/update/${element.id}`;
-    //   // this.downloadService.updateRecords(path, dataToSend);
-    // });
   }
 }
