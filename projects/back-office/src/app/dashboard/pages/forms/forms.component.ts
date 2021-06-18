@@ -12,6 +12,7 @@ import {
   PermissionType,
   SafeConfirmModalComponent,
   ImportRecordModalComponent,
+  ImportRecordsTokensModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -204,8 +205,26 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onImportRecord(element: any, e: any): void {
     console.log(element);
-    // this.importPopup.open(ImportRecordModalComponent);
-    const path = `upload/records/update/${element.id}`;
-    this.downloadService.updateRecords(path);
+    const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
+    dialogRef.afterClosed().subscribe(data => {
+        console.log('*** DIALOG CLOSED ***');
+        console.log(data);
+        const path = `upload/records/update/${element.id}`;
+        this.downloadService.updateRecords(path, data);
+    });
+    // this.importPopup._getAfterAllClosed().subscribe(data => {
+    //   console.log('*** DIALOG CLOSED ***');
+    //   console.log(data);
+    // });
+    // this.importPopup.afterAllClosed.subscribe(data => {
+    //   // Do stuff after the dialog has closed
+    //   console.log('*** DIALOG CLOSED ***');
+    //   console.log(data);
+    //   // console.log(data['accesToken']);
+    //   dataToSend = data;
+    //
+    //   // const path = `upload/records/update/${element.id}`;
+    //   // this.downloadService.updateRecords(path, dataToSend);
+    // });
   }
 }

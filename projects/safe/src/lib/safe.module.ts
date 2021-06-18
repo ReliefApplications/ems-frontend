@@ -28,6 +28,11 @@ import { ImportRecordModalComponent } from './components/import-record-modal/imp
 import {NgxDropzoneModule} from 'ngx-dropzone';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
+import { ImportRecordsTokensModalComponent } from './components/import-records-tokens-modal/import-records-tokens-modal.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   exports: [
@@ -57,13 +62,18 @@ import {MatButtonModule} from '@angular/material/button';
     SafeRecordModalModule,
     SafeProfileModule
   ],
-    imports: [
-        NgxDropzoneModule,
-        CommonModule,
-        MatButtonModule
-    ],
+  imports: [
+    NgxDropzoneModule,
+    CommonModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDialogModule
+  ],
   declarations: [
-    ImportRecordModalComponent
+    ImportRecordModalComponent,
+    ImportRecordsTokensModalComponent
   ]
 })
 export class SafeModule { }

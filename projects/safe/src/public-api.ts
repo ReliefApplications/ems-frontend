@@ -60,6 +60,7 @@ export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
 export * from './lib/components/import-record-modal/public-api';
+export * from './lib/components/import-records-tokens-modal/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
