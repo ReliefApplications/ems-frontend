@@ -51,8 +51,7 @@
                     <mat-form-field appearance="outline" style=" margin-bottom: -1.25em">
                         <mat-label>Field</mat-label>
                         <mat-select formControlName="name">
-                            <mat-option>-- None --</mat-option>
-                            <mat-option *ngFor="let field of fields" [value]="field.name">{{field.name}}</mat-option>
+                            <mat-option *ngFor="let field of filteredFields(element.value.name)" [value]="field.name">{{field.name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field appearance="outline" *ngIf="element.value.name" style=" margin-bottom: -1.25em">
@@ -63,7 +62,7 @@
                         <mat-icon>remove_circle_outline</mat-icon>
                     </button>
                 </form>
-                <button mat-icon-button color="primary" (click)="onAddElement()">
+                <button *ngIf="filteredFields('').length > 0" mat-icon-button color="primary" (click)="onAddElement()">
                     <mat-icon>add_circle_outline</mat-icon>
                 </button>
             </mat-expansion-panel>

@@ -3,7 +3,9 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ApiConfiguration, Channel, Form, PullJob, status } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { GetApiConfigurationsQueryResponse, GetFormByIdQueryResponse, GetFormsQueryResponse, GET_API_CONFIGURATIONS, GET_FORM_BY_ID, GET_FORM_NAMES } from 'projects/back-office/src/app/graphql/queries';
+import { GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS,
+   GetFormByIdQueryResponse, GET_FORM_BY_ID,
+   GetFormsQueryResponse, GET_FORM_NAMES } from 'projects/back-office/src/app/graphql/queries';
 import { Subscription } from 'rxjs';
 import { SubscriptionModalComponent } from '../../../subscriptions/components/subscription-modal/subscription-modal.component';
 @Component({
@@ -93,6 +95,12 @@ export class PullJobModalComponent implements OnInit {
 
   get mappingArray(): FormArray {
     return this.pullJobForm.get('mapping') as FormArray;
+  }
+
+  /*  Filter fields so we cannot add a multiple mapping for the same one
+  */
+  filteredFields(name: string): any[] {
+    return this.fields.filter(field => field.name === name || !this.pullJobForm.value.mapping.some((x: any) => x.name === field.name));
   }
 
   /*  Add new element for the mapping.
