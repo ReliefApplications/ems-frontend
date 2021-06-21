@@ -3,6 +3,7 @@ import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
+import { SafeDownloadService } from '../../services/download.service';
 
 @Component({
   selector: 'safe-record-history',
@@ -26,7 +27,10 @@ export class SafeRecordHistoryComponent implements OnInit {
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
 
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    private downloadService: SafeDownloadService
+    ) { }
 
   ngOnInit(): void {
     this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
@@ -236,5 +240,12 @@ export class SafeRecordHistoryComponent implements OnInit {
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
     this.filterHistory = this.history.filter(item => !startDate || !endDate || item.created >= startDate && item.created <= endDate);
+  }
+
+  onDownload(type: string): void {
+    const path = `download/form/records/${this.record.id}/history`;
+    const fileName = `${this.record.id}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
