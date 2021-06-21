@@ -149,8 +149,10 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           value.apiConfiguration && { apiConfiguration: value.apiConfiguration },
           value.schedule && { schedule: value.schedule },
           value.convertTo && { convertTo: value.convertTo },
-          value.mapping && { mapping: value.mapping },
           value.channel && { channel: value.channel },
+          value.mapping && { mapping: value.mapping.reduce((o: any, element: any) => {
+            return { ...o, [element.name]: element.value };
+          }, {}) },
         );
         this.apollo.mutate<EditPullJobMutationResponse>({
           mutation: EDIT_PULL_JOB,
