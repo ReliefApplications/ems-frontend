@@ -201,7 +201,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe(accessToken => {
       if (accessToken !== undefined){
         const path = `upload/form/kobo/${element.id}`;
-        this.downloadService.exportFormGetLink(path, {accessToken: accessToken}, element);
+        this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element);
         // this.downloadService.updateRecords(path, {accessToken: accessToken});
       }
     });
