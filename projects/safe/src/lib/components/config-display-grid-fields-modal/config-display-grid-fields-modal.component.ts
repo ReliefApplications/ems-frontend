@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, Inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
@@ -14,8 +14,8 @@ import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
   styleUrls: ['./config-display-grid-fields-modal.component.css'],
   providers: [
     PopupService,
-    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]},
-    {provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
@@ -23,7 +23,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   public form: FormGroup = new FormGroup({});
   public loading = true;
 
-  @ViewChild('settingsContainer', {read: ViewContainerRef}) settingsContainer: any;
+  @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
