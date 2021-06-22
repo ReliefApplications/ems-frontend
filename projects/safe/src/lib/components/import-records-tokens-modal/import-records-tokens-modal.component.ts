@@ -8,13 +8,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 })
 export class ImportRecordsTokensModalComponent implements OnInit {
 
-  // accessToken: string;
-  // formId: string;
-
   constructor(public dialogRef: MatDialogRef<ImportRecordsTokensModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
-    // this.accessToken = 'test1';
-    // this.formId = 'test2';
   }
 
   ngOnInit(): void {
