@@ -61,8 +61,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       apiConfiguration: string;
       schedule?: string;
       convertTo?: string;
-      mapping?: any;
       channel?: string;
+      mapping?: any;
+      rawMapping?: any;
     }) => {
       if (value) {
         const variables = {
@@ -74,8 +75,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
         Object.assign(variables,
           value.schedule && { schedule: value.schedule },
           value.convertTo && { convertTo: value.convertTo },
-          value.mapping && { mapping: value.mapping },
           value.channel && { channel: value.channel },
+          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
         );
         this.apollo.mutate<AddPullJobMutationResponse>({
           mutation: ADD_PULL_JOB,
@@ -135,8 +136,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       apiConfiguration: string;
       schedule?: string;
       convertTo?: string;
-      mapping?: any;
       channel?: string;
+      mapping?: any;
+      rawMapping?: any;
     }) => {
       if (value) {
         const variables = {
@@ -150,9 +152,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           value.schedule && { schedule: value.schedule },
           value.convertTo && { convertTo: value.convertTo },
           value.channel && { channel: value.channel },
-          value.mapping && { mapping: value.mapping.reduce((o: any, field: any) => {
-            return { ...o, [field.name]: field.value };
-          }, {}) },
+          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
         );
         this.apollo.mutate<EditPullJobMutationResponse>({
           mutation: EDIT_PULL_JOB,

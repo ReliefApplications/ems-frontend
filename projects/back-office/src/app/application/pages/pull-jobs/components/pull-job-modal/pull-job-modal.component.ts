@@ -25,6 +25,9 @@ export class PullJobModalComponent implements OnInit {
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
 
+  // === RAW JSON UTILITY ===
+  public openRawJSON = false;
+
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
@@ -50,6 +53,7 @@ export class PullJobModalComponent implements OnInit {
           value: [this.data.pullJob?.mapping[x], Validators.required],
         }))
         : []),
+      rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : '']
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES
@@ -118,9 +122,39 @@ export class PullJobModalComponent implements OnInit {
     }));
   }
 
+  /*  Toggle the edit mode and update form values accordingly
+  */
+  toggleRawJSON(): void {
+    if (this.openRawJSON) {
+      const mapping = JSON.parse(this.pullJobForm.get('rawMapping')?.value || '');
+      this.pullJobForm.setControl('mapping', this.formBuilder.array(Object.keys(mapping).map((x: any) => this.formBuilder.group({
+        name: [x, Validators.required],
+        value: [mapping[x], Validators.required],
+      }))));
+    } else {
+      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => {
+        return { ...o, [field.name]: field.value };
+      }, {});
+      this.pullJobForm.get('rawMapping')?.setValue(JSON.stringify(mapping, null, 2));
+    }
+    this.openRawJSON = !this.openRawJSON;
+  }
+
   /*  Close the modal without sending any data.
   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  /*  Synchronize mapping values on update button click.
+  */
+  returnFormValue(): any {
+    if (!this.openRawJSON) {
+      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => {
+        return { ...o, [field.name]: field.value };
+      }, {});
+      this.pullJobForm.get('rawMapping')?.setValue(JSON.stringify(mapping, null, 2));
+    }
+    return this.pullJobForm.value;
   }
 }
