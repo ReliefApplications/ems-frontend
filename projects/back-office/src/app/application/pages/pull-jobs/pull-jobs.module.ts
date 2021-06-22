@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { SafeConfirmModalModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatProgressSpinnerModule,
     MatTableModule,
     SafeConfirmModalModule,
+    MatExpansionModule,
   ]
 })
 export class PullJobsModule { }
