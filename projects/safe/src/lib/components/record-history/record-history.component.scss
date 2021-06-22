@@ -77,3 +77,11 @@ mat-expansion-panel {
   text-align: center;
   margin-bottom: 12px;
 }
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start !important;
+  text-align: end;
+  margin-left: auto;
+}
