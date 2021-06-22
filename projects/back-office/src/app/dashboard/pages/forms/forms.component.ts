@@ -12,6 +12,7 @@ import {
   PermissionType,
   SafeConfirmModalComponent,
   ImportRecordsTokensModalComponent,
+  ExportFormsTokenModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -196,9 +197,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExportForKobo(element: any, e: any): void {
-    const path = `download/form/kobo/${element.id}`;
-    const fileName = `${element.name}.xlsx`;
-    this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
+    const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent);
+    dialogRef.afterClosed().subscribe(accessToken => {
+      if (accessToken !== undefined){
+        const path = `upload/form/kobo/${element.id}`;
+        console.log('%% accessToken %%');
+        console.log(accessToken);
+        this.downloadService.exportFormGetLink(path, {accessToken: accessToken});
+        // this.downloadService.updateRecords(path, {accessToken: accessToken});
+      }
+    });
   }
 
   onImportRecord(element: any, e: any): void {

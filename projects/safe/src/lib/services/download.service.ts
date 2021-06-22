@@ -45,6 +45,37 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
+  // exportFormGetLink(path: string, type: string, accessToken: string): void {
+  //   const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+  //   const token = localStorage.getItem('msal.idtoken');
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer ${token}`
+  //   });
+  //   console.log('ACC');
+  //   console.log(accessToken);
+  //   const body = {accessToken: accessToken};
+  //   this.http.post(url, body, { headers }).subscribe((res) => {
+  //     console.log('in post');
+  //     console.log('### res ###');
+  //     console.log(res);
+  //     // return res;
+  //   });
+  //   console.log('after post');
+  // }
+
+  exportFormGetLink(path: string, data: any): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    this.http.post(url, data, {headers}).subscribe(res => {
+      console.log(res);
+    });
+  }
+
   updateRecords(path: string, data: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
@@ -55,6 +86,7 @@ export class SafeDownloadService {
     console.log('*** body ***');
     console.log(data);
     this.http.post(url, data, {headers}).subscribe(res => {
+      console.log('^^^ res ^^^');
       console.log(res);
     });
   }

@@ -1,0 +1,10 @@
+<h3> Export form to KoBo </h3>
+
+<form class="cont">
+  <mat-form-field id="access-token">
+    <mat-label>Access token</mat-label>
+    <input matInput #acessToken>
+  </mat-form-field>
+</form>
+
+<button mat-flat-button color="primary" (click)="exportForm(acessToken.value)"> Done </button>
