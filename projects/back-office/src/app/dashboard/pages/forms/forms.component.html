@@ -187,6 +187,12 @@
             <mat-icon>get_app</mat-icon>
             Import record
           </button>
+          <ng-container *ngIf="element.koboUrl != undefined">
+            <button mat-menu-item>
+              <mat-icon>link</mat-icon>
+              Copy link
+            </button>
+          </ng-container>
         </mat-menu>
       </td>
     </ng-container>

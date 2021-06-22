@@ -45,15 +45,20 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  exportFormGetLink(path: string, data: any): void {
+  exportFormGetLink(path: string, data: any, element: any): any {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
+    console.log(element);
     this.http.post(url, data, {headers}).subscribe(res => {
       console.log(res);
+      console.log(element);
+      // element.koboUrl = url;
+      // console.log(element);
+      return res;
     });
   }
 
