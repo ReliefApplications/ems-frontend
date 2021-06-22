@@ -109,8 +109,8 @@
                         <!-- EDITION ( dropdown / radiogroup ) -->
                         <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                             <kendo-dropdownlist [data]="field.meta.choices"
-                                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
-                                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
+                                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'"
                                 [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
                         </ng-container>
                     </ng-template>
@@ -143,8 +143,8 @@
                     </ng-template>
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                         <kendo-multiselect [data]="field.meta.choices"
-                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
-                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'"
                             [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false">
                         </kendo-multiselect>
                     </ng-template>

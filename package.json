@@ -1,11 +1,12 @@
 {
   "name": "safe-front",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "build:ci": "ng build --prod --sourceMap=false",
+    "build:ci:ra": "ng build --prod --sourceMap=false --configuration=ra",
     "build:az:front": "ng build --configuration=azure --sourceMap=false --project=front-office",
     "build:az:back": "ng build --configuration=azure --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:elem": "ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk",
@@ -13,6 +14,7 @@
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
     "compodoc:back": "npx compodoc -p tsconfig.json projects/back-office/src -d documentation/back-office",
     "compodoc:safe": "npx compodoc -p tsconfig.json projects/safe/src -d documentation/safe",
+    "compodoc:elem": "npx compodoc -p tsconfig.json projects/web-element/src -d documentation/web-element",
     "test": "ng test",
     "test:ci": "ng test",
     "lint": "ng lint",

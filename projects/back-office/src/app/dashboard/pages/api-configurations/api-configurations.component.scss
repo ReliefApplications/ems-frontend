@@ -1,0 +1,37 @@
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end !important;
+    text-align: end;
+    margin-left: auto;
+}
+
+.table-column {
+    padding: 0px 4px;
+}
+
+.action-column {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.searchbar {
+    float: left;
+  
+    .filters-toggle {
+      margin-left: 12px;
+    }
+  
+    button {
+      margin-bottom: 10px;
+    }
+}
+  
+.filters {
+    clear: both;
+    float: left;
+    margin-left: -12px;
+
+    .mat-form-field {
+        margin-left: 12px;
+    }
+}
