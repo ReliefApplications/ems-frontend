@@ -193,7 +193,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
     const mainDiv = document.createElement('div');
     mainDiv.id = 'searchDiv';
     if (fieldsSettingsForm) {
-      console.log('FIELDS SETTINGSS', multiselect);
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Search';
       btnEl.style.width = '100px';
@@ -208,7 +207,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           }
         });
         dialogRef.afterClosed().subscribe((row: any[]) => {
-          console.log('RESULT', row);
           if (!row) {
             return;
           }

@@ -2,7 +2,8 @@
 <div style="width: 320px" *ngIf="!loading">
     <h1 mat-dialog-title>Select {{ data.targetForm.name }} target</h1>
     <div mat-dialog-content>
-        <form [formGroup]="chooseRecordForm">
+        <button mat-button color="primary" (click)="onSearch()">{{ isSearchActivated ? 'Select' : 'Search' }}</button>
+        <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated"> 
             <div class="form-group">
                 <mat-form-field>
                     <mat-label>Record</mat-label>
@@ -14,6 +15,13 @@
                 </mat-form-field>
             </div>
         </form>
+        <safe-resource-grid *ngIf="isSearchActivated"
+            [settings]="records"
+            [multiSelect]="false"
+            [selectedRows]="selectedRows"
+            (rowSelected)="onRowSelected($event)"
+        >
+        </safe-resource-grid>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button (click)="onClose()">Cancel</button>

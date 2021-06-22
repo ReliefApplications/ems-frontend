@@ -113,6 +113,11 @@ export class SafeResourceGridComponent implements OnInit {
         }
         this.getRecords();
       });
+    } else {
+      this.gridData = {
+        data: this.settings,
+        total: this.settings.length
+      };
     }
   }
 

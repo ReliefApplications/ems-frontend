@@ -872,6 +872,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         targetForm,
         targetFormField,
+        settings: this.settings
       },
     });
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
