@@ -21,7 +21,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
 
   // === LOAD DATA ===
   public loading = true;
-  public isSearchActivated: boolean = false;
+  public isSearchActivated = false;
   public selectedRows: any [] = [];
 
   constructor(
@@ -51,7 +51,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
     });
   }
 
-  onSearch():void {
+  onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
   }
 
