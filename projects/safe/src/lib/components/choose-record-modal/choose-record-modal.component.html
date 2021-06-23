@@ -3,28 +3,25 @@
     <h1 mat-dialog-title>Select {{ data.targetForm.name }} target</h1>
     <div mat-dialog-content>
         <button mat-button color="primary" (click)="onSearch()">{{ isSearchActivated ? 'Select' : 'Search' }}</button>
-        <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated"> 
+        <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
             <div class="form-group">
                 <mat-form-field>
                     <mat-label>Record</mat-label>
                     <mat-select formControlName="record">
-                        <mat-option *ngFor="let record of records" [value]="record">
+                        <mat-option *ngFor="let record of records" [value]="record.id">
                             {{record.data[data.targetFormField]}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
         </form>
-        <safe-resource-grid *ngIf="isSearchActivated"
-            [settings]="records"
-            [multiSelect]="false"
-            [selectedRows]="selectedRows"
-            (rowSelected)="onRowSelected($event)"
-        >
+        <safe-resource-grid *ngIf="isSearchActivated" [settings]="{ query: data.targetFormQuery }" [multiSelect]="false"
+            (rowSelected)="onRowSelected($event)">
         </safe-resource-grid>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button (click)="onClose()">Cancel</button>
-        <button mat-flat-button [mat-dialog-close]="chooseRecordForm.value" cdkFocusInitial color="primary" [disabled]="!chooseRecordForm.valid">Attach</button>
+        <button mat-flat-button [mat-dialog-close]="chooseRecordForm.value" cdkFocusInitial color="primary"
+            [disabled]="!chooseRecordForm.valid">Attach</button>
     </div>
 </div>

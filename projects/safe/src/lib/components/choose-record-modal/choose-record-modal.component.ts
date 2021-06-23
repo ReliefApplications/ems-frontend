@@ -31,9 +31,9 @@ export class SafeChooseRecordModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       targetForm: Form,
       targetFormField: string,
-      settings: any
+      targetFormQuery: any
     }
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -56,8 +56,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
   }
 
   onRowSelected(rows: any): void {
-    this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem);
-    this.selectedRows = rows.selectedRows;
+    this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem.id);
   }
   /*  Close the modal without sending data.
   */
