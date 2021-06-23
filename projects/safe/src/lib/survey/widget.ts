@@ -26,10 +26,25 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         name: 'tooltip:text',
         category: 'general'
       });
+      Survey.Serializer.addProperty('comment', {
+        name: 'allowEdition:boolean',
+        type: 'boolean',
+        dependsOn: ['readOnly'],
+        default: false,
+        category: 'general',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.readOnly) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      });
       Survey.Serializer.removeProperty('expression', 'readOnly');
       Survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
+        visibleIndex: 6,
         default: false,
         category: 'general',
         required: true,
@@ -62,6 +77,28 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         }
         el.value = question.value;
       }
+      // Display of edit button for comment question
+      if (question.getType() === 'comment' && question.allowEdition) {
+        const mainDiv = document.createElement('div');
+        mainDiv.id = 'editComment';
+        const btnEl = document.createElement('button');
+        btnEl.innerText = 'Edit';
+        btnEl.style.width = '50px';
+        mainDiv.appendChild(btnEl);
+        el.parentElement.insertBefore(mainDiv, el);
+        mainDiv.style.display = !question.allowEdition ? 'none' : '';
+        question.registerFunctionOnPropertyValueChanged('allowEdition',
+          () => {
+            mainDiv.style.display = !question.allowEdition ? 'none' : '';
+          });
+        question.registerFunctionOnPropertyValueChanged('readOnly',
+          () => {
+            mainDiv.style.display = !question.readOnly ? 'none' : '';
+          });
+        btnEl.onclick = () => {
+          question.readOnly = false;
+        };
+      }
       // Display of tooltip
       if (question.tooltip) {
         const header = el.parentElement.parentElement.querySelector('h5');
@@ -73,6 +110,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           span.style.fontSize = '1em';
           span.style.cursor = 'pointer';
           header.appendChild(span);
+          span.style.display = !question.tooltip ? 'none' : '';
+          question.registerFunctionOnPropertyValueChanged('tooltip',
+          () => {
+            span.style.display = !question.tooltip ? 'none' : '';
+          });
         }
       }
       // Display of add button for resource question
@@ -95,7 +137,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             dialogRef.afterClosed().subscribe(res => {
               if (res) {
                 const e = new CustomEvent('saveResourceFromEmbed',
-                  {detail: {resource: res.data, template: res.template}});
+                  { detail: { resource: res.data, template: res.template } });
                 document.dispatchEvent(e);
               }
             });
@@ -131,7 +173,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             const questionQuery = question.gridFieldsSettings || {};
             const questionFilter = questionQuery.filter || {};
             instance.settings = {
-              query: { ...questionQuery, filter: { ...questionFilter,
+              query: {
+                ...questionQuery, filter: {
+                  ...questionFilter,
                   ids: question.value || []
                 }
               }
@@ -139,7 +183,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.name) {
                 instance.settings = {
-                  query: { ...questionQuery, filter: { ...questionFilter,
+                  query: {
+                    ...questionQuery, filter: {
+                      ...questionFilter,
                       ids: options.value || []
                     }
                   }
