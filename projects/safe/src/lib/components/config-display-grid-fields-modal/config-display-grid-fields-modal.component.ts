@@ -4,9 +4,12 @@ import { QueryBuilderService } from '../../services/query-builder.service';
 import { FormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
-import { Overlay } from '@angular/cdk/overlay';
-import { scrollFactory } from '../survey/survey-grid/survey-grid.component';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+  return () => overlay.scrollStrategies.block();
+}
 
 @Component({
   selector: 'safe-config-display-grid-fields-modal',
