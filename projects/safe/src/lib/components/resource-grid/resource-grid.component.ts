@@ -97,8 +97,7 @@ export class SafeResourceGridComponent implements OnInit {
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
