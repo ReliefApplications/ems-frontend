@@ -56,7 +56,8 @@ export class SafeDownloadService {
     this.http.post(url, data, {headers}).subscribe(res => {
       console.log(res);
       console.log(element);
-      // element.koboUrl = url;
+      element.koboUrl = url;
+      Object.preventExtensions(element);
       // console.log(element);
       return res;
     });
