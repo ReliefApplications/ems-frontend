@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -102,6 +102,13 @@ query GetShortForms {
     canCreate
     canUpdate
     canDelete
+    resource {
+      id
+      coreForm {
+        id
+        name
+      }
+    }
   }
 }`;
 
@@ -118,12 +125,14 @@ query GetShortFormById($id: ID!) {
     name
     structure
     fields
+    status
     canCreateRecords
     uniqueRecord {
       id
       modifiedAt
       data
     }
+    canUpdate
   }
 }`;
 
@@ -135,6 +144,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     createdAt
     structure
     fields
+    status
     versions {
       id
       createdAt
@@ -408,6 +418,7 @@ export const GET_APPLICATION_BY_ID = gql`
       }
       canSee
       canUpdate
+      isLocked
     }
   }
 `;
@@ -611,4 +622,116 @@ query GetPositionAttributesFromCategory($id: ID!) {
 export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
   positionAttributes: PositionAttribute[];
+}
+
+// === GET RECORD DETAILS ===
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
+// === GET API CONFIGURATIONS ===
+export const GET_API_CONFIGURATIONS = gql`
+query GetApiConfigurations {
+  apiConfigurations {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationsQueryResponse {
+  loading: boolean;
+  apiConfigurations: ApiConfiguration[];
+}
+
+// === GET API CONFIGURATION ===
+export const GET_API_CONFIGURATION = gql`
+query GetApiConfiguration($id: ID!) {
+  apiConfiguration(id: $id) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationQueryResponse {
+  loading: boolean;
+  apiConfiguration: ApiConfiguration;
 }

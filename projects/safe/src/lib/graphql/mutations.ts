@@ -43,7 +43,6 @@ export interface ConvertRecordMutationResponse {
 }
 
 // === ADD RECORD ===
-
 export const ADD_RECORD = gql`
 mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
   addRecord(form: $form, data: $data) {
@@ -64,6 +63,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
 export interface AddRecordMutationResponse {
   loading: boolean;
   addRecord: Record;
+}
+
+// === UPLOAD FILE ===
+export const UPLOAD_FILE = gql`
+mutation uploadFile($file: Upload!, $form: ID!) {
+  uploadFile(file: $file, form: $form)
+}`;
+
+export interface UploadFileMutationResponse {
+  loading: boolean;
+  uploadFile: string;
 }
 
 // === EDIT FORM ===
@@ -213,8 +223,8 @@ export interface AddRoleToUsersMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
-  editRole(id: $id, permissions: $permissions, channels: $channels) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID], $title: String) {
+  editRole(id: $id, permissions: $permissions, channels: $channels, title: $title) {
     id
     title
     permissions {
@@ -371,6 +381,8 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     canSee
     canUpdate
     canDelete
+    locked
+    lockedByUser
   }
 }`;
 
@@ -578,4 +590,19 @@ mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
+}
+
+// === TOGGLE APPLICATION LOCK ===
+export const TOGGLE_APPLICATION_LOCK = gql`
+mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
+  toggleApplicationLock(id: $id, lock: $lock) {
+    id
+    locked
+    lockedByUser
+  }
+}`;
+
+export interface ToggleApplicationLockMutationResponse {
+  loading: boolean;
+  toggleApplicationLock: Application;
 }

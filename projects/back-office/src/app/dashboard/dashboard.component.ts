@@ -55,6 +55,11 @@ export class DashboardComponent implements OnInit {
           name: 'Roles',
           path: '/settings/roles',
           icon: 'admin_panel_settings'
+        },
+        {
+          name: 'API Configurations',
+          path: '/settings/apiconfigurations',
+          icon: 'settings_input_composite'
         }
       ]
     }

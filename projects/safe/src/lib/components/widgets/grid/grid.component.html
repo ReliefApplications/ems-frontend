@@ -12,16 +12,18 @@
     </div>
     <!-- GRID HEADER -->
     <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-        [skip]="skip" [loading]="loading" [columnMenu]="true" [reorderable]="true" [sortable]="true"
+        [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
-        filterable="menu" [filter]="filter" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-        [resizable]="true">
+        [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
+        (cellClick)="cellClickHandler($event)" [resizable]="true">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
+            <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
+            <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
                     (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
@@ -35,15 +37,14 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <button class='k-button' (click)="onExportRecord(selectedRowsIndex)" style="float: right">Export
-                    selected
-                </button>
+                <kendo-dropdownbutton [data]="exportData" style="float: right">
+                    Export selected
+                </kendo-dropdownbutton>
             </ng-container>
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
             <!-- ROW SELECTION -->
             <kendo-grid-checkbox-column
-                *ngIf="!settings.actions || settings.actions.delete || settings.actions.convert || (settings.floatingButton && settings.floatingButton.modifySelectedRows)"
                 [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
                 [columnMenu]="false" [showSelectAll]="true">
             </kendo-grid-checkbox-column>
@@ -54,26 +55,42 @@
                     [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
-                    <!-- DISPLAY ( text / comment ) -->
-                    <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text'">
-                        <div class="textbox-container">
-                            <div #refSpan class="textbox">
-                                {{dataItem[field.name]}}
-                            </div>
-                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon">launch</mat-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </ng-template>
-                    <!-- DISPLAY ( color ) -->
+                    <!-- DISPLAY -->
                     <ng-container *ngIf="field.meta">
+                        <!-- DISPLAY ( text / comment ) -->
+                        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'text'">
+                            <div class="textbox-container">
+                                <div #refSpan class="textbox">
+                                    {{dataItem[field.name]}}
+                                </div>
+                                <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
+                                    <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
+                                        mat-icon-button>
+                                        <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
+                                        </mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <!-- DISPLAY ( boolean ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled/>
+                        </ng-template>
+                        <!-- DISPLAY ( color ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
                         </ng-template>
+                        <!-- DISPLAY ( resource ) -->
+                        <!-- <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'resource'">
+                            <div *ngIf="dataItem[field.name]" class="textbox-container">
+                                <div #refSpan class="textbox">
+                                    {{dataItem[field.name]}}
+                                    <span class="record-link" matTooltip="Open the record details" (click)="onShowDetails(dataItem[field.name])">{{dataItem[field.name]}}</span>
+                                </div>
+                            </div>
+                        </ng-template> -->
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
@@ -92,8 +109,8 @@
                         <!-- EDITION ( dropdown / radiogroup ) -->
                         <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                             <kendo-dropdownlist [data]="field.meta.choices"
-                                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
-                                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
+                                [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                                [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'"
                                 [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
                         </ng-container>
                     </ng-template>
@@ -126,16 +143,25 @@
                     </ng-template>
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                         <kendo-multiselect [data]="field.meta.choices"
-                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : field.meta.choices.text ? 'text' : null"
-                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : field.meta.choices.value ? 'value' : null"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'"
                             [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false">
                         </kendo-multiselect>
                     </ng-template>
                 </kendo-grid-column>
+                <!-- FILE -->
+                <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
+                    [columnMenu]="false" [editable]="false" [width]="field.title.length * 7 + 50"
+                    [minResizableWidth]="50">
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        <button kendoButton icon="file-data" *ngFor="let file of dataItem[field.name]" [look]="'flat'"
+                            [matTooltip]="file.name" (click)="onDownload(file)"></button>
+                    </ng-template>
+                </kendo-grid-column>
                 <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
                 <kendo-grid-column-group [title]="field.title"
-                    *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type)">
-                    <ng-container *ngIf="field.meta.type !== 'multipletext' && field.meta.type !== 'matrixdynamic'">
+                    *ngIf="field.type === 'JSON' && !multiSelectTypes.includes(field.meta.type) && field.meta.type !== 'file'">
+                    <ng-container *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)">
                         <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
                         <kendo-grid-column [columnMenu]="false" [width]="field.title.length * 7 + 50"
                             [minResizableWidth]="50" [editable]="!field.disabled">
@@ -259,7 +285,7 @@
             <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
                 <ng-template kendoGridCellTemplate let-idx="rowIndex">
                     <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                        (click)="onShowDetails(gridData.data[idx].id)"></button>
+                        (click)="onShowDetails(gridData.data[idx].id)" matTooltip="Open detail"></button>
                 </ng-template>
             </kendo-grid-column>
             <!-- ROW ACTIONS -->
@@ -287,7 +313,6 @@
                             Update
                         </button>
                     </mat-menu>
-
                 </ng-template>
             </kendo-grid-column>
         </ng-container>

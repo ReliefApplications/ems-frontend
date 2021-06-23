@@ -1,0 +1,91 @@
+<h1 mat-dialog-title>{{data.pullJob ? 'Edit Pull job' : 'New Pull job'}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="pullJobForm">
+        <div class="form-group">
+            <div class="form-group-row">
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Name</mat-label>
+                    <input type="text" placeholder="Name your Pull job." matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="status">
+                      <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{ statusChoice }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-group-row">
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Schedule</mat-label>
+                    <input type="text" placeholder="Enter the schedule time for this Pull job." matInput formControlName="schedule">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>API Configuration used</mat-label>
+                    <mat-select formControlName="apiConfiguration">
+                        <mat-option *ngFor="let apiConfiguration of apiConfigurations" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-group-row">
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Convert to</mat-label>
+                    <mat-select formControlName="convertTo">
+                        <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Notify on</mat-label>
+                    <mat-select formControlName="channel">
+                        <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <mat-expansion-panel [disabled]="!pullJobForm.value.convertTo || !fields.length" class="update-list">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Mapping
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="actions">
+                    <button mat-flat-button color="primary" (click)="toggleRawJSON()">
+                        <mat-icon>edit_note</mat-icon>
+                        Switch mode
+                    </button>
+                </div>
+                <ng-container *ngIf="openRawJSON">
+                    <mat-form-field appearance="outline" style="width: 100%;">
+                        <mat-label>Raw JSON</mat-label>
+                        <textarea matInput formControlName="rawMapping" placeholder="Please enter a JSON for the data mapping between the API and the Form."
+                        [matTextareaAutosize]="true" [matAutosizeMinRows]="2"></textarea>
+                    </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!openRawJSON">
+                    <form [formGroup]="$any(element)" *ngFor="let element of mappingArray.controls; index as i">
+                        <mat-form-field appearance="outline" style=" margin-bottom: -1.25em">
+                            <mat-label>Field</mat-label>
+                            <mat-select formControlName="name">
+                                <mat-option *ngFor="let field of filteredFields(element.value.name)" [value]="field.name">{{field.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" *ngIf="element.value.name" style=" margin-bottom: -1.25em">
+                            <mat-label>Value</mat-label>
+                            <input matInput formControlName="value" type="string" />
+                        </mat-form-field>
+                        <button mat-icon-button color="warn" (click)="onDeleteElement(i)">
+                            <mat-icon>remove_circle_outline</mat-icon>
+                        </button>
+                    </form>
+                    <button *ngIf="filteredFields('').length > 0" mat-icon-button color="primary" (click)="onAddElement()">
+                        <mat-icon>add_circle_outline</mat-icon>
+                    </button>
+                </ng-container>
+            </mat-expansion-panel>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-flat-button [mat-dialog-close]="returnFormValue()" cdkFocusInitial color="primary"
+        [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{data.pullJob ? 'Update' : 'Create'}}</button>
+</div>

@@ -1,7 +1,7 @@
-import { Component, ComponentRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy,
+import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy,
   OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeAuthService } from '../../services/auth.service';
-import { LayoutService } from '../../services/layout.service';
+import { SafeLayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Application } from '../../models/application.model';
@@ -50,19 +50,33 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public showSidenav = false;
 
+  public user: any;
+  public otherOffice = '';
+  private environment: any;
+
   constructor(
+    @Inject('environment') environment: any,
     private router: Router,
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
-    private layoutService: LayoutService,
+    private layoutService: SafeLayoutService,
     public dialog: MatDialog,
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
+    this.environment = environment;
   }
 
   ngOnInit(): void {
-    this.authService.user.subscribe(() => {
+    this.authService.user.subscribe((user) => {
+      if (user) {
+        this.user = { ...user};
+        if (this.environment.module === 'backoffice') {
+          this.otherOffice = 'front office';
+        } else {
+          this.otherOffice = 'back office';
+        }
+      }
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {
@@ -191,6 +205,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onOpenProfile(): void {
     this.router.navigate(['/profile']);
+  }
+
+  onSwitchOffice(): void {
+    if (this.environment.module === 'backoffice') {
+      window.location.href = this.environment.frontOfficeUri;
+    } else {
+      window.location.href = this.environment.backOfficeUri;
+    }
   }
 
   onMarkAllNotificationsAsRead(): void {

@@ -31,6 +31,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public applicationId = '';
   public form?: Form;
   public completed = false;
+  public hideNewRecord = false;
 
   // === TAB NAME EDITION ===
   public formActive = false;
@@ -180,8 +181,9 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onComplete(e: any): void {
-    this.completed = e;
+  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+    this.completed = e.completed;
+    this.hideNewRecord = e.hideNewRecord || false;
   }
 
   clearForm(): void {

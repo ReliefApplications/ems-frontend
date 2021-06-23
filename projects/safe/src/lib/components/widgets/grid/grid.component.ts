@@ -20,7 +20,7 @@ import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.com
 import { Form } from '../../../models/form.model';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { LayoutService } from '../../../services/layout.service';
+import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter, Inject
@@ -62,7 +62,6 @@ const GRADIENT_SETTINGS: GradientSettings = {
 };
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
-
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -110,6 +109,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FILTER ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  public showFilter = false;
 
   // === SETTINGS ===
   @Input() header = true;
@@ -117,10 +117,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
-
-  // === DOWNLOAD ===
-  public excelFileName = '';
-  private apiUrl = '';
 
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
@@ -138,12 +134,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
 
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory?: ComponentFactory<any>;
+
+  // === DOWNLOAD ===
+  public excelFileName = '';
+  private apiUrl = '';
+  public exportData: Array<any> = [
+    {
+      text: '.csv',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'csv')
+    },
+    {
+      text: '.xlsx',
+      click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
+    }
+  ];
+
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
-
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
 
   constructor(
     @Inject('environment') environment: any,
@@ -153,7 +163,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
@@ -172,7 +182,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
@@ -693,15 +702,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Export selected records to a csv file
   */
-  public onExportRecord(items: number[]): void {
+  public onExportRecord(items: number[], type: string): void {
     const ids: any[] = [];
     for (const index of items) {
       const id = this.gridData.data[index].id;
       ids.push(id);
     }
     const url = `${this.apiUrl}/download/records`;
-    const fileName = `${this.settings.title}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName, { params: { ids: ids.join(',') }});
+    const fileName = `${this.settings.title}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
   }
 
   /* Open a dialog component which provide tools to convert the selected record
@@ -798,7 +808,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (options.sendMail) {
         window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
-        this.onExportRecord(this.selectedRowsIndex);
+        this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
         await Promise.all(promises);
@@ -848,6 +858,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return promises;
   }
 
+  /* Download the file.
+  */
+  public onDownload(file: any): void {
+    const path = `download/file/${file.content}`;
+    this.downloadService.getFile(path, file.type, file.name);
+  }
+
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
@@ -861,20 +878,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (value) {
       const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
       let data = value.record.data;
-      Object.keys(value.record.data).forEach(key => {
-        if (key === resourceField.name) {
-          if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0].id };
-          } else {
-            if (data[key]) {
-              const ids = selectedRecords.map(x => x.id);
-              data = { ...data, [key]: data[key].concat(ids) };
-            } else {
-              data = { ...data, [key]: selectedRecords.map(x => x.id) };
-            }
-          }
+      const key = resourceField.name;
+      if (resourceField.type === 'resource') {
+        data = { ...data, [key]: selectedRecords[0].id };
+      } else {
+        if (data[key]) {
+          const ids = selectedRecords.map(x => x.id);
+          data = { ...data, [key]: data[key].concat(ids) };
+        } else {
+          data = { ...data, [key]: selectedRecords.map(x => x.id) };
         }
-      }, this);
+      }
       this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
@@ -887,6 +901,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           if (record) {
             this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, resourceField.name,
               value.record.data[targetFormField]));
+            this.dialog.open(SafeFormModalComponent, {
+              data: {
+                recordId: record.id,
+                locale: 'en'
+              }
+            });
           }
         }
       });
@@ -928,6 +948,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return ( e.offsetWidth < e.scrollWidth );
   }
 
+  /**
+   * Toggle quick filter visibility
+   */
+  public onToggleFilter(): void {
+    this.showFilter = !this.showFilter;
+  }
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {

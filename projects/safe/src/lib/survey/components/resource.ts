@@ -6,9 +6,12 @@ import {
   GetResourcesQueryResponse
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
-import { resourceConditions, resourcesFilterValues } from './resources';
+import { resourceConditions } from './resources';
+import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
-export function init(Survey: any, apollo: Apollo): void {
+export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
   let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
@@ -25,7 +28,11 @@ export function init(Survey: any, apollo: Apollo): void {
     }
   });
 
-  let filters: { field: string, operator: string, value: string }[] = [{field: '', operator: '', value: ''}];
+  let filters: { field: string, operator: string, value: string }[] = [{
+    field: '',
+    operator: '',
+    value: ''
+  }];
 
   const hasUniqueRecord = ((id: string) =>
     resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
@@ -78,17 +85,73 @@ export function init(Survey: any, apollo: Apollo): void {
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          getResourceById({id: obj.resource}).subscribe(response => {
-            const serverRes = response.data.resource.fields;
-            const res = [];
-            res.push({value: null});
-            for (const item of serverRes) {
-              res.push({value: item.name});
-            }
-            choicesCallback(res);
-          });
+          if (obj.resource) {
+            getResourceById({id: obj.resource}).subscribe(response => {
+              const serverRes = response.data.resource.fields;
+              const res = [];
+              res.push({value: null});
+              for (const item of serverRes) {
+                if (item.type !== 'matrix') {
+                  res.push({value: item.name});
+                }
+              }
+              choicesCallback(res);
+            });
+
+          }
         },
       });
+
+      // Build set available grid fields button
+      Survey
+        .JsonObject
+        .metaData
+        .addProperty('resource', {
+          name: 'Search resource table',
+          type: 'availableFieldsBn',
+          isRequired: true,
+          category: 'Custom Questions',
+          dependsOn: ['resource'],
+          visibleIf: (obj: any) => !!obj && !!obj.resource,
+          visibleIndex: 4
+        });
+
+      const setGridFieldsBtn = {
+        render: (editor: any, htmlElement: any) => {
+          const btn = document.createElement('button');
+          btn.innerText = 'Available grid fields';
+          btn.style.width = '100%';
+          btn.style.border = 'none';
+          btn.style.padding = '10px';
+          htmlElement.appendChild(btn);
+          btn.onclick = (ev: any) => {
+            const currentQuestion = editor.object;
+            getResourceById({id: currentQuestion.resource}).subscribe(response => {
+              if (response.data.resource && response.data.resource.name) {
+                const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
+                const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
+                  data: {
+                    form: !currentQuestion.gridFieldsSettings ? null :
+                      this.convertFromRawToFormGroup(currentQuestion.gridFieldsSettings),
+                    resourceName: nameTrimmed
+                  }
+                });
+                dialogRef.afterClosed().subscribe((res: any) => {
+                  if (res && res.value.fields) {
+                    currentQuestion.gridFieldsSettings = res.getRawValue();
+                  }
+                });
+              }
+            });
+
+          };
+        }
+      };
+
+      SurveyCreator
+        .SurveyPropertyEditorFactory
+        .registerCustomEditor('availableFieldsBn', setGridFieldsBtn);
+
       Survey.Serializer.addProperty('resource', {
         name: 'test service',
         category: 'Custom Questions',
@@ -189,16 +252,16 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue',
+        dependsOn: ['resource', 'selectQuestion', 'displayField'],
+        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resource', {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({id: obj.resource}).subscribe((response) => {
@@ -217,10 +280,18 @@ export function init(Survey: any, apollo: Apollo): void {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
-        dependsOn: 'selectQuestion',
-        visibleIf: (obj: any) => obj.selectQuestion,
+        dependsOn: ['resource', 'displayField', 'selectQuestion'],
+        visibleIf: (obj: any) => obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
-          choicesCallback(resourceConditions);
+          const questionByName = !!obj.survey.getQuestionByName(obj.selectQuestion) ?
+            obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
+          if (questionByName && questionByName.inputType === 'date') {
+            choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
+          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
+            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
+          } else {
+            choicesCallback(resourceConditions);
+          }
         },
         visibleIndex: 3
       });
@@ -229,10 +300,19 @@ export function init(Survey: any, apollo: Apollo): void {
           type: 'selectResourceText',
           name: 'selectResourceText',
           displayName: 'Select a resource',
-          dependsOn: ['resource', 'selectQuestion'],
-          visibleIf: (obj: any) => !obj.resource,
+          dependsOn: ['resource', 'displayField'],
+          visibleIf: (obj: any) => !obj.resource || !obj.displayField,
           visibleIndex: 3
-        }
+        },
+        Survey.Serializer.addProperty('resource', {
+            name: 'gridFieldsSettings',
+            dependsOn: ['resource'],
+            visibleIf: (obj: any) => {
+              obj.gridFieldsSettings = obj.resource ? obj.gridFieldsSettings : new FormGroup({}).getRawValue();
+              return false;
+            }
+          }
+        )
       );
 
       const selectResourceText = {
@@ -260,7 +340,7 @@ export function init(Survey: any, apollo: Apollo): void {
           const text = document.createElement('div');
           text.innerHTML = 'You can use curly brackets to get access to the question values.' +
             '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, eq, gt, gte, lt, lte' +
+            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
             '<br><b>value:</b> {question1} or static value' +
             '<br><b>Example:</b>' +
             '<br>[{' +
@@ -270,7 +350,7 @@ export function init(Survey: any, apollo: Apollo): void {
             '<br>},' +
             '<br>{' +
             '<br>"field":"age",' +
-            '<br>"operator": "gt",' +
+            '<br>"operator": ">",' +
             '<br>"value": "{question1}"' +
             '<br>}]';
           htmlElement.appendChild(text);
@@ -289,6 +369,7 @@ export function init(Survey: any, apollo: Apollo): void {
           visibleIndex: 4
         }
       );
+
     },
     onLoaded(question: any): void {
       if (question.placeholder) {
@@ -328,28 +409,31 @@ export function init(Survey: any, apollo: Apollo): void {
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
-            const watchedQuestion = question.survey.getQuestionByName(question.selectQuestion);
-            watchedQuestion.valueChangedCallback = () => {
-              setAdvanceFilter(watchedQuestion.value, question);
-              if (question.displayAsGrid) {
-                resourcesFilterValues.next(filters);
-              } else {
-                this.populateChoices(question);
+            question.survey.onValueChanged.add((survey: any, options: any) => {
+              if (options.name === question.selectQuestion) {
+                if (!!options.value || options.question.customQuestion && options.question.customQuestion.name) {
+                  setAdvanceFilter(options.value, question);
+                  this.populateChoices(question);
+                }
               }
-            };
+            });
           }
         } else if (!question.selectQuestion && question.customFilter && question.customFilter.trim().length > 0) {
           const obj = JSON.parse(question.customFilter);
           if (obj) {
             for (const objElement of obj) {
-              if (objElement.value.match(/^{*.*}$/)) {
+              const value = objElement.value;
+              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
                 const quest = objElement.value.substr(1, objElement.value.length - 2);
                 objElement.value = '';
-                const watchedQuestion = question.survey.getQuestionByName(quest);
-                watchedQuestion.valueChangedCallback = () => {
-                  setAdvanceFilter(watchedQuestion.value, objElement.field);
-                  this.populateChoices(question);
-                };
+                question.survey.onValueChanged.add((survey: any, options: any) => {
+                  if (options.question.name === quest) {
+                    if (!!options.value) {
+                      setAdvanceFilter(options.value, objElement.field);
+                      this.populateChoices(question);
+                    }
+                  }
+                });
               }
             }
             filters = obj;
@@ -360,7 +444,6 @@ export function init(Survey: any, apollo: Apollo): void {
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resource') {
-        question.filterBy = [];
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
@@ -403,6 +486,14 @@ export function init(Survey: any, apollo: Apollo): void {
         });
       }
     },
+    convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
+      if (!gridSettingsRaw.fields) {
+        return null;
+      }
+      const auxForm = formBuilder.group(gridSettingsRaw);
+      auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+      return auxForm;
+    }
   };
   Survey.ComponentCollection.Instance.add(component);
 
