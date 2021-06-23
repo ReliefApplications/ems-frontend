@@ -38,14 +38,14 @@ export class SafeResourceGridModalComponent implements OnInit {
   onRowSelected(rows: any): void {
     if (this.multiSelect) {
       if (rows.selectedRows.length > 0) {
-        this.selectedRows = this.selectedRows.concat(rows.selectedRows);
+        this.selectedRows = this.selectedRows.concat(rows.selectedRows.map((x: any) => x.dataItem.id));
       }
       if (rows.deselectedRows.length > 0) {
         const deselectedRows = rows.deselectedRows.map((r: any) => r.dataItem.id);
         this.selectedRows = this.selectedRows.filter((r: any) => !deselectedRows.includes(r));
       }
     } else {
-      this.selectedRows = rows.selectedRows;
+      this.selectedRows = rows.selectedRows.map((x: any) => x.dataItem.id);
     }
   }
 

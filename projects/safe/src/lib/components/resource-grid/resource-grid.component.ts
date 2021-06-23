@@ -9,6 +9,7 @@ import { SafeRecordModalComponent } from '../record-modal/record-modal.component
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -31,7 +32,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   styleUrls: ['./resource-grid.component.scss'],
   providers: [
     PopupService,
-    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]},
+    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
 export class SafeResourceGridComponent implements OnInit {
@@ -101,6 +103,10 @@ export class SafeResourceGridComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
+    this.init();
+  }
+
+  public init(): void {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {

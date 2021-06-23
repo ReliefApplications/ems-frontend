@@ -123,30 +123,30 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
 
           let instance: SafeResourceGridComponent;
           if (question.displayAsGrid) {
-            const selectedRows: string[] = [];
-            for (const item of question.value) {
-              selectedRows.push(item);
-            }
             const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
             instance = grid.instance;
             instance.multiSelect = true;
-            instance.selectedRows = selectedRows;
+            // instance.selectedRows = question.value || [];
             instance.readOnly = true;
             const questionQuery = question.gridFieldsSettings || {};
             const questionFilter = questionQuery.filter || {};
             instance.settings = {
               query: { ...questionQuery, filter: { ...questionFilter,
-                  ids: selectedRows
+                  ids: question.value || []
                 }
               }
             };
-            // instance.id = question.resource;
-            // instance.field = question.displayField;
-            // instance.readOnly = (question.survey.mode === 'display');
-            // instance.selectedIds.subscribe((value: any[]) => {
-            //   question.value = value;
-            // });
-            // instance.selectedIds.next(selectedIds);
+            question.survey.onValueChanged.add((survey: any, options: any) => {
+              if (options.name === question.name) {
+                instance.settings = {
+                  query: { ...questionQuery, filter: { ...questionFilter,
+                      ids: options.value || []
+                    }
+                  }
+                };
+                instance.init();
+              }
+            });
           }
           if (question.survey.mode !== 'display') {
             const mainDiv = document.createElement('div');
@@ -217,16 +217,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : []
           }
         });
-        dialogRef.afterClosed().subscribe((row: any[]) => {
-          if (!row) {
+        dialogRef.afterClosed().subscribe((rows: any[]) => {
+          if (!rows) {
             return;
           }
-          if (row.length > 0) {
-            if (row.length === 1) {
-              question.value = row[0].dataItem.id;
-            } else {
-              question.value = row.map(r => r.dataItem ? r.dataItem.id : r);
-            }
+          if (rows.length > 0) {
+            question.value = multiselect ? rows : rows[0];
           } else {
             question.value = null;
           }
