@@ -29,13 +29,22 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       Survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
+        dependsOn: ['readOnly'],
         default: false,
-        category: 'general'
+        category: 'general',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.readOnly) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       });
       Survey.Serializer.removeProperty('expression', 'readOnly');
       Survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
+        visibleIndex: 6,
         default: false,
         category: 'general',
         required: true,
@@ -70,7 +79,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
-        question.survey.mode = 'display';
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
         const btnEl = document.createElement('button');
@@ -83,8 +91,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           () => {
             mainDiv.style.display = !question.allowEdition ? 'none' : '';
           });
+        question.registerFunctionOnPropertyValueChanged('readOnly',
+          () => {
+            mainDiv.style.display = !question.readOnly ? 'none' : '';
+          });
         btnEl.onclick = () => {
-          question.survey.mode = 'edit';
+          question.readOnly = false;
         };
       }
       // Display of tooltip
@@ -98,6 +110,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           span.style.fontSize = '1em';
           span.style.cursor = 'pointer';
           header.appendChild(span);
+          span.style.display = !question.tooltip ? 'none' : '';
+          question.registerFunctionOnPropertyValueChanged('tooltip',
+          () => {
+            span.style.display = !question.tooltip ? 'none' : '';
+          });
         }
       }
       // Display of add button for resource question
