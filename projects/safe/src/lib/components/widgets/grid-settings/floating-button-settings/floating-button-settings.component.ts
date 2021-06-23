@@ -139,6 +139,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('subject')?.updateValueAndValidity();
     });
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
+    console.log(this.buttonForm);
   }
 
   compareFields(field1: any, field2: any): boolean {
