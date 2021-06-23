@@ -156,7 +156,9 @@ export class SafeResourceGridComponent implements OnInit {
                   data: this.items,
                   total: this.items.length
                 };
-                this.getSelectedRows();
+                if (!this.readOnly) {
+                  this.getSelectedRows();
+                }
               }
             }
           },

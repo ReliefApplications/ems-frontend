@@ -132,10 +132,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             instance.multiSelect = true;
             instance.selectedRows = selectedRows;
             instance.readOnly = true;
+            const questionQuery = question.gridFieldsSettings || {};
+            const questionFilter = questionQuery.filter || {};
             instance.settings = {
-              query: { ...question.gridFieldsSettings, filter: Object.assign(question.gridFieldsSettings?.filter || {}, {
+              query: { ...questionQuery, filter: { ...questionFilter,
                   ids: selectedRows
-                })
+                }
               }
             };
             // instance.id = question.resource;

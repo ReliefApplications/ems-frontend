@@ -1,4 +1,4 @@
-<kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [height]="410" [selectable]="selectableSettings"
+<kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [height]="410" [selectable]="!readOnly && selectableSettings"
   kendoGridSelectBy [selectedKeys]="selectedRowsIndex" (selectionChange)="selectionChange($event)">
   <ng-template kendoGridToolbarTemplate>
     <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
@@ -10,7 +10,7 @@
       </mat-select>
     </mat-form-field>
   </ng-template>
-  <kendo-grid-checkbox-column [width]="41" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
+  <kendo-grid-checkbox-column [width]="41" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect" *ngIf="!readOnly">
   </kendo-grid-checkbox-column>
 
   <!-- ************************************************************ !-->
