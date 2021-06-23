@@ -447,6 +447,25 @@ export const GET_APPLICATION_BY_ID = gql`
           name
         }
       }
+      pullJobs {
+        id
+        name
+        status
+        apiConfiguration {
+          id
+          name
+        }
+        schedule
+        convertTo {
+          id
+          name
+        }
+        mapping
+        channel {
+          id
+          title
+        }
+      }
       canSee
       canUpdate
       canDelete
@@ -454,6 +473,8 @@ export const GET_APPLICATION_BY_ID = gql`
         id
         title
       }
+      locked
+      lockedByUser
     }
   }
 `;

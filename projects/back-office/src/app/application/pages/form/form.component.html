@@ -27,7 +27,7 @@
         </ng-container>
     </div>
     <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
-    <ng-container *ngIf="completed && !form.uniqueRecord">
+    <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
         <button mat-flat-button (click)="clearForm()">New record</button>
     </ng-container>
 </ng-container>

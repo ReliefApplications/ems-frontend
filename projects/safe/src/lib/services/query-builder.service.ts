@@ -66,11 +66,11 @@ export class QueryBuilderService {
     return filter ? Object.keys(filter).reduce((o, key) => {
       if (filter[key] || filter[key] === false) {
         if (filter[key] === 'today()') {
-          return {...o, [key]: new Date().toISOString().substring(0, 10)};
+          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
         }
-        return {...o, [key]: filter[key]};
+        return { ...o, [key]: filter[key] };
       }
-      return {...o};
+      return { ...o };
     }, {}) : null;
   }
 
@@ -136,7 +136,7 @@ export class QueryBuilderService {
         query GetCustomQuery {
           ${builtQuery.name}(
           sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
-          sortOrder: "${ builtQuery.sort ? builtQuery.sort.order : ''}",
+          sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
           ) {
           ${fields}
@@ -181,10 +181,22 @@ export class QueryBuilderService {
     let str = '{';
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str += p + ': ' + (typeof obj[p] === 'string' ? `"${obj[p]}"` : obj[p]) + ',\n';
+        str += p + ': ' + (
+            typeof obj[p] === 'string' ? `"${obj[p]}"` :
+            Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
+            obj[p]
+          ) + ',\n';
       }
     }
     return str + '}';
+  }
+
+  private arrayToString(array: any): string {
+    let str = '[';
+    for (const item of array) {
+      str += (typeof item === 'string' ? `"${item}"` : item) + ',\n';
+    }
+    return str + ']';
   }
 
   public createQueryForm(value: any): FormGroup {
@@ -210,7 +222,7 @@ export class QueryBuilderService {
       return this.formBuilder.group(group);
     } else {
       const group = Object.keys(filter).reduce((o, key) => {
-        return ({...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)]});
+        return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
       }, {});
       return this.formBuilder.group(group);
     }
@@ -220,7 +232,7 @@ export class QueryBuilderService {
     switch (newField ? field.type.kind : field.kind) {
       case 'LIST': {
         return this.formBuilder.group({
-          name: [{value: field.name, disabled: true}],
+          name: [{ value: field.name, disabled: true }],
           type: [newField ? field.type.ofType.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
@@ -234,7 +246,7 @@ export class QueryBuilderService {
       }
       case 'OBJECT': {
         return this.formBuilder.group({
-          name: [{value: field.name, disabled: true}],
+          name: [{ value: field.name, disabled: true }],
           type: [newField ? field.type.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
@@ -243,8 +255,8 @@ export class QueryBuilderService {
       }
       default: {
         return this.formBuilder.group({
-          name: [{value: field.name, disabled: true}],
-          type: [{value: newField ? field.type.name : field.type, disabled: true}],
+          name: [{ value: field.name, disabled: true }],
+          type: [{ value: newField ? field.type.name : field.type, disabled: true }],
           kind: [newField ? field.type.kind : field.kind],
           label: [field.label ? field.label : field.name, Validators.required]
         });

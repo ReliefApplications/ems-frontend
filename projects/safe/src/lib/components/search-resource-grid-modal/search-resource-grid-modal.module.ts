@@ -8,13 +8,13 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
-    imports: [
-        CommonModule,
-        MatDialogModule,
-        SafeResourceGridModule,
-        MatProgressSpinnerModule,
-        MatButtonModule,
-    ],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    SafeResourceGridModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+  ],
   exports: [SafeResourceGridModalComponent]
 })
 export class SafeSearchResourceGridModalModule { }
