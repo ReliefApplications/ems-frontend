@@ -179,10 +179,12 @@
             <mat-icon>delete</mat-icon>
             Delete
           </button>
-          <button mat-menu-item (click)="onExportForKobo(element, $event)">
-            <mat-icon>send</mat-icon>
-            Export for Kobo
-          </button>
+          <ng-container *ngIf="element.koboUrl == null">
+            <button mat-menu-item (click)="onExportForKobo(element, $event)">
+              <mat-icon>send</mat-icon>
+              Export for Kobo
+            </button>
+          </ng-container>
           <button mat-menu-item (click)="onImportRecord(element, $event)">
             <mat-icon>get_app</mat-icon>
             Import record
