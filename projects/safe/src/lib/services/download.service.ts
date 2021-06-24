@@ -55,14 +55,10 @@ export class SafeDownloadService {
     console.log(element);
     this.http.post(url, data, {headers}).subscribe(res => {
       console.log(res);
-      // Object.values(res).forEach((value) => {console.log(value)});
-      // const koboUrl = Object.values(res)[0];
-      // console.log(JSON.stringify(res));
-      // console.log(JSON.parse(JSON.stringify(res)));
       const koboUrl = JSON.parse(JSON.stringify(res)).url;
       console.log(koboUrl);
       console.log(element);
-      // element.koboUrl = res.url;
+      // element.koboUrl = koboUrl;
       // Object.preventExtensions(element);
       // console.log(element);
       return res;

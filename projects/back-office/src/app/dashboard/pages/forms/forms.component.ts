@@ -197,14 +197,30 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExportForKobo(element: any, e: any): void {
+    console.log(element);
     const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element}});
-    dialogRef.afterClosed().subscribe(accessToken => {
+    dialogRef.afterClosed().subscribe(async accessToken => {
       if (accessToken !== undefined){
         const path = `upload/form/kobo/${element.id}`;
-        this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element);
+        const r = await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element);
+        // console.log(r);
+        // setTimeout(() => {
+        //   console.log('UPDATE FORMS');
+        //   this.apollo.watchQuery<GetFormsQueryResponse>({
+        //     query: GET_SHORT_FORMS,
+        //   }).valueChanges.subscribe((res: any) => {
+        //     console.log(res.data.form);
+        //     this.dataSource.data = res.data.forms;
+        //     this.loading = res.loading;
+        //     this.filterPredicate();
+        //   });
+        // }, 30000);
         // this.downloadService.updateRecords(path, {accessToken: accessToken});
       }
     });
+    // const path = `download/form/kobo/${element.id}`;
+    // const fileName = `${element.name}.xlsx`;
+    // this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
   }
 
   onImportRecord(element: any, e: any): void {
@@ -216,5 +232,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           this.downloadService.updateRecords(path, data);
         }
     });
+  }
+
+  copyUrl(element: any, $event: any): void {
+    console.log('copyUrl');
+    console.log(element);
+    console.log(element.koboUrl);
   }
 }

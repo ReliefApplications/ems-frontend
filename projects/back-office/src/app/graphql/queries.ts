@@ -109,6 +109,7 @@ query GetShortForms {
         name
       }
     }
+    koboUrl
   }
 }`;
 

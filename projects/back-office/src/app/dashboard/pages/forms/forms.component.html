@@ -187,8 +187,8 @@
             <mat-icon>get_app</mat-icon>
             Import record
           </button>
-          <ng-container *ngIf="element.koboUrl != undefined">
-            <button mat-menu-item>
+          <ng-container *ngIf="element.koboUrl !== null">
+            <button mat-menu-item (click)="copyUrl(element, $event)">
               <mat-icon>link</mat-icon>
               Copy link
             </button>
