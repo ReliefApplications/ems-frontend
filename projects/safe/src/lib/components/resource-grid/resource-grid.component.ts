@@ -346,9 +346,9 @@ export class SafeResourceGridComponent implements OnInit {
 
   /* Check if element overflows
   */
-  isEllipsisActive(e: any): boolean {
-    return (e.offsetWidth < e.scrollWidth);
-  }
+  // isEllipsisActive(e: any): boolean {
+  //   return (e.offsetWidth < e.scrollWidth);
+  // }
 
   /* Download the file.
 */

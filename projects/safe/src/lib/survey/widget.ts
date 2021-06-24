@@ -81,6 +81,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       if (question.getType() === 'comment' && question.allowEdition) {
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
+        mainDiv.style.height = '23px';
+        mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
         btnEl.innerText = 'Edit';
         btnEl.style.width = '50px';
@@ -249,6 +251,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
   function buildSearchButton(question: any, fieldsSettingsForm: FormGroup, multiselect: boolean): any {
     const mainDiv = document.createElement('div');
     mainDiv.id = 'searchDiv';
+    mainDiv.style.height = '23px';
+    mainDiv.style.marginBottom = '0.5em';
     if (fieldsSettingsForm) {
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Search';
