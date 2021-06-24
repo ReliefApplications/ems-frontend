@@ -202,7 +202,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe(async accessToken => {
       if (accessToken !== undefined){
         const path = `upload/form/kobo/${element.id}`;
-        const r = await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element);
+        const r = await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
         // console.log(r);
         // setTimeout(() => {
         //   console.log('UPDATE FORMS');
@@ -218,6 +218,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         // this.downloadService.updateRecords(path, {accessToken: accessToken});
       }
     });
+
     // const path = `download/form/kobo/${element.id}`;
     // const fileName = `${element.name}.xlsx`;
     // this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);

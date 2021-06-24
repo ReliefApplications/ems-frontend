@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import {Apollo} from 'apollo-angular';
+import {GetFormsQueryResponse, GET_FORM_BY_ID, GET_FORMS} from '../graphql/queries';
+// import {GET_SHORT_FORMS, GetFormsQueryResponse} from '../../../../back-office/src/app/graphql/queries';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,7 @@ export class SafeDownloadService {
   constructor(
     @Inject('environment') environment: any,
     private http: HttpClient,
+    private apollo: Apollo,
   ) {
     this.baseUrl = environment.API_URL;
   }
@@ -45,7 +48,7 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  exportFormGetLink(path: string, data: any, element: any): any {
+  exportFormGetLink(path: string, data: any, element: any, dataSource: any): any {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
@@ -58,6 +61,17 @@ export class SafeDownloadService {
       const koboUrl = JSON.parse(JSON.stringify(res)).url;
       console.log(koboUrl);
       console.log(element);
+
+      this.apollo.watchQuery<GetFormsQueryResponse>({
+            query: GET_FORMS,
+          }).valueChanges.subscribe((res: any) => {
+            console.log('UPDATE FORM');
+            console.log(res.data.form);
+            // element = res.data.form;
+            dataSource.data = res.data.forms;
+            // this.loading = res.loading;
+            // this.filterPredicate();
+          });
       // element.koboUrl = koboUrl;
       // Object.preventExtensions(element);
       // console.log(element);

@@ -174,6 +174,7 @@ export const GET_FORMS = gql`
     canCreate
     canUpdate
     canDelete
+    koboUrl
   }
 }`;
 
