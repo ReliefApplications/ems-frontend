@@ -202,20 +202,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe(async accessToken => {
       if (accessToken !== undefined){
         const path = `upload/form/kobo/${element.id}`;
-        const r = await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
-        // console.log(r);
-        // setTimeout(() => {
-        //   console.log('UPDATE FORMS');
-        //   this.apollo.watchQuery<GetFormsQueryResponse>({
-        //     query: GET_SHORT_FORMS,
-        //   }).valueChanges.subscribe((res: any) => {
-        //     console.log(res.data.form);
-        //     this.dataSource.data = res.data.forms;
-        //     this.loading = res.loading;
-        //     this.filterPredicate();
-        //   });
-        // }, 30000);
-        // this.downloadService.updateRecords(path, {accessToken: accessToken});
+        await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
       }
     });
 

@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import {Apollo} from 'apollo-angular';
 import {GetFormsQueryResponse, GET_FORM_BY_ID, GET_FORMS} from '../graphql/queries';
-// import {GET_SHORT_FORMS, GetFormsQueryResponse} from '../../../../back-office/src/app/graphql/queries';
 
 @Injectable({
   providedIn: 'root'
@@ -67,14 +66,10 @@ export class SafeDownloadService {
           }).valueChanges.subscribe((res: any) => {
             console.log('UPDATE FORM');
             console.log(res.data.form);
-            // element = res.data.form;
             dataSource.data = res.data.forms;
             // this.loading = res.loading;
             // this.filterPredicate();
           });
-      // element.koboUrl = koboUrl;
-      // Object.preventExtensions(element);
-      // console.log(element);
       return res;
     });
   }
