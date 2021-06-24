@@ -1,5 +1,5 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<div style="width: 320px" *ngIf="!loading">
+<div [style.width.px]="width" *ngIf="!loading">
     <h1 mat-dialog-title>Select {{ data.targetForm.name }} target</h1>
     <div mat-dialog-content>
         <button mat-button color="primary" (click)="onSearch()">{{ isSearchActivated ? 'Select' : 'Search' }}</button>
