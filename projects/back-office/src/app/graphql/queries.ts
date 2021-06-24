@@ -110,6 +110,7 @@ query GetShortForms {
       }
     }
     koboUrl
+    uid
   }
 }`;
 

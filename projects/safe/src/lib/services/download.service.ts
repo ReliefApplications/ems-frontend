@@ -63,10 +63,10 @@ export class SafeDownloadService {
 
       this.apollo.watchQuery<GetFormsQueryResponse>({
             query: GET_FORMS,
-          }).valueChanges.subscribe((res: any) => {
+          }).valueChanges.subscribe((resApollo: any) => {
             console.log('UPDATE FORM');
-            console.log(res.data.form);
-            dataSource.data = res.data.forms;
+            console.log(resApollo.data.form);
+            dataSource.data = resApollo.data.forms;
             // this.loading = res.loading;
             // this.filterPredicate();
           });

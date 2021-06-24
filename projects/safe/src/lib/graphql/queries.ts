@@ -175,6 +175,7 @@ export const GET_FORMS = gql`
     canUpdate
     canDelete
     koboUrl
+    uid
   }
 }`;
 

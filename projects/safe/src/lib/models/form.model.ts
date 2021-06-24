@@ -31,4 +31,5 @@ export interface Form {
     canCreateRecords?: boolean;
     uniqueRecord?: Record;
     koboUrl?: string;
+    uid?: string;
 }
