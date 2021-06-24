@@ -54,11 +54,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
 
   onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
-    if (this.isSearchActivated) {
-      this.width = 1060;
-    } else {
-      this.width = 360;
-    }
+    this.isSearchActivated ? this.width = 1060 : this.width = 360;
   }
 
   onRowSelected(rows: any): void {
