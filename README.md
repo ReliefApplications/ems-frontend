@@ -154,3 +154,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+# Common issues
+
+## Javascript heap out of memory
+
+Error can appear when executing the front-end due to a memory limit.
+
+You can use this command to serve the front-end if the error occurs:
+```
+node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
+```

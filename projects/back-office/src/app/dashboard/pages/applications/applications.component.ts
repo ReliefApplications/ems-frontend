@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -28,7 +28,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public loading = true;
   public applications = new MatTableDataSource<Application>([]);
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
-
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
