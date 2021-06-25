@@ -7,4 +7,15 @@
   </mat-form-field>
 </form>
 
-<button mat-flat-button color="primary" (click)="exportForm(acessToken.value)"> Done </button>
+<mat-spinner mode="indeterminate" color="primary" id="spinner-loading" diameter="50" [ngStyle]="{'display': spinnerDisplay == false ? 'none' : 'block' }"></mat-spinner>
+
+<mat-card>
+  <mat-card-content>
+    <p id="lab" [textContent]="link"></p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-flat-button color="primary" style="width: 15px; height: 15px">Copy</button>
+  </mat-card-actions>
+</mat-card>
+
+<button mat-flat-button color="primary" [disabled]="doneButton" (click)="exportForm(acessToken.value)"> Done </button>

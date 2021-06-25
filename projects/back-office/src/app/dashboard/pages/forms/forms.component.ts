@@ -198,13 +198,13 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onExportForm(element: any, e: any): void {
     console.log(element);
-    const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element}});
-    dialogRef.afterClosed().subscribe(async accessToken => {
-      if (accessToken !== undefined){
-        const path = `upload/form/kobo/${element.id}`;
-        await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
-      }
-    });
+    const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element, src: this.dataSource}});
+    // dialogRef.afterClosed().subscribe(async accessToken => {
+    //   if (accessToken !== undefined){
+    //     const path = `upload/form/kobo/${element.id}`;
+    //     await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
+    //   }
+    // });
 
     // const path = `download/form/kobo/${element.id}`;
     // const fileName = `${element.name}.xlsx`;

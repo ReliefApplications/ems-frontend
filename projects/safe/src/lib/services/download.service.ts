@@ -47,7 +47,7 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  exportFormGetLink(path: string, data: any, element: any, dataSource: any): any {
+  exportFormGetLink(path: string, data: any, element: any, dataSource: any, linkLabel: any, spinner: any): any {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
@@ -62,16 +62,20 @@ export class SafeDownloadService {
       console.log(element);
 
       this.apollo.watchQuery<GetFormsQueryResponse>({
-            query: GET_FORMS,
-          }).valueChanges.subscribe((resApollo: any) => {
-            console.log('UPDATE FORM');
-            console.log(resApollo.data.form);
-            dataSource.data = resApollo.data.forms;
-            // this.loading = res.loading;
-            // this.filterPredicate();
-          });
-      return res;
+        query: GET_FORMS,
+      }).valueChanges.subscribe((resApollo: any) => {
+        console.log('UPDATE FORM');
+        console.log(resApollo.data.form);
+        dataSource.data = resApollo.data.forms;
+        linkLabel = koboUrl;
+        spinner = false;
+        // this.loading = res.loading;
+        // this.filterPredicate();
+        return res;
+      });
+      console.log('END APOLLO');
     });
+    console.log('END FUNCTION');
   }
 
   updateRecords(path: string, data: any): void {

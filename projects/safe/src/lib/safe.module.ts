@@ -34,6 +34,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   exports: [
@@ -63,15 +65,17 @@ import {MatDialogModule} from '@angular/material/dialog';
     SafeRecordModalModule,
     SafeProfileModule
   ],
-  imports: [
-    NgxDropzoneModule,
-    CommonModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDialogModule
-  ],
+    imports: [
+        NgxDropzoneModule,
+        CommonModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        MatCardModule
+    ],
   declarations: [
     ImportRecordModalComponent,
     ImportRecordsTokensModalComponent,

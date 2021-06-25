@@ -5,3 +5,11 @@
 #access-token {
   margin-right: 10px;
 }
+
+#lab{
+  background-color: #4dafd9;
+}
+
+#spinner-loading {
+  display:none;
+}
