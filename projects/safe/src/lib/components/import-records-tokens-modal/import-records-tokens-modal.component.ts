@@ -16,9 +16,8 @@ export class ImportRecordsTokensModalComponent implements OnInit {
     this.data = {};
   }
 
-  importRecords(accesToken: string, formId: string): void {
+  importRecords(accesToken: string): void {
     this.data.accessToken = accesToken;
-    this.data.formId = formId;
     return this.dialogRef.close(this.data);
   }
 }

@@ -196,7 +196,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.clearDateFilter();
   }
 
-  onExportForKobo(element: any, e: any): void {
+  onExportForm(element: any, e: any): void {
     console.log(element);
     const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element}});
     dialogRef.afterClosed().subscribe(async accessToken => {
@@ -216,6 +216,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
     dialogRef.afterClosed().subscribe(data => {
         if (data !== undefined){
+          data.formId = element.uid;
           const path = `upload/records/update/${element.id}`;
           this.downloadService.updateRecords(path, data);
         }

@@ -14,13 +14,8 @@
     <mat-label>Access token</mat-label>
     <input matInput #acessToken>
   </mat-form-field>
-
-  <mat-form-field id="form-id">
-    <mat-label>Form Id</mat-label>
-    <input matInput #formId>
-  </mat-form-field>
 </form>
 
-<button mat-flat-button color="primary" (click)="importRecords(acessToken.value, formId.value)"> Done </button>
+<button mat-flat-button color="primary" (click)="importRecords(acessToken.value)"> Done </button>
 <!--[mat-dialog-close]="data"-->
 <!--[mat-dialog-close]="{acessToken:acessToken.value, formId:formId.value}"-->
