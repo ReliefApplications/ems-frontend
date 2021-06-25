@@ -19,6 +19,7 @@ export class PullJobModalComponent implements OnInit {
   pullJobForm: FormGroup = new FormGroup({});
 
   // === DATA ===
+  public loading = true;
   public forms: Form[] = [];
   public apiConfigurations: ApiConfiguration[] = [];
   public statusChoices = Object.values(status);
@@ -58,13 +59,17 @@ export class PullJobModalComponent implements OnInit {
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES
     }).valueChanges.subscribe((res: any) => {
-      this.forms = res.data.forms;
+      if (res) {
+        this.forms = res.data.forms;
+        this.loading = res.data.loading || this.apiConfigurations.length === 0;
+      }
     });
     this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS
     }).valueChanges.subscribe( res => {
       if (res) {
         this.apiConfigurations = res.data.apiConfigurations;
+        this.loading = res.data.loading || this.forms.length === 0;
       }
     });
 
