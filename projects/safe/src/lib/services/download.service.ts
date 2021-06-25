@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import {GetFormsQueryResponse, GET_FORM_BY_ID, GET_FORMS} from '../graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { GetFormsQueryResponse, GET_FORM_BY_ID, GET_FORMS } from '../graphql/queries';
 
 @Injectable({
   providedIn: 'root'
@@ -47,35 +47,22 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  exportFormGetLink(path: string, data: any, element: any, dataSource: any, linkLabel: any, spinner: any): any {
+  async exportFormGetLink(path: string, data: any, element: any, dataSource: any, linkLabel: any, spinner: any): Promise<any> {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    console.log(element);
-    this.http.post(url, data, {headers}).subscribe(res => {
-      console.log(res);
-      const koboUrl = JSON.parse(JSON.stringify(res)).url;
-      console.log(koboUrl);
-      console.log(element);
-
-      this.apollo.watchQuery<GetFormsQueryResponse>({
-        query: GET_FORMS,
-      }).valueChanges.subscribe((resApollo: any) => {
-        console.log('UPDATE FORM');
-        console.log(resApollo.data.form);
-        dataSource.data = resApollo.data.forms;
-        linkLabel = koboUrl;
-        spinner = false;
-        // this.loading = res.loading;
-        // this.filterPredicate();
-        return res;
-      });
-      console.log('END APOLLO');
-    });
-    console.log('END FUNCTION');
+    const response = await this.http.post(url, data, { headers }).toPromise();
+    console.log('1');
+    const koboUrl = JSON.parse(JSON.stringify(response)).url;
+    const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
+    console.log('2');
+    dataSource.data = responseApollo.data.forms;
+    linkLabel = koboUrl;
+    spinner = false;
+    return;
   }
 
   updateRecords(path: string, data: any): void {
@@ -87,7 +74,7 @@ export class SafeDownloadService {
     });
     console.log('*** body ***');
     console.log(data);
-    this.http.post(url, data, {headers}).subscribe(res => {
+    this.http.post(url, data, { headers }).subscribe(res => {
       console.log('^^^ res ^^^');
       console.log(res);
     });
