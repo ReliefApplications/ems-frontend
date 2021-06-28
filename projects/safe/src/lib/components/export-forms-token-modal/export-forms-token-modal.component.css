@@ -1,15 +1,36 @@
-#cont {
-  width: 500px;
+#form {
+  /*width: 1000px;*/
+}
+
+#input{
+  /*width: 250px;*/
 }
 
 #access-token {
+  width: 350px;
+  /*width: max-content;*/
   margin-right: 10px;
-}
-
-#lab{
-  background-color: #4dafd9;
 }
 
 #spinner-loading {
   display:none;
+}
+
+#card {
+  width: 500px;
+  margin-bottom: 15px;
+}
+
+#success-message {
+  color: #63D168;
+}
+
+#cont-card {
+  /*width: 500px;*/
+  display: inline;
+  /*background-color: #53a7ff*/
+}
+
+#link {
+  text-decoration: underline;
 }

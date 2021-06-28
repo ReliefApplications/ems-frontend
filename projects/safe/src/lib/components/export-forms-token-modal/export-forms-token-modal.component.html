@@ -1,21 +1,44 @@
 <h3> Export form to KoBo </h3>
 
-<form class="cont">
+<form id="form">
   <mat-form-field id="access-token">
     <mat-label>Access token</mat-label>
-    <input matInput #acessToken>
+    <input id="input" matInput #acessToken>
   </mat-form-field>
 </form>
 
 <mat-spinner mode="indeterminate" color="primary" id="spinner-loading" diameter="50" [ngStyle]="{'display': spinnerDisplay == false ? 'none' : 'block' }"></mat-spinner>
 
-<mat-card>
-  <mat-card-content>
-    <p id="lab" [textContent]="link"></p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-flat-button color="primary" style="width: 30px; height: 15px">Copy</button>
-  </mat-card-actions>
-</mat-card>
+<div id="cont-card">
+  <mat-card id="card" [ngStyle]="{'display': cardDisplay == false ? 'none' : 'block' }">
+  <!--  <mat-card-content>-->
+  <!--    <mat-grid-list cols="2" rowHeight="2:1">-->
+  <!--      <p id="lab" [textContent]="link"></p>-->
+  <!--      <button mat-flat-button color="primary">-->
+  <!--        <mat-icon>file_copy</mat-icon>-->
+  <!--      </button>-->
+  <!--    </mat-grid-list>-->
+  <!--  </mat-card-content>-->
 
-<button mat-flat-button color="primary" [disabled]="doneButton" (click)="exportForm(acessToken.value)"> Done </button>
+    <p id="success-message"> The form has been successfully exported <mat-icon>check</mat-icon> </p>
+
+
+
+      <div>
+
+  <p [textContent]="link" (click)="copyLinkToClipboard()" style="display: inline" id="link"></p>
+  <button mat-icon-button color="primary" style="display: inline" (click)="copyLinkToClipboard()">
+    <mat-icon>file_copy</mat-icon>
+  </button>
+      </div>
+
+
+  <!--  <mat-card-actions>-->
+  <!--    <button mat-flat-button color="primary">-->
+  <!--      <mat-icon>file_copy</mat-icon>-->
+  <!--    </button>-->
+  <!--  </mat-card-actions>-->
+  </mat-card>
+</div>
+
+<button mat-flat-button color="primary" [disabled]="doneButton" (click)="exportForm(acessToken.value)"> Export </button>

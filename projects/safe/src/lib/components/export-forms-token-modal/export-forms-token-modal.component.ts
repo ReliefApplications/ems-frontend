@@ -14,13 +14,15 @@ export class ExportFormsTokenModalComponent implements OnInit {
   public link: string;
   public doneButton: boolean;
   public spinnerDisplay: boolean;
+  public cardDisplay: boolean;
 
   constructor(public dialogRef: MatDialogRef<ExportFormsTokenModalComponent>,
               private downloadService: SafeDownloadService,
               @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.link = 'url';
+    this.link = '';
     this.doneButton = false;
     this.spinnerDisplay = false;
+    this.cardDisplay = false;
   }
 
   ngOnInit(): void {
@@ -29,38 +31,38 @@ export class ExportFormsTokenModalComponent implements OnInit {
   async exportForm(accessToken: string): Promise<void> {
     // return this.dialogRef.close(accessToken);
 
+    this.doneButton = true;
+    // this.spinnerDisplay = true;
 
-    if (accessToken !== undefined) {
-      this.doneButton = true;
-      this.spinnerDisplay = true;
-      // document.getElementById('spinner-loading').style.display = 'block';
+    this.cardDisplay = true;
 
-      // document.getElementById('spinner-loading').remove()
-      // document.getElementById('spinner-loading').setAttribute('style','display: block;');
-      const path = `upload/form/kobo/${this.data.elt.id}`;
-      const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
+    this.link = '$$$$$ url $$$$$';
 
-      this.link = dataReturn.url;
-      this.data.src = dataReturn.src;
-
-      console.log('3');
-      this.spinnerDisplay = false;
-
-      console.log(this.link);
-      // console.log('this.data.elt.koboUrl.toString()');
-      // console.log(this.data.elt.koboUrl);
-      // this.link = this.data.elt.koboUrl;
-    }
-
-
-    // console.log(this.data);
-    // if (accessToken !== undefined){
+    // if (accessToken !== undefined) {
+    //   this.doneButton = true;
+    //   this.spinnerDisplay = true;
+    //
     //   const path = `upload/form/kobo/${this.data.elt.id}`;
-    //   const url = this.downloadService.exportFormGetLink(path, {accessToken: accessToken}, this.data.elt);
-    //   this.data.urlKobo = url;
-    //   // this.downloadService.updateRecords(path, {accessToken: accessToken});
-    //   console.log('°°° url °°°');
-    //   console.log(url);
+    //   const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
+    //
+    //   this.cardDisplay = true;
+    //
+    //   this.link = dataReturn.url;
+    //   this.data.src = dataReturn.src;
+    //
+    //   console.log('3');
+    //   this.spinnerDisplay = false;
+    //
+    //   console.log(this.link);
     // }
+  }
+
+  copyLinkToClipboard(): void {
+    const input = document.body.appendChild(document.createElement('input'));
+    input.value = this.link;
+    input.focus();
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
   }
 }

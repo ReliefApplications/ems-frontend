@@ -37,6 +37,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
+import {MatIconModule} from '@angular/material/icon';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @NgModule({
   exports: [
@@ -76,7 +78,9 @@ import { SafeSearchResourceGridModalModule } from './components/search-resource-
     MatFormFieldModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatIconModule,
+    MatGridListModule
   ],
   declarations: [
     ImportRecordModalComponent,
