@@ -54,7 +54,8 @@ export class PullJobModalComponent implements OnInit {
           value: [this.data.pullJob?.mapping[x], Validators.required],
         }))
         : []),
-      rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : '']
+      rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : ''],
+      uniqueIdentifiers: [this.data.pullJob && this.data.pullJob.uniqueIdentifiers ? this.data.pullJob.uniqueIdentifiers : []]
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES
@@ -112,13 +113,13 @@ export class PullJobModalComponent implements OnInit {
     return this.fields.filter(field => field.name === name || !this.pullJobForm.value.mapping.some((x: any) => x.name === field.name));
   }
 
-  /*  Add new element for the mapping.
+  /*  Remove element from the mapping
   */
   onDeleteElement(index: number): void {
     this.mappingArray.removeAt(index);
   }
 
-  /*  Remove element from the mapping.
+  /*  Add new element to the mapping.
   */
   onAddElement(): void {
     this.mappingArray.push(this.formBuilder.group({
