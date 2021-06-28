@@ -47,7 +47,7 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
-  async exportFormGetLink(path: string, data: any, element: any, dataSource: any, linkLabel: any, spinner: any): Promise<any> {
+  async exportFormGetLink(path: string, data: any): Promise<any> {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
@@ -59,10 +59,14 @@ export class SafeDownloadService {
     const koboUrl = JSON.parse(JSON.stringify(response)).url;
     const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
     console.log('2');
-    dataSource.data = responseApollo.data.forms;
-    linkLabel = koboUrl;
-    spinner = false;
-    return;
+    const dataReturn = {
+      src: responseApollo.data.forms,
+      url: koboUrl
+    };
+    // dataSource.data = responseApollo.data.forms;
+    // linkLabel = koboUrl;
+    // spinner = false;
+    return dataReturn;
   }
 
   updateRecords(path: string, data: any): void {

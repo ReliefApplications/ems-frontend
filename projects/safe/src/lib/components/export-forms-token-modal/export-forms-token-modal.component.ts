@@ -16,8 +16,8 @@ export class ExportFormsTokenModalComponent implements OnInit {
   public spinnerDisplay: boolean;
 
   constructor(public dialogRef: MatDialogRef<ExportFormsTokenModalComponent>,
-    private downloadService: SafeDownloadService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+              private downloadService: SafeDownloadService,
+              @Inject(MAT_DIALOG_DATA) public data: any) {
     this.link = 'url';
     this.doneButton = false;
     this.spinnerDisplay = false;
@@ -38,14 +38,13 @@ export class ExportFormsTokenModalComponent implements OnInit {
       // document.getElementById('spinner-loading').remove()
       // document.getElementById('spinner-loading').setAttribute('style','display: block;');
       const path = `upload/form/kobo/${this.data.elt.id}`;
-      await this.downloadService.exportFormGetLink(path,
-        { aToken: accessToken },
-        this.data.elt,
-        this.data.src,
-        this.link,
-        this.spinnerDisplay);
+      const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
+
+      this.link = dataReturn.url;
+      this.data.src = dataReturn.src;
 
       console.log('3');
+      this.spinnerDisplay = false;
 
       console.log(this.link);
       // console.log('this.data.elt.koboUrl.toString()');
