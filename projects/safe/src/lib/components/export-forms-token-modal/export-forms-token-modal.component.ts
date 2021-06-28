@@ -30,31 +30,23 @@ export class ExportFormsTokenModalComponent implements OnInit {
 
   async exportForm(accessToken: string): Promise<void> {
     // return this.dialogRef.close(accessToken);
+    if (accessToken !== undefined) {
+      this.doneButton = true;
+      this.spinnerDisplay = true;
 
-    this.doneButton = true;
-    // this.spinnerDisplay = true;
+      const path = `upload/form/kobo/${this.data.elt.id}`;
+      const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
 
-    this.cardDisplay = true;
+      this.cardDisplay = true;
 
-    this.link = '$$$$$ url $$$$$';
+      this.link = dataReturn.url;
+      this.data.src = dataReturn.src;
 
-    // if (accessToken !== undefined) {
-    //   this.doneButton = true;
-    //   this.spinnerDisplay = true;
-    //
-    //   const path = `upload/form/kobo/${this.data.elt.id}`;
-    //   const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
-    //
-    //   this.cardDisplay = true;
-    //
-    //   this.link = dataReturn.url;
-    //   this.data.src = dataReturn.src;
-    //
-    //   console.log('3');
-    //   this.spinnerDisplay = false;
-    //
-    //   console.log(this.link);
-    // }
+      console.log('3');
+      this.spinnerDisplay = false;
+
+      console.log(this.link);
+    }
   }
 
   copyLinkToClipboard(): void {
