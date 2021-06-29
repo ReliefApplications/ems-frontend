@@ -35,12 +35,13 @@ export class ExportFormsTokenModalComponent implements OnInit {
       this.spinnerDisplay = true;
 
       const path = `upload/form/kobo/${this.data.elt.id}`;
-      const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
+      // const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
+      setTimeout(() => {console.log('wait'); }, 2000);
 
       this.cardDisplay = true;
 
-      this.link = dataReturn.url;
-      this.data.src = dataReturn.src;
+      // this.link = dataReturn.url;
+      // this.data.src = dataReturn.src;
 
       console.log('3');
       this.spinnerDisplay = false;

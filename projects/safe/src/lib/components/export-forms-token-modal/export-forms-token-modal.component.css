@@ -7,7 +7,7 @@
 }
 
 #access-token {
-  width: 350px;
+  width: 400px;
   /*width: max-content;*/
   margin-right: 10px;
 }
@@ -17,8 +17,8 @@
 }
 
 #card {
-  width: 500px;
-  margin-bottom: 15px;
+  width: fit-content;
+  /*margin-bottom: 15px;*/
 }
 
 #success-message {
@@ -33,4 +33,8 @@
 
 #link {
   text-decoration: underline;
+}
+
+#btn-export {
+  margin-top: 20px;
 }

@@ -69,18 +69,17 @@ export class SafeDownloadService {
     return dataReturn;
   }
 
-  updateRecords(path: string, data: any): void {
+  async updateRecords(path: string, data: any): Promise<void> {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
+    console.log('1');
     console.log('*** body ***');
     console.log(data);
-    this.http.post(url, data, { headers }).subscribe(res => {
-      console.log('^^^ res ^^^');
-      console.log(res);
-    });
+    await this.http.post(url, data, { headers }).toPromise().then(res => { console.log(res); });
+    console.log('2');
   }
 }

@@ -213,14 +213,18 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onImportRecord(element: any, e: any): void {
     console.log(element);
-    const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
-    dialogRef.afterClosed().subscribe(data => {
-        if (data !== undefined){
-          data.formId = element.uid;
-          const path = `upload/records/update/${element.id}`;
-          this.downloadService.updateRecords(path, data);
-        }
-    });
+    // const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
+    // dialogRef.afterClosed().subscribe(data => {
+    //   console.log('data: onImport');
+    //   console.log(data);
+    //   if (data !== undefined){
+    //       data.formId = element.uid;
+    //       const path = `upload/records/update/${element.id}`;
+    //       this.downloadService.updateRecords(path, data);
+    //   }
+    // });
+
+    const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent, {data: {elt: element}});
   }
 
   copyUrl(element: any, $event: any): void {

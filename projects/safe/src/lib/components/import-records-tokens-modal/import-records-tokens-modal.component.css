@@ -1,11 +1,25 @@
-#cont {
+#form {
   width: 500px;
 }
 
 #access-token {
+  width: 315px;
   margin-right: 10px;
 }
 
-#form-id {
-  margin-right: 10px;
+#success-message {
+  color: #63D168;
+}
+
+#card {
+  /*margin-bottom: 15px;*/
+  width: fit-content;
+}
+
+#spinner {
+  /*margin-bottom: 100px;*/
+}
+
+#btn-import {
+  margin-top: 20px;
 }
