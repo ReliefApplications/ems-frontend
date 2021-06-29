@@ -25,6 +25,10 @@
   color: #63D168;
 }
 
+#error-message {
+  color: #9b001d;
+}
+
 #cont-card {
   /*width: 500px;*/
   display: inline;

@@ -54,15 +54,29 @@ export class SafeDownloadService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    const response = await this.http.post(url, data, { headers }).toPromise();
+    let response = null;
+    let reason = null;
+    await this.http.post(url, data, { headers }).toPromise().then((res) => {
+      console.log('RES');
+      console.log(res);
+      response = res;
+    }).catch((reas => {console.log(reas); reason = reas; }));
     console.log('1');
-    const koboUrl = JSON.parse(JSON.stringify(response)).url;
-    const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
-    console.log('2');
-    const dataReturn = {
-      src: responseApollo.data.forms,
-      url: koboUrl
-    };
+    console.log(response);
+    console.log(reason);
+    let dataReturn = null;
+    if (response != null){
+      console.log('1.5');
+      const koboUrl = JSON.parse(JSON.stringify(response)).url;
+      console.log(koboUrl);
+      const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
+      console.log('2');
+      dataReturn = {
+        src: responseApollo.data.forms,
+        url: koboUrl
+      };
+    }
+    console.log('2.5');
     // dataSource.data = responseApollo.data.forms;
     // linkLabel = koboUrl;
     // spinner = false;

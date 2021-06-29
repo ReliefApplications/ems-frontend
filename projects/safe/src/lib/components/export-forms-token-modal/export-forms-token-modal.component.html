@@ -11,8 +11,9 @@
 
 <div id="cont-card">
   <mat-card id="card" [ngStyle]="{'display': cardDisplay == false ? 'none' : 'block' }">
-    <p id="success-message"> The form has been successfully exported <mat-icon>check</mat-icon> </p>
-    <div>
+    <p id="success-message" [ngStyle]="{'display': successDisplay == false ? 'none' : 'block' }"> The form has been successfully exported <mat-icon>check</mat-icon> </p>
+    <p id="error-message" [ngStyle]="{'display': successDisplay != false ? 'none' : 'block' }"> There was a problem exporting the form <mat-icon>close</mat-icon> </p>
+    <div [ngStyle]="{'display': cardUrlDisplay == false ? 'none' : 'block' }">
       <p [textContent]="link" (click)="copyLinkToClipboard()" style="display: inline" id="link"></p>
       <button mat-icon-button color="primary" style="display: inline" (click)="copyLinkToClipboard()">
         <mat-icon>file_copy</mat-icon>
