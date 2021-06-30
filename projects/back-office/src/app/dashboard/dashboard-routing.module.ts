@@ -144,6 +144,23 @@ export const routes = [
                         // canActivate: [SafePermissionGuard]
                     },
                     {
+                        path: 'apiconfigurations',
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/api-configurations/api-configurations.module')
+                                .then(m => m.ApiConfigurationsModule),
+                                // canActivate: [SafePermissionGuard]
+                            },
+                            {
+                                path: ':id',
+                                loadChildren: () => import('./pages/api-configuration/api-configuration.module')
+                                    .then(m => m.ApiConfigurationModule),
+                                // canActivate: [SafePermissionGuard]
+                            }
+                        ]
+                    },
+                    {
                         path: '**',
                         pathMatch: 'full',
                         redirectTo: 'users'

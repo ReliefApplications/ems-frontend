@@ -7,6 +7,9 @@ import {
 } from '../../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
+import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 export const resourcesFilterValues =
   new BehaviorSubject<{ field: string, operator: string, value: string }[]>([{field: '', operator: '', value: ''}]);
@@ -21,7 +24,7 @@ export const resourceConditions = [
   {value: '<=', text: 'less or equals'}
 ];
 
-export function init(Survey: any, apollo: Apollo): void {
+export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
   let resourcesForms: any[] = [];
   const getResources = () => apollo.query<GetResourcesQueryResponse>({
     query: GET_RESOURCES,
@@ -100,13 +103,76 @@ export function init(Survey: any, apollo: Apollo): void {
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
-                res.push({value: item.name});
+                if (item.type !== 'matrix') {
+                  res.push({value: item.name});
+                }
               }
               choicesCallback(res);
             });
           }
         },
       });
+
+      // Build set available grid fields button
+      Survey
+        .JsonObject
+        .metaData
+        .addProperty('resources', {
+          name: 'Search resource table',
+          type: 'availableFieldsBtn',
+          isRequired: true,
+          category: 'Custom Questions',
+          dependsOn: 'resource',
+          visibleIf: (obj: any) => !!obj && !!obj.resource,
+          visibleIndex: 4
+        });
+
+      const setGridFieldsBtn = {
+        render: (editor: any, htmlElement: any) => {
+          const btn = document.createElement('button');
+          btn.innerText = 'Available grid fields';
+          btn.style.width = '100%';
+          btn.style.border = 'none';
+          btn.style.padding = '10px';
+          htmlElement.appendChild(btn);
+          btn.onclick = (ev: any) => {
+            const currentQuestion = editor.object;
+            getResourceById({id: currentQuestion.resource}).subscribe(response => {
+              if (response.data.resource && response.data.resource.name) {
+                const nameTrimmed = response.data.resource.name.replace(/\s/g, '').toLowerCase();
+                const dialogRef = dialog.open(ConfigDisplayGridFieldsModalComponent, {
+                  data: {
+                    form: !currentQuestion.gridFieldsSettings ? null :
+                      convertFromRawToFormGroup(currentQuestion.gridFieldsSettings),
+                    resourceName: nameTrimmed
+                  }
+                });
+                dialogRef.afterClosed().subscribe((res: any) => {
+                  if (res && res.value.fields) {
+                    currentQuestion.gridFieldsSettings = res.getRawValue();
+                  }
+                });
+              }
+            });
+
+          };
+
+          function convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
+            if (!gridSettingsRaw.fields) {
+              return null;
+            }
+            const auxForm = formBuilder.group(gridSettingsRaw);
+            auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+            return auxForm;
+          }
+        }
+      };
+
+      SurveyCreator
+        .SurveyPropertyEditorFactory
+        .registerCustomEditor('availableFieldsBtn', setGridFieldsBtn);
+
+
       Survey.Serializer.addProperty('resources', {
         name: 'test service',
         category: 'Custom Questions',
@@ -216,13 +282,22 @@ export function init(Survey: any, apollo: Apollo): void {
         },
       });
       Survey.Serializer.addProperty('resources', {
-        type: 'string',
-        name: 'staticValue',
-        category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion', 'displayField'],
-        visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
-        visibleIndex: 3,
-      });
+          name: 'gridFieldsSettings',
+          dependsOn: 'resource',
+          visibleIf: (obj: any) => {
+            obj.gridFieldsSettings = obj.resource ? obj.gridFieldsSettings : new FormGroup({}).getRawValue();
+            return false;
+          }
+        }
+      ),
+        Survey.Serializer.addProperty('resources', {
+          type: 'string',
+          name: 'staticValue',
+          category: 'Filter by Questions',
+          dependsOn: ['resource', 'selectQuestion', 'displayField'],
+          visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
+          visibleIndex: 3,
+        });
       Survey.Serializer.addProperty('resources', {
         type: 'dropdown',
         name: 'filterBy',
@@ -456,7 +531,7 @@ export function init(Survey: any, apollo: Apollo): void {
           }
         });
       }
-    },
+    }
   };
   Survey.ComponentCollection.Instance.add(component);
 
