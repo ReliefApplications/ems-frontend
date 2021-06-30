@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ import { NOTIFICATIONS } from '../../const/notifications';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class SafeFormComponent implements OnInit, OnDestroy {
+export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
@@ -150,8 +150,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       // TODO: check
       this.survey.locale = 'en';
     }
-
-    this.survey.render(this.containerId);
+    
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
@@ -161,6 +160,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.selectedTabIndex = surveyModel.currentPageNo;
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
+  }
+
+  ngAfterViewInit(): void {
+    this.survey.render(this.containerId);
   }
 
   public reset(): void {
