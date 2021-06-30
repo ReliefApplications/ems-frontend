@@ -22,6 +22,7 @@ export class FormRecordsComponent implements OnInit {
   public form: any;
   displayedColumns: string[] = [];
   dataSource: any[] = [];
+  public copyDataSource: any[] = [];
   public showSidenav = true;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
@@ -51,8 +52,21 @@ export class FormRecordsComponent implements OnInit {
         }
       }).valueChanges.subscribe(res => {
         this.form = res.data.form;
-        this.dataSource = this.form.records;
         this.setDisplayedColumns();
+        // deep clone so we can modify the nested element in read only
+        this.copyDataSource = JSON.parse(JSON.stringify(this.form.records)); 
+        this.copyDataSource.forEach((record: any) => {
+          for(let question in record.data) {
+            this.displayedColumns.forEach(title => {
+              if (title === question) {
+                if (record.data[question].length > title.length) {
+                  record.data[question] = record.data[question].slice(0, title.length*2) + '...'
+                }
+              }
+            })
+          }
+        })
+        this.dataSource = this.copyDataSource;
         this.loading = res.loading;
       });
     }
