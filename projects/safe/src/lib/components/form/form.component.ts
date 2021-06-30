@@ -151,7 +151,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.survey.locale = 'en';
     }
 
-    console.log("this survey = ", this.survey);
     this.survey.render(this.containerId);
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
