@@ -65,15 +65,24 @@ export class SafeDownloadService {
     console.log(response);
     console.log(reason);
     let dataReturn = null;
-    if (response != null){
+    if (reason == null){
       console.log('1.5');
       const koboUrl = JSON.parse(JSON.stringify(response)).url;
       console.log(koboUrl);
       const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
       console.log('2');
       dataReturn = {
-        src: responseApollo.data.forms,
-        url: koboUrl
+        status: true,
+        data : {
+          src: responseApollo.data.forms,
+          url: koboUrl
+        }
+      };
+    }
+    else {
+      dataReturn = {
+        status: false,
+        data : reason
       };
     }
     console.log('2.5');

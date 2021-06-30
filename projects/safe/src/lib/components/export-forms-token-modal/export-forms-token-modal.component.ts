@@ -18,6 +18,7 @@ export class ExportFormsTokenModalComponent implements OnInit {
 
   public cardUrlDisplay: boolean;
   public successDisplay: boolean;
+  public errorMsg: string;
 
   constructor(public dialogRef: MatDialogRef<ExportFormsTokenModalComponent>,
               private downloadService: SafeDownloadService,
@@ -29,6 +30,8 @@ export class ExportFormsTokenModalComponent implements OnInit {
 
     this.cardUrlDisplay = false;
     this.successDisplay = false;
+
+    this.errorMsg = 'There was a problem exporting the form';
   }
 
   ngOnInit(): void {
@@ -44,19 +47,22 @@ export class ExportFormsTokenModalComponent implements OnInit {
       const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
       console.log('dataReturn');
       console.log(dataReturn);
+      // console.log(dataReturn.url);
+      // console.log(dataReturn.src);
       this.spinnerDisplay = false;
-      if (dataReturn != null){
+      if (dataReturn.status === true){
         this.successDisplay = true;
         this.cardUrlDisplay = true;
         this.cardDisplay = true;
 
-        this.link = dataReturn.url;
-        this.data.src = dataReturn.src;
+        this.link = dataReturn.data.url;
+        this.data.src = dataReturn.data.src;
 
         console.log('3');
         console.log(this.link);
       }
       else {
+        this.errorMsg = 'There was a problem exporting the form\nReason: ' + dataReturn.data.error;
         this.successDisplay = false;
         this.cardUrlDisplay = false;
         this.cardDisplay = true;
