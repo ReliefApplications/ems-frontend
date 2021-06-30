@@ -24,10 +24,8 @@ import { SafeRecordHistoryModule } from './components/record-history/record-hist
 import { SafeRecordModalModule } from './components/record-modal/public-api';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
 import { SafeProfileModule } from './pages/profile/profile.module';
-import { ImportRecordModalComponent } from './components/import-record-modal/import-record-modal.component';
-import {NgxDropzoneModule} from 'ngx-dropzone';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
+import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
+import { SafeImportRecordModalModule } from './components/import-record-modal/import-record-modal.module';
 
 @NgModule({
   exports: [
@@ -55,15 +53,9 @@ import {MatButtonModule} from '@angular/material/button';
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
-    SafeProfileModule
-  ],
-    imports: [
-        NgxDropzoneModule,
-        CommonModule,
-        MatButtonModule
-    ],
-  declarations: [
-    ImportRecordModalComponent
+    SafeProfileModule,
+    SafeSearchResourceGridModalModule,
+    SafeImportRecordModalModule
   ]
 })
 export class SafeModule { }

@@ -103,6 +103,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 name: 'Subscriptions',
                 path: './settings/subscriptions',
                 icon: 'move_to_inbox'
+              },
+              {
+                name: 'Pull jobs',
+                path: './settings/pull-jobs',
+                icon: 'cloud_download'
               }
             ]
           }
@@ -160,6 +165,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
+      this.applicationService.leaveApplication();
     }
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
