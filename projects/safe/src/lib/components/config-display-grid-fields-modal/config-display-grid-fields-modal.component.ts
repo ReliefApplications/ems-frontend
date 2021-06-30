@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { FormGroup } from '@angular/forms';
@@ -29,7 +29,6 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
 
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
     @Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string },
     private queryBuilder: QueryBuilderService) {
   }

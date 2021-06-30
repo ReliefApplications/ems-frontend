@@ -90,6 +90,9 @@
               </mat-select>
             </mat-form-field>
           </ng-container>
+          <ng-container *ngIf="buttonForm.value.targetForm">
+            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false"></safe-query-builder>
+          </ng-container>
         </div>
         <span class="info-row">
           <mat-checkbox formControlName="notify">Notify</mat-checkbox>
