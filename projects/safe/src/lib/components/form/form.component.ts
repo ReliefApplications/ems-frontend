@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
+import { v4 as uuidv4 } from 'uuid';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -36,6 +37,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   public surveyActive = true;
   public selectedTabIndex = 0;
   private temporaryFilesStorage: any = {};
+  public containerId: string;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -59,7 +61,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    this.containerId = uuidv4();
+  }
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -147,7 +151,8 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.survey.locale = 'en';
     }
 
-    this.survey.render('surveyContainer');
+    console.log("this survey = ", this.survey);
+    this.survey.render(this.containerId);
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
