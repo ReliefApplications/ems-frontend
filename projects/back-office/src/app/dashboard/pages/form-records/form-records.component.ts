@@ -54,18 +54,20 @@ export class FormRecordsComponent implements OnInit {
         this.form = res.data.form;
         this.setDisplayedColumns();
         // deep clone so we can modify the nested element in read only
-        this.copyDataSource = JSON.parse(JSON.stringify(this.form.records)); 
+        this.copyDataSource = JSON.parse(JSON.stringify(this.form.records));
         this.copyDataSource.forEach((record: any) => {
-          for(let question in record.data) {
-            this.displayedColumns.forEach(title => {
-              if (title === question) {
-                if (record.data[question].length > title.length) {
-                  record.data[question] = record.data[question].slice(0, title.length*2) + '...'
+          for (const question in record.data) {
+            if (question) {
+              this.displayedColumns.forEach(title => {
+                if (title === question) {
+                  if (record.data[question].length > title.length) {
+                    record.data[question] = record.data[question].slice(0, title.length * 2) + '...';
+                  }
                 }
-              }
-            })
+              });
+            }
           }
-        })
+        });
         this.dataSource = this.copyDataSource;
         this.loading = res.loading;
       });
