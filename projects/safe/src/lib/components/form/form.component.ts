@@ -1,7 +1,8 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
+import { v4 as uuidv4 } from 'uuid';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -19,7 +20,7 @@ import { NOTIFICATIONS } from '../../const/notifications';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class SafeFormComponent implements OnInit, OnDestroy {
+export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
@@ -36,6 +37,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   public surveyActive = true;
   public selectedTabIndex = 0;
   private temporaryFilesStorage: any = {};
+  public containerId: string;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -59,7 +61,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    this.containerId = uuidv4();
+  }
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -146,8 +150,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       // TODO: check
       this.survey.locale = 'en';
     }
-
-    this.survey.render('surveyContainer');
+    
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
@@ -157,6 +160,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.selectedTabIndex = surveyModel.currentPageNo;
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
+  }
+
+  ngAfterViewInit(): void {
+    this.survey.render(this.containerId);
   }
 
   public reset(): void {
