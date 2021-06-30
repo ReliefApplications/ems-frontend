@@ -1,14 +1,5 @@
-#form {
-  /*width: 1000px;*/
-}
-
-#input{
-  /*width: 250px;*/
-}
-
 #access-token {
   width: 400px;
-  /*width: max-content;*/
   margin-right: 10px;
 }
 
@@ -18,7 +9,6 @@
 
 #card {
   width: fit-content;
-  /*margin-bottom: 15px;*/
 }
 
 #success-message {
@@ -30,9 +20,7 @@
 }
 
 #cont-card {
-  /*width: 500px;*/
   display: inline;
-  /*background-color: #53a7ff*/
 }
 
 #link {

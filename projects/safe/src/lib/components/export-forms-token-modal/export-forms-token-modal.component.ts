@@ -1,8 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
 import { SafeDownloadService } from '../../services/download.service';
-import { element } from 'protractor';
 
 @Component({
   selector: 'safe-export-forms-token-modal',
@@ -41,15 +39,12 @@ export class ExportFormsTokenModalComponent implements OnInit {
     // return this.dialogRef.close(accessToken);
     if (accessToken !== undefined) {
       this.doneButton = true;
-      this.spinnerDisplay = true;
 
+      this.spinnerDisplay = true;
       const path = `upload/form/kobo/${this.data.elt.id}`;
       const dataReturn = await this.downloadService.exportFormGetLink(path, { aToken: accessToken });
-      console.log('dataReturn');
-      console.log(dataReturn);
-      // console.log(dataReturn.url);
-      // console.log(dataReturn.src);
       this.spinnerDisplay = false;
+
       if (dataReturn.status === true){
         this.successDisplay = true;
         this.cardUrlDisplay = true;
@@ -58,7 +53,6 @@ export class ExportFormsTokenModalComponent implements OnInit {
         this.link = dataReturn.data.url;
         this.data.src = dataReturn.data.src;
 
-        console.log('3');
         console.log(this.link);
       }
       else {
@@ -67,7 +61,6 @@ export class ExportFormsTokenModalComponent implements OnInit {
         this.cardUrlDisplay = false;
         this.cardDisplay = true;
       }
-      console.log('AFTER');
     }
   }
 

@@ -197,34 +197,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExportForm(element: any, e: any): void {
-    console.log(element);
-    const dialogRef = this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element, src: this.dataSource}});
-    // dialogRef.afterClosed().subscribe(async accessToken => {
-    //   if (accessToken !== undefined){
-    //     const path = `upload/form/kobo/${element.id}`;
-    //     await this.downloadService.exportFormGetLink(path, {aToken: accessToken}, element, this.dataSource);
-    //   }
-    // });
-
-    // const path = `download/form/kobo/${element.id}`;
-    // const fileName = `${element.name}.xlsx`;
-    // this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
+    this.importPopup.open(ExportFormsTokenModalComponent, {data: {elt: element, src: this.dataSource}});
   }
 
   onImportRecord(element: any, e: any): void {
-    console.log(element);
-    // const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
-    // dialogRef.afterClosed().subscribe(data => {
-    //   console.log('data: onImport');
-    //   console.log(data);
-    //   if (data !== undefined){
-    //       data.formId = element.uid;
-    //       const path = `upload/records/update/${element.id}`;
-    //       this.downloadService.updateRecords(path, data);
-    //   }
-    // });
-
-    const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent, {data: {elt: element}});
+    this.importPopup.open(ImportRecordsTokensModalComponent, {data: {elt: element}});
   }
 
   copyUrl(element: any, $event: any): void {

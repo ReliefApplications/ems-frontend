@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { GetFormsQueryResponse, GET_FORM_BY_ID, GET_FORMS } from '../graphql/queries';
+import { GetFormsQueryResponse, GET_FORMS } from '../graphql/queries';
 
 @Injectable({
   providedIn: 'root'
@@ -57,20 +57,14 @@ export class SafeDownloadService {
     let response = null;
     let reason = null;
     await this.http.post(url, data, { headers }).toPromise().then((res) => {
-      console.log('RES');
-      console.log(res);
       response = res;
     }).catch((reas => {console.log(reas); reason = reas; }));
-    console.log('1');
     console.log(response);
     console.log(reason);
     let dataReturn = null;
     if (reason == null){
-      console.log('1.5');
       const koboUrl = JSON.parse(JSON.stringify(response)).url;
-      console.log(koboUrl);
       const responseApollo = await this.apollo.query<GetFormsQueryResponse>({query: GET_FORMS}).toPromise();
-      console.log('2');
       dataReturn = {
         status: true,
         data : {
@@ -85,10 +79,6 @@ export class SafeDownloadService {
         data : reason
       };
     }
-    console.log('2.5');
-    // dataSource.data = responseApollo.data.forms;
-    // linkLabel = koboUrl;
-    // spinner = false;
     return dataReturn;
   }
 
@@ -99,10 +89,7 @@ export class SafeDownloadService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    console.log('1');
-    console.log('*** body ***');
     console.log(data);
     await this.http.post(url, data, { headers }).toPromise().then(res => { console.log(res); });
-    console.log('2');
   }
 }

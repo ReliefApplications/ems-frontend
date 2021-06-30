@@ -10,7 +10,6 @@ import {SafeDownloadService} from '../../services/download.service';
 
 export class ImportRecordsTokensModalComponent implements OnInit {
 
-  // public body: { formId: string; accessToken: string };
   public body: any;
   public cardDisplay: boolean;
   public spinnerDisplay: boolean;
@@ -26,7 +25,6 @@ export class ImportRecordsTokensModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.data = {};
   }
 
   async importRecords(accesToken: string): Promise<void> {
@@ -40,14 +38,8 @@ export class ImportRecordsTokensModalComponent implements OnInit {
       const path = `upload/records/update/${this.data.elt.id}`;
       await this.downloadService.updateRecords(path, this.body);
 
-      console.log('3');
-
       this.spinnerDisplay = false;
       this.cardDisplay = true;
     }
-    // console.log('this.data: importRecords');
-    // console.log(this.data);
-    // this.data.accessToken = accesToken;
-    // return this.dialogRef.close(this.data);
   }
 }
