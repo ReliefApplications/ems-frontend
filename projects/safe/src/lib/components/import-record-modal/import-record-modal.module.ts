@@ -9,7 +9,9 @@ import { SafeImportRecordModalComponent } from './import-record-modal.component'
     SafeImportRecordModalComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatButtonModule,
+    NgxDropzoneModule
   ],
   exports: [
     SafeImportRecordModalComponent

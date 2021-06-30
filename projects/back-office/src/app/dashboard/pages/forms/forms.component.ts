@@ -11,7 +11,7 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  ImportRecordModalComponent,
+  SafeImportRecordModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
