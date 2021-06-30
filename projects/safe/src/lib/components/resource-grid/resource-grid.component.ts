@@ -78,6 +78,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public detailsField: any;
 
   public loading = true;
+  public queryError = false;
 
   public fields: any[] = [];
 
@@ -113,7 +114,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   public init(): void {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe((res: any) => {
         for (const field in res.data) {
@@ -123,6 +124,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
         }
         this.getRecords();
       });
+    } else {
+      this.loading = false;
+      this.queryError = true;
     }
   }
 

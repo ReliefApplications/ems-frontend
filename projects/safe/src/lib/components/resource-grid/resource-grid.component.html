@@ -1,5 +1,6 @@
-<kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [height]="410" [selectable]="!readOnly && selectableSettings"
-  kendoGridSelectBy [selectedKeys]="selectedRowsIndex" (selectionChange)="selectionChange($event)">
+<kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [height]="410"
+  [selectable]="!readOnly && selectableSettings" kendoGridSelectBy [selectedKeys]="selectedRowsIndex"
+  (selectionChange)="selectionChange($event)">
   <ng-template kendoGridToolbarTemplate>
     <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
   </ng-template>
@@ -10,7 +11,8 @@
       </mat-select>
     </mat-form-field>
   </ng-template>
-  <kendo-grid-checkbox-column [width]="41" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect" *ngIf="!readOnly">
+  <kendo-grid-checkbox-column [width]="41" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect"
+    *ngIf="!readOnly">
   </kendo-grid-checkbox-column>
 
   <!-- ************************************************************ !-->
@@ -231,6 +233,10 @@
       </button>
     </ng-template>
   </kendo-grid-column>
+  <!-- EMPTY TABLE / INVALID QUERY -->
+  <ng-template kendoGridNoRecordsTemplate>
+    {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
+  </ng-template>
   <!-- ROW SUBGRID -->
   <ng-container *ngIf="detailsField">
     <div *kendoGridDetailTemplate="let dataItem">
