@@ -92,4 +92,22 @@ export class SafeAuthService {
   get user(): Observable<User | null> {
     return this._user.asObservable();
   }
+
+  /* Check if user exist and fetch it if not
+  */
+  getProfileIfNull(): void {
+    const user = this._user.getValue();
+    if (!user) {
+      this.getProfile();
+    }
+  }
+
+  /* Check if account exist and fetch it if not
+  */
+  getAccountIfNull(): void {
+    if (!this.account) {
+      this.checkAccount();
+    }
+  }
+
 }
