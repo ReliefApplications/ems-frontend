@@ -11,7 +11,8 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  ImportRecordsTokensModalComponent,
+  SafeImportRecordsTokensModalComponent,
+  SafeImportRecordModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -203,7 +204,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onImportRecord(element: any, e: any): void {
     console.log(element);
-    const dialogRef = this.importPopup.open(ImportRecordsTokensModalComponent);
+    const dialogRef = this.importPopup.open(SafeImportRecordsTokensModalComponent);
     dialogRef.afterClosed().subscribe(data => {
         if (data !== undefined){
           const path = `upload/records/update/${element.id}`;

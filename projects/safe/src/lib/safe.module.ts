@@ -24,15 +24,9 @@ import { SafeRecordHistoryModule } from './components/record-history/record-hist
 import { SafeRecordModalModule } from './components/record-modal/public-api';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
 import { SafeProfileModule } from './pages/profile/profile.module';
-import { ImportRecordModalComponent } from './components/import-record-modal/import-record-modal.component';
-import {NgxDropzoneModule} from 'ngx-dropzone';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import { ImportRecordsTokensModalComponent } from './components/import-records-tokens-modal/import-records-tokens-modal.component';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatDialogModule} from '@angular/material/dialog';
+import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
+import { SafeImportRecordModalModule } from './components/import-record-modal/import-record-modal.module';
+import { SafeImportRecordsTokensModalModule } from './components/import-records-tokens-modal/import-records-tokens-modal.module';
 
 @NgModule({
   exports: [
@@ -60,20 +54,10 @@ import {MatDialogModule} from '@angular/material/dialog';
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
-    SafeProfileModule
-  ],
-  imports: [
-    NgxDropzoneModule,
-    CommonModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDialogModule
-  ],
-  declarations: [
-    ImportRecordModalComponent,
-    ImportRecordsTokensModalComponent
+    SafeProfileModule,
+    SafeSearchResourceGridModalModule,
+    SafeImportRecordModalModule,
+    SafeImportRecordsTokensModalModule
   ]
 })
 export class SafeModule { }

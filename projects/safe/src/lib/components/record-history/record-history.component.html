@@ -21,6 +21,15 @@
       </mat-date-range-picker>
     </mat-form-field>
   </div>
+  <div class="actions">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
+      Download history
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+    </mat-menu>
+  </div>
 </div>
 <div class="history-container">
   <ng-container *ngFor="let item of filterHistory; let index=index">

@@ -6,12 +6,12 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
   templateUrl: './import-records-tokens-modal.component.html',
   styleUrls: ['./import-records-tokens-modal.component.css']
 })
-export class ImportRecordsTokensModalComponent implements OnInit {
+export class SafeImportRecordsTokensModalComponent implements OnInit {
 
   // accessToken: string;
   // formId: string;
 
-  constructor(public dialogRef: MatDialogRef<ImportRecordsTokensModalComponent>,
+  constructor(public dialogRef: MatDialogRef<SafeImportRecordsTokensModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     // this.accessToken = 'test1';
     // this.formId = 'test2';
