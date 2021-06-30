@@ -23,7 +23,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<boolean> = new EventEmitter();
+  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
@@ -163,7 +163,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     this.survey.clear();
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
-    this.save.emit(false);
+    this.save.emit({ completed: false });
     this.survey.render();
     this.surveyActive = true;
   }
@@ -178,6 +178,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     let mutation: any;
     this.surveyActive = false;
     const data = this.survey.data;
+
+    // console.log('*** data ***');
+    // console.log(data);
+
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
@@ -193,7 +197,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           }
         }).toPromise();
         if (res.errors) {
-          this.snackBar.openSnackBar('Upload failed.', { error: true });
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
           data[name][index].content = res.data?.uploadFile;
@@ -208,6 +212,12 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       }
     }
     this.survey.data = data;
+    console.log('this.survey');
+    console.log(this.survey);
+    console.log('this.survey.data');
+    console.log(this.survey.data);
+    console.log('this.form');
+    console.log(this.form);
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record ? this.record.id : this.form.uniqueRecord?.id;
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
@@ -228,7 +238,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     }
     mutation.subscribe((res: any) => {
       if (res.errors) {
-        this.save.emit(false);
+        this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
@@ -249,7 +259,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         if (this.form.uniqueRecord) {
           this.selectedTabIndex = 0;
         }
-        this.save.emit(true);
+        this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
       }
     });
   }

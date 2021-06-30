@@ -11,6 +11,7 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
+  SafeImportRecordModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -20,6 +21,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import {HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-forms',
@@ -58,7 +60,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private importPopup: MatDialog
   ) {}
 
   /*  Load the forms.
@@ -197,5 +200,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     const path = `download/form/kobo/${element.id}`;
     const fileName = `${element.name}.xlsx`;
     this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, fileName);
+  }
+
+  onImportRecord(element: any, e: any): void {
+    console.log(element);
+    // this.importPopup.open(ImportRecordModalComponent);
+    const path = `upload/records/update/${element.id}`;
+    this.downloadService.updateRecords(path);
   }
 }

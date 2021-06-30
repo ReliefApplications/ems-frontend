@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
@@ -111,7 +111,7 @@ export class SafeGridSettingsComponent implements OnInit {
         this.queryName = res.name;
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
-          query.subscribe((res1: { data: any }) => {
+          query.subscribe((res1: { data: any }) => {
             const source = res1.data[`_${this.queryName}Meta`]._source;
             this.tileForm?.get('resource')?.setValue(source);
             if (source) {
@@ -139,7 +139,7 @@ export class SafeGridSettingsComponent implements OnInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
-    return this.formBuilder.group({
+    const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
@@ -155,20 +155,26 @@ export class SafeGridSettingsComponent implements OnInit {
       attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
+      targetFormQuery: this.queryBuilder.createQueryForm(value?.targetFormQuery || null),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-        value && value.notify ? Validators.required : null],
+      value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
       value && value.publish ? Validators.required : null],
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [value && value.distributionList ? value.distributionList : [],
-        value && value.sendMail ? Validators.required : null],
+      value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
       value && value.sendMail ? Validators.required : null],
       // attachment: [value && value.attachment ? value.attachment : false]
     });
+    buttonForm.get('targetForm')?.valueChanges.subscribe(target => {
+      const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
+      buttonForm.get('targetFormQuery')?.get('name')?.setValue(queryName);
+    });
+    return buttonForm;
   }
 
   public addFloatingButton(): void {

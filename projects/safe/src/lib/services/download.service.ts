@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import {Apollo} from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class SafeDownloadService {
 
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
     this.baseUrl = environment.API_URL;
   }
@@ -42,5 +43,17 @@ export class SafeDownloadService {
     document.body.append(link);
     link.click();
     setTimeout(() => link.remove(), 0);
+  }
+
+  updateRecords(path: string): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    this.http.get(url, {headers}).subscribe(res => {
+      console.log(res);
+    });
   }
 }
