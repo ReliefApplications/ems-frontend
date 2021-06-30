@@ -64,6 +64,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       channel?: string;
       mapping?: any;
       rawMapping?: any;
+      uniqueIdentifiers?: any;
     }) => {
       if (value) {
         const variables = {
@@ -77,6 +78,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           value.convertTo && { convertTo: value.convertTo },
           value.channel && { channel: value.channel },
           value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+          value.uniqueIdentifiers && { uniqueIdentifiers: value.uniqueIdentifiers }
         );
         this.apollo.mutate<AddPullJobMutationResponse>({
           mutation: ADD_PULL_JOB,
@@ -139,6 +141,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       channel?: string;
       mapping?: any;
       rawMapping?: any;
+      uniqueIdentifiers?: any;
     }) => {
       if (value) {
         const variables = {
@@ -153,6 +156,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           value.convertTo && { convertTo: value.convertTo },
           value.channel && { channel: value.channel },
           value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+          value.uniqueIdentifiers && { uniqueIdentifiers: value.uniqueIdentifiers }
         );
         this.apollo.mutate<EditPullJobMutationResponse>({
           mutation: EDIT_PULL_JOB,

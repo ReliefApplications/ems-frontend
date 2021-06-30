@@ -12,5 +12,6 @@ export interface PullJob {
     schedule?: string;
     convertTo?: Form;
     mapping?: any;
+    uniqueIdentifiers?: string[];
     channel?: Channel;
 }
