@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { GridDataResult, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
@@ -36,7 +36,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
     { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
-export class SafeResourceGridComponent implements OnInit {
+export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   @Input()
   multiSelect = false;
@@ -75,7 +75,6 @@ export class SafeResourceGridComponent implements OnInit {
   private dataQuery: any;
 
   private dataSubscription?: Subscription;
-  private originalItems: any[] = [];
   public detailsField: any;
 
   public loading = true;
@@ -106,6 +105,12 @@ export class SafeResourceGridComponent implements OnInit {
     this.init();
   }
 
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
+
   public init(): void {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
@@ -118,11 +123,6 @@ export class SafeResourceGridComponent implements OnInit {
         }
         this.getRecords();
       });
-    } else {
-      this.gridData = {
-        data: this.settings,
-        total: this.settings.length
-      };
     }
   }
 
@@ -135,10 +135,8 @@ export class SafeResourceGridComponent implements OnInit {
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
-        this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
       } else {
-        this.originalItems = [];
         this.fields = [];
         this.detailsField = '';
       }
@@ -158,7 +156,6 @@ export class SafeResourceGridComponent implements OnInit {
                 this.fields = this.getFields(fields);
                 this.items = cloneData(res.data[field] ? res.data[field] : []);
                 this.convertDateFields(this.items);
-                this.originalItems = cloneData(this.items);
                 this.detailsField = fields.find((x: any) => x.kind === 'LIST');
                 if (this.detailsField) {
                   this.detailsField = {...this.detailsField, actions: this.settings.actions};

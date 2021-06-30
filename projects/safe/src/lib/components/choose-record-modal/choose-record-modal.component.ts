@@ -24,7 +24,6 @@ export class SafeChooseRecordModalComponent implements OnInit {
   public isSearchActivated = false;
   public selectedRows: any [] = [];
 
-  public width: any = 460;
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -54,7 +53,6 @@ export class SafeChooseRecordModalComponent implements OnInit {
 
   onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
-    this.isSearchActivated ? this.width = 1060 : this.width = 460;
   }
 
   onRowSelected(rows: any): void {
