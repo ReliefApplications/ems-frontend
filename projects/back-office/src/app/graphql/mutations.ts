@@ -726,8 +726,8 @@ export interface EditApiConfigurationMutationResponse {
 
 // === ADD PULL JOB ===
 export const ADD_PULL_JOB = gql`
-mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $channel: ID) {
-  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, channel: $channel) {
+mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status
@@ -741,6 +741,7 @@ mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiCon
       name
     }
     mapping
+    uniqueIdentifiers
     channel {
       id
       title
@@ -768,8 +769,8 @@ export interface DeletePullJobMutationResponse {
 
 // === EDIT PULL JOB ===
 export const EDIT_PULL_JOB = gql`
-mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $channel: ID) {
-  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, channel: $channel) {
+mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status
@@ -783,6 +784,7 @@ mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status,
       name
     }
     mapping
+    uniqueIdentifiers
     channel {
       id
       title
