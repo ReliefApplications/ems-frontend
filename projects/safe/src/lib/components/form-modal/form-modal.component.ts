@@ -137,6 +137,7 @@ export class SafeFormModalComponent implements OnInit {
         if (this.data.recordId) {
           await this.uploadFiles(survey);
           if (this.isMultiEdition) {
+            // faire la mutation multiple
             for (const id of this.data.recordId) {
               this.updateData(id, survey);
             }

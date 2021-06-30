@@ -518,6 +518,17 @@ export interface DeleteRecordMutationResponse {
   deleteRecord: Record;
 }
 
+// === DELETE RECORD ===
+export const DELETE_RECORDS = gql`
+mutation deleteRecords($ids: [ID]!) {
+  deleteRecords(ids: $ids)
+}`;
+
+export interface DeleteRecordsMutationResponse {
+  loading: boolean;
+  deleteRecords: number;
+}
+
 // === ADD SUBSCRIPTION ===
 export const ADD_SUBSCRIPTION = gql`
 mutation addSubscription($application: ID!, $routingKey: String!, $title: String!, $convertTo: ID, $channel: ID) {
