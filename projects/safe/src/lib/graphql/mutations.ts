@@ -221,9 +221,9 @@ export interface AddRoleToUsersMutationResponse {
   addRoleToUsers: User[];
 }
 
-export const ADD_MULTIPLE_USERS = gql`
-mutation addMultipleUsers($users: JSON!) {
-  addMultipleUsers(users: $users) {
+export const ADD_USERS = gql`
+mutation addUsers($users: JSON!) {
+  addUsers(users: $users) {
     id
     username
     name
@@ -235,9 +235,9 @@ mutation addMultipleUsers($users: JSON!) {
   }
 }`;
 
-export interface AddMultipleUsersMutationResponse {
+export interface AddUsersMutationResponse {
   loading: boolean;
-  addMultipleUsers: User[];
+  addUsers: User[];
 }
 
 // === EDIT ROLE ===

@@ -10,7 +10,7 @@ import {
   ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
-  DELETE_USERS, DeleteUsersMutationResponse, AddMultipleUsersMutationResponse, ADD_MULTIPLE_USERS
+  DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
 } from '../../graphql/mutations';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
 import { SafeInviteUserComponent } from './components/invite-user/invite-user.component';
@@ -75,8 +75,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         if (value.length) {
-          this.apollo.mutate<AddMultipleUsersMutationResponse>({
-            mutation: ADD_MULTIPLE_USERS,
+          this.apollo.mutate<AddUsersMutationResponse>({
+            mutation: ADD_USERS,
             variables: {
               users: value
             }
