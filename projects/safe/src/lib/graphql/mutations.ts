@@ -27,6 +27,22 @@ export interface EditRecordMutationResponse {
   editRecord: Record;
 }
 
+// === EDIT RECORDS ===
+export const EDIT_RECORDS = gql`
+mutation editRecords($ids: [ID]!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecords(ids: $ids, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordsMutationResponse {
+  loading: boolean;
+  editRecords: Record[];
+}
+
 // === CONVERT RECORD ===
 export const CONVERT_RECORD = gql`
 mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
