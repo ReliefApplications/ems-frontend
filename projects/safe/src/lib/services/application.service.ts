@@ -6,6 +6,7 @@ import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
+import { PullJob } from '../models/pullJob.model';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse,
@@ -660,4 +661,16 @@ export class SafeApplicationService {
       });
     }
   }
+
+  /* Update application with latest pullJobs
+  */
+  updatePullJobs(pullJobs: PullJob[]): void {
+    const application = this._application.getValue();
+    if (application) {
+      const newApplication = {...application, pullJobs};
+      this._application.next(newApplication);
+    }
+  }
+
+
 }

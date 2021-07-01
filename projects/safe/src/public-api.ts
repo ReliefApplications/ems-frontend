@@ -35,6 +35,7 @@ export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
+export * from './lib/models/pullJob.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -61,6 +62,8 @@ export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
+export * from './lib/components/search-resource-grid-modal/public-api';
+export * from './lib/components/config-display-grid-fields-modal/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
