@@ -100,7 +100,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   onEdit(user: User): void {
     const dialogRef = this.dialog.open(SafeEditUserComponent, {
-      panelClass: 'add-dialog',
       data: {
         user,
         availableRoles: this.roles,
