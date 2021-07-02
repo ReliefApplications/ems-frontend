@@ -9,7 +9,8 @@ import {
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
-import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
+import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
+   UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
@@ -137,9 +138,7 @@ export class SafeFormModalComponent implements OnInit {
         if (this.data.recordId) {
           await this.uploadFiles(survey);
           if (this.isMultiEdition) {
-            for (const id of this.data.recordId) {
-              this.updateData(id, survey);
-            }
+            this.updateMultipleData(this.data.recordId, survey);
           } else {
             this.updateData(this.data.recordId, survey);
           }
@@ -178,6 +177,20 @@ export class SafeFormModalComponent implements OnInit {
     }).subscribe(res => {
       if (res.data) {
         this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
+      }
+    });
+  }
+
+  public updateMultipleData(ids: any, survey: any): void {
+    this.apollo.mutate<EditRecordsMutationResponse>({
+      mutation: EDIT_RECORDS,
+      variables: {
+        ids,
+        data: survey.data
+      }
+    }).subscribe(res => {
+      if (res.data) {
+        this.dialogRef.close({ template: this.form?.id, data: res.data.editRecords });
       }
     });
   }

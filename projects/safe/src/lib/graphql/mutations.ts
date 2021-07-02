@@ -27,6 +27,22 @@ export interface EditRecordMutationResponse {
   editRecord: Record;
 }
 
+// === EDIT RECORDS ===
+export const EDIT_RECORDS = gql`
+mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
+  editRecords(ids: $ids, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordsMutationResponse {
+  loading: boolean;
+  editRecords: Record[];
+}
+
 // === CONVERT RECORD ===
 export const CONVERT_RECORD = gql`
 mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
@@ -516,6 +532,17 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORDS = gql`
+mutation deleteRecords($ids: [ID]!) {
+  deleteRecords(ids: $ids)
+}`;
+
+export interface DeleteRecordsMutationResponse {
+  loading: boolean;
+  deleteRecords: number;
 }
 
 // === ADD SUBSCRIPTION ===
