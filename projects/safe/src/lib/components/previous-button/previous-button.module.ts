@@ -12,10 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatButtonModule
   ],
-  exports: [
-    SafePreviousButtonComponent,
-    MatIconModule,
-    MatButtonModule
-  ]
+  exports: [SafePreviousButtonComponent]
 })
 export class SafePreviousButtonModule { }
