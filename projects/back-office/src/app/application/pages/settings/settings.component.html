@@ -1,3 +1,8 @@
+
+<safe-layout [title]="title" [navGroups]="navGroups" [toolbar]="toolbar" [route]="route"></safe-layout>
+<ng-template #toolbar>
+  <app-application-toolbar></app-application-toolbar>
+</ng-template>
 <form [formGroup]="settingsForm" *ngIf="settingsForm">
   <h1>General</h1>
   <div class="form-group">

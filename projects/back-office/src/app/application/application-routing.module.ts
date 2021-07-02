@@ -26,53 +26,6 @@ const routes: Routes = [
             path: 'edit',
             loadChildren: () => import('./pages/settings/settings.module')
               .then(m => m.SettingsModule)
-          },
-          {
-            path: 'roles',
-            loadChildren: () => import('./pages/roles/roles.module')
-              .then(m => m.RolesModule),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'users',
-            loadChildren: () => import('./pages/users/users.module')
-              .then(m => m.UsersModule),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'position',
-            children: [
-              {
-                path: '',
-                loadChildren: () => import('./pages/position/position.module')
-                .then(m => m.PositionModule),
-                // canActivate: [SafePermissionGuard]
-              },
-              {
-                path: ':id',
-                loadChildren: () => import('./pages/position-attributes/position-attributes.module')
-                  .then(m => m.PositionAttributesModule),
-                // canActivate: [SafePermissionGuard]
-              },
-            ]
-          },
-          {
-            path: 'channels',
-            loadChildren: () => import('./pages/channels/channels.module')
-              .then(m => m.ChannelsModule),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'subscriptions',
-            loadChildren: () => import('./pages/subscriptions/subscriptions.module')
-              .then(m => m.SubscriptionsModule),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'pull-jobs',
-            loadChildren: () => import('./pages/pull-jobs/pull-jobs.module')
-              .then(m => m.PullJobsModule),
-            // canActivate: [SafePermissionGuard]
           }
         ]
       },

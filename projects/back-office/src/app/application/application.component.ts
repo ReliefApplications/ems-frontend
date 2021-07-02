@@ -78,37 +78,37 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 path: './settings/edit',
                 icon: 'settings'
               }
-              ,
-              {
-                name: 'Users',
-                path: './settings/users',
-                icon: 'supervisor_account'
-              },
-              {
-                name: 'Roles',
-                path: './settings/roles',
-                icon: 'admin_panel_settings'
-              },
-              {
-                name: 'Attributes',
-                path: './settings/position',
-                icon: 'manage_accounts'
-              },
-              {
-                name: 'Channels',
-                path: './settings/channels',
-                icon: 'edit_notifications'
-              },
-              {
-                name: 'Subscriptions',
-                path: './settings/subscriptions',
-                icon: 'move_to_inbox'
-              },
-              {
-                name: 'Pull jobs',
-                path: './settings/pull-jobs',
-                icon: 'cloud_download'
-              }
+              // ,
+              // {
+              //   name: 'Users',
+              //   path: './settings/users',
+              //   icon: 'supervisor_account'
+              // },
+              // {
+              //   name: 'Roles',
+              //   path: './settings/roles',
+              //   icon: 'admin_panel_settings'
+              // },
+              // {
+              //   name: 'Attributes',
+              //   path: './settings/position',
+              //   icon: 'manage_accounts'
+              // },
+              // {
+              //   name: 'Channels',
+              //   path: './settings/channels',
+              //   icon: 'edit_notifications'
+              // },
+              // {
+              //   name: 'Subscriptions',
+              //   path: './settings/subscriptions',
+              //   icon: 'move_to_inbox'
+              // },
+              // {
+              //   name: 'Pull jobs',
+              //   path: './settings/pull-jobs',
+              //   icon: 'cloud_download'
+              // }
             ]
           }
         ];
