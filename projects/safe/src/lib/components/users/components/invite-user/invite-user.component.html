@@ -75,6 +75,6 @@
   <button mat-button (click)="onClose()">Close</button>
   <button type="submit" *ngIf="!allowMultipleInvites" mat-flat-button [mat-dialog-close]="inviteForm.value"
     color="primary" [disabled]="!inviteForm.valid">Invite</button>
-  <button type="submit" *ngIf="allowMultipleInvites" mat-flat-button [mat-dialog-close]="multipleInviteForm.value"
+  <button type="submit" *ngIf="allowMultipleInvites" mat-flat-button [mat-dialog-close]="returnValueMultipleUsers()"
     color="primary" [disabled]="!multipleInviteForm.valid">Invite users</button>
 </div>

@@ -78,12 +78,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           this.apollo.mutate<AddUsersMutationResponse>({
             mutation: ADD_USERS,
             variables: {
-              users: value
+              users: value,
+              application: this.roles[0].application?.id
             }
-          }).subscribe((res: any) => {
+          }).subscribe(res => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addMultipleUsers.length));
-              this.users.data = this.users.data.concat(res.data.addMultipleUsers);
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
+              this.users.data = this.users.data.concat(res?.data?.addUsers || []);
             } else {
               this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
             }

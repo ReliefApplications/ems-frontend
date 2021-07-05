@@ -13,8 +13,12 @@ import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
-import { validate } from 'graphql';
 
+interface AddUserValue {
+  email: string;
+  roles: string[];
+  attributes: { value: string, category: string };
+}
 @Component({
   selector: 'safe-invite-user',
   templateUrl: './invite-user.component.html',
@@ -287,4 +291,13 @@ export class SafeInviteUserComponent implements OnInit {
     return Array.from(new Set(csvArr));
   }
 
+  public returnValueMultipleUsers(): AddUserValue[]{
+    return this.multipleInviteForm.value.map((userForm: any) => {
+      return {
+        email: userForm.email,
+        roles: userForm.role.map((x: any) => x.id),
+        attributes: userForm.categories.map((x: any) => ({ value: x.value, category: x.id }))
+      };
+    });
+  }
 }
