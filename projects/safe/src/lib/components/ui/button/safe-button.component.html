@@ -1,0 +1,81 @@
+<ng-container [ngSwitch]="buttonType">
+
+  <button
+    *ngSwitchDefault
+    mat-button
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    {{text}}
+  </button>
+
+  <button
+    *ngSwitchCase="'mat-raised-button'"
+    mat-raised-button
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    {{text}}
+  </button>
+
+  <button
+    *ngSwitchCase="'mat-stroked-button'"
+    mat-stroked-button
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    {{text}}
+  </button>
+
+  <button
+    *ngSwitchCase="'mat-flat-button'"
+    mat-flat-button
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    {{text}}
+  </button>
+
+  <button
+    *ngSwitchCase="'mat-icon-button'"
+    mat-icon-button
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    <mat-icon>{{icon}}</mat-icon>
+  </button>
+
+  <button
+    *ngSwitchCase="'mat-fab'"
+    mat-fab
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    <mat-icon>{{icon}}</mat-icon>
+  </button>
+
+
+  <button
+    *ngSwitchCase="'mat-mini-fab'"
+    mat-mini-fab
+    [color]="color"
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    <mat-icon>{{icon}}</mat-icon>
+  </button>
+
+</ng-container>
