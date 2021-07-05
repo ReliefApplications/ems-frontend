@@ -1,9 +1,9 @@
 import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Role, User } from '../../../../models/user.model';
+import { Role, User, AddUser } from '../../../../models/user.model';
 import { GetUsersQueryResponse, GET_USERS } from '../../../../graphql/queries';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -14,11 +14,6 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
 
-interface AddUserValue {
-  email: string;
-  roles: string[];
-  attributes: { value: string, category: string };
-}
 @Component({
   selector: 'safe-invite-user',
   templateUrl: './invite-user.component.html',
@@ -291,7 +286,7 @@ export class SafeInviteUserComponent implements OnInit {
     return Array.from(new Set(csvArr));
   }
 
-  public returnValueMultipleUsers(): AddUserValue[]{
+  public returnValueMultipleUsers(): AddUser[]{
     return this.multipleInviteForm.value.map((userForm: any) => {
       return {
         email: userForm.email,
