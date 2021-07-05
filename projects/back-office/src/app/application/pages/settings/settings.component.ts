@@ -2,14 +2,12 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService, ContentType } from '@safe/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService, SafeLayoutService } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
-
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -25,17 +23,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public user: any;
   public locked: boolean  | undefined = undefined;
   public lockedByUser: boolean | undefined = undefined;
-  public navGroups: any[] = [];
+  public navItems: any[] = [];
   public title = '';
 
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private router: Router,
-    public route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
+    private layoutService: SafeLayoutService,
     public dialog: MatDialog
   ) { }
 
@@ -54,76 +52,44 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.lockedByUser = this.application?.lockedByUser;
       }
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
-      if (application) {
-        this.title = application.name || '';
-        const navItems: any[] = [];
-        this.navGroups = [
-          {
-            name: 'Administration',
-            navItems: [
-              {
-                name: 'Users',
-                path: './settings/users',
-                icon: 'supervisor_account'
-              },
-              {
-                name: 'Roles',
-                path: './settings/roles',
-                icon: 'admin_panel_settings'
-              },
-              {
-                name: 'Attributes',
-                path: './settings/position',
-                icon: 'manage_accounts'
-              },
-              {
-                name: 'Channels',
-                path: './settings/channels',
-                icon: 'edit_notifications'
-              },
-              {
-                name: 'Subscriptions',
-                path: './settings/subscriptions',
-                icon: 'move_to_inbox'
-              },
-              {
-                name: 'Pull jobs',
-                path: './settings/pull-jobs',
-                icon: 'cloud_download'
-              }
-            ]
-          }
-        ];
+    this.navItems = [
+      {
+        name: 'Settings',
+        path: './settings/edit',
+        icon: 'settings'
+      },
+      {
+        name: 'Users',
+        path: './settings/users',
+        icon: 'supervisor_account'
+      },
+      {
+        name: 'Roles',
+        path: './settings/roles',
+        icon: 'admin_panel_settings'
+      },
+      {
+        name: 'Attributes',
+        path: './settings/position',
+        icon: 'manage_accounts'
+      },
+      {
+        name: 'Channels',
+        path: './settings/channels',
+        icon: 'edit_notifications'
+      },
+      {
+        name: 'Subscriptions',
+        path: './settings/subscriptions',
+        icon: 'move_to_inbox'
+      },
+      {
+        name: 'Pull jobs',
+        path: './settings/pull-jobs',
+        icon: 'cloud_download'
       }
-    });
-  }
-
-  private getNavIcon(type: string): string {
-    switch (type) {
-      case 'workflow':
-        return 'linear_scale';
-      case 'form':
-        return 'description';
-      default:
-        return 'dashboard';
-    }
-  }
-
-  onDeletePage(item: any): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: 'Delete page',
-        content: `Do you confirm the deletion of the page ${item.name} ?`,
-        confirmText: 'Delete',
-        confirmColor: 'warn'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if ( value ) {
-        this.applicationService.deletePage(item.id);
-      }
-    });
+    ]
+    this.layoutService.setNavItems(this.navItems);
   }
   
   onSubmit(): void {
