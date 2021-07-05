@@ -8,7 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -44,7 +44,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeRecordModalModule,
     SafeChooseRecordModalModule,
     SafeExpandedCommentModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ButtonsModule
   ],
   exports: [SafeGridComponent]
 })

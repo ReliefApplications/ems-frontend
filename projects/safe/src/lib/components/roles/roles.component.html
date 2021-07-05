@@ -6,10 +6,6 @@
       <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
         placeholder="Search...">
     </mat-form-field>
-    <!-- <button mat-flat-button (click)="showFilters = !showFilters" class="filters-toggle">
-      <mat-icon>filter_list</mat-icon>
-      Filter
-    </button> -->
   </div>
   <div class="actions">
     <button mat-flat-button color="primary" (click)="onAdd()">
@@ -17,13 +13,6 @@
       Create a role
     </button>
   </div>
-  <!-- <div class="filters" [style.display]="!showFilters ? 'none' : ''">
-    <mat-form-field appearance="outline">
-      <input [ngModel]="usersFilter" matInput (keyup)="applyFilter('usersCount', $event)" type="number"
-        placeholder="Users">
-    </mat-form-field>
-    <button mat-button color="warn" (click)="clearAllFilters()">Clear Filters</button>
-  </div> -->
   <table mat-table [dataSource]="roles" matSort>
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef>

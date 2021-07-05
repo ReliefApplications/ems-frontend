@@ -12,6 +12,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -27,7 +28,8 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
     DragDropModule,
     MatBadgeModule,
     MatDividerModule,
-    SafeConfirmModalModule
+    SafeConfirmModalModule,
+    MatTooltipModule
   ],
   exports: [SafeLayoutComponent]
 })

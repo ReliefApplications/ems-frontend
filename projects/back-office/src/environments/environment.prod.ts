@@ -6,6 +6,7 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/common',
   redirectUrl: 'https://safe-backoffice.development.humanitarian.tech',
   postLogoutRedirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth',
-  frontOffice: 'https://safe.development.humanitarian.tech/',
-  backOffice: 'https://safe-backoffice.development.humanitarian.tech/',
+  frontOfficeUri: 'https://safe.development.humanitarian.tech/',
+  backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
+  module: 'backoffice'
 };
