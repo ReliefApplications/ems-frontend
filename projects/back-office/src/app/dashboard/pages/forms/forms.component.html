@@ -23,7 +23,7 @@
         <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
         <mat-date-range-picker #rangePicker>
           <mat-date-range-picker-actions>
-            <safe-button buttonType="mat-button" text="Clear range" color="primary" matDateRangePickerCancel
+            <safe-button buttonType="mat-button" text="Clear range" matDateRangePickerCancel
                          (click)="clearDateFilter()"></safe-button>
             <safe-button buttonType="mat-raised-button" text="Apply" color="primary" matDateRangePickerApply
                          (click)="applyFilter('createdAt', null)">
