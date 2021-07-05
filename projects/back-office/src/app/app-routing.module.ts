@@ -33,20 +33,15 @@ const routes: Routes = [
           }
         ]
       },
-      // {
-      //   path: 'va',
-      //   loadChildren: () => import('../../../safe/src/lib/components/virtual-assistant')
-      //     .then(m => m.Virtual),
-      // },
       {
           path: 'va',
           // component: VaComponent
           children: [
           {
             path: ':id',
-            component: VirtualAssistantComponent
-            // loadChildren: () => import('./dashboard/pages/va/va.module')
-            //   .then(m => m.VaModule),
+            // component: VirtualAssistantComponent
+            loadChildren: () => import('./dashboard/pages/virtual-assistant/virtual-assistant.module')
+              .then(m => m.VirtualAssistantModule),
           }
         ]
       },
