@@ -196,9 +196,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async onExportAssistant(element: any, $event: any): Promise<void> {
     console.log(element);
-    const path = `download/form/${element.id}`;
-    const dataReturn = await this.downloadService.getForm(path);
-    window.open('/test');
+    // const path = `download/form/${element.id}`;
+    // const dataReturn = await this.downloadService.getForm(path);
+    window.open(`/va/${element.id}`);
+    // this.router.navigate([`/va/${element.id}`]);
     // return dataReturn;
   }
 }
