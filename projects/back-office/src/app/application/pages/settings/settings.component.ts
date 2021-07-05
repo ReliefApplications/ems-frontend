@@ -2,7 +2,8 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService, SafeLayoutService } from '@safe/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService,
+  NOTIFICATIONS, SafeAuthService, SafeLayoutService } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
@@ -88,10 +89,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
         path: './settings/pull-jobs',
         icon: 'cloud_download'
       }
-    ]
+    ];
     this.layoutService.setNavItems(this.navItems);
   }
-  
+
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm?.value);
     this.settingsForm?.markAsPristine();

@@ -48,7 +48,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             path: './settings/edit',
             icon: 'settings'
           }
-        ]
+        ];
       }
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
