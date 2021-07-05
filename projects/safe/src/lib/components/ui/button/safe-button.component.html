@@ -8,6 +8,7 @@
     [disableRipple]="disableRipple"
     (click)="clicked.emit()"
   >
+    <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
     {{text}}
   </button>
 
@@ -19,6 +20,7 @@
     [disableRipple]="disableRipple"
     (click)="clicked.emit()"
   >
+    <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
     {{text}}
   </button>
 
@@ -30,6 +32,7 @@
     [disableRipple]="disableRipple"
     (click)="clicked.emit()"
   >
+    <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
     {{text}}
   </button>
 
@@ -41,6 +44,7 @@
     [disableRipple]="disableRipple"
     (click)="clicked.emit()"
   >
+    <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
     {{text}}
   </button>
 
@@ -77,5 +81,17 @@
   >
     <mat-icon>{{icon}}</mat-icon>
   </button>
+
+  <button
+    *ngSwitchCase="'mat-menu-item'"
+    mat-menu-item
+    [disabled]="disabled"
+    [disableRipple]="disableRipple"
+    (click)="clicked.emit()"
+  >
+    <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
+    {{text}}
+  </button>
+
 
 </ng-container>

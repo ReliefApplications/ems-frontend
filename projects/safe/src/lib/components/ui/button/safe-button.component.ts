@@ -9,6 +9,7 @@ export class ButtonType {
   static ICON = 'mat-icon-button';
   static FAB = 'mat-fab';
   static MINI_FAB = 'mat-mini-fab';
+  static MENU_ITEM = 'mat-menu-item';
 }
 
 @Component({
@@ -22,7 +23,7 @@ export class SafeButtonComponent implements OnInit {
   text?: string;
 
   @Input()
-  color: ThemePalette = 'primary';
+  color?: ThemePalette;
 
   @Input()
   disableRipple = false;
