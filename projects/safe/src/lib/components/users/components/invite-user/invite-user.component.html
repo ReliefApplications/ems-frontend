@@ -55,7 +55,9 @@
           <form [formGroup]="$any(role)" class="form-container">
             <mat-form-field appearance="outline">
               <mat-label>Role</mat-label>
-              <input [readonly]="true" matInput formControlName="title" type="text" />
+              <mat-select formControlName="id">
+                <mat-option *ngFor="let role of data.roles" [value]="role.id">{{ role.title }}</mat-option>
+              </mat-select>
             </mat-form-field>
           </form>
         </ng-container>
