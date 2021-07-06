@@ -9,7 +9,7 @@
                placeholder="Search...">
       </mat-form-field>
       <safe-button buttonType="mat-stroked-button" text="Filter" icon="filter_list" color="primary" class="filter-btn"
-                   (clicked)="showFilters = !showFilters"></safe-button>
+                   (click)="showFilters = !showFilters"></safe-button>
     </div>
     <div class="filters" [style.display]="!showFilters ? 'none' : ''">
       <mat-form-field appearance="outline">
@@ -22,7 +22,7 @@
         <mat-date-range-picker #rangePicker>
           <mat-date-range-picker-actions>
             <safe-button buttonType="mat-button" text="Clear range"
-                         (clicked)="clearDateFilter()"></safe-button>
+                         (click)="clearDateFilter()"></safe-button>
             <safe-button buttonType="mat-raised-button" text="Apply" color="primary" matDateRangePickerApply
                          (click)="applyFilter('createdAt', null)"></safe-button>
           </mat-date-range-picker-actions>
@@ -42,14 +42,14 @@
         </mat-select>
       </mat-form-field>
       <safe-button buttonType="mat-button" color="warn" text="Clear Filters"
-                   (clicked)="clearAllFilters()"></safe-button>
+                   (click)="clearAllFilters()"></safe-button>
     </div>
   </div>
 
   <div>
     <div class="actions">
       <safe-button *ngIf="canAdd" buttonType="mat-flat-button" text="Create an application" color="primary" icon="add"
-                   (clicked)="onAdd()"></safe-button>
+                   (click)="onAdd()"></safe-button>
     </div>
   </div>
   <table mat-table [dataSource]="applications" matSort>

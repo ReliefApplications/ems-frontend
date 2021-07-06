@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 
 export class ButtonType {
@@ -36,10 +36,6 @@ export class SafeButtonComponent implements OnInit {
 
   @Input()
   icon?: string;
-
-  @Output()
-  clicked = new EventEmitter<Event>();
-
 
   constructor() {
   }

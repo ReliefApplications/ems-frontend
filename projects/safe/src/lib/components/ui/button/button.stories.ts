@@ -17,14 +17,9 @@ export default {
   title: 'SAFE/Button'
 } as Meta;
 
-export const actionsData = {
-  onClick: action('onClick'),
-};
-
 const Template: Story<SafeButtonComponent> = args => ({
   props: {
-    ...args,
-    clicked: actionsData.onClick
+    ...args
   }
 });
 
