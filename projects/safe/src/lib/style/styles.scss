@@ -429,5 +429,4 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   text-align: right;
 }
 
-$primary: #008dc9;
-@import "~@progress/kendo-theme-default/scss/all";
+@import "theme.scss";
