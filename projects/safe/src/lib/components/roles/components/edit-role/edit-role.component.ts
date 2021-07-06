@@ -22,7 +22,6 @@ export class SafeEditRoleComponent implements OnInit {
   public permissions: Permission[] = [];
   public channels: Channel[] = [];
   public applications: any[] = [];
-  public lastEntry: any[] = [];
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
@@ -51,22 +50,19 @@ export class SafeEditRoleComponent implements OnInit {
       query: GET_CHANNELS,
     }).valueChanges.subscribe(res => {
       this.channels = res.data.channels;
-      // store applications with unicity
-      this.channels.forEach(x => {
-        if (!this.lastEntry.includes(x.application?.name)) {
-          this.applications.push({ name: x.application?.name, channels: [] });
-          this.lastEntry.push(x.application?.name);
-        }
-      });
-      // store channels linked to applications
-      this.applications.forEach(x => {
-        this.channels.forEach(channel => {
-          if (!this.lastEntry.includes(channel.id) && channel.application?.name === x.name) {
-            x.channels.push(channel);
-            this.lastEntry.push(channel.id);
-          }
+      // Move channels in an array under corresponding applications.
+      this.applications = Array.from(new Set(this.channels.map(x => x.application?.name)))
+        .map(name => {
+          return {
+            name: name ? name : 'Global',
+            channels: this.channels.reduce((o: Channel[], channel: Channel) => {
+              if (channel?.application?.name === name) {
+                o.push(channel);
+              }
+              return o;
+            }, [])
+          };
         });
-      });
     });
     this.roleForm = this.formBuilder.group({
       title: [this.data.role.title, Validators.required],
