@@ -574,11 +574,11 @@ export class SafeApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title));
           const newApplication: Application = { ...application,
-            channels: application?.channels?.map(pos => {
-              if (pos.title === title) {
-                pos = { ...pos, title: res.data?.editChannel.title };
+            channels: application?.channels?.map(x => {
+              if (x.id === channel.id) {
+                x = { ...x, title: res.data?.editChannel.title };
               }
-              return pos;
+              return x;
             })
           };
           this._application.next(newApplication);
