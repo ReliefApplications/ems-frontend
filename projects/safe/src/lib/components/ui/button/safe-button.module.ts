@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeButtonComponent } from './safe-button.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from "@angular/material/menu";
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [SafeButtonComponent],
