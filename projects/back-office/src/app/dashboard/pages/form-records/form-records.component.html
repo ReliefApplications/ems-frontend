@@ -9,6 +9,15 @@
         <button mat-menu-item (click)="onDownload('csv')">.csv</button>
         <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
       </mat-menu>
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
+        <mat-icon>file_upload</mat-icon>
+        Upload records
+      </button>
+      <mat-menu #matUploadMenu="matMenu">
+        <button mat-menu-item (click)="downloadTemplate()">Download template</button>
+<!--        <button mat-menu-item (click)="onDownload('csv')">.csv</button>-->
+        <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+      </mat-menu>
     </div>
 </div>
 <ng-container *ngIf="!loading">

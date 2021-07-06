@@ -1,12 +1,21 @@
 import { Apollo } from 'apollo-angular';
 import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS } from '../../../graphql/queries';
-import { EditRecordMutationResponse, EDIT_RECORD, DeleteRecordMutationResponse, DELETE_RECORD } from '../../../graphql/mutations';
+import {
+  GetFormByIdQueryResponse,
+  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS
+} from '../../../graphql/queries';
+import {
+  EditRecordMutationResponse,
+  EDIT_RECORD,
+  DeleteRecordMutationResponse,
+  DELETE_RECORD
+} from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
-import { SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
-  NOTIFICATIONS, SafeSnackBarService } from '@safe/builder';
+import {
+  SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
+  NOTIFICATIONS, SafeSnackBarService
+} from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -35,7 +44,8 @@ export class FormRecordsComponent implements OnInit {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-  ) { }
+  ) {
+  }
 
   /*  Load the records, using the form id passed as a parameter.
   */
@@ -82,7 +92,7 @@ export class FormRecordsComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.dataSource = this.dataSource.filter( x => {
+      this.dataSource = this.dataSource.filter(x => {
         return x.id !== id;
       });
     });
@@ -116,9 +126,9 @@ export class FormRecordsComponent implements OnInit {
     });
   }
 
-   /* Opens the history of the record on the right side of the screen.
-  */
-   public onViewHistory(id: string): void {
+  /* Opens the history of the record on the right side of the screen.
+ */
+  public onViewHistory(id: string): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
@@ -140,7 +150,13 @@ export class FormRecordsComponent implements OnInit {
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
+    const queryString = new URLSearchParams({type}).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+  }
+
+  downloadTemplate(): void {
+    const path = `download/form/records/${this.id}/template`;
+    const queryString = new URLSearchParams({type: 'xlsx'}).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, 'template.xlsx');
   }
 }
