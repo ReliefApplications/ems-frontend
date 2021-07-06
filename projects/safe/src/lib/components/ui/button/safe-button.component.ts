@@ -37,6 +37,9 @@ export class SafeButtonComponent implements OnInit {
   @Input()
   icon?: string;
 
+  @Input()
+  customClass?: string;
+
   constructor() {
   }
 
