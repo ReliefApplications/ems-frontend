@@ -1,0 +1,30 @@
+<!--<mat-grid-list cols="2">-->
+<!--    <mat-grid-tile>-->
+<!--        <img src="{{imgSrc}}">-->
+<!--    </mat-grid-tile>-->
+<!--    <mat-grid-tile>-->
+<!--        <p>message</p>-->
+<!--    </mat-grid-tile>-->
+<!--</mat-grid-list>-->
+
+<div *ngIf="reply=='true'; then thenBlock else elseBlock"></div>
+<ng-template #thenBlock >
+  <div id="messageGlobal" style="margin-left:{{ml}}; margin-right: {{mr}}; background-color: {{backgroundColorReply}}">
+    <img alt="profile_photo" src="{{imgSrc}}">
+    <p innerText="{{text}}"></p>
+  </div>
+</ng-template>
+<ng-template #elseBlock >
+  <div id="messageGlobal" style="margin-left:{{ml}}; margin-right: {{mr}}; background-color: {{backgroundColor}}">
+    <img alt="profile_photo" src="{{imgSrc}}">
+    <p innerText="{{text}}"></p>
+  </div>
+</ng-template>
+<div id="btnChoicesCont" *ngIf="choices!=null">
+  <button class="btnChoice" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch}}</button>
+</div>
+<!--<div id="messageGlobal" style="margin-left: {{ml}}; margin-right: {{mr}}; background-color: {{backgroundColor}}">-->
+<!--  <img alt="profile_photo" src="{{imgSrc}}">-->
+<!--  <p innerText="{{text}}"></p>-->
+<!--</div>-->
+

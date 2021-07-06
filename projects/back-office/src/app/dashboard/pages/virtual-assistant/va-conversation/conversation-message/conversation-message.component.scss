@@ -1,0 +1,31 @@
+#messageGlobal{
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 15px;
+  margin-left: 0;
+  margin-right: auto;
+  margin-bottom: 10px;
+}
+
+img {
+  display: inline;
+  height: 40px;
+  width:40px;
+  border-radius: 100px;
+}
+
+p {
+  display: inline;
+  margin-left: 10px;
+  color: white;
+}
+
+.btnChoice {
+  margin-right: 5px;
+}
+
+#btnsChoices {
+
+}
