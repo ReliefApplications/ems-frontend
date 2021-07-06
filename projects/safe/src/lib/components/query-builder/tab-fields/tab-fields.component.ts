@@ -74,6 +74,19 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           componentRef.destroy();
         });
       }
+    } else {
+      this.fieldForm?.patchValue({
+        label: this.prettifyLabel(this.fieldForm.value.label)
+      });
     }
+  }
+
+  /**
+   * Prettify grid label
+   */
+  private prettifyLabel(label: string): string {
+    label = label.replace('_', ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    return label;
   }
 }

@@ -1,7 +1,8 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
+import { v4 as uuidv4 } from 'uuid';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -19,11 +20,11 @@ import { NOTIFICATIONS } from '../../const/notifications';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class SafeFormComponent implements OnInit, OnDestroy {
+export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<boolean> = new EventEmitter();
+  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
@@ -36,6 +37,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   public surveyActive = true;
   public selectedTabIndex = 0;
   private temporaryFilesStorage: any = {};
+  public containerId: string;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -59,7 +61,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    this.containerId = uuidv4();
+  }
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -103,10 +107,10 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     if (this.isStep) {
       this.recordsSubscription = this.workflowService.records.subscribe(records => {
         if (records.length > 0) {
-          const mergedRecord = records[0];
-          cachedData = mergedRecord.data;
+          const mergedData = this.mergedData(records);
+          cachedData = Object.assign({}, mergedData);
           const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === mergedRecord.form?.resource?.id) {
+          if (resourcesField && resourcesField.resource === records[0].form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
@@ -147,7 +151,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.survey.locale = 'en';
     }
 
-    this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
@@ -159,11 +162,15 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
+  ngAfterViewInit(): void {
+    this.survey.render(this.containerId);
+  }
+
   public reset(): void {
     this.survey.clear();
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
-    this.save.emit(false);
+    this.save.emit({ completed: false });
     this.survey.render();
     this.surveyActive = true;
   }
@@ -193,7 +200,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
           }
         }).toPromise();
         if (res.errors) {
-          this.snackBar.openSnackBar('Upload failed.', { error: true });
+          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
           data[name][index].content = res.data?.uploadFile;
@@ -228,7 +235,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     }
     mutation.subscribe((res: any) => {
       if (res.errors) {
-        this.save.emit(false);
+        this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
@@ -249,7 +256,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         if (this.form.uniqueRecord) {
           this.selectedTabIndex = 0;
         }
-        this.save.emit(true);
+        this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
       }
     });
   }
@@ -331,6 +338,51 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
     this.survey.render();
+  }
+
+  private mergedData(records: Record[]): any {
+    const data: any = {};
+    // Loop on source fields
+    for (const inputField of records[0].form?.fields || []) {
+      // If source field match with target field
+      if (this.form.fields?.some(x => x.name === inputField.name)) {
+        const targetField = this.form.fields?.find(x => x.name === inputField.name);
+        // If source field got choices
+        if (inputField.choices || inputField.choicesByUrl) {
+          // If the target has multiple choices we concatenate all the source values
+          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
+            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
+              data[inputField.name] = records.reduce((o: string[], record: Record) => {
+                o = o.concat(record.data[inputField.name]);
+                return o;
+              }, []);
+            } else {
+              data[inputField.name] = records.map(x => x.data[inputField.name]);
+            }
+          }
+          // If the target has single choice we we put the common choice if any or leave it empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+        // If source field is a free input and types are matching between source and target field
+        else if (inputField.type === targetField.type) {
+          // If type is text just put the text of the first record
+          if (inputField.type === 'text') {
+            data[inputField.name] = records[0].data[inputField.name];
+          }
+          // If type is different from text and there is a common value, put it. Otherwise leave empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+      }
+    }
+    return data;
   }
 
   ngOnDestroy(): void {

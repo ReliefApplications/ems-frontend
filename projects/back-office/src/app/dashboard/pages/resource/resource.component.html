@@ -7,10 +7,14 @@
         </h1>
         <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></safe-access>
         <div class="actions">
-            <button mat-flat-button color="primary" (click)="onDownload()">
+            <button mat-flat-button color="primary" [matMenuTriggerFor]="menu" >
               <mat-icon>file_download</mat-icon>
               Download records
             </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+              <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+            </mat-menu>
         </div>
     </div>
     <mat-tab-group dynamicHeight>

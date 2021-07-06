@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class LayoutService {
+export class SafeLayoutService {
 
   // tslint:disable-next-line: variable-name
   private _rightSidenav = new BehaviorSubject<any>(null);
