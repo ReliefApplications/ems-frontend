@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
+import { Application, Channel, ChannelDisplay, Role, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
@@ -13,12 +13,10 @@ import { EditChannelComponent } from './components/edit-channel/edit-channel.com
 export class ChannelsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public channels: Channel[] = [];
+  private channels: Channel[] = [];
+  public channelsData: ChannelDisplay[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
-  public applications: any[] = [];
-  public lastEntry: any[] = [];
-  public application: any;
 
   // === SUBSCRIPTIONS ===
   private applicationSubscription?: Subscription;
@@ -36,26 +34,23 @@ export class ChannelsComponent implements OnInit, OnDestroy {
       } else {
         this.channels = [];
       }
-      // store all application name with unicity
-      this.channels.forEach(channel => {
-        channel.subscribedRoles?.forEach(role => {
-          if (!this.lastEntry.includes(role.application?.name)) {
-            this.applications.push({ name: role.application?.name, roles: [] });
-            this.lastEntry.push(role.application?.name);
-          }
-        });
-      });
-      // store roles linked to applications
-      this.applications.forEach(app => {
-        this.channels.forEach(channel => {
-          channel.subscribedRoles?.forEach(role => {
-            if (!this.lastEntry.includes(role.id) && role.application?.name === app.name) {
-              app.roles.push(role);
-              this.lastEntry.push(role.id);
-            }
+      // Move roles in an array under corresponding applications under corresponding channels
+      this.channelsData = this.channels.map((channel: ChannelDisplay) => {
+        const subscribedApplications = Array.from(new Set(channel.subscribedRoles?.map(x => x.application?.name)))
+          .map((name?: string) => {
+            return {
+              name: name ? name : 'Global',
+              roles: channel.subscribedRoles ? channel.subscribedRoles.reduce((o: Role[], role: Role) => {
+                if (role?.application?.name === name) {
+                  o.push(role);
+                }
+                return o;
+              }, []) : []
+            };
           });
-        });
+        return {...channel, subscribedApplications};
       });
+      console.log(this.channelsData);
     });
   }
 
