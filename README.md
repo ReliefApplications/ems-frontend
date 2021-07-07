@@ -1,6 +1,7 @@
 SAFE Front-end
 =======
 [![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)
+[![Build](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml)
 [![CodeQL](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml)
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
