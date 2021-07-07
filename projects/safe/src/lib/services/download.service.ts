@@ -52,7 +52,7 @@ export class SafeDownloadService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    // console.log(url);
+    console.log(url);
     // console.log(headers);
     let response;
     let reason;
