@@ -35,17 +35,14 @@ export class ConversationMessageComponent implements OnInit {
     if (msg !== null) {
       console.log(this.reply);
       if (this.reply === 'true'){
-        console.log('REPLY 1');
         // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColorReply;
         this.ml = 'auto';
         this.mr = '0';
-        console.log('REPLY 2');
 
       } else {
         // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColor;
         this.ml = '0';
         this.mr = 'auto';
-        console.log('NOT REPLY');
       }
     }
   }

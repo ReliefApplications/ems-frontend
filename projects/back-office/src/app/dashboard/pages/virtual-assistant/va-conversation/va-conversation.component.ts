@@ -11,23 +11,25 @@ import {User} from '../models/user.model';
 export class VaConversationComponent implements OnInit {
 
   @Input() form: any[] = [];
+  public records: any[] = [];
 
-  items: string[] = [];
   public currentText: string;
   @ViewChild(CdkVirtualScrollViewport) viewport: any;
 
   public messages: Message[] = [];
+  public iCurrentQuestion: number;
 
   constructor() {
     this.currentText = '';
     console.log(this.messages);
+    this.iCurrentQuestion = 0;
     // this.viewport = new CdkVirtualScrollViewport();
   }
 
 
+
+
   ngOnInit(): void {
-    console.log('this.form');
-    console.log(this.form);
     // this.speechToTextService.endSpeechEvent.subscribe(
     //   (text) => {
     //     this.currentText = text;
@@ -39,11 +41,20 @@ export class VaConversationComponent implements OnInit {
     //   }
     // );
 
-    window.setTimeout(() => {
-      console.log('this.form');
+    // window.setTimeout(() => {
+    //   console.log('this.form');
+    //   console.log(this.form);
+    //   this.sendQuestionMsg(this.form[0].name);
+    //   }, 5000);
+  }
+
+  ngOnChanges(): void{
+    console.log('ngAfterContentInit');
+    if (this.form !== undefined) {
+      console.log('*this.form*');
       console.log(this.form);
-      this.sendQuestionMsg(this.form[0].name);
-      }, 5000);
+      this.sendQuestionMsg();
+    }
   }
 
   msgUpdated(msg: any): void{
@@ -65,10 +76,20 @@ export class VaConversationComponent implements OnInit {
     }
     this.currentText = '';
     this.updateScrollViewPos();
+
+    this.sendQuestionMsg();
   }
 
-  sendQuestionMsg(msg: string): void {
-    this.currentText = msg;
+  sendQuestionMsg(): void {
+    if (this.iCurrentQuestion < this.form.length){
+      console.log('sendQuestionMsg');
+      console.log(this.iCurrentQuestion);
+      console.log(this.form.length);
+      this.currentText = this.form[this.iCurrentQuestion].name;
+    }
+    else {
+      this.currentText = 'Form finished';
+    }
     if (this.currentText !== '') {
       this.addMsg('',
         this.currentText,
@@ -77,6 +98,7 @@ export class VaConversationComponent implements OnInit {
         Date.now(),
         []);
       console.log(this.messages);
+      this.iCurrentQuestion++;
     }
     this.currentText = '';
     this.updateScrollViewPos();
