@@ -976,10 +976,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openOnClick(item: any, field: any): void {
-    const path = field.name.split('.').slice(0, -1).concat('id');
-    try {
-      const id = path.reduce((o: any, i: any) => o[i], item);
-      this.onShowDetails(id);
-    } catch {}
+    const path: string[] = field.name.split('.');
+    const recordId = path.reduce((o: any, key: string) => o[key], item);
+    this.onShowDetails(recordId);
   }
 }
