@@ -31,18 +31,18 @@ export class ConversationMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const msg = document.getElementById('messageGlobal');
+    const msg = document.getElementsByClassName('messageGlobal');
     if (msg !== null) {
       console.log(this.reply);
       if (this.reply === 'true'){
         console.log('REPLY 1');
-        // document.getElementById('messageGlobal').style.backgroundColor = this.backgroundColorReply;
+        // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColorReply;
         this.ml = 'auto';
         this.mr = '0';
         console.log('REPLY 2');
 
       } else {
-        // document.getElementById('messageGlobal').style.backgroundColor = this.backgroundColor;
+        // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColor;
         this.ml = '0';
         this.mr = 'auto';
         console.log('NOT REPLY');

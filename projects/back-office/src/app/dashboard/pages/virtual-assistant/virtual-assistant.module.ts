@@ -12,7 +12,11 @@ import {ConversationMessageComponent} from './va-conversation/conversation-messa
 import {ConversationFooterComponent} from './va-conversation/conversation-footer/conversation-footer.component';
 
 @NgModule({
-  declarations: [VirtualAssistantComponent, VaConversationComponent, ConversationHeaderComponent, ConversationMessageComponent, ConversationFooterComponent],
+  declarations: [VirtualAssistantComponent,
+    VaConversationComponent,
+    ConversationHeaderComponent,
+    ConversationMessageComponent,
+    ConversationFooterComponent],
   imports: [
     CommonModule,
     VirtualAssistantRoutingModule,

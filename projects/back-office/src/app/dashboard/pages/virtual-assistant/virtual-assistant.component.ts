@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SafeDownloadService} from '../../../../../../safe/src/lib/services/download.service';
@@ -8,7 +8,8 @@ import {Message} from './models/message.model';
 @Component({
   selector: 'app-virtual-assistant',
   templateUrl: './virtual-assistant.component.html',
-  styleUrls: ['./virtual-assistant.component.scss']
+  styleUrls: ['./virtual-assistant.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class VirtualAssistantComponent implements OnInit {
 
