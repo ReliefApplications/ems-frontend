@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   CONVERT_RECORD,
   ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
+  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -677,6 +677,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a confirmation modal and then delete the selected record
   */
   public onDeleteRow(items: number[]): void {
+    const recordIds: string[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      recordIds.push(id);
+    }
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -689,15 +694,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises: Promise<any>[] = [];
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
-          promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
-            mutation: DELETE_RECORD,
-            variables: { id }
-          }).toPromise());
-        }
-        Promise.all(promises).then(() => {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: DELETE_RECORDS,
+          variables: {
+            ids: recordIds
+          }
+        }).subscribe(() => {
           this.reloadData();
         });
       }
