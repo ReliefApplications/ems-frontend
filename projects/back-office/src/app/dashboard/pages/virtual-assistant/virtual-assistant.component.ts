@@ -40,8 +40,16 @@ export class VirtualAssistantComponent implements OnInit {
   async getForm(): Promise<void>{
     const path = `download/form/${this.id}`;
     const dataReturn = await this.downloadService.getForm(path);
+    console.log('dataReturn');
+    console.log(dataReturn);
     if (dataReturn.status === true) {
-      this.form = dataReturn.data;
+      console.log(JSON.parse(dataReturn.data.structure));
+      this.form = JSON.parse(dataReturn.data.structure).pages[0].elements;
+      console.log('this.form');
+      console.log(this.form);
+      // this.form = dataReturn.data;
+
+      // JSON.parse(form.structure).pages[0].elements
 
       // this.addMsg(this.form[0].type,
       //   this.form[0].name,

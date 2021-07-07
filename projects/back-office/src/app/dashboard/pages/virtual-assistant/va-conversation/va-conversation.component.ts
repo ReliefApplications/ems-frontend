@@ -85,7 +85,7 @@ export class VaConversationComponent implements OnInit {
       console.log('sendQuestionMsg');
       console.log(this.iCurrentQuestion);
       console.log(this.form.length);
-      this.currentText = this.form[this.iCurrentQuestion].name;
+      this.currentText = this.form[this.iCurrentQuestion].title;
     }
     else {
       this.currentText = 'Form finished';
