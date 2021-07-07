@@ -1,4 +1,4 @@
-name: DEV CI
+name: Github Pages
 
 on:
   push:
@@ -67,12 +67,6 @@ jobs:
         with:
           name: doc_web_element
           path: documentation/web-element
-      - name: Build Shared Library
-        run: npm run build safe
-      - name: Build Back-office
-        run: npm run build:az:back
-      - name: Build Front-office
-        run: npm run build:az:front
 
   deploy_safe_documentation:
     name : Deploy @SAFE documentation 🚀
