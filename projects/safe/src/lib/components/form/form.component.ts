@@ -1,7 +1,8 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
+import { v4 as uuidv4 } from 'uuid';
 import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -19,11 +20,11 @@ import { NOTIFICATIONS } from '../../const/notifications';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
-export class SafeFormComponent implements OnInit, OnDestroy {
+export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<boolean> = new EventEmitter();
+  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
@@ -36,6 +37,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
   public surveyActive = true;
   public selectedTabIndex = 0;
   private temporaryFilesStorage: any = {};
+  public containerId: string;
 
   // === SURVEY COLORS ===
   primaryColor = '#008DC9';
@@ -59,7 +61,9 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    this.containerId = uuidv4();
+  }
 
   ngOnInit(): void {
     const defaultThemeColorsSurvey = Survey
@@ -147,7 +151,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
       this.survey.locale = 'en';
     }
 
-    this.survey.render('surveyContainer');
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
@@ -159,11 +162,15 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
+  ngAfterViewInit(): void {
+    this.survey.render(this.containerId);
+  }
+
   public reset(): void {
     this.survey.clear();
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
-    this.save.emit(false);
+    this.save.emit({ completed: false });
     this.survey.render();
     this.surveyActive = true;
   }
@@ -200,7 +207,6 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('ho');
     const questions = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
@@ -229,7 +235,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
     }
     mutation.subscribe((res: any) => {
       if (res.errors) {
-        this.save.emit(false);
+        this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
@@ -250,7 +256,7 @@ export class SafeFormComponent implements OnInit, OnDestroy {
         if (this.form.uniqueRecord) {
           this.selectedTabIndex = 0;
         }
-        this.save.emit(true);
+        this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
       }
     });
   }
