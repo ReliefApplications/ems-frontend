@@ -155,8 +155,8 @@ export class FormRecordsComponent implements OnInit {
   }
 
   downloadTemplate(): void {
-    const path = `download/form/records/${this.id}/template`;
-    const queryString = new URLSearchParams({type: 'xlsx'}).toString();
+    const path = `download/form/records/${this.id}`;
+    const queryString = new URLSearchParams({type: 'xlsx', template: 'true'}).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, 'template.xlsx');
   }
 }
