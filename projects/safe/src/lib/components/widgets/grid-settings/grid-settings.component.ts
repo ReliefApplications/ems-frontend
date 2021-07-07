@@ -156,7 +156,7 @@ export class SafeGridSettingsComponent implements OnInit {
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
       targetFormQuery: value && value.targetForm ? this.queryBuilder.createQueryForm(value?.targetFormQuery || null)
-        : this.queryBuilder.createQueryForm(value?.targetFormQuery || null).setValidators(null),
+        : this.queryBuilder.createQueryForm(null).setValidators(null),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
         value && value.notify ? Validators.required : null],
@@ -172,12 +172,12 @@ export class SafeGridSettingsComponent implements OnInit {
       // attachment: [value && value.attachment ? value.attachment : false]
     });
     buttonForm.get('targetForm')?.valueChanges.subscribe(target => {
-      const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
-      const targetFormQuery = buttonForm.get('targetFormQuery');
-      if (!target) {
-        targetFormQuery?.setValidators(null);
+      if (target?.name) {
+        const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
+        buttonForm.get('targetFormQuery')?.setValue(this.queryBuilder.createQueryForm({name: queryName}));
+      } else {
+        buttonForm.get('targetFormQuery')?.setValue(this.queryBuilder.createQueryForm(null).setValidators(null));
       }
-      targetFormQuery?.get('name')?.setValue(queryName);
     });
     return buttonForm;
   }
