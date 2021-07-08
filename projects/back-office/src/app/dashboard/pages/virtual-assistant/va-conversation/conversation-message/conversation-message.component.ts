@@ -26,21 +26,17 @@ export class ConversationMessageComponent implements OnInit {
   public mr = '';
 
   constructor() {
-    console.log(this.choices);
     // this.imgSrc = environment.profilePhotoDefault;
   }
 
   ngOnInit(): void {
     const msg = document.getElementsByClassName('messageGlobal');
     if (msg !== null) {
-      console.log(this.reply);
       if (this.reply === 'true'){
-        // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColorReply;
         this.ml = 'auto';
         this.mr = '0';
-
-      } else {
-        // document.getElementsByClassName('messageGlobal').style.backgroundColor = this.backgroundColor;
+      }
+      else {
         this.ml = '0';
         this.mr = 'auto';
       }
@@ -49,7 +45,6 @@ export class ConversationMessageComponent implements OnInit {
 
   btnChoiceClickFn($event: any , ch: string): void{
     this.btnChoiceClick.emit(ch);
-    console.log('$event.target');
     $event.target.parentElement.setAttribute('style', 'display: none');
   }
 }

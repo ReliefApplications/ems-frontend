@@ -12,17 +12,26 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   @Input() form: any[] = [];
   public records: any[] = [];
+  public currentRecord: any;
 
   public currentText: string;
   @ViewChild(CdkVirtualScrollViewport) viewport: any;
 
-  public messages: Message[] = [];
+  public conv: Message[] = [];
   public iCurrentQuestion: number;
+
+  public endConv: boolean;
+  public endConvMsg: string;
 
   constructor() {
     this.currentText = '';
-    console.log(this.messages);
+
     this.iCurrentQuestion = 0;
+
+    this.endConvMsg = 'restart';
+    this.endConv = false;
+
+    this.currentRecord = {};
   }
 
   ngOnInit(): void {
@@ -45,10 +54,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void{
-    console.log('ngAfterContentInit');
     if (this.form !== undefined) {
-      console.log('*this.form*');
-      console.log(this.form);
       this.sendQuestionMsg();
     }
   }
@@ -60,33 +66,54 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   sendReplyMsg(msg: string): void {
-    if (msg !== '') {
-      this.addMsg('',
-        msg,
-        'true',
-        new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
-        Date.now(),
-        []);
-      console.log(this.messages);
+    if (!this.endConv){
+      if (msg !== '') {
+        this.addMsg('',
+          msg,
+          'true',
+          new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
+          Date.now(),
+          []);
+        console.log(this.conv);
 
-      // reset input text
-      this.currentText = '';
+        // this.records.push(msg);
+        // complete current record
+        // -1 because the chat start with a message of the bot
+        this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
+        console.log(this.currentRecord);
+        console.log(this.iCurrentQuestion);
 
-      this.updateScrollViewPos();
+        console.log(this.records);
 
-      this.sendQuestionMsg();
+        // reset input text
+        this.currentText = '';
+
+        this.updateScrollViewPos();
+
+        this.sendQuestionMsg();
+      }
     }
   }
 
+  sendReplyMsgEnd(): void {
+      if (this.endConvMsg !== '') {
+        this.addMsg('',
+          this.endConvMsg,
+          'true',
+          new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
+          Date.now(),
+          []);
+        // reset input text
+        this.currentText = '';
+        this.updateScrollViewPos();
+        this.sendQuestionMsg();
+      }
+  }
+
   sendQuestionMsg(): void {
-    console.log('this.currentText');
-    console.log(this.currentText);
     let nextQuest = '';
     if (this.iCurrentQuestion < this.form.length){
-      console.log(this.iCurrentQuestion);
-      console.log(this.form.length);
       nextQuest = this.form[this.iCurrentQuestion].title;
-
       this.addMsg('',
         nextQuest,
         'false',
@@ -96,13 +123,16 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }
     else if (this.iCurrentQuestion === this.form.length) {
       nextQuest = 'Thank you for your time, bye!';
+      this.endConv = true;
+      // add this record
+      this.records.push(this.currentRecord);
 
       this.addMsg('',
         nextQuest,
         'false',
         new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
         Date.now(),
-        ['restart']);
+        [this.endConvMsg]);
     }
     if (this.iCurrentQuestion <= this.form.length){
       this.iCurrentQuestion++;
@@ -116,7 +146,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
          user: User,
          date: number,
          choices: string[]): void {
-    this.messages.push(new Message(type, text, reply, user, date, choices));
+    this.conv.push(new Message(type, text, reply, user, date, choices));
   }
 
   updateScrollViewPos(): void {
@@ -138,9 +168,21 @@ export class VaConversationComponent implements OnInit, OnChanges {
     // this.speechToTextService.start();
   }
 
-  choiceClick(e: any): void{
-    console.log(e);
-    this.sendReplyMsg(e);
+  choiceClick(choice: any): void{
+    console.log(choice);
+    if (choice === this.endConvMsg){
+      this.endConv = false;
+      this.sendReplyMsgEnd();
+      this.iCurrentQuestion = 0;
+      this.currentRecord = {};
+      window.setTimeout(() => {
+        this.sendQuestionMsg();
+      }, 500);
+    }
+    else {
+      this.sendReplyMsg(choice);
+    }
+
   }
 
 }
