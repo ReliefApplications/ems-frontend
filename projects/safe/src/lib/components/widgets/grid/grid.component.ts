@@ -272,7 +272,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -969,15 +968,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.showFilter = !this.showFilter;
   }
 
+  /**
+   * Open a modal for record display corresponding to the clicked field
+   */
+  openOnClick(item: any, field: any): void {
+    const path: string[] = field.name.split('.').slice(0, -1).concat('id');
+    const recordId = path.reduce((o: any, key: string) => o[key], item);
+    this.onShowDetails(recordId);
+  }
+
+  /**
+   * Access nested element from an object using a key with dots.
+   */
+  accessNested(item: any, keys: string): string {
+    const path: string[] = keys.split('.');
+    return path.reduce((o: any, key: string) => o[key] ? o[key] : keys, item);
+  }
+
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
-  }
-
-  openOnClick(item: any, field: any): void {
-    const path: string[] = field.name.split('.');
-    const recordId = path.reduce((o: any, key: string) => o[key], item);
-    this.onShowDetails(recordId);
   }
 }

@@ -86,7 +86,7 @@
                     </ng-container>
                     <!-- DISPLAY ( scalar with openOnClick ) -->
                     <ng-container *ngIf="field.openOnClick">
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"><span class="record-link" (click)="openOnClick(dataItem, field)">test</span>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"><span class="record-link" (click)="openOnClick(dataItem, field)">{{accessNested(dataItem, field.name)}}</span>
                         </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
