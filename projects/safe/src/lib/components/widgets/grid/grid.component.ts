@@ -811,7 +811,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        const body = this.buildBody(this.selectedRowsIndex, options.bodyQuery);
+        const body = this.buildBody(this.selectedRowsIndex, options.bodyFields);
         window.location.href = `mailto:${options.distributionList}?subject=${options.subject}&body=${encodeURIComponent(body)}`;
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
@@ -968,15 +968,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.showFilter = !this.showFilter;
   }
 
-  /* 
+  /*
    * Build email body in plain text from selected rows
    */
-  private buildBody(rowsIndex: number[], query: any): string {
+  private buildBody(rowsIndex: number[], fields: any): string {
     let body = '';
     let i = 1;
     for (const index of rowsIndex) {
       body += `######   ${i}   ######\n`;
-      for (const field of query.fields) {
+      for (const field of fields) {
         body += `${field.name}:   ${this.gridData.data[index][field.name]}\n`;
       }
       body += '______________________\n';
