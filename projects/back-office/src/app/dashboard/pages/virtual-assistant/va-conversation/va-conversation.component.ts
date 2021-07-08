@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {Message} from '../models/message.model';
 import {User} from '../models/user.model';
@@ -8,7 +8,7 @@ import {User} from '../models/user.model';
   templateUrl: './va-conversation.component.html',
   styleUrls: ['./va-conversation.component.scss']
 })
-export class VaConversationComponent implements OnInit {
+export class VaConversationComponent implements OnInit, OnChanges {
 
   @Input() form: any[] = [];
   public records: any[] = [];
@@ -23,11 +23,7 @@ export class VaConversationComponent implements OnInit {
     this.currentText = '';
     console.log(this.messages);
     this.iCurrentQuestion = 0;
-    // this.viewport = new CdkVirtualScrollViewport();
   }
-
-
-
 
   ngOnInit(): void {
     // this.speechToTextService.endSpeechEvent.subscribe(
@@ -48,7 +44,7 @@ export class VaConversationComponent implements OnInit {
     //   }, 5000);
   }
 
-  ngOnChanges(): void{
+  ngOnChanges(changes: SimpleChanges): void{
     console.log('ngAfterContentInit');
     if (this.form !== undefined) {
       console.log('*this.form*');
@@ -64,44 +60,54 @@ export class VaConversationComponent implements OnInit {
   }
 
   sendReplyMsg(msg: string): void {
-    this.currentText = msg;
-    if (this.currentText !== '') {
+    if (msg !== '') {
       this.addMsg('',
-        this.currentText,
+        msg,
         'true',
         new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
         Date.now(),
         []);
       console.log(this.messages);
-    }
-    this.currentText = '';
-    this.updateScrollViewPos();
 
-    this.sendQuestionMsg();
+      // reset input text
+      this.currentText = '';
+
+      this.updateScrollViewPos();
+
+      this.sendQuestionMsg();
+    }
   }
 
   sendQuestionMsg(): void {
+    console.log('this.currentText');
+    console.log(this.currentText);
+    let nextQuest = '';
     if (this.iCurrentQuestion < this.form.length){
-      console.log('sendQuestionMsg');
       console.log(this.iCurrentQuestion);
       console.log(this.form.length);
-      this.currentText = this.form[this.iCurrentQuestion].title;
-    }
-    else {
-      this.currentText = 'Form finished';
-    }
-    if (this.currentText !== '') {
+      nextQuest = this.form[this.iCurrentQuestion].title;
+
       this.addMsg('',
-        this.currentText,
+        nextQuest,
         'false',
         new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
         Date.now(),
         []);
-      console.log(this.messages);
-      this.iCurrentQuestion++;
     }
-    this.currentText = '';
-    this.updateScrollViewPos();
+    else if (this.iCurrentQuestion === this.form.length) {
+      nextQuest = 'Thank you for your time, bye!';
+
+      this.addMsg('',
+        nextQuest,
+        'false',
+        new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
+        Date.now(),
+        ['restart']);
+    }
+    if (this.iCurrentQuestion <= this.form.length){
+      this.iCurrentQuestion++;
+      this.updateScrollViewPos();
+    }
   }
 
   addMsg(type: string,

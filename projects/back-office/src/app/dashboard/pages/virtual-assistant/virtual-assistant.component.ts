@@ -2,8 +2,6 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SafeDownloadService} from '../../../../../../safe/src/lib/services/download.service';
-import {User} from './models/user.model';
-import {Message} from './models/message.model';
 
 @Component({
   selector: 'app-virtual-assistant',
@@ -40,10 +38,8 @@ export class VirtualAssistantComponent implements OnInit {
   async getForm(): Promise<void>{
     const path = `download/form/${this.id}`;
     const dataReturn = await this.downloadService.getForm(path);
-    console.log('dataReturn');
-    console.log(dataReturn);
     if (dataReturn.status === true) {
-      console.log(JSON.parse(dataReturn.data.structure));
+      // console.log(JSON.parse(dataReturn.data.structure));
       this.form = JSON.parse(dataReturn.data.structure).pages[0].elements;
       console.log('this.form');
       console.log(this.form);

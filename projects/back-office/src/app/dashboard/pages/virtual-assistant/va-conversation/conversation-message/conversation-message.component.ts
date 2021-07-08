@@ -52,5 +52,4 @@ export class ConversationMessageComponent implements OnInit {
     console.log('$event.target');
     $event.target.parentElement.setAttribute('style', 'display: none');
   }
-
 }

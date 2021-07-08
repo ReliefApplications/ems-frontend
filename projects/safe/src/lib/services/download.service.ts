@@ -58,8 +58,8 @@ export class SafeDownloadService {
     let reason;
     await this.http.get(url, { headers }).toPromise().then((res) => {
       response = res;
-      console.log('res');
-      console.log(res);
+      // console.log('res');
+      // console.log(res);
     }).catch((reas => {console.log(reas); reason = reas; }));
     // console.log(response);
     // console.log(reason);
