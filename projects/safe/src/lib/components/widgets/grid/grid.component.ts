@@ -811,7 +811,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
+        const body = this.buildBody(this.selectedRowsIndex, options.bodyQuery);
+        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}&body=${encodeURIComponent(body)}`;
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
@@ -965,6 +966,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+  }
+
+  /* 
+   * Build email body in plain text from selected rows
+   */
+  private buildBody(rowsIndex: number[], query: any): string {
+    let body = '';
+    let i = 1;
+    for (const index of rowsIndex) {
+      body += `######   ${i}   ######\n`;
+      for (const field of query.fields) {
+        body += `${field.name}:   ${this.gridData.data[index][field.name]}\n`;
+      }
+      body += '______________________\n';
+      i ++;
+    }
+    return body;
   }
 
   ngOnDestroy(): void {

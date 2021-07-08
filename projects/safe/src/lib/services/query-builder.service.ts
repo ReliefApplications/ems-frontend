@@ -199,10 +199,10 @@ export class QueryBuilderService {
     return str + ']';
   }
 
-  public createQueryForm(value: any): FormGroup {
+  public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
-      name: [value ? value.name : '', Validators.required],
-      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
+      name: [value ? value.name : '', validators ? Validators.required : null],
+      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [], validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']

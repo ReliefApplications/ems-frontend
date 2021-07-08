@@ -4,9 +4,9 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
 
-      <mat-form-field appearance="outline" *ngIf="!isField">
+      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
         <mat-label>Select a data set</mat-label>
-        <input [readonly]="canSelectDataSet !== true" type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+        <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           <mat-option *ngFor="let option of filteredQueries" [value]="option">
             {{option}}

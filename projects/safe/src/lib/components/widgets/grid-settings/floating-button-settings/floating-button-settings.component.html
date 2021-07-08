@@ -161,6 +161,7 @@
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
+          <safe-query-builder [form]="$any(buttonForm.controls.bodyQuery)" [canSelectDataSet]="false"></safe-query-builder>
           <!-- <span class="radio-row">
             <mat-radio-group formControlName="attachment">
               Link records:

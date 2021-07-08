@@ -105,6 +105,8 @@ export class SafeGridSettingsComponent implements OnInit {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
             this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
+            // Change also the query for fields displayed in email
+            floatingButton.get('bodyQuery')?.get('name')?.setValue(res.name);
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
@@ -155,8 +157,7 @@ export class SafeGridSettingsComponent implements OnInit {
       attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
-      targetFormQuery: value && value.targetForm ? this.queryBuilder.createQueryForm(value?.targetFormQuery || null)
-        : this.queryBuilder.createQueryForm(null).setValidators(null),
+      targetFormQuery: this.queryBuilder.createQueryForm(value.targetFormQuery || null, Boolean(value.targetForm)),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
         value && value.notify ? Validators.required : null],
@@ -169,15 +170,27 @@ export class SafeGridSettingsComponent implements OnInit {
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
         value && value.sendMail ? Validators.required : null],
+      bodyQuery: this.queryBuilder.createQueryForm(value?.bodyQuery || { name: this.tile.settings.query.name }, Boolean(value.sendMail)),
       // attachment: [value && value.attachment ? value.attachment : false]
     });
+    // Update queries validators when needed
     buttonForm.get('targetForm')?.valueChanges.subscribe(target => {
       if (target?.name) {
         const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
-        buttonForm.get('targetFormQuery')?.setValue(this.queryBuilder.createQueryForm({name: queryName}));
+        buttonForm.get('targetFormQuery')?.get('name')?.setValue(queryName);
       } else {
-        buttonForm.get('targetFormQuery')?.setValue(this.queryBuilder.createQueryForm(null).setValidators(null));
+        buttonForm.get('targetFormQuery')?.clearValidators();
       }
+      buttonForm.get('targetFormQuery')?.updateValueAndValidity();
+    });
+    buttonForm.get('sendMail')?.valueChanges.subscribe(value => {
+      if (value) {
+        buttonForm.get('bodyQuery.name')?.setValidators([Validators.required]);
+        buttonForm.get('bodyQuery.fields')?.setValidators([Validators.required]);
+      } else {
+        buttonForm.get('bodyQuery')?.clearValidators();
+      }
+      buttonForm.get('bodyQuery')?.updateValueAndValidity();
     });
     return buttonForm;
   }
