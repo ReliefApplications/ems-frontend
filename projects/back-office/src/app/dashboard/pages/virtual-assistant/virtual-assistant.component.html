@@ -19,13 +19,21 @@
 <!--  </mat-grid-tile>-->
 <!--</mat-grid-list>-->
 
-<mat-grid-list cols="12" rowHeight="4:1">
-  <!-- 24 -->
-  <mat-grid-tile style="background-color: #53a7ff" [colspan]="vaCols" rowspan="24">
-    <img id="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
+<!--<mat-grid-list cols="2" rowHeight="1:1" style="background-color: black">-->
+<!--  <mat-grid-tile style="background-color: #53a7ff;" colspan="1" rowspan="1">-->
+<!--    <img id="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>-->
+<!--  </mat-grid-tile>-->
+<!--  <mat-grid-tile class="conversation" style="background-color: #cb53ff" colspan="1" rowspan="1">-->
+<!--    <app-va-conversation [form]="form"></app-va-conversation>-->
+<!--  </mat-grid-tile>-->
+<!--</mat-grid-list>-->
+
+
+<mat-grid-list cols="2" rowHeight="100%">
+  <mat-grid-tile style="background-color: #53a7ff;" colspan="1" rowspan="1">
+    <img id="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
   </mat-grid-tile>
-  <mat-grid-tile class="conversation" style="background-color: #cb53ff" colspan="6" rowspan="24">
+  <mat-grid-tile class="conversation" colspan="1" rowspan="1">
     <app-va-conversation [form]="form"></app-va-conversation>
   </mat-grid-tile>
 </mat-grid-list>
-

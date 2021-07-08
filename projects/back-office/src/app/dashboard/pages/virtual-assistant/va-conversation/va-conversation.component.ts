@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@an
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {Message} from '../models/message.model';
 import {User} from '../models/user.model';
+import {Choices} from '../models/choices.model';
 
 @Component({
   selector: 'app-va-conversation',
@@ -124,7 +125,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
         'false',
         new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
         Date.now(),
-        [this.endConvMsg]);
+        [new Choices(this.endConvMsg, this.endConvMsg + '?')]);
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
     }
@@ -139,6 +140,15 @@ export class VaConversationComponent implements OnInit, OnChanges {
           new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
           Date.now(),
           []);
+        break;
+      case 'radiogroup':
+        this.addMsg('',
+          this.form[this.iCurrentQuestion].title,
+          'false',
+          new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
+          Date.now(),
+          []);
+        break;
     }
   }
 
@@ -147,7 +157,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
          reply: string,
          user: User,
          date: number,
-         choices: string[]): void {
+         choices: Choices[]): void {
     this.conv.push(new Message(type, text, reply, user, date, choices));
   }
 

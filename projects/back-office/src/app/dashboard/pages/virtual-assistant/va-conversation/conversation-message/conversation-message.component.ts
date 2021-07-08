@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Choices} from '../../models/choices.model';
 
 @Component({
   selector: 'app-conversation-message',
@@ -17,8 +18,7 @@ export class ConversationMessageComponent implements OnInit {
 
   @Input() reply = '';
 
-  @Input()
-  choices: string[] = [];
+  @Input() choices: Choices[];
 
   @Output() btnChoiceClick: EventEmitter<any> = new EventEmitter();
 
@@ -27,6 +27,7 @@ export class ConversationMessageComponent implements OnInit {
 
   constructor() {
     // this.imgSrc = environment.profilePhotoDefault;
+    this.choices = [{value: '', text: ''}];
   }
 
   ngOnInit(): void {

@@ -12,5 +12,5 @@
   </div>
 </ng-template>
 <div id="btnChoicesCont" *ngIf="choices!=null">
-  <button mat-flat-button color="primary" class="btnChoice" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch}}</button>
+  <button mat-flat-button color="primary" class="btnChoice" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch.value)">{{ch.text}}</button>
 </div>
