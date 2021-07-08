@@ -133,11 +133,11 @@
                             (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
                     </ng-template>
                 </kendo-grid-column>
-                <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
-                <kendo-grid-column [title]="field.title"
-                    *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)" [columnMenu]="false"
+                <!-- MULTI SELECT QUESTION TYPES ( checkbox, tagbox ) -->
+                <kendo-grid-column title="oui"
+                    *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                     [editor]="field.editor" [editable]="!field.disabled" [width]="field.title.length * 7 + 50"
-                    [minResizableWidth]="50">
+                    [filter]="field.filter" [filterable]="field.filter" [minResizableWidth]="50">
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                         {{ dataItem[field.name] }}
                     </ng-template>

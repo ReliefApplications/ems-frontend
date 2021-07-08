@@ -476,7 +476,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'JSON': {
-        return '';
+        return 'text';
       }
       default: {
         return 'text';
@@ -569,6 +569,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect filtering events and update the items loaded.
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
+    console.log("filter = ", filter);
     this.filter = filter;
     this.loadItems();
   }
@@ -964,6 +965,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Toggle quick filter visibility
    */
   public onToggleFilter(): void {
+    console.log("fields = ", this.fields)
     this.showFilter = !this.showFilter;
   }
 
