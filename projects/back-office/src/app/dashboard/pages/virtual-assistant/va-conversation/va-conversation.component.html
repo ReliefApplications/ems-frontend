@@ -5,5 +5,5 @@
       <app-conversation-message backgroundColor="#8e8e93" backgroundColorReply="#1982FC" *ngFor="let msg of this.conv" class="example-item" text="{{msg.text}}" imgSrc="{{msg.user.avatar}}" reply="{{msg.reply}}" [choices]="msg.choices" (btnChoiceClick)="choiceClick($event)"></app-conversation-message>
     </cdk-virtual-scroll-viewport>
   </div>
-  <app-conversation-footer id="foot" inputValue="{{currentText}}" (inputChange)="msgUpdated($event)" (keyup.enter)="sendReplyMsg(currentText)" (btnSendClick)="sendReplyMsg(currentText)" (btnRecClick)="startSpeech()"></app-conversation-footer>
+  <app-conversation-footer id="foot" inputValue="{{currentText}}" (inputChange)="msgUpdated($event)" (keyup.enter)="sendReplyMsgText(currentText)" (btnSendClick)="sendReplyMsgText(currentText)" (btnRecClick)="startSpeech()"></app-conversation-footer>
 </div>

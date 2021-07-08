@@ -55,7 +55,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void{
     if (this.form !== undefined) {
-      this.sendQuestionMsg();
+      this.sendNextQuestion();
     }
   }
 
@@ -65,37 +65,34 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }
   }
 
-  sendReplyMsg(msg: string): void {
-    if (!this.endConv){
-      if (msg !== '') {
-        this.addMsg('',
-          msg,
-          'true',
-          new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
-          Date.now(),
-          []);
-        console.log(this.conv);
+  sendReplyMsgText(msg: string): void {
+    if (!this.endConv && msg !== ''){
+      this.addMsg('',
+        msg,
+        'true',
+        new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
+        Date.now(),
+        []);
+      console.log(this.conv);
 
-        // this.records.push(msg);
-        // complete current record
-        // -1 because the chat start with a message of the bot
-        this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
-        console.log(this.currentRecord);
-        console.log(this.iCurrentQuestion);
+      // this.records.push(msg);
+      // complete current record
+      // -1 because the chat start with a message of the bot
+      this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
 
-        console.log(this.records);
+      // reset input text
+      this.currentText = '';
 
-        // reset input text
-        this.currentText = '';
+      this.updateScrollViewPos();
 
-        this.updateScrollViewPos();
-
-        this.sendQuestionMsg();
-      }
+      this.sendNextQuestion();
     }
+    // else if (msg === this.endConvMsg){
+    //   this.restartForm();
+    // }
   }
 
-  sendReplyMsgEnd(): void {
+  sendReplyMsgTextEnd(): void {
       if (this.endConvMsg !== '') {
         this.addMsg('',
           this.endConvMsg,
@@ -106,37 +103,42 @@ export class VaConversationComponent implements OnInit, OnChanges {
         // reset input text
         this.currentText = '';
         this.updateScrollViewPos();
-        this.sendQuestionMsg();
+        this.sendNextQuestion();
       }
   }
 
-  sendQuestionMsg(): void {
-    let nextQuest = '';
+  sendNextQuestion(): void {
     if (this.iCurrentQuestion < this.form.length){
-      nextQuest = this.form[this.iCurrentQuestion].title;
-      this.addMsg('',
-        nextQuest,
-        'false',
-        new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
-        Date.now(),
-        []);
+      this.questionController();
+      this.iCurrentQuestion++;
+      this.updateScrollViewPos();
     }
     else if (this.iCurrentQuestion === this.form.length) {
-      nextQuest = 'Thank you for your time, bye!';
       this.endConv = true;
       // add this record
       this.records.push(this.currentRecord);
+      console.log(this.records);
 
       this.addMsg('',
-        nextQuest,
+        'Thank you for your time, bye!',
         'false',
         new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
         Date.now(),
         [this.endConvMsg]);
-    }
-    if (this.iCurrentQuestion <= this.form.length){
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
+    }
+  }
+
+  questionController(): void {
+    switch (this.form[this.iCurrentQuestion].type){
+      case 'text':
+        this.addMsg('',
+          this.form[this.iCurrentQuestion].title,
+          'false',
+          new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
+          Date.now(),
+          []);
     }
   }
 
@@ -171,18 +173,21 @@ export class VaConversationComponent implements OnInit, OnChanges {
   choiceClick(choice: any): void{
     console.log(choice);
     if (choice === this.endConvMsg){
-      this.endConv = false;
-      this.sendReplyMsgEnd();
-      this.iCurrentQuestion = 0;
-      this.currentRecord = {};
-      window.setTimeout(() => {
-        this.sendQuestionMsg();
-      }, 500);
+      this.restartForm();
     }
     else {
-      this.sendReplyMsg(choice);
+      this.sendReplyMsgText(choice);
     }
+  }
 
+  restartForm(): void {
+    this.endConv = false;
+    this.sendReplyMsgTextEnd();
+    this.iCurrentQuestion = 0;
+    this.currentRecord = {};
+    window.setTimeout(() => {
+      this.sendNextQuestion();
+    }, 500);
   }
 
 }
