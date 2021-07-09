@@ -8,6 +8,8 @@ import {Choices} from '../../models/choices.model';
 })
 export class ConversationMessageComponent implements OnInit {
 
+  @Input() type = '';
+
   @Input() imgSrc = '';
 
   @Input() backgroundColor = '';
@@ -44,8 +46,12 @@ export class ConversationMessageComponent implements OnInit {
     }
   }
 
-  btnChoiceClickFn($event: any , ch: string): void{
+  btnChoiceClickFn($event: any , ch: Choices): void{
     this.btnChoiceClick.emit(ch);
     $event.target.parentElement.setAttribute('style', 'display: none');
+  }
+
+  btnChoiceCheckClickFn($event: any, ch: Choices): void {
+    $event.target.parentElement.setAttribute('color', 'Accent');
   }
 }

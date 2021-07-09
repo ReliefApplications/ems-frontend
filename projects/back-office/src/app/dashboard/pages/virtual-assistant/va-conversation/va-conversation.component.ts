@@ -74,7 +74,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
         new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
         Date.now(),
         []);
-      console.log(this.conv);
 
       // this.records.push(msg);
       // complete current record
@@ -93,6 +92,29 @@ export class VaConversationComponent implements OnInit, OnChanges {
     // }
   }
 
+  sendReplyMsgChoice(ch: Choices): void {
+    if (!this.endConv && ch.text !== ''){
+      this.addMsg('',
+        ch.text,
+        'true',
+        new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
+        Date.now(),
+        []);
+
+      // this.records.push(msg);
+      // complete current record
+      // -1 because the chat start with a message of the bot
+      this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = ch.value;
+
+      // reset input text
+      this.currentText = '';
+
+      this.updateScrollViewPos();
+
+      this.sendNextQuestion();
+    }
+  }
+
   sendReplyMsgTextEnd(): void {
       if (this.endConvMsg !== '') {
         this.addMsg('',
@@ -109,47 +131,74 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   sendNextQuestion(): void {
+    console.log('this.iCurrentQuestion');
+    console.log(this.iCurrentQuestion);
     if (this.iCurrentQuestion < this.form.length){
-      this.questionController();
+      console.log('BEF');
+      const r = this.questionController();
+      console.log('AFT');
+      console.log('this.iCurrentQuestion++; 1');
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
+      if (!r){
+        this.sendNextQuestion();
+      }
     }
     else if (this.iCurrentQuestion === this.form.length) {
       this.endConv = true;
       // add this record
       this.records.push(this.currentRecord);
+      console.log('FIN: records');
       console.log(this.records);
 
-      this.addMsg('',
+      const cTab = [];
+      // cTab.push(new Choices(this.endConvMsg, this.endConvMsg + '?'));
+      cTab.push({value: this.endConvMsg, text: this.endConvMsg + '?'});
+      console.log(cTab);
+
+      this.addMsg('text',
         'Thank you for your time, bye!',
         'false',
         new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
         Date.now(),
-        [new Choices(this.endConvMsg, this.endConvMsg + '?')]);
+        cTab);
+      console.log('this.iCurrentQuestion++; 2');
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
     }
   }
 
-  questionController(): void {
+  questionController(): boolean {
+    let r = true;
+    console.log('*** questionController ***');
+    console.log(this.form[this.iCurrentQuestion].type);
+    console.log(this.form[this.iCurrentQuestion].choices);
     switch (this.form[this.iCurrentQuestion].type){
       case 'text':
-        this.addMsg('',
+        this.addMsg(this.form[this.iCurrentQuestion].type,
           this.form[this.iCurrentQuestion].title,
           'false',
           new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
           Date.now(),
           []);
         break;
-      case 'radiogroup':
-        this.addMsg('',
+      case 'radiogroup' || 'checkbox':
+        this.addMsg(this.form[this.iCurrentQuestion].type,
           this.form[this.iCurrentQuestion].title,
           'false',
           new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
           Date.now(),
-          []);
+          this.form[this.iCurrentQuestion].choices);
+        break;
+      default:
+        console.log('default');
+        r = false;
+        // console.log('this.iCurrentQuestion++; 3');
+        // this.iCurrentQuestion++;
+
         break;
     }
+    return r;
   }
 
   addMsg(type: string,
@@ -180,13 +229,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
     // this.speechToTextService.start();
   }
 
-  choiceClick(choice: any): void{
-    console.log(choice);
-    if (choice === this.endConvMsg){
+  choiceClick(choice: Choices): void{
+    if (choice.value === this.endConvMsg){
       this.restartForm();
     }
     else {
-      this.sendReplyMsgText(choice);
+      this.sendReplyMsgChoice(choice);
     }
   }
 
