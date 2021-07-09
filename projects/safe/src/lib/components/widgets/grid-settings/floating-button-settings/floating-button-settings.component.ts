@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
-import { QueryBuilderService } from 'projects/safe/src/lib/services/query-builder.service';
+import { QueryBuilderService } from '../../../../services/query-builder.service';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];

@@ -976,11 +976,35 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     let i = 1;
     for (const index of rowsIndex) {
       body += `######   ${i}   ######\n`;
-      for (const field of fields) {
-        body += `${field.name}:   ${this.gridData.data[index][field.name]}\n`;
-      }
+      const item = this.gridData.data[index];
+      body += this.buildBodyRow(item, fields);
       body += '______________________\n';
       i ++;
+    }
+    return body;
+  }
+
+  private buildBodyRow(item: any, fields: any, tabs = ''): string {
+    let body = '';
+    for (const field of fields) {
+      switch (field.kind) {
+        case 'LIST':
+          body += `${tabs}${field.name}:\n`;
+          const list = item ? item[field.name] || [] : [];
+          list.forEach((element: any, index: number) => {
+            body += this.buildBodyRow(element, field.fields, tabs + '\t');
+            if (index < (list.length - 1)) {
+              body += `${tabs + '\t'}______________________\n`;
+            }
+          });
+          break;
+        case 'OBJECT':
+          body += `${tabs}${field.name}:\n`;
+          body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
+          break;
+        default:
+          body += `${tabs}${field.name}:   ${item ? item[field.name] : ''}\n`;
+      }
     }
     return body;
   }
