@@ -78,7 +78,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send simple reply message (TEXT)
   sendReplyMsgText(msg: string): void {
-    if (!this.endConv && msg !== ''){
+    console.log(this.iCurrentQuestion);
+    if (!this.endConv && msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
       this.addMsg('', msg, 'true', new User('Me', this.userImgLink), Date.now(), []);
 
       // this.records.push(msg);

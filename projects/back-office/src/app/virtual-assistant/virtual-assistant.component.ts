@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {SafeDownloadService} from '../../../../../../safe/src/lib/services/download.service';
+import {SafeDownloadService} from '../../../../safe/src/lib/services/download.service';
 
 @Component({
   selector: 'app-virtual-assistant',
