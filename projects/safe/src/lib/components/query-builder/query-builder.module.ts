@@ -36,6 +36,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatTooltipModule,
     MatAutocompleteModule
   ],
-  exports: [SafeQueryBuilderComponent]
+  exports: [
+    SafeQueryBuilderComponent,
+    SafeTabFieldsComponent
+  ]
 })
 export class SafeQueryBuilderModule { }
