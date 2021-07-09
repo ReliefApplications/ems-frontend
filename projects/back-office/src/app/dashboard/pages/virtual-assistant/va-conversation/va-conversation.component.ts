@@ -174,7 +174,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
     console.log(this.form[this.iCurrentQuestion].type);
     console.log(this.form[this.iCurrentQuestion].choices);
     switch (this.form[this.iCurrentQuestion].type){
-      case 'text' || 'expression':
+      case 'text':
         this.addMsg(this.form[this.iCurrentQuestion].type,
           this.form[this.iCurrentQuestion].title,
           'false',
@@ -182,7 +182,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
           Date.now(),
           []);
         break;
-      case 'radiogroup' || 'checkbox':
+      case 'radiogroup':
+      case 'checkbox':
         this.addMsg(this.form[this.iCurrentQuestion].type,
           this.form[this.iCurrentQuestion].title,
           'false',
@@ -259,4 +260,30 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }, 500);
   }
 
+  choiceCheckValidateClick(choices: any[]): void {
+    console.log('# choiceCheckValidateClick #');
+    console.log(choices);
+    let text = '';
+    const choicesRecord: string[] = [];
+    choices.forEach((ch) => {
+      choicesRecord.push(ch.value);
+      console.log('ch');
+      console.log(ch.text);
+      text = text + ' ' + ch.text;
+    });
+    this.addMsg('',
+      text,
+      'true',
+      new User('Me', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'),
+      Date.now(),
+      []);
+
+    this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = choicesRecord;
+
+    this.currentText = '';
+
+    this.updateScrollViewPos();
+
+    this.sendNextQuestion();
+  }
 }

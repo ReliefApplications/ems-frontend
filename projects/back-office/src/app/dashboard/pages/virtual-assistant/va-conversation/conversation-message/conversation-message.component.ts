@@ -23,13 +23,18 @@ export class ConversationMessageComponent implements OnInit {
   @Input() choices: Choices[];
 
   @Output() btnChoiceClick: EventEmitter<any> = new EventEmitter();
+  @Output() btnChoiceCheckValidateClick: EventEmitter<any> = new EventEmitter();
 
   public ml = '';
   public mr = '';
 
+  public checkBoxChoices: Choices[];
+
   constructor() {
     // this.imgSrc = environment.profilePhotoDefault;
     this.choices = [{value: '', text: ''}];
+
+    this.checkBoxChoices = [];
   }
 
   ngOnInit(): void {
@@ -53,6 +58,18 @@ export class ConversationMessageComponent implements OnInit {
   }
 
   btnChoiceCheckClickFn($event: any, ch: Choices): void {
-    $event.target.parentElement.setAttribute('color', 'Accent');
+    console.log($event.currentTarget);
+    if (this.checkBoxChoices.includes(ch)){
+      this.checkBoxChoices.splice(this.checkBoxChoices.indexOf(ch), 1);
+      // $event.currentTarget.setAttribute('style', 'background-color: #3a8dc4');
+    }
+    else {
+      this.checkBoxChoices.push(ch);
+      // $event.currentTarget.setAttribute('style', 'background-color: green');
+    }
+  }
+
+  btnChoiceCheckValidateClickFn($event: MouseEvent): void {
+    this.btnChoiceCheckValidateClick.emit(this.checkBoxChoices);
   }
 }
