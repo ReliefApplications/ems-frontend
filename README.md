@@ -13,6 +13,7 @@ This front-end was made using [Angular](https://angular.io/). It uses multiple e
 
 It was made for a Proof of Concept of a UI Builder for SAFE.
 
+
 To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
 
 *   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
