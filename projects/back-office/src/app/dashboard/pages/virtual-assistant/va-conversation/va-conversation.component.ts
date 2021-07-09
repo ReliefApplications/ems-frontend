@@ -174,7 +174,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
     console.log(this.form[this.iCurrentQuestion].type);
     console.log(this.form[this.iCurrentQuestion].choices);
     switch (this.form[this.iCurrentQuestion].type){
-      case 'text':
+      case 'text' || 'expression':
         this.addMsg(this.form[this.iCurrentQuestion].type,
           this.form[this.iCurrentQuestion].title,
           'false',
@@ -189,6 +189,17 @@ export class VaConversationComponent implements OnInit, OnChanges {
           new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
           Date.now(),
           this.form[this.iCurrentQuestion].choices);
+        break;
+      case 'expression':
+        if (this.form[this.iCurrentQuestion].description){
+          this.addMsg(this.form[this.iCurrentQuestion].type,
+            this.form[this.iCurrentQuestion].description,
+            'false',
+            new User('Assistant', 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png'),
+            Date.now(),
+            []);
+        }
+        r = false;
         break;
       default:
         console.log('default');
