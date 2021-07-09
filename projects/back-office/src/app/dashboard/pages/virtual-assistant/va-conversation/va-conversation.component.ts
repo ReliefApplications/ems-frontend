@@ -153,7 +153,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
       const cTab = [];
       // cTab.push(new Choices(this.endConvMsg, this.endConvMsg + '?'));
-      cTab.push({value: this.endConvMsg, text: this.endConvMsg + '?'});
+      cTab.push({value: this.endConvMsg, text: this.endConvMsg + '?'}, {value: 'value', text: 'text'});
       console.log(cTab);
 
       this.addMsg('text',

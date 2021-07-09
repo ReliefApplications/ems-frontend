@@ -48,7 +48,14 @@ export class ConversationMessageComponent implements OnInit {
 
   btnChoiceClickFn($event: any , ch: Choices): void{
     this.btnChoiceClick.emit(ch);
-    $event.target.parentElement.setAttribute('style', 'display: none');
+    // $event.target.parentElement.setAttribute('style', 'display: none');
+    // console.log($event.target);
+    console.log('$event.currentTarget');
+    console.log($event.currentTarget);
+    console.log($event.currentTarget.parentElement);
+    $event.currentTarget.parentElement.setAttribute('style', 'display: none');
+    // console.log($event.target.parentElement);
+    // console.log($event.target.parentElement.parentElement);
   }
 
   btnChoiceCheckClickFn($event: any, ch: Choices): void {

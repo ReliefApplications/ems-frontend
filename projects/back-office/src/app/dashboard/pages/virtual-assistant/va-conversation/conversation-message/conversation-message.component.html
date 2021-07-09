@@ -11,9 +11,9 @@
     <p innerText="{{text}}"></p>
   </div>
 </ng-template>
-<ng-container class="btnChoicesCont" *ngIf="choices!=null && (type == 'radiogroup' || type == 'text')">
+<div class="btnChoicesCont" *ngIf="choices!=null && (type == 'radiogroup' || type == 'text')">
   <button mat-flat-button color="primary" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch.text}}</button>
-</ng-container>
-<ng-container class="btnChoicesCont" *ngIf="choices!=null && (type == 'checkbox')">
+</div>
+<div class="btnChoicesCont" *ngIf="choices!=null && (type == 'checkbox')">
   <button mat-flat-button color="primary" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceCheckClickFn($event, ch)">{{ch.text}}</button>
-</ng-container>
+</div>
