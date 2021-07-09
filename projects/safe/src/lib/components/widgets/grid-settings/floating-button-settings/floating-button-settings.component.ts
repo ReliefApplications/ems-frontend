@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -8,6 +8,8 @@ import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
+import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
+import { QueryBuilderService } from '../../../../services/query-builder.service';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -40,6 +42,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   // Emails
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   public emails: string[] = [];
+  public factory?: ComponentFactory<any>;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
@@ -51,6 +54,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
+    private queryBuilder: QueryBuilderService,
+    private componentFactoryResolver: ComponentFactoryResolver,
   ) { }
 
   ngOnInit(): void {
@@ -139,6 +144,28 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('subject')?.updateValueAndValidity();
     });
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
+
+    this.buttonForm?.get('targetForm')?.valueChanges.subscribe(target => {
+      if (target?.name) {
+        const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
+        this.buttonForm?.get('targetFormQuery.name')?.setValue(queryName);
+        this.buttonForm?.get('targetFormQuery.fields')?.setValidators([Validators.required]);
+      } else {
+        this.buttonForm?.get('targetFormQuery')?.clearValidators();
+      }
+      this.buttonForm?.get('targetFormQuery')?.updateValueAndValidity();
+    });
+
+    this.buttonForm?.get('sendMail')?.valueChanges.subscribe((sendEmail: boolean) => {
+      if (sendEmail) {
+        this.buttonForm?.get('bodyFields')?.setValidators([Validators.required]);
+      } else {
+        this.buttonForm?.get('bodyFields')?.clearValidators();
+      }
+      this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
+    });
+
+    this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
   }
 
   compareFields(field1: any, field2: any): boolean {

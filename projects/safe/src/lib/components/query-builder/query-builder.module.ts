@@ -38,6 +38,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatAutocompleteModule,
     MatSlideToggleModule
   ],
-  exports: [SafeQueryBuilderComponent]
+  exports: [
+    SafeQueryBuilderComponent,
+    SafeTabFieldsComponent
+  ]
 })
 export class SafeQueryBuilderModule { }
