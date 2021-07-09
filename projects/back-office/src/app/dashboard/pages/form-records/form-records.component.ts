@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
@@ -13,10 +13,12 @@ import {
 } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
 import {
-  SafeDownloadService, SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
+  SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
+import * as XLSX from 'xlsx';
+import { SafeDownloadService } from '../../../../../../safe/src/lib/services/download.service';
 
 @Component({
   selector: 'app-form-records',
@@ -36,6 +38,8 @@ export class FormRecordsComponent implements OnInit {
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
+  @ViewChild('xlsxFile') xlsxFile: any;
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -53,23 +57,28 @@ export class FormRecordsComponent implements OnInit {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id,
-          display: false
-        }
-      }).valueChanges.subscribe(res => {
-        this.form = res.data.form;
-        this.dataSource = this.form.records;
-        this.setDisplayedColumns();
-        this.loading = res.loading;
-      });
+      this.getFormData();
     }
   }
 
+  private getFormData(): void {
+    this.loading = true;
+    this.apollo.watchQuery<GetFormByIdQueryResponse>({
+      query: GET_FORM_BY_ID,
+      variables: {
+        id: this.id,
+        display: false
+      }
+    }).valueChanges.subscribe(res => {
+      this.form = res.data.form;
+      this.dataSource = this.form.records;
+      this.setDisplayedColumns();
+      this.loading = res.loading;
+    });
+  }
+
   /*  Modify the list of columns.
-  */
+    */
   private setDisplayedColumns(): void {
     const columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
@@ -157,6 +166,22 @@ export class FormRecordsComponent implements OnInit {
   downloadTemplate(): void {
     const path = `download/form/records/${this.id}`;
     const queryString = new URLSearchParams({type: 'xlsx', template: 'true'}).toString();
-    this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, 'template.xlsx');
+    this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, `${this.form.name}_template.xlsx`);
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    this.uploadFileData(file);
+  }
+
+  uploadFileData(file: any): void {
+    const path = `upload/form/records/${this.id}`;
+    this.downloadService.uploadFile(path, file).subscribe(res => {
+      this.xlsxFile.nativeElement.value = '';
+      if (res.status === 'OK') {
+        this.snackBar.openSnackBar('The records was added successfully.');
+        this.getFormData();
+      }
+    });
   }
 }
