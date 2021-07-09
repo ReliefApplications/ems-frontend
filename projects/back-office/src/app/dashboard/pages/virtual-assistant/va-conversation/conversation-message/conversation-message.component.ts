@@ -23,7 +23,7 @@ export class ConversationMessageComponent implements OnInit {
   @Input() choices: Choices[];
 
   @Output() btnChoiceClick: EventEmitter<any> = new EventEmitter();
-  @Output() btnChoiceCheckValidateClick: EventEmitter<any> = new EventEmitter();
+  @Output() btnChoiceCheckBoxValidateClick: EventEmitter<any> = new EventEmitter();
 
   public ml = '';
   public mr = '';
@@ -57,20 +57,18 @@ export class ConversationMessageComponent implements OnInit {
     $event.currentTarget.parentElement.setAttribute('style', 'display: none');
   }
 
-  btnChoiceCheckClickFn($event: any, ch: Choices): void {
+  btnChoiceCheckBoxClickFn($event: any, ch: Choices): void {
     console.log($event.currentTarget);
     if (this.checkBoxChoices.includes(ch)){
       this.checkBoxChoices.splice(this.checkBoxChoices.indexOf(ch), 1);
-      // $event.currentTarget.setAttribute('style', 'background-color: #3a8dc4');
     }
     else {
       this.checkBoxChoices.push(ch);
-      // $event.currentTarget.setAttribute('style', 'background-color: green');
     }
   }
 
-  btnChoiceCheckValidateClickFn($event: any): void {
-    this.btnChoiceCheckValidateClick.emit(this.checkBoxChoices);
+  btnChoiceCheckBoxValidateClickFn($event: any): void {
+    this.btnChoiceCheckBoxValidateClick.emit(this.checkBoxChoices);
     $event.currentTarget.parentElement.parentElement.setAttribute('style', 'display: none');
   }
 }
