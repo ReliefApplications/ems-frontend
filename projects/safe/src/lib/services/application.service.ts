@@ -448,12 +448,13 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
+          const newUser = res.data.editUser;
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
-          const index = application.users?.indexOf(user);
-          if (application.users && index) {
-            application.users[index] = res.data.editUser;
-          }
-          this._application.next(application);
+          const newApplication: Application = {
+            ...application,
+            users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
+          };
+          this._application.next(newApplication);
         }
       });
     }

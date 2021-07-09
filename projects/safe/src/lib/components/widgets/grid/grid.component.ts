@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   CONVERT_RECORD,
   ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
+  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -675,6 +675,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a confirmation modal and then delete the selected record
   */
   public onDeleteRow(items: number[]): void {
+    const recordIds: string[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      recordIds.push(id);
+    }
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -687,15 +692,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises: Promise<any>[] = [];
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
-          promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
-            mutation: DELETE_RECORD,
-            variables: { id }
-          }).toPromise());
-        }
-        Promise.all(promises).then(() => {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: DELETE_RECORDS,
+          variables: {
+            ids: recordIds
+          }
+        }).subscribe(() => {
           this.reloadData();
         });
       }
@@ -809,7 +811,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
+        const body = this.buildBody(this.selectedRowsIndex, options.bodyFields);
+        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}&body=${encodeURIComponent(body)}`;
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
@@ -963,6 +966,47 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+  }
+
+  /*
+   * Build email body in plain text from selected rows
+   */
+  private buildBody(rowsIndex: number[], fields: any): string {
+    let body = '';
+    let i = 1;
+    for (const index of rowsIndex) {
+      body += `######   ${i}   ######\n`;
+      const item = this.gridData.data[index];
+      body += this.buildBodyRow(item, fields);
+      body += '______________________\n';
+      i ++;
+    }
+    return body;
+  }
+
+  private buildBodyRow(item: any, fields: any, tabs = ''): string {
+    let body = '';
+    for (const field of fields) {
+      switch (field.kind) {
+        case 'LIST':
+          body += `${tabs}${field.name}:\n`;
+          const list = item ? item[field.name] || [] : [];
+          list.forEach((element: any, index: number) => {
+            body += this.buildBodyRow(element, field.fields, tabs + '\t');
+            if (index < (list.length - 1)) {
+              body += `${tabs + '\t'}______________________\n`;
+            }
+          });
+          break;
+        case 'OBJECT':
+          body += `${tabs}${field.name}:\n`;
+          body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
+          break;
+        default:
+          body += `${tabs}${field.name}:   ${item ? item[field.name] : ''}\n`;
+      }
+    }
+    return body;
   }
 
   ngOnDestroy(): void {
