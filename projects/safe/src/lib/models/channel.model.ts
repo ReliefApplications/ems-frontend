@@ -8,3 +8,10 @@ export interface Channel {
     subscribedRoles?: Role[];
     routingKey?: string;
 }
+
+export interface ChannelDisplay extends Channel {
+    subscribedApplications?: {
+        name: string,
+        roles: Role[]
+    }[];
+}
