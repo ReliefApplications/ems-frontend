@@ -69,7 +69,8 @@ export class ConversationMessageComponent implements OnInit {
     }
   }
 
-  btnChoiceCheckValidateClickFn($event: MouseEvent): void {
+  btnChoiceCheckValidateClickFn($event: any): void {
     this.btnChoiceCheckValidateClick.emit(this.checkBoxChoices);
+    $event.currentTarget.parentElement.parentElement.setAttribute('style', 'display: none');
   }
 }
