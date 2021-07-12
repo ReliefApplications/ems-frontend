@@ -1,1 +1,20 @@
-<p>array-filter-menu works!</p>
+<ng-container *ngIf="form">
+    <div class="k-form" [formGroup]="form">
+        <ng-container [formGroup]="$any(filters.at(0))">
+            <kendo-dropdownlist [data]="operators" [valuePrimitive]="true" textField="text" valueField="value"
+                formControlName="operator"></kendo-dropdownlist>
+            <kendo-multiselect [data]="data" [valuePrimitive]="true" [textField]="textField" [valueField]="valueField"
+                formControlName="value">
+            </kendo-multiselect>
+        </ng-container>
+        <kendo-dropdownlist formControlName="logic" [data]="logics" [valuePrimitive]="true" textField="text"
+            valueField="value" class="k-filter-and"></kendo-dropdownlist>
+        <ng-container [formGroup]="$any(filters.at(1))">
+            <kendo-dropdownlist [data]="operators" [valuePrimitive]="true" textField="text" valueField="value"
+                formControlName="operator"></kendo-dropdownlist>
+            <kendo-multiselect [data]="data" [valuePrimitive]="true" [textField]="textField" [valueField]="valueField"
+                formControlName="value">
+            </kendo-multiselect>
+        </ng-container>
+    </div>
+</ng-container>

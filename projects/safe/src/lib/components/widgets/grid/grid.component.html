@@ -135,15 +135,17 @@
                 </kendo-grid-column>
                 <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox ) -->
                 <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
-                    [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor" [editable]="!field.disabled"
-                    [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
-                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
-                        let-filterService="filterService">
-                        <safe-array-filter-menu></safe-array-filter-menu>
+                    [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
+                    [editable]="!field.disabled" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                        <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
+                            [data]="field.meta.choices" [field]="field.name"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
+                        </safe-array-filter-menu>
                     </ng-template>
                     <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                        <safe-array-filter [filter]="filter" [data]="field.meta.choices"
-                            [field]="field.name"
+                        <safe-array-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
                             [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
                             [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
                         </safe-array-filter>
