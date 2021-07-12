@@ -2,6 +2,9 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SafeDownloadService} from '../../../../safe/src/lib/services/download.service';
+import {Apollo} from 'apollo-angular';
+// import {GET_FORM_BY_ID, GetFormByIdQueryResponse} from '../../../../../dist/safe/lib/graphql/queries';
+import {GET_FORM_BY_ID, GET_SHORT_FORMS, GetFormByIdQueryResponse, GetFormsQueryResponse} from '../graphql/queries';
 
 @Component({
   selector: 'app-virtual-assistant',
@@ -21,7 +24,9 @@ export class VirtualAssistantComponent implements OnInit {
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
-  constructor(private route: ActivatedRoute, private downloadService: SafeDownloadService) {
+  constructor(private route: ActivatedRoute,
+              private downloadService: SafeDownloadService,
+              private apollo: Apollo) {
     this.vaCols = 6;
     this.iQuestion = 0;
   }
@@ -36,36 +41,35 @@ export class VirtualAssistantComponent implements OnInit {
   }
 
   async getForm(): Promise<void>{
-    const path = `download/form/${this.id}`;
-    const dataReturn = await this.downloadService.getForm(path);
-    if (dataReturn.status === true) {
-      // console.log(JSON.parse(dataReturn.data.structure));
-      this.form = JSON.parse(dataReturn.data.structure).pages[0].elements;
-      console.log('this.form');
-      console.log(this.form);
-      // this.form = dataReturn.data;
+    // const path = `download/form/${this.id}`;
+    // const dataReturn = await this.downloadService.getForm(path);
+    // if (dataReturn.status === true) {
+    //   // console.log(JSON.parse(dataReturn.data.structure));
+    //   this.form = JSON.parse(dataReturn.data.structure).pages[0].elements;
+    //   console.log('this.form');
+    //   console.log(this.form);
+    // }
+    // else {
+    //   // problem with the form
+    // }
 
-      // JSON.parse(form.structure).pages[0].elements
+    // this.apollo.watchQuery<GetFormsQueryResponse>({
+    //   query: GET_SHORT_FORMS,
+    // }).valueChanges.subscribe((res: any) => {
+    //   console.log('Apollo: res.data.forms');
+    //   console.log(res.data.forms);
+    // });
 
-      // this.addMsg(this.form[0].type,
-      //   this.form[0].name,
-      //   'false',
-      //   new User('assistant', 'https://www.pngarts.com/files/11/Avatar-PNG-Transparent-Image.png'),
-      //   Date.now(),
-      //   []);
-
-      // for (const m of this.form){
-      //   this.addMsg(m.type,
-      //     m.name,
-      //     'false',
-      //     new User('assistant', 'https://www.pngarts.com/files/11/Avatar-PNG-Transparent-Image.png'),
-      //     Date.now(),
-      //     null);
-      // }
-    }
-    else {
-      // problem with the form
-    }
+    this.apollo.watchQuery<GetFormByIdQueryResponse>({
+      query: GET_FORM_BY_ID,
+      variables: {
+        id: this.id
+      }
+    }).valueChanges.subscribe((res: any) => {
+      console.log('APOLLO: res.data.form');
+      console.log(res);
+      this.form = JSON.parse(res.data.form.structure).pages[0].elements;
+    });
   }
 
   onChatButton(event: any): void {
