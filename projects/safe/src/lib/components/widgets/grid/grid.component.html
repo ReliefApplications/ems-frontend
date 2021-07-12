@@ -44,9 +44,8 @@
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
             <!-- ROW SELECTION -->
-            <kendo-grid-checkbox-column
-                [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
-                [columnMenu]="false" [showSelectAll]="true">
+            <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}"
+                [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="true">
             </kendo-grid-checkbox-column>
             <!-- FIELDS -->
             <ng-container *ngFor="let field of fields">
@@ -74,8 +73,9 @@
                             </div>
                         </ng-template>
                         <!-- DISPLAY ( boolean ) -->
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
-                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled/>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'boolean'">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled />
                         </ng-template>
                         <!-- DISPLAY ( color ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
@@ -133,11 +133,16 @@
                             (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
                     </ng-template>
                 </kendo-grid-column>
-                <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
-                <kendo-grid-column [title]="field.title"
-                    *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)" [columnMenu]="false"
-                    [editor]="field.editor" [editable]="!field.disabled" [width]="field.title.length * 7 + 50"
-                    [minResizableWidth]="50">
+                <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox ) -->
+                <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
+                    [field]="field.name" [title]="field.title" [editor]="field.editor" [editable]="!field.disabled"
+                    [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
+                    <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
+                        <safe-array-filter [filter]="filter" [data]="field.meta.choices"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
+                        </safe-array-filter>
+                    </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                         {{ dataItem[field.name] }}
                     </ng-template>
