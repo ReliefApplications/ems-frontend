@@ -54,7 +54,7 @@ export class SafeDownloadService {
     });
     const formData = new FormData();
 
-    formData.append('sampleFile', file, file.name);
+    formData.append('excelFile', file, file.name);
 
     return this.http.post(url, formData, {headers});
   }

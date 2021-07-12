@@ -182,6 +182,10 @@ export class FormRecordsComponent implements OnInit {
         this.snackBar.openSnackBar('The records was added successfully.');
         this.getFormData();
       }
-    });
+    }, (error => {
+      console.log('ERROR', error);
+      this.snackBar.openSnackBar(error.error, {error: true});
+      this.xlsxFile.nativeElement.value = '';
+    }));
   }
 }
