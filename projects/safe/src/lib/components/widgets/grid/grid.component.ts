@@ -476,7 +476,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         return 'date';
       }
       case 'JSON': {
-        return 'array';
+        return '';
       }
       default: {
         return 'text';

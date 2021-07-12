@@ -143,6 +143,7 @@
                     </ng-template>
                     <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
                         <safe-array-filter [filter]="filter" [data]="field.meta.choices"
+                            [field]="field.name"
                             [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
                             [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
                         </safe-array-filter>

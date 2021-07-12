@@ -13,6 +13,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
     return filter ? filter.value : null;
   }
 
+  @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
   @Input() public textField = '';
@@ -34,14 +35,15 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
 
   public onChange(value: any): void {
     this.applyFilter(
-      value === null // value of the default item
-        ? this.removeFilter(this.valueField) // remove the filter
+      value === null
+        ? this.removeFilter(this.valueField)
         : this.updateFilter({
-            // add a filter for the field with the value
-            field: this.valueField,
-            operator: 'contains',
-            value,
-          })
-    ); // update the root filter
+          field: this.field,
+          operator: (itemValue: any, filterValue: any) => {
+            return filterValue.every((i: any) => itemValue.includes(i));
+          },
+          value,
+        })
+    );
   }
 }
