@@ -198,6 +198,28 @@ export interface DeleteResourceMutationResponse{
   deletedResource: Resource;
 }
 
+// === ADD RECORD ===
+export const ADD_RECORD = gql`
+mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
+  addRecord(form: $form, data: $data) {
+    id
+    createdAt
+    modifiedAt
+    data(display: $display)
+    form {
+      uniqueRecord {
+        id
+        modifiedAt
+        data
+      }
+    }
+  }
+}`;
+
+export interface AddRecordMutationResponse {
+  loading: boolean;
+  addRecord: Record;
+}
 
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`

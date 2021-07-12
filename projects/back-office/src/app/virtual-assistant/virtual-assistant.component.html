@@ -34,6 +34,6 @@
     <img id="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
   </mat-grid-tile>
   <mat-grid-tile class="conversation" colspan="1" rowspan="1">
-    <app-va-conversation [form]="form"></app-va-conversation>
+    <app-va-conversation [form]="form" (endConversation)="vaEndConversation($event)"></app-va-conversation>
   </mat-grid-tile>
 </mat-grid-list>

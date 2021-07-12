@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {Message} from '../models/message.model';
 import {User} from '../models/user.model';
@@ -21,19 +21,23 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public conv: Message[] = [];
   public iCurrentQuestion: number;
 
-  public restartMsg: string;
+  public restartChoiceMsg: string;
+  public endChoiceMsg: string;
 
   public userImgLink: string;
   public vaImgLink: string;
 
   public endMessage: string;
 
+  @Output() endConversation: EventEmitter<any> = new EventEmitter();
+
   constructor() {
     this.currentText = '';
 
     this.iCurrentQuestion = 0;
 
-    this.restartMsg = 'restart';
+    this.restartChoiceMsg = 'restart';
+    this.endChoiceMsg = 'end';
 
     this.currentRecord = {};
 
@@ -113,8 +117,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send final conversation message
   sendReplyMsgTextEnd(): void {
-    if (this.restartMsg !== '') {
-      this.addMsg('', this.restartMsg, 'true', new User('Me', this.userImgLink), Date.now(), []);
+    if (this.restartChoiceMsg !== '') {
+      this.addMsg('', this.restartChoiceMsg, 'true', new User('Me', this.userImgLink), Date.now(), []);
       this.afterReply();
     }
   }
@@ -150,7 +154,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
       console.log(this.records);
 
       this.addMsg('text', this.endMessage, 'false', new User('Assistant', this.vaImgLink), Date.now(),
-        [new Choices(this.restartMsg, this.restartMsg + '?')]);
+        [
+          new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
+          new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
+        ]);
 
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
@@ -166,6 +173,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
           new User('Assistant', this.vaImgLink), Date.now(), []);
         break;
       case 'radiogroup':
+      case 'dropdown':
       case 'checkbox':
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           new User('Assistant', this.vaImgLink), Date.now(), this.form[this.iCurrentQuestion].choices);
@@ -178,6 +186,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
         r = false;
         break;
       default:
+        this.currentRecord[this.form[this.iCurrentQuestion].name] = null,
         r = false;
         break;
     }
@@ -186,8 +195,24 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // click on a choice (radio)
   choiceClick(choice: Choices): void{
-    if (choice.value === this.restartMsg){
+    if (choice.value === this.restartChoiceMsg){
       this.restartForm();
+    }
+    else if (choice.value === this.endChoiceMsg){
+      this.endConversation.emit(this.records);
+      // add record
+        // this.apollo.watchQuery<AddRecordMutationResponse>({
+        //   query: ADD_RECORD,
+        //   variables: {
+        //     form: this.id,
+        //     data: this.records
+        //   }
+        // }).valueChanges.subscribe((res: any) => {
+        //   console.log('APOLLO: res.data.form');
+        //   console.log(res);
+        //   this.form = JSON.parse(res.data.form.structure).pages[0].elements;
+        // });
+      // close the window
     }
     else {
       this.sendReplyMsgChoice(choice);

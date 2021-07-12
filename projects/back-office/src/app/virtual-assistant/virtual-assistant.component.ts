@@ -3,8 +3,9 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SafeDownloadService} from '../../../../safe/src/lib/services/download.service';
 import {Apollo} from 'apollo-angular';
-// import {GET_FORM_BY_ID, GetFormByIdQueryResponse} from '../../../../../dist/safe/lib/graphql/queries';
-import {GET_FORM_BY_ID, GET_SHORT_FORMS, GetFormByIdQueryResponse, GetFormsQueryResponse} from '../graphql/queries';
+import {GET_FORM_BY_ID, GetFormByIdQueryResponse} from '../graphql/queries';
+import {ADD_RECORD, AddRecordMutationResponse} from '../graphql/mutations';
+// import {ADD_RECORD, AddRecordMutationResponse} from '../../../../../dist/safe/lib/graphql/mutations';
 
 @Component({
   selector: 'app-virtual-assistant',
@@ -79,6 +80,21 @@ export class VirtualAssistantComponent implements OnInit {
     }
     else {
       this.vaCols = 12;
+    }
+  }
+
+  vaEndConversation(records: any): void {
+    console.log('vaEndConversation');
+    console.log(records);
+    for (const r of records){
+      console.log(r);
+      this.apollo.mutate<AddRecordMutationResponse>({
+        mutation: ADD_RECORD,
+        variables: {
+          form: this.id,
+          data: r
+        }
+      }).subscribe((res) => { console.log(res); });
     }
   }
 }
