@@ -291,10 +291,9 @@
             <!-- ROW ACTIONS -->
             <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
                 <ng-template kendoGridCellTemplate let-idx="rowIndex">
-                    <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
-                        [matMenuTriggerFor]="menu">
+                    <button *ngIf="gridData.data[idx].canUpdate || gridData.data[idx].canDelete || settings.actions.history"
+                    style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'" [matMenuTriggerFor]="menu">
                     </button>
-
                     <mat-menu #menu="matMenu">
                         <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
                             mat-menu-item (click)="onDeleteRow([idx])">
