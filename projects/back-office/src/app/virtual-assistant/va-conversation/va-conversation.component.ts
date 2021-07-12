@@ -21,8 +21,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public conv: Message[] = [];
   public iCurrentQuestion: number;
 
-  public endConv: boolean;
-  public endConvChoiceMsg: string;
+  public restartMsg: string;
 
   public userImgLink: string;
   public vaImgLink: string;
@@ -34,8 +33,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
     this.iCurrentQuestion = 0;
 
-    this.endConvChoiceMsg = 'restart';
-    this.endConv = false;
+    this.restartMsg = 'restart';
 
     this.currentRecord = {};
 
@@ -79,7 +77,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send simple reply message (TEXT)
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
-    if (!this.endConv && msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
+    if (msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
       this.addMsg('', msg, 'true', new User('Me', this.userImgLink), Date.now(), []);
 
       // this.records.push(msg);
@@ -92,7 +90,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send reply message after clicking on a choice (RADIOGROUP)
   sendReplyMsgChoice(ch: Choices): void {
-    if (!this.endConv && ch.text !== ''){
+    if (ch.text !== ''){
       this.addMsg('', ch.text, 'true', new User('Me', this.userImgLink), Date.now(), []);
       this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = ch.value;
       this.afterReply();
@@ -115,8 +113,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send final conversation message
   sendReplyMsgTextEnd(): void {
-    if (this.endConvChoiceMsg !== '') {
-      this.addMsg('', this.endConvChoiceMsg, 'true', new User('Me', this.userImgLink), Date.now(), []);
+    if (this.restartMsg !== '') {
+      this.addMsg('', this.restartMsg, 'true', new User('Me', this.userImgLink), Date.now(), []);
       this.afterReply();
     }
   }
@@ -129,7 +127,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   restartForm(): void {
-    this.endConv = false;
     this.sendReplyMsgTextEnd();
     this.iCurrentQuestion = 0;
     this.currentRecord = {};
@@ -148,14 +145,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
       }
     }
     else if (this.iCurrentQuestion === this.form.length) {
-      this.endConv = true;
-
       // add this record
       this.records.push(this.currentRecord);
       console.log(this.records);
 
       this.addMsg('text', this.endMessage, 'false', new User('Assistant', this.vaImgLink), Date.now(),
-        [new Choices(this.endConvChoiceMsg, this.endConvChoiceMsg + '?')]);
+        [new Choices(this.restartMsg, this.restartMsg + '?')]);
 
       this.iCurrentQuestion++;
       this.updateScrollViewPos();
@@ -191,7 +186,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // click on a choice (radio)
   choiceClick(choice: Choices): void{
-    if (choice.value === this.endConvChoiceMsg){
+    if (choice.value === this.restartMsg){
       this.restartForm();
     }
     else {
