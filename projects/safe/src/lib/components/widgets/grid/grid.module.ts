@@ -19,6 +19,7 @@ import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-re
 import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeArrayFilterModule } from './array-filter/array-filter.module';
+import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { SafeArrayFilterModule } from './array-filter/array-filter.module';
     SafeExpandedCommentModule,
     MatTooltipModule,
     ButtonsModule,
-    SafeArrayFilterModule
+    SafeArrayFilterModule,
+    SafeArrayFilterMenuModule
   ],
   exports: [SafeGridComponent]
 })

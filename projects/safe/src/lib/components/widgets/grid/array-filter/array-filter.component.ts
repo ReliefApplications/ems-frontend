@@ -20,7 +20,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
 
   public get defaultItem(): any {
     return {
-      [this.textField]: "Select item...",
+      [this.textField]: 'Select item...',
       [this.valueField]: null,
     };
   }
@@ -39,8 +39,8 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
         : this.updateFilter({
             // add a filter for the field with the value
             field: this.valueField,
-            operator: "contains",
-            value: value,
+            operator: 'contains',
+            value,
           })
     ); // update the root filter
   }
