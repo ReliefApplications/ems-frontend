@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FilterService } from '@progress/kendo-angular-grid';
-import { contains, empty, equals, notContains, notEmpty, notEquals } from '../../../../utils/array-filter';
+import { contains, equals, notContains, notEquals } from '../../../../utils/array-filter';
 
 @Component({
   selector: 'safe-array-filter-menu',
@@ -9,13 +9,6 @@ import { contains, empty, equals, notContains, notEmpty, notEquals } from '../..
   styleUrls: ['./array-filter-menu.component.scss']
 })
 export class SafeArrayFilterMenuComponent implements OnInit {
-
-  // public get selectedValue(operator: any): any {
-  //   const filter = this.filter.filters.filter(
-  //     (x: any) => x.field === this.field && x.operator === operator
-  //   )[0];
-  //   return filter ? filter.value : null;
-  // }
 
   @Input() public field = '';
   @Input() public filter: any;
@@ -64,14 +57,14 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       text: 'Does not contain',
       value: notContains
     },
-    {
-      text: 'Is empty',
-      value: empty
-    },
-    {
-      text: 'Is not empty',
-      value: notEmpty
-    }
+    // {
+    //   text: 'Is empty',
+    //   value: empty
+    // },
+    // {
+    //   text: 'Is not empty',
+    //   value: notEmpty
+    // }
   ];
 
   constructor(private fb: FormBuilder) { }

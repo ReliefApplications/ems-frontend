@@ -14,10 +14,10 @@ export const notContains = (itemValue: any, filterValue: any): boolean => {
     return !filterValue.some((i: any) => itemValue.includes(i));
 };
 
-export const empty = (itemValue: any, filterValue: any): boolean => {
-    return !notEmpty(itemValue, filterValue);
-};
+// export const isempty = (itemValue: any): boolean => {
+//     return !notEmpty(itemValue);
+// };
 
-export const notEmpty = (itemValue: any, filterValue: any): boolean => {
-    return itemValue && itemValue.length > 0;
-};
+// export const notEmpty = (itemValue: any): boolean => {
+//     return itemValue && itemValue.length > 0;
+// };
