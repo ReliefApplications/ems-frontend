@@ -66,6 +66,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.speakInit(this.speech, this.speechData);
+    console.log('this.form');
+    console.log(this.form);
   }
 
   ngOnChanges(changes: SimpleChanges): void{
@@ -204,11 +206,16 @@ export class VaConversationComponent implements OnInit, OnChanges {
         break;
       case 'expression':
         if (this.form[this.iCurrentQuestion].description){
-          this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].description, 'false',
+          this.addMsg(this.form[this.iCurrentQuestion].type,
+            this.form[this.iCurrentQuestion].title + '\n' + this.form[this.iCurrentQuestion].description,
+            'false',
             this.userVa, Date.now(), []);
         }
         r = false;
         break;
+      // case 'comment':
+      //   this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].description, 'false',
+      //     this.userVa, Date.now(), []);
       default:
         this.currentRecord[this.form[this.iCurrentQuestion].name] = null,
         r = false;
