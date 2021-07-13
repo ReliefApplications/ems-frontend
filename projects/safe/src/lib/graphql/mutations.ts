@@ -364,7 +364,7 @@ export interface DeletePageMutationResponse {
 }
 
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
   editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
