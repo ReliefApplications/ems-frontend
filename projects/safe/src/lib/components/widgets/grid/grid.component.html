@@ -137,7 +137,8 @@
                 <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                     [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
                     [editable]="!field.disabled" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
-                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
                         <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
                             [data]="field.meta.choices" [field]="field.name"
                             [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
@@ -303,13 +304,16 @@
             <!-- ROW ACTIONS -->
             <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
                 <ng-template kendoGridCellTemplate let-idx="rowIndex">
-                    <button *ngIf="gridData.data[idx].canUpdate || gridData.data[idx].canDelete || settings.actions.history"
-                    style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'" [matMenuTriggerFor]="menu">
+                    <button
+                        *ngIf="settings.actions && ((settings.actions.update && gridData.data[idx].canUpdate) || settings.actions.history ||
+                        (settings.actions.convert && gridData.data[idx].canUpdate) || (settings.actions.delete && gridData.data[idx].canDelete))"
+                        style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
+                        [matMenuTriggerFor]="menu">
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
-                            mat-menu-item (click)="onDeleteRow([idx])">
-                            Delete
+                        <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate"
+                            mat-menu-item color="warn" (click)="onUpdateRow(gridData.data[idx].id)">
+                            Update
                         </button>
                         <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
                             (click)="onViewHistory(gridData.data[idx].id)">
@@ -319,9 +323,10 @@
                             mat-menu-item color="warn" (click)="onConvertRecord([idx])">
                             Convert
                         </button>
-                        <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate"
-                            mat-menu-item color="warn" (click)="onUpdateRow(gridData.data[idx].id)">
-                            Update
+                        <mat-divider></mat-divider>
+                        <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
+                            mat-menu-item (click)="onDeleteRow([idx])">
+                            Delete
                         </button>
                     </mat-menu>
                 </ng-template>
