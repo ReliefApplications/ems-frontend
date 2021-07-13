@@ -183,11 +183,10 @@ export class FormRecordsComponent implements OnInit {
     this.downloadService.uploadFile(path, file).subscribe(res => {
       this.xlsxFile.nativeElement.value = '';
       if (res.status === 'OK') {
-        this.snackBar.openSnackBar('The records was added successfully.');
+        this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
         this.getFormData();
       }
     }, (error => {
-      console.log('ERROR', error);
       this.snackBar.openSnackBar(error.error, {error: true});
       this.xlsxFile.nativeElement.value = '';
     }));
