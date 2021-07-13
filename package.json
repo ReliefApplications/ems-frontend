@@ -71,6 +71,7 @@
     "leaflet.markercluster": "^1.4.1",
     "msal": "^1.4.4",
     "rxjs": "~6.6.7",
+    "speak-tts": "^2.0.8",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "^1.8.54",
     "survey-creator": "^1.8.54",

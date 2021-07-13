@@ -3,6 +3,8 @@ import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {Message} from '../models/message.model';
 import {User} from '../models/user.model';
 import {Choices} from '../models/choices.model';
+// @ts-ignore
+import Speech from 'speak-tts';
 
 @Component({
   selector: 'app-va-conversation',
@@ -31,6 +33,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   @Output() endConversation: EventEmitter<any> = new EventEmitter();
 
+  public speech: any;
+  public speechData: any;
+
+  public userMe: User;
+  public userVa: User;
+
   constructor() {
     this.currentText = '';
 
@@ -44,31 +52,21 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.userImgLink = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png';
     this.vaImgLink = 'https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png';
 
+    this.userMe = new User('Me', this.userImgLink);
+    this.userVa = new User('Assistant', this.vaImgLink);
+
     this.endMessage = 'Thank you for your time, bye!';
+
+    this.speech = new Speech();
   }
 
   ngOnInit(): void {
-    // this.speechToTextService.endSpeechEvent.subscribe(
-    //   (text) => {
-    //     this.currentText = text;
-    //   }
-    // );
-    // this.controllerService.botReplied.subscribe(
-    //   () => {
-    //     this.updateScrollViewPos();
-    //   }
-    // );
-
-    // window.setTimeout(() => {
-    //   console.log('this.form');
-    //   console.log(this.form);
-    //   this.sendQuestionMsg(this.form[0].name);
-    //   }, 5000);
+    this.speakInit(this.speech, this.speechData);
   }
 
   ngOnChanges(changes: SimpleChanges): void{
     if (this.form !== undefined) {
-      this.sendNextQuestion();
+      // this.sendNextQuestion();
     }
   }
 
@@ -82,7 +80,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
     if (msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
-      this.addMsg('', msg, 'true', new User('Me', this.userImgLink), Date.now(), []);
+      this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
 
       // this.records.push(msg);
       // complete current record
@@ -95,9 +93,22 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send reply message after clicking on a choice (RADIOGROUP)
   sendReplyMsgChoice(ch: Choices): void {
     if (ch.text !== ''){
-      this.addMsg('', ch.text, 'true', new User('Me', this.userImgLink), Date.now(), []);
+
+      this.speak(this.speech, ch.text);
+
+      this.addMsg('', ch.text, 'true', this.userMe, Date.now(), []);
       this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = ch.value;
       this.afterReply();
+    }
+  }
+
+  // click on a checkbox choice
+  choiceCheckBoxClick(e: any): void {
+    if (e.state === true){
+      this.speak(this.speech, e.choice.text);
+    }
+    else {
+      this.speak(this.speech, e.choice.text + ' removed');
     }
   }
 
@@ -110,7 +121,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       text = text + ' ' + ch.text;
     });
 
-    this.addMsg('', text, 'true', new User('Me', this.userImgLink), Date.now(), []);
+    this.addMsg('', text, 'true', this.userMe, Date.now(), []);
     this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = choicesRecord;
     this.afterReply();
   }
@@ -118,7 +129,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send final conversation message
   sendReplyMsgTextEnd(): void {
     if (this.restartChoiceMsg !== '') {
-      this.addMsg('', this.restartChoiceMsg, 'true', new User('Me', this.userImgLink), Date.now(), []);
+      this.addMsg('', this.restartChoiceMsg, 'true', this.userMe, Date.now(), []);
       this.afterReply();
     }
   }
@@ -153,7 +164,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       this.records.push(this.currentRecord);
       console.log(this.records);
 
-      this.addMsg('text', this.endMessage, 'false', new User('Assistant', this.vaImgLink), Date.now(),
+      this.addMsg('text', this.endMessage, 'false', this.userVa, Date.now(),
         [
           new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
           new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
@@ -170,18 +181,18 @@ export class VaConversationComponent implements OnInit, OnChanges {
     switch (this.form[this.iCurrentQuestion].type){
       case 'text':
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
-          new User('Assistant', this.vaImgLink), Date.now(), []);
+          this.userVa, Date.now(), []);
         break;
       case 'radiogroup':
       case 'dropdown':
       case 'checkbox':
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
-          new User('Assistant', this.vaImgLink), Date.now(), this.form[this.iCurrentQuestion].choices);
+          this.userVa, Date.now(), this.form[this.iCurrentQuestion].choices);
         break;
       case 'expression':
         if (this.form[this.iCurrentQuestion].description){
           this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].description, 'false',
-            new User('Assistant', this.vaImgLink), Date.now(), []);
+            this.userVa, Date.now(), []);
         }
         r = false;
         break;
@@ -226,6 +237,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
          user: User,
          date: number,
          choices: Choices[]): void {
+    console.log('@@ ADDMSG @@');
+    if (reply === 'false'){
+      console.log('speak');
+      this.speak(this.speech, text);
+      console.log('HIII');
+    }
     this.conv.push(new Message(type, text, reply, user, date, choices));
   }
 
@@ -244,7 +261,38 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }, 50);
   }
 
-  startSpeech(): void {
-    // this.speechToTextService.start();
+  /* TTS */
+  speakInit(speech: Speech, speechData: any): void {
+    if (speech.hasBrowserSupport()) { // returns a boolean
+      console.log('speech synthesis supported');
+      speech.init({
+        volume: 1,
+        lang: 'en-GB',
+        rate: 1,
+        pitch: 1,
+        voice: 'Google UK English Male',
+        splitSentences: true,
+        listeners: {
+        }
+      }).then((data: any) => {
+        // The "data" object contains the list of available voices and the voice synthesis params
+        console.log('Speech is ready, voices are available', data);
+        speechData = data;
+        this.sendNextQuestion();
+
+      }).catch((e: any) => {
+        console.error('An error occured while initializing : ', e);
+      });
+    }
+  }
+
+  speak(speech: Speech, msg: string): void {
+    speech.speak({
+      text: msg,
+    }).then(() => {
+      console.log('Success !');
+    }).catch((e: any) => {
+      console.error('An error occurred :', e);
+    });
   }
 }

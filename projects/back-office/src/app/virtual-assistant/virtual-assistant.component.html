@@ -29,11 +29,13 @@
 <!--</mat-grid-list>-->
 
 
-<mat-grid-list cols="2" rowHeight="100%">
-  <mat-grid-tile style="background-color: #53a7ff;" colspan="1" rowspan="1">
-    <img id="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
+<div *ngIf="!this.start" style="background-color: #53a7ff; height: 100%; width: 100%;"><img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/></div>
+<mat-grid-list *ngIf="this.start" cols="2" rowHeight="100%">
+  <mat-grid-tile style="background-color: #53a7ff;" [colspan]="1" [rowspan]="1">
+    <img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
   </mat-grid-tile>
-  <mat-grid-tile class="conversation" colspan="1" rowspan="1">
+  <mat-grid-tile class="conversation" [colspan]="1" [rowspan]="1">
     <app-va-conversation [form]="form" (endConversation)="vaEndConversation($event)"></app-va-conversation>
   </mat-grid-tile>
 </mat-grid-list>
+<button *ngIf="!this.start" mat-flat-button color="primary" id="btn-start" (click)="btnStartClick()"> Start </button>

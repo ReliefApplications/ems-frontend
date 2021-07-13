@@ -21,6 +21,9 @@ export class VirtualAssistantComponent implements OnInit {
   public iQuestion: any;
   public messages: any;
   public vaCols: number;
+  public chatCols: number;
+
+  public start: boolean;
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
@@ -28,8 +31,12 @@ export class VirtualAssistantComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private downloadService: SafeDownloadService,
               private apollo: Apollo) {
-    this.vaCols = 6;
+    // this.vaCols = 6;
+    this.vaCols = 2;
+    this.chatCols = 0;
     this.iQuestion = 0;
+
+    this.start = false;
   }
 
   ngOnInit(): void {
@@ -73,15 +80,15 @@ export class VirtualAssistantComponent implements OnInit {
     });
   }
 
-  onChatButton(event: any): void {
-    console.log('onChatButton');
-    if (this.vaCols !== 6) {
-      this.vaCols = 6;
-    }
-    else {
-      this.vaCols = 12;
-    }
-  }
+  // onChatButton(event: any): void {
+  //   console.log('onChatButton');
+  //   if (this.vaCols !== 6) {
+  //     this.vaCols = 6;
+  //   }
+  //   else {
+  //     this.vaCols = 12;
+  //   }
+  // }
 
   vaEndConversation(records: any): void {
     console.log('vaEndConversation');
@@ -96,5 +103,11 @@ export class VirtualAssistantComponent implements OnInit {
         }
       }).subscribe((res) => { console.log(res); });
     }
+  }
+
+  btnStartClick(): void {
+    this.vaCols = 1;
+    this.chatCols = 1;
+    this.start = true;
   }
 }

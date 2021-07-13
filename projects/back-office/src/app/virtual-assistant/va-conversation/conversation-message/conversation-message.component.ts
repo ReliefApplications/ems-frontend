@@ -24,6 +24,7 @@ export class ConversationMessageComponent implements OnInit {
 
   @Output() btnChoiceClick: EventEmitter<any> = new EventEmitter();
   @Output() btnChoiceCheckBoxValidateClick: EventEmitter<any> = new EventEmitter();
+  @Output() btnChoiceCheckBoxClick: EventEmitter<any> = new EventEmitter();
 
   public ml = '';
   public mr = '';
@@ -59,12 +60,16 @@ export class ConversationMessageComponent implements OnInit {
 
   btnChoiceCheckBoxClickFn($event: any, ch: Choices): void {
     console.log($event.currentTarget);
+    let e;
     if (this.checkBoxChoices.includes(ch)){
+      e = {choice: ch, state: false};
       this.checkBoxChoices.splice(this.checkBoxChoices.indexOf(ch), 1);
     }
     else {
+      e = {choice: ch, state: true};
       this.checkBoxChoices.push(ch);
     }
+    this.btnChoiceCheckBoxClick.emit(e);
   }
 
   btnChoiceCheckBoxValidateClickFn($event: any): void {
