@@ -214,18 +214,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     else if (choice.value === this.endChoiceMsg){
       this.endConversation.emit(this.records);
       // add record
-        // this.apollo.watchQuery<AddRecordMutationResponse>({
-        //   query: ADD_RECORD,
-        //   variables: {
-        //     form: this.id,
-        //     data: this.records
-        //   }
-        // }).valueChanges.subscribe((res: any) => {
-        //   console.log('APOLLO: res.data.form');
-        //   console.log(res);
-        //   this.form = JSON.parse(res.data.form.structure).pages[0].elements;
-        // });
       // close the window
+      // window.close();
     }
     else {
       this.sendReplyMsgChoice(choice);
@@ -239,14 +229,14 @@ export class VaConversationComponent implements OnInit, OnChanges {
          user: User,
          date: number,
          choices: Choices[]): void {
-    console.log('@@ ADDMSG @@');
     if (reply === 'false'){
       console.log('speak');
       this.speak(this.speech, text);
-      console.log('HIII');
     }
     this.conv.push(new Message(type, text, reply, user, date, choices));
   }
+
+  /* ----- STYLE ----- */
 
   updateScrollViewPos(): void {
     setTimeout(() => {
@@ -263,7 +253,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }, 50);
   }
 
-  /* TTS */
+  /* ----- TTS ----- */
+
   speakInit(speech: Speech, speechData: any): void {
     if (speech.hasBrowserSupport()) { // returns a boolean
       console.log('speech synthesis supported');

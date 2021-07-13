@@ -101,7 +101,10 @@ export class VirtualAssistantComponent implements OnInit {
           form: this.id,
           data: r
         }
-      }).subscribe((res) => { console.log(res); });
+      }).subscribe((res) => {
+        console.log(res);
+        window.close();
+      });
     }
   }
 
