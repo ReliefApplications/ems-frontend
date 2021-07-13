@@ -50,7 +50,6 @@ export class ChannelsComponent implements OnInit, OnDestroy {
           });
         return {...channel, subscribedApplications};
       });
-      console.log(this.channelsData);
     });
   }
 
