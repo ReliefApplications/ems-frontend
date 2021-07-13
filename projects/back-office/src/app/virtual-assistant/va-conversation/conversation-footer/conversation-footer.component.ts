@@ -18,10 +18,11 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
   public btnRec: any;
 
   @Input() inputValue = '';
+  @Input() inputType = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     // we skip that at the beginning when object are not yet set
-    if (this.input !== undefined){
+    if (this.input !== undefined && changes.inputValue !== undefined){
       this.msgChange(changes.inputValue.currentValue);
       this.input.focus();
     }

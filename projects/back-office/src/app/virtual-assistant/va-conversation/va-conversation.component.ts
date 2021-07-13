@@ -39,6 +39,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public userMe: User;
   public userVa: User;
 
+  public inputMsgType: string;
+
   constructor() {
     this.currentText = '';
 
@@ -58,6 +60,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.endMessage = 'Thank you for your time, bye!';
 
     this.speech = new Speech();
+
+    this.inputMsgType = 'text';
   }
 
   ngOnInit(): void {
@@ -180,8 +184,15 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // control the bot format message depending on the type
   questionController(): boolean {
     let r = true;
-    switch (this.form[this.iCurrentQuestion].type){
+    const t = this.form[this.iCurrentQuestion].type;
+    switch (t){
       case 'text':
+        if (this.form[this.iCurrentQuestion].inputType !== null) {
+          this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
+        }
+        else {
+          this.inputMsgType = 'text';
+        }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
         break;
