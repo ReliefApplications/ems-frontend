@@ -16,6 +16,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SafeConfirmModalModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -23,22 +24,23 @@ import { MatExpansionModule } from '@angular/material/expansion';
     PullJobsComponent,
     PullJobModalComponent
   ],
-  imports: [
-    CommonModule,
-    PullJobsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    SafeConfirmModalModule,
-    MatExpansionModule,
-  ]
+    imports: [
+        CommonModule,
+        PullJobsRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatSelectModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        SafeConfirmModalModule,
+        MatExpansionModule,
+        MatDividerModule,
+    ]
 })
 export class PullJobsModule { }
