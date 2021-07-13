@@ -20,6 +20,7 @@ import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.m
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeArrayFilterModule } from './array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu.module';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu
     MatTooltipModule,
     ButtonsModule,
     SafeArrayFilterModule,
-    SafeArrayFilterMenuModule
+    SafeArrayFilterMenuModule,
+    MatDividerModule
   ],
   exports: [SafeGridComponent]
 })

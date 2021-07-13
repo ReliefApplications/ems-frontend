@@ -26,6 +26,7 @@
 
 .form-group {
     flex: 50%;
+    max-width: 100%;
     
     &:not(:first-child) {
         margin-top: 0px;
