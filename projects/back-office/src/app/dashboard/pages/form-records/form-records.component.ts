@@ -17,7 +17,6 @@ import {
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
-import * as XLSX from 'xlsx';
 import { SafeDownloadService } from '../../../../../../safe/src/lib/services/download.service';
 
 @Component({
