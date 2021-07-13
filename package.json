@@ -1,6 +1,6 @@
 {
   "name": "safe-front",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -98,6 +98,7 @@
     "@types/ws": "^7.4.1",
     "@webcomponents/custom-elements": "^1.4.3",
     "babel-loader": "^8.2.2",
+    "chromatic": "^5.9.2",
     "codelyzer": "^6.0.0",
     "husky": "^4.3.8",
     "jasmine-core": "~3.6.0",

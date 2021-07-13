@@ -34,6 +34,7 @@ export class FormRecordsComponent implements OnInit {
   displayedColumns: string[] = [];
   dataSource: any[] = [];
   public showSidenav = true;
+  private historyId = '';
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -104,6 +105,9 @@ export class FormRecordsComponent implements OnInit {
       this.dataSource = this.dataSource.filter(x => {
         return x.id !== id;
       });
+      if (id === this.historyId) {
+        this.layoutService.setRightSidenav(null);
+      }
     });
   }
 
@@ -144,6 +148,7 @@ export class FormRecordsComponent implements OnInit {
         id
       }
     }).subscribe(res => {
+      this.historyId = id;
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {
