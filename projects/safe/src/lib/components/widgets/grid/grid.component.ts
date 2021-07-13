@@ -39,7 +39,20 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
-const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+const cloneData = (data: any[]) => data.map((item: any) => {
+  const auxItem: any = {...item};
+  Object.keys(item).map(key => {
+    if (item[key] instanceof Object) {
+      Object.keys(item[key]).map(k => {
+        if (k !== '__typename' && k !== 'id') {
+          const objK: any = `${key}.${k}`;
+          auxItem[objK] = item[key][k];
+        }
+      });
+    }
+  });
+  return Object.assign({}, auxItem);
+});
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
