@@ -169,7 +169,7 @@
             <mat-icon>edit</mat-icon>
             Edit
           </button>
-          <ng-container *ngIf="element.canSee && element.recordsCount > 0">
+          <ng-container *ngIf="element.canSee">
             <button mat-menu-item [routerLink]="['/forms/records', element.id]">
               <mat-icon>plagiarism</mat-icon>
               View
