@@ -79,14 +79,16 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send simple reply message (TEXT)
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
-    if (msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
-      this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
+    if (this.iCurrentQuestion < this.form.length){
+      if (msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
+        this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
 
-      // this.records.push(msg);
-      // complete current record
-      // -1 because the chat start with a message of the bot
-      this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
-      this.afterReply();
+        // this.records.push(msg);
+        // complete current record
+        // -1 because the chat start with a message of the bot
+        this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
+        this.afterReply();
+      }
     }
   }
 
