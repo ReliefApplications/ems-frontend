@@ -44,9 +44,8 @@
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
             <!-- ROW SELECTION -->
-            <kendo-grid-checkbox-column
-                [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}" [resizable]="false"
-                [columnMenu]="false" [showSelectAll]="true">
+            <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}"
+                [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="true">
             </kendo-grid-checkbox-column>
             <!-- FIELDS -->
             <ng-container *ngFor="let field of fields">
@@ -74,8 +73,9 @@
                             </div>
                         </ng-template>
                         <!-- DISPLAY ( boolean ) -->
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
-                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled/>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'boolean'">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled />
                         </ng-template>
                         <!-- DISPLAY ( color ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
@@ -133,11 +133,24 @@
                             (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
                     </ng-template>
                 </kendo-grid-column>
-                <!-- MULTI SELECT QUESTION TYPES ( checkbox ) -->
-                <kendo-grid-column [title]="field.title"
-                    *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)" [columnMenu]="false"
-                    [editor]="field.editor" [editable]="!field.disabled" [width]="field.title.length * 7 + 50"
-                    [minResizableWidth]="50">
+                <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox ) -->
+                <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
+                    [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
+                    [editable]="!field.disabled" [width]="field.title.length * 7 + 50" [minResizableWidth]="50">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
+                            [data]="field.meta.choices" [field]="field.name"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
+                        </safe-array-filter-menu>
+                    </ng-template>
+                    <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
+                        <safe-array-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
+                            [textField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.text : 'text'"
+                            [valueField]="field.meta.choicesByUrl ? field.meta.choicesByUrl.value : 'value'">
+                        </safe-array-filter>
+                    </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                         {{ dataItem[field.name] }}
                     </ng-template>
@@ -291,14 +304,16 @@
             <!-- ROW ACTIONS -->
             <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
                 <ng-template kendoGridCellTemplate let-idx="rowIndex">
-                    <button style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
+                    <button
+                        *ngIf="settings.actions && ((settings.actions.update && gridData.data[idx].canUpdate) || settings.actions.history ||
+                        (settings.actions.convert && gridData.data[idx].canUpdate) || (settings.actions.delete && gridData.data[idx].canDelete))"
+                        style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
                         [matMenuTriggerFor]="menu">
                     </button>
-
                     <mat-menu #menu="matMenu">
-                        <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
-                            mat-menu-item (click)="onDeleteRow([idx])">
-                            Delete
+                        <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate"
+                            mat-menu-item color="warn" (click)="onUpdateRow(gridData.data[idx].id)">
+                            Update
                         </button>
                         <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
                             (click)="onViewHistory(gridData.data[idx].id)">
@@ -308,9 +323,10 @@
                             mat-menu-item color="warn" (click)="onConvertRecord([idx])">
                             Convert
                         </button>
-                        <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate"
-                            mat-menu-item color="warn" (click)="onUpdateRow(gridData.data[idx].id)">
-                            Update
+                        <mat-divider></mat-divider>
+                        <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
+                            mat-menu-item (click)="onDeleteRow([idx])">
+                            Delete
                         </button>
                     </mat-menu>
                 </ng-template>
