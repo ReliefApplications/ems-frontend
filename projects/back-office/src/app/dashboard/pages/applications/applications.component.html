@@ -121,7 +121,7 @@
             <mat-icon>file_copy</mat-icon>
             Duplicate
           </button>
-          <mat-divider></mat-divider>
+          <mat-divider *ngIf="element.canDelete"></mat-divider>
           <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
             <mat-icon>delete</mat-icon>
             Delete
