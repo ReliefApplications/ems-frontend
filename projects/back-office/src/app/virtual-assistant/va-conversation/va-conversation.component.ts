@@ -41,6 +41,9 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   public inputMsgType: string;
 
+  public mtObjectTemp: any;
+  public iCurMtQ: number;
+
   constructor() {
     this.currentText = '';
 
@@ -62,6 +65,9 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.speech = new Speech();
 
     this.inputMsgType = 'text';
+
+    this.mtObjectTemp = {};
+    this.iCurMtQ = -1;
   }
 
   ngOnInit(): void {
@@ -90,6 +96,13 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
         this.currentRecord[this.form[this.iCurrentQuestion].name] = msg;
         this.afterReply();
+      }
+      else if (this.form[this.iCurrentQuestion].type === 'multipletext'){
+        this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
+        this.mtObjectTemp[this.form[this.iCurrentQuestion].items[this.iCurMtQ ].name] = msg;
+        this.currentText = '';
+        this.updateScrollViewPos();
+        this.sendNextMtQuestion();
       }
     }
   }
@@ -217,12 +230,29 @@ export class VaConversationComponent implements OnInit, OnChanges {
         }
         r = false;
         break;
+      case 'multipletext':
+        this.iCurMtQ = -1;
+        this.mtObjectTemp = {};
+        this.sendNextMtQuestion();
+        break;
       default:
         this.currentRecord[this.form[this.iCurrentQuestion].name] = null,
         r = false;
         break;
     }
     return r;
+  }
+
+  sendNextMtQuestion(): void {
+    this.iCurMtQ ++ ;
+    if (this.iCurMtQ < this.form[this.iCurrentQuestion].items.length){
+      this.addMsg('text', this.form[this.iCurrentQuestion].items[this.iCurMtQ].title, 'false', this.userVa, Date.now(), []);
+    }
+    else {
+      console.log('FINISHED');
+      this.currentRecord[this.form[this.iCurrentQuestion].name] = this.mtObjectTemp;
+      this.sendNextQuestion();
+    }
   }
 
   // click on a choice (radio)
