@@ -85,15 +85,9 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send simple reply message (TEXT) (click on send msg or enter)
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
-    console.log(this.form[this.iCurrentQuestion - 1].type);
-    console.log(this.form[this.iCurrentQuestion].type);
     if (this.iCurrentQuestion < this.form.length){
       if (msg !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
         this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
-
-        // this.records.push(msg);
-        // complete current record
-        // -1 because the chat start with a message of the bot
         this.currentRecord[this.form[this.iCurrentQuestion].name] = msg;
         this.afterReply();
       }
@@ -195,9 +189,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
         if (this.form[this.iCurrentQuestion].inputType !== null) {
           this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
         }
-        // else {
-        //   this.inputMsgType = 'text';
-        // }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
         break;
@@ -226,9 +217,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
         }
         r = false;
         break;
-      // case 'comment':
-      //   this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].description, 'false',
-      //     this.userVa, Date.now(), []);
       default:
         this.currentRecord[this.form[this.iCurrentQuestion].name] = null,
         r = false;
@@ -244,9 +232,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }
     else if (choice.value === this.endChoiceMsg){
       this.endConversation.emit(this.records);
-      // add record
-      // close the window
-      // window.close();
     }
     else {
       this.sendReplyMsgChoice(choice);
