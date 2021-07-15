@@ -82,11 +82,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }
   }
 
-  // send simple reply message (TEXT)
+  // send simple reply message (TEXT) (click on send msg or enter)
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
-    if (this.iCurrentQuestion < this.form.length){
-      if (msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text'){
+    console.log(this.form[this.iCurrentQuestion - 1].type);
+    if (this.iCurrentQuestion - 1  < this.form.length){
+      if ((msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text') || (msg !== '' &&  this.form[this.iCurrentQuestion - 1].type === 'comment')){
         this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
 
         // this.records.push(msg);
@@ -185,6 +186,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // control the bot format message depending on the type
   questionController(): boolean {
+    this.inputMsgType = 'text';
     let r = true;
     const t = this.form[this.iCurrentQuestion].type;
     switch (t){
@@ -192,9 +194,13 @@ export class VaConversationComponent implements OnInit, OnChanges {
         if (this.form[this.iCurrentQuestion].inputType !== null) {
           this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
         }
-        else {
-          this.inputMsgType = 'text';
-        }
+        // else {
+        //   this.inputMsgType = 'text';
+        // }
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+          this.userVa, Date.now(), []);
+        break;
+      case 'comment':
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
         break;
