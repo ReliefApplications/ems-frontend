@@ -86,8 +86,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
     console.log(this.form[this.iCurrentQuestion - 1].type);
-    if (this.iCurrentQuestion - 1  < this.form.length){
-      if ((msg !== '' && this.form[this.iCurrentQuestion - 1].type === 'text') || (msg !== '' &&  this.form[this.iCurrentQuestion - 1].type === 'comment')){
+    if (this.iCurrentQuestion - 1 < this.form.length){
+      if (msg !== '' && (this.form[this.iCurrentQuestion - 1].type === 'text' || this.form[this.iCurrentQuestion - 1].type === 'comment')){
         this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
 
         // this.records.push(msg);
