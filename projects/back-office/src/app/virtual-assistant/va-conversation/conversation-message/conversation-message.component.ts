@@ -76,4 +76,7 @@ export class ConversationMessageComponent implements OnInit {
     this.btnChoiceCheckBoxValidateClick.emit(this.checkBoxChoices);
     $event.currentTarget.parentElement.parentElement.setAttribute('style', 'display: none');
   }
+
+  btnBooleanClickFn(value: any): void {
+  }
 }

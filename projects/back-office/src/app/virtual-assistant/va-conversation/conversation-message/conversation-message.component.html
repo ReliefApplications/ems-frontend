@@ -11,9 +11,12 @@
     <p innerText="{{text}}"></p>
   </div>
 </ng-template>
-<div class="btnChoicesCont" *ngIf="choices!=null && (type == 'radiogroup' || type == 'text')">
+<div class="btnChoicesCont" *ngIf="choices!=null && (type == 'radiogroup' || type == 'text' || type == 'boolean')">
   <button mat-flat-button color="primary" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch.text}}</button>
 </div>
+<!--<div class="btnChoicesCont" *ngIf="choices!=null && (type == 'boolean')">-->
+<!--  <button mat-flat-button color="primary" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch.text}}</button>-->
+<!--</div>-->
 <div *ngIf="choices!=null && (type == 'checkbox' || type == 'dropdown' || type == 'tagbox')">
   <div class="btnChoicesCont">
     <button mat-flat-button [color]="(this.checkBoxChoices.includes(ch) ? 'accent' : 'primary')" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceCheckBoxClickFn($event, ch)">{{ch.text}}</button>
@@ -22,3 +25,7 @@
     <button mat-flat-button id="btnChoicesValidate" (click)="btnChoiceCheckBoxValidateClickFn($event)"> OK </button>
   </div>
 </div>
+<!--<div *ngIf="type == 'boolean'">-->
+<!--  <button mat-flat-button color="primary" class="btnChoices" (click)="btnBooleanClickFn('false')">{{this.}}</button>-->
+<!--  <button mat-flat-button color="primary" class="btnChoices" (click)="btnBooleanClickFn('true')">{{text}}</button>-->
+<!--</div>-->

@@ -205,6 +205,11 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
         break;
+      case 'boolean':
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+          this.userVa, Date.now(), [new Choices('false', this.form[this.iCurrentQuestion].labelFalse),
+            new Choices('true', this.form[this.iCurrentQuestion].labelTrue)]);
+        break;
       case 'radiogroup':
       case 'dropdown':
       case 'checkbox':

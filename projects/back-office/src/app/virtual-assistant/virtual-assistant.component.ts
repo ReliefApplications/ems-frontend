@@ -77,6 +77,7 @@ export class VirtualAssistantComponent implements OnInit {
       console.log('APOLLO: res.data.form');
       console.log(res);
       this.form = JSON.parse(res.data.form.structure).pages[0].elements;
+      console.log(this.form);
     });
   }
 

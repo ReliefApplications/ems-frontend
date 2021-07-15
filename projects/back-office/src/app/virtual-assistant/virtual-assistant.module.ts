@@ -10,6 +10,7 @@ import { VaConversationComponent } from './va-conversation/va-conversation.compo
 import {ConversationHeaderComponent} from './va-conversation/conversation-header/conversation-header.component';
 import {ConversationMessageComponent} from './va-conversation/conversation-message/conversation-message.component';
 import {ConversationFooterComponent} from './va-conversation/conversation-footer/conversation-footer.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [VirtualAssistantComponent,
@@ -17,14 +18,15 @@ import {ConversationFooterComponent} from './va-conversation/conversation-footer
     ConversationHeaderComponent,
     ConversationMessageComponent,
     ConversationFooterComponent],
-  imports: [
-    CommonModule,
-    VirtualAssistantRoutingModule,
-    MatIconModule,
-    MatButtonModule,
-    MatGridListModule,
-    ScrollingModule
-  ],
+    imports: [
+        CommonModule,
+        VirtualAssistantRoutingModule,
+        MatIconModule,
+        MatButtonModule,
+        MatGridListModule,
+        ScrollingModule,
+        MatSlideToggleModule
+    ],
   exports: [VirtualAssistantComponent]
 })
 export class VirtualAssistantModule { }
