@@ -14,7 +14,7 @@
 <div class="btnChoicesCont" *ngIf="choices!=null && (type == 'radiogroup' || type == 'text')">
   <button mat-flat-button color="primary" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceClickFn($event, ch)">{{ch.text}}</button>
 </div>
-<div *ngIf="choices!=null && (type == 'checkbox' || type == 'dropdown')">
+<div *ngIf="choices!=null && (type == 'checkbox' || type == 'dropdown' || type == 'tagbox')">
   <div class="btnChoicesCont">
     <button mat-flat-button [color]="(this.checkBoxChoices.includes(ch) ? 'accent' : 'primary')" class="btnChoices" *ngFor="let ch of this.choices" (click)="btnChoiceCheckBoxClickFn($event, ch)">{{ch.text}}</button>
   </div>
@@ -22,4 +22,3 @@
     <button mat-flat-button id="btnChoicesValidate" (click)="btnChoiceCheckBoxValidateClickFn($event)"> OK </button>
   </div>
 </div>
-

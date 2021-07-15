@@ -208,6 +208,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       case 'radiogroup':
       case 'dropdown':
       case 'checkbox':
+      case 'tagbox':
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), this.form[this.iCurrentQuestion].choices);
         break;
