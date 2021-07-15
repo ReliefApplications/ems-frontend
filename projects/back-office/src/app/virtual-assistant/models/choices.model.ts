@@ -1,8 +1,8 @@
 export class Choices {
-  value: string;
+  value: any;
   text: string;
 
-  constructor(value: string, text: string) {
+  constructor(value: any, text: string) {
     this.value = value;
     this.text = text;
   }
