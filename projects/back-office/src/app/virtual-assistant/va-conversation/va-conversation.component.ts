@@ -44,7 +44,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   constructor() {
     this.currentText = '';
 
-    this.iCurrentQuestion = 0;
+    this.iCurrentQuestion = -1;
 
     this.restartChoiceMsg = 'restart';
     this.endChoiceMsg = 'end';
@@ -86,14 +86,15 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendReplyMsgText(msg: string): void {
     console.log(this.iCurrentQuestion);
     console.log(this.form[this.iCurrentQuestion - 1].type);
-    if (this.iCurrentQuestion - 1 < this.form.length){
-      if (msg !== '' && (this.form[this.iCurrentQuestion - 1].type === 'text' || this.form[this.iCurrentQuestion - 1].type === 'comment')){
+    console.log(this.form[this.iCurrentQuestion].type);
+    if (this.iCurrentQuestion < this.form.length){
+      if (msg !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
         this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
 
         // this.records.push(msg);
         // complete current record
         // -1 because the chat start with a message of the bot
-        this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = msg;
+        this.currentRecord[this.form[this.iCurrentQuestion].name] = msg;
         this.afterReply();
       }
     }
@@ -106,7 +107,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       this.speak(this.speech, ch.text);
 
       this.addMsg('', ch.text, 'true', this.userMe, Date.now(), []);
-      this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = ch.value;
+      this.currentRecord[this.form[this.iCurrentQuestion].name] = ch.value;
       this.afterReply();
     }
   }
@@ -131,7 +132,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
     });
 
     this.addMsg('', text, 'true', this.userMe, Date.now(), []);
-    this.currentRecord[this.form[this.iCurrentQuestion - 1].name] = choicesRecord;
+    this.currentRecord[this.form[this.iCurrentQuestion].name] = choicesRecord;
     this.afterReply();
   }
 
@@ -152,7 +153,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   restartForm(): void {
     this.sendReplyMsgTextEnd();
-    this.iCurrentQuestion = 0;
+    this.iCurrentQuestion = -1;
     this.currentRecord = {};
     window.setTimeout(() => {
       this.sendNextQuestion();
@@ -160,9 +161,9 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   sendNextQuestion(): void {
+    this.iCurrentQuestion++;
     if (this.iCurrentQuestion < this.form.length){
       const r = this.questionController();
-      this.iCurrentQuestion++;
       this.updateScrollViewPos();
       if (!r){
         this.sendNextQuestion();
@@ -179,7 +180,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
           new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
         ]);
 
-      this.iCurrentQuestion++;
+      // this.iCurrentQuestion++;
       this.updateScrollViewPos();
     }
   }
