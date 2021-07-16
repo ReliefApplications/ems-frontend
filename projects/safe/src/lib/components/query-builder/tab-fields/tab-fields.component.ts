@@ -26,6 +26,11 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
     this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
+    this.selectedFields.forEach((x, index) => {
+      if (!x.type) {
+        this.form.at(index).setErrors({ invalid: true });
+      }
+    })
   }
 
   ngOnChanges(): void {
