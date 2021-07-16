@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
@@ -186,12 +185,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe((res: any) => {
+        this.queryError = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = res.data[field];
           }
         }
         this.getRecords();
+      }, () => {
+        this.loading = false;
+        this.queryError = true;
       });
     } else {
       this.loading = false;
@@ -256,10 +259,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.fields = [];
         this.detailsField = '';
       }
-      // this.gridData = {
-      //   data: this.items,
-      //   total: this.items.length
-      // };
       this.loadItems();
       this.loading = false;
 
@@ -267,6 +266,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+          this.queryError = false;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -279,15 +279,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               if (this.detailsField) {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
-              // this.gridData = {
-              //   data: this.items,
-              //   total: this.items.length
-              // };
               this.loadItems();
             }
           }
         },
-          () => this.loading = false);
+        () => {
+          this.queryError = true;
+          this.loading = false;
+        });
       } else {
         this.loading = false;
       }
