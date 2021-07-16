@@ -296,36 +296,36 @@
             </ng-container>
             <!-- ROW DETAILS -->
             <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
-                <ng-template kendoGridCellTemplate let-idx="rowIndex">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                     <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                        (click)="onShowDetails(gridData.data[idx].id)" matTooltip="Open detail"></button>
+                        (click)="onShowDetails(dataItem.id)" matTooltip="Open detail"></button>
                 </ng-template>
             </kendo-grid-column>
             <!-- ROW ACTIONS -->
             <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
-                <ng-template kendoGridCellTemplate let-idx="rowIndex">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                     <button
-                        *ngIf="settings.actions && ((settings.actions.update && gridData.data[idx].canUpdate) || settings.actions.history ||
-                        (settings.actions.convert && gridData.data[idx].canUpdate) || (settings.actions.delete && gridData.data[idx].canDelete))"
+                        *ngIf="settings.actions && ((settings.actions.update && dataItem.canUpdate) || settings.actions.history ||
+                        (settings.actions.convert && dataItem.canUpdate) || (settings.actions.delete && dataItem.canDelete))"
                         style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
                         [matMenuTriggerFor]="menu">
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button *ngIf="(!settings.actions || settings.actions.update) && gridData.data[idx].canUpdate"
-                            mat-menu-item color="warn" (click)="onUpdateRow(gridData.data[idx].id)">
+                        <button *ngIf="(!settings.actions || settings.actions.update) && dataItem.canUpdate"
+                            mat-menu-item color="warn" (click)="onUpdateRow(dataItem.id)">
                             Update
                         </button>
                         <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-                            (click)="onViewHistory(gridData.data[idx].id)">
+                            (click)="onViewHistory(dataItem.id)">
                             History
                         </button>
-                        <button *ngIf="(!settings.actions || settings.actions.convert) && gridData.data[idx].canUpdate"
-                            mat-menu-item color="warn" (click)="onConvertRecord([idx])">
+                        <button *ngIf="(!settings.actions || settings.actions.convert) && dataItem.canUpdate"
+                            mat-menu-item color="warn" (click)="onConvertRecord([idx - skip])">
                             Convert
                         </button>
                         <mat-divider></mat-divider>
-                        <button *ngIf="(!settings.actions || settings.actions.delete) && gridData.data[idx].canDelete"
-                            mat-menu-item (click)="onDeleteRow([idx])">
+                        <button *ngIf="(!settings.actions || settings.actions.delete) && dataItem.canDelete"
+                            mat-menu-item (click)="onDeleteRow([idx - skip])">
                             Delete
                         </button>
                     </mat-menu>

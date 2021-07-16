@@ -256,10 +256,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.fields = [];
         this.detailsField = '';
       }
-      this.gridData = {
-        data: this.items,
-        total: this.items.length
-      };
+      // this.gridData = {
+      //   data: this.items,
+      //   total: this.items.length
+      // };
+      this.loadItems();
       this.loading = false;
 
       // Parent grid
@@ -278,10 +279,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               if (this.detailsField) {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
-              this.gridData = {
-                data: this.items,
-                total: this.items.length
-              };
+              // this.gridData = {
+              //   data: this.items,
+              //   total: this.items.length
+              // };
+              this.loadItems();
             }
           }
         },
@@ -561,9 +563,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect pagination events and update the items loaded.
   */
   public pageChange(event: PageChangeEvent): void {
+    this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    this.selectedRowsIndex = [];
+    this.canUpdateSelectedRows = false;
+    this.canDeleteSelectedRows = false;
     this.loadItems();
+    this.loading = false;
   }
 
   /*  Detect filtering events and update the items loaded.
@@ -579,11 +586,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const deselectedRows = selection.deselectedRows || [];
     const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
-      const deselectIndex = deselectedRows.map((item => item.index));
+      const deselectIndex = deselectedRows.map((item => item.index - this.skip));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
     if (selectedRows.length > 0) {
-      const selectedItems = selectedRows.map((item) => item.index);
+      const selectedItems = selectedRows.map((item) => item.index - this.skip);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
