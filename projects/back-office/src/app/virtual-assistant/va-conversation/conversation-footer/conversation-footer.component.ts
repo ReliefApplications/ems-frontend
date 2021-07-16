@@ -23,6 +23,21 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // we skip that at the beginning when object are not yet set
     if (this.input !== undefined && changes.inputValue !== undefined){
+      // if (this.inputType === 'color'){
+      //   this.inputValue = '#000000';
+      // }
+      // if (this.inputType === 'range'){
+      //   this.inputValue = '50';
+      // }
+      // if (this.inputType === 'tel'){
+      //   console.log('### TEL ###');
+      //   this.inputValue = '+';
+      // }
+      console.log('changes.inputValue.currentValue : ' + changes.inputValue.currentValue);
+      console.log('this.inputValue : ' + this.inputValue);
+      console.log('this.inputType : ' + this.inputType);
+      console.log('this.input.value : ' + this.input.value);
+      this.input.value = this.inputValue;
       this.msgChange(changes.inputValue.currentValue);
       this.input.focus();
     }

@@ -42,6 +42,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public iCurMtQ: number;
 
   constructor() {
+    console.log('currentText CHANGED');
     this.currentText = '';
 
     this.iCurrentQuestion = -1;
@@ -78,22 +79,24 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   msgUpdated(msg: any): void{
     if (typeof msg === 'string'){
+      console.log('currentText CHANGED msgUpdtaed');
+      console.log(msg);
       this.currentText = msg;
     }
   }
 
   // send simple reply message (TEXT) (click on send msg or enter)
-  sendReplyMsgText(msg: string): void {
+  sendReplyMsgText(): void {
     console.log(this.iCurrentQuestion);
     if (this.iCurrentQuestion < this.form.length){
-      if (msg !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
-        this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
-        this.currentRecord[this.form[this.iCurrentQuestion].name] = msg;
+      if (this.currentText !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
+        this.addMsg('', this.currentText, 'true', this.userMe, Date.now(), []);
+        this.currentRecord[this.form[this.iCurrentQuestion].name] = this.currentText;
         this.afterReply();
       }
-      else if (this.form[this.iCurrentQuestion].type === 'multipletext'){
-        this.addMsg('', msg, 'true', this.userMe, Date.now(), []);
-        this.mtObjectTemp[this.form[this.iCurrentQuestion].items[this.iCurMtQ ].name] = msg;
+      else if (this.currentText !== '' && this.form[this.iCurrentQuestion].type === 'multipletext'){
+        this.addMsg('', this.currentText, 'true', this.userMe, Date.now(), []);
+        this.mtObjectTemp[this.form[this.iCurrentQuestion].items[this.iCurMtQ ].name] = this.currentText;
         this.currentText = '';
         this.updateScrollViewPos();
         this.sendNextMtQuestion();
@@ -103,13 +106,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send reply message after clicking on a choice (RADIOGROUP)
   sendReplyMsgChoice(ch: Choices): void {
-    console.log('@@ sendReplyMsgChoice @@');
     if (ch.text !== ''){
-      console.log('## sendReplyMsgChoice ##');
-      console.log(ch);
-      console.log(ch.text);
-      console.log(ch.value);
-      this.speak(this.speech, ch.text);
+      // this.speak(this.speech, ch.text);
       this.addMsg('', ch.text, 'true', this.userMe, Date.now(), []);
       this.currentRecord[this.form[this.iCurrentQuestion].name] = ch.value;
       this.afterReply();
@@ -119,10 +117,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // click on a checkbox choice
   choiceCheckBoxClick(e: any): void {
     if (e.state === true){
-      this.speak(this.speech, e.choice.text);
+      // this.speak(this.speech, e.choice.text);
     }
     else {
-      this.speak(this.speech, e.choice.text + ' removed');
+      // this.speak(this.speech, e.choice.text + ' removed');
     }
   }
 
@@ -164,6 +162,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   sendNextQuestion(): void {
+    console.log('sendNextQuestion');
+    console.log(this.currentText);
     this.iCurrentQuestion++;
     if (this.iCurrentQuestion < this.form.length){
       const r = this.questionController();
@@ -195,9 +195,17 @@ export class VaConversationComponent implements OnInit, OnChanges {
       case 'text':
         if (this.form[this.iCurrentQuestion].inputType !== null) {
           this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
+          console.log(this.inputMsgType);
           if (this.inputMsgType === 'color'){
             this.currentText = '#000000';
           }
+          if (this.inputMsgType === 'range'){
+            this.currentText = '50';
+          }
+          // if (this.inputMsgType === 'tel'){
+          //   console.log('### TEL ###');
+          //   this.currentText = '+';
+          // }
         }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
@@ -273,7 +281,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
          choices: Choices[]): void {
     if (reply === 'false'){
       console.log('speak');
-      this.speak(this.speech, text);
+      // this.speak(this.speech, text);
     }
     this.conv.push(new Message(type, text, reply, user, date, choices));
   }
