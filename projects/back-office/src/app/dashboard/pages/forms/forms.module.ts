@@ -18,29 +18,31 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule } from '@angular/forms';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [FormsComponent],
-  imports: [
-    CommonModule,
-    FormsRoutingModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatSortModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatChipsModule,
-    SafeConfirmModalModule,
-    AddFormModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    MatSelectModule,
-    AngularFormsModule
-  ],
+    imports: [
+        CommonModule,
+        FormsRoutingModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatChipsModule,
+        SafeConfirmModalModule,
+        AddFormModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatInputModule,
+        MatSelectModule,
+        AngularFormsModule,
+        MatDividerModule
+    ],
   exports: [FormsComponent]
 })
 export class FormsModule { }

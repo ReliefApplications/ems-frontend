@@ -15,26 +15,28 @@ import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { SafeConfirmModalModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
   declarations: [SubscriptionsComponent, SubscriptionModalComponent],
-  imports: [
-    CommonModule,
-    SubscriptionsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    SafeConfirmModalModule,
-    MatAutocompleteModule
-  ]
+    imports: [
+        CommonModule,
+        SubscriptionsRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatSelectModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        SafeConfirmModalModule,
+        MatAutocompleteModule,
+        MatDividerModule
+    ]
 })
 export class SubscriptionsModule { }

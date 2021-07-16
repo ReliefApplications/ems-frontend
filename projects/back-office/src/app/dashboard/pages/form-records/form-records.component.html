@@ -42,13 +42,14 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="deleteRecord(element.id, $event)">
-                            <mat-icon>delete</mat-icon>
-                            Delete
-                        </button>
                         <button mat-menu-item color="warn" (click)="onViewHistory(element.id)">
                             <mat-icon>library_books</mat-icon>
                             History
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="deleteRecord(element.id, $event)">
+                            <mat-icon>delete</mat-icon>
+                            Delete
                         </button>
                     </mat-menu>
                 </td>
