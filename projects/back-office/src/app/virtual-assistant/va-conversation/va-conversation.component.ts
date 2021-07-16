@@ -79,7 +79,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   msgUpdated(msg: any): void{
     if (typeof msg === 'string'){
-      console.log('currentText CHANGED msgUpdtaed');
+      console.log('msgUpdated');
       console.log(msg);
       this.currentText = msg;
     }
@@ -147,6 +147,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   afterReply(): void {
+    console.log('AFTER REPLYYYYY');
     this.currentText = '';
     this.updateScrollViewPos();
     this.sendNextQuestion();
@@ -202,10 +203,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
           if (this.inputMsgType === 'range'){
             this.currentText = '50';
           }
-          // if (this.inputMsgType === 'tel'){
-          //   console.log('### TEL ###');
-          //   this.currentText = '+';
-          // }
         }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
