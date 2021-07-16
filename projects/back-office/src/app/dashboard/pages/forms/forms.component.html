@@ -151,7 +151,8 @@
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-button *ngIf="!element.core && element.resource?.coreForm?.name" [routerLink]="['/forms/builder', element.resource.coreForm.id]">
+        <button mat-button *ngIf="!element.core && element.resource?.coreForm?.name"
+          [routerLink]="['/forms/builder', element.resource.coreForm.id]">
           {{ element.resource.coreForm.name }}
         </button>
       </td>
@@ -175,11 +176,13 @@
               View
             </button>
           </ng-container>
-          <mat-divider *ngIf="element.canDelete"></mat-divider>
-          <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
-            <mat-icon>delete</mat-icon>
-            Delete
-          </button>
+          <ng-container *ngIf="element.canDelete">
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="onDelete(element, $event)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </ng-container>
         </mat-menu>
       </td>
     </ng-container>

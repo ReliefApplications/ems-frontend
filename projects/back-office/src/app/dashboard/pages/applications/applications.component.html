@@ -6,7 +6,7 @@
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
         <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-               placeholder="Search...">
+          placeholder="Search...">
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="showFilters = !showFilters" class="filters-toggle">
         <mat-icon>filter_list</mat-icon>
@@ -116,22 +116,24 @@
             Preview
           </button>
           <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
-                       *ngIf="element.canUpdate"></safe-access>
+            *ngIf="element.canUpdate"></safe-access>
           <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
             <mat-icon>file_copy</mat-icon>
             Duplicate
           </button>
-          <mat-divider *ngIf="element.canDelete"></mat-divider>
-          <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
-            <mat-icon>delete</mat-icon>
-            Delete
-          </button>
+          <ng-container *ngIf="element.canDelete">
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="onDelete(element, $event)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </ng-container>
         </mat-menu>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
-        [routerLink]="['/applications', row.id]"></tr>
+      [routerLink]="['/applications', row.id]"></tr>
   </table>
 </ng-container>
