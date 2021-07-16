@@ -17,11 +17,14 @@
             <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
                 <div>
                     <span>{{ field.name }}</span>
-                    <button class="field-error" mat-icon-button (click)="onEdit(index)" *ngIf="form.at(index).invalid">
+                    <button class="field-error" mat-icon-button (click)="onEdit(index)" *ngIf="form.at(index).invalid && field.type">
                         <mat-icon>error</mat-icon>
                     </button>
+                    <button class="field-error" mat-icon-button *ngIf="!field.type" (click)="onDelete(index)" matTooltip="Invalid field. Please click to remove.">
+                        <mat-icon>close</mat-icon>
+                    </button>
                 </div>
-                <div>
+                <div *ngIf="field.type">
                     <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
                     <button mat-icon-button (click)="onEdit(index)">
                         <mat-icon>edit</mat-icon>
