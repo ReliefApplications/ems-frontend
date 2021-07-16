@@ -195,6 +195,9 @@ export class VaConversationComponent implements OnInit, OnChanges {
       case 'text':
         if (this.form[this.iCurrentQuestion].inputType !== null) {
           this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
+          if (this.inputMsgType === 'color'){
+            this.currentText = '#000000';
+          }
         }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
           this.userVa, Date.now(), []);
