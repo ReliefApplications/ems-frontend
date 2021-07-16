@@ -30,7 +30,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       if (!x.type) {
         this.form.at(index).setErrors({ invalid: true });
       }
-    })
+    });
   }
 
   ngOnChanges(): void {
