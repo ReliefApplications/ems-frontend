@@ -463,6 +463,7 @@ export const GET_APPLICATION_BY_ID = gql`
           name
         }
         mapping
+        uniqueIdentifiers
         channel {
           id
           title

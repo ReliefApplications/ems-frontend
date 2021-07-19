@@ -6,7 +6,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   templateUrl: './import-record-modal.component.html',
   styleUrls: ['./import-record-modal.component.css']
 })
-export class ImportRecordModalComponent implements OnInit {
+export class SafeImportRecordModalComponent implements OnInit {
 
   files: File[] = [];
   baseUrl: string;

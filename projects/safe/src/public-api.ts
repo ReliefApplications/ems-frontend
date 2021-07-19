@@ -67,6 +67,9 @@ export * from './lib/components/import-records-tokens-modal/public-api';
 export * from './lib/components/export-forms-token-modal/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
 export * from './lib/components/config-display-grid-fields-modal/public-api';
+export * from './lib/components/search-resource-grid-modal/public-api';
+export * from './lib/components/config-display-grid-fields-modal/public-api';
+export * from './lib/components/import-records-tokens-modal/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

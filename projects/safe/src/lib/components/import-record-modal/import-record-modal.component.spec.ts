@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImportRecordModalComponent } from './import-record-modal.component';
+import { SafeImportRecordModalComponent } from './import-record-modal.component';
 
-describe('ImportRecordModalComponent', () => {
-  let component: ImportRecordModalComponent;
-  let fixture: ComponentFixture<ImportRecordModalComponent>;
+describe('SafeImportRecordModalComponent', () => {
+  let component: SafeImportRecordModalComponent;
+  let fixture: ComponentFixture<SafeImportRecordModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ImportRecordModalComponent ]
+      declarations: [ SafeImportRecordModalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ImportRecordModalComponent);
+    fixture = TestBed.createComponent(SafeImportRecordModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

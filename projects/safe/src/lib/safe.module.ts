@@ -39,7 +39,11 @@ import { MatCardModule } from '@angular/material/card';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
+import { SafeImportRecordModalModule } from './components/import-record-modal/import-record-modal.module';
+import { SafeImportRecordsTokensModalModule } from './components/import-records-tokens-modal/import-records-tokens-modal.module';
 
+// TODO
 @NgModule({
   exports: [
     SafeLayoutModule,
@@ -86,6 +90,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
     ImportRecordModalComponent,
     ImportRecordsTokensModalComponent,
     ExportFormsTokenModalComponent
+    SafeSearchResourceGridModalModule,
+    SafeImportRecordModalModule,
+    SafeImportRecordsTokensModalModule
   ]
 })
 export class SafeModule { }

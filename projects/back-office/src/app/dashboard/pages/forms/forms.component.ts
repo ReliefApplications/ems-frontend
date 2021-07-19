@@ -13,6 +13,7 @@ import {
   SafeConfirmModalComponent,
   ImportRecordsTokensModalComponent,
   ExportFormsTokenModalComponent,
+  SafeImportRecordsTokensModalComponent,
   NOTIFICATIONS,
   Form,
   SafeDownloadService
@@ -208,7 +209,15 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('copyUrl');
     console.log(element);
     console.log(element.koboUrl);
+    // TODO
     this.copyStringToClipboard(element.koboUrl);
+    const dialogRef = this.importPopup.open(SafeImportRecordsTokensModalComponent);
+    dialogRef.afterClosed().subscribe(data => {
+        if (data !== undefined){
+          const path = `upload/records/update/${element.id}`;
+          this.downloadService.updateRecords(path, data);
+        }
+    });
   }
 
   copyStringToClipboard(str: any): void {

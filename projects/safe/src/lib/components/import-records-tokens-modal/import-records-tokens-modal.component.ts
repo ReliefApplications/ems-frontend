@@ -7,8 +7,8 @@ import {SafeDownloadService} from '../../services/download.service';
   templateUrl: './import-records-tokens-modal.component.html',
   styleUrls: ['./import-records-tokens-modal.component.css']
 })
-
-export class ImportRecordsTokensModalComponent implements OnInit {
+// TODO
+export class SafeImportRecordsTokensModalComponent implements OnInit {
 
   public body: any;
   public cardDisplay: boolean;
@@ -17,6 +17,7 @@ export class ImportRecordsTokensModalComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<ImportRecordsTokensModalComponent>,
               private downloadService: SafeDownloadService,
+  constructor(public dialogRef: MatDialogRef<SafeImportRecordsTokensModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.body = {};
     this.cardDisplay = false;

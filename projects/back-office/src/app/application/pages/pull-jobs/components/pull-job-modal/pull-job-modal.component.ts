@@ -19,6 +19,7 @@ export class PullJobModalComponent implements OnInit {
   pullJobForm: FormGroup = new FormGroup({});
 
   // === DATA ===
+  public loading = true;
   public forms: Form[] = [];
   public apiConfigurations: ApiConfiguration[] = [];
   public statusChoices = Object.values(status);
@@ -53,18 +54,23 @@ export class PullJobModalComponent implements OnInit {
           value: [this.data.pullJob?.mapping[x], Validators.required],
         }))
         : []),
-      rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : '']
+      rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : ''],
+      uniqueIdentifiers: [this.data.pullJob && this.data.pullJob.uniqueIdentifiers ? this.data.pullJob.uniqueIdentifiers : []]
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES
     }).valueChanges.subscribe((res: any) => {
-      this.forms = res.data.forms;
+      if (res) {
+        this.forms = res.data.forms;
+        this.loading = res.data.loading || this.apiConfigurations.length === 0;
+      }
     });
     this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS
     }).valueChanges.subscribe( res => {
       if (res) {
         this.apiConfigurations = res.data.apiConfigurations;
+        this.loading = res.data.loading || this.forms.length === 0;
       }
     });
 
@@ -107,13 +113,13 @@ export class PullJobModalComponent implements OnInit {
     return this.fields.filter(field => field.name === name || !this.pullJobForm.value.mapping.some((x: any) => x.name === field.name));
   }
 
-  /*  Add new element for the mapping.
+  /*  Remove element from the mapping
   */
   onDeleteElement(index: number): void {
     this.mappingArray.removeAt(index);
   }
 
-  /*  Remove element from the mapping.
+  /*  Add new element to the mapping.
   */
   onAddElement(): void {
     this.mappingArray.push(this.formBuilder.group({
