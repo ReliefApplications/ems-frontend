@@ -707,6 +707,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).subscribe(() => {
           this.reloadData();
+          this.layoutService.setRightSidenav(null);
         });
       }
     });

@@ -43,21 +43,30 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       if (this.selectedFields === event.container.data) {
-        const fieldTomove = this.form.at(event.previousIndex);
+        const fieldToMove = this.form.at(event.previousIndex);
         this.form.removeAt(event.previousIndex);
-        this.form.insert(event.currentIndex, fieldTomove);
+        this.form.insert(event.currentIndex, fieldToMove);
       }
     } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
       if (this.selectedFields === event.previousContainer.data) {
         if (this.fieldForm === this.form.at(event.previousIndex) as FormGroup) {
           this.fieldForm = new FormGroup({});
         }
-        this.form.removeAt(event.previousIndex);
+        if (this.form.at(event.previousIndex).errors?.invalid) {
+          this.form.removeAt(event.previousIndex);
+          this.selectedFields.splice(event.previousIndex, 1);
+        } else {
+          transferArrayItem(event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex);
+          this.form.removeAt(event.previousIndex);
+        }
       } else {
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
         this.form.insert(event.currentIndex, this.queryBuilder.addNewField(this.selectedFields[event.currentIndex], true));
       }
     }
