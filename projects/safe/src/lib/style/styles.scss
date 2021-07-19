@@ -103,6 +103,11 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
     color: mat-color($primary);
   }
 
+  .primary-link {
+    @extend .primary;
+    cursor: pointer;
+  }
+
   .accent {
     color: mat-color($accent);
   }

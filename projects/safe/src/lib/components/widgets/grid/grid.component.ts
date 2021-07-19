@@ -33,6 +33,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import { get as _get } from 'lodash';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -205,6 +206,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+  }
+
+  public get(item: any, fieldName: string): any {
+    return _get(item, fieldName);
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {

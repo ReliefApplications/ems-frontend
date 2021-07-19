@@ -86,7 +86,7 @@
                     <ng-container *ngIf="field.link">
                         <!-- DISPLAY ( field with link ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                            <span class="record-link" (click)="openFieldLink(dataItem, field)">{{dataItem[field.name]}} - {{field.name}}</span>
+                            <span class="primary-link" (click)="openFieldLink(dataItem, field)">{{ get(dataItem, field.name)}}</span>
                         </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
