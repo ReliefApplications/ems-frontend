@@ -169,14 +169,14 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           }
         },
       });
-      Survey.Serializer.addProperty('filterableResourcesTable', {
-        name: 'displayAsGrid:boolean',
-        category: 'Custom Questions',
-        dependsOn: 'resource',
-        value: true,
-        visibleIf: (obj: any) => false,
-        visibleIndex: 3,
-      });
+      // Survey.Serializer.addProperty('filterableResourcesTable', {
+      //   name: 'displayAsGrid:boolean',
+      //   category: 'Custom Questions',
+      //   dependsOn: 'resource',
+      //   value: true,
+      //   visibleIf: (obj: any) => false,
+      //   visibleIndex: 3,
+      // });
 
       Survey.Serializer.addProperty('filterableResourcesTable', {
         name: 'selectQuestion:dropdown',
@@ -303,6 +303,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
 
     },
     onLoaded(question: any): void {
+      question.displayOnly = true;
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -319,9 +320,9 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
           filters[0].questionID = question.id;
-          if (question.displayAsGrid) {
-            filterableGridFilterValues.next(filters);
-          }
+          // if (question.displayAsGrid) {
+          filterableGridFilterValues.next(filters);
+          // }
           if (question.selectQuestion) {
             question.registerFunctionOnPropertyValueChanged('filterCondition',
               () => {
@@ -362,11 +363,11 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                   question.survey.getQuestionByName(question.selectQuestion).inputType;
                 const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
                 setAdvanceFilter(value, question);
-                if (question.displayAsGrid) {
-                  filterableGridFilterValues.next(filters);
-                } else {
-                  this.populateChoices(question);
-                }
+                // if (question.displayAsGrid) {
+                filterableGridFilterValues.next(filters);
+                // } else {
+                //   this.populateChoices(question);
+                // }
                 // }
               }
             });
@@ -384,11 +385,11 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                   if (options.question.name === quest) {
                     if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
-                      if (question.displayAsGrid) {
-                        filterableGridFilterValues.next(filters);
-                      } else {
-                        this.populateChoices(question, objElement.field);
-                      }
+                      // if (question.displayAsGrid) {
+                      filterableGridFilterValues.next(filters);
+                      // } else {
+                      //   this.populateChoices(question, objElement.field);
+                      // }
                     }
                   }
                 });
@@ -402,26 +403,27 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
       }
     },
     populateChoices(question: any, field?: string): void {
-      if (question.displayAsGrid) {
-        if (question.selectQuestion) {
-          const f = field ? field : question.filteryBy;
-          const obj = filters.filter((i: any) => i.field === f);
-          if (obj.length > 0) {
-            filterableGridFilterValues.next(obj);
-          }
-        } else if (question.customFilter) {
-          filterableGridFilterValues.next(filters);
+      // if (question.displayAsGrid) {
+      if (question.selectQuestion) {
+        const f = field ? field : question.filteryBy;
+        const obj = filters.filter((i: any) => i.field === f);
+        if (obj.length > 0) {
+          filterableGridFilterValues.next(obj);
         }
-      } else {
-        getResourceById({id: question.resource, filters}).subscribe((response) => {
-          const serverRes = response.data.resource.records || [];
-          const res: any[] = [];
-          for (const item of serverRes) {
-            res.push({value: item.id});
-          }
-          question.contentQuestion.choices = res;
-        });
+      } else if (question.customFilter) {
+        filterableGridFilterValues.next(filters);
       }
+      // }
+      // else {
+      //   getResourceById({id: question.resource, filters}).subscribe((response) => {
+      //     const serverRes = response.data.resource.records || [];
+      //     const res: any[] = [];
+      //     for (const item of serverRes) {
+      //       res.push({value: item.id});
+      //     }
+      //     question.contentQuestion.choices = res;
+      //   });
+      // }
     },
     onPropertyChanged(question: any, propertyName: string, newValue: any): void {
       if (propertyName === 'resource') {
@@ -432,11 +434,11 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
       }
     },
     onAfterRender(question: any, el: any): void {
-      if (question.displayAsGrid) {
-        // hide tagbox if grid view is enable
-        const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
-        element.style.display = 'none';
-      }
+      // if (question.displayAsGrid) {
+      // hide tagbox if grid view is enable
+      const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
+      element.style.display = 'none';
+      // }
 
       if (question.canAddNew && question.addTemplate) {
         document.addEventListener('saveResourceFromEmbed', (e: any) => {

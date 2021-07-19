@@ -3,7 +3,14 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Outpu
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
 import { v4 as uuidv4 } from 'uuid';
-import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
+import {
+  AddRecordMutationResponse,
+  ADD_RECORD,
+  EditRecordMutationResponse,
+  EDIT_RECORD,
+  UploadFileMutationResponse,
+  UPLOAD_FILE
+} from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -11,7 +18,7 @@ import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 
@@ -24,7 +31,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
+  @Output() save: EventEmitter<{ completed: boolean, hideNewRecord?: boolean }> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
@@ -113,7 +120,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           if (resourcesField && resourcesField.resource === records[0].form?.resource?.id) {
             cachedData[resourcesField.name] = records.map(x => x.id);
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, {error: true});
           }
         }
       });
@@ -170,13 +177,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.clear();
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
-    this.save.emit({ completed: false });
+    this.save.emit({completed: false});
     this.survey.render();
     this.surveyActive = true;
   }
 
   public valueChange(): void {
-    localStorage.setItem(this.storageId, JSON.stringify({ data: this.survey.data, date: new Date() }));
+    localStorage.setItem(this.storageId, JSON.stringify({data: this.survey.data, date: new Date()}));
   }
 
   /*  Custom SurveyJS method, save a new record or edit existing one.
@@ -200,18 +207,20 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }).toPromise();
         if (res.errors) {
-          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          this.snackBar.openSnackBar(res.errors[0].message, {error: true});
           return;
         } else {
           data[name][index].content = res.data?.uploadFile;
         }
       }
     }
-    const questions = this.survey.getAllQuestions();
+    const questions: any = this.survey.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+        if ((!data[key] && questions[field].getType() !== 'boolean') || questions[field].displayOnly) {
+          data[key] = null;
+        }
       }
     }
     this.survey.data = data;
@@ -235,10 +244,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     mutation.subscribe((res: any) => {
       if (res.errors) {
-        this.save.emit({ completed: false });
+        this.save.emit({completed: false});
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+        this.snackBar.openSnackBar(res.errors[0].message, {error: true});
       } else {
         localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
@@ -256,7 +265,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.form.uniqueRecord) {
           this.selectedTabIndex = 0;
         }
-        this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
+        this.save.emit({completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord});
       }
     });
   }
@@ -293,7 +302,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           ]);
           if (content.length === options.files.length) {
             options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
+              return {file: fileContent.file, content: fileContent.content};
             }));
           }
         };
@@ -313,7 +322,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         xhr.responseType = 'blob';
       };
       xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+        const file = new File([xhr.response], options.fileValue.name, {type: options.fileValue.type});
         const reader = new FileReader();
         reader.onload = (e) => {
           options.callback('success', e.target?.result);

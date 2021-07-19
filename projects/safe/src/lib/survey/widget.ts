@@ -44,11 +44,21 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       Survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
+        visibleIndex: 5,
+        default: false,
+        category: 'general',
+        required: true,
+      });
+      Survey.Serializer.addProperty('question', {
+        name: 'displayOnly:boolean',
+        type: 'boolean',
         visibleIndex: 6,
         default: false,
         category: 'general',
         required: true,
       });
+
+
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
@@ -256,20 +266,32 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           instance.selectedRows = question.value;
           const questionQuery = question.gridFieldsSettings || {};
           const questionFilter = questionQuery.filter || {};
-          question.survey.onValueChanged.add((survey: any, options: any) => {
-            if (options.name === question.name) {
-              instance.settings = {
-                query: {
-                  ...questionQuery, filter: {
-                    ...questionFilter,
-                    ids: options.value || []
-                  }
-                }
-              };
-              instance.init();
+          instance.settings = {
+            query: {
+              ...questionQuery, filter: {
+                ...questionFilter,
+                ids: question.value || []
+              }
             }
-          });
+          };
+          // questionFilter.questionID = question.id;
+          if (question.survey.onValueChasnged) {
 
+            question.survey.onValueChasnged.add((survey: any, options: any) => {
+              if (options.name === question.name) {
+                instance.settings = {
+                  query: {
+                    ...questionQuery, filter: {
+                      ...questionFilter,
+                      ids: options.value || []
+                    }
+                  }
+                };
+                instance.init();
+              }
+            });
+
+          }
         }
       }
     }

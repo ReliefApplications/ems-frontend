@@ -139,7 +139,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.queryError = true;
     }
-    // }
   }
 
   private getRecords(): void {
@@ -339,9 +338,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   onFilter(value: any, fromGrid = false): void {
-    if (!fromGrid && value.questionID !== this.questionID) {
-      return;
-    }
+    // if (!fromGrid && value.questionID !== this.questionID) {
+    //   return;
+    // }
     this.selectedRowsIndex = [];
     this.selectedRows = [];
     const filteredData: any[] = [];
