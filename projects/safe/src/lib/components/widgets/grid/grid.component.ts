@@ -217,6 +217,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         default: {
           return {
             name: fullName,
+            link: f.link,
             title: f.label ? f.label : f.name,
             type: f.type,
             format: this.getFormat(f.type),
@@ -1014,6 +1015,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     return body;
+  }
+
+  public openFieldLink(item: any, field: any): void {
+    console.log(item);
+    console.log(field);
+    console.log(item[field.name]);
+    const path: string[] = field.name.split('.').slice(0, -1).concat('id');
+    const recordId = path.reduce((o: any, key: string) => o[key], item);
+    this.onShowDetails(recordId);
   }
 
   ngOnDestroy(): void {

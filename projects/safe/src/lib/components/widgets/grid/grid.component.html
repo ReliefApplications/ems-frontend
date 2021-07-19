@@ -55,7 +55,7 @@
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.title.length * 7 + 50"
                     [minResizableWidth]="50">
                     <!-- DISPLAY -->
-                    <ng-container *ngIf="field.meta">
+                    <ng-container *ngIf="field.meta && !field.link">
                         <!-- DISPLAY ( text / comment ) -->
                         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'text'">
@@ -82,15 +82,12 @@
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
                         </ng-template>
-                        <!-- DISPLAY ( resource ) -->
-                        <!-- <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'resource'">
-                            <div *ngIf="dataItem[field.name]" class="textbox-container">
-                                <div #refSpan class="textbox">
-                                    {{dataItem[field.name]}}
-                                    <span class="record-link" matTooltip="Open the record details" (click)="onShowDetails(dataItem[field.name])">{{dataItem[field.name]}}</span>
-                                </div>
-                            </div>
-                        </ng-template> -->
+                    </ng-container>
+                    <ng-container *ngIf="field.link">
+                        <!-- DISPLAY ( field with link ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                            <span class="record-link" (click)="openFieldLink(dataItem, field)">{{dataItem[field.name]}} - {{field.name}}</span>
+                        </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
