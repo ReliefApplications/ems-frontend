@@ -169,8 +169,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
     console.log('sendNextQuestion');
     console.log(this.currentText);
     if (this.conv.length === 0){
-      this.addMsg('text', this.td.title, 'false', this.userVa, Date.now(), []);
-      this.addMsg('text', this.td.description, 'false', this.userVa, Date.now(), []);
+      if (this.td.title !== undefined){
+        this.addMsg('text', this.td.title, 'false', this.userVa, Date.now(), []);
+      }
+      if (this.td.description !== undefined){
+        this.addMsg('text', this.td.description, 'false', this.userVa, Date.now(), []);
+      }
       this.sendNextQuestion();
     }
     else {

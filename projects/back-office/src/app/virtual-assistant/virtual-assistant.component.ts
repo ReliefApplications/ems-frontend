@@ -18,7 +18,7 @@ export class VirtualAssistantComponent implements OnInit {
   // === DATA ===
   public id = '';
   public form: any;
-  public td: any;
+  public td: {title: string, description: string};
   public iQuestion: any;
   public messages: any;
   public vaCols: number;
@@ -38,6 +38,11 @@ export class VirtualAssistantComponent implements OnInit {
     this.iQuestion = 0;
 
     this.start = false;
+
+    this.td = {
+      title: '',
+      description: ''
+    };
   }
 
   ngOnInit(): void {
@@ -78,10 +83,14 @@ export class VirtualAssistantComponent implements OnInit {
       console.log('APOLLO: res.data.form');
       console.log(res);
       this.form = JSON.parse(res.data.form.structure).pages[0].elements;
-      this.td = {
-        title: JSON.parse(res.data.form.structure).pages[0].title,
-        description: JSON.parse(res.data.form.structure).pages[0].description
-      };
+      if (JSON.parse(res.data.form.structure).pages[0].title !== undefined){
+        console.log(JSON.parse(res.data.form.structure).pages[0].title);
+        this.td.title = JSON.parse(res.data.form.structure).pages[0].title;
+      }
+      if (JSON.parse(res.data.form.structure).pages[0].description !== undefined){
+        console.log(JSON.parse(res.data.form.structure).pages[0].description);
+        this.td.description = JSON.parse(res.data.form.structure).pages[0].description;
+      }
       console.log(this.form);
     });
   }
