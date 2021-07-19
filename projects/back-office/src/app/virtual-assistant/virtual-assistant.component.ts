@@ -25,6 +25,8 @@ export class VirtualAssistantComponent implements OnInit {
   public chatCols: number;
 
   public start: boolean;
+  public startBtn: boolean;
+  public loadingForm: boolean;
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
@@ -38,6 +40,8 @@ export class VirtualAssistantComponent implements OnInit {
     this.iQuestion = 0;
 
     this.start = false;
+    this.startBtn = false;
+    this.loadingForm = true;
 
     this.td = {
       title: '',
@@ -82,16 +86,19 @@ export class VirtualAssistantComponent implements OnInit {
     }).valueChanges.subscribe((res: any) => {
       console.log('APOLLO: res.data.form');
       console.log(res);
-      this.form = JSON.parse(res.data.form.structure).pages[0].elements;
-      if (JSON.parse(res.data.form.structure).pages[0].title !== undefined){
+      const formStruct = JSON.parse(res.data.form.structure).pages[0];
+      this.form = formStruct.elements;
+      if (formStruct.title !== undefined){
         console.log(JSON.parse(res.data.form.structure).pages[0].title);
-        this.td.title = JSON.parse(res.data.form.structure).pages[0].title;
+        this.td.title = formStruct.title;
       }
-      if (JSON.parse(res.data.form.structure).pages[0].description !== undefined){
-        console.log(JSON.parse(res.data.form.structure).pages[0].description);
-        this.td.description = JSON.parse(res.data.form.structure).pages[0].description;
+      if (formStruct.description !== undefined){
+        console.log(formStruct.description);
+        this.td.description = formStruct.description;
       }
       console.log(this.form);
+      this.startBtn = true;
+      this.loadingForm = false;
     });
   }
 
@@ -127,5 +134,6 @@ export class VirtualAssistantComponent implements OnInit {
     this.vaCols = 1;
     this.chatCols = 1;
     this.start = true;
+    this.startBtn = false;
   }
 }

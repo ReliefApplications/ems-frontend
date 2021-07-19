@@ -11,6 +11,7 @@ import {ConversationHeaderComponent} from './va-conversation/conversation-header
 import {ConversationMessageComponent} from './va-conversation/conversation-message/conversation-message.component';
 import {ConversationFooterComponent} from './va-conversation/conversation-footer/conversation-footer.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [VirtualAssistantComponent,
@@ -25,7 +26,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
         MatButtonModule,
         MatGridListModule,
         ScrollingModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        MatProgressSpinnerModule
     ],
   exports: [VirtualAssistantComponent]
 })
