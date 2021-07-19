@@ -17,27 +17,29 @@ import { MatTableModule } from '@angular/material/table';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
   declarations: [SafeRolesComponent, SafeAddRoleComponent, SafeEditRoleComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    SafeConfirmModalModule,
-    MatSortModule,
-    MatAutocompleteModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        SafeConfirmModalModule,
+        MatSortModule,
+        MatAutocompleteModule,
+        MatDividerModule
+    ],
   exports: [SafeRolesComponent]
 })
 export class SafeRolesModule { }
