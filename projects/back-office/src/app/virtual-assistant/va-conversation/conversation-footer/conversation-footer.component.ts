@@ -83,4 +83,9 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
       this.btnSend.setAttribute('style', 'display: inline');
     }
   }
+
+  testFn(): void {
+    console.log('## testFn');
+    this.input.focus();
+  }
 }

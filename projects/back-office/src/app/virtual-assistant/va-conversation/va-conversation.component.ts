@@ -1,10 +1,23 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {Message} from '../models/message.model';
 import {User} from '../models/user.model';
 import {Choices} from '../models/choices.model';
 // @ts-ignore
 import Speech from 'speak-tts';
+import {ConversationFooterComponent} from './conversation-footer/conversation-footer.component';
+
 
 @Component({
   selector: 'app-va-conversation',
@@ -13,6 +26,8 @@ import Speech from 'speak-tts';
 })
 export class VaConversationComponent implements OnInit, OnChanges {
 
+  // @ts-ignore
+  @ViewChild('footerComponent') conversationFooterComponent: ConversationFooterComponent;
   @Input() form: any[] = [];
   @Input() td: {title: string, description: string};
   public records: any[] = [];
@@ -66,6 +81,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.speech = new Speech();
 
     this.td = {title: '', description: ''};
+
+    // this.conversationFooterComponent;
   }
 
   ngOnInit(): void {
@@ -79,6 +96,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
       // this.sendNextQuestion();
     }
   }
+
+  // ngAfterViewInit(): void {
+  //   this.conversationFooterComponent.testFn();
+  // }
 
   msgUpdated(msg: any): void{
     if (typeof msg === 'string'){
@@ -199,6 +220,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.inputMsgType = 'text';
         this.updateScrollViewPos();
       }
+      // this.conversationFooterComponent.testFn();
     }
 
   }
@@ -297,6 +319,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       // this.speak(this.speech, text);
     }
     this.conv.push(new Message(type, text, reply, user, date, choices));
+    this.conversationFooterComponent.testFn();
   }
 
   /* ----- STYLE ----- */
