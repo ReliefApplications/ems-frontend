@@ -18,6 +18,7 @@ export class VirtualAssistantComponent implements OnInit {
   // === DATA ===
   public id = '';
   public form: any;
+  public td: any;
   public iQuestion: any;
   public messages: any;
   public vaCols: number;
@@ -77,6 +78,10 @@ export class VirtualAssistantComponent implements OnInit {
       console.log('APOLLO: res.data.form');
       console.log(res);
       this.form = JSON.parse(res.data.form.structure).pages[0].elements;
+      this.td = {
+        title: JSON.parse(res.data.form.structure).pages[0].title,
+        description: JSON.parse(res.data.form.structure).pages[0].description
+      };
       console.log(this.form);
     });
   }

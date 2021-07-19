@@ -35,7 +35,7 @@
     <img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
   </mat-grid-tile>
   <mat-grid-tile class="conversation" [colspan]="1" [rowspan]="1">
-    <app-va-conversation [form]="form" (endConversation)="vaEndConversation($event)"></app-va-conversation>
+    <app-va-conversation [form]="form" [td]="td" (endConversation)="vaEndConversation($event)"></app-va-conversation>
   </mat-grid-tile>
 </mat-grid-list>
 <button *ngIf="!this.start" mat-flat-button color="primary" id="btn-start" (click)="btnStartClick()"> Start </button>

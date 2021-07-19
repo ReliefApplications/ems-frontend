@@ -14,6 +14,7 @@ import Speech from 'speak-tts';
 export class VaConversationComponent implements OnInit, OnChanges {
 
   @Input() form: any[] = [];
+  @Input() td: {title: string, description: string};
   public records: any[] = [];
   public currentRecord: any;
 
@@ -63,6 +64,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.iCurMtQ = -1;
 
     this.speech = new Speech();
+
+    this.td = {title: '', description: ''};
   }
 
   ngOnInit(): void {
@@ -165,27 +168,35 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendNextQuestion(): void {
     console.log('sendNextQuestion');
     console.log(this.currentText);
-    this.iCurrentQuestion++;
-    if (this.iCurrentQuestion < this.form.length){
-      const r = this.questionController();
-      this.updateScrollViewPos();
-      if (!r){
-        this.sendNextQuestion();
+    if (this.conv.length === 0){
+      this.addMsg('text', this.td.title, 'false', this.userVa, Date.now(), []);
+      this.addMsg('text', this.td.description, 'false', this.userVa, Date.now(), []);
+      this.sendNextQuestion();
+    }
+    else {
+      this.iCurrentQuestion++;
+      if (this.iCurrentQuestion < this.form.length){
+        const r = this.questionController();
+        this.updateScrollViewPos();
+        if (!r){
+          this.sendNextQuestion();
+        }
+      }
+      else if (this.iCurrentQuestion === this.form.length) {
+        // add this record
+        this.records.push(this.currentRecord);
+        console.log(this.records);
+
+        this.addMsg('text', this.endMessage, 'false', this.userVa, Date.now(),
+          [
+            new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
+            new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
+          ]);
+        this.inputMsgType = 'text';
+        this.updateScrollViewPos();
       }
     }
-    else if (this.iCurrentQuestion === this.form.length) {
-      // add this record
-      this.records.push(this.currentRecord);
-      console.log(this.records);
 
-      this.addMsg('text', this.endMessage, 'false', this.userVa, Date.now(),
-        [
-          new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
-          new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
-        ]);
-      this.inputMsgType = 'text';
-      this.updateScrollViewPos();
-    }
   }
 
   // control the bot format message depending on the type
