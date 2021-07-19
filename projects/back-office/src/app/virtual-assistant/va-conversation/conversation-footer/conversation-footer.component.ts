@@ -24,16 +24,7 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
     // we skip that at the beginning when object are not yet set
     if (this.input !== undefined && changes.inputValue !== undefined){
       console.log('ngOnChanges : ' + this.inputValue);
-      // if (this.inputType === 'color'){
-      //   this.inputValue = '#000000';
-      // }
-      // if (this.inputType === 'range'){
-      //   this.inputValue = '50';
-      // }
-      // if (this.inputType === 'tel'){
-      //   console.log('### TEL ###');
-      //   this.inputValue = '+';
-      // }
+
       this.input.value = null;
       console.log('this.input.value : ' + this.input.value);
       this.input.value = null;
@@ -68,19 +59,19 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
 
   msgChange(text: string): void {
     this.inputChange.emit(text);
-    if (text === ''){
-      this.btnSend.setAttribute('disabled', '');
-      this.btnSend.setAttribute('style', 'display: none');
-
-      this.btnRec.removeAttribute('disabled');
-      this.btnRec.setAttribute('style', 'display: inline');
-    } else {
-      this.btnRec.setAttribute('disabled', '');
-      this.btnRec.setAttribute('style', 'display: none');
-
-      this.btnSend.removeAttribute('disabled');
-      this.btnSend.setAttribute('style', 'display: inline');
-    }
+    // if (text === ''){
+    //   this.btnSend.setAttribute('disabled', '');
+    //   this.btnSend.setAttribute('style', 'display: none');
+    //
+    //   this.btnRec.removeAttribute('disabled');
+    //   this.btnRec.setAttribute('style', 'display: inline');
+    // } else {
+    //   this.btnRec.setAttribute('disabled', '');
+    //   this.btnRec.setAttribute('style', 'display: none');
+    //
+    //   this.btnSend.removeAttribute('disabled');
+    //   this.btnSend.setAttribute('style', 'display: inline');
+    // }
   }
 
   testFn(): void {
