@@ -61,7 +61,7 @@
             </button>
           </div>
         </div>
-        <span class="info-row">
+        <span class="info-row" *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="attachToRecord">Attach to record</mat-checkbox>
           <mat-icon class="info-icon"
             matTooltip="When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field."
@@ -89,6 +89,9 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="buttonForm.value.targetForm">
+            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false"></safe-query-builder>
           </ng-container>
         </div>
         <span class="info-row">
@@ -158,6 +161,9 @@
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
+          <h2>Select fields to write in body</h2> 
+          <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
+            [factory]="factory"></safe-tab-fields>
           <!-- <span class="radio-row">
             <mat-radio-group formControlName="attachment">
               Link records:

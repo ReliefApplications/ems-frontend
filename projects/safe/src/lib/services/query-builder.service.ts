@@ -4,8 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'modifiedAt', 'canUpdate', 'canDelete'];
-const DISABLED_FIELDS = ['createdBy', 'canUpdate', 'canDelete'];
+const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
+const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
+const USER_FIELDS = ['id', 'name', 'username'];
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class QueryBuilderService {
 
   // tslint:disable-next-line: variable-name
   public __availableQueries = new BehaviorSubject<any[]>([]);
+  private userFields = [];
 
   get availableQueries(): Observable<any> {
     return this.__availableQueries.asObservable();
@@ -27,6 +29,8 @@ export class QueryBuilderService {
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
       this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
+      this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
+        .type.ofType.fields.filter((x: any) => USER_FIELDS.includes(x.name));
     });
   }
 
@@ -36,6 +40,9 @@ export class QueryBuilderService {
   }
 
   public getFieldsFromType(typeName: string): any[] {
+    if (typeName === 'User') {
+      return this.userFields;
+    }
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
     return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
   }
@@ -95,6 +102,9 @@ export class QueryBuilderService {
   }
 
   private buildMetaFields(fields: any[]): any {
+    if (!fields) {
+      return '';
+    }
     return [''].concat(fields.map(x => {
       switch (x.kind) {
         case 'SCALAR': {
@@ -102,12 +112,12 @@ export class QueryBuilderService {
         }
         case 'LIST': {
           return `${x.name} {
-            ${this.buildMetaFields(x.fields)}
+            ${x.fields && x.fields.length > 0 ? this.buildMetaFields(x.fields) : ''}
           }` + '\n';
         }
         case 'OBJECT': {
           return `${x.name} {
-            ${this.buildMetaFields(x.fields)}
+            ${x.fields && x.fields.length > 0 ? this.buildMetaFields(x.fields) : ''}
           }` + '\n';
         }
         default: {
@@ -125,12 +135,12 @@ export class QueryBuilderService {
       const query = gql`
         query GetCustomQuery {
           ${builtQuery.name}(
-            sortField: ${builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
-            sortOrder: "${builtQuery.sort.order}",
-            filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
+          sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
+          sortOrder: "${builtQuery.sort?.order || '' }",
+          filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
           ) {
-            ${fields}
-          }
+          ${fields}
+        }
         }
       `;
       return this.apollo.watchQuery<any>({
@@ -162,32 +172,53 @@ export class QueryBuilderService {
     }
   }
 
+  public getQueryNameFromResourceName(resourceName: string): any {
+    const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
+    return this.__availableQueries.getValue().find(x => x.type.ofType.name.toLowerCase() === nameTrimmed)?.name || '';
+  }
+
   private objToString(obj: any): string {
     let str = '{';
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str += p + ': ' + (typeof obj[p] === 'string' ? `"${obj[p]}"` : obj[p]) + ',\n';
+        str += p + ': ' + (
+            typeof obj[p] === 'string' ? `"${obj[p]}"` :
+            Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
+            obj[p]
+          ) + ',\n';
       }
     }
     return str + '}';
   }
 
-  public createQueryForm(value: any): FormGroup {
+  private arrayToString(array: any): string {
+    let str = '[';
+    for (const item of array) {
+      str += (typeof item === 'string' ? `"${item}"` : item) + ',\n';
+    }
+    return str + ']';
+  }
+
+  public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
-      name: [value ? value.name : '', Validators.required],
-      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
+      name: [value ? value.name : '', validators ? Validators.required : null],
+      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
+       validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
       }),
-      filter: this.createFilterGroup(value ? value.filter : {}, null)
+      filter: this.createFilterGroup(value && value.filter ? value.filter : {}, null)
     });
   }
 
   public createFilterGroup(filter: any, availableFilter: any): FormGroup {
     if (availableFilter) {
       const group = availableFilter.reduce((o: any, key: any) => {
-        return ({ ...o, [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)] });
+        return ({
+          ...o,
+          [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)]
+        });
       }, {});
       return this.formBuilder.group(group);
     } else {
@@ -238,12 +269,12 @@ export class QueryBuilderService {
     const queries = this.__availableQueries.getValue().map(x => x.name);
     if (queries.includes(queryName)) {
       const query = gql`
-      query GetCustomSourceQuery {
-        _${queryName}Meta {
-          _source
+        query GetCustomSourceQuery {
+          _${queryName}Meta {
+            _source
+          }
         }
-      }
-    `;
+      `;
       return this.apollo.query<any>({
         query,
         variables: {}

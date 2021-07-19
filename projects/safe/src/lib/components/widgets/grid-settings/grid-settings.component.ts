@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
@@ -98,20 +98,22 @@ export class SafeGridSettingsComponent implements OnInit {
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications in floating button if any
+        // Check if the query changed to clean modifications and fields for email in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
             this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
+            const bodyFields =  floatingButton.get('bodyFields') as FormArray;
+            bodyFields.clear();
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
         this.queryName = res.name;
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
-          query.subscribe((res1: { data: any }) => {
+          query.subscribe((res1: { data: any }) => {
             const source = res1.data[`_${this.queryName}Meta`]._source;
             this.tileForm?.get('resource')?.setValue(source);
             if (source) {
@@ -139,7 +141,7 @@ export class SafeGridSettingsComponent implements OnInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
-    return this.formBuilder.group({
+    const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
@@ -155,20 +157,25 @@ export class SafeGridSettingsComponent implements OnInit {
       attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
+      targetFormQuery: this.queryBuilder.createQueryForm(value && value.targetFormQuery ? value.targetFormQuery : null,
+        Boolean(value && value.targetForm)),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
         value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-      value && value.publish ? Validators.required : null],
+        value && value.publish ? Validators.required : null],
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [value && value.distributionList ? value.distributionList : [],
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
-      value && value.sendMail ? Validators.required : null],
+        value && value.sendMail ? Validators.required : null],
+      bodyFields: this.formBuilder.array(value && value.bodyFields ? value.bodyFields : [],
+        value && value.sendMail ? Validators.required : null),
       // attachment: [value && value.attachment ? value.attachment : false]
     });
+    return buttonForm;
   }
 
   public addFloatingButton(): void {

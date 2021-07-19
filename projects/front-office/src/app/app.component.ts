@@ -14,6 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // === MSAL ERROR HANDLING ===
   private subscription?: Subscription;
+  private timeout?: NodeJS.Timeout;
 
   constructor(
     private broadcastService: BroadcastService,
@@ -24,13 +25,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.broadcastService.subscribe('msal:acquireTokenSuccess', () => {
-      this.authService.getProfile();
-      this.authService.checkAccount();
+      this.authService.getProfileIfNull();
+      this.authService.getAccountIfNull();
       if (this.authService.account) {
         const idToken = this.authService.account.idToken;
         const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
         if (idToken && timeout > 0) {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             this.msalService.acquireTokenSilent({
               scopes: [environment.clientId]
             });

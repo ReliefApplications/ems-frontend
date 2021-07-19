@@ -1,5 +1,4 @@
-import {Apollo} from 'apollo-angular';
-
+import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
@@ -9,8 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   CONVERT_RECORD,
-  ConvertRecordMutationResponse, DELETE_RECORD, DeleteRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
+  ConvertRecordMutationResponse, EDIT_RECORD, EditRecordMutationResponse,
+  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { Subscription } from 'rxjs';
@@ -18,7 +17,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../../graphql/queries';
+import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse, GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -62,7 +61,6 @@ const GRADIENT_SETTINGS: GradientSettings = {
 };
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
-
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -83,7 +81,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private docClickSubscription: any;
 
   // === DATA ===
-  public gridData: GridDataResult = { data: [], total: 0};
+  public gridData: GridDataResult = { data: [], total: 0 };
   private items: any[] = [];
   private originalItems: any[] = [];
   private updatedItems: any[] = [];
@@ -110,6 +108,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FILTER ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  public showFilter = false;
 
   // === SETTINGS ===
   @Input() header = true;
@@ -134,10 +133,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
 
-  get hasChanges(): boolean {
-    return this.updatedItems.length > 0;
-  }
-
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -154,6 +149,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
+
+  get hasChanges(): boolean {
+    return this.updatedItems.length > 0;
+  }
 
   constructor(
     @Inject('environment') environment: any,
@@ -182,17 +181,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe((res: any) => {
+        this.queryError = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = res.data[field];
           }
         }
         this.getRecords();
+      }, () => {
+        this.loading = false;
+        this.queryError = true;
       });
     } else {
       this.loading = false;
@@ -257,16 +259,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.fields = [];
         this.detailsField = '';
       }
-      this.gridData = {
-        data: this.items,
-        total: this.items.length
-      };
+      this.loadItems();
       this.loading = false;
 
       // Parent grid
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+          this.queryError = false;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -279,14 +279,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               if (this.detailsField) {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
-              this.gridData = {
-                data: this.items,
-                total: this.items.length
-              };
+              this.loadItems();
             }
           }
         },
-          () => this.loading = false);
+        () => {
+          this.queryError = true;
+          this.loading = false;
+        });
       } else {
         this.loading = false;
       }
@@ -494,8 +494,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         formGroup[field.name] = [dataItem[field.name]];
         if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
           this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-            this.fields[index] =  { ...field,
-              meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }};
+            this.fields[index] = {
+              ...field,
+              meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
+            };
           });
         }
       } else {
@@ -560,9 +562,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect pagination events and update the items loaded.
   */
   public pageChange(event: PageChangeEvent): void {
+    this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    this.selectedRowsIndex = [];
+    this.canUpdateSelectedRows = false;
+    this.canDeleteSelectedRows = false;
     this.loadItems();
+    this.loading = false;
   }
 
   /*  Detect filtering events and update the items loaded.
@@ -578,11 +585,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const deselectedRows = selection.deselectedRows || [];
     const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
-      const deselectIndex = deselectedRows.map((item => item.index));
+      const deselectIndex = deselectedRows.map((item => item.index - this.skip));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
     }
     if (selectedRows.length > 0) {
-      const selectedItems = selectedRows.map((item) => item.index);
+      const selectedItems = selectedRows.map((item) => item.index - this.skip);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
@@ -674,6 +681,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a confirmation modal and then delete the selected record
   */
   public onDeleteRow(items: number[]): void {
+    const recordIds: string[] = [];
+    for (const index of items) {
+      const id = this.gridData.data[index].id;
+      recordIds.push(id);
+    }
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -686,15 +698,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const promises: Promise<any>[] = [];
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
-          promises.push(this.apollo.mutate<DeleteRecordMutationResponse>({
-            mutation: DELETE_RECORD,
-            variables: { id }
-          }).toPromise());
-        }
-        Promise.all(promises).then(() => {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: DELETE_RECORDS,
+          variables: {
+            ids: recordIds
+          }
+        }).subscribe(() => {
           this.reloadData();
         });
       }
@@ -712,7 +721,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const url = `${this.apiUrl}/download/records`;
     const fileName = `${this.settings.title}.${type}`;
     const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, {params: {ids: ids.join(',')}});
+    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, { params: { ids: ids.join(',') } });
   }
 
   /* Open a dialog component which provide tools to convert the selected record
@@ -785,7 +794,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
       if (options.attachToRecord) {
-        await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField);
+        await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField, options.targetFormQuery);
       }
       const promises: Promise<any>[] = [];
       if (options.notify) {
@@ -808,7 +817,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}`;
+        const body = this.buildBody(this.selectedRowsIndex, options.bodyFields);
+        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}&body=${encodeURIComponent(body)}`;
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
@@ -868,45 +878,56 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
-  private async promisedAttachToRecord(selectedRecords: any[], targetForm: Form, targetFormField: string): Promise<void> {
+  private async promisedAttachToRecord(
+    selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
         targetForm,
         targetFormField,
+        targetFormQuery
       },
     });
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
-    if (value) {
-      const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
-      let data = value.record.data;
-      Object.keys(value.record.data).forEach(key => {
-        if (key === resourceField.name) {
-          if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0].id };
-          } else {
-            if (data[key]) {
-              const ids = selectedRecords.map(x => x.id);
-              data = { ...data, [key]: data[key].concat(ids) };
-            } else {
-              data = { ...data, [key]: selectedRecords.map(x => x.id) };
-            }
-          }
-        }
-      }, this);
-      this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
+    if (value && value.record) {
+      this.apollo.query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
         variables: {
-          id: value.record.id,
-          data
+          id: value.record
         }
       }).subscribe(res => {
-        if (res.data) {
-          const record = res.data.editRecord;
-          if (record) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, resourceField.name,
-              value.record.data[targetFormField]));
+        const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
+        let data = res.data.record.data;
+        const key = resourceField.name;
+        if (resourceField.type === 'resource') {
+          data = { ...data, [key]: selectedRecords[0].id };
+        } else {
+          if (data[key]) {
+            const ids = selectedRecords.map(x => x.id);
+            data = { ...data, [key]: data[key].concat(ids) };
+          } else {
+            data = { ...data, [key]: selectedRecords.map(x => x.id) };
           }
         }
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: value.record,
+            data
+          }
+        }).subscribe(res2 => {
+          if (res2.data) {
+            const record = res2.data.editRecord;
+            if (record) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
+              this.dialog.open(SafeFormModalComponent, {
+                data: {
+                  recordId: record.id,
+                  locale: 'en'
+                }
+              });
+            }
+          }
+        });
       });
     }
   }
@@ -927,14 +948,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       panelClass: 'expanded-widget-dialog'
     });
     dialogRef.afterClosed().subscribe(res => {
-      if ( res !== item[rowTitle] ) {
+      if (res !== item[rowTitle]) {
         this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
         this.items.find(x => x.id === item.id)[rowTitle] = res;
-        if ( this.updatedItems.find( x => x.id === item.id ) !== undefined ){
-          this.updatedItems.find( x => x.id === item.id )[rowTitle] = res;
+        if (this.updatedItems.find(x => x.id === item.id) !== undefined) {
+          this.updatedItems.find(x => x.id === item.id)[rowTitle] = res;
         }
         else {
-          this.updatedItems.push( { [rowTitle]: res, id: item.id } );
+          this.updatedItems.push({ [rowTitle]: res, id: item.id });
         }
       }
     });
@@ -943,9 +964,56 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Check if element overflows
   */
   isEllipsisActive(e: any): boolean {
-    return ( e.offsetWidth < e.scrollWidth );
+    return (e.offsetWidth < e.scrollWidth);
   }
 
+  /**
+   * Toggle quick filter visibility
+   */
+  public onToggleFilter(): void {
+    this.showFilter = !this.showFilter;
+  }
+
+  /*
+   * Build email body in plain text from selected rows
+   */
+  private buildBody(rowsIndex: number[], fields: any): string {
+    let body = '';
+    let i = 1;
+    for (const index of rowsIndex) {
+      body += `######   ${i}   ######\n`;
+      const item = this.gridData.data[index];
+      body += this.buildBodyRow(item, fields);
+      body += '______________________\n';
+      i ++;
+    }
+    return body;
+  }
+
+  private buildBodyRow(item: any, fields: any, tabs = ''): string {
+    let body = '';
+    for (const field of fields) {
+      switch (field.kind) {
+        case 'LIST':
+          body += `${tabs}${field.name}:\n`;
+          const list = item ? item[field.name] || [] : [];
+          list.forEach((element: any, index: number) => {
+            body += this.buildBodyRow(element, field.fields, tabs + '\t');
+            if (index < (list.length - 1)) {
+              body += `${tabs + '\t'}______________________\n`;
+            }
+          });
+          break;
+        case 'OBJECT':
+          body += `${tabs}${field.name}:\n`;
+          body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
+          break;
+        default:
+          body += `${tabs}${field.name}:   ${item ? item[field.name] : ''}\n`;
+      }
+    }
+    return body;
+  }
 
   ngOnDestroy(): void {
     if (this.dataSubscription) {

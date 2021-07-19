@@ -25,13 +25,18 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
+    this.selectedFields.forEach((x, index) => {
+      if (!x.type) {
+        this.form.at(index).setErrors({ invalid: true });
+      }
+    });
   }
 
   ngOnChanges(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
   }
 
   drop(event: CdkDragDrop<string[]>): void {
@@ -74,6 +79,24 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           componentRef.destroy();
         });
       }
+    } else {
+      this.fieldForm?.patchValue({
+        label: this.prettifyLabel(this.fieldForm.value.label)
+      });
     }
+  }
+
+  public onDelete(index: number): void {
+    this.form.removeAt(index);
+    this.selectedFields.splice(index, 1);
+  }
+
+  /**
+   * Prettify grid label
+   */
+  private prettifyLabel(label: string): string {
+    label = label.replace('_', ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    return label;
   }
 }

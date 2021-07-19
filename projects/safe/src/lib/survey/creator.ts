@@ -8,11 +8,17 @@ export function initCreatorSettings(survey: any): void {
   };
   survey.Serializer.findProperty('question', 'valueName').isRequired = true;
 
-  // needs to hide valueName to don't give access to change it filteredData question.
+  // hide value name to prevent access to filteredData question.
   survey.Serializer.findProperty('text', 'valueName').visibleIf =
     ((obj: any) => obj.getType() !== 'multi-level dropdown' && (!obj.valueName || obj.valueName && !obj.valueName.match(/filtered_data$/)));
 
-  // // needs to hide valueName to don't give access to change it filteredData question.
+  // hide value name to prevent access to filteredData question.
   survey.Serializer.findProperty('multi-level dropdown', 'valueName').visibleIf =
     ((obj: any) => obj.getType() !== 'multi-level dropdown' && (!obj.valueName || obj.valueName && !obj.valueName.match(/filtered_data$/)));
+  // This is needed for file question, to prevent files to be stored as plain text.
+  survey.Serializer.findProperty('file', 'storeDataAsText').onGetValue = (obj: any) => {
+    return false;
+  };
+  survey.Serializer.findProperty('file', 'storeDataAsText').readOnly = true;
+  survey.Serializer.findProperty('file', 'storeDataAsText').visible = false;
 }

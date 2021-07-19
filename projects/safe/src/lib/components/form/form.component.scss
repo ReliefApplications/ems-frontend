@@ -1,3 +1,5 @@
+@import '../../style/survey.scss';
+
 :host {
   position: relative;
 }
@@ -19,9 +21,9 @@
   border-radius: 3px;
 }
 
-::ng-deep .k-dropdown .k-dropdown-wrap {
-  background: rgb(150, 145, 145) !important;
-}
+// ::ng-deep .k-dropdown .k-dropdown-wrap {
+//   background: rgb(150, 145, 145) !important;
+// }
 
 .record-date {
   color: #9e9e9e;

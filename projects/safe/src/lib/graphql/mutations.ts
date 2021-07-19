@@ -27,6 +27,22 @@ export interface EditRecordMutationResponse {
   editRecord: Record;
 }
 
+// === EDIT RECORDS ===
+export const EDIT_RECORDS = gql`
+mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
+  editRecords(ids: $ids, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordsMutationResponse {
+  loading: boolean;
+  editRecords: Record[];
+}
+
 // === CONVERT RECORD ===
 export const CONVERT_RECORD = gql`
 mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
@@ -381,6 +397,8 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     canSee
     canUpdate
     canDelete
+    locked
+    lockedByUser
   }
 }`;
 
@@ -450,6 +468,20 @@ export interface AddChannelMutationResponse {
   addChannel: Channel;
 }
 
+// === EDIT CHANNEL ===
+export const EDIT_CHANNEL = gql`
+mutation editChannel($id: ID!, $title: String!) {
+  editChannel(id: $id, title: $title){
+    id
+    title
+  }
+}`;
+
+export interface EditChannelMutationResponse {
+  loading: boolean;
+  editChannel: Channel;
+}
+
 // === DELETE CHANNEL ===
 export const DELETE_CHANNEL = gql`
 mutation deleteChannel($id: ID!) {
@@ -514,6 +546,17 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORDS = gql`
+mutation deleteRecords($ids: [ID]!) {
+  deleteRecords(ids: $ids)
+}`;
+
+export interface DeleteRecordsMutationResponse {
+  loading: boolean;
+  deleteRecords: number;
 }
 
 // === ADD SUBSCRIPTION ===
@@ -588,4 +631,19 @@ mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
+}
+
+// === TOGGLE APPLICATION LOCK ===
+export const TOGGLE_APPLICATION_LOCK = gql`
+mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
+  toggleApplicationLock(id: $id, lock: $lock) {
+    id
+    locked
+    lockedByUser
+  }
+}`;
+
+export interface ToggleApplicationLockMutationResponse {
+  loading: boolean;
+  toggleApplicationLock: Application;
 }

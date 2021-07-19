@@ -1,6 +1,8 @@
 SAFE Front-end
 =======
 [![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)
+[![Build](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml)
+[![CodeQL](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml)
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
@@ -47,7 +49,7 @@ First, install globally the bundle analyzer:
 npm install -g webpack-bundle-analyzer
 ```
 
-You can then run, for both back and front office:
+You can then run, for both back, front office and web element projects:
 ```
 ng build --stats-json
 ```
@@ -61,6 +63,27 @@ webpack-bundle-analyzer ./dist/<project-name>/stats.json
 and your browser will pop up the page at localhost:8888.
 
 # Useful commands
+
+## Compodoc
+
+The package.json contains commands to generate Angular documentation.
+
+Commands have to be executed once per project, and executed again after any modification of the related code.
+
+Subsequent command will generate the documentation:
+```
+npm run compodoc:<project>
+```
+
+If the command fails, check that compodoc is installed on your computer.
+You can execute following command for that:
+```
+npm i -g compodoc
+```
+
+A subfolder should be generated under *documentation* folder.
+
+You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project.
 
 ## Development server
 
@@ -133,3 +156,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+# Common issues
+
+## Javascript heap out of memory
+
+Error can appear when executing the front-end due to a memory limit.
+
+You can use this command to serve the front-end if the error occurs:
+```
+node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
+```
