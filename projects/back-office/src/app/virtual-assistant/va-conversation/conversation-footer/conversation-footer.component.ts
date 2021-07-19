@@ -49,7 +49,6 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
       else if (changes.inputValue.currentValue !== ''){
         this.msgChange(changes.inputValue.currentValue);
       }
-      console.log('*** FOCUS ***');
       this.input.focus();
     }
   }
@@ -85,7 +84,6 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
   }
 
   testFn(): void {
-    console.log('## testFn');
     this.input.focus();
   }
 }

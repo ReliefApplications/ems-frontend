@@ -58,7 +58,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public iCurMtQ: number;
 
   constructor() {
-    console.log('currentText CHANGED');
     this.currentText = '';
 
     this.iCurrentQuestion = -1;
@@ -171,7 +170,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   afterReply(): void {
-    console.log('AFTER REPLYYYYY');
     this.currentText = '';
     this.updateScrollViewPos();
     this.sendNextQuestion();
