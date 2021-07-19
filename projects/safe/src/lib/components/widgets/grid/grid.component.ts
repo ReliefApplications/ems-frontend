@@ -209,20 +209,21 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+      const fullName = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
-          return this.getFields(f.fields, f.name, true);
+          return this.getFields(f.fields, fullName, true);
         }
         default: {
           return {
-            name: prefix ? `${prefix}.${f.name}` : f.name,
+            name: fullName,
             title: f.label ? f.label : f.name,
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly
+            meta: this.metaFields[fullName],
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly
           };
         }
       }
