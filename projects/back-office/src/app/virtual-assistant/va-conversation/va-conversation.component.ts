@@ -92,10 +92,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
     }
   }
 
-  // ngAfterViewInit(): void {
-  //   this.conversationFooterComponent.testFn();
-  // }
-
   msgUpdated(msg: any): void{
     if (typeof msg === 'string'){
       console.log('msgUpdated');
@@ -214,7 +210,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.inputMsgType = 'text';
         this.updateScrollViewPos();
       }
-      // this.conversationFooterComponent.testFn();
     }
   }
 

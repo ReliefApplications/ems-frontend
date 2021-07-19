@@ -5,7 +5,6 @@ import {SafeDownloadService} from '../../../../safe/src/lib/services/download.se
 import {Apollo} from 'apollo-angular';
 import {GET_FORM_BY_ID, GetFormByIdQueryResponse} from '../graphql/queries';
 import {ADD_RECORD, AddRecordMutationResponse} from '../graphql/mutations';
-// import {ADD_RECORD, AddRecordMutationResponse} from '../../../../../dist/safe/lib/graphql/mutations';
 
 @Component({
   selector: 'app-virtual-assistant',
@@ -59,25 +58,6 @@ export class VirtualAssistantComponent implements OnInit {
   }
 
   async getForm(): Promise<void>{
-    // const path = `download/form/${this.id}`;
-    // const dataReturn = await this.downloadService.getForm(path);
-    // if (dataReturn.status === true) {
-    //   // console.log(JSON.parse(dataReturn.data.structure));
-    //   this.form = JSON.parse(dataReturn.data.structure).pages[0].elements;
-    //   console.log('this.form');
-    //   console.log(this.form);
-    // }
-    // else {
-    //   // problem with the form
-    // }
-
-    // this.apollo.watchQuery<GetFormsQueryResponse>({
-    //   query: GET_SHORT_FORMS,
-    // }).valueChanges.subscribe((res: any) => {
-    //   console.log('Apollo: res.data.forms');
-    //   console.log(res.data.forms);
-    // });
-
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
       query: GET_FORM_BY_ID,
       variables: {
@@ -101,16 +81,6 @@ export class VirtualAssistantComponent implements OnInit {
       this.loadingForm = false;
     });
   }
-
-  // onChatButton(event: any): void {
-  //   console.log('onChatButton');
-  //   if (this.vaCols !== 6) {
-  //     this.vaCols = 6;
-  //   }
-  //   else {
-  //     this.vaCols = 12;
-  //   }
-  // }
 
   vaEndConversation(records: any): void {
     console.log('vaEndConversation');
