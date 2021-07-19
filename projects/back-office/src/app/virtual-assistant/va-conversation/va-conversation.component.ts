@@ -1,7 +1,5 @@
 import {
-  AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -80,8 +78,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.speech = new Speech();
 
     this.td = {title: '', description: ''};
-
-    // this.conversationFooterComponent;
   }
 
   ngOnInit(): void {
@@ -317,7 +313,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       // this.speak(this.speech, text);
     }
     this.conv.push(new Message(type, text, reply, user, date, choices));
-    this.conversationFooterComponent.testFn();
+    this.conversationFooterComponent.inputFocus();
   }
 
   /* ----- STYLE ----- */

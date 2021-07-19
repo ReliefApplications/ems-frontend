@@ -24,12 +24,8 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
     // we skip that at the beginning when object are not yet set
     if (this.input !== undefined && changes.inputValue !== undefined){
       console.log('ngOnChanges : ' + this.inputValue);
-
       this.input.value = null;
       console.log('this.input.value : ' + this.input.value);
-      this.input.value = null;
-      console.log('this.input.value : ' + this.input.value);
-      this.input.value = null;
       console.log('changes.inputValue.currentValue : ' + changes.inputValue.currentValue);
       console.log('this.inputValue : ' + this.inputValue);
       console.log('this.inputType : ' + this.inputType);
@@ -59,22 +55,5 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
 
   msgChange(text: string): void {
     this.inputChange.emit(text);
-    // if (text === ''){
-    //   this.btnSend.setAttribute('disabled', '');
-    //   this.btnSend.setAttribute('style', 'display: none');
-    //
-    //   this.btnRec.removeAttribute('disabled');
-    //   this.btnRec.setAttribute('style', 'display: inline');
-    // } else {
-    //   this.btnRec.setAttribute('disabled', '');
-    //   this.btnRec.setAttribute('style', 'display: none');
-    //
-    //   this.btnSend.removeAttribute('disabled');
-    //   this.btnSend.setAttribute('style', 'display: inline');
-    // }
-  }
-
-  testFn(): void {
-    this.input.focus();
   }
 }
