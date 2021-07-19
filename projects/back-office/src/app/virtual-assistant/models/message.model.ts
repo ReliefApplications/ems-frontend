@@ -4,7 +4,7 @@ import {Choices} from './choices.model';
 export class Message {
     type: string;
     text: string;
-    reply: string;
+    reply: boolean;
     user: User;
     date: number;
     choices: Choices[];
@@ -12,7 +12,7 @@ export class Message {
     // tslint:disable-next-line:max-line-length
     constructor(type: string,
                 text: string,
-                reply: string,
+                reply: boolean,
                 user: User,
                 date: number,
                 choices: Choices[]) {

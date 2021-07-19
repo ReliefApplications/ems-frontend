@@ -109,12 +109,12 @@ export class VaConversationComponent implements OnInit, OnChanges {
     console.log(this.iCurrentQuestion);
     if (this.iCurrentQuestion < this.form.length){
       if (this.currentText !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
-        this.addMsg('', this.currentText, 'true', this.userMe, Date.now(), []);
+        this.addMsg('', this.currentText, true, this.userMe, Date.now(), []);
         this.currentRecord[this.form[this.iCurrentQuestion].name] = this.currentText;
         this.afterReply();
       }
       else if (this.currentText !== '' && this.form[this.iCurrentQuestion].type === 'multipletext'){
-        this.addMsg('', this.currentText, 'true', this.userMe, Date.now(), []);
+        this.addMsg('', this.currentText, true, this.userMe, Date.now(), []);
         this.mtObjectTemp[this.form[this.iCurrentQuestion].items[this.iCurMtQ ].name] = this.currentText;
         this.currentText = '';
         this.updateScrollViewPos();
@@ -127,7 +127,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendReplyMsgChoice(ch: Choices): void {
     if (ch.text !== ''){
       // this.speak(this.speech, ch.text);
-      this.addMsg('', ch.text, 'true', this.userMe, Date.now(), []);
+      this.addMsg('', ch.text, true, this.userMe, Date.now(), []);
       this.currentRecord[this.form[this.iCurrentQuestion].name] = ch.value;
       this.afterReply();
     }
@@ -152,7 +152,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       text = text + ' ' + ch.text;
     });
 
-    this.addMsg('', text, 'true', this.userMe, Date.now(), []);
+    this.addMsg('', text, true, this.userMe, Date.now(), []);
     this.currentRecord[this.form[this.iCurrentQuestion].name] = choicesRecord;
     this.afterReply();
   }
@@ -160,7 +160,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send final conversation message
   sendReplyMsgTextEnd(): void {
     if (this.restartChoiceMsg !== '') {
-      this.addMsg('', this.restartChoiceMsg, 'true', this.userMe, Date.now(), []);
+      this.addMsg('', this.restartChoiceMsg, true, this.userMe, Date.now(), []);
       this.afterReply();
     }
   }
@@ -185,10 +185,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
     console.log(this.currentText);
     if (this.conv.length === 0){
       if (this.td.title !== undefined){
-        this.addMsg('text', this.td.title, 'false', this.userVa, Date.now(), []);
+        this.addMsg('text', this.td.title, false, this.userVa, Date.now(), []);
       }
       if (this.td.description !== undefined){
-        this.addMsg('text', this.td.description, 'false', this.userVa, Date.now(), []);
+        this.addMsg('text', this.td.description, false, this.userVa, Date.now(), []);
       }
       this.sendNextQuestion();
     }
@@ -206,7 +206,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.records.push(this.currentRecord);
         console.log(this.records);
 
-        this.addMsg('text', this.endMessage, 'false', this.userVa, Date.now(),
+        this.addMsg('text', this.endMessage, false, this.userVa, Date.now(),
           [
             new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
             new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
@@ -216,7 +216,6 @@ export class VaConversationComponent implements OnInit, OnChanges {
       }
       // this.conversationFooterComponent.testFn();
     }
-
   }
 
   // control the bot format message depending on the type
@@ -236,15 +235,15 @@ export class VaConversationComponent implements OnInit, OnChanges {
             this.currentText = '50';
           }
         }
-        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, false,
           this.userVa, Date.now(), []);
         break;
       case 'comment':
-        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, false,
           this.userVa, Date.now(), []);
         break;
       case 'boolean':
-        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, false,
           this.userVa, Date.now(), [new Choices(false, this.form[this.iCurrentQuestion].labelFalse),
             new Choices(true, this.form[this.iCurrentQuestion].labelTrue)]);
         break;
@@ -252,14 +251,14 @@ export class VaConversationComponent implements OnInit, OnChanges {
       case 'dropdown':
       case 'checkbox':
       case 'tagbox':
-        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, 'false',
+        this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, false,
           this.userVa, Date.now(), this.form[this.iCurrentQuestion].choices);
         break;
       case 'expression':
         if (this.form[this.iCurrentQuestion].description){
           this.addMsg(this.form[this.iCurrentQuestion].type,
             this.form[this.iCurrentQuestion].title + '\n' + this.form[this.iCurrentQuestion].description,
-            'false',
+            false,
             this.userVa, Date.now(), []);
         }
         r = false;
@@ -280,7 +279,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   sendNextMtQuestion(): void {
     this.iCurMtQ ++ ;
     if (this.iCurMtQ < this.form[this.iCurrentQuestion].items.length){
-      this.addMsg('text', this.form[this.iCurrentQuestion].items[this.iCurMtQ].title, 'false', this.userVa, Date.now(), []);
+      this.addMsg('text', this.form[this.iCurrentQuestion].items[this.iCurMtQ].title, false, this.userVa, Date.now(), []);
     }
     else {
       this.currentRecord[this.form[this.iCurrentQuestion].name] = this.mtObjectTemp;
@@ -304,11 +303,11 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // add a message to the conversation
   addMsg(type: string,
          text: string,
-         reply: string,
+         reply: boolean,
          user: User,
          date: number,
          choices: Choices[]): void {
-    if (reply === 'false'){
+    if (reply === false){
       console.log('speak');
       // this.speak(this.speech, text);
     }
