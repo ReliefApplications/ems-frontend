@@ -10,6 +10,8 @@ import { QueryBuilderService } from '../../services/query-builder.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { Apollo } from 'apollo-angular';
+import { filterableGridFilterValues } from '../../survey/components/filterable-resources-table';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -33,7 +35,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   providers: [
     PopupService,
     {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]},
-    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
+    {provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
   ]
 })
 export class SafeResourceGridComponent implements OnInit, OnDestroy {
@@ -47,6 +49,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   @Input()
   selectedRows: string[] = [];
 
+  @Input()
+  filterableTypeQuestion = false;
+
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
 
@@ -59,6 +64,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === INPUTS ===
+  public questionID = '';
   public id = '';
   public field = '';
   public readOnly = false;
@@ -97,13 +103,18 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
+    public apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
     this.init();
+    filterableGridFilterValues.subscribe((value: any) => {
+      this.onFilter(value[0]);
+    });
   }
 
   ngOnDestroy(): void {
@@ -128,6 +139,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.queryError = true;
     }
+    // }
   }
 
   private getRecords(): void {
@@ -168,6 +180,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
                   data: this.items,
                   total: this.items.length
                 };
+                this.onFilter(filterableGridFilterValues.getValue()[0]);
                 if (!this.readOnly) {
                   this.getSelectedRows();
                 }
@@ -184,7 +197,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   private getSelectedRows(): void {
     if (this.selectedRows.length > 0) {
       this.gridData.data.forEach((row: any, index: number) => {
-        if (this.selectedRows.includes(row.id)) {
+        if (this.filterableTypeQuestion || this.selectedRows.includes(row.id)) {
           this.selectedRowsIndex.push(index);
         }
       });
@@ -325,7 +338,10 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFilter(value: any): void {
+  onFilter(value: any, fromGrid = false): void {
+    if (!fromGrid && value.questionID !== this.questionID) {
+      return;
+    }
     this.selectedRowsIndex = [];
     this.selectedRows = [];
     const filteredData: any[] = [];

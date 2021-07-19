@@ -114,9 +114,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
-          () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
+            () => {
+              span.style.display = !question.tooltip ? 'none' : '';
+            });
         }
       }
       // Display of add button for resource question
@@ -139,7 +139,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             dialogRef.afterClosed().subscribe(res => {
               if (res) {
                 const e = new CustomEvent('saveResourceFromEmbed',
-                  { detail: { resource: res.data, template: res.template } });
+                  {detail: {resource: res.data, template: res.template}});
                 document.dispatchEvent(e);
               }
             });
@@ -243,6 +243,33 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
               });
           }
+        }
+      }
+      if (question.getType() === 'filterableresourcestable') {
+        if (question.resource) {
+          let instance: SafeResourceGridComponent;
+          const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
+          instance = grid.instance;
+          instance.questionID = question.id;
+          instance.multiSelect = true;
+          instance.readOnly = true;
+          instance.selectedRows = question.value;
+          const questionQuery = question.gridFieldsSettings || {};
+          const questionFilter = questionQuery.filter || {};
+          question.survey.onValueChanged.add((survey: any, options: any) => {
+            if (options.name === question.name) {
+              instance.settings = {
+                query: {
+                  ...questionQuery, filter: {
+                    ...questionFilter,
+                    ids: options.value || []
+                  }
+                }
+              };
+              instance.init();
+            }
+          });
+
         }
       }
     }

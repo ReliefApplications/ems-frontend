@@ -66,11 +66,11 @@ export class QueryBuilderService {
     return filter ? Object.keys(filter).reduce((o, key) => {
       if (filter[key] || filter[key] === false) {
         if (filter[key] === 'today()') {
-          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
+          return {...o, [key]: new Date().toISOString().substring(0, 10)};
         }
-        return { ...o, [key]: filter[key] };
+        return {...o, [key]: filter[key]};
       }
-      return { ...o };
+      return {...o};
     }, {}) : null;
   }
 
@@ -129,7 +129,7 @@ export class QueryBuilderService {
 
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
+    if (builtQuery && builtQuery.fields && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
@@ -154,7 +154,7 @@ export class QueryBuilderService {
 
   public buildMetaQuery(settings: any, subQuery = false): any {
     const builtQuery = subQuery ? settings : settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
+    if (builtQuery && builtQuery.fields && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomMetaQuery {
@@ -182,10 +182,10 @@ export class QueryBuilderService {
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
         str += p + ': ' + (
-            typeof obj[p] === 'string' ? `"${obj[p]}"` :
+          typeof obj[p] === 'string' ? `"${obj[p]}"` :
             Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
-            obj[p]
-          ) + ',\n';
+              obj[p]
+        ) + ',\n';
       }
     }
     return str + '}';
@@ -203,7 +203,7 @@ export class QueryBuilderService {
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
       fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
-       validators ? Validators.required : null),
+        validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
@@ -223,7 +223,7 @@ export class QueryBuilderService {
       return this.formBuilder.group(group);
     } else {
       const group = Object.keys(filter).reduce((o, key) => {
-        return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
+        return ({...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)]});
       }, {});
       return this.formBuilder.group(group);
     }
@@ -233,7 +233,7 @@ export class QueryBuilderService {
     switch (newField ? field.type.kind : field.kind) {
       case 'LIST': {
         return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
+          name: [{value: field.name, disabled: true}],
           type: [newField ? field.type.ofType.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
@@ -247,7 +247,7 @@ export class QueryBuilderService {
       }
       case 'OBJECT': {
         return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
+          name: [{value: field.name, disabled: true}],
           type: [newField ? field.type.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
@@ -256,8 +256,8 @@ export class QueryBuilderService {
       }
       default: {
         return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          type: [{ value: newField ? field.type.name : field.type, disabled: true }],
+          name: [{value: field.name, disabled: true}],
+          type: [{value: newField ? field.type.name : field.type, disabled: true}],
           kind: [newField ? field.type.kind : field.kind],
           label: [field.label ? field.label : field.name, Validators.required]
         });

@@ -2,7 +2,7 @@
   [selectable]="!readOnly && selectableSettings" kendoGridSelectBy [selectedKeys]="selectedRowsIndex"
   (selectionChange)="selectionChange($event)">
   <ng-template kendoGridToolbarTemplate>
-    <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
+    <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target, true)" />
   </ng-template>
   <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
     <mat-form-field *ngIf="availableRecords.length > 0">
