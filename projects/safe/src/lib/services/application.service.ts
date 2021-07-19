@@ -279,8 +279,6 @@ export class SafeApplicationService {
   /* Add a new page to the opened application.
   */
   addPage(value: any): void {
-    console.log('value = ', value);
-    // do a trick to send value.type as a ContentType instead of a String
     const application = this._application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddPageMutationResponse>({
