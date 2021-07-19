@@ -183,6 +183,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
           new Choices(this.restartChoiceMsg, this.restartChoiceMsg + '?'),
           new Choices(this.endChoiceMsg, this.endChoiceMsg + '?')
         ]);
+      this.inputMsgType = 'text';
       this.updateScrollViewPos();
     }
   }
