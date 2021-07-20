@@ -129,7 +129,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter(); // change name and type
+  @Output() goToRelativeStep: EventEmitter<number> = new EventEmitter();
 
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
@@ -818,7 +818,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (promises.length > 0) {
         await Promise.all(promises);
       }
-      if (options.passDataToNextStep) {
+      if (options.passDataToRelativeStep) {
         const promisedRecords: Promise<any>[] = [];
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
@@ -833,7 +833,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     if (options.goToRelativeStep) {
-      this.goToRelativeStep.emit(options.passDataToRelativeStep);
+      this.goToRelativeStep.emit(options.relativeStepIndex);
     } else {
       this.reloadData();
     }

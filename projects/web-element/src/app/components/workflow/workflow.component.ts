@@ -53,14 +53,26 @@ export class WorkflowComponent implements OnInit {
 
   /* Trigger step changes from grid widgets
   */
-  onActivate(e: any, stepper: MatHorizontalStepper): void {
-    if (this.selectedIndex + 1 < this.steps.length) {
-      stepper.next();
-    } else if (this.selectedIndex + 1 === this.steps.length) {
-      stepper.selectedIndex = 0;
-      // this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
-    } else {
-      // this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+  onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
+    if (elementRef.goToRelativeStep) {
+      elementRef.goToRelativeStep.subscribe((event: number) => {
+        if (event) {
+          const relativeStepIndex = this.selectedIndex + event;
+          if (relativeStepIndex < this.steps.length && relativeStepIndex >= 0) {
+            this.selectedIndex += event;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          } else if (relativeStepIndex === this.steps.length) {
+            this.selectedIndex = 0;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          } else if (relativeStepIndex < 0) {
+            this.selectedIndex = this.steps.length - 1;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          }
+        }
+      });
     }
   }
 }

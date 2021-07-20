@@ -145,8 +145,8 @@ export class SafeGridSettingsComponent implements OnInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToRelativeStep: [value && value.goToRelativeStep ? value.goToRelativeStep : false],
-      passDataToRelativeStep: [value && value.passDataToRelativeStep ? value.passDataToRelativeStep : 1],
-      passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      relativeStepIndex: [value && value.relativeStepIndex ? value.relativeStepIndex : 1],
+      passDataToRelativeStep: [value && value.passDataToRelativeStep ? value.passDataToRelativeStep : false],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length

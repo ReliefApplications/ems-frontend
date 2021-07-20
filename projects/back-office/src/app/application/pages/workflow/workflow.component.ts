@@ -214,7 +214,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onActivate(elementRef: any): void {
     if (elementRef.goToRelativeStep) {
-      elementRef.goToRelativeStep.subscribe((event: any) => {
+      elementRef.goToRelativeStep.subscribe((event: number) => {
         if (event) {
           this.goToRelativeStep(event);
         }
@@ -224,8 +224,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Navigate to the next step if possible and change selected step / index consequently
   */
-  private goToRelativeStep(event: any): void {
-    const value = parseInt(event, 10);
+  private goToRelativeStep(value: number): void {
     const relativeStepIndex = this.selectedStepIndex + value;
     if (relativeStepIndex < this.steps.length && relativeStepIndex >= 0) {
       this.selectedStepIndex += value;
@@ -240,7 +239,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToRelativeStep, { error: true });
     }
   }
 

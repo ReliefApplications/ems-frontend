@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
+import { Step } from '../../../../models/step.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
@@ -38,6 +39,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
   private workflowSubscription?: Subscription;
+  private currentStepContent = '';
+  private steps: Step[] = [];
 
   // Emails
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
@@ -62,15 +65,11 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     if (this.router.url.includes('dashboard') && !this.router.url.includes('workflow')) {
       this.isDashboard = true;
     } else {
-      const currentStepContent = this.router.url.split('/').pop();
+      this.currentStepContent = this.router.url.split('/').pop() || '';
       this.workflowSubscription = this.workflowService.workflow.subscribe(workflow => {
         if (workflow) {
-          const steps = workflow.steps || [];
-          const currentStepIndex = steps.findIndex(x => x.content === currentStepContent);
-          if (currentStepIndex >= 0) {
-            const nextStep = steps[currentStepIndex + 1];
-            this.canPassData = nextStep && nextStep.type === ContentType.form;
-          }
+          this.steps = workflow.steps || [];
+          this.setCanPassDataValue(this.buttonForm?.value.relativeStepIndex);
         } else {
           const workflowId = this.router.url.split('/workflow/').pop()?.split('/').shift();
           this.workflowService.loadWorkflow(workflowId);
@@ -165,7 +164,27 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
     });
 
+    this.buttonForm?.get('relativeStepIndex')?.valueChanges.subscribe((relativeStepIndex: number) => {
+      if (relativeStepIndex) {
+        this.setCanPassDataValue(relativeStepIndex);
+        if (!this.canPassData) {
+          this.buttonForm?.get('passDataToRelativeStep')?.setValue(false);
+        }
+      } else {
+        this.canPassData = false;
+        this.buttonForm?.get('passDataToRelativeStep')?.setValue(false);
+      }
+    });
+
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
+  }
+
+  private setCanPassDataValue(relativeStepIndex: number): void {
+    const currentStepIndex = this.steps.findIndex(x => x.content === this.currentStepContent);
+    if (currentStepIndex >= 0) {
+      const relativeStep = this.steps[currentStepIndex + relativeStepIndex];
+      this.canPassData = relativeStep && relativeStep.type === ContentType.form;
+    }
   }
 
   compareFields(field1: any, field2: any): boolean {

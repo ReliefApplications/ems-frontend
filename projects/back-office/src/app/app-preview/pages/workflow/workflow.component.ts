@@ -86,9 +86,24 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   */
   onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
     if (elementRef.goToRelativeStep) {
-      elementRef.goToRelativeStep.subscribe((event: any) => {
+      elementRef.goToRelativeStep.subscribe((event: number) => {
         if (event) {
-          stepper.next();
+          const relativeStepIndex = this.selectedIndex + event;
+          if (relativeStepIndex < this.steps.length && relativeStepIndex >= 0) {
+            this.selectedIndex += event;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          } else if (relativeStepIndex === this.steps.length) {
+            this.selectedIndex = 0;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          } else if (relativeStepIndex < 0) {
+            this.selectedIndex = this.steps.length - 1;
+            this.selectedStep = this.steps[this.selectedIndex];
+            stepper.selectedIndex = this.selectedIndex;
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToRelativeStep, { error: true });
+          }
         }
       });
     }
