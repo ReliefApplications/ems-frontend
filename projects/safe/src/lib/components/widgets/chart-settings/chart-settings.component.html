@@ -25,6 +25,10 @@
             <div class="chart-form">
                 <mat-tab-group class="chart-settings" animationDuration="0ms" >
                     <mat-tab label="Data source">
+                        <button mat-flat-button color="primary" (click)="refreshPipeline()" [disabled]="!pipelineChanged">
+                            <mat-icon>refresh</mat-icon>
+                            Apply changes
+                        </button>
                         <div class="form-group">
                             <mat-form-field appearance="outline">
                                 <mat-label>Aggregation</mat-label>
@@ -98,7 +102,7 @@
                 </mat-tab-group>
             </div>
             <div class="chart-display">
-                <safe-chart class="widget-content" [header]="false" [export]="false" [settings]="tileForm.value">
+                <safe-chart class="widget-content" [header]="false" [export]="false" [settings]="settings">
                 </safe-chart>
             </div>
         </div>

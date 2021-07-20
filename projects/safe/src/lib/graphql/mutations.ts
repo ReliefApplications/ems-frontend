@@ -27,6 +27,22 @@ export interface EditRecordMutationResponse {
   editRecord: Record;
 }
 
+// === EDIT RECORDS ===
+export const EDIT_RECORDS = gql`
+mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
+  editRecords(ids: $ids, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordsMutationResponse {
+  loading: boolean;
+  editRecords: Record[];
+}
+
 // === CONVERT RECORD ===
 export const CONVERT_RECORD = gql`
 mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
@@ -43,7 +59,6 @@ export interface ConvertRecordMutationResponse {
 }
 
 // === ADD RECORD ===
-
 export const ADD_RECORD = gql`
 mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
   addRecord(form: $form, data: $data) {
@@ -64,6 +79,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
 export interface AddRecordMutationResponse {
   loading: boolean;
   addRecord: Record;
+}
+
+// === UPLOAD FILE ===
+export const UPLOAD_FILE = gql`
+mutation uploadFile($file: Upload!, $form: ID!) {
+  uploadFile(file: $file, form: $form)
+}`;
+
+export interface UploadFileMutationResponse {
+  loading: boolean;
+  uploadFile: string;
 }
 
 // === EDIT FORM ===
@@ -129,6 +155,30 @@ export interface EditUserMutationResponse {
   editUser: User;
 }
 
+// === EDIT USER PROFILE ===
+export const EDIT_USER_PROFILE = gql`
+mutation editUserProfile($profile: UserProfileInputType!) {
+  editUserProfile(profile: $profile) {
+    id
+    username
+    name
+    roles {
+      id
+      title
+      application {
+        id
+      }
+    }
+    oid
+    favoriteApp
+  }
+}`;
+
+export interface EditUserProfileMutationResponse {
+  loading: boolean;
+  editUserProfile: User;
+}
+
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
 mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
@@ -189,8 +239,8 @@ export interface AddRoleToUsersMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-mutation editRole($id: ID!, $permissions: [ID], $channels: [ID]) {
-  editRole(id: $id, permissions: $permissions, channels: $channels) {
+mutation editRole($id: ID!, $permissions: [ID], $channels: [ID], $title: String) {
+  editRole(id: $id, permissions: $permissions, channels: $channels, title: $title) {
     id
     title
     permissions {
@@ -347,6 +397,8 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     canSee
     canUpdate
     canDelete
+    locked
+    lockedByUser
   }
 }`;
 
@@ -416,6 +468,20 @@ export interface AddChannelMutationResponse {
   addChannel: Channel;
 }
 
+// === EDIT CHANNEL ===
+export const EDIT_CHANNEL = gql`
+mutation editChannel($id: ID!, $title: String!) {
+  editChannel(id: $id, title: $title){
+    id
+    title
+  }
+}`;
+
+export interface EditChannelMutationResponse {
+  loading: boolean;
+  editChannel: Channel;
+}
+
 // === DELETE CHANNEL ===
 export const DELETE_CHANNEL = gql`
 mutation deleteChannel($id: ID!) {
@@ -480,6 +546,17 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORDS = gql`
+mutation deleteRecords($ids: [ID]!) {
+  deleteRecords(ids: $ids)
+}`;
+
+export interface DeleteRecordsMutationResponse {
+  loading: boolean;
+  deleteRecords: number;
 }
 
 // === ADD SUBSCRIPTION ===
@@ -554,4 +631,19 @@ mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
+}
+
+// === TOGGLE APPLICATION LOCK ===
+export const TOGGLE_APPLICATION_LOCK = gql`
+mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
+  toggleApplicationLock(id: $id, lock: $lock) {
+    id
+    locked
+    lockedByUser
+  }
+}`;
+
+export interface ToggleApplicationLockMutationResponse {
+  loading: boolean;
+  toggleApplicationLock: Application;
 }

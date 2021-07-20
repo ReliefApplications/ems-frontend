@@ -1,12 +1,10 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { SafeDownloadService, SafeSnackBarService } from '@safe/builder';
+import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-resource',
@@ -55,7 +53,7 @@ export class ResourceComponent implements OnInit {
           this.setDisplayedColumns(false);
           this.loading = res.loading;
         } else {
-          this.snackBar.openSnackBar('No access provided to this resource.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
           this.router.navigate(['/resources']);
         }
       }, (err) => {
@@ -98,7 +96,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Record deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { duration: 1000 });
       this.dataSourceRecords = this.dataSourceRecords.filter(x => {
         return x.id !== id;
       });
@@ -115,7 +113,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
       this.dataSourceForms = this.dataSourceForms.filter(x => {
         return x.id !== id;
       });
@@ -138,9 +136,10 @@ export class ResourceComponent implements OnInit {
     });
   }
 
-  onDownload(): void {
-    const url = `${environment.API_URL}/download/resource/records/${this.id}`;
-    const fileName = `${this.resource.name}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
+  onDownload(type: string): void {
+    const path = `download/resource/records/${this.id}`;
+    const fileName = `${this.resource.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }

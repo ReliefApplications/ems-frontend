@@ -18,6 +18,7 @@ import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
+import { NOTIFICATIONS } from '../../const/notifications';
 
 @Component({
   selector: 'safe-users',
@@ -49,7 +50,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -86,10 +87,10 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             }
           }).subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(res.data.addRoleToUsers.length > 1 ? `${res.data.addRoleToUsers.length} users were invited.` : 'user was invited.');
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
               this.users.data = this.users.data.concat(res.data.addRoleToUsers);
             } else {
-              this.snackBar.openSnackBar('User could not be invited.', { error: true });
+              this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
             }
           });
         }
@@ -99,7 +100,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   onEdit(user: User): void {
     const dialogRef = this.dialog.open(SafeEditUserComponent, {
-      panelClass: 'add-dialog',
       data: {
         user,
         availableRoles: this.roles,
@@ -120,7 +120,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             }
           }).subscribe(res => {
             if (res.data) {
-              this.snackBar.openSnackBar(`${user.username} roles updated.`);
+              this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
                   x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
@@ -157,11 +157,10 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           }).subscribe(res => {
             this.loading = false;
             if (res.data) {
-              this.snackBar.openSnackBar(res.data.deleteUsers > 1 ? `${res.data.deleteUsers} users were deleted` : 'User was deleted',
-                { duration: 3000 });
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers), { duration: 3000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             } else {
-              this.snackBar.openSnackBar('Users could not be deleted.', { error: true });
+              this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
             }
           });
         }

@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, User, SafeAuthService, SafeSnackBarService, SafeApplicationService, Permission, Permissions, ContentType } from '@safe/builder';
+import { Application, User, Role, SafeAuthService, SafeSnackBarService, SafeApplicationService,
+  Permission, Permissions, ContentType, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -21,7 +22,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   private permissions: Permission[] = [];
+  private roles: Role[] = [];
   public navGroups: any[] = [];
+
+  private firstLoad = true;
 
   constructor(
     private authService: SafeAuthService,
@@ -37,10 +41,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const applications = user.applications || [];
         if (applications.length > 0) {
           this.applications = applications;
-          this.applicationService.loadApplication(applications[0].id || '');
+          if (this.firstLoad) {
+            this.firstLoad = false;
+            if (user.favoriteApp) {
+              this.applicationService.loadApplication(user.favoriteApp);
+            } else {
+              this.applicationService.loadApplication(applications[0].id || '');
+            }
+          }
+          this.roles = user.roles || [];
           this.permissions = user.permissions || [];
         } else {
-          this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
         }
       }
     });
@@ -48,7 +60,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (application) {
         this.title = application.name || '';
         const adminNavItems: any[] = [];
-        if (this.permissions.some(x => (x.type === Permissions.canSeeUsers && !x.global)
+        if (this.permissions.some(x => (x.type === Permissions.canSeeUsers
+          && this.roles.some(y => y.application?.id === application.id && y.permissions?.some(perm => perm.id === x.id)))
           || (x.type === Permissions.canManageApplications && x.global))) {
           adminNavItems.push({
             name: 'Users',
@@ -56,7 +69,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             icon: 'supervisor_account'
           });
         }
-        if (this.permissions.some(x => (x.type === Permissions.canSeeRoles && !x.global)
+        if (this.permissions.some(x => (x.type === Permissions.canSeeRoles
+          && this.roles.some(y => y.application?.id === application.id && y.permissions?.some(perm => perm.id === x.id)))
           || (x.type === Permissions.canManageApplications && x.global))) {
           adminNavItems.push({
             name: 'Roles',

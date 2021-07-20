@@ -21,6 +21,8 @@ export class SafeChooseRecordModalComponent implements OnInit {
 
   // === LOAD DATA ===
   public loading = true;
+  public isSearchActivated = false;
+  public selectedRows: any [] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,9 +30,10 @@ export class SafeChooseRecordModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       targetForm: Form,
-      targetFormField: string
+      targetFormField: string,
+      targetFormQuery: any
     }
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
@@ -48,7 +51,13 @@ export class SafeChooseRecordModalComponent implements OnInit {
     });
   }
 
+  onSearch(): void {
+    this.isSearchActivated = !this.isSearchActivated;
+  }
 
+  onRowSelected(rows: any): void {
+    this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem.id);
+  }
   /*  Close the modal without sending data.
   */
   onClose(): void {

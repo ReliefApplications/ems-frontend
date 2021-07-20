@@ -6,7 +6,7 @@
     <mat-icon>keyboard_backspace</mat-icon>
   </button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1>{{title}}</h1>
+    <h1 class="application-title">{{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -31,7 +31,13 @@
       notifications</mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="logout()">Logout</button>
+    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
+    <ng-container *ngIf="user && user.isAdmin">
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+    </ng-container>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()" class="warn">Logout</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
@@ -74,9 +80,9 @@
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                  <button mat-icon-button class="nav-action" *ngIf="item.action"
+                    <button mat-icon-button class="nav-action" *ngIf="item.action" 
                     (click)="onClick(item.action.callback, $event)">
-                    <mat-icon>{{ item.action.icon }}</mat-icon>
+                    <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
                   </button>
                   <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
                     <mat-icon>drag_indicator</mat-icon>

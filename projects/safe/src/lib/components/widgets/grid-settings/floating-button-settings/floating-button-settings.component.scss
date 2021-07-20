@@ -26,9 +26,31 @@
 
 .form-group {
     flex: 50%;
+    max-width: 100%;
     
     &:not(:first-child) {
         margin-top: 0px;
         margin-left: 64px;
       }
 }
+
+.mat-chip {
+    max-width: none;
+    border-radius: 1rem !important;
+}
+
+.radio-row {
+    display: flex;
+    flex-direction: row;
+    .mat-radio-button {
+        margin-left: 12px;
+    }
+}
+
+.sub-parameters {
+    margin-left: 24px;
+    border-left: 2px solid gray;
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+}   

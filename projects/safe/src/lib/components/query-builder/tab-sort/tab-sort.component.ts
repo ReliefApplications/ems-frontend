@@ -13,7 +13,6 @@ export class SafeTabSortComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
 }

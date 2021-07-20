@@ -2,12 +2,13 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService } from '@safe/builder';
+import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
 import { Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
+import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-add-page',
@@ -29,6 +30,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
+    // === ASSETS ===
+    public assetsPath = '';
+
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -36,7 +40,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
-  ) { }
+  ) {
+    this.assetsPath = `${environment.backOfficeUri}assets`;
+  }
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({
@@ -49,8 +55,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.apollo.watchQuery<GetFormsQueryResponse>({
-          query: GET_FORMS,
-        }).valueChanges.subscribe((res) => {
+          query: GET_FORM_NAMES,
+        }).valueChanges.subscribe((res: any) => {
           this.forms = res.data.forms;
           contentControl.setValidators([Validators.required]);
           contentControl.updateValueAndValidity();
@@ -132,6 +138,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           const id = res.data?.addForm.id || '';
           this.pageForm.controls.content.setValue(id);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', value.name));
+
           this.onSubmit();
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

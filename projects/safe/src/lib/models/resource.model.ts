@@ -15,4 +15,5 @@ export interface Resource {
     canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
+    coreForm?: Form;
 }

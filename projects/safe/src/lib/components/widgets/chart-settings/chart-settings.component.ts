@@ -14,7 +14,7 @@ import { CHART_TYPES, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } f
 export class SafeChartSettingsComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm: FormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -31,8 +31,14 @@ export class SafeChartSettingsComponent implements OnInit {
   public chart?: Chart;
   public type: any;
 
+  // === DISPLAY PREVIEW ===
+  private pipeline?: string;
+  public pipelineChanged = false;
+  public settings: any;
+
+
   public get chartForm(): FormGroup {
-    return this.tileForm.controls.chart as FormGroup;
+    return this.tileForm?.controls.chart as FormGroup || null;
   }
 
   // public get type(): object {
@@ -68,7 +74,7 @@ export class SafeChartSettingsComponent implements OnInit {
     );
     this.change.emit(this.tileForm);
 
-    this.tileForm.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
 
@@ -76,7 +82,7 @@ export class SafeChartSettingsComponent implements OnInit {
     //   this.selectedFields = this.getFields(this.tileForm.value.query.fields);
     // }
 
-    const chartForm = this.tileForm.get('chart') as FormGroup;
+    const chartForm = this.tileForm?.get('chart') as FormGroup;
     chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find(x => x.name === value);
     });
@@ -88,6 +94,12 @@ export class SafeChartSettingsComponent implements OnInit {
     // queryForm.valueChanges.subscribe((res) => {
     //   this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     // });
+
+    this.pipeline = chartSettings.pipeline;
+    this.settings = this.tileForm?.value;
+    chartForm.controls.pipeline.valueChanges.subscribe((value) => {
+      this.pipelineChanged = value !== this.pipeline;
+    });
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -106,4 +118,12 @@ export class SafeChartSettingsComponent implements OnInit {
       }
     }));
   }
+
+  refreshPipeline(): void {
+    this.pipeline = this.tileForm?.get('chart.pipeline')?.value;
+    this.settings = this.tileForm?.value;
+    this.pipelineChanged = false;
+  }
+
+
 }

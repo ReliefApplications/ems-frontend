@@ -1,7 +1,7 @@
 <ng-container *ngIf="!loading">
     <div mat-dialog-title>
-        <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="survey.pages.length > 1">
-            <mat-tab *ngFor="let page of survey.pages" [label]="page.title"></mat-tab>
+        <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="formPages.length > 1">
+            <mat-tab *ngFor="let page of formPages" [label]="page.title ? page.title : page.name"></mat-tab>
         </mat-tab-group>
         <div class="versions-info" *ngIf="data.compareTo">
             <div class="version-info">
@@ -17,7 +17,7 @@
 </ng-container>
 <mat-dialog-content>
     <ng-container *ngIf="!data.compareTo">
-        <span mat-dialog-title *ngIf="modifiedAt" class="modified-at">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
+        <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
         <div [id]="containerId"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">

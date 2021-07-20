@@ -102,6 +102,14 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   .primary {
     color: mat-color($primary);
   }
+
+  .accent {
+    color: mat-color($accent);
+  }
+
+  .warn {
+    color: mat-color($warn);
+  }
 }
 
 @mixin chip($theme) {
@@ -396,7 +404,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-// === UTIS ===
+// === UTILS ===
 .info-icon {
   color: #939393;
   font-size: 22px;
@@ -414,3 +422,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-left: 12px;
   }
 }
+
+// === SURVEYS ===
+.title-left {
+  width: 15%;
+  text-align: right;
+}
+
+@import "theme.scss";

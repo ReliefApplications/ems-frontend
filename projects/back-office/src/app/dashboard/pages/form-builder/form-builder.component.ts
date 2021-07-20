@@ -1,15 +1,15 @@
-import {Apollo} from 'apollo-angular';
-import {Component, OnInit} from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent } from '@safe/builder';
+import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
   selector: 'app-form-builder',
@@ -60,7 +60,7 @@ export class FormBuilderComponent implements OnInit {
 
   /* Shows modal confirmation before leave the page if has changes on form
   */
-  canDeactivate(): Observable<boolean> | boolean{
+  canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
@@ -88,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
+        query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id
         }
@@ -106,7 +106,7 @@ export class FormBuilderComponent implements OnInit {
             this.authService.canLogout.next(!this.hasChanges);
           }
         } else {
-          this.snackBar.openSnackBar('No access provided to this form.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('form'), { error: true });
           // redirect to default screen if error
           this.router.navigate(['/forms']);
         }
@@ -151,9 +151,10 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
-          this.snackBar.openSnackBar('Form updated');
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
           this.form = res.data?.editForm;
-          this.structure = structure; // Update current form to
+          this.structure = structure;
+          localStorage.removeItem(`form:${this.id}`);
           this.hasChanges = false;
           this.authService.canLogout.next(true);
         }
@@ -183,10 +184,10 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('Unable to update the status: ' + res.errors[0].message);
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
         statusModal.close();
       } else {
-        this.snackBar.openSnackBar(`Status updated to ${e.value}`, { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value), { duration: 1000 });
         this.form = { ...this.form, status: res.data?.editForm.status };
         statusModal.close();
       }
@@ -197,7 +198,7 @@ export class FormBuilderComponent implements OnInit {
   */
   setTemplate(id: string): void {
     this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }
@@ -245,14 +246,14 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar('Unable to update the form: ' + res.errors[0].message);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar('Name updated', { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName), { duration: 1000 });
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
         }
-    });
+      });
   }
 
   /*  Edit the permissions layer.
@@ -273,9 +274,10 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar('Unable to update the access: ' + res.errors[0].message);
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
         statusModal.close();
       } else {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
         this.form = res.data?.editForm;
         statusModal.close();
       }

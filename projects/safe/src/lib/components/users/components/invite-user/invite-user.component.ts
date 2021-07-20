@@ -12,6 +12,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { NOTIFICATIONS } from '../../../../const/notifications';
 
 @Component({
   selector: 'safe-invite-user',
@@ -109,7 +110,7 @@ export class SafeInviteUserComponent implements OnInit {
         if (!this.data.users.find((user: any) => user.username.toLowerCase() === value.toLocaleString())) {
           this.emails.push(value.trim());
         } else {
-          this.snackBar.openSnackBar(`${value} already exists on this application`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('user', value));
         }
       }
       this.inviteForm.get('email')?.setValue(this.emails);
@@ -164,7 +165,7 @@ export class SafeInviteUserComponent implements OnInit {
           }
         }
         if (emailRegistered) {
-          this.snackBar.openSnackBar('Some emails are already part of the application and will not be invited.');
+          this.snackBar.openSnackBar(NOTIFICATIONS.emailRegistered);
         }
       };
 
@@ -174,7 +175,7 @@ export class SafeInviteUserComponent implements OnInit {
 
     } else {
       if (files.length > 0) {
-        this.snackBar.openSnackBar('Please import valid .csv file.', {error: true});
+        this.snackBar.openSnackBar(NOTIFICATIONS.isFormatValid, {error: true});
       }
       this.fileReset();
     }

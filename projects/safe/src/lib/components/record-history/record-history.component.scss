@@ -6,7 +6,6 @@
   width: 328px;
 }
 
-
 .history-header {
   align-items: center;
   padding: 16px;
@@ -17,11 +16,20 @@
   }
 }
 
+.history-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .history-user {
   background-color: #b2c9eb;
   border-radius: 10px;
   padding: 4px;
   margin-left: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
 }
 
 ::ng-deep .modify-field, ::ng-deep .add-field, ::ng-deep .remove-field {
@@ -72,4 +80,12 @@ mat-expansion-panel {
 .full-history {
   text-align: center;
   margin-bottom: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start !important;
+  text-align: end;
+  margin-left: auto;
 }

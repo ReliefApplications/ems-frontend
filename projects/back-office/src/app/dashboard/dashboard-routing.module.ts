@@ -18,6 +18,11 @@ export const routes = [
                 redirectTo: 'applications'
             },
             {
+                path: 'profile',
+                loadChildren: () => import('./pages/profile/profile.module')
+                    .then(m => m.ProfileModule),
+            },
+            {
                 path: 'forms',
                 children: [
                     {
@@ -137,6 +142,23 @@ export const routes = [
                         loadChildren: () => import('./pages/roles/roles.module')
                             .then(m => m.RolesModule),
                         // canActivate: [SafePermissionGuard]
+                    },
+                    {
+                        path: 'apiconfigurations',
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: () => import('./pages/api-configurations/api-configurations.module')
+                                .then(m => m.ApiConfigurationsModule),
+                                // canActivate: [SafePermissionGuard]
+                            },
+                            {
+                                path: ':id',
+                                loadChildren: () => import('./pages/api-configuration/api-configuration.module')
+                                    .then(m => m.ApiConfigurationModule),
+                                // canActivate: [SafePermissionGuard]
+                            }
+                        ]
                     },
                     {
                         path: '**',

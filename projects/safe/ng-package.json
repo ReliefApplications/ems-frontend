@@ -22,7 +22,8 @@
       "@progress/kendo-angular-inputs": "@progress/kendo-angular-inputs",
       "@progress/kendo-angular-dateinputs": "@progress/kendo-angular-dateinputs",
       "leaflet": "leaflet",
-      "@progress/kendo-angular-scheduler": "@progress/kendo-angular-scheduler"
+      "@progress/kendo-angular-scheduler": "@progress/kendo-angular-scheduler",
+      "@progress/kendo-angular-popup": "@progress/kendo-angular-popup"
     }
   }
 }

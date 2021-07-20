@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
@@ -22,6 +22,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public settingsForm?: FormGroup;
   private applicationSubscription?: Subscription;
   public application?: Application;
+  public user: any;
+  public locked: boolean  | undefined = undefined;
+  public lockedByUser: boolean | undefined = undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,6 +32,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
+    private authService: SafeAuthService,
     public dialog: MatDialog
   ) { }
 
@@ -43,6 +47,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
             description: [application.description]
           }
         );
+        this.locked = this.application?.locked;
+        this.lockedByUser = this.application?.lockedByUser;
       }
     });
   }
@@ -53,40 +59,48 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   onDuplicate(): void {
-    this.dialog.open(DuplicateApplicationComponent, {
-      data: {
-        id: this.application?.id,
-        name: this.application?.name
-      }
-    });
+    if (this.locked && !this.lockedByUser) {
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
+    } else {
+      this.dialog.open(DuplicateApplicationComponent, {
+        data: {
+          id: this.application?.id,
+          name: this.application?.name
+        }
+      });
+    }
   }
 
   onDelete(): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: 'Delete application',
-        content: `Do you confirm the deletion of this application ?`,
-        confirmText: 'Delete',
-        confirmColor: 'warn'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        const id = this.application?.id;
-        this.apollo.mutate<DeleteApplicationMutationResponse>({
-          mutation: DELETE_APPLICATION,
-          variables: {
-            id
-          }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar('Application deleted', { duration: 1000 });
-          this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data?.deleteApplication.id;
+    if (this.locked && !this.lockedByUser) {
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
+    } else {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: 'Delete application',
+          content: `Do you confirm the deletion of this application ?`,
+          confirmText: 'Delete',
+          confirmColor: 'warn'
+        }
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          const id = this.application?.id;
+          this.apollo.mutate<DeleteApplicationMutationResponse>({
+            mutation: DELETE_APPLICATION,
+            variables: {
+              id
+            }
+          }).subscribe(res => {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
+            this.applications.data = this.applications.data.filter(x => {
+              return x.id !== res.data?.deleteApplication.id;
+            });
           });
-        });
-        this.router.navigate(['/applications']);
-      }
-    });
+          this.router.navigate(['/applications']);
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

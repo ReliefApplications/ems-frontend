@@ -10,6 +10,11 @@ export * from './lib/services/application.service';
 export * from './lib/services/download.service';
 export * from './lib/services/workflow.service';
 export * from './lib/services/form.service';
+export * from './lib/services/layout.service';
+export * from './lib/services/api-proxy.service';
+
+// === CONST ===
+export * from './lib/const/notifications';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
@@ -29,6 +34,8 @@ export * from './lib/models/channel.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
+export * from './lib/models/apiConfiguration.model';
+export * from './lib/models/pullJob.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -55,6 +62,11 @@ export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
+export * from './lib/components/search-resource-grid-modal/public-api';
+export * from './lib/components/config-display-grid-fields-modal/public-api';
+
+// === PAGES ===
+export * from './lib/pages/profile/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

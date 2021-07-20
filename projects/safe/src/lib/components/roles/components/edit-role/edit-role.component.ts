@@ -1,6 +1,6 @@
 import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Channel } from '../../../../models/channel.model';
@@ -21,7 +21,7 @@ export class SafeEditRoleComponent implements OnInit {
   // === DATA ===
   public permissions: Permission[] = [];
   public channels: Channel[] = [];
-
+  public applications: any[] = [];
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
@@ -50,8 +50,22 @@ export class SafeEditRoleComponent implements OnInit {
       query: GET_CHANNELS,
     }).valueChanges.subscribe(res => {
       this.channels = res.data.channels;
+      // Move channels in an array under corresponding applications.
+      this.applications = Array.from(new Set(this.channels.map(x => x.application?.name)))
+        .map(name => {
+          return {
+            name: name ? name : 'Global',
+            channels: this.channels.reduce((o: Channel[], channel: Channel) => {
+              if (channel?.application?.name === name) {
+                o.push(channel);
+              }
+              return o;
+            }, [])
+          };
+        });
     });
     this.roleForm = this.formBuilder.group({
+      title: [this.data.role.title, Validators.required],
       permissions: [this.data.role.permissions ? this.data.role.permissions.map(x => x.id) : null],
       channels: [this.data.role.channels ? this.data.role.channels.map(x => x.id) : null]
     });

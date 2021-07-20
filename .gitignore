@@ -1,16 +1,23 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
+# Compiled output
 /dist
 /tmp
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
 
-# dependencies
+# Doc
+documentation/*
+documentation.json
+
+# Dependencies
 /node_modules
 
-# profiling files
+# Storybook
+storybook-static/*
+
+# Profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json
 

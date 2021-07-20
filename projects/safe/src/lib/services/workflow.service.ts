@@ -10,6 +10,7 @@ import { SafeSnackBarService } from './snackbar.service';
 import { ContentType } from '../models/page.model';
 import { Step } from '../models/step.model';
 import { Record } from '../models/record.model';
+import { NOTIFICATIONS } from '../const/notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,7 @@ export class SafeWorkflowService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(`${value.name} step created`);
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('step', value.name));
           this.loadWorkflow(workflow.id);
           if (value.type === ContentType.form) {
             this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
@@ -71,7 +72,7 @@ export class SafeWorkflowService {
         }
       });
     } else {
-      this.snackBar.openSnackBar('No opened workflow.', { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('workflow'), { error: true });
       this.router.navigate(['../'], { relativeTo: route });
     }
   }
@@ -87,6 +88,7 @@ export class SafeWorkflowService {
         }
         return x;
       }) };
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name), { error: true });
       this._workflow.next(newWorkflow);
     }
   }
