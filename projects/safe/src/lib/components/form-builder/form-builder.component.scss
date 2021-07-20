@@ -1,5 +1,9 @@
 @import '../../style/survey.scss';
 
 ::ng-deep .svd_content {
-    padding: 8px 0 !important;
+  padding: 8px 0 !important;
+}
+
+::ng-deep .title-left {
+  min-width: 100px;
 }
