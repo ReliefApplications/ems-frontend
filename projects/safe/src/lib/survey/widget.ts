@@ -82,14 +82,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         el.value = question.value;
       }
 
-      if (question.getType() === 'text' || question.getType() === 'dropdown' || question.getType() === 'boolean'
-        || question.getType() === 'comment' || question.getType() === 'radiogroup' || question.getType() === 'checkbox'
-        || question.getType() === 'image' || question.getType() === 'expression' || question.getType() === 'file'
-        || question.getType() === 'multipletext') {
-        question.startWithNewLine = !question.survey.compactForm;
-        question.titleLocation = question.survey.compactForm && question.titleLocation === 'default'
-          ? 'left' : question.titleLocation;
-      }
+      question.survey.registerFunctionOnPropertyValueChanged('compactForm',
+        () => {
+          for (const item of question.survey.getAllQuestions()) {
+            setCompactStyle(item);
+          }
+        });
 
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
@@ -261,6 +259,17 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       }
     }
   };
+
+  function setCompactStyle(question: any): void {
+    if (question.getType() === 'text' || question.getType() === 'dropdown' || question.getType() === 'boolean'
+      || question.getType() === 'comment' || question.getType() === 'radiogroup' || question.getType() === 'checkbox'
+      || question.getType() === 'image' || question.getType() === 'expression' || question.getType() === 'file'
+      || question.getType() === 'multipletext') {
+      question.startWithNewLine = !question.survey.compactForm;
+      question.titleLocation = question.survey.compactForm && question.titleLocation === 'default'
+        ? 'left' : question.titleLocation;
+    }
+  }
 
   function buildSearchButton(question: any, fieldsSettingsForm: FormGroup, multiselect: boolean): any {
     const mainDiv = document.createElement('div');
