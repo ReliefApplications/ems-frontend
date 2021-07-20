@@ -22,6 +22,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       return true;
     },
     init(): void {
+      Survey.Serializer.addProperty('survey', {
+        name: 'compactForm:boolean',
+        category: 'general'
+      });
       Survey.Serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general'
@@ -77,6 +81,16 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         }
         el.value = question.value;
       }
+
+      if (question.getType() === 'text' || question.getType() === 'dropdown' || question.getType() === 'boolean'
+        || question.getType() === 'comment' || question.getType() === 'radiogroup' || question.getType() === 'checkbox'
+        || question.getType() === 'image' || question.getType() === 'expression' || question.getType() === 'file'
+        || question.getType() === 'multipletext') {
+        question.startWithNewLine = !question.survey.compactForm;
+        question.titleLocation = question.survey.compactForm && question.titleLocation === 'default'
+          ? 'left' : question.titleLocation;
+      }
+
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
         const mainDiv = document.createElement('div');
@@ -114,9 +128,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
-          () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
+            () => {
+              span.style.display = !question.tooltip ? 'none' : '';
+            });
         }
       }
       // Display of add button for resource question
@@ -139,7 +153,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
             dialogRef.afterClosed().subscribe(res => {
               if (res) {
                 const e = new CustomEvent('saveResourceFromEmbed',
-                  { detail: { resource: res.data, template: res.template } });
+                  {detail: {resource: res.data, template: res.template}});
                 document.dispatchEvent(e);
               }
             });
