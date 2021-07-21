@@ -9,6 +9,11 @@ import {
   GetChannelsQueryResponse, GET_CHANNELS } from '../../../../graphql/queries';
 import { Permission, Role } from '../../../../models/user.model';
 
+interface DialogData {
+  role: Role;
+  application: boolean;
+}
+
 @Component({
   selector: 'safe-edit-role',
   templateUrl: './edit-role.component.html',
@@ -28,10 +33,7 @@ export class SafeEditRoleComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditRoleComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      role: Role,
-      application: boolean
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo
   ) { }
 

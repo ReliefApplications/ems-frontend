@@ -9,6 +9,12 @@ import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/quer
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 
+interface DialogData {
+  recordId: string;
+  locale?: string;
+  compareTo?: any;
+}
+
 @Component({
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
@@ -35,11 +41,7 @@ export class SafeRecordModalComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      recordId: string,
-      locale?: string,
-      compareTo?: any
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService

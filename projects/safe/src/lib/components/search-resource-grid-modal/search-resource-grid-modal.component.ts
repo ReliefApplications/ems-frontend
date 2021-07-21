@@ -1,6 +1,12 @@
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+interface DialogData {
+  gridSettings: any;
+  multiselect: boolean;
+  selectedRows: string[];
+}
+
 @Component({
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
@@ -14,11 +20,7 @@ export class SafeResourceGridModalComponent implements OnInit {
   public selectedRows: any [] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
-      gridSettings: any,
-      multiselect: boolean,
-      selectedRows: string[]
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
     private ref: ApplicationRef,
   ) {

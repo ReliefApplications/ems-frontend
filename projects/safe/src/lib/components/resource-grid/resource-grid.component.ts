@@ -18,7 +18,8 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  return () => overlay.scrollStrategies.block();
+  const block = () => overlay.scrollStrategies.block();
+  return block;
 }
 
 

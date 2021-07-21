@@ -17,6 +17,12 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 
+interface DialogData {
+  template?: string;
+  recordId?: string | [];
+  locale?: string;
+}
+
 @Component({
   selector: 'safe-form-modal',
   templateUrl: './form-modal.component.html',
@@ -41,11 +47,7 @@ export class SafeFormModalComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      template?: string,
-      recordId?: string | [],
-      locale?: string,
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
