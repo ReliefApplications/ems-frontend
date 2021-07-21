@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+interface DialogData {
+  title: string;
+  comment: string;
+}
+
 @Component({
   selector: 'safe-expanded-comment',
   templateUrl: './expanded-comment.component.html',
@@ -15,10 +20,7 @@ export class SafeExpandedCommentComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedCommentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      title: string,
-      comment: string
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   ngOnInit(): void {

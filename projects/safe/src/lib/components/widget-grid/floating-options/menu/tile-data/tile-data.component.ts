@@ -3,6 +3,11 @@ import { Component, OnInit, Inject, ViewChild, ViewContainerRef,
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+interface DialogData {
+  tile: any;
+  template: any;
+}
+
 @Component({
   selector: 'safe-tile-data',
   templateUrl: './tile-data.component.html',
@@ -21,10 +26,7 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     public dialogRef: MatDialogRef<SafeTileDataComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      tile: any,
-      template: any
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   ngOnInit(): void {}

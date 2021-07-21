@@ -4,6 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { Role, User } from '../../../../models/user.model';
 
+interface DialogData {
+  user: User;
+  availableRoles: Role[];
+  multiple: boolean;
+  positionAttributeCategories?: PositionAttributeCategory[];
+}
+
 @Component({
   selector: 'safe-edit-user',
   templateUrl: './edit-user.component.html',
@@ -21,12 +28,7 @@ export class SafeEditUserComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      user: User,
-      availableRoles: Role[],
-      multiple: boolean,
-      positionAttributeCategories?: PositionAttributeCategory[]
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   /*  Load the roles and build the form.

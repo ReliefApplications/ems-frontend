@@ -14,12 +14,17 @@ import { QueryBuilderService } from '../../../../services/query-builder.service'
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
+export function codesFactory(): () => any {
+  const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
+  return codes;
+}
+
 @Component({
   selector: 'safe-floating-button-settings',
   templateUrl: './floating-button-settings.component.html',
   styleUrls: ['./floating-button-settings.component.scss'],
   providers: [
-    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE })}
+    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory}
   ]
 })
 

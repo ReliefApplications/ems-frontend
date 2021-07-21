@@ -2,9 +2,13 @@ import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
+
+interface DialogData {
+  title: string;
+  record: string;
+}
 
 @Component({
   selector: 'safe-convert-modal',
@@ -28,10 +32,7 @@ export class SafeConvertModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeConvertModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      title: string,
-      record: string
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   ngOnInit(): void {
