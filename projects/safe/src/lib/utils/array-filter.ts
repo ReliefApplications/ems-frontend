@@ -7,11 +7,11 @@ export const notEquals = (itemValue: any, filterValue: any): boolean => {
 };
 
 export const contains = (itemValue: any, filterValue: any): boolean => {
-    return filterValue.every((i: any) => itemValue.includes(i));
+    return filterValue?.every((i: any) => itemValue?.includes(i));
 };
 
 export const notContains = (itemValue: any, filterValue: any): boolean => {
-    return !filterValue.some((i: any) => itemValue.includes(i));
+    return !filterValue?.some((i: any) => itemValue?.includes(i));
 };
 
 // export const isempty = (itemValue: any): boolean => {
