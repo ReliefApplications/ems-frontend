@@ -1,4 +1,5 @@
-import { ApiConfiguration, status } from './apiConfiguration.model';
+import { ApiConfiguration } from './apiConfiguration.model';
+import { status } from './form.model';
 import { Channel } from './channel.model';
 import { Form } from './form.model';
 

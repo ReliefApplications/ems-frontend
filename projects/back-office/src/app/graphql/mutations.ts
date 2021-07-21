@@ -248,7 +248,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
 }`;
 
 export const EDIT_FORM_STATUS = gql`
-mutation editForm($id: ID!, $status: String!) {
+mutation editForm($id: ID!, $status: Status!) {
   editForm(id: $id, status: $status) {
     status
   }
@@ -409,7 +409,7 @@ export interface AddApplicationMutationResponse {
 
 // === EDIT APPLICATION ===
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
   editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
@@ -502,7 +502,7 @@ export interface DeletePageMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
   addPage(name: $name, type: $type, content: $content, application: $application){
     id
     name
@@ -686,7 +686,7 @@ export interface DeleteApiConfigurationMutationResponse {
 
 // === EDIT API CONFIGURATION ===
 export const EDIT_API_CONFIGURATIION = gql`
-mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: String, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
+mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
   editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
     id
     name

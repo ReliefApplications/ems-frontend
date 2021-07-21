@@ -9,6 +9,14 @@ export interface Version {
     data?: string;
 }
 
+/*  Enum of status.
+*/
+export enum status {
+    active = 'active',
+    pending = 'pending',
+    archived = 'archived'
+}
+
 /* Model for Form object.
 */
 export interface Form {
@@ -16,7 +24,7 @@ export interface Form {
     name?: string;
     createdAt?: Date;
     structure?: string;
-    status?: string;
+    status?: status;
     versions?: Version[];
     recordsCount?: number;
     core?: boolean;
