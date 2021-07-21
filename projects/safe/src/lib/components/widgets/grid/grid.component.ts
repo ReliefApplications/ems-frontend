@@ -974,6 +974,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    if (this.showFilter) {
+      this.fields.filter(x => !x.disabled).forEach((field, index) => {
+        if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
+          if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
+            this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
+              this.fields[index] = {
+                ...field,
+                meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
+              };
+            });
+          }
+        }
+      });
+    }
   }
 
   /*
