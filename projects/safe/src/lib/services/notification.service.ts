@@ -33,8 +33,8 @@ export class SafeNotificationService {
         } else {
           this._notifications.next([]);
         }
-        this.firstLoad = false;
       });
+      this.firstLoad = false;
       this.apollo.subscribe<NotificationSubscriptionResponse>({
         query: NOTIFICATION_SUBSCRIPTION
       }).subscribe(res => {
