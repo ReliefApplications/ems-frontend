@@ -22,6 +22,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
       return true;
     },
     init(): void {
+      Survey.Serializer.addProperty('survey', {
+        name: 'compactForm:boolean',
+        category: 'general'
+      });
       Survey.Serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general'
@@ -52,6 +56,19 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
+      const questionDiv = el.parentElement.parentElement;
+      const questionTitle = questionDiv.querySelector('.title-left') ?? '';
+      if (question.survey.compactForm) {
+        if (questionTitle) {
+          questionTitle.style.width = 'auto';
+        }
+        questionDiv.style.padding = '0px';
+      } else {
+        if (questionTitle) {
+          questionTitle.style.width = '15%';
+        }
+        questionDiv.style.padding = '0.5em 1em 1.5em 1em';
+      }
       // Correction of date inputs
       if (question.value && ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType)) {
         const date = new Date(question.value);
