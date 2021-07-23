@@ -31,6 +31,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
   public records: any[] = [];
   public currentRecord: any;
 
+  @Input() language: string;
+
   public currentText: string;
   @ViewChild(CdkVirtualScrollViewport) viewport: any;
 
@@ -78,6 +80,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
     this.speech = new Speech();
 
     this.td = {title: '', description: ''};
+
+    this.language = 'en-GB';
   }
 
   ngOnInit(): void {
@@ -122,7 +126,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // send reply message after clicking on a choice (RADIOGROUP)
   sendReplyMsgChoice(ch: Choices): void {
     if (ch.text !== ''){
-      // this.speak(this.speech, ch.text);
+      this.speak(this.speech, ch.text);
       this.addMsg('', ch.text, true, this.userMe, Date.now(), []);
       this.currentRecord[this.form[this.iCurrentQuestion].name] = ch.value;
       this.afterReply();
@@ -132,10 +136,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
   // click on a checkbox choice
   choiceCheckBoxClick(e: any): void {
     if (e.state === true){
-      // this.speak(this.speech, e.choice.text);
+      this.speak(this.speech, e.choice.text);
     }
     else {
-      // this.speak(this.speech, e.choice.text + ' removed');
+      this.speak(this.speech, e.choice.text + ' removed');
     }
   }
 
@@ -304,7 +308,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
          choices: Choices[]): void {
     if (reply === false){
       console.log('speak');
-      // this.speak(this.speech, text);
+      this.speak(this.speech, text);
     }
     this.conv.push(new Message(type, text, reply, user, date, choices));
     this.conversationFooterComponent.inputFocus();
@@ -334,7 +338,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
       console.log('speech synthesis supported');
       speech.init({
         volume: 1,
-        lang: 'en-GB',
+        lang: this.language,
         rate: 1,
         pitch: 1,
         voice: 'Google UK English Male',

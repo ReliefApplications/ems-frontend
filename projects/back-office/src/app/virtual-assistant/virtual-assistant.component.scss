@@ -1,7 +1,10 @@
+//.va-face {
+//  position: absolute;;
+//  top: 50%;
+//  left: calc(50% - 100px);
+//  width: 200px;
+//}
 .va-face {
-  position: absolute;;
-  top: 50%;
-  left: calc(50% - 100px);
   width: 200px;
 }
 .conversation .mat-figure {
@@ -18,13 +21,19 @@
   margin: 0;
 }
 
+//#btn-start {
+//  position: absolute;
+//  font-size: large;
+//  height: 50px;
+//  width: 100px;
+//  top: 90%;
+//  left: calc(50% - 50px);
+//}
+
 #btn-start {
-  position: absolute;
   font-size: large;
   height: 50px;
   width: 100px;
-  top: 90%;
-  left: calc(50% - 50px);
 }
 
 #spinner-loading-form {
