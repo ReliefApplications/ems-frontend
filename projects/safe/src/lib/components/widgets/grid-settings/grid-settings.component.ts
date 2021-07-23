@@ -74,11 +74,53 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
+
+    this.tileForm.get('query')?.valueChanges.subscribe(res => {
+      if (res.name) {
+        // Check if the query changed to clean modifications and fields for email in floating button if any
+        if (this.fields && (res.name !== this.queryName)) {
+          const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
+          for (const floatingButton of floatingButtons.controls) {
+            const modifications = floatingButton.get('modifications') as FormArray;
+            modifications.clear();
+            this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
+            const bodyFields = floatingButton.get('bodyFields') as FormArray;
+            bodyFields.clear();
+          }
+        }
+        this.fields = this.queryBuilder.getFields(res.name);
+        this.queryName = res.name;
+        const query = this.queryBuilder.sourceQuery(this.queryName);
+        if (query) {
+          query.subscribe((res1: { data: any }) => {
+            const source = res1.data[`_${this.queryName}Meta`]._source;
+            this.tileForm?.get('resource')?.setValue(source);
+            if (source) {
+              this.apollo.query<GetRelatedFormsQueryResponse>({
+                query: GET_RELATED_FORMS,
+                variables: {
+                  resource: source
+                }
+              }).subscribe(res2 => {
+                if (res2.errors) {
+                  this.relatedForms = [];
+                } else {
+                  this.relatedForms = res2.data.resource.relatedForms || [];
+                }
+              });
+            }
+          });
+        } else {
+          this.relatedForms = [];
+        }
+      } else {
+        this.fields = [];
+      }
+    });
   }
 
   ngAfterViewInit(): void {
     if (this.tileForm) {
-      // this.change.emit(this.tileForm);
       this.tileForm.valueChanges.subscribe(() => {
         this.change.emit(this.tileForm);
       });
@@ -103,49 +145,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       });
 
       this.queryName = this.tileForm.get('query')?.value.name;
-
-      this.tileForm.get('query')?.valueChanges.subscribe(res => {
-        if (res.name) {
-          // Check if the query changed to clean modifications and fields for email in floating button if any
-          if (this.fields && (res.name !== this.queryName)) {
-            const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-            for (const floatingButton of floatingButtons.controls) {
-              const modifications = floatingButton.get('modifications') as FormArray;
-              modifications.clear();
-              this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
-              const bodyFields = floatingButton.get('bodyFields') as FormArray;
-              bodyFields.clear();
-            }
-          }
-          this.fields = this.queryBuilder.getFields(res.name);
-          this.queryName = res.name;
-          const query = this.queryBuilder.sourceQuery(this.queryName);
-          if (query) {
-            query.subscribe((res1: { data: any }) => {
-              const source = res1.data[`_${this.queryName}Meta`]._source;
-              this.tileForm?.get('resource')?.setValue(source);
-              if (source) {
-                this.apollo.query<GetRelatedFormsQueryResponse>({
-                  query: GET_RELATED_FORMS,
-                  variables: {
-                    resource: source
-                  }
-                }).subscribe(res2 => {
-                  if (res2.errors) {
-                    this.relatedForms = [];
-                  } else {
-                    this.relatedForms = res2.data.resource.relatedForms || [];
-                  }
-                });
-              }
-            });
-          } else {
-            this.relatedForms = [];
-          }
-        } else {
-          this.fields = [];
-        }
-      });
     }
   }
 
@@ -190,7 +189,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public addFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.push(this.createFloatingButtonForm({show: true}));
-    this.tabIndex = floatingButtons.length - 1;
   }
 
   public deleteFloatingButton(): void {
