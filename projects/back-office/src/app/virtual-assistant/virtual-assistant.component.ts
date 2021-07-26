@@ -5,6 +5,7 @@ import {SafeDownloadService} from '../../../../safe/src/lib/services/download.se
 import {Apollo} from 'apollo-angular';
 import {GET_FORM_BY_ID, GetFormByIdQueryResponse} from '../graphql/queries';
 import {ADD_RECORD, AddRecordMutationResponse} from '../graphql/mutations';
+import {FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-virtual-assistant',
@@ -27,6 +28,8 @@ export class VirtualAssistantComponent implements OnInit {
 
   public voiceLanguage: {value: string, text: string}[];
   public curLanguage: string;
+
+  selectFormControl = new FormControl('', Validators.required);
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
@@ -148,12 +151,8 @@ export class VirtualAssistantComponent implements OnInit {
     this.startBtn = false;
   }
 
-  langClick(lang: any): void {
+  langChanges(lang: any): void {
     console.log(lang);
-  }
-
-  langChanges(e: any): void {
-    console.log(e.target.value);
-    this.curLanguage = e.target.value;
+    this.curLanguage = lang;
   }
 }

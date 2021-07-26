@@ -1,29 +1,37 @@
-<div *ngIf="!this.start" style="background-color: #ffe9d3; height: 100%; width: 100%;">
+<div *ngIf="!this.start" style="background-color: #87ef06; height: 100%; width: 100%;">
   <mat-grid-list cols="3" rowHeight="50%">
-    <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
+    <mat-grid-tile style="background-color: #8aa36b;" colspan="1" rowspan="1">
     </mat-grid-tile>
     <mat-grid-tile style="background-color: #e28223;" colspan="1" rowspan="1">
       <img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
     </mat-grid-tile>
-    <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
+    <mat-grid-tile style="background-color: #d4c9ab;" colspan="1" rowspan="1">
     </mat-grid-tile>
-    <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
+    <mat-grid-tile style="background-color: #d4c9ab;" colspan="1" rowspan="1">
     </mat-grid-tile>
-    <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
-      <select (change)="langChanges($event)">
-        <option *ngFor="let lang of this.voiceLanguage" [value]="lang.value" (click)="langClick(lang.value)">
-          {{ lang.text }}
-        </option>
-      </select>
-      <button *ngIf="this.startBtn" mat-flat-button id="btn-start" color="primary" (click)="btnStartClick()"> Start </button>
+    <mat-grid-tile style="background-color: #d4c9ab;" colspan="1" rowspan="1">
+      <mat-form-field id="select-lang" appearance="fill">
+        <mat-label>Choose language</mat-label>
+        <mat-select (valueChange)="langChanges($event)" [formControl]="selectFormControl" required>
+          <mat-option>Select language</mat-option>
+          <mat-option *ngFor="let lang of this.voiceLanguage" [value]="lang.value">
+            {{ lang.text }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="selectFormControl.hasError('required')">
+          This field is required
+        </mat-error>
+        <mat-hint>You can choose your language here</mat-hint>
+      </mat-form-field>
+      <button *ngIf="this.startBtn" [disabled]="selectFormControl.hasError('required')" mat-flat-button id="btn-start" color="primary" (click)="btnStartClick()"> Start </button>
       <mat-progress-spinner id="spinner-loading-form" *ngIf="this.loadingForm" mode="indeterminate"></mat-progress-spinner>
     </mat-grid-tile>
-    <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
+    <mat-grid-tile style="background-color: #d4c9ab;" colspan="1" rowspan="1">
     </mat-grid-tile>
   </mat-grid-list>
 </div>
 <mat-grid-list *ngIf="this.start" cols="2" rowHeight="100%">
-  <mat-grid-tile style="background-color: #ffe9d3;" [colspan]="1" [rowspan]="1">
+  <mat-grid-tile style="background-color: #8f6ba3;" [colspan]="1" [rowspan]="1">
     <img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>
   </mat-grid-tile>
   <mat-grid-tile class="conversation" [colspan]="1" [rowspan]="1">
