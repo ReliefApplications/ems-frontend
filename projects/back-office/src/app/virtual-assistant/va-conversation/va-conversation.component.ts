@@ -306,7 +306,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
          user: User,
          date: number,
          choices: Choices[]): void {
-    if (reply === false){
+    if (!reply){
       console.log('speak');
       this.speak(this.speech, text);
     }
@@ -334,19 +334,17 @@ export class VaConversationComponent implements OnInit, OnChanges {
   /* ----- TTS ----- */
 
   speakInit(speech: Speech, speechData: any): void {
-    if (speech.hasBrowserSupport()) { // returns a boolean
+    if (speech.hasBrowserSupport()) {
       console.log('speech synthesis supported');
       speech.init({
         volume: 1,
         lang: this.language,
         rate: 1,
         pitch: 1,
-        // voice: 'Google UK English Male',
         splitSentences: true,
         listeners: {
         }
       }).then((data: any) => {
-        // The "data" object contains the list of available voices and the voice synthesis params
         console.log('Speech is ready, voices are available', data);
         speechData = data;
         this.sendNextQuestion();

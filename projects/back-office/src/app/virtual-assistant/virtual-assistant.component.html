@@ -1,6 +1,4 @@
 <div *ngIf="!this.start" style="background-color: #ffe9d3; height: 100%; width: 100%;">
-<!--  <img class="va-face" alt="va-face" src="https://www.121outsource.com/wp-content/uploads/2018/08/virtual-assitants.png"/>-->
-
   <mat-grid-list cols="3" rowHeight="50%">
     <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
     </mat-grid-tile>
@@ -16,12 +14,9 @@
         <option *ngFor="let lang of this.voiceLanguage" [value]="lang.value" (click)="langClick(lang.value)">
           {{ lang.text }}
         </option>
-<!--        <option value="volvo">Volvo</option>-->
-<!--        <option value="saab">Saab</option>-->
-<!--        <option value="mercedes">Mercedes</option>-->
-<!--        <option value="audi">Audi</option>-->
       </select>
       <button *ngIf="this.startBtn" mat-flat-button id="btn-start" color="primary" (click)="btnStartClick()"> Start </button>
+      <mat-progress-spinner id="spinner-loading-form" *ngIf="this.loadingForm" mode="indeterminate"></mat-progress-spinner>
     </mat-grid-tile>
     <mat-grid-tile style="background-color: #2f83ad;" colspan="1" rowspan="1">
     </mat-grid-tile>
@@ -35,5 +30,3 @@
     <app-va-conversation [form]="form" [td]="td" [language]="curLanguage" (endConversation)="vaEndConversation($event)"></app-va-conversation>
   </mat-grid-tile>
 </mat-grid-list>
-<!--<button *ngIf="this.startBtn" mat-flat-button color="primary" id="btn-start" (click)="btnStartClick()"> Start </button>-->
-<mat-progress-spinner id="spinner-loading-form" *ngIf="this.loadingForm" mode="indeterminate">

@@ -45,11 +45,6 @@ export class VirtualAssistantComponent implements OnInit {
       description: ''
     };
 
-    // tslint:disable-next-line:max-line-length
-    // this.voiceLanguage = ['ar-SA', 'cs-CZ', 'da-DK', 'de-DE', 'el-GR', 'en', 'en-AU', 'en-GB', 'en-IE', 'en-IN', 'en-US', 'en-ZA', 'es-AR',
-    // tslint:disable-next-line:max-line-length
-    //   'es-ES', 'es-MX', 'es-US', 'fi-FI', 'fr-CA', 'fr-FR', 'he-IL', 'hi-IN', 'hu-HU', 'id-ID', 'it-IT', 'ja-JP', 'ko-KR', 'nb-NO', 'nl-BE',
-    //   'nl-NL', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO', 'ru-RU', 'sk-SK', 'sv-SE', 'th-TH', 'tr-TR', 'zh-CN', 'zh-HK', 'zh-TW'];
     this.voiceLanguage = [
       {value: 'ar-SA', text: 'ar'},
       {value: 'cs-CZ', text: 'cs'},
