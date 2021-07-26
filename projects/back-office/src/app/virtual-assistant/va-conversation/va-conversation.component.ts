@@ -341,7 +341,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
         lang: this.language,
         rate: 1,
         pitch: 1,
-        voice: 'Google UK English Male',
+        // voice: 'Google UK English Male',
         splitSentences: true,
         listeners: {
         }
