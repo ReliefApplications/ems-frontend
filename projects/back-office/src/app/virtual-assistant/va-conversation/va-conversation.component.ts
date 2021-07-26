@@ -97,6 +97,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
   }
 
   msgUpdated(msg: any): void{
+    console.log('MSGGG');
     if (typeof msg === 'string'){
       console.log('msgUpdated');
       console.log(msg);
@@ -106,6 +107,7 @@ export class VaConversationComponent implements OnInit, OnChanges {
 
   // send simple reply message (TEXT) (click on send msg or enter)
   sendReplyMsgText(): void {
+    console.log('sendReplyMsgText()');
     console.log(this.iCurrentQuestion);
     if (this.iCurrentQuestion < this.form.length){
       if (this.currentText !== '' && (this.form[this.iCurrentQuestion].type === 'text' || this.form[this.iCurrentQuestion].type === 'comment')){
@@ -121,6 +123,8 @@ export class VaConversationComponent implements OnInit, OnChanges {
         this.sendNextMtQuestion();
       }
     }
+    console.log('this.currentText = ');
+    console.log(this.currentText);
   }
 
   // send reply message after clicking on a choice (RADIOGROUP)
@@ -228,10 +232,10 @@ export class VaConversationComponent implements OnInit, OnChanges {
           this.inputMsgType = this.form[this.iCurrentQuestion].inputType;
           console.log(this.inputMsgType);
           if (this.inputMsgType === 'color'){
-            this.currentText = '#000000';
+            this.currentText = '#3131dc';
           }
           if (this.inputMsgType === 'range'){
-            this.currentText = '50';
+            this.currentText = '67';
           }
         }
         this.addMsg(this.form[this.iCurrentQuestion].type, this.form[this.iCurrentQuestion].title, false,

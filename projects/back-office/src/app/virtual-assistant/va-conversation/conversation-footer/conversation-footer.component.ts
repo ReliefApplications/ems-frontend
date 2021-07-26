@@ -25,6 +25,7 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
     if (this.input !== undefined && changes.inputValue !== undefined){
       console.log('ngOnChanges : ' + this.inputValue);
       this.input.value = null;
+      this.input.value = '';
       console.log('this.input.value : ' + this.input.value);
       console.log('changes.inputValue.currentValue : ' + changes.inputValue.currentValue);
       console.log('this.inputValue : ' + this.inputValue);
@@ -36,7 +37,7 @@ export class ConversationFooterComponent implements OnInit, OnChanges {
       else if (changes.inputValue.currentValue !== ''){
         this.msgChange(changes.inputValue.currentValue);
       }
-      this.input.focus();
+      this.inputFocus();
     }
   }
 
