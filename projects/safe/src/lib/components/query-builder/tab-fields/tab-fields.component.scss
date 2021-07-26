@@ -1,15 +1,15 @@
 .field-wrapper {
   display: flex;
   margin-top: 16px;
+  height: 500px;
+  overflow: auto;
 }
 
 .field-container {
+  width: 50%;
   min-width: 400px;
   margin-right: 25px;
-  display: flex;
-  flex-direction: column;
-  vertical-align: top;
-  flex: 1;
+  float: left;
 
   &:last-child {
     margin-right: 0;
@@ -18,17 +18,17 @@
     width: 100%;
   }
 }
-  
+
 .field-list {
   border: solid 1px #ccc;
-  min-height: 60px;
+  min-height: 400px;
   background: #ccc;
   border-radius: 4px;
   overflow: hidden;
   display: block;
   flex: 1;
 }
-  
+
 .field-box {
   padding: 20px 10px;
   border-bottom: solid 1px #ccc;
@@ -42,7 +42,7 @@
   background: white;
   font-size: 14px;
 }
-  
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -50,7 +50,7 @@
               0 8px 10px 1px rgba(0, 0, 0, 0.14),
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-  
+
 .cdk-drag-placeholder {
   opacity: 0;
 }
