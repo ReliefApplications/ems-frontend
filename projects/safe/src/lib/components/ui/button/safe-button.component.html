@@ -45,7 +45,8 @@
     [ngClass]="!!customClass ? customClass : ''"
   >
     <mat-icon *ngIf="icon && icon.length > 0">{{icon}}</mat-icon>
-    {{text}}
+    <!--    {{text}}-->
+    <ng-content></ng-content>
   </button>
 
   <button

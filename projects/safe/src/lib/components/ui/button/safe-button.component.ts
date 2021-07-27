@@ -13,7 +13,8 @@ export class ButtonType {
 }
 
 @Component({
-  selector: 'safe-button',
+  // tslint:disable-next-line:component-selector
+  selector: 'div[safe-button], button[safe-button]',
   templateUrl: './safe-button.component.html',
   styleUrls: ['./safe-button.component.css']
 })

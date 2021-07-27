@@ -56,9 +56,9 @@
         </mat-form-field>
 
         <div class="ping-button-container">
-          <safe-button buttonType="mat-flat-button" text="Send ping request" icon="online_prediction" color="primary"
+          <button safe-button buttonType="mat-flat-button" text="Send ping request" icon="online_prediction" color="primary"
                        (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
-          </safe-button>
+          </button>
         </div>
 
       </div>
@@ -97,8 +97,8 @@
         </div>
       </ng-container>
     </div>
-    <safe-button buttonType="mat-flat-button" (click)="onSave()" color="primary" [disabled]="apiForm.invalid || !apiForm.dirty">Save
+    <button safe-button buttonType="mat-flat-button" (click)="onSave()" color="primary" [disabled]="apiForm.invalid || !apiForm.dirty">Save
       changes
-    </safe-button>
+    </button>
   </form>
 </ng-container>
