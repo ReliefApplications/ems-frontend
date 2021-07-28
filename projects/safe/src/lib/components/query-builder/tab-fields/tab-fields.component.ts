@@ -68,6 +68,8 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           event.previousIndex,
           event.currentIndex);
         this.form.insert(event.currentIndex, this.queryBuilder.addNewField(this.selectedFields[event.currentIndex], true));
+        this.onEdit(event.currentIndex);
+        this.onCloseField();
       }
     }
   }
@@ -104,7 +106,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    * Prettify grid label
    */
   private prettifyLabel(label: string): string {
-    label = label.replace('_', ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    label = label.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
     label = label.charAt(0).toUpperCase() + label.slice(1);
     return label;
   }
