@@ -150,6 +150,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Save the dashboard changes in the database.
   */
   private autoSaveChanges(): void {
+    this.loading = true;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -158,7 +159,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.tiles = res.data?.editDashboard.structure;
-    });
+      this.loading = false;
+    }, error => this.loading = false);
   }
 
   /*  Edit the permissions layer.
