@@ -1,16 +1,22 @@
-import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { Component, Input, OnInit } from '@angular/core';
+import { ButtonCategory } from './button-category.enum';
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'a[safe-button], button[safe-button]',
+  selector: 'safe-button',
   templateUrl: './button.component.html',
   styleUrls: [
     './button.component.scss'
   ]
 })
-export class SafeButtonComponent extends MatButton implements OnInit  {
+export class SafeButtonComponent implements OnInit  {
 
-  ngOnInit(): void {
-  }
+  @Input() category: ButtonCategory = ButtonCategory.PRIMARY;
+
+  @Input() block = false;
+
+  @Input() disabled = false;
+
+  @Input() icon = '';
+
+  ngOnInit(): void {}
 }

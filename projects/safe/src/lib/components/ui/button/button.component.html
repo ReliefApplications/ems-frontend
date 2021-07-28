@@ -1,1 +1,9 @@
-<ng-content></ng-content>
+<button mat-button
+    [class.mat-flat-button]="category === 'secondary'"
+    [class.mat-stroked-button]="category === 'tertiary'"
+    [class.safe-btn-block]="block"
+    [disabled]="disabled"
+>
+    <mat-icon *ngIf="icon">{{icon}}</mat-icon>
+    <ng-content></ng-content>
+</button>

@@ -1,7 +1,7 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeButtonModule } from './button.module';
 import { SafeButtonComponent } from './button.component';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonCategory } from './button-category.enum';
 
 export default {
     component: SafeButtonComponent,
@@ -13,11 +13,29 @@ export default {
             providers: []
         })
     ],
-    title: 'UI/Button'
+    title: 'UI/Button',
+    argTypes: {
+        category: {
+            options: [ButtonCategory.PRIMARY, ButtonCategory.SECONDARY, ButtonCategory.TERTIARY],
+            control: { type: 'select' }
+        },
+        block: {
+            defaultValue: false,
+            control: { type: 'boolean' }
+        },
+        disabled: {
+            defaultValue: false,
+            control: { type: 'boolean' }
+        },
+        icon: {
+            defaultValue: '',
+            control: { type: 'text' }
+        }
+    }
 } as Meta;
 
 const Template: Story<SafeButtonComponent> = args => ({
-    template: '<button safe-button mat-button>Default</button>',
+    template: '<safe-button>This is a button</safe-button>',
     props: {
         ...args
     }
@@ -25,6 +43,5 @@ const Template: Story<SafeButtonComponent> = args => ({
 
 export const Default = Template.bind({});
 Default.args = {
-    color: 'primary',
-    isRoundButton: true
+    category: ButtonCategory.PRIMARY
 };
