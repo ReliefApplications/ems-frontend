@@ -186,7 +186,8 @@ export class SafeApplicationService {
         variables: {
           id: application?.id,
           name: value.name,
-          description: value.description
+          description: value.description,
+          status: value.status
         }
       }).subscribe(res => {
         if (res.errors) {
