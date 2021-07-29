@@ -9,7 +9,9 @@
         <button mat-menu-item (click)="onDownload('csv')">.csv</button>
         <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
       </mat-menu>
-      <button mat-flat-button color="primary" [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
+      <button matTooltip="Expected format: First line, all questions names: 'questionName1', 'questionName2', 'questionNameN'.
+       Other lines, all questions values: 'questionValue1', 'questionValue2', 'questionValueN'." 
+       mat-flat-button color="primary" [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
         <mat-icon>file_upload</mat-icon>
         Upload records
       </button>

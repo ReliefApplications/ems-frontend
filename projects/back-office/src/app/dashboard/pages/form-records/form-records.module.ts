@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeRecordHistoryModule } from '@safe/builder';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -19,7 +20,8 @@ import { MatDividerModule } from '@angular/material/divider';
         MatIconModule,
         MatMenuModule,
         SafeRecordHistoryModule,
-        MatDividerModule
+        MatDividerModule,
+        MatTooltipModule
     ],
   exports: [FormRecordsComponent]
 })
