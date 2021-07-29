@@ -12,8 +12,8 @@
     </div>
     <!-- GRID HEADER -->
     <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-        [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
-        [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
+        [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false, filter: showFilter ? false : true }"
+        [reorderable]="true" [sortable]="true" [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
         [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [resizable]="true">
