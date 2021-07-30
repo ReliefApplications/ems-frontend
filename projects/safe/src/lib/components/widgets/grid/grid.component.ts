@@ -636,17 +636,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Opens the record on a read-only modal.
+  /* Opens the record on a read-only modal. If edit mode is enabled, reload data on dialog close.
   */
-  public onShowDetails(id: string): void {
-    this.dialog.open(SafeRecordModalComponent, {
+  public onShowDetails(id: string, dataCanUpdate: boolean): void {
+    const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: id,
-        locale: 'en'
+        locale: 'en',
+        canUpdate: dataCanUpdate
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.reloadData();
+      }
     });
   }
 

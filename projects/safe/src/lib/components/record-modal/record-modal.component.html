@@ -19,6 +19,7 @@
     <ng-container *ngIf="!data.compareTo">
         <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
         <div [id]="containerId"></div>
+        <button *ngIf="canEdit" mat-button color="primary" (click)="onEditMode()">{{ edit ? 'Lock' : 'Edit' }} record</button>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
         <mat-grid-list cols="2" rowHeight="2:1">
