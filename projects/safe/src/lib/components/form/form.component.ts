@@ -85,7 +85,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('^^^');
     this.safeAuthService.user.subscribe(val => console.log(val?.name));
     console.log('^^^');
-    addCustomFunctions(Survey, this.record, this.safeAuthService);
+    let name;
+    this.safeAuthService.user.subscribe(val => name = val?.name);
+    addCustomFunctions(Survey, this.record, name);
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
