@@ -14,6 +14,7 @@ import { SafeWorkflowService } from '../../services/workflow.service';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
+import {SafeAuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'safe-form',
@@ -60,7 +61,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private safeAuthService: SafeAuthService
   ) {
     this.containerId = uuidv4();
   }
@@ -77,7 +79,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       .applyTheme();
 
     // Add custom functions for the expression question
-    addCustomFunctions(Survey, this.record);
+    console.log('***');
+    console.log(this.record);
+    console.log(this.safeAuthService);
+    console.log('^^^');
+    this.safeAuthService.user.subscribe(val => console.log(val?.name));
+    console.log('^^^');
+    addCustomFunctions(Survey, this.record, this.safeAuthService);
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = new Survey.Model(JSON.stringify(structure));
