@@ -6,20 +6,12 @@ export default function addCustomFunctions(Survey: any, record?: Record | undefi
     Survey.FunctionFactory.Instance.register('createdBy', () => {
       let result;
       if (record){
-        if (record.createdBy?.name){
-          result = record.createdBy?.name;
-        }
-        else {
-          result = 'no name related to this record';
-        }
+        result = record.createdBy?.name ? record.createdBy?.name : 'no name related to this record';
       }
-      else {
-        if (user) {
-          result = user;
-        }
-        else {
-          result = 'no records and username not found';
-        }
+      else if (user) {
+        result = user;
+      } else {
+        result = 'no records and username not found';
       }
       return result;
     });
