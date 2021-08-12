@@ -100,6 +100,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private metaQuery: any;
   private dataSubscription?: Subscription;
   private dashboardId = 0;
+  private id = '';
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -153,9 +154,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
 
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
-
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -180,13 +178,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.subscribe((params) => {
       this.dashboardId = params.id;
     });
     console.log('this.idWidget');
     console.log(this.widgetId);
     console.log('this.idDashboard');
     console.log(this.dashboardId);
+    this.id = this.dashboardId.toString() + this.widgetId;
+    console.log('this.id');
+    console.log(this.id);
   }
 
   /*  Detect changes of the settings to (re)load the data.
