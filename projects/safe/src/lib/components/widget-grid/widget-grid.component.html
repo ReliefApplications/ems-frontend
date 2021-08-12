@@ -1,4 +1,4 @@
-<div class="grid-container">
+ <div class="grid-container">
     <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
             [colspan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"

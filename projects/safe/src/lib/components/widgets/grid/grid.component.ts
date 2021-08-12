@@ -33,6 +33,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import {ActivatedRoute} from '@angular/router';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -98,6 +99,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
+  private dashboardId = 0;
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -113,6 +115,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SETTINGS ===
   @Input() header = true;
   @Input() settings: any = null;
+  @Input() widgetId = 0;
 
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
@@ -150,6 +153,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
 
+  // === ROUTE ===
+  private routeSubscription?: Subscription;
+
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -166,13 +172,21 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private route: ActivatedRoute
   ) {
     this.apiUrl = environment.API_URL;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      this.dashboardId = params.id;
+    });
+    console.log('this.idWidget');
+    console.log(this.widgetId);
+    console.log('this.idDashboard');
+    console.log(this.dashboardId);
   }
 
   /*  Detect changes of the settings to (re)load the data.
