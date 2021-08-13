@@ -101,6 +101,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
   private dashboardId = 0;
   private id = '';
+  private colOrder: {field: string, order: number}[] = [];
+  private copyFields: any[] = [];
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -188,6 +190,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.id = this.dashboardId.toString() + this.widgetId;
     console.log('this.id');
     console.log(this.id);
+    console.log('this.fields');
+    console.log(this.fields);
+
+    // if localStorage false
+    this.resetFields();
+    // else
+    // re-take the localStorage but verify the removed or added elements
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -238,7 +247,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: this.metaFields[fullName],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly,
+            order: 0
           };
         }
       }
@@ -267,6 +277,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
+        this.copyFields = this.fields;
+        console.log(this.fields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
@@ -288,6 +300,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
+              this.copyFields = this.fields;
+              console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -1049,6 +1063,88 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
+    }
+  }
+
+  columnReorder(e: any): void {
+    console.log(e);
+    console.log(e.column);
+    console.log(e.newIndex);
+    console.log(e.oldIndex);
+    // need to move the column in the array
+    // e.column.field
+    // let col = this.fields.find(o => o.name === e.column.field);
+
+    // const col = this.colOrder.find(c => c.field === e.column.field);
+    // if (col === undefined){
+    //   this.colOrder.push({field: e.column.field, order: e.newIndex});
+    // }
+    // else {
+    //   col.order = e.newIndex;
+    // }
+    // console.log(col);
+    // console.log(this.colOrder);
+
+    // let fieldsCopy = this.fields;
+    const tempFields = [];
+    let j = 0;
+
+    const oldIndex = e.oldIndex - 1;
+    const newIndex = e.newIndex - 1;
+
+    // for all fieldCopy set order
+
+    console.log(this.copyFields);
+    for (let i = 0; i < this.copyFields.length; i++) {
+      if (i === newIndex){
+        if (oldIndex < newIndex) {
+          tempFields[j] = this.copyFields[i];
+          j++;
+          tempFields[j] = this.copyFields[oldIndex];
+        }
+        if (oldIndex > newIndex){
+          tempFields[j] = this.copyFields[oldIndex];
+          j++;
+          tempFields[j] = this.copyFields[i];
+        }
+
+        j++;
+      }
+      else if (i !== oldIndex){
+        tempFields[j] = this.copyFields[i];
+        j++;
+      }
+    }
+
+    console.log(tempFields);
+
+    this.copyFields = tempFields;
+
+    console.log(this.copyFields);
+
+    // tempFields[e.newIndex - 1] = this.fields[e.oldIndex - 1];
+    // console.log(tempFields);
+    // for (const [i, f] of this.fields.entries()) {
+    //   if (tempFields[j] === undefined) {
+    //     tempFields[j] = f;
+    //     console.log(i);
+    //   }
+    //   else {
+    //     // if (e.oldIndex < e.newIndex) {
+    //     //
+    //     // }
+    //     j++;
+    //     tempFields[j] = f;
+    //   }
+    //
+    //   j++;
+    // }
+
+  }
+
+  resetFields(): void {
+    for (const [i, f] of this.fields.entries()) {
+      f.order = i;
     }
   }
 }

@@ -11,7 +11,7 @@
         </div>
     </div>
     <!-- GRID HEADER -->
-    <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
+    <kendo-grid (columnReorder)="columnReorder($event)" id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
         [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
