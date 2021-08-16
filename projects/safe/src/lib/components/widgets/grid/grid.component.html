@@ -11,12 +11,12 @@
         </div>
     </div>
     <!-- GRID HEADER -->
-    <kendo-grid (columnReorder)="columnReorder($event)" id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
+    <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
         [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false }" [reorderable]="true" [sortable]="true"
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
         [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
-        (cellClick)="cellClickHandler($event)" [resizable]="true">
+        (cellClick)="cellClickHandler($event)" [resizable]="true" (columnReorder)="columnReorder($event)" (dataStateChange)="eventGridFn($event)" >
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>

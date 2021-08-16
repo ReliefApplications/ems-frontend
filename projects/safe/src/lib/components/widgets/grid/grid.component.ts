@@ -22,7 +22,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject
+  ComponentFactoryResolver, EventEmitter, Inject, AfterViewInit, AfterContentInit, AfterViewChecked
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -69,7 +69,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -105,6 +105,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private copyFields: any[] = [];
   private orderedFields: any[] = [];
   private storedObj: any = {fields: null};
+
+  // === VERIFICATION UPDATE FIELDS ===
+  private checkFieldsUpdated: boolean;
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -178,6 +181,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private route: ActivatedRoute
   ) {
     this.apiUrl = environment.API_URL;
+    this.checkFieldsUpdated = false;
   }
 
   ngOnInit(): void {
@@ -234,6 +238,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
+  ngAfterViewChecked(): void {
+    if (!this.checkFieldsUpdated){
+      this.updateFields();
+    }
+  }
+
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
@@ -285,7 +295,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.copyFields = this.fields;
-        this.updateFields();
+        // this.updateFields();
         console.log(this.fields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
@@ -309,7 +319,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               this.loading = false;
               this.fields = this.getFields(fields);
               this.copyFields = this.fields;
-              this.updateFields();
+              // this.updateFields();
               console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
@@ -638,19 +648,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open the form corresponding to selected row in order to update it
   */
   public onUpdateRow(items: number | number[]): void {
-    const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
-      (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
-      data: {
-        recordId: ids,
-        locale: 'en'
-      }
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.reloadData();
-      }
-    });
+    // const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
+    //   (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
+    // const dialogRef = this.dialog.open(SafeFormModalComponent, {
+    //   data: {
+    //     recordId: ids,
+    //     locale: 'en'
+    //   }
+    // });
+    // dialogRef.afterClosed().subscribe(value => {
+    //   if (value) {
+    //     this.reloadData();
+    //   }
+    // });
+    this.updateFields();
   }
 
   /* Opens the history of the record on the right side of the screen.
@@ -1120,6 +1131,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  eventGridFn(e: any): void{
+    console.log('-------------    ### EVENT ###');
+    console.log(e);
+  }
+
   updateFields(): void {
     // take the fields stored in the local storage and add or remove the new or old fields
     console.log(this.storedObj);
@@ -1209,14 +1225,58 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.orderedFields = storedFields;
         console.log('- nothing changes -');
       }
-      console.log('this.orderedFields');
-      console.log(this.orderedFields);
+      // console.log('this.orderedFields');
+      // console.log(this.orderedFields);
       // document.getElementById('customGrid')
 
       // HAVE TO REVIEW THIS PART BECAUSE IT DOESN'T WORK (it's not reordering columns)
+      // because I send to it a column object, but I need to send it the column HTML element
       for (const [i, field] of this.orderedFields.entries()) {
+        // console.log('field');
+        // console.log(field);
         this.grid?.reorderColumn(field, i);
       }
+      console.log('---------------------');
+      console.log('this.grid?.columnList');
+      console.log(this.grid?.columnList);
+      console.log('this.grid?.columns');
+      console.log(this.grid?.columns);
+      console.log('this.grid?.columns.first');
+      console.log(this.grid?.columns.first);
+      console.log('this.grid?.columns.get(2)');
+      console.log(this.grid?.columns.get(2));
+      console.log('this.grid?.columnList.forEach((c) => console.log(c))');
+      // console.log(this.grid?.columnList.forEach((c) => console.log(c)));
+      console.log('this.grid?.columnList.toArray()');
+      console.log(this.grid?.columnList.toArray());
+      console.log(this.grid?.detailTemplate);
+
+      if (this.grid?.columns !== undefined){
+        console.log('for (const column of this.grid?.columns))');
+        for (const column of this.grid?.columns){
+          // console.log(column);
+        }
+      }
+      else {
+        console.log('UNDEFINED');
+      }
+
+
+      this.grid?.columns.forEach((column, index, array) => {
+        // console.log('column');
+        // console.log(column);
+      });
+      console.log('this.grid?.columns.toArray()');
+      console.log(this.grid?.columns.toArray());
+      console.log('after');
+      for (const c of this.orderedFields) {
+        // console.log(c);
+      }
+    }
+    console.log(this.grid?.columns.toArray());
+    if (this.grid?.columns.toArray().length !== 0){
+      console.log('DATA LOADED');
+      this.checkFieldsUpdated = true;
     }
   }
 }
