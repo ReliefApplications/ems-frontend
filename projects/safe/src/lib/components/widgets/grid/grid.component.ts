@@ -101,7 +101,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataSubscription?: Subscription;
   private dashboardId = 0;
   private id = '';
-  private copyFields: any[] = [];
   private orderedFields: any[] = [];
   private storedObj: any = {fields: null};
   private stopReorderEvent = false;
@@ -199,15 +198,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     console.log('this.fields');
     console.log(this.fields);
 
-    if (localStorage.getItem(this.id) !== null) {
-      this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
-    }
-
-    console.log('this.storedObj');
-    console.log(this.storedObj);
-    // if localStorage false
-    // else
-    // re-take the localStorage but verify the removed or added elements
+    this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -294,9 +285,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
-        this.copyFields = this.fields;
-        // this.updateFields();
-        console.log(this.fields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
         this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
@@ -318,9 +306,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              this.copyFields = this.fields;
-              // this.updateFields();
-              console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -1086,7 +1071,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     }
   }
 
-
+  /**
+   * Update the order of the columns
+   * @param e event parameter
+   */
   columnReorder(e: any): void {
     if (!this.stopReorderEvent){
       const tempFields = [];
@@ -1118,29 +1106,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
       this.orderedFields = tempFields;
       this.storedObj.fields = this.orderedFields;
-      console.log('this.storedObj.fields - AFTER ');
-      console.log(this.storedObj.fields);
       localStorage.setItem(this.id, JSON.stringify(this.storedObj));
     }
-    else {
-      console.log('EVENT BLOCKEDDDDDDD ~~~~~~~~~');
-    }
   }
 
-  resetFields(): void {
-    for (const [i, f] of this.fields.entries()) {
-      f.order = i;
-    }
-  }
-
+  /**
+   * Update the order of the columns
+   */
   updateFields(): void {
-    console.log('UPDATE');
     if (this.grid?.columns.toArray().length !== 0){
       // take the fields stored in the local storage and add or remove the new or old fields
       if (this.storedObj.fields !== null && this.storedObj.fields.length !== 0){
-        console.log('STORED FILE FOUND');
-        console.log('this.storedObj.fields');
-        console.log(this.storedObj.fields);
         const storedFields = this.storedObj.fields;
         let verify = false;
         const fieldsToAdd = [];
@@ -1183,11 +1159,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           this.orderedFields = storedFields.filter((el: any) => {
             return el != null;
           });
-          console.log('- changes -');
         }
         else {
           this.orderedFields = storedFields;
-          console.log('- nothing changes -');
         }
 
         this.stopReorderEvent = true;
@@ -1208,10 +1182,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       }
       else {
         this.orderedFields = this.fields;
-        console.log('<<< this.orderedFields >>>');
-        console.log(this.orderedFields);
       }
-      console.log('DATA LOADED');
       this.checkFieldsUpdated = true;
     }
   }
