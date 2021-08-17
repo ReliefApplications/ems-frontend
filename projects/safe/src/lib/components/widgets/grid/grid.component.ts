@@ -1234,44 +1234,28 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       for (const [i, field] of this.orderedFields.entries()) {
         // console.log('field');
         // console.log(field);
-        this.grid?.reorderColumn(field, i);
+        // this.grid?.reorderColumn(field, i);
       }
       console.log('---------------------');
-      console.log('this.grid?.columnList');
-      console.log(this.grid?.columnList);
-      console.log('this.grid?.columns');
-      console.log(this.grid?.columns);
-      console.log('this.grid?.columns.first');
-      console.log(this.grid?.columns.first);
-      console.log('this.grid?.columns.get(2)');
-      console.log(this.grid?.columns.get(2));
-      console.log('this.grid?.columnList.forEach((c) => console.log(c))');
-      // console.log(this.grid?.columnList.forEach((c) => console.log(c)));
-      console.log('this.grid?.columnList.toArray()');
-      console.log(this.grid?.columnList.toArray());
-      console.log(this.grid?.detailTemplate);
 
-      if (this.grid?.columns !== undefined){
-        console.log('for (const column of this.grid?.columns))');
-        for (const column of this.grid?.columns){
-          // console.log(column);
-        }
-      }
-      else {
-        console.log('UNDEFINED');
-      }
+      // if (this.grid?.columns !== undefined){
+      //   console.log('for (const column of this.grid?.columns))');
+      //   for (const column of this.grid?.columns){
+      //     // console.log(column);
+      //   }
+      // }
+      // else {
+      //   console.log('UNDEFINED');
+      // }
 
+      // for (const i = 1; i < this.grid?.columns.length - 1; i++){
+      //   console.log(this.grid?.columns[i]);
+      // }
 
       this.grid?.columns.forEach((column, index, array) => {
-        // console.log('column');
-        // console.log(column);
+        console.log('column');
+        console.log(column);
       });
-      console.log('this.grid?.columns.toArray()');
-      console.log(this.grid?.columns.toArray());
-      console.log('after');
-      for (const c of this.orderedFields) {
-        // console.log(c);
-      }
     }
     console.log(this.grid?.columns.toArray());
     if (this.grid?.columns.toArray().length !== 0){
