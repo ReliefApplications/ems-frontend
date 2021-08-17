@@ -101,7 +101,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataSubscription?: Subscription;
   private dashboardId = 0;
   private id = '';
-  private colOrder: {field: string, order: number}[] = [];
   private copyFields: any[] = [];
   private orderedFields: any[] = [];
   private storedObj: any = {fields: null};
@@ -1087,16 +1086,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     }
   }
 
-  columnReorder(e: any): void {
-    // console.log(e);
-    // console.log(e.column);
-    // console.log(e.newIndex);
-    // console.log(e.oldIndex);
-    console.log('this.copyFields - BEFORE');
-    console.log(this.copyFields);
-    console.log('this.orderedFields - BEFORE');
-    console.log(this.orderedFields);
 
+  columnReorder(e: any): void {
     if (!this.stopReorderEvent){
       const tempFields = [];
       let j = 0;
@@ -1146,7 +1137,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     console.log('UPDATE');
     if (this.grid?.columns.toArray().length !== 0){
       // take the fields stored in the local storage and add or remove the new or old fields
-      if (this.storedObj.fields !== null){
+      if (this.storedObj.fields !== null && this.storedObj.fields.length !== 0){
         console.log('STORED FILE FOUND');
         console.log('this.storedObj.fields');
         console.log(this.storedObj.fields);
@@ -1209,11 +1200,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               curColumn = c;
               // +1 because getFields() doesn't return the first column (checkbox column)
               // btw he doesn't take the last two column too
-              this.grid?.reorderColumn(c, i + 1, { before: true });
+              this.grid?.reorderColumn(c, i + 1);
             }
           });
         }
         this.stopReorderEvent = false;
+      }
+      else {
+        this.orderedFields = this.fields;
+        console.log('<<< this.orderedFields >>>');
+        console.log(this.orderedFields);
       }
       console.log('DATA LOADED');
       this.checkFieldsUpdated = true;
