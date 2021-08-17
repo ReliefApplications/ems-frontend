@@ -105,6 +105,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private copyFields: any[] = [];
   private orderedFields: any[] = [];
   private storedObj: any = {fields: null};
+  private stopReorderEvent = false;
 
   // === VERIFICATION UPDATE FIELDS ===
   private checkFieldsUpdated: boolean;
@@ -295,6 +296,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.copyFields = this.fields;
+        console.log('*** 1:this.copyFields');
+        console.log(this.copyFields);
         // this.updateFields();
         console.log(this.fields);
         this.convertDateFields(this.items);
@@ -319,6 +322,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               this.loading = false;
               this.fields = this.getFields(fields);
               this.copyFields = this.fields;
+              console.log('*** 2:this.copyFields');
+              console.log(this.copyFields);
               // this.updateFields();
               console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
@@ -1091,38 +1096,61 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     console.log(e.column);
     console.log(e.newIndex);
     console.log(e.oldIndex);
+    console.log('this.copyFields - BEFORE');
+    console.log(this.copyFields);
 
-    const tempFields = [];
-    let j = 0;
-    const oldIndex = e.oldIndex - 1;
-    const newIndex = e.newIndex - 1;
+    if (!this.stopReorderEvent){
+      const tempFields = [];
+      let j = 0;
+      // shift by 1 because the old and new index take in account the first checkbox column
+      const oldIndex = e.oldIndex - 1;
+      const newIndex = e.newIndex - 1;
 
-    for (let i = 0; i < this.copyFields.length; i++) {
-      if (i === newIndex){
-        if (oldIndex < newIndex) {
+      for (let i = 0; i < this.copyFields.length; i++) {
+        if (i === newIndex){
+          if (oldIndex < newIndex) {
+            tempFields[j] = this.copyFields[i];
+            j++;
+            tempFields[j] = this.copyFields[oldIndex];
+          }
+          if (oldIndex > newIndex){
+            tempFields[j] = this.copyFields[oldIndex];
+            j++;
+            tempFields[j] = this.copyFields[i];
+          }
+
+          j++;
+        }
+        else if (i !== oldIndex){
           tempFields[j] = this.copyFields[i];
           j++;
-          tempFields[j] = this.copyFields[oldIndex];
         }
-        if (oldIndex > newIndex){
-          tempFields[j] = this.copyFields[oldIndex];
-          j++;
-          tempFields[j] = this.copyFields[i];
-        }
+      }
 
-        j++;
-      }
-      else if (i !== oldIndex){
-        tempFields[j] = this.copyFields[i];
-        j++;
-      }
+      // for (let i = 0; i < this.copyFields.length; i++) {
+      //   if (i === newIndex) {
+      //     tempFields[j] = this.copyFields[i];
+      //     j++;
+      //   }
+      //   else if (i !== oldIndex) {
+      //     tempFields[j] = this.copyFields[i];
+      //     j++;
+      //   }
+      // }
+
+      this.copyFields = tempFields;
+      // console.log('tempFields');
+      // console.log(tempFields);
+      console.log(' @@@ this.copyFields @@@ ');
+      console.log(this.copyFields);
+      this.storedObj.fields = this.copyFields;
+      localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+    }
+    else {
+      console.log('EVENT BLOCKEDDDDDDD ~~~~~~~~~');
     }
 
-    this.copyFields = tempFields;
-    console.log(tempFields);
-    console.log(this.copyFields);
-    this.storedObj.fields = this.copyFields;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+
   }
 
   resetFields(): void {
@@ -1137,128 +1165,109 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   updateFields(): void {
-    // take the fields stored in the local storage and add or remove the new or old fields
-    console.log(this.storedObj);
-    if (this.storedObj.fields !== null){
-      const storedFields = this.storedObj.fields;
-      const refStoredFields = this.storedObj.fields;
-      let verify = false;
-      const fieldsToAdd = [];
-      const fieldsToRemove = [];
-
-      // fields to remove
-      for (const [i, sf] of storedFields.entries()) {
-        for (const f of this.fields) {
-          if (f === sf){
-            verify = true;
-          }
-        }
-        if (verify){
-          // // remove sf from storedFields
-          // storedFields.pop(sf);
-          // // move all others fields to fill the gap
-          // let j = i;
-          // while (j < storedFields.length - 1){
-          //   storedFields[j] = refStoredFields[j++];
-          //   j++;
-          // }
-
-          // const tempStoredFields = [];
-          // for (const elt of storedFields) {
-          //   if (elt !== sf) {
-          //     tempStoredFields.push(elt);
-          //   }
-          // }
-
-          fieldsToRemove.push(sf);
-
-          console.log('REMOVED');
-        }
-        verify = false;
-      }
-
-      // fields to add
-      for (const f of this.fields) {
-        for (const sf of storedFields) {
-          if (sf === f){
-            verify = true;
-          }
-        }
-        if (verify){
-          // // add sf from storedFields
-          // // remove sf from storedFields
-          // storedFields.pop(sf);
-          // // move all others fields to fill the gap
-          // let j = i;
-          // while (j < storedFields.length - 1){
-          //   storedFields[j] = refStoredFields[j++];
-          //   j++;
-          // }
-
-          // const tempStoredFields = [];
-          // for (const elt of storedFields) {
-          //   if (elt !== sf) {
-          //     tempStoredFields.push(elt);
-          //   }
-          // }
-
-          fieldsToAdd.push(f);
-
-          console.log('ADDED');
-        }
-        verify = false;
-      }
-
-      if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-        for (const f of fieldsToAdd) {
-          storedFields.push(f);
-        }
-        for (const f of fieldsToRemove) {
-          storedFields.pop(f);
-        }
-        this.orderedFields = storedFields.filter((el: any) => {
-          return el != null;
-        });
-        console.log('- changes -');
-      }
-      else {
-        this.orderedFields = storedFields;
-        console.log('- nothing changes -');
-      }
-      // console.log('this.orderedFields');
-      // console.log(this.orderedFields);
-      // document.getElementById('customGrid')
-
-      // HAVE TO REVIEW THIS PART BECAUSE IT DOESN'T WORK (it's not reordering columns)
-      // because I send to it a column object, but I need to send it the column HTML element
-      for (const [i, field] of this.orderedFields.entries()) {
-        // console.log('field');
-        // console.log(field);
-        // this.grid?.reorderColumn(field, i);
-      }
-      console.log('---------------------');
-
-      // if (this.grid?.columns !== undefined){
-      //   console.log('for (const column of this.grid?.columns))');
-      //   for (const column of this.grid?.columns){
-      //     // console.log(column);
-      //   }
-      // }
-      // else {
-      //   console.log('UNDEFINED');
-      // }
-
-      // for (const i = 1; i < this.grid?.columns.length - 1; i++){
-      //   console.log(this.grid?.columns[i]);
-      // }
-
-      this.grid?.columns.forEach((column, index, array) => {
-        console.log('column');
-        console.log(column);
-      });
-    }
-    console.log(this.grid?.columns.toArray());
     if (this.grid?.columns.toArray().length !== 0){
+      // take the fields stored in the local storage and add or remove the new or old fields
+      if (this.storedObj.fields !== null){
+        const storedFields = this.storedObj.fields;
+        let verify = false;
+        const fieldsToAdd = [];
+        const fieldsToRemove = [];
+
+        // fields to remove
+        for (const sf of storedFields.entries()) {
+          for (const f of this.fields) {
+            if (f === sf){
+              verify = true;
+            }
+          }
+          if (verify){
+            fieldsToRemove.push(sf);
+            console.log('REMOVED');
+          }
+          verify = false;
+        }
+
+        // fields to add
+        for (const f of this.fields) {
+          for (const sf of storedFields) {
+            if (sf === f){
+              verify = true;
+            }
+          }
+          if (verify){
+            fieldsToAdd.push(f);
+            console.log('ADDED');
+          }
+          verify = false;
+        }
+
+        if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
+          console.log('fieldsToAdd');
+          console.log(fieldsToAdd);
+          console.log('fieldsToRemove');
+          console.log(fieldsToRemove);
+          for (const f of fieldsToAdd) {
+            storedFields.push(f);
+          }
+          for (const f of fieldsToRemove) {
+            storedFields.pop(f);
+          }
+          // remove empty element form array
+          this.orderedFields = storedFields.filter((el: any) => {
+            return el != null;
+          });
+          console.log('- changes -');
+        }
+        else {
+          this.orderedFields = storedFields;
+          console.log('- nothing changes -');
+        }
+
+        // HAVE TO REVIEW THIS PART BECAUSE IT DOESN'T WORK (it's not reordering columns)
+        // because I send to it a column object, but I need to send it the column HTML element
+        console.log('this.orderedFields');
+        console.log(this.orderedFields);
+        this.stopReorderEvent = true;
+        for (const [i, field] of this.orderedFields.entries()) {
+          let curColumn;
+          console.log('field');
+          console.log(field);
+          console.log(i);
+          this.grid?.columns.forEach((c, n, a) => {
+            // not sure if it's the best methode to identify the column
+            // but I can't get c.field so...
+            if (c.title === field.title){
+              curColumn = c;
+              // +1 because getFields() doesn't return the first column (checkbox column)
+              // btw he doesn't take the last two column too
+              this.grid?.reorderColumn(c, i + 1, { before: true });
+            }
+          });
+        }
+        this.stopReorderEvent = false;
+        console.log('---------------------');
+
+        // if (this.grid?.columns !== undefined){
+        //   console.log('for (const column of this.grid?.columns))');
+        //   for (const column of this.grid?.columns){
+        //     // console.log(column);
+        //   }
+        // }
+        // else {
+        //   console.log('UNDEFINED');
+        // }
+
+        // for (const i = 1; i < this.grid?.columns.length - 1; i++){
+        //   console.log(this.grid?.columns[i]);
+        // }
+
+        // this.grid?.columns.forEach((column, index, array) => {
+        //   console.log('column');
+        //   console.log(column);
+        // });
+      }
+      console.log(this.orderedFields);
+      console.log(this.grid?.columns);
       console.log('DATA LOADED');
       this.checkFieldsUpdated = true;
     }
