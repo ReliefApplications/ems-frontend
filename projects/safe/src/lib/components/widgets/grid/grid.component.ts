@@ -1126,11 +1126,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   updateFields(): void {
     if (this.grid?.columns.toArray().length !== 0){
       // take the fields stored in the local storage and add or remove the new or old fields
-      console.log('### this.storedObj');
-      console.log(this.storedObj);
-      console.log(this.storedObj.fields);
-      console.log(this.fields);
-      console.log('######');
       if (this.storedObj.fields !== null && this.storedObj.fields !== undefined){
         if (this.storedObj.fields.length !== 0){
           const storedFields = this.storedObj.fields;
@@ -1206,16 +1201,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       }
       // if no localstorage
       else {
-        // this.grid?.columns.forEach((c, i, a) => {
-        //   this.orderedFields.push(c);
-        // });
         this.orderedFields = this.fields;
-        console.log('this.fields');
-        console.log(this.fields);
-        console.log('this.grid?.columns');
-        console.log(this.grid?.columns);
-        console.log('this.orderedFields');
-        console.log(this.orderedFields);
       }
       this.checkFieldsUpdated = true;
     }
@@ -1224,14 +1210,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   updateColWidth(): void {
     if (this.grid?.columns.toArray().length !== 0){
       // take the fields stored in the local storage and add or remove the new or old fields
-      console.log('*** this.storedObj');
-      console.log(this.storedObj);
-      console.log(this.storedObj.colWidth);
-      console.log('******');
       if (this.storedObj.colWidth !== null && this.storedObj.colWidth !== undefined) {
         if (this.storedObj.colWidth.length !== 0){
-          console.log('LOCAL STORAGE ok');
-          console.log(this.storedObj.colWidth);
           const storedColWidth = this.storedObj.colWidth;
           let verify = false;
           const fieldsToAdd = [];
@@ -1245,8 +1225,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               }
             }
             if (!verify){
-              console.log('HAVE TO REMOVE scw');
-              console.log(scw);
               fieldsToRemove.push(scw);
             }
             verify = false;
@@ -1260,31 +1238,22 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               }
             }
             if (!verify){
-              console.log('HAVE TO ADD f');
-              console.log(f);
               fieldsToAdd.push(f);
             }
             verify = false;
           }
 
           if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-            console.log('*** ADD REMOVE ***');
             for (const f of fieldsToAdd) {
               storedColWidth.push(f);
             }
             for (const f of fieldsToRemove) {
               storedColWidth.pop(f);
             }
-            console.log('this.colWidth');
-            console.log(this.colWidth);
-            console.log('storedColWidth');
-            console.log(storedColWidth);
             // remove empty element form array
             this.colWidth = storedColWidth.filter((el: any) => {
               return el != null;
             });
-            console.log('this.colWidth');
-            console.log(this.colWidth);
           }
           else {
             this.colWidth = storedColWidth;
@@ -1302,48 +1271,28 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
                 console.log(c);
               }
             });
-            // this.stopReorderEvent = false;
           }
         }
         // if no localstorage
         else {
           this.fillColWidth();
-          // this.checkFieldsUpdated = true;
         }
       }
       // if no localstorage
       else {
         this.fillColWidth();
-        // this.checkFieldsUpdated = true;
       }
     }
   }
 
   fillColWidth(): void {
-    console.log('no LOCAL STORAGE');
-    console.log(this.grid?.columns);
     this.grid?.columns.forEach((c, i, a) => {
       // console.log(c);
       if (c.title !== undefined){
         this.colWidth.push({title: c.title, width: c.width});
       }
     });
-    console.log('this.colWidth');
-    console.log(this.colWidth);
   }
-
-  // updateColWidth(): void{
-  //   if (this.storedObj.colWidth !== null) {
-  //     if (this.storedObj.colWidth.length !== 0) {
-  //     }
-  //   }
-  //   else {
-  //     // for the moment it's still title property because, it's still impossible to get the field property
-  //     this.grid?.columns.forEach((c, i, a) => {
-  //       this.colWidth.push({title: c.title, width: c.width});
-  //     });
-  //   }
-  // }
 
   columnResize(e: Array<ColumnResizeArgs>): void {
     console.log(e);
