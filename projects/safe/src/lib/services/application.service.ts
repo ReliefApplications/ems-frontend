@@ -194,6 +194,14 @@ export class SafeApplicationService {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Application', res.errors[0].message));
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name));
+          if (res.data?.editApplication) {
+            const newApplication = { ...application,
+              name: res.data.editApplication.name,
+              description: res.data.editApplication.description,
+              status: res.data.editApplication.status
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }
