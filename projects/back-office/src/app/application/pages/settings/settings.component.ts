@@ -44,7 +44,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
           {
             id: [{ value: application.id, disabled: true }],
             name: [application.name, Validators.required],
-            description: [application.description]
+            description: [application.description],
+            status: [application.status]
           }
         );
         this.locked = this.application?.locked;
