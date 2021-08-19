@@ -1081,15 +1081,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: orderedFields & colWidth)
    */
   updateFeature(storedObjFieldArg: string, globalVariableFeature: string): void {
-    // if (storedObjFieldArg === 'fields' && globalVariableFeature === 'colWidth'){
-    //   // globalVariableFeature = 'orderedFields';
-    //   // console.log(this.orderedFields);
-    //   console.log(this[globalVariableFeature]);
-    //   console.log(this[storedObjFieldArg]);
-    // }
-    // else if (storedObjFieldArg === 'colWidth'){
-    //   globalVariableFeature = 'colWidth';
-    // }
+    console.log('UPDATE FEATURE');
+    console.log(storedObjFieldArg);
+    console.log(globalVariableFeature);
+    if (storedObjFieldArg === 'fields' && globalVariableFeature === 'orderedFields'){
+      // globalVariableFeature = 'orderedFields';
+      // console.log(this.orderedFields);
+      console.log('this[globalVariableFeature]');
+      console.log(this[globalVariableFeature]);
+      console.log('this.orderedFields');
+      console.log(this.orderedFields);
+    }
+    else if (storedObjFieldArg === 'colWidth' && globalVariableFeature === 'colWidth'){
+      console.log('this[globalVariableFeature]');
+      console.log(this[globalVariableFeature]);
+      console.log('this.colWidth');
+      console.log(this.colWidth);
+    }
     if (this.grid?.columns.toArray().length !== 0){
       // take the fields stored in the local storage and add or remove the new or old fields
       if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
@@ -1158,6 +1166,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             // }
             if (globalVariableFeature === 'orderedFields' || globalVariableFeature === 'colWidth'){
               this[globalVariableFeature] = storedField;
+              console.log('***');
+              console.log(globalVariableFeature);
+              console.log('***');
+              console.log(this[globalVariableFeature]);
             }
           }
 
@@ -1165,56 +1177,62 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             this.stopReorderEvent = true;
           }
 
-          if (storedObjFieldArg === 'fields'){
-            for (const [i, field] of this.orderedFields.entries()) {
-              let curColumn;
-              this.grid?.columns.forEach((c, n, a) => {
-                // not sure if it's the best methode to identify the column
-                // but I can't get c.field so...
-                if (c.title === field.title){
-                  curColumn = c;
-                  // +1 because getFields() doesn't return the first column (checkbox column)
-                  // btw he doesn't take the last two column too
-                  this.grid?.reorderColumn(c, i + 1);
-                }
-              });
-            }
-            this.stopReorderEvent = false;
-          }
-          else if (storedObjFieldArg === 'colWidth'){
-            for (const col of this.colWidth) {
-              let curColumn;
-              this.grid?.columns.forEach((c, n, a) => {
-                // not sure if it's the best methode to identify the column
-                // but I can't get c.field so...
-                if (c.title === col.title){
-                  curColumn = c;
-                  c.width = col.width;
-                }
-              });
-            }
-          }
-          // if (globalVariableFeature === 'orderedFields' || globalVariableFeature === 'colWidth'){
-          //   for (const [i, field] of this[globalVariableFeature].entries()) {
+          // if (storedObjFieldArg === 'fields'){
+          //   for (const [i, field] of this.orderedFields.entries()) {
+          //     let curColumn;
           //     this.grid?.columns.forEach((c, n, a) => {
           //       // not sure if it's the best methode to identify the column
           //       // but I can't get c.field so...
           //       if (c.title === field.title){
+          //         curColumn = c;
           //         // +1 because getFields() doesn't return the first column (checkbox column)
           //         // btw he doesn't take the last two column too
-          //         if (storedObjFieldArg === 'fields'){
-          //           this.grid?.reorderColumn(c, i + 1);
-          //         }
-          //         else if (storedObjFieldArg === 'colWidth'){
-          //           c.width = field.width;
-          //         }
+          //         this.grid?.reorderColumn(c, i + 1);
           //       }
           //     });
           //   }
-          //   if (storedObjFieldArg === 'fields'){
-          //     this.stopReorderEvent = false;
+          //   this.stopReorderEvent = false;
+          // }
+          // else if (storedObjFieldArg === 'colWidth'){
+          //   for (const col of this.colWidth) {
+          //     let curColumn;
+          //     this.grid?.columns.forEach((c, n, a) => {
+          //       // not sure if it's the best methode to identify the column
+          //       // but I can't get c.field so...
+          //       if (c.title === col.title){
+          //         curColumn = c;
+          //         c.width = col.width;
+          //       }
+          //     });
           //   }
           // }
+          if (globalVariableFeature === 'orderedFields' || globalVariableFeature === 'colWidth'){
+            console.log('///' + storedObjFieldArg + ' - ' + globalVariableFeature + '\\\\\\');
+            console.log('1***');
+            for (const [i, field] of this[globalVariableFeature].entries()) {
+              console.log('2***');
+              this.grid?.columns.forEach((c, n, a) => {
+                console.log('3***');
+                // not sure if it's the best methode to identify the column
+                // but I can't get c.field so...
+                if (c.title === field.title){
+                  console.log('4***');
+                  // +1 because getFields() doesn't return the first column (checkbox column)
+                  // btw he doesn't take the last two column too
+                  if (storedObjFieldArg === 'fields'){
+                    this.grid?.reorderColumn(c, i + 1);
+                    console.log('REORDER');
+                  }
+                  else if (storedObjFieldArg === 'colWidth'){
+                    c.width = field.width;
+                  }
+                }
+              });
+            }
+          }
+          if (storedObjFieldArg === 'fields'){
+            this.stopReorderEvent = false;
+          }
         }
         // if no localstorage
         else {
