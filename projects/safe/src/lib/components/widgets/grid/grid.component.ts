@@ -638,12 +638,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Opens the record on a read-only modal. If edit mode is enabled, reload data on dialog close.
   */
-  public onShowDetails(id: string, dataCanUpdate: boolean): void {
+  public onShowDetails(item: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: id,
+        recordId: item.id,
         locale: 'en',
-        canUpdate: dataCanUpdate
+        canUpdate: item.canUpdate
       },
       height: '98%',
       width: '100vw',
@@ -651,7 +651,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.reloadData();
+        this.onUpdateRow(item.id);
       }
     });
   }

@@ -19,7 +19,6 @@
     <ng-container *ngIf="!data.compareTo">
         <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
         <div [id]="containerId"></div>
-        <button *ngIf="canEdit" mat-button color="primary" (click)="onEditMode()">{{ edit ? 'Lock' : 'Edit' }} record</button>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
         <mat-grid-list cols="2" rowHeight="2:1">
@@ -33,4 +32,7 @@
 <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
     <button mat-button (click)="onClose()">Close</button>
     <button mat-flat-button mat-dialog-close="true" cdkFocusInitial color="primary">Revert to past record</button>
+</mat-dialog-actions>
+<mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo && canEdit">
+    <button mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
 </mat-dialog-actions>

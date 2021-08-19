@@ -34,7 +34,6 @@ export class SafeRecordModalComponent implements OnInit {
   public surveyNext: Survey.Model | null = null;
   public formPages: any[] = [];
   public canEdit: boolean | undefined = false;
-  public edit = false;
 
   public containerId: string;
   public containerNextId = '';
@@ -158,36 +157,8 @@ export class SafeRecordModalComponent implements OnInit {
     xhr.send();
   }
 
-  onEditMode(): void {
-    this.edit = !this.edit;
-    this.survey.mode = this.edit ? 'edit' : 'display';
-    this.survey.showNavigationButtons = this.edit;
-    this.survey.onComplete.add(this.editRecord);
-  }
-
-  public editRecord = (survey: any) => {
-    /* we can send to backend empty data if they are not required
-    */
-    const data = survey.data;
-    const questions = survey.getAllQuestions();
-    for (const field in questions) {
-      if (questions[field]) {
-        const key = questions[field].getValueName();
-        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
-      }
-    }
-    survey.data = data;
-    this.apollo.mutate<EditRecordMutationResponse>({
-      mutation: EDIT_RECORD,
-      variables: {
-        id: this.data.recordId,
-        data: survey.data
-      }
-    }).subscribe(res => {
-      if (res.data) {
-        this.dialogRef.close(true);
-      }
-    });
+  public onEdit(): void {
+    this.dialogRef.close(true);
   }
 
   /* Close the modal without sending any data.

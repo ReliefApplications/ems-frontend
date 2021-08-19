@@ -298,7 +298,7 @@
             <kendo-grid-column [columnMenu]="false" [width]="56" title="Details">
                 <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                     <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                        (click)="onShowDetails(dataItem.id, dataItem.canUpdate)" matTooltip="Open detail"></button>
+                        (click)="onShowDetails(dataItem)" matTooltip="Open detail"></button>
                 </ng-template>
             </kendo-grid-column>
             <!-- ROW ACTIONS -->
