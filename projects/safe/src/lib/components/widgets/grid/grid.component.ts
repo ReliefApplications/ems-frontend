@@ -206,6 +206,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     // if I write the name this.storedObj.colWidth it doesn't work and I don't understand why
     this.storedObj.colWidth = JSON.parse(localStorage.getItem(this.id) || '{}').colWidth;
     this.storedObj.fields = JSON.parse(localStorage.getItem(this.id) || '{}').fields;
+    this.storedObj.filter = JSON.parse(localStorage.getItem(this.id) || '{}').filter;
+    this.filter = this.storedObj.filter;
+    this.loadItems();
+
     console.log('this.storedObj');
     console.log(this.storedObj);
   }
@@ -622,6 +626,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
+    console.log('filter change');
+    console.log(this.filter);
+    this.storedObj.filter = this.filter;
+    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
     this.loadItems();
   }
 
