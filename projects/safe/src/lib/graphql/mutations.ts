@@ -19,6 +19,9 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     data(display: $display)
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
   }
 }`;
 
@@ -65,11 +68,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data(display: $display)
     form {
       uniqueRecord {
         id
         modifiedAt
+        createdBy {
+          name
+        }
         data
       }
     }
