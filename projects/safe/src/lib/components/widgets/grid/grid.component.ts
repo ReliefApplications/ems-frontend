@@ -189,24 +189,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.route.params.subscribe((params) => {
       this.dashboardId = params.id;
     });
-    console.log('this.idWidget');
-    console.log(this.widgetId);
-    console.log('this.idDashboard');
-    console.log(this.dashboardId);
     this.id = this.dashboardId.toString() + this.widgetId;
     console.log('this.id');
     console.log(this.id);
     console.log('this.fields');
     console.log(this.fields);
 
-    // console.log(JSON.parse(localStorage.getItem(this.id) || '{}'));
-    // console.log(JSON.parse(localStorage.getItem(this.id) || '{}').colWidth);
-    // this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
-
-    // if I write the name this.storedObj.colWidth it doesn't work and I don't understand why
-    this.storedObj.colWidth = JSON.parse(localStorage.getItem(this.id) || '{}').colWidth;
-    this.storedObj.fields = JSON.parse(localStorage.getItem(this.id) || '{}').fields;
-    this.storedObj.filter = JSON.parse(localStorage.getItem(this.id) || '{}').filter;
+    this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
     this.filter = this.storedObj.filter;
     this.loadItems();
 
@@ -246,8 +235,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     if (!this.checkFieldsUpdated){
       this.updateFeature('fields');
       this.updateFeature('colWidth');
-      // this.updateFields();
-      // this.updateColWidth();
     }
   }
 
@@ -626,8 +613,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    console.log('filter change');
-    console.log(this.filter);
     this.storedObj.filter = this.filter;
     localStorage.setItem(this.id, JSON.stringify(this.storedObj));
     this.loadItems();
@@ -1091,172 +1076,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   /**
-   * Update the order of the columns
-   */
-  // updateFields(): void {
-  //   if (this.grid?.columns.toArray().length !== 0){
-  //     // take the fields stored in the local storage and add or remove the new or old fields
-  //     if (this.storedObj.fields !== null && this.storedObj.fields !== undefined){
-  //       if (this.storedObj.fields.length !== 0){
-  //         const storedFields = this.storedObj.fields;
-  //         let verify = false;
-  //         const fieldsToAdd = [];
-  //         const fieldsToRemove = [];
-  //
-  //         // fields to remove
-  //         for (const sf of storedFields.entries()) {
-  //           for (const f of this.fields) {
-  //             if (f === sf){
-  //               verify = true;
-  //             }
-  //           }
-  //           if (!verify){
-  //             fieldsToRemove.push(sf);
-  //           }
-  //           verify = false;
-  //         }
-  //
-  //         // fields to add
-  //         for (const f of this.fields) {
-  //           for (const sf of storedFields) {
-  //             if (sf === f){
-  //               verify = true;
-  //             }
-  //           }
-  //           if (!verify){
-  //             fieldsToAdd.push(f);
-  //           }
-  //           verify = false;
-  //         }
-  //
-  //         if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-  //           for (const f of fieldsToAdd) {
-  //             storedFields.push(f);
-  //           }
-  //           for (const f of fieldsToRemove) {
-  //             storedFields.pop(f);
-  //           }
-  //           // remove empty element form array
-  //           this.orderedFields = storedFields.filter((el: any) => {
-  //             return el != null;
-  //           });
-  //         }
-  //         else {
-  //           this.orderedFields = storedFields;
-  //         }
-  //
-  //         this.stopReorderEvent = true;
-  //         for (const [i, field] of this.orderedFields.entries()) {
-  //           let curColumn;
-  //           this.grid?.columns.forEach((c, n, a) => {
-  //             // not sure if it's the best methode to identify the column
-  //             // but I can't get c.field so...
-  //             if (c.title === field.title){
-  //               curColumn = c;
-  //               // +1 because getFields() doesn't return the first column (checkbox column)
-  //               // btw he doesn't take the last two column too
-  //               this.grid?.reorderColumn(c, i + 1);
-  //             }
-  //           });
-  //         }
-  //         this.stopReorderEvent = false;
-  //         console.log(this.fields);
-  //       }
-  //       // if no localstorage
-  //       else {
-  //         this.orderedFields = this.fields;
-  //       }
-  //     }
-  //     // if no localstorage
-  //     else {
-  //       this.orderedFields = this.fields;
-  //     }
-  //     this.checkFieldsUpdated = true;
-  //   }
-  // }
-
-  /**
-   * Update the width of the columns
-   */
-  // updateColWidth(): void {
-  //   if (this.grid?.columns.toArray().length !== 0){
-  //     // take the fields stored in the local storage and add or remove the new or old fields
-  //     if (this.storedObj.colWidth !== null && this.storedObj.colWidth !== undefined) {
-  //       if (this.storedObj.colWidth.length !== 0){
-  //         const storedColWidth = this.storedObj.colWidth;
-  //         let verify = false;
-  //         const fieldsToAdd = [];
-  //         const fieldsToRemove = [];
-  //
-  //         // fields to remove
-  //         for (const scw of storedColWidth) {
-  //           for (const f of this.fields) {
-  //             if (f.title === scw.title){
-  //               verify = true;
-  //             }
-  //           }
-  //           if (!verify){
-  //             fieldsToRemove.push(scw);
-  //           }
-  //           verify = false;
-  //         }
-  //
-  //         // fields to add
-  //         for (const f of this.fields) {
-  //           for (const scw of storedColWidth) {
-  //             if (scw.title === f.title){
-  //               verify = true;
-  //             }
-  //           }
-  //           if (!verify){
-  //             fieldsToAdd.push(f);
-  //           }
-  //           verify = false;
-  //         }
-  //
-  //         if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-  //           for (const f of fieldsToAdd) {
-  //             storedColWidth.push(f);
-  //           }
-  //           for (const f of fieldsToRemove) {
-  //             storedColWidth.pop(f);
-  //           }
-  //           // remove empty element form array
-  //           this.colWidth = storedColWidth.filter((el: any) => {
-  //             return el != null;
-  //           });
-  //         }
-  //         else {
-  //           this.colWidth = storedColWidth;
-  //         }
-  //
-  //         // this.stopReorderEvent = true;
-  //         for (const col of this.colWidth) {
-  //           let curColumn;
-  //           this.grid?.columns.forEach((c, n, a) => {
-  //             // not sure if it's the best methode to identify the column
-  //             // but I can't get c.field so...
-  //             if (c.title === col.title){
-  //               curColumn = c;
-  //               c.width = col.width;
-  //               console.log(c);
-  //             }
-  //           });
-  //         }
-  //       }
-  //       // if no localstorage
-  //       else {
-  //         this.fillColWidth();
-  //       }
-  //     }
-  //     // if no localstorage
-  //     else {
-  //       this.fillColWidth();
-  //     }
-  //   }
-  // }
-
-  /**
    * Update the feature we want we want
    * @param storedObjFieldArg the feature we want to update (for the moment, only: fields & colWidth)
    */
@@ -1383,7 +1202,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       }
     }
   }
-
 
   /**
    * Update the order of the columns
