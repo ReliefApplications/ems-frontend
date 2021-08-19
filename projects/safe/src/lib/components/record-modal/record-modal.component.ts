@@ -8,12 +8,14 @@ import * as Survey from 'survey-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
+import { EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { SafeAuthService } from '../../services/auth.service';
 
 interface DialogData {
   recordId: string;
   locale?: string;
   compareTo?: any;
+  canUpdate?: boolean;
 }
 
 @Component({
@@ -31,6 +33,7 @@ export class SafeRecordModalComponent implements OnInit {
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
   public formPages: any[] = [];
+  public canEdit: boolean | undefined = false;
 
   public containerId: string;
   public containerNextId = '';
@@ -55,6 +58,7 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -89,7 +93,6 @@ export class SafeRecordModalComponent implements OnInit {
       this.survey.showNavigationButtons = 'none';
       this.survey.showProgressBar = 'off';
       this.survey.render(this.containerId);
-
       if (this.data.compareTo) {
         this.surveyNext = new Survey.Model(this.form?.structure);
         this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
@@ -152,6 +155,10 @@ export class SafeRecordModalComponent implements OnInit {
       reader.readAsDataURL(file);
     };
     xhr.send();
+  }
+
+  public onEdit(): void {
+    this.dialogRef.close(true);
   }
 
   /* Close the modal without sending any data.
