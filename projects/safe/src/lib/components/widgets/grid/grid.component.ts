@@ -1173,8 +1173,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           }
           else {
             this.orderedFields = storedFields;
-            console.log('this.orderedFields');
-            console.log(this.orderedFields);
           }
 
           this.stopReorderEvent = true;
@@ -1295,18 +1293,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   columnResize(e: Array<ColumnResizeArgs>): void {
-    console.log(e);
     this.colWidth.forEach((c, i, a) => {
       if (c.title === e[0].column.title){
         c.width = e[0].newWidth;
       }
     });
-    console.log(this.colWidth);
 
     this.storedObj.colWidth = this.colWidth;
-    console.log(this.colWidth);
-    console.log(this.storedObj.colWidth);
     localStorage.setItem(this.id, JSON.stringify(this.storedObj));
-    console.log(JSON.parse(localStorage.getItem(this.id) || '{}'));
   }
 }
