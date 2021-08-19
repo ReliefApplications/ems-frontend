@@ -33,6 +33,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import { prettifyLabel } from '../../../utils/prettify';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -210,6 +211,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
       const fullName = prefix ? `${prefix}.${f.name}` : f.name;
+      console.log(fullName);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
@@ -217,7 +219,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         default: {
           return {
             name: fullName,
-            title: f.label ? f.label : f.name,
+            title: f.label ? f.label : prettifyLabel(f.name),
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),

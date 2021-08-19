@@ -2,6 +2,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Component, ComponentFactory, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { prettifyLabel } from '../../../utils/prettify';
 
 @Component({
   selector: 'safe-tab-fields',
@@ -68,8 +69,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           event.previousIndex,
           event.currentIndex);
         this.form.insert(event.currentIndex, this.queryBuilder.addNewField(this.selectedFields[event.currentIndex], true));
-        this.onEdit(event.currentIndex);
-        this.onCloseField();
       }
     }
   }
@@ -90,24 +89,11 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           componentRef.destroy();
         });
       }
-    } else {
-      this.fieldForm?.patchValue({
-        label: this.prettifyLabel(this.fieldForm.value.label)
-      });
     }
   }
 
   public onDelete(index: number): void {
     this.form.removeAt(index);
     this.selectedFields.splice(index, 1);
-  }
-
-  /**
-   * Prettify grid label
-   */
-  private prettifyLabel(label: string): string {
-    label = label.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
-    label = label.charAt(0).toUpperCase() + label.slice(1);
-    return label;
   }
 }
