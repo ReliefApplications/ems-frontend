@@ -386,8 +386,8 @@
             "azure-uat": {
               "fileReplacements": [
                 {
-                  "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.azure.uat.ts"
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.uat.ts"
                 }
               ],
               "optimization": true,
@@ -413,8 +413,8 @@
             "azure-prod": {
               "fileReplacements": [
                 {
-                  "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.azure.prod.ts"
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.prod.ts"
                 }
               ],
               "optimization": true,

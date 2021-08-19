@@ -2,6 +2,5 @@
     "files.exclude": {
         "documentation/**": true
     },
-    "appService.defaultWebAppToDeploy": "/subscriptions/0956c944-254f-48eb-99ec-be3b80cb5abd/resourceGroups/EMSSAFE-P-WEU-RG01/providers/Microsoft.Web/sites/emssafe-p-frontofficewebapp",
-    "appService.deploySubpath": "dist/front-office"
+    "appService.defaultWebAppToDeploy": "None"
 }
