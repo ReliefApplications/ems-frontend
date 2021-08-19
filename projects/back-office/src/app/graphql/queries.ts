@@ -261,7 +261,6 @@ query GetRecordById($id: ID!) {
       name
     }
     data
-    modifiedAt
     form {
       id
       structure

@@ -623,6 +623,9 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     data(display: $display)
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
   }
 }`;
 
