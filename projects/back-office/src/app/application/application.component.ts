@@ -45,7 +45,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             name: 'Display',
             callback: (event: any) => this.onReorder(event),
             navItems: navItems
-            .concat(application.pages?.filter(x => x.content).map(x => {
+            .concat(application.pages?.filter((x: any) => x.content).map((x: any) => {
               return {
                 id: x.id,
                 name: x.name,
