@@ -16,7 +16,7 @@
         [pageable]="pagerSettings" [sort]="sort" [selectable]="selectableSettings"
         (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)" (pageChange)="pageChange($event)"
         [filterable]="showFilter ? true : 'menu'" [filter]="filter" (filterChange)="filterChange($event)"
-        (cellClick)="cellClickHandler($event)" [resizable]="true" (columnReorder)="columnReorder($event)" (columnResize)="columnResize($event)">
+        (cellClick)="cellClickHandler($event)" [resizable]="true" (columnReorder)="columnReorder($event)" (columnResize)="columnResize($event)" (columnVisibilityChange)="columnVisibilityChange($event)">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>

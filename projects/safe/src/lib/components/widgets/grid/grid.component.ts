@@ -2,7 +2,14 @@ import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings, ColumnResizeArgs, ColumnBase
+  GridDataResult,
+  PageChangeEvent,
+  SelectableSettings,
+  SelectionEvent,
+  PagerSettings,
+  ColumnResizeArgs,
+  ColumnBase,
+  ColumnVisibilityChangeEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -105,6 +112,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private storedObj: any = {};
   private stopReorderEvent = false;
   private colWidth: any[] = [];
+  private columnsDisplay: any[] = [];
 
   // === VERIFICATION UPDATE FIELDS ===
   private checkFieldsUpdated: boolean;
@@ -201,6 +209,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
     console.log('this.storedObj');
     console.log(this.storedObj);
+
+    console.log('this.gridData');
+    console.log(this.gridData);
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -235,7 +246,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     if (!this.checkFieldsUpdated){
       this.updateFeature('fields');
       this.updateFeature('colWidth');
+      this.updateFeature('columnsDisplay');
     }
+    // console.log(this.grid?.columns);
+    // console.log('this.orderedFields');
+    // console.log(this.orderedFields);
+    // console.log('this.colWidth');
+    // console.log(this.colWidth);
+    // console.log('this.fields');
+    // this.grid?.columns.forEach((c, i, a) => {
+    //   this.columnsDisplay.push({''})
+    // });
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -1081,6 +1102,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: orderedFields & colWidth)
    */
   updateFeature(storedObjFieldArg: string): void {
+    // console.log('UPDATE');
     let globalVariableFeature = '';
     if (storedObjFieldArg === 'fields'){
       globalVariableFeature = 'orderedFields';
@@ -1088,8 +1110,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     else if (storedObjFieldArg === 'colWidth'){
       globalVariableFeature = 'colWidth';
     }
-    console.log('###' + globalVariableFeature + '###');
-    if (this.grid?.columns.toArray().length !== 0 && (globalVariableFeature === 'orderedFields' || globalVariableFeature === 'colWidth')){
+    else if (storedObjFieldArg === 'columnsDisplay'){
+      globalVariableFeature = 'columnsDisplay';
+    }
+    if (this.grid?.columns.toArray().length !== 0
+      && (globalVariableFeature === 'orderedFields'
+        || globalVariableFeature === 'colWidth'
+        || globalVariableFeature === 'columnsDisplay')){
       // take the fields stored in the local storage and add or remove the new or old fields
       if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
         if (this.storedObj[storedObjFieldArg].length !== 0){
@@ -1101,7 +1128,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           // fields to remove
           for (const sf of storedField) {
             for (const f of this.fields) {
-              if ((storedObjFieldArg === 'fields' && f === sf) || (storedObjFieldArg === 'colWidth' && f.title === sf.title)){
+              if ((storedObjFieldArg === 'fields' && f === sf)
+                || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
+                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
               }
             }
@@ -1114,7 +1143,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           // fields to add
           for (const f of this.fields) {
             for (const sf of storedField) {
-              if ((storedObjFieldArg === 'fields' && f === sf) || (storedObjFieldArg === 'colWidth' && f.title === sf.title)){
+              if ((storedObjFieldArg === 'fields' && f === sf)
+                || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
+                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
               }
             }
@@ -1157,6 +1188,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
                 else if (storedObjFieldArg === 'colWidth'){
                   c.width = field.width;
                 }
+                else if (storedObjFieldArg === 'columnsDisplay'){
+                  c.hidden = field.display;
+                }
               }
             });
           }
@@ -1172,6 +1206,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           else if (storedObjFieldArg === 'colWidth'){
             this.fillColWidth();
           }
+          else if (storedObjFieldArg === 'columnsDisplay'){
+            this.fillColumnDisplay();
+          }
         }
       }
       // if no localstorage
@@ -1181,6 +1218,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         }
         else if (storedObjFieldArg === 'colWidth'){
           this.fillColWidth();
+        }
+        else if (storedObjFieldArg === 'columnsDisplay'){
+          this.fillColumnDisplay();
         }
       }
       if (storedObjFieldArg === 'fields'){
@@ -1254,5 +1294,38 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         this.colWidth.push({title: c.title, width: c.width});
       }
     });
+  }
+
+  fillColumnDisplay(): void {
+    this.grid?.columns.forEach((c, i, a) => {
+      if (c.title !== undefined){
+        if (c.hidden === undefined){
+          this.columnsDisplay.push({title: c.title, display: false});
+        }
+        else {
+          this.columnsDisplay.push({title: c.title, display: c.hidden});
+        }
+        // console.log('c');
+        // console.log(c);
+        // console.log('c.hidden');
+        // console.log(c.hidden);
+      }
+    });
+  }
+
+  columnVisibilityChange(e: ColumnVisibilityChangeEvent): void {
+    console.log('columnVisibilityChange');
+    console.log(e);
+    console.log(e.columns[0]);
+    this.columnsDisplay.forEach((c, i, a) => {
+      if (c.title === e.columns[0].title){
+        c.display = e.columns[0].hidden;
+        console.log(c.title);
+        console.log(c.display);
+      }
+    });
+    this.storedObj.columnsDisplay = this.columnsDisplay;
+    console.log(this.storedObj);
+    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
   }
 }
