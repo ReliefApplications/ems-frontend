@@ -452,18 +452,21 @@ export class SafeApplicationService {
         mutation: EDIT_USER,
         variables: {
           id: user.id,
-          roles: [value.role],
+          roles: value.roles,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
           const newUser = res.data.editUser;
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
-          const newApplication: Application = {
-            ...application,
-            users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
-          };
-          this._application.next(newApplication);
+          const index = application?.users?.indexOf(user);
+          if (application?.users && index) {
+            const newApplication: Application = {
+              ...application,
+              users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }
