@@ -7,6 +7,14 @@
     line-height: 24px;
 }
 
+.safe-btn-icon {
+    height: 18px;
+    width: 18px;
+    font-size: 18px;
+    vertical-align: sub !important;
+    margin-right: 4px;
+}
+
 .safe-btn-success {
     &:not(:disabled) {
         color: #63d168;
