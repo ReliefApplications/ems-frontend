@@ -124,11 +124,38 @@
                 }
               ]
             },
-            "azure": {
+            "azure-uat": {
               "fileReplacements": [
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.azure.ts"
+                  "with": "projects/back-office/src/environments/environment.azure.uat.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "azure-prod": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.azure.prod.ts"
                 }
               ],
               "optimization": true,
@@ -156,6 +183,33 @@
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
                   "with": "projects/back-office/src/environments/environment.ra.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "wv": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.wv.ts"
                 }
               ],
               "optimization": true,
@@ -329,11 +383,38 @@
                 }
               ]
             },
-            "azure": {
+            "azure-uat": {
               "fileReplacements": [
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.azure.ts"
+                  "with": "projects/front-office/src/environments/environment.azure.uat.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "azure-prod": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.prod.ts"
                 }
               ],
               "optimization": true,
@@ -361,6 +442,33 @@
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
                   "with": "projects/front-office/src/environments/environment.ra.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "wv": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.wv.ts"
                 }
               ],
               "optimization": true,

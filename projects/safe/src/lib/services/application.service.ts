@@ -186,13 +186,22 @@ export class SafeApplicationService {
         variables: {
           id: application?.id,
           name: value.name,
-          description: value.description
+          description: value.description,
+          status: value.status
         }
       }).subscribe(res => {
         if (res.errors) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Application', res.errors[0].message));
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name));
+          if (res.data?.editApplication) {
+            const newApplication = { ...application,
+              name: res.data.editApplication.name,
+              description: res.data.editApplication.description,
+              status: res.data.editApplication.status
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }
