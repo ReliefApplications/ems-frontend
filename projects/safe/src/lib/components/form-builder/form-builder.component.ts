@@ -38,6 +38,7 @@ const QUESTION_TYPES = [
 export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   @Input() structure: any;
+  @Input() fields: any[] = [];
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
@@ -88,10 +89,55 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         };
       }));
 
+    // Remove adorners to set choices directly from survey view
+    SurveyCreator.removeAdorners(["choices-label", "choices-draggable", "select-choices"]);
+
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
+
+    // === CORE QUESTIONS FOR CHILD FORM ===
+    const coreFields = this.fields.filter(x => x.isCore);
+    if (coreFields.length > 0) {
+
+      // Remove core fields adorners
+      this.surveyCreator.onElementAllowOperations.add((sender, options) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) return;
+        // If it is a core field
+        if (coreFields.some(x => x.name === obj.valueName)) {
+          // Disable deleting, editing, changing type and changing if required or not
+          options.allowDelete = false;
+          options.allowChangeType = false;
+          options.allowChangeRequired = false;
+          options.allowAddToToolbox = false;
+          options.allowCopy = false;
+          options.allowShowEditor = false;
+          options.allowShowHideTitle = false;
+          // options.allowEdit = false;
+          options.allowDragging = true;
+        }
+      });
+  
+      // Block core fields edition
+      this.surveyCreator.onShowingProperty.add((sender, options) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) return;
+        // If it is a core field
+        if (coreFields.some(x => x.name === obj.valueName)) {
+          options.canShow = false;
+        }
+      });
+  
+      // Highlight core fields
+      this.surveyCreator.survey.onAfterRenderQuestion.add((sender: any, options: any) => {
+        // If it is a core field
+        if (coreFields.some(x => x.name === options.question.valueName)) {
+          options.htmlElement.children[0].className += " core-question";
+        }
+      });
+    }
   }
 
   ngOnChanges(): void {

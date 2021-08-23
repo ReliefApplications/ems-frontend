@@ -126,6 +126,7 @@ query GetShortFormById($id: ID!) {
   form(id: $id) {
     id
     name
+    core
     structure
     fields
     status
