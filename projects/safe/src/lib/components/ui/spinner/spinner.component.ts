@@ -9,9 +9,9 @@ import { SpinnerVariant } from './spinner-variant.enum';
 })
 export class SafeSpinnerComponent implements OnInit {
 
-  @Input() size: SpinnerSize = SpinnerSize.MEDIUM;
+  @Input() size: SpinnerSize | string = SpinnerSize.MEDIUM;
 
-  @Input() variant: SpinnerVariant = SpinnerVariant.DEFAULT;
+  @Input() variant: SpinnerVariant | string = SpinnerVariant.DEFAULT;
 
   get diameter(): number {
     switch (this.size) {

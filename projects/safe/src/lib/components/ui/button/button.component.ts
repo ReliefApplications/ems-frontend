@@ -13,11 +13,11 @@ import { ButtonVariant } from './button-variant.enum';
 })
 export class SafeButtonComponent implements OnInit  {
 
-  @Input() category: ButtonCategory = ButtonCategory.PRIMARY;
+  @Input() category: ButtonCategory | string = ButtonCategory.PRIMARY;
 
-  @Input() size: ButtonSize = ButtonSize.MEDIUM;
+  @Input() size: ButtonSize | string = ButtonSize.MEDIUM;
 
-  @Input() variant: ButtonVariant = ButtonVariant.DEFAULT;
+  @Input() variant: ButtonVariant | string = ButtonVariant.DEFAULT;
 
   @Input() block = false;
 

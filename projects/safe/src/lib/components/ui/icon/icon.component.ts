@@ -12,7 +12,7 @@ export class SafeIconComponent implements OnInit {
 
   @Input() inline = false;
 
-  @Input() variant: IconVariant = IconVariant.DEFAULT;
+  @Input() variant: IconVariant | string = IconVariant.DEFAULT;
 
   get color(): string {
     switch (this.variant) {
