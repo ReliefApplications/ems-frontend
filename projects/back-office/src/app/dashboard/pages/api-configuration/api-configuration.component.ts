@@ -83,7 +83,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   /*  Create the settings form depending on the authType
   */
   private buildSettingsForm(type: string): FormGroup {
-    if (type === 'service-to-service') {
+    if (type === 'serviceToService') {
       return this.formBuilder.group({
         authTargetUrl: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.authTargetUrl
           ? '●●●●●●●●●●●●●' : '', Validators.required],
