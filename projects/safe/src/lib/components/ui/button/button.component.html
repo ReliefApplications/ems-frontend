@@ -3,6 +3,8 @@
     [class.mat-stroked-button]="category === 'tertiary'"
     [class.safe-btn-block]="block"
     [class.safe-btn-small]="size === 'small'"
+    [class.safe-btn-success]="variant === 'success'"
+    [color]="color"
     [disabled]="disabled"
 >
     <mat-icon *ngIf="icon">{{icon}}</mat-icon>

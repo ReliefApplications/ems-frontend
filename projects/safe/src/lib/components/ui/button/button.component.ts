@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
+import { ButtonVariant } from './button-variant.enum';
 
 @Component({
   selector: 'safe-button',
@@ -15,11 +16,27 @@ export class SafeButtonComponent implements OnInit  {
 
   @Input() size: ButtonSize = ButtonSize.MEDIUM;
 
+  @Input() variant: ButtonVariant = ButtonVariant.DEFAULT;
+
   @Input() block = false;
 
   @Input() disabled = false;
 
   @Input() icon = '';
+
+  get color(): string {
+    switch (this.variant) {
+      case 'primary': {
+        return 'primary';
+      }
+      case 'danger': {
+        return 'warn';
+      }
+      default: {
+        return '';
+      }
+    }
+  }
 
   ngOnInit(): void {}
 }
