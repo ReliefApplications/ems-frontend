@@ -4,6 +4,7 @@ import { SafeButtonComponent } from './button.component';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
+import { withKnobs, text, select } from '@storybook/addon-knobs';
 
 export default {
     component: SafeButtonComponent,
@@ -13,7 +14,8 @@ export default {
                 SafeButtonModule
             ],
             providers: []
-        })
+        }),
+        withKnobs
     ],
     title: 'UI/Button',
     argTypes: {
@@ -54,9 +56,10 @@ export default {
 } as Meta;
 
 const Template: Story<SafeButtonComponent> = args => ({
-    template: '<safe-button>This is a button</safe-button>',
+    template: '<safe-button>{{content}}</safe-button>',
     props: {
-        ...args
+        ...args,
+        content: text('Text', 'This is a button')
     }
 });
 
