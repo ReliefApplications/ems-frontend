@@ -7,19 +7,22 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeRecordHistoryModule } from '@safe/builder';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [FormRecordsComponent],
-  imports: [
-    CommonModule,
-    FormRecordsRoutingModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    SafeRecordHistoryModule
-  ],
+    imports: [
+        CommonModule,
+        FormRecordsRoutingModule,
+        MatTableModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        SafeRecordHistoryModule,
+        MatDividerModule,
+        MatTooltipModule
+    ],
   exports: [FormRecordsComponent]
 })
 export class FormRecordsModule { }

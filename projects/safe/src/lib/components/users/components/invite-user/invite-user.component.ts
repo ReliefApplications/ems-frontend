@@ -14,6 +14,12 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
 
+interface DialogData {
+  roles: Role[];
+  users: [];
+  positionAttributeCategories?: PositionAttributeCategory[];
+}
+
 @Component({
   selector: 'safe-invite-user',
   templateUrl: './invite-user.component.html',
@@ -52,11 +58,7 @@ export class SafeInviteUserComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeInviteUserComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      roles: Role[];
-      users: [];
-      positionAttributeCategories?: PositionAttributeCategory[]
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
   }
 

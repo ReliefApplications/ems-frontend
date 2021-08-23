@@ -3,29 +3,38 @@
     <div class="field-container" *ngIf="!fieldForm">
         <h2>Available fields</h2>
 
-        <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
-            (cdkDropListDropped)="drop($event)">
-            <div class="field-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span
-                    class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
+        <div class="field-list-wrapper">
+            <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
+                (cdkDropListDropped)="drop($event)">
+                <div class="field-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span
+                        class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
+            </div>
         </div>
     </div>
 
     <div class="field-container" *ngIf="!fieldForm">
         <h2>Selected fields</h2>
 
-        <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">
-            <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
-                <div>
-                    <span>{{ field.name }}</span>
-                    <button class="field-error" mat-icon-button (click)="onEdit(index)" *ngIf="form.at(index).invalid">
-                        <mat-icon>error</mat-icon>
-                    </button>
-                </div>
-                <div>
-                    <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
-                    <button mat-icon-button (click)="onEdit(index)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
+        <div class="field-list-wrapper">
+            <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">
+                <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
+                    <div>
+                        <span>{{ field.name }}</span>
+                        <button class="field-error" mat-icon-button (click)="onEdit(index)"
+                            *ngIf="form.at(index).invalid && field.type">
+                            <mat-icon>error</mat-icon>
+                        </button>
+                        <button class="field-error" mat-icon-button *ngIf="!field.type" (click)="onDelete(index)"
+                            matTooltip="Invalid field. Please click to remove.">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="field.type">
+                        <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
+                        <button mat-icon-button (click)="onEdit(index)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,11 +48,11 @@
                 </button>
                 <mat-form-field appearance="outline">
                     <mat-label>Field name</mat-label>
-                    <input matInput formControlName="name" type="text" [disabled]="true"/>
+                    <input matInput formControlName="name" type="text" [disabled]="true" />
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Label</mat-label>
-                    <input matInput formControlName="label" type="text"/>
+                    <input matInput formControlName="label" type="text" />
                 </mat-form-field>
             </form>
         </ng-container>

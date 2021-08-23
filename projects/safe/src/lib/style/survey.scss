@@ -1,0 +1,9 @@
+::ng-deep .sv-boolean:not(.sv-boolean--checked) {
+    .sv-boolean__switch {
+        background-color: rgba(64, 64, 64, 0.5) !important;
+    }
+}
+
+::ng-deep .sv_q {
+    padding-bottom: 0.5em !important;
+}

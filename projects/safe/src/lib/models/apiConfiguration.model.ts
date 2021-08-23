@@ -1,15 +1,9 @@
-/*  Enum of authType.
-*/
-export enum status {
-    active = 'active',
-    pending = 'pending',
-    archived = 'archived'
-}
+import { status } from './form.model';
 
 /*  Enum of authType.
 */
 export enum authType {
-    serviceToService = 'service-to-service',
+    serviceToService = 'serviceToService',
 }
 
 

@@ -1,0 +1,67 @@
+name: Storybook
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [15.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build Shared Library
+        run: npm run build -- --prod safe
+      - name: Build Storybook
+        run: npm run build-storybook -- -o storybook
+      - name: Archive build Storybook
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: storybook
+          path: storybook
+  
+  deploy_storybook:
+    name : Deploy @SAFE documentation 🚀
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # SAFE
+      - name: Download doc Storybook
+        uses: actions/download-artifact@v1
+        with:
+          name: storybook
+          path: storybook
+      - name: Deploy to github pages Storybook
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        with:
+          token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
+          repository-name: ReliefApplications/ReliefApplications.github.io
+          branch: master
+          folder: storybook
+          target-folder: emrs-safe-frontend/storybook
+          clean: true

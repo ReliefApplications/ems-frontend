@@ -98,13 +98,15 @@ export class SafeGridSettingsComponent implements OnInit {
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications in floating button if any
+        // Check if the query changed to clean modifications and fields for email in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
             this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
+            const bodyFields =  floatingButton.get('bodyFields') as FormArray;
+            bodyFields.clear();
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
@@ -155,24 +157,23 @@ export class SafeGridSettingsComponent implements OnInit {
       attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
-      targetFormQuery: this.queryBuilder.createQueryForm(value?.targetFormQuery || null),
+      targetFormQuery: this.queryBuilder.createQueryForm(value && value.targetFormQuery ? value.targetFormQuery : null,
+        Boolean(value && value.targetForm)),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-      value && value.notify ? Validators.required : null],
+        value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-      value && value.publish ? Validators.required : null],
+        value && value.publish ? Validators.required : null],
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [value && value.distributionList ? value.distributionList : [],
-      value && value.sendMail ? Validators.required : null],
+        value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
-      value && value.sendMail ? Validators.required : null],
+        value && value.sendMail ? Validators.required : null],
+      bodyFields: this.formBuilder.array(value && value.bodyFields ? value.bodyFields : [],
+        value && value.sendMail ? Validators.required : null),
       // attachment: [value && value.attachment ? value.attachment : false]
-    });
-    buttonForm.get('targetForm')?.valueChanges.subscribe(target => {
-      const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
-      buttonForm.get('targetFormQuery')?.get('name')?.setValue(queryName);
     });
     return buttonForm;
   }

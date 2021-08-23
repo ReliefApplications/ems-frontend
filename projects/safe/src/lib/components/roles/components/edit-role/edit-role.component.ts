@@ -9,6 +9,11 @@ import {
   GetChannelsQueryResponse, GET_CHANNELS } from '../../../../graphql/queries';
 import { Permission, Role } from '../../../../models/user.model';
 
+interface DialogData {
+  role: Role;
+  application: boolean;
+}
+
 @Component({
   selector: 'safe-edit-role',
   templateUrl: './edit-role.component.html',
@@ -21,17 +26,14 @@ export class SafeEditRoleComponent implements OnInit {
   // === DATA ===
   public permissions: Permission[] = [];
   public channels: Channel[] = [];
-
+  public applications: any[] = [];
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditRoleComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      role: Role,
-      application: boolean
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo
   ) { }
 
@@ -50,6 +52,19 @@ export class SafeEditRoleComponent implements OnInit {
       query: GET_CHANNELS,
     }).valueChanges.subscribe(res => {
       this.channels = res.data.channels;
+      // Move channels in an array under corresponding applications.
+      this.applications = Array.from(new Set(this.channels.map(x => x.application?.name)))
+        .map(name => {
+          return {
+            name: name ? name : 'Global',
+            channels: this.channels.reduce((o: Channel[], channel: Channel) => {
+              if (channel?.application?.name === name) {
+                o.push(channel);
+              }
+              return o;
+            }, [])
+          };
+        });
     });
     this.roleForm = this.formBuilder.group({
       title: [this.data.role.title, Validators.required],

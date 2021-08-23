@@ -108,7 +108,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : null}`,
+        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : ''}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }

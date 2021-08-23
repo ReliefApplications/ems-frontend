@@ -38,6 +38,9 @@ query GetRoles($all: Boolean, $application: ID) {
       type
     }
     usersCount
+    application {
+      name
+    }
   }
 }`;
 
@@ -254,8 +257,10 @@ query GetRecordById($id: ID!) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data
-    modifiedAt
     form {
       id
       structure

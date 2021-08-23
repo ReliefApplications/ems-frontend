@@ -93,6 +93,12 @@ export class SafeAuthService {
     return this._user.asObservable();
   }
 
+  /* Return the logged user value.
+  */
+  get userValue(): User | null {
+    return this._user.getValue();
+  }
+
   /* Check if user exist and fetch it if not
   */
   getProfileIfNull(): void {

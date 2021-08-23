@@ -1,6 +1,8 @@
 SAFE Front-end
 =======
 [![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)
+[![Build](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml)
+[![CodeQL](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml)
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
@@ -122,12 +124,12 @@ Deployment of the npm @safe/builder package is a 3-steps process:
 
 - Build the package:
 ```
-ng build --project=safe
+ng build --prod safe
 ```
 
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
-npm publish ./projects/safe
+npm publish ./dist/safe
 ```
 
 ## Build the web components

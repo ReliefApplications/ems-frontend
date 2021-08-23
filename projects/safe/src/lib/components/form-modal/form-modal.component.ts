@@ -9,12 +9,20 @@ import {
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import * as Survey from 'survey-angular';
-import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
+import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
+   UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
+import { SafeAuthService } from '../../services/auth.service';
+
+interface DialogData {
+  template?: string;
+  recordId?: string | [];
+  locale?: string;
+}
 
 @Component({
   selector: 'safe-form-modal',
@@ -40,15 +48,12 @@ export class SafeFormModalComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      template?: string,
-      recordId?: string | [],
-      locale?: string,
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private authService: SafeAuthService
   ) {
     this.containerId = uuidv4();
   }
@@ -77,7 +82,7 @@ export class SafeFormModalComponent implements OnInit {
         this.form = record.form;
         this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
         this.loading = false;
-        addCustomFunctions(Survey, record);
+        addCustomFunctions(Survey, this.authService, record);
         this.survey = new Survey.Model(this.form?.structure);
         this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
         this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
@@ -137,9 +142,7 @@ export class SafeFormModalComponent implements OnInit {
         if (this.data.recordId) {
           await this.uploadFiles(survey);
           if (this.isMultiEdition) {
-            for (const id of this.data.recordId) {
-              this.updateData(id, survey);
-            }
+            this.updateMultipleData(this.data.recordId, survey);
           } else {
             this.updateData(this.data.recordId, survey);
           }
@@ -178,6 +181,20 @@ export class SafeFormModalComponent implements OnInit {
     }).subscribe(res => {
       if (res.data) {
         this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
+      }
+    });
+  }
+
+  public updateMultipleData(ids: any, survey: any): void {
+    this.apollo.mutate<EditRecordsMutationResponse>({
+      mutation: EDIT_RECORDS,
+      variables: {
+        ids,
+        data: survey.data
+      }
+    }).subscribe(res => {
+      if (res.data) {
+        this.dialogRef.close({ template: this.form?.id, data: res.data.editRecords });
       }
     });
   }

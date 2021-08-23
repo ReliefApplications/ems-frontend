@@ -1,14 +1,24 @@
 <div class="page-header">
     <h1 class="page-title">List of records</h1>
     <div class="actions">
-      <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
-        <mat-icon>file_download</mat-icon>
-        Download records
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-        <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-      </mat-menu>
+        <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
+            <mat-icon>file_download</mat-icon>
+            Download records
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+            <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+        </mat-menu>
+        <button matTooltip="File should contain one record per row. Header row contains the names of data fields." mat-flat-button color="primary"
+            [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
+            <mat-icon>file_upload</mat-icon>
+            Upload records
+        </button>
+        <mat-menu #matUploadMenu="matMenu">
+            <button mat-menu-item (click)="downloadTemplate()">Download template</button>
+            <!--        <button mat-menu-item (click)="onDownload('csv')">.csv</button>-->
+            <input #xlsxFile type="file" data-max-size="5120" accept=".xlsx" (change)="onFileChange($event)" />
+        </mat-menu>
     </div>
 </div>
 <ng-container *ngIf="!loading">
@@ -27,13 +37,14 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="deleteRecord(element.id, $event)">
-                            <mat-icon>delete</mat-icon>
-                            Delete
-                        </button>
                         <button mat-menu-item color="warn" (click)="onViewHistory(element.id)">
                             <mat-icon>library_books</mat-icon>
                             History
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="deleteRecord(element.id, $event)">
+                            <mat-icon>delete</mat-icon>
+                            Delete
                         </button>
                     </mat-menu>
                 </td>

@@ -43,6 +43,8 @@ import {
   DELETE_POSITION_ATTRIBUTE_CATEGORY,
   EditPositionAttributeCategoryMutationResponse,
   EDIT_POSITION_ATTRIBUTE_CATEGORY,
+  EditChannelMutationResponse,
+  EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK
 } from '../graphql/mutations';
@@ -184,13 +186,22 @@ export class SafeApplicationService {
         variables: {
           id: application?.id,
           name: value.name,
-          description: value.description
+          description: value.description,
+          status: value.status
         }
       }).subscribe(res => {
         if (res.errors) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Application', res.errors[0].message));
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name));
+          if (res.data?.editApplication) {
+            const newApplication = { ...application,
+              name: res.data.editApplication.name,
+              description: res.data.editApplication.description,
+              status: res.data.editApplication.status
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }
@@ -446,16 +457,16 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
+          const newUser = res.data.editUser;
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
           const index = application?.users?.indexOf(user);
           if (application?.users && index) {
-            const copyObjectApplication = {...application};
-            const copyArrayUsers = [...application.users];
-            copyArrayUsers[index] = res.data.editUser;
-            copyObjectApplication.users = copyArrayUsers;
-            application = copyObjectApplication;
+            const newApplication: Application = {
+              ...application,
+              users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
+            };
+            this._application.next(newApplication);
           }
-          this._application.next(application);
         }
       });
     }
@@ -561,6 +572,31 @@ export class SafeApplicationService {
         }
       });
     }
+  }
+  /* Edit a channel's title
+    */
+  editChannel(channel: Channel, title: string): void {
+    const application = this._application.getValue();
+    this.apollo.mutate<EditChannelMutationResponse>({
+      mutation: EDIT_CHANNEL,
+      variables: {
+        id: channel.id,
+        title
+      }
+      }).subscribe(res => {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title));
+          const newApplication: Application = { ...application,
+            channels: application?.channels?.map(x => {
+              if (x.id === channel.id) {
+                x = { ...x, title: res.data?.editChannel.title };
+              }
+              return x;
+            })
+          };
+          this._application.next(newApplication);
+        }
+      });
   }
 
   /* Remove a channel from the system with all notifications linked to it

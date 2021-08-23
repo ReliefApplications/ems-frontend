@@ -2,6 +2,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Component, ComponentFactory, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { prettifyLabel } from '../../../utils/prettify';
 
 @Component({
   selector: 'safe-tab-fields',
@@ -25,34 +26,48 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
+    this.selectedFields.forEach((x, index) => {
+      if (!x.type) {
+        this.form.at(index).setErrors({ invalid: true });
+      }
+    });
   }
 
   ngOnChanges(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x));
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
   }
 
   drop(event: CdkDragDrop<string[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       if (this.selectedFields === event.container.data) {
-        const fieldTomove = this.form.at(event.previousIndex);
+        const fieldToMove = this.form.at(event.previousIndex);
         this.form.removeAt(event.previousIndex);
-        this.form.insert(event.currentIndex, fieldTomove);
+        this.form.insert(event.currentIndex, fieldToMove);
       }
     } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
       if (this.selectedFields === event.previousContainer.data) {
         if (this.fieldForm === this.form.at(event.previousIndex) as FormGroup) {
           this.fieldForm = new FormGroup({});
         }
-        this.form.removeAt(event.previousIndex);
+        if (this.form.at(event.previousIndex).errors?.invalid) {
+          this.form.removeAt(event.previousIndex);
+          this.selectedFields.splice(event.previousIndex, 1);
+        } else {
+          transferArrayItem(event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex);
+          this.form.removeAt(event.previousIndex);
+        }
       } else {
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
         this.form.insert(event.currentIndex, this.queryBuilder.addNewField(this.selectedFields[event.currentIndex], true));
       }
     }
@@ -74,19 +89,11 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           componentRef.destroy();
         });
       }
-    } else {
-      this.fieldForm?.patchValue({
-        label: this.prettifyLabel(this.fieldForm.value.label)
-      });
     }
   }
 
-  /**
-   * Prettify grid label
-   */
-  private prettifyLabel(label: string): string {
-    label = label.replace('_', ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
-    label = label.charAt(0).toUpperCase() + label.slice(1);
-    return label;
+  public onDelete(index: number): void {
+    this.form.removeAt(index);
+    this.selectedFields.splice(index, 1);
   }
 }
