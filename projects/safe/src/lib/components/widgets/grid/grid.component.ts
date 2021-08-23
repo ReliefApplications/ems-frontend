@@ -198,20 +198,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       this.dashboardId = params.id;
     });
     this.id = this.dashboardId.toString() + this.widgetId;
-    console.log('this.id');
-    console.log(this.id);
-    console.log('this.fields');
-    console.log(this.fields);
 
     this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
     this.filter = this.storedObj.filter;
     this.loadItems();
-
-    console.log('this.storedObj');
-    console.log(this.storedObj);
-
-    console.log('this.gridData');
-    console.log(this.gridData);
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -1105,11 +1095,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           const fieldsToAdd = [];
           const fieldsToRemove = [];
 
-          console.log('storedField');
-          console.log(storedField);
-          console.log('this.fields');
-          console.log(this.fields);
-
           // fields to remove
           for (const sf of storedField) {
             for (const f of this.fields) {
@@ -1120,8 +1105,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               }
             }
             if (!verify){
-              console.log('sf');
-              console.log(sf);
               fieldsToRemove.push(sf);
             }
             verify = false;
@@ -1137,42 +1120,21 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               }
             }
             if (!verify){
-              console.log('f');
-              console.log(f);
               fieldsToAdd.push(f);
             }
             verify = false;
           }
 
-          console.log('fieldsToAdd');
-          console.log(fieldsToAdd);
-          console.log('fieldsToRemove');
-          console.log(fieldsToRemove);
-
           if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-            console.log('CHANGED');
-            console.log('fieldsToAdd');
-            console.log(fieldsToAdd);
-            console.log('fieldsToRemove');
-            console.log(fieldsToRemove);
-            console.log('this.columnsOrder');
-            console.log(this.columnsOrder);
             for (const f of fieldsToAdd) {
               storedField.push(f);
             }
             for (const f of fieldsToRemove) {
               storedField.pop(f);
             }
-
-            console.log('this.columnsOrder');
-            console.log(this.columnsOrder);
-
             this[storedObjFieldArg] = storedField.filter((el: any) => {
               return el != null;
             });
-
-            console.log('this.columnsOrder');
-            console.log(this.columnsOrder);
           }
           else {
             this[storedObjFieldArg] = storedField;
@@ -1271,9 +1233,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
       this.columnsOrder = tempFields;
       this.storedObj.columnsOrder = this.columnsOrder;
-      console.log(this.storedObj);
-      console.log(this.columnsOrder);
-      console.log(tempFields);
       localStorage.setItem(this.id, JSON.stringify(this.storedObj));
     }
   }
@@ -1317,18 +1276,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   columnVisibilityChange(e: ColumnVisibilityChangeEvent): void {
-    console.log('columnVisibilityChange');
-    console.log(e);
-    console.log(e.columns[0]);
     this.columnsDisplay.forEach((c, i, a) => {
       if (c.title === e.columns[0].title){
         c.display = e.columns[0].hidden;
-        console.log(c.title);
-        console.log(c.display);
       }
     });
     this.storedObj.columnsDisplay = this.columnsDisplay;
-    console.log(this.storedObj);
     localStorage.setItem(this.id, JSON.stringify(this.storedObj));
   }
 }
