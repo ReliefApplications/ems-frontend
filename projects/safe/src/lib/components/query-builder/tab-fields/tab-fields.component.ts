@@ -15,22 +15,21 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   @Input() fields: any[] = [];
   // === TEMPLATE REFERENCE ===
   @Input() factory?: ComponentFactory<any>;
-  @ViewChild('childTemplate', {read: ViewContainerRef}) childTemplate?: ViewContainerRef;
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate?: ViewContainerRef;
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
 
-  constructor(private queryBuilder: QueryBuilderService) {
-  }
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || {name: x});
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
     this.selectedFields.forEach((x, index) => {
       if (!x.type) {
-        this.form.at(index).setErrors({invalid: true});
+        this.form.at(index).setErrors({ invalid: true });
       }
     });
   }
@@ -38,7 +37,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || {name: x});
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
   }
 
   drop(event: CdkDragDrop<string[]>): void {

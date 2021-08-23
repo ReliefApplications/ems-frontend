@@ -23,7 +23,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss'],
   providers: [
-    {provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+    { provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
 export class SafeQueryBuilderComponent implements OnInit {
@@ -53,8 +53,7 @@ export class SafeQueryBuilderComponent implements OnInit {
     private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
