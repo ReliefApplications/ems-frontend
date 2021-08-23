@@ -14,7 +14,8 @@ import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  return () => overlay.scrollStrategies.block();
+  const block = () => overlay.scrollStrategies.block();
+  return block;
 }
 
 @Component({

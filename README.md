@@ -124,12 +124,12 @@ Deployment of the npm @safe/builder package is a 3-steps process:
 
 - Build the package:
 ```
-ng build --project=safe
+ng build --prod safe
 ```
 
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
-npm publish ./projects/safe
+npm publish ./dist/safe
 ```
 
 ## Build the web components

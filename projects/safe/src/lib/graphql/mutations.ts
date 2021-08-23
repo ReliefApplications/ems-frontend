@@ -19,6 +19,9 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     data(display: $display)
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
   }
 }`;
 
@@ -65,11 +68,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data(display: $display)
     form {
       uniqueRecord {
         id
         modifiedAt
+        createdBy {
+          name
+        }
         data
       }
     }
@@ -181,7 +190,7 @@ export interface EditUserProfileMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
   addPage(name: $name, type: $type, content: $content, application: $application){
     id
     name
@@ -364,7 +373,7 @@ export interface DeletePageMutationResponse {
 }
 
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
   editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description

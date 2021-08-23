@@ -8,7 +8,13 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  return () => overlay.scrollStrategies.block();
+  const block = () => overlay.scrollStrategies.block();
+  return block;
+}
+
+interface DialogData {
+  form: any;
+  resourceName: string;
 }
 
 @Component({
@@ -29,7 +35,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { form: any, resourceName: string },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private queryBuilder: QueryBuilderService) {
   }
 

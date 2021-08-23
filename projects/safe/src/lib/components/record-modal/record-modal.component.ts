@@ -8,6 +8,15 @@ import * as Survey from 'survey-angular';
 import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
+import { EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
+import { SafeAuthService } from '../../services/auth.service';
+
+interface DialogData {
+  recordId: string;
+  locale?: string;
+  compareTo?: any;
+  canUpdate?: boolean;
+}
 
 @Component({
   selector: 'safe-record-modal',
@@ -24,6 +33,7 @@ export class SafeRecordModalComponent implements OnInit {
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
   public formPages: any[] = [];
+  public canEdit: boolean | undefined = false;
 
   public containerId: string;
   public containerNextId = '';
@@ -35,14 +45,11 @@ export class SafeRecordModalComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      recordId: string,
-      locale?: string,
-      compareTo?: any
-    },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private authService: SafeAuthService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -51,6 +58,7 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -71,7 +79,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.modifiedAt = this.record.modifiedAt || null;
       this.form = this.record.form;
       this.loading = res.loading;
-      addCustomFunctions(Survey, this.record);
+      addCustomFunctions(Survey, this.authService, this.record);
       this.survey = new Survey.Model(this.form?.structure);
       for (const page of this.survey.pages) {
         if (page.isVisible) {
@@ -85,7 +93,6 @@ export class SafeRecordModalComponent implements OnInit {
       this.survey.showNavigationButtons = 'none';
       this.survey.showProgressBar = 'off';
       this.survey.render(this.containerId);
-
       if (this.data.compareTo) {
         this.surveyNext = new Survey.Model(this.form?.structure);
         this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
@@ -148,6 +155,10 @@ export class SafeRecordModalComponent implements OnInit {
       reader.readAsDataURL(file);
     };
     xhr.send();
+  }
+
+  public onEdit(): void {
+    this.dialogRef.close(true);
   }
 
   /* Close the modal without sending any data.
