@@ -41,6 +41,7 @@ import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import {ActivatedRoute} from '@angular/router';
+import {SafeAuthService} from '../../../services/auth.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -114,6 +115,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private columnsWidth: any[] = [];
   private columnsDisplay: any[] = [];
 
+  // === VERIFICATION IF USER IS ADMIN ===
+  public isAdmin: boolean;
+
   // === VERIFICATION UPDATE FIELDS ===
   private checkFieldsUpdated: boolean;
 
@@ -186,10 +190,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private safeAuthService: SafeAuthService
   ) {
     this.apiUrl = environment.API_URL;
     this.checkFieldsUpdated = false;
+    this.isAdmin = false;
   }
 
   ngOnInit(): void {
@@ -622,6 +628,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   /*  Detect filtering events and update the items loaded.
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
+    this.isAdmin = this.safeAuthService.userIsAdmin;
     this.filter = filter;
     this.storedObj.filter = this.filter;
     localStorage.setItem(this.id, JSON.stringify(this.storedObj));
@@ -1213,6 +1220,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param e event parameter (oldIndex, newIndex)
    */
   columnReorder(e: any): void {
+    this.isAdmin = this.safeAuthService.userIsAdmin;
     if (!this.stopReorderEvent){
       const tempFields: any[] = [];
       let j = 0;
@@ -1252,6 +1260,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param e event parameter (oldWidth, newWidth)
    */
   columnResize(e: Array<ColumnResizeArgs>): void {
+    this.isAdmin = this.safeAuthService.userIsAdmin;
     this.columnsWidth.forEach((c, i, a) => {
       if (c.title === e[0].column.title){
         c.width = e[0].newWidth;
@@ -1266,6 +1275,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param e event parameter
    */
   columnVisibilityChange(e: ColumnVisibilityChangeEvent): void {
+    this.isAdmin = this.safeAuthService.userIsAdmin;
     this.columnsDisplay.forEach((c, i, a) => {
       if (c.title === e.columns[0].title){
         c.display = e.columns[0].hidden;
@@ -1300,5 +1310,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         }
       }
     });
+  }
+
+  saveGridStatus(e: any): void {
+    console.log('Save status');
+    console.log(e);
   }
 }
