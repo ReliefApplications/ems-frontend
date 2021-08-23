@@ -1,4 +1,4 @@
-export enum SpinnerVariant {
+export enum IconVariant {
     DEFAULT = 'default',
     PRIMARY = 'primary',
     SUCCESS = 'success',

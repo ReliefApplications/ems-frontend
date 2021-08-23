@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeButtonComponent } from './button.component';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeSpinnerModule } from '../spinner/spinner.module';
+import { SafeIconModule } from '../icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -12,8 +12,8 @@ import { SafeSpinnerModule } from '../spinner/spinner.module';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule,
-    SafeSpinnerModule
+    SafeSpinnerModule,
+    SafeIconModule
   ],
   exports: [
     SafeButtonComponent

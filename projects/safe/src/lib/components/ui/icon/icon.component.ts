@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { IconVariant } from './icon-variant.enum';
 
 @Component({
   selector: 'safe-icon',
@@ -7,9 +8,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SafeIconComponent implements OnInit {
 
-  constructor() { }
+  @Input() icon = '';
 
-  ngOnInit(): void {
+  @Input() inline = false;
+
+  @Input() variant: IconVariant = IconVariant.DEFAULT;
+
+  get color(): string {
+    switch (this.variant) {
+      case IconVariant.PRIMARY: {
+        return 'primary';
+      }
+      case IconVariant.DANGER: {
+        return 'warn';
+      }
+      default: {
+        return '';
+      }
+    }
   }
 
+  constructor() { }
+
+  ngOnInit(): void { }
 }
