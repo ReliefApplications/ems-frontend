@@ -1,9 +1,14 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GetChannelsQueryResponse, GetRelatedFormsQueryResponse, GET_CHANNELS, GET_RELATED_FORMS } from '../../../graphql/queries';
+import {
+  GetChannelsQueryResponse,
+  GetRelatedFormsQueryResponse,
+  GET_CHANNELS,
+  GET_RELATED_FORMS
+} from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
@@ -16,7 +21,7 @@ import { Form } from '../../../models/form.model';
 })
 /*  Modal content for the settings of the grid widgets.
 */
-export class SafeGridSettingsComponent implements OnInit {
+export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -70,32 +75,6 @@ export class SafeGridSettingsComponent implements OnInit {
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
 
-    this.change.emit(this.tileForm);
-    this.tileForm.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
-
-    this.applicationService.application.subscribe((application: Application | null) => {
-      if (application) {
-        this.apollo.watchQuery<GetChannelsQueryResponse>({
-          query: GET_CHANNELS,
-          variables: {
-            application: application.id
-          }
-        }).valueChanges.subscribe(res => {
-          this.channels = res.data.channels;
-        });
-      } else {
-        this.apollo.watchQuery<GetChannelsQueryResponse>({
-          query: GET_CHANNELS,
-        }).valueChanges.subscribe(res => {
-          this.channels = res.data.channels;
-        });
-      }
-    });
-
-    this.queryName = this.tileForm.get('query')?.value.name;
-
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
         // Check if the query changed to clean modifications and fields for email in floating button if any
@@ -105,7 +84,7 @@ export class SafeGridSettingsComponent implements OnInit {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
             this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
-            const bodyFields =  floatingButton.get('bodyFields') as FormArray;
+            const bodyFields = floatingButton.get('bodyFields') as FormArray;
             bodyFields.clear();
           }
         }
@@ -138,6 +117,35 @@ export class SafeGridSettingsComponent implements OnInit {
         this.fields = [];
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.tileForm) {
+      this.tileForm.valueChanges.subscribe(() => {
+        this.change.emit(this.tileForm);
+      });
+
+      this.applicationService.application.subscribe((application: Application | null) => {
+        if (application) {
+          this.apollo.watchQuery<GetChannelsQueryResponse>({
+            query: GET_CHANNELS,
+            variables: {
+              application: application.id
+            }
+          }).valueChanges.subscribe(res => {
+            this.channels = res.data.channels;
+          });
+        } else {
+          this.apollo.watchQuery<GetChannelsQueryResponse>({
+            query: GET_CHANNELS,
+          }).valueChanges.subscribe(res => {
+            this.channels = res.data.channels;
+          });
+        }
+      });
+
+      this.queryName = this.tileForm.get('query')?.value.name;
+    }
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
@@ -180,8 +188,7 @@ export class SafeGridSettingsComponent implements OnInit {
 
   public addFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.push(this.createFloatingButtonForm({ show: true }));
-    this.tabIndex = floatingButtons.length - 1;
+    floatingButtons.push(this.createFloatingButtonForm({show: true}));
   }
 
   public deleteFloatingButton(): void {

@@ -1,8 +1,11 @@
 .field-wrapper {
   display: flex;
   margin-top: 16px;
-  height: 500px;
   overflow: auto;
+
+  &:not(.hidden) {
+    height: 500px;
+  }
 }
 
 .field-container {

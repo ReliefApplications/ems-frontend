@@ -53,10 +53,14 @@ export class SafeQueryBuilderComponent implements OnInit {
     private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
+    this.buildSettings();
+  }
+
+  buildSettings(): void {
     if (this.form?.value.type) {
       this.isField = true;
       this.availableFields = this.queryBuilder.getFieldsFromType(this.form?.value.type)
@@ -104,6 +108,11 @@ export class SafeQueryBuilderComponent implements OnInit {
 
   onCloseField(): void {
     this.closeField.emit(true);
+  }
+
+  setForm(newForm: FormGroup): void {
+    this.form = newForm;
+    this.buildSettings();
   }
 
   private filterQueries(value: string): string[] {
