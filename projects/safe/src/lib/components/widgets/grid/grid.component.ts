@@ -111,7 +111,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private columnsOrder: any[] = [];
   private storedObj: any = {};
   private stopReorderEvent = false;
-  private colWidth: any[] = [];
+  private columnsWidth: any[] = [];
   private columnsDisplay: any[] = [];
 
   // === VERIFICATION UPDATE FIELDS ===
@@ -245,7 +245,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   ngAfterViewChecked(): void {
     if (!this.checkFieldsUpdated){
       this.updateFeature('columnsOrder');
-      this.updateFeature('colWidth');
+      this.updateFeature('columnsWidth');
       this.updateFeature('columnsDisplay');
     }
     // console.log(this.grid?.columns);
@@ -1098,8 +1098,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
   /**
    * Update the feature we want we want
-   * @param storedObjFieldArg the feature we want to update (storage side) (for the moment, only: fields & colWidth)
-   * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: columnsOrder & colWidth)
+   * @param storedObjFieldArg the feature we want to update (storage side) (for the moment, only: fields & columnsWidth)
+   * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: columnsOrder & columnsWidth)
    */
   updateFeature(storedObjFieldArg: string): void {
     // console.log('UPDATE');
@@ -1115,7 +1115,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     // }
     if (this.grid?.columns.toArray().length !== 0
       && (storedObjFieldArg === 'columnsOrder'
-        || storedObjFieldArg === 'colWidth'
+        || storedObjFieldArg === 'columnsWidth'
         || storedObjFieldArg === 'columnsDisplay')){
       // take the fields stored in the local storage and add or remove the new or old fields
       if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
@@ -1129,7 +1129,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           for (const sf of storedField) {
             for (const f of this.fields) {
               if ((storedObjFieldArg === 'columnsOrder' && f === sf)
-                || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
+                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
                 || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
               }
@@ -1144,7 +1144,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           for (const f of this.fields) {
             for (const sf of storedField) {
               if ((storedObjFieldArg === 'columnsOrder' && f === sf)
-                || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
+                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
                 || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
               }
@@ -1185,7 +1185,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
                 if (storedObjFieldArg === 'columnsOrder'){
                   this.grid?.reorderColumn(c, i + 1);
                 }
-                else if (storedObjFieldArg === 'colWidth'){
+                else if (storedObjFieldArg === 'columnsWidth'){
                   c.width = field.width;
                 }
                 else if (storedObjFieldArg === 'columnsDisplay'){
@@ -1221,7 +1221,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     if (storedObjFieldArg === 'columnsOrder'){
       this.columnsOrder = this.fields;
     }
-    else if (storedObjFieldArg === 'colWidth'){
+    else if (storedObjFieldArg === 'columnsWidth'){
       this.fillColWidth();
     }
     else if (storedObjFieldArg === 'columnsDisplay'){
@@ -1276,22 +1276,22 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param e event parameter (oldWidth, newWidth)
    */
   columnResize(e: Array<ColumnResizeArgs>): void {
-    this.colWidth.forEach((c, i, a) => {
+    this.columnsWidth.forEach((c, i, a) => {
       if (c.title === e[0].column.title){
         c.width = e[0].newWidth;
       }
     });
-    this.storedObj.colWidth = this.colWidth;
+    this.storedObj.columnsWidth = this.columnsWidth;
     localStorage.setItem(this.id, JSON.stringify(this.storedObj));
   }
 
   /**
-   * Fill colWidth variable with grid columns properties (used when there is no localStorage)
+   * Fill columnsWidth variable with grid columns properties (used when there is no localStorage)
    */
   fillColWidth(): void {
     this.grid?.columns.forEach((c, i, a) => {
       if (c.title !== undefined){
-        this.colWidth.push({title: c.title, width: c.width});
+        this.columnsWidth.push({title: c.title, width: c.width});
       }
     });
   }
