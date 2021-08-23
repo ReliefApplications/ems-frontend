@@ -2,6 +2,7 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeButtonModule } from './button.module';
 import { SafeButtonComponent } from './button.component';
 import { ButtonCategory } from './button-category.enum';
+import { ButtonSize } from './button-size.enum';
 
 export default {
     component: SafeButtonComponent,
@@ -17,6 +18,10 @@ export default {
     argTypes: {
         category: {
             options: [ButtonCategory.PRIMARY, ButtonCategory.SECONDARY, ButtonCategory.TERTIARY],
+            control: { type: 'select' }
+        },
+        size: {
+            options: [ButtonSize.SMALL, ButtonSize.MEDIUM],
             control: { type: 'select' }
         },
         block: {
@@ -43,5 +48,6 @@ const Template: Story<SafeButtonComponent> = args => ({
 
 export const Default = Template.bind({});
 Default.args = {
-    category: ButtonCategory.PRIMARY
+    category: ButtonCategory.PRIMARY,
+    size: ButtonSize.MEDIUM
 };

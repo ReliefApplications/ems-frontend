@@ -2,6 +2,7 @@
     [class.mat-flat-button]="category === 'secondary'"
     [class.mat-stroked-button]="category === 'tertiary'"
     [class.safe-btn-block]="block"
+    [class.safe-btn-small]="size === 'small'"
     [disabled]="disabled"
 >
     <mat-icon *ngIf="icon">{{icon}}</mat-icon>
