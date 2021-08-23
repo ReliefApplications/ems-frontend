@@ -40,5 +40,7 @@ export class SafeButtonComponent implements OnInit  {
     }
   }
 
+  constructor() {}
+
   ngOnInit(): void {}
 }
