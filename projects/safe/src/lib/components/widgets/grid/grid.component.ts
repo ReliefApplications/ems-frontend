@@ -33,6 +33,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import { prettifyLabel } from '../../../utils/prettify';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -215,15 +216,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
+          const metaData = this.metaFields[fullName] || null;
           return {
             name: fullName,
-            title: f.label ? f.label : f.name,
+            title: f.label ? f.label : prettifyLabel(f.name),
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            meta: this.metaFields[fullName],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly
+            meta: metaData,
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly
           };
         }
       }

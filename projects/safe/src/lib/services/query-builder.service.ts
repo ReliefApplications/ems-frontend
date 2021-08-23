@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { prettifyLabel } from '../utils/prettify';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
@@ -230,6 +231,7 @@ export class QueryBuilderService {
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {
+    console.log(field);
     switch (newField ? field.type.kind : field.kind) {
       case 'LIST': {
         return this.formBuilder.group({
@@ -259,7 +261,7 @@ export class QueryBuilderService {
           name: [{ value: field.name, disabled: true }],
           type: [{ value: newField ? field.type.name : field.type, disabled: true }],
           kind: [newField ? field.type.kind : field.kind],
-          label: [field.label ? field.label : field.name, Validators.required]
+          label: [field.label ? field.label : prettifyLabel(field.name), Validators.required]
         });
       }
     }
