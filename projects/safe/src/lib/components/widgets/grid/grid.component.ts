@@ -248,15 +248,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       this.updateFeature('columnsWidth');
       this.updateFeature('columnsDisplay');
     }
-    // console.log(this.grid?.columns);
-    // console.log('this.orderedFields');
-    // console.log(this.orderedFields);
-    // console.log('this.colWidth');
-    // console.log(this.colWidth);
-    // console.log('this.fields');
-    // this.grid?.columns.forEach((c, i, a) => {
-    //   this.columnsDisplay.push({''})
-    // });
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -1102,17 +1093,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: columnsOrder & columnsWidth)
    */
   updateFeature(storedObjFieldArg: string): void {
-    // console.log('UPDATE');
-    // let globalVariableFeature = '';
-    // if (storedObjFieldArg === 'fields'){
-    //   globalVariableFeature = 'orderedFields';
-    // }
-    // else if (storedObjFieldArg === 'colWidth'){
-    //   globalVariableFeature = 'colWidth';
-    // }
-    // else if (storedObjFieldArg === 'columnsDisplay'){
-    //   globalVariableFeature = 'columnsDisplay';
-    // }
     if (this.grid?.columns.toArray().length !== 0
       && (storedObjFieldArg === 'columnsOrder'
         || storedObjFieldArg === 'columnsWidth'
@@ -1305,10 +1285,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         else {
           this.columnsDisplay.push({title: c.title, display: c.hidden});
         }
-        // console.log('c');
-        // console.log(c);
-        // console.log('c.hidden');
-        // console.log(c.hidden);
       }
     });
   }
