@@ -186,13 +186,22 @@ export class SafeApplicationService {
         variables: {
           id: application?.id,
           name: value.name,
-          description: value.description
+          description: value.description,
+          status: value.status
         }
       }).subscribe(res => {
         if (res.errors) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Application', res.errors[0].message));
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name));
+          if (res.data?.editApplication) {
+            const newApplication = { ...application,
+              name: res.data.editApplication.name,
+              description: res.data.editApplication.description,
+              status: res.data.editApplication.status
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }
@@ -443,18 +452,21 @@ export class SafeApplicationService {
         mutation: EDIT_USER,
         variables: {
           id: user.id,
-          roles: [value.role],
+          roles: value.roles,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
           const newUser = res.data.editUser;
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
-          const newApplication: Application = {
-            ...application,
-            users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
-          };
-          this._application.next(newApplication);
+          const index = application?.users?.indexOf(user);
+          if (application?.users && index) {
+            const newApplication: Application = {
+              ...application,
+              users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
+            };
+            this._application.next(newApplication);
+          }
         }
       });
     }

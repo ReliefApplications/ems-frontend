@@ -2,6 +2,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Component, ComponentFactory, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { prettifyLabel } from '../../../utils/prettify';
 
 @Component({
   selector: 'safe-tab-fields',
@@ -20,12 +21,12 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
 
-  constructor(private queryBuilder: QueryBuilderService) { }
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
     this.selectedFields.forEach((x, index) => {
       if (!x.type) {
         this.form.at(index).setErrors({ invalid: true });
@@ -36,7 +37,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     const selectedFields: string[] = this.form.getRawValue().map(x => x.name);
     this.availableFields = this.fields.slice().filter(x => !selectedFields.includes(x.name));
-    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
+    this.selectedFields = selectedFields.map(x => this.fields.find(f => f.name === x) || { name: x });
   }
 
   drop(event: CdkDragDrop<string[]>): void {
@@ -81,31 +82,18 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     if (this.fieldForm.value.kind !== 'SCALAR') {
       if (this.childTemplate && this.factory) {
         const componentRef = this.childTemplate.createComponent(this.factory);
-        componentRef.instance.form = this.fieldForm;
+        componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
           componentRef.destroy();
         });
       }
-    } else {
-      this.fieldForm?.patchValue({
-        label: this.prettifyLabel(this.fieldForm.value.label)
-      });
     }
   }
 
   public onDelete(index: number): void {
     this.form.removeAt(index);
     this.selectedFields.splice(index, 1);
-  }
-
-  /**
-   * Prettify grid label
-   */
-  private prettifyLabel(label: string): string {
-    label = label.replace('_', ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
-    label = label.charAt(0).toUpperCase() + label.slice(1);
-    return label;
   }
 }
