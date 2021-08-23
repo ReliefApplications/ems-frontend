@@ -108,7 +108,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataSubscription?: Subscription;
   private dashboardId = 0;
   private id = '';
-  private orderedFields: any[] = [];
+  private columnsOrder: any[] = [];
   private storedObj: any = {};
   private stopReorderEvent = false;
   private colWidth: any[] = [];
@@ -244,7 +244,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
   ngAfterViewChecked(): void {
     if (!this.checkFieldsUpdated){
-      this.updateFeature('fields');
+      this.updateFeature('columnsOrder');
       this.updateFeature('colWidth');
       this.updateFeature('columnsDisplay');
     }
@@ -1099,24 +1099,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   /**
    * Update the feature we want we want
    * @param storedObjFieldArg the feature we want to update (storage side) (for the moment, only: fields & colWidth)
-   * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: orderedFields & colWidth)
+   * @param globalVariableFeature the feature we want to update (code side) (for the moment, only: columnsOrder & colWidth)
    */
   updateFeature(storedObjFieldArg: string): void {
     // console.log('UPDATE');
-    let globalVariableFeature = '';
-    if (storedObjFieldArg === 'fields'){
-      globalVariableFeature = 'orderedFields';
-    }
-    else if (storedObjFieldArg === 'colWidth'){
-      globalVariableFeature = 'colWidth';
-    }
-    else if (storedObjFieldArg === 'columnsDisplay'){
-      globalVariableFeature = 'columnsDisplay';
-    }
+    // let globalVariableFeature = '';
+    // if (storedObjFieldArg === 'fields'){
+    //   globalVariableFeature = 'orderedFields';
+    // }
+    // else if (storedObjFieldArg === 'colWidth'){
+    //   globalVariableFeature = 'colWidth';
+    // }
+    // else if (storedObjFieldArg === 'columnsDisplay'){
+    //   globalVariableFeature = 'columnsDisplay';
+    // }
     if (this.grid?.columns.toArray().length !== 0
-      && (globalVariableFeature === 'orderedFields'
-        || globalVariableFeature === 'colWidth'
-        || globalVariableFeature === 'columnsDisplay')){
+      && (storedObjFieldArg === 'columnsOrder'
+        || storedObjFieldArg === 'colWidth'
+        || storedObjFieldArg === 'columnsDisplay')){
       // take the fields stored in the local storage and add or remove the new or old fields
       if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
         if (this.storedObj[storedObjFieldArg].length !== 0){
@@ -1128,7 +1128,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           // fields to remove
           for (const sf of storedField) {
             for (const f of this.fields) {
-              if ((storedObjFieldArg === 'fields' && f === sf)
+              if ((storedObjFieldArg === 'columnsOrder' && f === sf)
                 || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
                 || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
@@ -1143,7 +1143,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           // fields to add
           for (const f of this.fields) {
             for (const sf of storedField) {
-              if ((storedObjFieldArg === 'fields' && f === sf)
+              if ((storedObjFieldArg === 'columnsOrder' && f === sf)
                 || (storedObjFieldArg === 'colWidth' && f.title === sf.title)
                 || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
                 verify = true;
@@ -1163,26 +1163,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               storedField.pop(f);
             }
 
-            this[globalVariableFeature] = storedField.filter((el: any) => {
+            this[storedObjFieldArg] = storedField.filter((el: any) => {
               return el != null;
             });
           }
           else {
-            this[globalVariableFeature] = storedField;
+            this[storedObjFieldArg] = storedField;
           }
 
-          if (storedObjFieldArg === 'fields'){
+          if (storedObjFieldArg === 'columnsOrder'){
             this.stopReorderEvent = true;
           }
 
-          for (const [i, field] of this[globalVariableFeature].entries()) {
+          for (const [i, field] of this[storedObjFieldArg].entries()) {
             this.grid?.columns.forEach((c, n, a) => {
               // not sure if it's the best methode to identify the column
               // but I can't get c.field so...
               if (c.title === field.title){
                 // +1 because getFields() doesn't return the first column (checkbox column)
                 // btw he doesn't take the last two column too
-                if (storedObjFieldArg === 'fields'){
+                if (storedObjFieldArg === 'columnsOrder'){
                   this.grid?.reorderColumn(c, i + 1);
                 }
                 else if (storedObjFieldArg === 'colWidth'){
@@ -1194,7 +1194,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
               }
             });
           }
-          if (storedObjFieldArg === 'fields'){
+          if (storedObjFieldArg === 'columnsOrder'){
             this.stopReorderEvent = false;
           }
         }
@@ -1207,7 +1207,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       else {
         this.noLocalStorage(storedObjFieldArg);
       }
-      if (storedObjFieldArg === 'fields'){
+      if (storedObjFieldArg === 'columnsOrder'){
         this.checkFieldsUpdated = true;
       }
     }
@@ -1218,8 +1218,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param storedObjFieldArg the local storage field
    */
   noLocalStorage(storedObjFieldArg: string): void {
-    if (storedObjFieldArg === 'fields'){
-      this.orderedFields = this.fields;
+    if (storedObjFieldArg === 'columnsOrder'){
+      this.columnsOrder = this.fields;
     }
     else if (storedObjFieldArg === 'colWidth'){
       this.fillColWidth();
@@ -1241,31 +1241,31 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       const oldIndex = e.oldIndex - 1;
       const newIndex = e.newIndex - 1;
 
-      for (let i = 0; i < this.orderedFields.length; i++) {
+      for (let i = 0; i < this.columnsOrder.length; i++) {
         if (i === newIndex){
           if (oldIndex < newIndex) {
-            tempFields[j] = this.orderedFields[i];
+            tempFields[j] = this.columnsOrder[i];
             j++;
-            tempFields[j] = this.orderedFields[oldIndex];
+            tempFields[j] = this.columnsOrder[oldIndex];
           }
           if (oldIndex > newIndex){
-            tempFields[j] = this.orderedFields[oldIndex];
+            tempFields[j] = this.columnsOrder[oldIndex];
             j++;
-            tempFields[j] = this.orderedFields[i];
+            tempFields[j] = this.columnsOrder[i];
           }
 
           j++;
         }
         else if (i !== oldIndex){
-          tempFields[j] = this.orderedFields[i];
+          tempFields[j] = this.columnsOrder[i];
           j++;
         }
       }
 
-      this.orderedFields = tempFields;
-      this.storedObj.fields = this.orderedFields;
+      this.columnsOrder = tempFields;
+      this.storedObj.columnsOrder = this.columnsOrder;
       console.log(this.storedObj);
-      console.log(this.orderedFields);
+      console.log(this.columnsOrder);
       console.log(tempFields);
       localStorage.setItem(this.id, JSON.stringify(this.storedObj));
     }
