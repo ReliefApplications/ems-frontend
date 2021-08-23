@@ -1200,32 +1200,32 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         }
         // if no localstorage
         else {
-          if (storedObjFieldArg === 'fields'){
-            this.orderedFields = this.fields;
-          }
-          else if (storedObjFieldArg === 'colWidth'){
-            this.fillColWidth();
-          }
-          else if (storedObjFieldArg === 'columnsDisplay'){
-            this.fillColumnDisplay();
-          }
+          this.noLocalStorage(storedObjFieldArg);
         }
       }
       // if no localstorage
       else {
-        if (storedObjFieldArg === 'fields'){
-          this.orderedFields = this.fields;
-        }
-        else if (storedObjFieldArg === 'colWidth'){
-          this.fillColWidth();
-        }
-        else if (storedObjFieldArg === 'columnsDisplay'){
-          this.fillColumnDisplay();
-        }
+        this.noLocalStorage(storedObjFieldArg);
       }
       if (storedObjFieldArg === 'fields'){
         this.checkFieldsUpdated = true;
       }
+    }
+  }
+
+  /**
+   * Methode to call if there is no localstorage
+   * @param storedObjFieldArg the local storage field
+   */
+  noLocalStorage(storedObjFieldArg: string): void {
+    if (storedObjFieldArg === 'fields'){
+      this.orderedFields = this.fields;
+    }
+    else if (storedObjFieldArg === 'colWidth'){
+      this.fillColWidth();
+    }
+    else if (storedObjFieldArg === 'columnsDisplay'){
+      this.fillColumnDisplay();
     }
   }
 
