@@ -42,6 +42,10 @@ export default {
             defaultValue: false,
             control: { type: 'boolean' }
         },
+        loading: {
+            defaultValue: false,
+            control: { type: 'boolean' }
+        },
         icon: {
             defaultValue: '',
             control: { type: 'text' }

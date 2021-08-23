@@ -15,6 +15,12 @@
     margin-right: 4px;
 }
 
+.safe-btn-spinner {
+    display: inline-block;
+    vertical-align: sub !important;
+    margin-right: 4px;
+}
+
 .safe-btn-success {
     &:not(:disabled) {
         color: #63d168;
@@ -25,5 +31,8 @@
         &.mat-stroked-button {
             border-color: #63d168;
         }
+    }
+    ::ng-deep circle {
+        stroke: #63d168;
     }
 }

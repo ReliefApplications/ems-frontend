@@ -22,6 +22,8 @@ export class SafeButtonComponent implements OnInit  {
 
   @Input() disabled = false;
 
+  @Input() loading = false;
+
   @Input() icon = '';
 
   get color(): string {

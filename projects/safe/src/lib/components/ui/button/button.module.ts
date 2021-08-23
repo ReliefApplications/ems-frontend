@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeButtonComponent } from './button.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     SafeButtonComponent
