@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
@@ -28,14 +29,35 @@ export class SafeButtonComponent implements OnInit  {
 
   get color(): string {
     switch (this.variant) {
-      case 'primary': {
+      case ButtonVariant.PRIMARY: {
         return 'primary';
       }
-      case 'danger': {
+      case ButtonVariant.DANGER: {
         return 'warn';
       }
       default: {
         return '';
+      }
+    }
+  }
+
+  get spinnerVariant(): string {
+    switch (this.category) {
+      case ButtonCategory.PRIMARY: {
+        return this.variant;
+      }
+      case ButtonCategory.TERTIARY: {
+        return this.variant;
+      }
+      default: {
+        switch (this.variant) {
+          case ButtonVariant.DEFAULT: {
+            return SpinnerVariant.PRIMARY;
+          }
+          default: {
+            return SpinnerVariant.LIGHT;
+          }
+        }
       }
     }
   }

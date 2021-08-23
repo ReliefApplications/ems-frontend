@@ -8,6 +8,6 @@
     [disabled]="disabled"
 >
     <mat-icon *ngIf="icon && !loading" class="safe-btn-icon">{{icon}}</mat-icon>
-    <mat-spinner *ngIf="loading" diameter="18" class="safe-btn-spinner" [color]="color"></mat-spinner>
+    <safe-spinner *ngIf="loading" class="safe-btn-spinner" size="small" [variant]="spinnerVariant"></safe-spinner>
     <ng-content></ng-content>
 </button>
