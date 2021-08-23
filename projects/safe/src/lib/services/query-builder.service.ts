@@ -231,7 +231,6 @@ export class QueryBuilderService {
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {
-    console.log(field);
     switch (newField ? field.type.kind : field.kind) {
       case 'LIST': {
         return this.formBuilder.group({
