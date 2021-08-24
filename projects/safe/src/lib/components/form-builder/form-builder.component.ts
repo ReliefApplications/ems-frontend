@@ -130,13 +130,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           options.allowDragging = true;
         }
       });
-      let ii = 0
       // Block core fields edition
       this.surveyCreator.onShowingProperty.add((sender, options) => {
-        ii ++;
-        console.log(ii);
-        console.log('name', options.property.name);
-        console.log('category', options.property.category);
         const obj = options.obj;
         if (!obj || !obj.page) return;
         // If it is a core field
