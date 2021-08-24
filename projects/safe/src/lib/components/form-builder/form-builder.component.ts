@@ -30,6 +30,20 @@ const QUESTION_TYPES = [
   'tagbox'
 ];
 
+/* Allowed properties for a core question in a child form.
+*/
+const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'width',
+  'maxWidth',
+  'minWidth',
+  'startWithNewLine',
+  'indent',
+  'page',
+  'titleLocation',
+  'descriptionLocation',
+  'state'
+];
+
 @Component({
   selector: 'safe-form-builder',
   templateUrl: './form-builder.component.html',
@@ -116,13 +130,17 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           options.allowDragging = true;
         }
       });
-  
+      let ii = 0
       // Block core fields edition
       this.surveyCreator.onShowingProperty.add((sender, options) => {
+        ii ++;
+        console.log(ii);
+        console.log('name', options.property.name);
+        console.log('category', options.property.category);
         const obj = options.obj;
         if (!obj || !obj.page) return;
         // If it is a core field
-        if (coreFields.some(x => x.name === obj.valueName)) {
+        if (coreFields.some(x => x.name === obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(options.property.name)) {
           options.canShow = false;
         }
       });
