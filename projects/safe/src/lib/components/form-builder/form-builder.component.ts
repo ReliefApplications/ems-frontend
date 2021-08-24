@@ -141,12 +141,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
   
       // Highlight core fields
-      this.surveyCreator.survey.onAfterRenderQuestion.add((sender: any, options: any) => {
-        // If it is a core field
-        if (coreFields.some(x => x.name === options.question.valueName)) {
-          options.htmlElement.children[0].className += " core-question";
-        }
-      });
+      this.addCustomClassToCoreFields(coreFields);
     }
   }
 
@@ -157,7 +152,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         this.surveyCreator.survey.showQuestionNumbers = 'off';
         this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
       }
+      const coreFields = this.fields.filter(x => x.isCore);
+      if (coreFields.length > 0) {
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
     }
+  }
+
+  private addCustomClassToCoreFields(coreFields: any[], className = " core-question"): void {
+    this.surveyCreator.survey.onAfterRenderQuestion.add((sender: any, options: any) => {
+      // If it is a core field
+      if (coreFields.some(x => x.name === options.question.valueName)) {
+        options.htmlElement.children[0].className += className;
+      }
+    });
   }
 
   setCustomTheme(): void {
