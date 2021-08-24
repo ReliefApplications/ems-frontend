@@ -89,9 +89,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         };
       }));
 
-    // Remove adorners to set choices directly from survey view
-    SurveyCreator.removeAdorners(["choices-label", "choices-draggable", "select-choices"]);
-
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
