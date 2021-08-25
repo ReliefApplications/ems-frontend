@@ -19,7 +19,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
+import {Observable, Subject, Subscription} from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -42,6 +42,7 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import {ActivatedRoute} from '@angular/router';
 import {SafeAuthService} from '../../../services/auth.service';
+import {SafeGridService} from '../../../services/grid.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -191,7 +192,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
     private route: ActivatedRoute,
-    private safeAuthService: SafeAuthService
+    private safeAuthService: SafeAuthService,
+    private safeGridService: SafeGridService
   ) {
     this.apiUrl = environment.API_URL;
     this.checkFieldsUpdated = false;
@@ -212,11 +214,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     // Update columns filters
     this.filter = this.storedObj.filter;
     this.loadItems();
+
+    console.log(this.settings);
+    this.settings.layout = 'yes';
+    console.log(this.settings);
+    console.log('TEEEEEST');
   }
 
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
+    console.log(this.settings);
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -831,6 +839,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
+    console.log('GAAAAAANG!');
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -1315,5 +1324,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   saveGridStatus(e: any): void {
     console.log('Save status');
     console.log(e);
+    // this.safeGridService.layoutObservable.emit(this.storedObj);
+    // this.safeGridService.layout = this.storedObj;
+    // this.storedObjToSend.next(this.storedObj);
+
+    this.safeGridService.DataSource.next(this.storedObj);
+
+    // this.safeGridService.layoutObservable = new Observable((observer) => {
+    //   return this.storedObj;
+    // });
+    //
+    // this.safeGridService.layoutObservable = this.storedObj;
   }
 }

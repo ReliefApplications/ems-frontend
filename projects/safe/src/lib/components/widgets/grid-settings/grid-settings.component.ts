@@ -8,6 +8,7 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
 import { Form } from '../../../models/form.model';
+import {SafeGridService} from '../../../services/grid.service';
 
 @Component({
   selector: 'safe-grid-settings',
@@ -45,13 +46,15 @@ export class SafeGridSettingsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private safeGridService: SafeGridService
   ) {
   }
 
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
+    console.log('SETTINGS !!!');
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
 
@@ -67,8 +70,25 @@ export class SafeGridSettingsComponent implements OnInit {
         update: [hasActions ? tileSettings.actions.update : true]
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
-        tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
+        tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)]),
+      layout: {test: 'test'}
     });
+
+    // this.tileForm.layout = this.safeGridService.layout;
+
+    // this.safeGridService.layoutObservable.subscribe({l
+    //   next(obj: any): void { console.log(obj); }
+    // });
+
+    this.safeGridService.DataSource.subscribe(data => {
+      console.log('SUBSCRIBE');
+      console.log(data);
+    });
+
+    // this.safeGridService.layoutObservable.subscribe({
+    //   // this.tileForm.layout = layout;
+    //   // console.log('### layout ###');
+    // });
 
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {

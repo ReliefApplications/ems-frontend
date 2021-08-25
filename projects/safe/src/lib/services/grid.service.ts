@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AVAILABLE_TILES } from '../utils/available-tiles';
+import {Observable, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,13 @@ export class SafeGridService {
 
   // === LIST OF DEFAULT WIDGETS AVAILABLE ===
   public availableTiles = AVAILABLE_TILES;
+
+  public layout: any;
+
+  public layoutObservable: any = new Observable();
+
+  public DataSource: Subject<any> = new Subject<any>();
+  public Data = this.DataSource.asObservable();
 
   constructor() { }
 
