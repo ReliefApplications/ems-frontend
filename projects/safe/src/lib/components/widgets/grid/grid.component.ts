@@ -8,7 +8,6 @@ import {
   SelectionEvent,
   PagerSettings,
   ColumnResizeArgs,
-  ColumnBase,
   ColumnVisibilityChangeEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,7 +39,8 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { prettifyLabel } from '../../../utils/prettify';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -106,16 +106,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
-  private dashboardId = 0;
-  private id = '';
+
+  // === CACHED CONFIGURATION ===
+  private checkFieldsUpdated: boolean;
   private columnsOrder: any[] = [];
-  private storedObj: any = {};
+  private cachedConfig: any = {};
   private stopReorderEvent = false;
   private columnsWidth: any[] = [];
   private columnsDisplay: any[] = [];
-
-  // === VERIFICATION UPDATE FIELDS ===
-  private checkFieldsUpdated: boolean;
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -131,7 +129,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   // === SETTINGS ===
   @Input() header = true;
   @Input() settings: any = null;
-  @Input() widgetId = 0;
+  @Input() id = '';
 
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
@@ -185,8 +183,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService,
-    private route: ActivatedRoute
+    private downloadService: SafeDownloadService
   ) {
     this.apiUrl = environment.API_URL;
     this.checkFieldsUpdated = false;
@@ -194,17 +191,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    // Creation of the unique id (in order to identify the grid in the local storage)
-    this.route.params.subscribe((params) => {
-      this.dashboardId = params.id;
-    });
-    this.id = this.dashboardId.toString() + this.widgetId;
 
     // initialization of storedObj (it represent the localStorage)
-    this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
+    this.cachedConfig = JSON.parse(localStorage.getItem(`dashboard:${this.id}`) || '{}');
 
     // Update columns filters
-    this.filter = this.storedObj.filter;
+    this.filter = this.cachedConfig.filter;
     this.loadItems();
   }
 
@@ -260,16 +252,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           return this.getFields(f.fields, fullName, true);
         }
         default: {
+          const metaData = this.metaFields[fullName] || null;
           return {
             name: fullName,
-            title: f.label ? f.label : f.name,
+            title: f.label ? f.label : prettifyLabel(f.name),
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            meta: this.metaFields[fullName],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly,
-            order: 0
+            order: 0,
+            meta: metaData,
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly
           };
         }
       }
@@ -623,8 +616,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.storedObj.filter = this.filter;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+    this.cachedConfig.filter = this.filter;
+    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
     this.loadItems();
   }
 
@@ -684,17 +677,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     });
   }
 
-  /* Opens the record on a read-only modal.
+  /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
   */
-  public onShowDetails(id: string): void {
-    this.dialog.open(SafeRecordModalComponent, {
+  public onShowDetails(item: any): void {
+    const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: id,
-        locale: 'en'
+        recordId: item.id,
+        locale: 'en',
+        canUpdate: item.canUpdate
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.onUpdateRow(item.id);
+      }
     });
   }
 
@@ -1022,6 +1021,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    this.filter = {
+      logic: 'and',
+      filters: []
+    };
+    this.loadItems();
     if (this.showFilter) {
       this.fields.filter(x => !x.disabled).forEach((field, index) => {
         if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
@@ -1095,9 +1099,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       && (storedObjFieldArg === 'columnsOrder'
         || storedObjFieldArg === 'columnsWidth'
         || storedObjFieldArg === 'columnsDisplay')){
-      if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
-        if (this.storedObj[storedObjFieldArg].length !== 0){
-          const storedField = this.storedObj[storedObjFieldArg];
+      if (this.cachedConfig[storedObjFieldArg] !== null && this.cachedConfig[storedObjFieldArg] !== undefined){
+        if (this.cachedConfig[storedObjFieldArg].length !== 0){
+          const storedField = this.cachedConfig[storedObjFieldArg];
           let verify = false;
           const fieldsToAdd = [];
           const fieldsToRemove = [];
@@ -1242,8 +1246,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       }
 
       this.columnsOrder = tempFields;
-      this.storedObj.columnsOrder = this.columnsOrder;
-      localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+      this.cachedConfig.columnsOrder = this.columnsOrder;
+      localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
     }
   }
 
@@ -1257,8 +1261,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         c.width = e[0].newWidth;
       }
     });
-    this.storedObj.columnsWidth = this.columnsWidth;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+    this.cachedConfig.columnsWidth = this.columnsWidth;
+    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
   }
 
   /**
@@ -1271,8 +1275,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         c.display = e.columns[0].hidden;
       }
     });
-    this.storedObj.columnsDisplay = this.columnsDisplay;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+    this.cachedConfig.columnsDisplay = this.columnsDisplay;
+    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
   }
 
   /**

@@ -34,6 +34,6 @@ jobs:
       - name: Build Shared Library
         run: npm run build -- --prod safe
       - name: Build Back-office
-        run: npm run build:az:back
+        run: npm run build:az:uat:back
       - name: Build Front-office
-        run: npm run build:az:front
+        run: npm run build:az:uat:front
