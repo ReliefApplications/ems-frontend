@@ -7,8 +7,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnResizeArgs,
-  ColumnVisibilityChangeEvent
+  ColumnReorderEvent,
+  ColumnBase
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -28,7 +28,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject, AfterViewInit, AfterContentInit, AfterViewChecked, QueryList
+  ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -39,8 +39,9 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
-import { ActivatedRoute } from '@angular/router';
 import { prettifyLabel } from '../../../utils/prettify';
+import { GridLayout } from './models/grid-layout.model';
+import { ColumnComponent } from '@progress/kendo-angular-excel-export';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -76,7 +77,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -108,12 +109,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataSubscription?: Subscription;
 
   // === CACHED CONFIGURATION ===
-  private checkFieldsUpdated: boolean;
-  private columnsOrder: any[] = [];
-  private cachedConfig: any = {};
-  private stopReorderEvent = false;
-  private columnsWidth: any[] = [];
-  private columnsDisplay: any[] = [];
+  @Input() layout: GridLayout = {};
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -149,6 +145,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
+
+  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -186,17 +184,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     private downloadService: SafeDownloadService
   ) {
     this.apiUrl = environment.API_URL;
-    this.checkFieldsUpdated = false;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-
-    // initialization of storedObj (it represent the localStorage)
-    this.cachedConfig = JSON.parse(localStorage.getItem(`dashboard:${this.id}`) || '{}');
-
-    // Update columns filters
-    this.filter = this.cachedConfig.filter;
+    if (this.layout?.filter) {
+      this.filter = this.layout.filter;
+    }
+    if (this.layout?.sort) {
+      this.sort = this.layout.sort;
+    }
     this.loadItems();
   }
 
@@ -228,31 +225,22 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
-  ngAfterViewChecked(): void {
-    // checkFieldsUpdated enable us to not have to call again and again the updateFeature methode
-    // because the ngAfterViewChecked() methode is called many times
-    // but we have to use ngAfterViewChecked() because before that the grid fields are not initialized
-    if (!this.checkFieldsUpdated){
-      // Update columns: order, width and display
-      this.updateFeature('columnsOrder');
-      this.updateFeature('columnsWidth');
-      this.updateFeature('columnsDisplay');
-    }
-  }
-
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
+    const cachedFields = this.layout?.fields || {};
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      const fullName = prefix ? `${prefix}.${f.name}` : f.name;
+      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
           const metaData = this.metaFields[fullName] || null;
+          const cachedField = cachedFields[fullName] || null;
+          const title = f.label ? f.label : prettifyLabel(f.name);
           return {
             name: fullName,
             title: f.label ? f.label : prettifyLabel(f.name),
@@ -260,13 +248,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            order: 0,
             meta: metaData,
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            hidden: cachedField?.hidden || false,
+            width: cachedField?.width || title.length * 7 + 50,
+            index: cachedField?.index || fields.length
           };
         }
       }
-    }));
+    })).sort((a, b) => a.index - b.index );
   }
 
   private convertDateFields(items: any[]): void {
@@ -595,6 +585,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public sortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
+    this.layout.sort = sort;
+    this.layoutChanged.emit(this.layout);
     this.skip = 0;
     this.loadItems();
   }
@@ -616,8 +608,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.cachedConfig.filter = this.filter;
-    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
+    this.layout.filter = this.filter;
+    this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
 
@@ -1090,219 +1082,54 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   /**
-   * Update the feature we want we want
-   * @param storedObjFieldArg the feature we want to update (storage side)
-   * (for the moment, only: columnsOrder, columnsWidth, columnsDisplay)
+   * Set and emit new grid configuration after column reorder event.
+   * @param e ColumnReorderEvent
    */
-  updateFeature(storedObjFieldArg: string): void {
-    if (this.grid?.columns.toArray().length !== 0
-      && (storedObjFieldArg === 'columnsOrder'
-        || storedObjFieldArg === 'columnsWidth'
-        || storedObjFieldArg === 'columnsDisplay')){
-      if (this.cachedConfig[storedObjFieldArg] !== null && this.cachedConfig[storedObjFieldArg] !== undefined){
-        if (this.cachedConfig[storedObjFieldArg].length !== 0){
-          const storedField = this.cachedConfig[storedObjFieldArg];
-          let verify = false;
-          const fieldsToAdd = [];
-          const fieldsToRemove = [];
-
-          // fields to remove
-          for (const sf of storedField) {
-            for (const f of this.fields) {
-              if ((storedObjFieldArg === 'columnsOrder' && f.name === sf.name)
-                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
-                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
-                verify = true;
-              }
-            }
-            if (!verify){
-              fieldsToRemove.push(sf);
-            }
-            verify = false;
-          }
-
-          // fields to add
-          for (const f of this.fields) {
-            for (const sf of storedField) {
-              if ((storedObjFieldArg === 'columnsOrder' && f.name === sf.name)
-                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
-                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
-                verify = true;
-              }
-            }
-            if (!verify){
-              fieldsToAdd.push(f);
-            }
-            verify = false;
-          }
-
-          if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-            for (const f of fieldsToAdd) {
-              storedField.push(f);
-            }
-            for (const f of fieldsToRemove) {
-              storedField.pop(f);
-            }
-            this[storedObjFieldArg] = storedField.filter((el: any) => {
-              return el != null;
-            });
-          }
-          else {
-            this[storedObjFieldArg] = storedField;
-          }
-
-          // we need to turn off reorderEvent, because when we update it we don't want it to react
-          // we want it to react only when the user drag and drop columns
-          if (storedObjFieldArg === 'columnsOrder'){
-            this.stopReorderEvent = true;
-          }
-
-          // update features
-          for (const [i, field] of this[storedObjFieldArg].entries()) {
-            this.grid?.columns.forEach((c, n, a) => {
-              // not sure if it's the best methode to identify the column
-              // but I can't get c.field so...
-              if (c.title === field.title){
-                // +1 because getFields() doesn't return the first column (checkbox column)
-                // btw he doesn't take the last two column too
-                if (storedObjFieldArg === 'columnsOrder'){
-                  this.grid?.reorderColumn(c, i + 1);
-                }
-                else if (storedObjFieldArg === 'columnsWidth'){
-                  c.width = field.width;
-                }
-                else if (storedObjFieldArg === 'columnsDisplay'){
-                  c.hidden = field.display;
-                }
-              }
-            });
-          }
-          if (storedObjFieldArg === 'columnsOrder'){
-            this.stopReorderEvent = false;
-          }
-        }
-        // if no localstorage
-        else {
-          this.noLocalStorage(storedObjFieldArg);
-        }
+  columnReorder(e: ColumnReorderEvent): void {
+    if (e.oldIndex !== e.newIndex) {
+      const columns = this.grid?.columns.toArray();
+      if (columns) {
+        const column = columns.splice(e.oldIndex, 1);
+        console.log(column.orderIndex);
+        columns.splice(e.newIndex, 0, ...column);
+        console.log(columns);
       }
-      // if no localstorage
-      else {
-        this.noLocalStorage(storedObjFieldArg);
-      }
-      if (storedObjFieldArg === 'columnsOrder'){
-        this.checkFieldsUpdated = true;
-      }
+      this.setColumnsConfig();
     }
   }
 
   /**
-   * Methode to call if there is no localstorage
-   * @param storedObjFieldArg the local storage field
+   * Set and emit new grid configuration after column resize event.
    */
-  noLocalStorage(storedObjFieldArg: string): void {
-    if (storedObjFieldArg === 'columnsOrder'){
-      this.columnsOrder = this.fields;
-    }
-    else if (storedObjFieldArg === 'columnsWidth'){
-      this.fillColumnWidth();
-    }
-    else if (storedObjFieldArg === 'columnsDisplay'){
-      this.fillColumnDisplay();
-    }
+  columnResize(): void {
+    this.setColumnsConfig();
   }
 
   /**
-   * Order columns event
-   * @param e event parameter (oldIndex, newIndex)
+   * Set and emit new grid configuration after column visibility event.
    */
-  columnReorder(e: any): void {
-    if (!this.stopReorderEvent){
-      const tempFields: any[] = [];
-      let j = 0;
-      // shift by 1 because the old and new index take in account the first checkbox column
-      const oldIndex = e.oldIndex - 1;
-      const newIndex = e.newIndex - 1;
+  columnVisibilityChange(): void {
+    this.setColumnsConfig();
+  }
 
-      for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex){
-          if (oldIndex < newIndex) {
-            tempFields[j] = this.columnsOrder[i];
-            j++;
-            tempFields[j] = this.columnsOrder[oldIndex];
-          }
-          if (oldIndex > newIndex){
-            tempFields[j] = this.columnsOrder[oldIndex];
-            j++;
-            tempFields[j] = this.columnsOrder[i];
-          }
-
-          j++;
+  /**
+   * Generate the cached fields config from the grid columns.
+   */
+  private setColumnsConfig(): void {
+    const length = this.fields.length;
+    this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+      const index = 0;
+      console.log(c.field);
+      return {
+        ...obj,
+        [c.field]: {
+          field: c.field,
+          width: c.width,
+          hidden: c.hidden,
+          index
         }
-        else if (i !== oldIndex){
-          tempFields[j] = this.columnsOrder[i];
-          j++;
-        }
-      }
-
-      this.columnsOrder = tempFields;
-      this.cachedConfig.columnsOrder = this.columnsOrder;
-      localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
-    }
-  }
-
-  /**
-   * Resize columns width event
-   * @param e event parameter (oldWidth, newWidth)
-   */
-  columnResize(e: Array<ColumnResizeArgs>): void {
-    this.columnsWidth.forEach((c, i, a) => {
-      if (c.title === e[0].column.title){
-        c.width = e[0].newWidth;
-      }
-    });
-    this.cachedConfig.columnsWidth = this.columnsWidth;
-    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
-  }
-
-  /**
-   * Display columns event
-   * @param e event parameter
-   */
-  columnVisibilityChange(e: ColumnVisibilityChangeEvent): void {
-    this.columnsDisplay.forEach((c, i, a) => {
-      if (c.title === e.columns[0].title){
-        c.display = e.columns[0].hidden;
-      }
-    });
-    this.cachedConfig.columnsDisplay = this.columnsDisplay;
-    localStorage.setItem(`dashboard:${this.id}`, JSON.stringify(this.cachedConfig));
-  }
-
-  /**
-   * Fill columnsWidth variable with grid columns base properties (used when there is no localStorage)
-   */
-  fillColumnWidth(): void {
-    this.grid?.columns.forEach((c, i, a) => {
-      if (c.title !== undefined){
-        this.columnsWidth.push({title: c.title, width: c.width});
-      }
-    });
-  }
-
-  /**
-   * Fill columnsDisplay variable with grid columns base properties (used when there is no localStorage)
-   */
-  fillColumnDisplay(): void {
-    this.grid?.columns.forEach((c, i, a) => {
-      if (c.title !== undefined){
-        if (c.hidden === undefined){
-          this.columnsDisplay.push({title: c.title, display: false});
-        }
-        else {
-          this.columnsDisplay.push({title: c.title, display: c.hidden});
-        }
-      }
-    });
+      };
+    }, {});
+    this.layoutChanged.emit(this.layout);
   }
 }

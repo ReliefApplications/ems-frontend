@@ -22,4 +22,15 @@ export class SafeDashboardService {
   closeDashboard(): void {
     this.dashboard.next(null);
   }
+
+  getWidgetLayout(id: number): any {
+    const dashboardId = this.dashboard.getValue()?.id;
+    const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${id}`);
+    return cachedLayout ? JSON.parse(cachedLayout) : {};
+  }
+
+  saveWidgetLayout(id: number, layout: any): void {
+    const dashboardId = this.dashboard.getValue()?.id;
+    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify(layout));
+  }
 }
