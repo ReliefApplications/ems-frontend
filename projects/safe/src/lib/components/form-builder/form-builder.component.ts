@@ -113,33 +113,32 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     if (coreFields.length > 0) {
 
       // Remove core fields adorners
-      this.surveyCreator.onElementAllowOperations.add((sender, options) => {
-        const obj = options.obj;
-        if (!obj || !obj.page) return;
+      this.surveyCreator.onElementAllowOperations.add((sender, opt) => {
+        const obj = opt.obj;
+        if (!obj || !obj.page) { return; }
         // If it is a core field
         if (coreFields.some(x => x.name === obj.valueName)) {
           // Disable deleting, editing, changing type and changing if required or not
-          options.allowDelete = false;
-          options.allowChangeType = false;
-          options.allowChangeRequired = false;
-          options.allowAddToToolbox = false;
-          options.allowCopy = false;
-          options.allowShowEditor = false;
-          options.allowShowHideTitle = false;
+          opt.allowDelete = false;
+          opt.allowChangeType = false;
+          opt.allowChangeRequired = false;
+          opt.allowAddToToolbox = false;
+          opt.allowCopy = false;
+          opt.allowShowEditor = false;
+          opt.allowShowHideTitle = false;
           // options.allowEdit = false;
-          options.allowDragging = true;
+          opt.allowDragging = true;
         }
       });
       // Block core fields edition
-      this.surveyCreator.onShowingProperty.add((sender, options) => {
-        const obj = options.obj;
-        if (!obj || !obj.page) return;
+      this.surveyCreator.onShowingProperty.add((sender, opt) => {
+        const obj = opt.obj;
+        if (!obj || !obj.page) { return; }
         // If it is a core field
-        if (coreFields.some(x => x.name === obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(options.property.name)) {
-          options.canShow = false;
+        if (coreFields.some(x => x.name === obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+          opt.canShow = false;
         }
       });
-  
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
     }
@@ -160,7 +159,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
   }
 
-  private addCustomClassToCoreFields(coreFields: any[], className = " core-question"): void {
+  private addCustomClassToCoreFields(coreFields: any[], className = 'core-question'): void {
     this.surveyCreator.survey.onAfterRenderQuestion.add((sender: any, options: any) => {
       // If it is a core field
       if (coreFields.some(x => x.name === options.question.valueName)) {
