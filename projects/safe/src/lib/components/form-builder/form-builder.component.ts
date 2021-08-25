@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
+import { Form } from '../../models/form.model';
 
 /* Commented types are not yet implemented.
 */
@@ -44,6 +45,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'state'
 ];
 
+const CORE_FIELD_CLASS = 'core-question';
+
 @Component({
   selector: 'safe-form-builder',
   templateUrl: './form-builder.component.html',
@@ -51,8 +54,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 })
 export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
-  @Input() structure: any;
-  @Input() fields: any[] = [];
+  @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
@@ -85,12 +87,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       options
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.structure;
+    this.surveyCreator.text = this.form.structure || '';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-    if (!this.structure) {
+    if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
@@ -109,15 +111,15 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
-    const coreFields = this.fields.filter(x => x.isCore);
-    if (coreFields.length > 0) {
-
+    // Skip if form is core
+    if (!this.form.core) {
+      const coreFields = this.form.fields?.filter(x => x.isCore).map(x => x.name) || [];
       // Remove core fields adorners
       this.surveyCreator.onElementAllowOperations.add((sender, opt) => {
         const obj = opt.obj;
         if (!obj || !obj.page) { return; }
         // If it is a core field
-        if (coreFields.some(x => x.name === obj.valueName)) {
+        if (coreFields.includes(obj.valueName)) {
           // Disable deleting, editing, changing type and changing if required or not
           opt.allowDelete = false;
           opt.allowChangeType = false;
@@ -126,7 +128,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           opt.allowCopy = false;
           opt.allowShowEditor = false;
           opt.allowShowHideTitle = false;
-          // options.allowEdit = false;
           opt.allowDragging = true;
         }
       });
@@ -135,7 +136,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         const obj = opt.obj;
         if (!obj || !obj.page) { return; }
         // If it is a core field
-        if (coreFields.some(x => x.name === obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+        if (coreFields.includes(obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
           opt.canShow = false;
         }
       });
@@ -146,24 +147,24 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
-      this.surveyCreator.text = this.structure;
-      if (!this.structure) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
         this.surveyCreator.survey.showQuestionNumbers = 'off';
         this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
       }
-      const coreFields = this.fields.filter(x => x.isCore);
-      if (coreFields.length > 0) {
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields = this.form.fields?.filter(x => x.isCore).map(x => x.name) || [];
         // Highlight core fields
         this.addCustomClassToCoreFields(coreFields);
       }
     }
   }
 
-  private addCustomClassToCoreFields(coreFields: any[], className = 'core-question'): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add((sender: any, options: any) => {
-      // If it is a core field
-      if (coreFields.some(x => x.name === options.question.valueName)) {
-        options.htmlElement.children[0].className += className;
+  private addCustomClassToCoreFields(coreFields: string[]): void {
+    this.surveyCreator.survey.onAfterRenderQuestion.add((_, options: any) => {
+      if (coreFields.includes(options.question.valueName)) {
+        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
       }
     });
   }
