@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
-import { Dashboard, SafeSnackBarService } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, SafeDashboardService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -31,7 +31,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private dashboardService: SafeDashboardService
   ) { }
 
   ngOnInit(): void {
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }).valueChanges.subscribe((res) => {
         if (res.data.dashboard) {
           this.dashboard = res.data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
           this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
           this.loading = res.loading;
         } else {
@@ -64,6 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+    this.dashboardService.closeDashboard();
   }
 
 }
