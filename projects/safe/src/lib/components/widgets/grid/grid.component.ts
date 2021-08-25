@@ -33,6 +33,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
+import { prettifyLabel } from '../../../utils/prettify';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -215,15 +216,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
+          const metaData = this.metaFields[fullName] || null;
           return {
             name: fullName,
-            title: f.label ? f.label : f.name,
+            title: f.label ? f.label : prettifyLabel(f.name),
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            meta: this.metaFields[fullName],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly
+            meta: metaData,
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly
           };
         }
       }
@@ -636,17 +638,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Opens the record on a read-only modal.
+  /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
   */
-  public onShowDetails(id: string): void {
-    this.dialog.open(SafeRecordModalComponent, {
+  public onShowDetails(item: any): void {
+    const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: id,
-        locale: 'en'
+        recordId: item.id,
+        locale: 'en',
+        canUpdate: item.canUpdate
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.onUpdateRow(item.id);
+      }
     });
   }
 
@@ -974,6 +982,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    this.filter = {
+      logic: 'and',
+      filters: []
+    };
+    this.loadItems();
     if (this.showFilter) {
       this.fields.filter(x => !x.disabled).forEach((field, index) => {
         if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
