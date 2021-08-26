@@ -27,5 +27,5 @@
         </mat-button-toggle-group>
     </div>
     <app-history *ngIf="activeVersions" [dataSource]="form.versions || []" (open)="onOpenVersion($event)"></app-history>
-    <safe-form-builder [structure]="structure" (save)="onSave($event)" (formChange)="formStructureChange($event)"></safe-form-builder>
+    <safe-form-builder [form]="form" (save)="onSave($event)" (formChange)="formStructureChange($event)"></safe-form-builder>
 </ng-container>
