@@ -136,6 +136,24 @@ query GetShortFormById($id: ID!) {
       modifiedAt
       data
     }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
     canUpdate
   }
 }`;

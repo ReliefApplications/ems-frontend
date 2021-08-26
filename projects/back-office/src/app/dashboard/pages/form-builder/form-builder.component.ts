@@ -2,7 +2,6 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
@@ -152,7 +151,7 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
-          this.form = res.data?.editForm;
+          this.form = { ...res.data?.editForm, structure };
           this.structure = structure;
           localStorage.removeItem(`form:${this.id}`);
           this.hasChanges = false;
@@ -278,7 +277,7 @@ export class FormBuilderComponent implements OnInit {
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
-        this.form = res.data?.editForm;
+        this.form = { ...res.data?.editForm, structure: this.structure };
         statusModal.close();
       }
     });
