@@ -220,6 +220,8 @@ mutation editForm($id: ID!, $structure: JSON!) {
     name
     createdAt
     status
+    core
+    fields
     versions {
       id
       createdAt

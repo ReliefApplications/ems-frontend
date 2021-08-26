@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
+import { Form } from '../../models/form.model';
 
 /* Commented types are not yet implemented.
 */
@@ -30,6 +31,22 @@ const QUESTION_TYPES = [
   'tagbox'
 ];
 
+/* Allowed properties for a core question in a child form.
+*/
+const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'width',
+  'maxWidth',
+  'minWidth',
+  'startWithNewLine',
+  'indent',
+  'page',
+  'titleLocation',
+  'descriptionLocation',
+  'state'
+];
+
+const CORE_FIELD_CLASS = 'core-question';
+
 @Component({
   selector: 'safe-form-builder',
   templateUrl: './form-builder.component.html',
@@ -37,7 +54,7 @@ const QUESTION_TYPES = [
 })
 export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
-  @Input() structure: any;
+  @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
@@ -70,12 +87,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       options
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.structure;
+    this.surveyCreator.text = this.form.structure || '';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
-    if (!this.structure) {
+    if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
       this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
     }
@@ -92,16 +109,64 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
+
+    // === CORE QUESTIONS FOR CHILD FORM ===
+    // Skip if form is core
+    if (!this.form.core) {
+      const coreFields = this.form.fields?.filter(x => x.isCore).map(x => x.name) || [];
+      // Remove core fields adorners
+      this.surveyCreator.onElementAllowOperations.add((sender, opt) => {
+        const obj = opt.obj;
+        if (!obj || !obj.page) { return; }
+        // If it is a core field
+        if (coreFields.includes(obj.valueName)) {
+          // Disable deleting, editing, changing type and changing if required or not
+          opt.allowDelete = false;
+          opt.allowChangeType = false;
+          opt.allowChangeRequired = false;
+          opt.allowAddToToolbox = false;
+          opt.allowCopy = false;
+          opt.allowShowEditor = false;
+          opt.allowShowHideTitle = false;
+          opt.allowDragging = true;
+        }
+      });
+      // Block core fields edition
+      this.surveyCreator.onShowingProperty.add((sender, opt) => {
+        const obj = opt.obj;
+        if (!obj || !obj.page) { return; }
+        // If it is a core field
+        if (coreFields.includes(obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+          opt.canShow = false;
+        }
+      });
+      // Highlight core fields
+      this.addCustomClassToCoreFields(coreFields);
+    }
   }
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
-      this.surveyCreator.text = this.structure;
-      if (!this.structure) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
         this.surveyCreator.survey.showQuestionNumbers = 'off';
         this.surveyCreator.survey.completedHtml = '<h3>The form has successfully been submitted.</h3>';
       }
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields = this.form.fields?.filter(x => x.isCore).map(x => x.name) || [];
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
     }
+  }
+
+  private addCustomClassToCoreFields(coreFields: string[]): void {
+    this.surveyCreator.survey.onAfterRenderQuestion.add((_, options: any) => {
+      if (coreFields.includes(options.question.valueName)) {
+        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+      }
+    });
   }
 
   setCustomTheme(): void {
