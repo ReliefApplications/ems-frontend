@@ -252,11 +252,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
-            index: cachedField?.index || fields.length
+            orderIndex: cachedField?.orderIndex || fields.length
           };
         }
       }
-    })).sort((a, b) => a.index - b.index );
+    })).sort((a, b) => a.orderIndex - b.orderIndex );
   }
 
   private convertDateFields(items: any[]): void {
@@ -1087,13 +1087,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   columnReorder(e: ColumnReorderEvent): void {
     if (e.oldIndex !== e.newIndex) {
-      const columns = this.grid?.columns.toArray();
-      if (columns) {
-        const column = columns.splice(e.oldIndex, 1);
-        console.log(column.orderIndex);
-        columns.splice(e.newIndex, 0, ...column);
-        console.log(columns);
-      }
       this.setColumnsConfig();
     }
   }
@@ -1116,17 +1109,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Generate the cached fields config from the grid columns.
    */
   private setColumnsConfig(): void {
-    const length = this.fields.length;
     this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      const index = 0;
-      console.log(c.field);
       return {
         ...obj,
         [c.field]: {
           field: c.field,
           width: c.width,
           hidden: c.hidden,
-          index
+          orderIndex: c.orderIndex
         }
       };
     }, {});
