@@ -101,46 +101,6 @@ export interface UploadFileMutationResponse {
   uploadFile: string;
 }
 
-// === EDIT FORM ===
-export const EDIT_FORM_STRUCTURE = gql`
-mutation editForm($id: ID!, $structure: JSON!) {
-  editForm(id: $id, structure: $structure) {
-    id
-    name
-    createdAt
-    status
-    versions {
-      id
-      createdAt
-      data
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
-  }
-}`;
-
-export interface EditFormMutationResponse {
-  loading: boolean;
-  editForm: Form;
-}
-
 // === EDIT USER ===
 export const EDIT_USER = gql`
 mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
