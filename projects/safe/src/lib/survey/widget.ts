@@ -141,6 +141,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 const e = new CustomEvent('saveResourceFromEmbed',
                   { detail: { resource: res.data, template: res.template } });
                 document.dispatchEvent(e);
+                question.value = res.data.id;
               }
             });
           };
@@ -226,6 +227,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                       });
                       document.dispatchEvent(e);
                     }
+                    // there we really change the value and so trigger the method
+                    question.value = question.value.concat(res.data.id);
                   }
                 });
               };
