@@ -59,6 +59,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('init');
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;

@@ -227,6 +227,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                       document.dispatchEvent(e);
                     }
                   }
+                  question.value = question.value.concat(res.data.id);
                 });
               };
             }
