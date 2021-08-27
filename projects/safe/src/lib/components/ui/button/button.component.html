@@ -4,10 +4,11 @@
     [class.safe-btn-block]="block"
     [class.safe-btn-small]="size === 'small'"
     [class.safe-btn-success]="variant === 'success'"
+    [class.mat-icon-button]="!content"
     [color]="color"
     [disabled]="disabled"
 >
-    <safe-icon *ngIf="icon && !loading" [inline]="true" class="safe-btn-icon" [icon]="icon"></safe-icon>
+    <safe-icon *ngIf="icon && !loading" [inline]="isIconButton" [class.safe-btn-icon]="isIconButton" [icon]="icon"></safe-icon>
     <safe-spinner *ngIf="loading" class="safe-btn-spinner" size="small" [variant]="spinnerVariant"></safe-spinner>
-    <ng-content></ng-content>
+    <ng-content #content></ng-content>
 </button>

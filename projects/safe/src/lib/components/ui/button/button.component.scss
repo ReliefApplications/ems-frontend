@@ -18,6 +18,11 @@
     margin-right: 4px;
 }
 
+safe-icon:not(.safe-btn-icon) {
+    display: flex;
+    justify-content: center;
+}
+
 .safe-btn-success {
     &:not(:disabled) {
         color: #63d168;
