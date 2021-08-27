@@ -1,4 +1,4 @@
-import { Component, ContentChild, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
@@ -19,6 +19,8 @@ export class SafeButtonComponent implements OnInit  {
 
   @Input() variant: ButtonVariant | string = ButtonVariant.DEFAULT;
 
+  @Input() isIcon = false;
+
   @Input() block = false;
 
   @Input() disabled = false;
@@ -26,8 +28,6 @@ export class SafeButtonComponent implements OnInit  {
   @Input() loading = false;
 
   @Input() icon = '';
-
-  @ContentChild('content') content: ElementRef | undefined;
 
   get color(): string {
     switch (this.variant) {
@@ -62,10 +62,6 @@ export class SafeButtonComponent implements OnInit  {
         }
       }
     }
-  }
-
-  get isIconButton(): boolean {
-    return this.content ? true : false;
   }
 
   constructor() {}

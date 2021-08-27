@@ -4,7 +4,7 @@ import { SafeButtonComponent } from './button.component';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
-import { withKnobs, text, select } from '@storybook/addon-knobs';
+import { withKnobs, text } from '@storybook/addon-knobs';
 
 export default {
     component: SafeButtonComponent,
@@ -51,7 +51,11 @@ export default {
         icon: {
             defaultValue: '',
             control: { type: 'text' }
-        }
+        },
+        isIcon: {
+            defaultValue: false,
+            control: { type: 'boolean' }
+        },
     }
 } as Meta;
 
