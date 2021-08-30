@@ -28,7 +28,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject
+  ComponentFactoryResolver, EventEmitter, Inject, AfterViewChecked
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -42,6 +42,7 @@ import { SafeExpandedCommentComponent } from './expanded-comment/expanded-commen
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
 import { ColumnComponent } from '@progress/kendo-angular-excel-export';
+import {any} from 'codelyzer/util/function';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -77,7 +78,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -108,6 +109,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private metaQuery: any;
   private dataSubscription?: Subscription;
   private columnsOrder: any[] = [];
+
+  // === VERIFICATION UPDATE FIELDS ===
+  private checkFieldsUpdated = false;
+  private stopReorderEvent = false;
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
@@ -226,64 +231,70 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
-  private flatDeep(arr: any[]): any[] {
-    console.log('flatDeep');
-    const tempArr = arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
-    console.log(tempArr);
-    // console.log(this.grid?.columns.toArray());
-    console.log(this.grid);
-    console.log(this.grid?.columns);
-
-    this.grid?.columnList.forEach((c) => {
-      console.log(c);
-    });
-    console.log('-----');
-    // if (this.grid?.columns !== undefined){
-    //   this.grid?.columns.forEach((c, n, a) => {
-    //     console.log(c);
-    //   });
-    // }
-    for (const tempArrElement of tempArr) {
-      console.log(tempArrElement);
-      this.grid?.columns.forEach((c, n, a) => {
-        console.log('c');
-        console.log(c);
-        console.log(n);
-        console.log(a);
-      });
-      // const cb = this.grid?.columns.find((c) => c.field === tempArrElement.name);
-      // console.log(cb);
+  ngAfterViewChecked(): void {
+    // console.log(this.checkFieldsUpdated);
+    // console.log(this.grid?.columns.length);
+    if (this.grid?.columns.length !== undefined)
+    {
+      if (!this.checkFieldsUpdated && this.grid?.columns.length !== 0){
+        this.checkFieldsUpdated = true;
+        console.log('PASS');
+        this.stopReorderEvent = true;
+        const cachedFields = this.layout?.fields || {};
+        // console.log(cachedFields);
+        const cachedFieldsObj: any = Object.entries(cachedFields);
+        for (const [k, v] of cachedFieldsObj) {
+          // console.log('k');
+          // console.log(k);
+          // console.log('v');
+          // console.log(v);
+          // this.grid?.columns.forEach((c, n, a) => {
+          //   console.log('c');
+          //   console.log(c);
+          //   console.log(n);
+          //   console.log(a);
+          // });
+          const cb = this.grid?.columns.find((c) => c.title === v.title);
+          // console.log('v.order');
+          // console.log(v.order);
+          if (cb !== undefined){
+            console.log('cb');
+            console.log(cb);
+            console.log('order');
+            console.log(v.order + 1);
+            this.grid?.reorderColumn(cb, v.order + 1);
+          }
+        }
+        this.stopReorderEvent = false;
+      }
     }
-    // const finalArr = [];
-    // for (const tempArrElement of tempArr) {
-    //   finalArr[tempArrElement.orderIndex] = tempArrElement;
-    // }
-    // console.log('finalArr');
-    // console.log(finalArr);
-    // return finalArr;
+
+  }
+
+  private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     const cachedFields = this.layout?.fields || {};
-    console.log('fields');
-    console.log(fields);
-    console.log('cachedFields');
-    console.log(cachedFields);
-
-    for (const [k, v] of Object.entries(cachedFields)) {
-      console.log('qqqq');
-      console.log(v);
-    }
+    // console.log('fields');
+    // console.log(fields);
+    // console.log('cachedFields');
+    // console.log(cachedFields);
+    //
+    // for (const [k, v] of Object.entries(cachedFields)) {
+    //   console.log('qqqq');
+    //   console.log(v);
+    // }
 
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-      console.log(f);
-      console.log(f.kind);
-      console.log(prefix);
-      console.log(fullName);
-      console.log(cachedFields[fullName] || null);
-      console.log(cachedFields[fullName].order);
+      // console.log(f);
+      // console.log(f.kind);
+      // console.log(prefix);
+      // console.log(fullName);
+      // console.log(cachedFields[fullName] || null);
+      // console.log(cachedFields[fullName].order);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
@@ -1144,16 +1155,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param e ColumnReorderEvent
    */
   columnReorder(e: ColumnReorderEvent): void {
-    if (e.oldIndex !== e.newIndex) {
-      // if (!this.stopReorderEvent){
+    if ((e.oldIndex !== e.newIndex) && !this.stopReorderEvent) {
       if (this.columnsOrder.length === 0){
-        console.log('NOPE');
-        console.log('this.fields');
-        console.log(this.fields);
-        console.log('this.grid?.columns');
-        console.log(this.grid?.columns);
-        console.log('this.grid?.columns.toArray()');
-        console.log(this.grid?.columns.toArray());
+        // console.log('NOPE');
+        // console.log('this.fields');
+        // console.log(this.fields);
+        // console.log('this.grid?.columns');
+        // console.log(this.grid?.columns);
+        // console.log('this.grid?.columns.toArray()');
+        // console.log(this.grid?.columns.toArray());
         // this.columnsOrder = this.grid?.columns.toArray() ? this.grid?.columns.toArray() : [];
         this.columnsOrder = this.fields;
       }
@@ -1221,6 +1231,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         ...obj,
         [c.field]: {
           field: c.field,
+          title: c.title,
           width: c.width,
           hidden: c.hidden,
           // orderIndex: this.columnsOrder.findIndex((elt) => elt.name === c.field),
