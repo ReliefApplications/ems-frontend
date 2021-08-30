@@ -227,40 +227,59 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private flatDeep(arr: any[]): any[] {
+    console.log('flatDeep');
+    const tempArr = arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+    console.log(tempArr);
+    // console.log(this.grid?.columns.toArray());
+    console.log(this.grid);
+    console.log(this.grid?.columns);
+
+    this.grid?.columnList.forEach((c) => {
+      console.log(c);
+    });
+    console.log('-----');
+    // if (this.grid?.columns !== undefined){
+    //   this.grid?.columns.forEach((c, n, a) => {
+    //     console.log(c);
+    //   });
+    // }
+    for (const tempArrElement of tempArr) {
+      console.log(tempArrElement);
+      this.grid?.columns.forEach((c, n, a) => {
+        console.log('c');
+        console.log(c);
+        console.log(n);
+        console.log(a);
+      });
+      // const cb = this.grid?.columns.find((c) => c.field === tempArrElement.name);
+      // console.log(cb);
+    }
+    // const finalArr = [];
+    // for (const tempArrElement of tempArr) {
+    //   finalArr[tempArrElement.orderIndex] = tempArrElement;
+    // }
+    // console.log('finalArr');
+    // console.log(finalArr);
+    // return finalArr;
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     const cachedFields = this.layout?.fields || {};
-    let hasOrder = true;
-    for (const [k, v] of Object.entries(cachedFields)) {
-      if ('order' in Object(v)){
-        console.log('NOT NULL');
-      }
-      else {
-        hasOrder = false;
-        console.log('NULL');
-      }
-    }
+    console.log('fields');
+    console.log(fields);
+    console.log('cachedFields');
     console.log(cachedFields);
-    // for (let i = 0; i < cachedFields.length; i++) {
-    //   const o = cachedFields.find((field: any) => field.order === i);
-    //   console.log('$$$ o');
-    //   console.log(o);
-    // }
-    let i = 0;
+
     for (const [k, v] of Object.entries(cachedFields)) {
-      // console.log(v);
-      // const o = Object(cachedFields).find((field: any) => field.order === i);
-      // console.log('$$$ o');
-      // console.log(o);
-      i++;
+      console.log('qqqq');
+      console.log(v);
     }
 
-    // let orderIndex = 1;
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       console.log(f);
+      console.log(f.kind);
       console.log(prefix);
       console.log(fullName);
       console.log(cachedFields[fullName] || null);
@@ -284,7 +303,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
-            // orderIndex: cachedField?.order,
+            orderIndex: cachedField?.order,
             // order: cachedField?.order || orderIndex++,
           };
         }
@@ -1197,35 +1216,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Generate the cached fields config from the grid columns.
    */
   private setColumnsConfig(): void {
-    // console.log(this.grid?.columns.toArray().filter((x: any) => x.field));
-    // this.layout.fields = this.columnsOrder.filter((x: any) => x.name).reduce((obj, c: any) => {
-    //   return {
-    //     ...obj,
-    //     [c.name]: {
-    //       field: c
-    //     }
-    //   }
-    // });
-    // console.log('FOOOOOR');
-    // const obj;
-    // for (const elt of this.columnsOrder) {
-    //   console.log(elt);
-    //   const objTemp = this.grid?.columns.find((gridElt) => gridElt.field === elt.name);
-    //   obj[objTemp.]
-    // }
     this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      console.log(this.columnsOrder);
-      // for (const [col, v] of this.columnsOrder) {
-      //   console.log('col.name');
-      //   console.log(col.name);
-      //   console.log('c.field');
-      //   console.log(c.field);
-      //   if (col.name === c.field){
-      //       console.log('OKAY OKAY');
-      //   }
-      // }
-      // console.log(this.columnsOrder.find(column => column === c.field))
-      console.log(this.columnsOrder.findIndex((elt) => elt.name === c.field));
       return {
         ...obj,
         [c.field]: {
