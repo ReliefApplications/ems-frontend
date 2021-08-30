@@ -234,8 +234,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const cachedFields = this.layout?.fields || {};
     let hasOrder = true;
     for (const [k, v] of Object.entries(cachedFields)) {
-      // console.log(v);
-      // console.log(Object(v));
       if ('order' in Object(v)){
         console.log('NOT NULL');
       }
@@ -244,10 +242,29 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         console.log('NULL');
       }
     }
+    console.log(cachedFields);
+    // for (let i = 0; i < cachedFields.length; i++) {
+    //   const o = cachedFields.find((field: any) => field.order === i);
+    //   console.log('$$$ o');
+    //   console.log(o);
+    // }
+    let i = 0;
+    for (const [k, v] of Object.entries(cachedFields)) {
+      // console.log(v);
+      // const o = Object(cachedFields).find((field: any) => field.order === i);
+      // console.log('$$$ o');
+      // console.log(o);
+      i++;
+    }
 
-    let orderIndex = 1;
+    // let orderIndex = 1;
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+      console.log(f);
+      console.log(prefix);
+      console.log(fullName);
+      console.log(cachedFields[fullName] || null);
+      console.log(cachedFields[fullName].order);
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
@@ -256,8 +273,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           const metaData = this.metaFields[fullName] || null;
           const cachedField = cachedFields[fullName] || null;
           const title = f.label ? f.label : prettifyLabel(f.name);
-          console.log('cachedField');
-          console.log(cachedField);
           return {
             name: fullName,
             title: f.label ? f.label : prettifyLabel(f.name),
@@ -269,12 +284,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
-            orderIndex: cachedField?.orderIndex || orderIndex++,
+            // orderIndex: cachedField?.order,
             // order: cachedField?.order || orderIndex++,
           };
         }
       }
-    })).sort((a, b) => a.orderIndex - b.orderIndex );
+    }));
   }
 
   private convertDateFields(items: any[]): void {
@@ -299,6 +314,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.items = this.parent[this.settings.name];
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
+        console.log('this.fields');
         console.log(this.fields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
@@ -321,6 +337,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
+              console.log('this.fields');
               console.log(this.fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
               this.convertDateFields(this.items);
@@ -1109,43 +1126,54 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   columnReorder(e: ColumnReorderEvent): void {
     if (e.oldIndex !== e.newIndex) {
-      // // if (!this.stopReorderEvent){
-      // const tempFields: any[] = [];
-      // let j = 0;
-      // // shift by 1 because the old and new index take in account the first checkbox column
-      // const oldIndex = e.oldIndex - 1;
-      // const newIndex = e.newIndex - 1;
-      //
-      // for (let i = 0; i < this.columnsOrder.length; i++) {
-      //   if (i === newIndex){
-      //     if (oldIndex < newIndex) {
-      //       tempFields[j] = this.columnsOrder[i];
-      //       j++;
-      //       tempFields[j] = this.columnsOrder[oldIndex];
-      //     }
-      //     if (oldIndex > newIndex){
-      //       tempFields[j] = this.columnsOrder[oldIndex];
-      //       j++;
-      //       tempFields[j] = this.columnsOrder[i];
-      //     }
-      //
-      //     j++;
-      //   }
-      //   else if (i !== oldIndex){
-      //     tempFields[j] = this.columnsOrder[i];
-      //     j++;
-      //   }
+      // if (!this.stopReorderEvent){
+      if (this.columnsOrder.length === 0){
+        console.log('NOPE');
+        console.log('this.fields');
+        console.log(this.fields);
+        console.log('this.grid?.columns');
+        console.log(this.grid?.columns);
+        console.log('this.grid?.columns.toArray()');
+        console.log(this.grid?.columns.toArray());
+        // this.columnsOrder = this.grid?.columns.toArray() ? this.grid?.columns.toArray() : [];
+        this.columnsOrder = this.fields;
+      }
+      else {
+        console.log('YEP');
+      }
+      const tempFields: any[] = [];
+      let j = 0;
+      // shift by 1 because the old and new index take in account the first checkbox column
+      const oldIndex = e.oldIndex - 1;
+      const newIndex = e.newIndex - 1;
+
+      for (let i = 0; i < this.columnsOrder.length; i++) {
+        if (i === newIndex){
+          if (oldIndex < newIndex) {
+            tempFields[j] = this.columnsOrder[i];
+            j++;
+            tempFields[j] = this.columnsOrder[oldIndex];
+          }
+          if (oldIndex > newIndex){
+            tempFields[j] = this.columnsOrder[oldIndex];
+            j++;
+            tempFields[j] = this.columnsOrder[i];
+          }
+
+          j++;
+        }
+        else if (i !== oldIndex){
+          tempFields[j] = this.columnsOrder[i];
+          j++;
+        }
+      }
+      this.columnsOrder = tempFields;
+      // this.storedObj.columnsOrder = this.columnsOrder;
+      // localStorage.setItem(this.id, JSON.stringify(this.storedObj));
       // }
-      // this.columnsOrder = tempFields;
-      // // this.storedObj.columnsOrder = this.columnsOrder;
-      // // localStorage.setItem(this.id, JSON.stringify(this.storedObj));
-      // // }
 
-
-      // console.log(this.fields);
-      // console.log(this.grid?.columns);
-      // console.log(e.column.orderIndex);
-      // this.fields.find(f => f.field === e.column.title)
+      console.log('this.columnsOrder');
+      console.log(this.columnsOrder);
 
       this.setColumnsConfig();
     }
@@ -1169,41 +1197,43 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Generate the cached fields config from the grid columns.
    */
   private setColumnsConfig(): void {
-    console.log('this.grid?.columns.toArray().filter((x: any) => x.field)');
-    console.log(this.grid?.columns.toArray().filter((x: any) => x.field));
-    console.log('this.grid?.columns');
-    console.log(this.grid?.columns);
+    // console.log(this.grid?.columns.toArray().filter((x: any) => x.field));
+    // this.layout.fields = this.columnsOrder.filter((x: any) => x.name).reduce((obj, c: any) => {
+    //   return {
+    //     ...obj,
+    //     [c.name]: {
+    //       field: c
+    //     }
+    //   }
+    // });
+    // console.log('FOOOOOR');
+    // const obj;
+    // for (const elt of this.columnsOrder) {
+    //   console.log(elt);
+    //   const objTemp = this.grid?.columns.find((gridElt) => gridElt.field === elt.name);
+    //   obj[objTemp.]
+    // }
     this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      console.log(obj);
-      console.log('c');
-      console.log(c);
-      console.log('c.field');
-      console.log(c.field);
-      // console.log({f: c.field, o: c.orderIndex});
-      const col = c;
-      console.log('col');
-      console.log(col);
-      console.log(col.orderIndex);
-      // for (const [k, v] of Object.entries(col)){
-      //   console.log('v');
-      //   console.log(k);
-      //   console.log(v);
+      console.log(this.columnsOrder);
+      // for (const [col, v] of this.columnsOrder) {
+      //   console.log('col.name');
+      //   console.log(col.name);
+      //   console.log('c.field');
+      //   console.log(c.field);
+      //   if (col.name === c.field){
+      //       console.log('OKAY OKAY');
+      //   }
       // }
-      console.log('this.fields.find(column => column === c.field)');
-      // console.log(this.fields.find(column => column === c.field));
-      // for (const f in this.fields){
-      //   console.log('f');
-      //   console.log(f);
-      // }
-      // console.log(this.columnsOrder.find(column => column === c.field));
+      // console.log(this.columnsOrder.find(column => column === c.field))
+      console.log(this.columnsOrder.findIndex((elt) => elt.name === c.field));
       return {
         ...obj,
         [c.field]: {
           field: c.field,
           width: c.width,
           hidden: c.hidden,
-          orderIndex: c.orderIndex,
-          // order: this.columnsOrder.find(column => column === c.field)
+          // orderIndex: this.columnsOrder.findIndex((elt) => elt.name === c.field),
+          order: this.columnsOrder.findIndex((elt) => elt.name === c.field)
         }
       };
     }, {});
