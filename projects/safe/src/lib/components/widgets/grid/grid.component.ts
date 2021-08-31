@@ -78,7 +78,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -231,45 +231,44 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
-  ngAfterViewChecked(): void {
-    // console.log(this.checkFieldsUpdated);
-    // console.log(this.grid?.columns.length);
-    if (this.grid?.columns.length !== undefined)
-    {
-      if (!this.checkFieldsUpdated && this.grid?.columns.length !== 0){
-        this.checkFieldsUpdated = true;
-        console.log('PASS');
-        this.stopReorderEvent = true;
-        const cachedFields = this.layout?.fields || {};
-        // console.log(cachedFields);
-        const cachedFieldsObj: any = Object.entries(cachedFields);
-        for (const [k, v] of cachedFieldsObj) {
-          // console.log('k');
-          // console.log(k);
-          // console.log('v');
-          // console.log(v);
-          // this.grid?.columns.forEach((c, n, a) => {
-          //   console.log('c');
-          //   console.log(c);
-          //   console.log(n);
-          //   console.log(a);
-          // });
-          const cb = this.grid?.columns.find((c) => c.title === v.title);
-          // console.log('v.order');
-          // console.log(v.order);
-          if (cb !== undefined){
-            console.log('cb');
-            console.log(cb);
-            console.log('order');
-            console.log(v.order + 1);
-            this.grid?.reorderColumn(cb, v.order + 1);
-          }
-        }
-        this.stopReorderEvent = false;
-      }
-    }
-
-  }
+  // ngAfterViewChecked(): void {
+  //   // console.log(this.checkFieldsUpdated);
+  //   // console.log(this.grid?.columns.length);
+  //   if (this.grid?.columns.length !== undefined)
+  //   {
+  //     if (!this.checkFieldsUpdated && this.grid?.columns.length !== 0){
+  //       this.checkFieldsUpdated = true;
+  //       console.log('PASS');
+  //       this.stopReorderEvent = true;
+  //       const cachedFields = this.layout?.fields || {};
+  //       // console.log(cachedFields);
+  //       const cachedFieldsObj: any = Object.entries(cachedFields);
+  //       for (const [k, v] of cachedFieldsObj) {
+  //         // console.log('k');
+  //         // console.log(k);
+  //         // console.log('v');
+  //         // console.log(v);
+  //         // this.grid?.columns.forEach((c, n, a) => {
+  //         //   console.log('c');
+  //         //   console.log(c);
+  //         //   console.log(n);
+  //         //   console.log(a);
+  //         // });
+  //         const cb = this.grid?.columns.find((c) => c.title === v.title);
+  //         // console.log('v.order');
+  //         // console.log(v.order);
+  //         if (cb !== undefined){
+  //           console.log('cb');
+  //           console.log(cb);
+  //           console.log('order');
+  //           console.log(v.order + 1);
+  //           this.grid?.reorderColumn(cb, v.order + 1);
+  //         }
+  //       }
+  //       this.stopReorderEvent = false;
+  //     }
+  //   }
+  // }
 
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
@@ -314,12 +313,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
-            orderIndex: cachedField?.order,
+            order: cachedField?.order,
             // order: cachedField?.order || orderIndex++,
           };
         }
       }
-    }));
+    })).sort((a, b) => a.order - b.order);
   }
 
   private convertDateFields(items: any[]): void {
@@ -1155,8 +1154,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * @param e ColumnReorderEvent
    */
   columnReorder(e: ColumnReorderEvent): void {
-    if ((e.oldIndex !== e.newIndex) && !this.stopReorderEvent) {
-      if (this.columnsOrder.length === 0){
+    if ((e.oldIndex !== e.newIndex)) {
+      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
+      // if (this.columnsOrder.length === 0){
         // console.log('NOPE');
         // console.log('this.fields');
         // console.log(this.fields);
@@ -1165,16 +1165,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         // console.log('this.grid?.columns.toArray()');
         // console.log(this.grid?.columns.toArray());
         // this.columnsOrder = this.grid?.columns.toArray() ? this.grid?.columns.toArray() : [];
-        this.columnsOrder = this.fields;
-      }
-      else {
-        console.log('YEP');
-      }
+        // this.columnsOrder = this.fields.map(x => x.name);
+      // }
+      console.log(this.columnsOrder);
       const tempFields: any[] = [];
       let j = 0;
       // shift by 1 because the old and new index take in account the first checkbox column
-      const oldIndex = e.oldIndex - 1;
-      const newIndex = e.newIndex - 1;
+      const oldIndex = e.oldIndex;
+      const newIndex = e.newIndex;
 
       for (let i = 0; i < this.columnsOrder.length; i++) {
         if (i === newIndex){
@@ -1197,13 +1195,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
         }
       }
       this.columnsOrder = tempFields;
+      console.log(this.columnsOrder);
       // this.storedObj.columnsOrder = this.columnsOrder;
       // localStorage.setItem(this.id, JSON.stringify(this.storedObj));
       // }
 
-      console.log('this.columnsOrder');
-      console.log(this.columnsOrder);
-
+      // console.log('this.columnsOrder');
+      // console.log(this.columnsOrder);
+      // console.log(this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field));
       this.setColumnsConfig();
     }
   }
@@ -1235,12 +1234,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
           width: c.width,
           hidden: c.hidden,
           // orderIndex: this.columnsOrder.findIndex((elt) => elt.name === c.field),
-          order: this.columnsOrder.findIndex((elt) => elt.name === c.field)
+          order: this.columnsOrder.findIndex((x) => x === c.field)
         }
       };
     }, {});
-    console.log('this.layout');
-    console.log(this.layout);
+    console.log(this.layout.fields);
     this.layoutChanged.emit(this.layout);
   }
 }
