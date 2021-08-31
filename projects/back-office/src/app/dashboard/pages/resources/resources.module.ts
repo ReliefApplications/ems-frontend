@@ -25,7 +25,6 @@ import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/but
     MatTableModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule,
     MatMenuModule,
     MatSortModule,
     MatInputModule,
