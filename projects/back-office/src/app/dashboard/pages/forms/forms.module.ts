@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [FormsComponent],
@@ -29,7 +30,6 @@ import { MatDividerModule } from '@angular/material/divider';
         MatTableModule,
         MatSortModule,
         MatDialogModule,
-        MatButtonModule,
         MatMenuModule,
         MatIconModule,
         MatChipsModule,
@@ -41,7 +41,8 @@ import { MatDividerModule } from '@angular/material/divider';
         MatInputModule,
         MatSelectModule,
         AngularFormsModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ],
   exports: [FormsComponent]
 })
