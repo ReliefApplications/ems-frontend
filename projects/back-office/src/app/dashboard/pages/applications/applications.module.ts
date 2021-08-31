@@ -22,6 +22,7 @@ import { DuplicateApplicationModule } from '../../../components/duplicate-applic
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
@@ -46,7 +47,8 @@ import { MatDividerModule } from '@angular/material/divider';
         DuplicateApplicationModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ],
   exports: [ApplicationsComponent]
 })
