@@ -68,7 +68,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     }
 
     this.apiForm.get('authType')?.valueChanges.subscribe(value => {
+      this.apiForm.controls.settings.clearValidators();
       this.apiForm.controls.settings = this.buildSettingsForm(value);
+      this.apiForm.controls.settings.updateValueAndValidity();
     });
   }
 
@@ -83,7 +85,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   /*  Create the settings form depending on the authType
   */
   private buildSettingsForm(type: string): FormGroup {
-    if (type === 'serviceToService') {
+    if (type === authType.serviceToService) {
       return this.formBuilder.group({
         authTargetUrl: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.authTargetUrl
           ? '●●●●●●●●●●●●●' : '', Validators.required],
@@ -93,6 +95,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
         safeID: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeID
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)]
+      });
+    } else if (type === authType.userToService) {
+      return this.formBuilder.group({
+        token: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.token
+          ? '●●●●●●●●●●●●●' : '', Validators.required]
       });
     }
     return this.formBuilder.group({});
