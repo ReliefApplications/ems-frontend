@@ -56,6 +56,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               settings: this.buildSettingsForm(this.apiConfiguration?.authType || '')
             }
           );
+          this.apiForm.get('authType')?.valueChanges.subscribe(value => {
+            this.apiForm.controls.settings.clearValidators();
+            this.apiForm.controls.settings = this.buildSettingsForm(value);
+            this.apiForm.controls.settings.updateValueAndValidity();
+          });
           this.loading = res.data.loading;
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
@@ -66,12 +71,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         this.router.navigate(['/settings/apiconfigurations']);
       });
     }
-
-    this.apiForm.get('authType')?.valueChanges.subscribe(value => {
-      this.apiForm.controls.settings.clearValidators();
-      this.apiForm.controls.settings = this.buildSettingsForm(value);
-      this.apiForm.controls.settings.updateValueAndValidity();
-    });
   }
 
   /*  Unsubscribe from the apollo subscription if needed
