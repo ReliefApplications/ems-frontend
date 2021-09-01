@@ -5,7 +5,7 @@ import { ApiConfiguration, authType, NOTIFICATIONS, SafeSnackBarService } from '
 import { Apollo } from 'apollo-angular';
 import { SafeApiProxyService, status } from 'projects/safe/src/public-api';
 import { Subscription } from 'rxjs';
-import { EditApiConfigurationMutationResponse, EDIT_API_CONFIGURATIION } from '../../../graphql/mutations';
+import { EditApiConfigurationMutationResponse, EDIT_API_CONFIGURATION } from '../../../graphql/mutations';
 import { GetApiConfigurationQueryResponse, GET_API_CONFIGURATION } from '../../../graphql/queries';
 
 @Component({
@@ -56,6 +56,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               settings: this.buildSettingsForm(this.apiConfiguration?.authType || '')
             }
           );
+          this.apiForm.get('authType')?.valueChanges.subscribe(value => {
+            this.apiForm.controls.settings.clearValidators();
+            this.apiForm.controls.settings = this.buildSettingsForm(value);
+            this.apiForm.controls.settings.updateValueAndValidity();
+          });
           this.loading = res.data.loading;
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
@@ -66,10 +71,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         this.router.navigate(['/settings/apiconfigurations']);
       });
     }
-
-    this.apiForm.get('authType')?.valueChanges.subscribe(value => {
-      this.apiForm.controls.settings = this.buildSettingsForm(value);
-    });
   }
 
   /*  Unsubscribe from the apollo subscription if needed
@@ -83,7 +84,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   /*  Create the settings form depending on the authType
   */
   private buildSettingsForm(type: string): FormGroup {
-    if (type === 'serviceToService') {
+    if (type === authType.serviceToService) {
       return this.formBuilder.group({
         authTargetUrl: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.authTargetUrl
           ? '●●●●●●●●●●●●●' : '', Validators.required],
@@ -93,6 +94,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
         safeID: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeID
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)]
+      });
+    } else if (type === authType.userToService) {
+      return this.formBuilder.group({
+        token: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.token
+          ? '●●●●●●●●●●●●●' : '', Validators.required]
       });
     }
     return this.formBuilder.group({});
@@ -106,7 +112,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     this.apollo.mutate<EditApiConfigurationMutationResponse>({
-      mutation: EDIT_API_CONFIGURATIION,
+      mutation: EDIT_API_CONFIGURATION,
       variables: {
         id: this.id,
         permissions: e
@@ -126,23 +132,27 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       this.apolloSubscription.unsubscribe();
     }
     this.loading = true;
+    const variables = { id: this.id };
+    Object.assign(variables,
+      this.apiForm.value.name !== this.apiConfiguration?.name && { name: this.apiForm.value.name },
+      this.apiForm.value.status !== this.apiConfiguration?.status && { status: this.apiForm.value.status },
+      this.apiForm.value.authType !== this.apiConfiguration?.authType && { authType: this.apiForm.value.authType },
+      this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint && { endpoint: this.apiForm.value.endpoint },
+      this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && { pingUrl: this.apiForm.value.pingUrl },
+      this.apiForm.controls.settings.touched && { settings: this.apiForm.controls.settings.value }
+    );
     this.apollo.mutate<EditApiConfigurationMutationResponse>({
-      mutation: EDIT_API_CONFIGURATIION,
-      variables: {
-        id: this.id,
-        name: this.apiForm.value.name,
-        status: this.apiForm.value.status,
-        authType: this.apiForm.value.authType,
-        endpoint: this.apiForm.value.endpoint,
-        pingUrl: this.apiForm.value.pingUrl,
-        settings: this.apiForm.controls.settings.value // Fix problem if we pass ●●●●●●●●●●●●●
-      }
+      mutation: EDIT_API_CONFIGURATION,
+      variables
     }).subscribe(res => {
-      if (res.data) {
-        this.apiConfiguration = res.data.editApiConfiguration;
+      if (res.errors) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('ApiConfiguration', res.errors[0].message), { error: true });
+        this.loading = false;
+      } else {
+        this.apiConfiguration = res.data?.editApiConfiguration;
         this.apiForm.controls.settings = this.buildSettingsForm(this.apiForm.value.authType);
         this.apiForm.markAsPristine();
-        this.loading = res.data.loading;
+        this.loading = res.data?.loading || false;
       }
     });
   }
