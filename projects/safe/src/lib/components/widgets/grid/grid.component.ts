@@ -7,8 +7,7 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent,
-  ColumnBase
+  ColumnReorderEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -28,7 +27,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject, AfterViewChecked
+  ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -41,8 +40,6 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
-import { ColumnComponent } from '@progress/kendo-angular-excel-export';
-import {any} from 'codelyzer/util/function';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -316,10 +313,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         },
-        () => {
-          this.queryError = true;
-          this.loading = false;
-        });
+          () => {
+            this.queryError = true;
+            this.loading = false;
+          });
       } else {
         this.loading = false;
       }
@@ -1048,7 +1045,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const item = this.gridData.data[index];
       body += this.buildBodyRow(item, fields);
       body += '______________________\n';
-      i ++;
+      i++;
     }
     return body;
   }
@@ -1098,26 +1095,25 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const newIndex = e.newIndex;
 
       for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex){
+        if (i === newIndex) {
           if (oldIndex < newIndex) {
             tempFields[j] = this.columnsOrder[i];
             j++;
             tempFields[j] = this.columnsOrder[oldIndex];
           }
-          if (oldIndex > newIndex){
+          if (oldIndex > newIndex) {
             tempFields[j] = this.columnsOrder[oldIndex];
             j++;
             tempFields[j] = this.columnsOrder[i];
           }
           j++;
         }
-        else if (i !== oldIndex){
+        else if (i !== oldIndex) {
           tempFields[j] = this.columnsOrder[i];
           j++;
         }
       }
-
-      this.columnsOrder = tempFields;
+      this.columnsOrder = tempFields.filter(x => x !== undefined);
       this.setColumnsConfig();
     }
   }
