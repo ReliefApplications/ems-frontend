@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { MatInputModule } from '@angular/material/input';
     MatTooltipModule,
     MatMenuModule,
     ClipboardModule,
-    SafeRecordHistoryModule
+    SafeRecordHistoryModule,
+    SafeButtonModule
   ],
   exports: [DashboardComponent]
 })
