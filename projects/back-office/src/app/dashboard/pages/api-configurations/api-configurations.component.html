@@ -8,8 +8,7 @@
         <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
           placeholder="Search...">
       </mat-form-field>
-      <safe-button category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-        <mat-icon>filter_list</mat-icon>
+      <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
         Filter
       </safe-button>
     </div>
@@ -38,8 +37,7 @@
 
   <div>
     <div class="actions">
-      <safe-button category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        <mat-icon>add</mat-icon>
+      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
         Create an API Configuration
       </safe-button>
     </div>

@@ -5,8 +5,7 @@
       <mat-icon matPrefix>search</mat-icon>
       <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search" placeholder="Search...">
     </mat-form-field>
-    <safe-button category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-      <mat-icon>filter_list</mat-icon>
+    <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
       Filter
     </safe-button>
   </div>

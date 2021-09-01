@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {SafeButtonModule} from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeAccessComponent, SafeEditAccessComponent],
@@ -23,7 +24,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatFormFieldModule,
     MatSelectModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SafeButtonModule
   ],
   exports: [SafeAccessComponent]
 })

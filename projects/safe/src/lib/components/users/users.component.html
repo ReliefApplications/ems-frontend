@@ -5,8 +5,7 @@
       <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
              placeholder="Search...">
     </mat-form-field>
-    <safe-button category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-      <mat-icon>filter_list</mat-icon>
+    <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
       Filter
     </safe-button>
   </div>
@@ -25,14 +24,12 @@
 </div>
 <div>
   <div class="actions">
-    <safe-button category="secondary" variant="primary" (click)="onInvite()">
-      <mat-icon>send</mat-icon>
+    <safe-button icon="send" category="secondary" variant="primary" (click)="onInvite()">
       Invite users
     </safe-button>
   </div>
   <div class="actions" *ngIf="selection.selected.length > 0">
-    <safe-button category="secondary" variant="danger" (click)="onDelete(selection.selected)">
-      <mat-icon>delete</mat-icon>
+    <safe-button icon="delete" category="secondary" variant="danger" (click)="onDelete(selection.selected)">
       Delete selected users
     </safe-button>
   </div>

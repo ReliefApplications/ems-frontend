@@ -21,9 +21,8 @@
     <div class="account-property">{{account ? account.name : ''}}</div>
     <div class="account-property">{{account ? account.userName : ''}}</div>
   </div>
-  <button mat-icon-button [matMenuTriggerFor]="accountMenu">
-    <mat-icon>account_circle</mat-icon>
-  </button>
+  <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
+  </safe-button>
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
     <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn"
       [matBadgeHidden]="notifications.length == 0">
@@ -65,9 +64,8 @@
                 <a [routerLink]="item.path" routerLinkActive="active-link"
                   (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
                   <ng-container *ngIf="item.isAddPage">
-                    <safe-button category="tertiary" variant="primary" class="add-page-button"
+                    <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
                       [class]="item.class ? item.class : ''">
-                      <mat-icon>add</mat-icon>
                       Add a Page
                     </safe-button>
                   </ng-container>
