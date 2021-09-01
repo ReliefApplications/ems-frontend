@@ -23,13 +23,14 @@ export function initCustomWidgets(
     dialog: MatDialog,
     apollo: Apollo,
     formBuilder: FormBuilder,
-    authService: SafeAuthService
+    authService: SafeAuthService,
+    environment: any
   ): void {
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, apollo, dialog, formBuilder);
-  initCustomWidget(Survey, domService, dialog);
+  initCustomWidget(Survey, domService, dialog, environment);
   addCustomFunctions(Survey, authService);
 }
