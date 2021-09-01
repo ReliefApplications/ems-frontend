@@ -690,7 +690,7 @@ export interface DeleteApiConfigurationMutationResponse {
 }
 
 // === EDIT API CONFIGURATION ===
-export const EDIT_API_CONFIGURATIION = gql`
+export const EDIT_API_CONFIGURATION = gql`
 mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
   editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
     id
