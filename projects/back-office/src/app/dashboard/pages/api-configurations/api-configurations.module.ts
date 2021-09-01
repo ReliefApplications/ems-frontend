@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSelectModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    SafeButtonModule
   ],
   exports: [ApiConfigurationsComponent]
 })
