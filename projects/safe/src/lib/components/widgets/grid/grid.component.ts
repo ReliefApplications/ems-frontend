@@ -2,7 +2,12 @@ import { Apollo } from 'apollo-angular';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
-  GridDataResult, PageChangeEvent, SelectableSettings, SelectionEvent, PagerSettings
+  GridDataResult,
+  PageChangeEvent,
+  SelectableSettings,
+  SelectionEvent,
+  PagerSettings,
+  ColumnReorderEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -34,6 +39,7 @@ import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
+import { GridLayout } from './models/grid-layout.model';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -99,6 +105,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
+  private columnsOrder: any[] = [];
+
+  // === CACHED CONFIGURATION ===
+  @Input() layout: GridLayout = {};
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -114,6 +124,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SETTINGS ===
   @Input() header = true;
   @Input() settings: any = null;
+  @Input() id = '';
 
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
@@ -133,6 +144,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
+
+  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -174,6 +187,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+    if (this.layout?.filter) {
+      this.filter = this.layout.filter;
+    }
+    if (this.layout?.sort) {
+      this.sort = this.layout.sort;
+    }
+    this.loadItems();
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -209,14 +229,18 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
+    const cachedFields = this.layout?.fields || {};
+
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      const fullName = prefix ? `${prefix}.${f.name}` : f.name;
+      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
           const metaData = this.metaFields[fullName] || null;
+          const cachedField = cachedFields[fullName] || null;
+          const title = f.label ? f.label : prettifyLabel(f.name);
           return {
             name: fullName,
             title: f.label ? f.label : prettifyLabel(f.name),
@@ -225,11 +249,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
             meta: metaData,
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            hidden: cachedField?.hidden || false,
+            width: cachedField?.width || title.length * 7 + 50,
+            order: cachedField?.order,
           };
         }
       }
-    }));
+    })).sort((a, b) => a.order - b.order);
   }
 
   private convertDateFields(items: any[]): void {
@@ -286,10 +313,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         },
-        () => {
-          this.queryError = true;
-          this.loading = false;
-        });
+          () => {
+            this.queryError = true;
+            this.loading = false;
+          });
       } else {
         this.loading = false;
       }
@@ -558,6 +585,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public sortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
+    this.layout.sort = sort;
+    this.layoutChanged.emit(this.layout);
     this.skip = 0;
     this.loadItems();
   }
@@ -579,6 +608,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
+    this.layout.filter = this.filter;
+    this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
 
@@ -1014,7 +1045,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const item = this.gridData.data[index];
       body += this.buildBodyRow(item, fields);
       body += '______________________\n';
-      i ++;
+      i++;
     }
     return body;
   }
@@ -1048,5 +1079,75 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Set and emit new grid configuration after column reorder event.
+   * @param e ColumnReorderEvent
+   */
+  columnReorder(e: ColumnReorderEvent): void {
+    if ((e.oldIndex !== e.newIndex)) {
+      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
+
+      const tempFields: any[] = [];
+      let j = 0;
+      const oldIndex = e.oldIndex;
+      const newIndex = e.newIndex;
+
+      for (let i = 0; i < this.columnsOrder.length; i++) {
+        if (i === newIndex) {
+          if (oldIndex < newIndex) {
+            tempFields[j] = this.columnsOrder[i];
+            j++;
+            tempFields[j] = this.columnsOrder[oldIndex];
+          }
+          if (oldIndex > newIndex) {
+            tempFields[j] = this.columnsOrder[oldIndex];
+            j++;
+            tempFields[j] = this.columnsOrder[i];
+          }
+          j++;
+        }
+        else if (i !== oldIndex) {
+          tempFields[j] = this.columnsOrder[i];
+          j++;
+        }
+      }
+      this.columnsOrder = tempFields.filter(x => x !== undefined);
+      this.setColumnsConfig();
+    }
+  }
+
+  /**
+   * Set and emit new grid configuration after column resize event.
+   */
+  columnResize(): void {
+    this.setColumnsConfig();
+  }
+
+  /**
+   * Set and emit new grid configuration after column visibility event.
+   */
+  columnVisibilityChange(): void {
+    this.setColumnsConfig();
+  }
+
+  /**
+   * Generate the cached fields config from the grid columns.
+   */
+  private setColumnsConfig(): void {
+    this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+      return {
+        ...obj,
+        [c.field]: {
+          field: c.field,
+          title: c.title,
+          width: c.width,
+          hidden: c.hidden,
+          order: this.columnsOrder.findIndex((x) => x === c.field)
+        }
+      };
+    }, {});
+    this.layoutChanged.emit(this.layout);
   }
 }
