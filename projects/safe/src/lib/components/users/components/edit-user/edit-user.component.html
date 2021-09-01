@@ -17,6 +17,6 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">Close</safe-button>
-    <safe-button [mat-dialog-close]="userForm.value" category="secondary" variant="primary" [disabled]="!userForm.valid">Update</safe-button>
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-flat-button [mat-dialog-close]="userForm.value" cdkFocusInitial color="primary" [disabled]="!userForm.valid">Update</button>
 </div>

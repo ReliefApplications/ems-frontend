@@ -18,6 +18,7 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../ui/button/button.module';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { MatDividerModule } from '@angular/material/divider';
         SafeConfirmModalModule,
         MatSortModule,
         MatAutocompleteModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ],
   exports: [SafeRolesComponent]
 })

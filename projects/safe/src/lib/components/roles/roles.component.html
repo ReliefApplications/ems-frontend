@@ -8,10 +8,10 @@
     </mat-form-field>
   </div>
   <div class="actions">
-    <button mat-flat-button color="primary" (click)="onAdd()">
+    <safe-button category="secondary" variant="primary" (click)="onAdd()">
       <mat-icon>add</mat-icon>
       Create a role
-    </button>
+    </safe-button>
   </div>
   <table mat-table [dataSource]="roles" matSort>
     <ng-container matColumnDef="title">
@@ -35,9 +35,8 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-          <mat-icon>more_vert</mat-icon>
-        </button>
+        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+        </safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onEdit(element)">
             <mat-icon>edit</mat-icon>
