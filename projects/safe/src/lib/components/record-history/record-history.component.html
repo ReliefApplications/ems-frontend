@@ -1,9 +1,8 @@
 <div class="history-header">
   <div>
     <h2>History</h2>
-    <button style="float: right" mat-icon-button (click)="onCancel()">
-      <mat-icon>close</mat-icon>
-    </button>
+    <safe-button [isIcon]="true" icon="close" style="float: right" (click)="onCancel()">
+    </safe-button>
   </div>
   <div style="clear: both">
     <mat-form-field>
@@ -15,16 +14,16 @@
       <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <button mat-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</button>
-          <button mat-raised-button color="primary" matDateRangePickerApply (click)="applyFilter()">Apply</button>
+          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</safe-button>
+          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">Apply</safe-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
   </div>
   <div class="actions">
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
+    <safe-button category="secondary" variant="primary" [matMenuTriggerFor]="menu">
       Download history
-    </button>
+    </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
       <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
@@ -45,10 +44,13 @@
       <ng-template matExpansionPanelContent>
         <div class="changes-content" *ngFor="let value of showMore ? item.changes : item.changes.slice(0, 4)"
           [innerHTML]="value"></div>
-        <div class="full-history"><button mat-button color="primary" *ngIf="!showMore && item.changes.length > 4"
-            (click)="showMore = true">Show more ({{item.changes.length - 4}})</button></div>
-        <button class="revert-icon" (click)="onRevert(item)" mat-stroked-button *ngIf="index > 0">Preview and revert
-          <mat-icon>update</mat-icon></button>
+        <div class="full-history">
+          <safe-button variant="primary" *ngIf="!showMore && item.changes.length > 4"
+            (click)="showMore = true">Show more ({{item.changes.length - 4}})</safe-button>
+        </div>
+        <safe-button icon="update" class="revert-icon" (click)="onRevert(item)" *ngIf="index > 0">
+          Preview and revert
+        </safe-button>
       </ng-template>
     </mat-expansion-panel>
   </ng-container>
