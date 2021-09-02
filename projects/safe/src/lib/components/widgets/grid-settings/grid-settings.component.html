@@ -30,10 +30,9 @@
       <div class="form-group-title">Quick action buttons</div>
       <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions
         below.</div>
-      <button mat-button color="primary" class="add-button" (click)="addFloatingButton()">
-        <mat-icon>add</mat-icon>
+      <safe-button icon="add" variant="primary" class="add-button" (click)="addFloatingButton()">
         Add a button
-      </button>
+      </safe-button>
       <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px"
         [(selectedIndex)]="tabIndex" *ngIf="floatingButtons.length > 0">
         <ng-container *ngFor="let floatingButton of floatingButtons.controls">

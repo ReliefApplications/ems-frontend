@@ -3,10 +3,9 @@
     <div class="form-group">
       <div style="display: flex; justify-content: space-between;">
         <mat-slide-toggle formControlName="show">Enable</mat-slide-toggle>
-        <button mat-button color="warn" (click)="emitDeleteButton()">
-          <mat-icon>remove_circle_outline</mat-icon>
+        <safe-button icon="remove_circle_outline" variant="danger" (click)="emitDeleteButton()">
           Delete this button
-        </button>
+        </safe-button>
       </div>
       <ng-container *ngIf="buttonForm.value.show">
         <mat-form-field appearance="outline">
@@ -52,13 +51,11 @@
                   <input matInput formControlName="value" type="string" />
                 </ng-container>
               </mat-form-field>
-              <button mat-icon-button color="warn" (click)="onDeleteModification(i)">
-                <mat-icon>remove_circle_outline</mat-icon>
-              </button>
+              <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteModification(i)">
+              </safe-button>
             </form>
-            <button mat-icon-button color="primary" (click)="onAddModification()">
-              <mat-icon>add_circle_outline</mat-icon>
-            </button>
+            <safe-button [isIcon]="true" icon="add_circle_outline" variant="primary" (click)="onAddModification()">
+            </safe-button>
           </div>
         </div>
         <span class="info-row" *ngIf="relatedForms.length > 0">
@@ -161,7 +158,7 @@
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
-          <h2>Select fields to write in body</h2> 
+          <h2>Select fields to write in body</h2>
           <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
             [factory]="factory"></safe-tab-fields>
           <!-- <span class="radio-row">
