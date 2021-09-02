@@ -11,6 +11,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [AddPageComponent],
@@ -26,7 +27,8 @@ import { MatRippleModule } from '@angular/material/core';
     MatRadioModule,
     MatDialogModule,
     AddPageRoutingModule,
-    MatRippleModule
+    MatRippleModule,
+    SafeButtonModule
   ]
 })
 export class AddPageModule { }
