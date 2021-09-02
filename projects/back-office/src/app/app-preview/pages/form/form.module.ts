@@ -5,6 +5,7 @@ import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeFormModule } from '@safe/builder';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [FormComponent],
@@ -12,7 +13,8 @@ import { SafeFormModule } from '@safe/builder';
     CommonModule,
     FormRoutingModule,
     MatButtonModule,
-    SafeFormModule
+    SafeFormModule,
+    SafeButtonModule
   ],
   exports: [FormComponent]
 })
