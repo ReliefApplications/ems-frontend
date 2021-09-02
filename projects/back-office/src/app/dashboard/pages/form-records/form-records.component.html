@@ -1,19 +1,17 @@
 <div class="page-header">
     <h1 class="page-title">List of records</h1>
     <div class="actions">
-        <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
-            <mat-icon>file_download</mat-icon>
+        <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
             Download records
-        </button>
+        </safe-button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onDownload('csv')">.csv</button>
             <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
         </mat-menu>
-        <button matTooltip="File should contain one record per row. Header row contains the names of data fields." mat-flat-button color="primary"
+        <safe-button icon="file_upload" category="secondary" variant="primary" matTooltip="File should contain one record per row. Header row contains the names of data fields."
             [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
-            <mat-icon>file_upload</mat-icon>
             Upload records
-        </button>
+        </safe-button>
         <mat-menu #matUploadMenu="matMenu">
             <button mat-menu-item (click)="downloadTemplate()">Download template</button>
             <!--        <button mat-menu-item (click)="onDownload('csv')">.csv</button>-->
@@ -33,9 +31,8 @@
             <ng-container *ngIf="column === '_actions'">
                 <th mat-header-cell *matHeaderCellDef class="action-column"> Actions</th>
                 <td mat-cell *matCellDef="let element" class="action-column">
-                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
+                    <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                    </safe-button>
                     <mat-menu #menu="matMenu">
                         <button mat-menu-item color="warn" (click)="onViewHistory(element.id)">
                             <mat-icon>library_books</mat-icon>

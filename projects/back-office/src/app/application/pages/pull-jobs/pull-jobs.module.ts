@@ -17,6 +17,7 @@ import { SafeConfirmModalModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { MatDividerModule } from '@angular/material/divider';
         SafeConfirmModalModule,
         MatExpansionModule,
         MatDividerModule,
+        SafeButtonModule
     ]
 })
 export class PullJobsModule { }

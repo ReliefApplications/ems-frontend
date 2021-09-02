@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SafeRecordHistoryModule } from '@safe/builder';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -21,7 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatMenuModule,
         SafeRecordHistoryModule,
         MatDividerModule,
-        MatTooltipModule
+        MatTooltipModule,
+        SafeButtonModule
     ],
   exports: [FormRecordsComponent]
 })

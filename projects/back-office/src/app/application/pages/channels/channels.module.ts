@@ -18,6 +18,7 @@ import { AddChannelComponent } from './components/add-channel/add-channel.compon
 import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [ChannelsComponent, AddChannelComponent, EditChannelComponent],
@@ -36,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider';
         MatTableModule,
         MatSelectModule,
         SafeConfirmModalModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ]
 })
 export class ChannelsModule { }

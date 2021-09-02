@@ -16,6 +16,7 @@ import { SafeConfirmModalModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider';
         MatTableModule,
         SafeConfirmModalModule,
         MatAutocompleteModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ]
 })
 export class SubscriptionsModule { }
