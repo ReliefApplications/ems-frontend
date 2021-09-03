@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatStepperModule,
     MatDividerModule,
     DragDropModule,
+    SafeButtonModule
   ],
   exports: [WorkflowComponent]
 })

@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [FormBuilderComponent, HistoryComponent],
@@ -29,7 +30,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatInputModule,
     MatButtonToggleModule,
     SafeFormBuilderModule,
-    SafeAccessModule
+    SafeAccessModule,
+    SafeButtonModule
   ],
   exports: [FormBuilderComponent]
 })

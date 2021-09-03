@@ -17,10 +17,9 @@
                         </mat-option>
                     </mat-optgroup>
                 </mat-autocomplete>
-                <button mat-button *ngIf="routingKey" matSuffix mat-icon-button aria-label="Clear"
+                <safe-button *ngIf="routingKey" matSuffix [isIcon]="true" icon="close" aria-label="Clear"
                     (click)="routingKey=''">
-                    <mat-icon>close</mat-icon>
-                </button>
+                </safe-button>
                 <mat-hint>Message broker routing key</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">

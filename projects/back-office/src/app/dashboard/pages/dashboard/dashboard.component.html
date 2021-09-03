@@ -13,12 +13,10 @@
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="dashboardName" type="string">
             </mat-form-field>
-            <button type="submit" mat-icon-button color="primary" [disabled]="!dashboardNameForm.valid">
-                <mat-icon>save</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="toggleFormActive()">
-                <mat-icon>close</mat-icon>
-            </button>
+            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!dashboardNameForm.valid">
+            </safe-button>
+            <safe-button mat-icon-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
+            </safe-button>
         </form>
     </ng-container>
     <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" (move)="onMove()" (edit)="onEditTile($event)"

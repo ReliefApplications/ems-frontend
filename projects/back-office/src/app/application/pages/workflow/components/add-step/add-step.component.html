@@ -28,14 +28,13 @@
                     <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <button mat-flat-button color="primary" (click)="onAdd()" [disabled]=!canCreateForm>
-                <mat-icon>add</mat-icon>
+            <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" [disabled]=!canCreateForm>
                 Create a form
-            </button>
+            </safe-button>
         </ng-container>
     </div>
 </form>
 <div class="add-step-stepper">
-    <button mat-button [disabled]="stage <= 1" (click)="onBack()">Back</button>
-    <button mat-flat-button color="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</button>
+    <safe-button [disabled]="stage <= 1" (click)="onBack()">Back</safe-button>
+    <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</safe-button>
 </div>

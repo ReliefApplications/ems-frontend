@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import {SafeButtonModule} from '../../../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [AddStepComponent],
@@ -24,7 +25,8 @@ import { MatRippleModule } from '@angular/material/core';
     MatIconModule,
     MatRadioModule,
     AddStepRoutingModule,
-    MatRippleModule
+    MatRippleModule,
+    SafeButtonModule
   ]
 })
 export class AddStepModule { }

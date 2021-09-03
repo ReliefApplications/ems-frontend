@@ -7,6 +7,7 @@ import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {SafeButtonModule} from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeFormComponent],
@@ -17,7 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
     DropDownListModule,
     MatTabsModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    SafeButtonModule
   ],
   exports: [SafeFormComponent]
 })
