@@ -1,9 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CategoryAxis } from '@progress/kendo-angular-charts';
+
+interface ChartTitle {
+  visible: boolean;
+  text: string;
+  position: 'top' | 'bottom';
+}
 
 interface ChartLegend {
-  visible?: boolean;
-  orientation?: string;
-  position?: string;
+  visible: boolean;
+  orientation: 'horizontal' | 'vertical';
+  position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 interface ChartSeries {
@@ -22,11 +29,13 @@ interface ChartSeries {
 })
 export class SafeLineChartComponent implements OnInit {
 
+  @Input() title: ChartTitle | undefined;
+
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
 
-  public categoryAxis: any = {
+  public categoryAxis: CategoryAxis = {
     type: 'date',
     maxDivisions: 10
   };

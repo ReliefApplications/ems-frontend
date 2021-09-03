@@ -2,13 +2,15 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { withKnobs } from '@storybook/addon-knobs';
 import { SafeDonutChartComponent } from './donut-chart.component';
 import { SafeDonutChartModule } from './donut-chart.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
     component: SafeDonutChartComponent,
     decorators: [
         moduleMetadata({
             imports: [
-                SafeDonutChartModule
+                SafeDonutChartModule,
+                BrowserAnimationsModule
             ],
             providers: []
         }),

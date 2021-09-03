@@ -2,13 +2,15 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { withKnobs } from '@storybook/addon-knobs';
 import { SafeLineChartComponent } from './line-chart.component';
 import { SafeLineChartModule } from './line-chart.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
     component: SafeLineChartComponent,
     decorators: [
         moduleMetadata({
             imports: [
-                SafeLineChartModule
+                SafeLineChartModule,
+                BrowserAnimationsModule
             ],
             providers: []
         }),

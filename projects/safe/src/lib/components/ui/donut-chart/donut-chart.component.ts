@@ -1,9 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+interface ChartTitle {
+  visible: boolean;
+  text: string;
+  position: 'top' | 'bottom';
+}
+
 interface ChartLegend {
-  visible?: boolean;
-  orientation?: string;
-  position?: string;
+  visible: boolean;
+  orientation: 'horizontal' | 'vertical';
+  position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 interface ChartSeries {
@@ -20,6 +26,8 @@ interface ChartSeries {
   styleUrls: ['./donut-chart.component.scss']
 })
 export class SafeDonutChartComponent implements OnInit {
+
+  @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
 
