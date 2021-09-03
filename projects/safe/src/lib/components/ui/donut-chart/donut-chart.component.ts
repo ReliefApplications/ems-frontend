@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChartComponent } from '@progress/kendo-angular-charts';
 
 interface ChartTitle {
   visible: boolean;
@@ -32,6 +33,9 @@ export class SafeDonutChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @ViewChild('chart')
+  public chart?: ChartComponent;
 
   constructor() { }
 

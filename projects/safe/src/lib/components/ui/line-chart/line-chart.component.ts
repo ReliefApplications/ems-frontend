@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CategoryAxis } from '@progress/kendo-angular-charts';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { CategoryAxis, ChartComponent } from '@progress/kendo-angular-charts';
 
 interface ChartTitle {
   visible: boolean;
@@ -34,6 +34,9 @@ export class SafeLineChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @ViewChild('chart')
+  public chart?: ChartComponent;
 
   public categoryAxis: CategoryAxis = {
     type: 'date',
