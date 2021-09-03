@@ -1,8 +1,7 @@
 <div class="widget-container">
     <div class="widget-header" *ngIf="header">{{settings.title}}</div>
-    <button mat-icon-button class="export-button" (click)="onExport()" *ngIf="export">
-        <mat-icon>get_app</mat-icon>
-    </button>
+    <safe-button [isIcon]="true" icon="get_app" class="export-button" (click)="onExport()" *ngIf="export">
+    </safe-button>
     <kendo-chart #chart class="widget-content" [categoryAxis]="settings.chart.type === 'line' ? categoryAxis : ''" *ngIf="settings.chart">
         <kendo-chart-title *ngIf="settings.chart.title" [visible]='settings.chart.title.visible' [text]='settings.chart.title.text'
             [position]='settings.chart.title.position'></kendo-chart-title>

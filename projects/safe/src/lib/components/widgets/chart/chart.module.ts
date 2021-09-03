@@ -5,16 +5,18 @@ import { ChartsModule } from '@progress/kendo-angular-charts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {SafeButtonModule} from '../../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeChartComponent],
-  imports: [
-    CommonModule,
-    ChartsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule
-  ],
+    imports: [
+        CommonModule,
+        ChartsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        SafeButtonModule
+    ],
   exports: [SafeChartComponent]
 })
 export class SafeChartModule { }

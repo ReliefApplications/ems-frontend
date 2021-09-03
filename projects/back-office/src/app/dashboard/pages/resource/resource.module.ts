@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeAccessModule, SafePreviousButtonModule } from '@safe/builder';
+import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -25,7 +26,8 @@ import { SafeAccessModule, SafePreviousButtonModule } from '@safe/builder';
     MatMenuModule,
     MatChipsModule,
     SafeAccessModule,
-    SafePreviousButtonModule
+    SafePreviousButtonModule,
+    SafeButtonModule
   ],
   exports: [ResourceComponent]
 })
