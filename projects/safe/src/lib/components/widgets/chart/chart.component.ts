@@ -70,7 +70,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       if (['pie', 'donut', 'line'].includes(this.settings.chart.type)) {
         this.series = [
           {
-            data: res.data.recordsAggregation
+            data: JSON.parse(JSON.stringify(res.data.recordsAggregation))
           }
         ];
       } else {
