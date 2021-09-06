@@ -14,6 +14,7 @@ import { SafeChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { SafeButtonModule } from '../../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeChartSettingsComponent],
@@ -32,7 +33,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     SafeChartModule,
     MatExpansionModule,
     MatSlideToggleModule,
-    MatTabsModule
+    MatTabsModule,
+    SafeButtonModule
   ],
   exports: [SafeChartSettingsComponent]
 })

@@ -17,7 +17,7 @@
               </mat-label>
               <input matInput formControlName="name" type='text' placeholder="Enter a name for the API Configuration" />
             </mat-form-field>
-        
+
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
                 Status
@@ -45,7 +45,7 @@
               </mat-label>
               <input matInput formControlName="endpoint" type='text' placeholder="Base URL for the API" />
             </mat-form-field>
-        
+
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
                 Ping extension
@@ -54,14 +54,13 @@
             </mat-form-field>
 
             <div class="ping-button-container">
-              <button mat-flat-button color="primary" (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
+              <safe-button icon="online_prediction" category="secondary" variant="primary" (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
                 Send ping request
-                <mat-icon>online_prediction</mat-icon>
-              </button>
+              </safe-button>
             </div>
 
           </div>
-          
+
           <h1>API authentication settings</h1>
           <ng-container *ngIf="apiForm.value.authType === 'serviceToService'">
             <div formGroupName="settings" class="form-group">
@@ -102,6 +101,6 @@
             </div>
           </ng-container>
         </div>
-        <button mat-flat-button (click)="onSave()" color="primary" [disabled]="apiForm.invalid || !apiForm.dirty">Save changes</button>
+        <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">Save changes</safe-button>
       </form>
 </ng-container>

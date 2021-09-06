@@ -1,6 +1,6 @@
 .action-list{
     padding-top: 50px;
-    button {
+    safe-button {
         margin-right: 16px;
         margin-bottom: 16px;
     }
@@ -8,10 +8,6 @@
 
 .header {
     padding-bottom: 16px;
-}
-
-.button-icon {
-    padding-bottom: 5px;
 }
 
 .settings-form {

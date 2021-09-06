@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { SafeButtonModule } from '../../components/ui/button/button.module';
 
 @NgModule({
   declarations: [SafeProfileComponent],
@@ -20,7 +21,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatMenuModule,
     ReactiveFormsModule,
-    MatIconModule
+    MatIconModule,
+    SafeButtonModule
   ],
   exports: [SafeProfileComponent]
 })

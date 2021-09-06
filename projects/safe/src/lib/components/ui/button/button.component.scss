@@ -1,3 +1,9 @@
+:host {
+    &.disabled {
+        pointer-events: none;
+    }
+}
+
 .safe-btn-block {
     width: 100%;
 }

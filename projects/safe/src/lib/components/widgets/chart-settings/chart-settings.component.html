@@ -25,10 +25,9 @@
             <div class="chart-form">
                 <mat-tab-group class="chart-settings" animationDuration="0ms" >
                     <mat-tab label="Data source">
-                        <button mat-flat-button color="primary" (click)="refreshPipeline()" [disabled]="!pipelineChanged">
-                            <mat-icon>refresh</mat-icon>
+                        <safe-button icon="refresh" category="secondary" variant="primary" (click)="refreshPipeline()" [disabled]="!pipelineChanged">
                             Apply changes
-                        </button>
+                        </safe-button>
                         <div class="form-group">
                             <mat-form-field appearance="outline">
                                 <mat-label>Aggregation</mat-label>
@@ -49,23 +48,25 @@
                                     <div>
                                         <h3>Position</h3>
                                         <div>
-                                            <button mat-flat-button
-                                                [color]="position.value === chartForm.value.legend.position ? 'primary' : ''"
-                                                (click)="chartForm.patchValue({legend: { position: position.value }})"
-                                                *ngFor="let position of legendPositions">
-                                                <mat-icon>{{ position.icon }}</mat-icon>
-                                            </button>
+                                            <safe-button
+                                              icon="{{ position.icon }}"
+                                              category="secondary"
+                                              [variant]="position.value === chartForm.value.legend.position ? 'primary' : ''"
+                                              (click)="chartForm.patchValue({legend: { position: position.value }})"
+                                              *ngFor="let position of legendPositions">
+                                            </safe-button>
                                         </div>
                                     </div>
                                     <div>
                                         <h3>Orientation</h3>
                                         <div>
-                                            <button mat-flat-button
-                                                [color]="orientation.value === chartForm.value.legend.orientation ? 'primary' : ''"
-                                                (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
-                                                *ngFor="let orientation of legendOrientations">
-                                                <mat-icon>{{ orientation.icon }}</mat-icon>
-                                            </button>
+                                            <safe-button
+                                              icon="{{ orientation.icon }}"
+                                              category="secondary"
+                                              [variant]="orientation.value === chartForm.value.legend.orientation ? 'primary' : ''"
+                                              (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
+                                              *ngFor="let orientation of legendOrientations">
+                                            </safe-button>
                                         </div>
                                     </div>
                                 </ng-container>
@@ -87,12 +88,13 @@
                                     <div>
                                         <h3>Position</h3>
                                         <div>
-                                            <button mat-flat-button
-                                                [color]="position.value === chartForm.value.title.position ? 'primary' : ''"
-                                                (click)="chartForm.patchValue({title: { position: position.value }})"
-                                                *ngFor="let position of titlePositions">
-                                                <mat-icon>{{ position.icon }}</mat-icon>
-                                            </button>
+                                            <safe-button
+                                              icon="{{ position.icon }}"
+                                              category="secondary"
+                                              [variant]="position.value === chartForm.value.title.position ? 'primary' : ''"
+                                              (click)="chartForm.patchValue({title: { position: position.value }})"
+                                              *ngFor="let position of titlePositions">
+                                            </safe-button>
                                         </div>
                                     </div>
                                 </ng-container>

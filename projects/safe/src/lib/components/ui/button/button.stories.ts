@@ -55,7 +55,7 @@ export default {
         isIcon: {
             defaultValue: false,
             control: { type: 'boolean' }
-        },
+        }
     }
 } as Meta;
 

@@ -11,12 +11,10 @@
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="workflowName" type="string">
             </mat-form-field>
-            <button type="submit" mat-icon-button color="primary" [disabled]="!workflowNameForm.valid">
-                <mat-icon>save</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="toggleFormActive()">
-                <mat-icon>close</mat-icon>
-            </button>
+            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!workflowNameForm.valid">
+            </safe-button>
+            <safe-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
+            </safe-button>
         </form>
     </ng-container>
     <div class="step-list-container">
@@ -24,20 +22,17 @@
         <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
             <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" (click)="onStepClick(step)"
                 (cdkDragStarted)="onDragStart()" [class.selected]="step === selectedStep" cdkDrag>
-                <button mat-icon-button class="step-handle" cdkDragHandle>
-                    <mat-icon>drag_indicator</mat-icon>
-                </button>
+                <safe-button [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
+                </safe-button>
                 <div class="step-placeholder" *cdkDragPlaceholder></div>
                 {{step.name}}
-                <button mat-icon-button class="delete-button" (click)="deleteStep(step, $event)">
-                    <mat-icon>delete</mat-icon>
-                </button>
+                <safe-button [isIcon]="true" icon="delete" class="delete-button" (click)="deleteStep(step, $event)">
+                </safe-button>
             </div>
             <div class="step-box">
-                <button mat-button color="primary" class="add-step-button" (click)="addStep()">
-                    <mat-icon>add</mat-icon>
+                <safe-button icon="add" variant="primary" class="add-step-button" (click)="addStep()">
                     Add a step
-                </button>
+                </safe-button>
             </div>
         </div>
         <mat-divider></mat-divider>

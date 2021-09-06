@@ -16,8 +16,8 @@
             </mat-form-field>
         </div>
     </div>
-    <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="userForm.invalid || !userForm.dirty">Save
-        changes</button>
+    <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="userForm.invalid || !userForm.dirty">Save
+        changes</safe-button>
     <table mat-table [dataSource]="user.applications" style="margin-top: 48px;">
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
@@ -50,9 +50,8 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element">
-                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
+                <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                </safe-button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item (click)="onSelectFavorite(element)">
                         <mat-icon>star</mat-icon>

@@ -1,8 +1,7 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
-        <button *ngIf="locked" mat-icon-button [color]="lockedByUser ? 'primary' : 'warn'"(click)="onUnlock()">
-            <mat-icon>lock</mat-icon>
-        </button>
+        <safe-button *ngIf="locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
+        </safe-button>
         <safe-button variant="danger" (click)="onClose()">Close</safe-button>
         <safe-button category="secondary" variant="success" (click)="onPublish()" [disabled]="!canPublish">Publish</safe-button>
     </div>

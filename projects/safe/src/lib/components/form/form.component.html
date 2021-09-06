@@ -1,8 +1,7 @@
 <div *ngIf="!record && isFromCacheData" class='clear-button'>
-  <button mat-flat-button color="primary" (click)="onClear()">
-    <mat-icon>restart_alt</mat-icon>
+  <safe-button icon="restart_alt" category="secondary" variant="primary" (click)="onClear()">
     Clear cache
-  </button>
+  </safe-button>
 </div>
 
 <div *ngIf="form.uniqueRecord || record">

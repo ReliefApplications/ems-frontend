@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
@@ -23,6 +23,7 @@ export class SafeButtonComponent implements OnInit  {
 
   @Input() block = false;
 
+  @HostBinding('class.disabled')
   @Input() disabled = false;
 
   @Input() loading = false;
