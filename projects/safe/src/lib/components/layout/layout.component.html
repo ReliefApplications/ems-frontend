@@ -1,7 +1,6 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="nav.toggle()" *ngIf="!largeDevice">
-    <mat-icon>men</mat-icon>
-  </button>
+  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" *ngIf="!largeDevice">
+  </safe-button>
   <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="largeDevice && route">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
@@ -23,6 +22,7 @@
   </div>
   <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
   </safe-button>
+<!-- TODO: style problems related with the red round notification sticker => can't replace it -->
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
     <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn"
       [matBadgeHidden]="notifications.length == 0">
