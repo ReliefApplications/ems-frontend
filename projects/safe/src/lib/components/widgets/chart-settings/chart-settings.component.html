@@ -14,7 +14,7 @@
                             <mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase
                             }}
                         </mat-select-trigger>
-                        <mat-option *ngFor="let type of types" [value]="type.name" (click)="refreshPipeline()">
+                        <mat-option *ngFor="let type of types" [value]="type.name">
                             <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
                         </mat-option>
                     </mat-select>
