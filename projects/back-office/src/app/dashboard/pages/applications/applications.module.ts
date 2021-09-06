@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ApplicationsRoutingModule } from './applications-routing.module';
 import { ApplicationsComponent } from './applications.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,30 +23,29 @@ import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
-    imports: [
-        CommonModule,
-        ApplicationsRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSortModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatChipsModule,
-        SafeConfirmModalModule,
-        SafeAccessModule,
-        DuplicateApplicationModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatDividerModule,
-        SafeButtonModule
-    ],
+  imports: [
+    CommonModule,
+    ApplicationsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatIconModule,
+    MatChipsModule,
+    SafeConfirmModalModule,
+    SafeAccessModule,
+    DuplicateApplicationModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDividerModule,
+    SafeButtonModule
+  ],
   exports: [ApplicationsComponent]
 })
 export class ApplicationsModule { }

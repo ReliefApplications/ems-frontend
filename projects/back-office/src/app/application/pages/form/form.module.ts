@@ -5,8 +5,6 @@ import { FormComponent } from './form.component';
 import { SafeFormModule, SafeAccessModule, SafeButtonModule } from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -20,8 +18,6 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    MatIconModule,
-    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     SafeButtonModule

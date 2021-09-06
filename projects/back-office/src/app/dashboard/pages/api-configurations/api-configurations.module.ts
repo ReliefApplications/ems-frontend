@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -16,6 +14,7 @@ import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeButtonModule } from '@safe/builder';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -25,8 +24,6 @@ import { SafeButtonModule } from '@safe/builder';
   imports: [
     CommonModule,
     ApiConfigurationsRoutingModule,
-    MatButtonModule,
-    MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
@@ -38,7 +35,8 @@ import { SafeButtonModule } from '@safe/builder';
     AngularFormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatIconModule
   ],
   exports: [ApiConfigurationsComponent]
 })

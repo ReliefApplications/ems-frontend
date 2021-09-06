@@ -6,8 +6,6 @@ import { SafeAccessModule, SafeFormBuilderModule, SafeButtonModule } from '@safe
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HistoryComponent } from './components/history/history.component';
 import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,8 +20,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatButtonModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
