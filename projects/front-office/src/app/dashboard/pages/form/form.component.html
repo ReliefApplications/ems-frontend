@@ -1,4 +1,3 @@
-<h1>Answer the form</h1>
 <ng-container *ngIf="!loading && form">
     <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
     <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
