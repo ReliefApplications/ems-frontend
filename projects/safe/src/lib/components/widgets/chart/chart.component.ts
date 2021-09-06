@@ -1,6 +1,5 @@
-import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
-import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
@@ -33,24 +32,21 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @ViewChild('chartWrapper')
   private chartWrapper?: SafeLineChartComponent | SafePieChartComponent | SafeDonutChartComponent;
 
-  public categoryAxis: any = {
-    type: 'date',
-    maxDivisions: 10
-  };
-
   constructor(
     private aggregationBuilder: AggregationBuilderService
   ) { }
 
   /*  Detect changes of the settings to reload the data.
   */
-  ngOnChanges(): void {
-    this.loading = false;
-    this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
-    if (this.dataQuery) {
-      this.getData();
-    } else {
-      this.loading = false;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.settings?.firstChange || changes.settings.currentValue.chart.pipeline !== changes.settings.previousValue.chart.pipeline) {
+      this.loading = true;
+      this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
+      if (this.dataQuery) {
+        this.getData();
+      } else {
+        this.loading = false;
+      }
     }
   }
 
