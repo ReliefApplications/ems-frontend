@@ -90,6 +90,16 @@
               </mat-form-field>
             </div>
           </ng-container>
+          <ng-container *ngIf="apiForm.value.authType === 'userToService'">
+            <div formGroupName="settings" class="form-group">
+              <mat-form-field appearance="outline">
+                <mat-label>
+                  Token
+                </mat-label>
+                <input matInput formControlName="token" type='text' placeholder="Enter the token used to authenticate to the Endpoint" onfocus="this.value=''"/>
+              </mat-form-field>
+            </div>
+          </ng-container>
         </div>
         <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">Save changes</safe-button>
       </form>

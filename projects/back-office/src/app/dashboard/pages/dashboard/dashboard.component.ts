@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -48,7 +48,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private dashboardService: SafeDashboardService
   ) { }
 
   ngOnInit(): void {
@@ -64,6 +65,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }).valueChanges.subscribe((res) => {
         if (res.data.dashboard) {
           this.dashboard = res.data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
           this.dashboardNameForm = new FormGroup({
             dashboardName: new FormControl(this.dashboard.name, Validators.required)
           });
@@ -89,6 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+    this.dashboardService.closeDashboard();
   }
 
   /*  Add a new widget to the dashboard.

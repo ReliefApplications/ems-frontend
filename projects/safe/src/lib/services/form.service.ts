@@ -23,12 +23,12 @@ export class SafeFormService {
     public authService: SafeAuthService
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, domService, dialog, apollo, formBuilder, authService);
+    initCustomWidgets(SurveyKo, domService, dialog, apollo, formBuilder, authService, environment);
 
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
 
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(Survey, domService, dialog, apollo, formBuilder, authService);
+    initCustomWidgets(Survey, domService, dialog, apollo, formBuilder, authService, environment);
   }
 }
