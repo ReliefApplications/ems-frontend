@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
+import { SafeButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [SettingsComponent],

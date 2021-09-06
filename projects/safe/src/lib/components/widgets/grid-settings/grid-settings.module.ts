@@ -16,7 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/floating-button-settings.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
-import {SafeButtonModule} from '../../ui/button/button.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],

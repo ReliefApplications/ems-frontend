@@ -2,14 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeConfirmModalModule } from '@safe/builder';
+import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,31 +18,30 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
-import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
 
 @NgModule({
   declarations: [FormsComponent],
-    imports: [
-        CommonModule,
-        FormsRoutingModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSortModule,
-        MatDialogModule,
-        MatMenuModule,
-        MatIconModule,
-        MatChipsModule,
-        SafeConfirmModalModule,
-        AddFormModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatInputModule,
-        MatSelectModule,
-        AngularFormsModule,
-        MatDividerModule,
-        SafeButtonModule
-    ],
+  imports: [
+    CommonModule,
+    FormsRoutingModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatIconModule,
+    MatChipsModule,
+    SafeConfirmModalModule,
+    AddFormModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatSelectModule,
+    AngularFormsModule,
+    MatDividerModule,
+    SafeButtonModule
+  ],
   exports: [FormsComponent]
 })
 export class FormsModule { }

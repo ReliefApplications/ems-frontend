@@ -13,7 +13,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {SafeButtonModule} from '../ui/button/button.module';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeLayoutComponent],

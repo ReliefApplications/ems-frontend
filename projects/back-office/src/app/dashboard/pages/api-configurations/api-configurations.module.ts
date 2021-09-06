@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
+import { SafeButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
 import { SafeAccessModule, SafePreviousButtonModule } from '@safe/builder';
@@ -12,9 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
-import {SafeButtonModule} from '../../../../../../safe/src/lib/components/ui/button/button.module';
-
-
+import { SafeButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [

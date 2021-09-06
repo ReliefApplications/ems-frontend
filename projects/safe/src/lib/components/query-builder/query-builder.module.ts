@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {SafeButtonModule} from '../ui/button/button.module';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [
