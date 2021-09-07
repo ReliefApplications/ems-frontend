@@ -423,4 +423,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+// === SURVEY BUILDER ===
+.core-question {
+  color: mat-color($safe-warn) !important;
+}
+
 @import "theme.scss";

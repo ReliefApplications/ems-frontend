@@ -19,6 +19,9 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     data(display: $display)
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
   }
 }`;
 
@@ -65,11 +68,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data(display: $display)
     form {
       uniqueRecord {
         id
         modifiedAt
+        createdBy {
+          name
+        }
         data
       }
     }
@@ -90,46 +99,6 @@ mutation uploadFile($file: Upload!, $form: ID!) {
 export interface UploadFileMutationResponse {
   loading: boolean;
   uploadFile: string;
-}
-
-// === EDIT FORM ===
-export const EDIT_FORM_STRUCTURE = gql`
-mutation editForm($id: ID!, $structure: JSON!) {
-  editForm(id: $id, structure: $structure) {
-    id
-    name
-    createdAt
-    status
-    versions {
-      id
-      createdAt
-      data
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
-  }
-}`;
-
-export interface EditFormMutationResponse {
-  loading: boolean;
-  editForm: Form;
 }
 
 // === EDIT USER ===

@@ -3,7 +3,8 @@ import { status } from './form.model';
 /*  Enum of authType.
 */
 export enum authType {
-    serviceToService = 'service-to-service',
+    serviceToService = 'serviceToService',
+    userToService = 'userToService'
 }
 
 

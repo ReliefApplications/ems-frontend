@@ -33,3 +33,6 @@
     <button mat-button (click)="onClose()">Close</button>
     <button mat-flat-button mat-dialog-close="true" cdkFocusInitial color="primary">Revert to past record</button>
 </mat-dialog-actions>
+<mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo && canEdit">
+    <button mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
+</mat-dialog-actions>

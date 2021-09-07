@@ -49,10 +49,9 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="actions">
-                    <button mat-flat-button color="primary" (click)="toggleRawJSON()">
-                        <mat-icon>edit_note</mat-icon>
+                    <safe-button icon="edit_note" category="secondary" variant="primary" (click)="toggleRawJSON()">
                         Switch mode
-                    </button>
+                    </safe-button>
                 </div>
                 <ng-container *ngIf="openRawJSON">
                     <mat-form-field appearance="outline" style="width: 100%;">
@@ -73,13 +72,11 @@
                             <mat-label>Value</mat-label>
                             <input matInput formControlName="value" type="string" />
                         </mat-form-field>
-                        <button mat-icon-button color="warn" (click)="onDeleteElement(i)">
-                            <mat-icon>remove_circle_outline</mat-icon>
-                        </button>
+                        <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteElement(i)">
+                        </safe-button>
                     </form>
-                    <button *ngIf="filteredFields('').length > 0" mat-icon-button color="primary" (click)="onAddElement()">
-                        <mat-icon>add_circle_outline</mat-icon>
-                    </button>
+                    <safe-button *ngIf="filteredFields('').length > 0" [isIcon]="true" icon="add_circle_outline" variant="primary" (click)="onAddElement()">
+                    </safe-button>
                 </ng-container>
             </mat-expansion-panel>
             <mat-form-field *ngIf="mappingArray.controls.length > 0" appearance="outline">

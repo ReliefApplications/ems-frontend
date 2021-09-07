@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
+import {SafeButtonModule} from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent, SafeInviteUserComponent],
@@ -40,7 +41,8 @@ import { MatDividerModule } from '@angular/material/divider';
         MatRippleModule,
         MatCheckboxModule,
         MatProgressSpinnerModule,
-        MatDividerModule
+        MatDividerModule,
+        SafeButtonModule
     ],
   exports: [SafeUsersComponent]
 })

@@ -19,7 +19,7 @@ import { SafeTileDisplayComponent } from './floating-options/menu/tile-display/t
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { SafeDashboardMenuComponent } from './dashboard-menu/dashboard-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [
@@ -46,7 +46,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatDialogModule,
     MatMenuModule,
     DragDropModule,
-    MatDividerModule
+    MatDividerModule,
+    SafeButtonModule
   ],
   exports: [SafeWidgetGridComponent]
 })

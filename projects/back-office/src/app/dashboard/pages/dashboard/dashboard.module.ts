@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { SafeAccessModule, SafeRecordHistoryModule, SafeWidgetGridModule } from '@safe/builder';
+import { SafeAccessModule, SafeRecordHistoryModule, SafeWidgetGridModule, SafeButtonModule } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -39,7 +38,8 @@ import { MatInputModule } from '@angular/material/input';
     MatTooltipModule,
     MatMenuModule,
     ClipboardModule,
-    SafeRecordHistoryModule
+    SafeRecordHistoryModule,
+    SafeButtonModule
   ],
   exports: [DashboardComponent]
 })

@@ -1,6 +1,6 @@
 {
   "name": "safe-front",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,8 +8,10 @@
     "build:ci": "ng build --prod --sourceMap=false",
     "build:ci:ra": "ng build --prod --sourceMap=false --configuration=ra",
     "build:ci:wv": "ng build --prod --sourceMap=false --configuration=wv",
-    "build:az:front": "ng build --configuration=azure --sourceMap=false --project=front-office",
-    "build:az:back": "ng build --configuration=azure --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
+    "build:az:uat:front": "ng build --configuration=azure-uat --sourceMap=false --project=front-office",
+    "build:az:uat:back": "ng build --configuration=azure-uat --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
+    "build:az:prod:front": "ng build --configuration=azure-prod --sourceMap=false --project=front-office",
+    "build:az:prod:back": "ng build --configuration=azure-prod --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:elem": "ng build web-element --aot --build-optimizer --extract-licenses --no-namedChunks --optimization --no-sourceMap --no-vendorChunk",
     "bundle:elem": "cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js > dist/web-element.js",
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
@@ -23,7 +25,11 @@
     "docs:json": "npx compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006",
     "build-storybook": "npm run docs:json && build-storybook",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
   },
   "private": true,
   "dependencies": {
@@ -74,10 +80,10 @@
     "msal": "^1.4.4",
     "rxjs": "~6.6.7",
     "subscriptions-transport-ws": "^0.9.18",
-    "survey-angular": "^1.8.54",
-    "survey-creator": "^1.8.54",
-    "survey-knockout": "^1.8.54",
-    "surveyjs-widgets": "^1.8.54",
+    "survey-angular": "^1.8.64",
+    "survey-creator": "^1.8.64",
+    "survey-knockout": "^1.8.64",
+    "surveyjs-widgets": "^1.8.64",
     "tslib": "^2.0.0",
     "uuid": "^8.3.1",
     "zone.js": "~0.10.2"
@@ -88,10 +94,11 @@
     "@angular/compiler-cli": "~11.2.8",
     "@babel/core": "^7.14.6",
     "@compodoc/compodoc": "^1.1.11",
-    "@storybook/addon-actions": "^6.3.2",
-    "@storybook/addon-essentials": "^6.3.2",
-    "@storybook/addon-links": "^6.3.2",
-    "@storybook/angular": "^6.3.2",
+    "@storybook/addon-actions": "^6.3.7",
+    "@storybook/addon-essentials": "^6.3.7",
+    "@storybook/addon-knobs": "^6.3.0",
+    "@storybook/addon-links": "^6.3.7",
+    "@storybook/angular": "^6.3.7",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/leaflet": "^1.5.19",
@@ -113,6 +120,7 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^11.1.2",
     "protractor": "~7.0.0",
+    "standard-version": "^9.3.1",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
@@ -123,5 +131,19 @@
     "commentChar": "#",
     "isConventionalCommit": false,
     "allowEmptyCommitMessage": false
+  },
+  "standard-version": {
+    "types": [
+      {"type": "feat", "section": "Features"},
+      {"type": "fix", "section": "Bug Fixes"},
+      {"type": "chore", "hidden": true},
+      {"type": "docs", "hidden": true},
+      {"type": "style", "hidden": true},
+      {"type": "refactor", "hidden": true},
+      {"type": "perf", "hidden": true},
+      {"type": "test", "hidden": true}
+    ],
+    "commitUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/commits/{{hash}}",
+    "compareUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/compare/{{previousTag}}...{{currentTag}}"
   }
 }

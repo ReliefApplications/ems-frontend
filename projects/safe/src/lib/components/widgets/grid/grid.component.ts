@@ -7,9 +7,7 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnResizeArgs,
-  ColumnBase,
-  ColumnVisibilityChangeEvent
+  ColumnReorderEvent
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -19,7 +17,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import {Observable, Subject, Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -29,7 +27,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject, AfterViewInit, AfterContentInit, AfterViewChecked, QueryList
+  ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
@@ -40,9 +38,8 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeDownloadService } from '../../../services/download.service';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
-import {ActivatedRoute} from '@angular/router';
-import {SafeAuthService} from '../../../services/auth.service';
-import {SafeGridService} from '../../../services/grid.service';
+import { prettifyLabel } from '../../../utils/prettify';
+import { GridLayout } from './models/grid-layout.model';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -78,7 +75,7 @@ const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -108,19 +105,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
-  private dashboardId = 0;
-  private id = '';
   private columnsOrder: any[] = [];
-  private storedObj: any = {};
-  private stopReorderEvent = false;
-  private columnsWidth: any[] = [];
-  private columnsDisplay: any[] = [];
 
-  // === VERIFICATION IF USER IS ADMIN ===
-  public isAdmin: boolean;
-
-  // === VERIFICATION UPDATE FIELDS ===
-  private checkFieldsUpdated: boolean;
+  // === CACHED CONFIGURATION ===
+  @Input() layout: GridLayout = {};
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -136,7 +124,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   // === SETTINGS ===
   @Input() header = true;
   @Input() settings: any = null;
-  @Input() widgetId = 0;
+  @Input() id = '';
 
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
@@ -156,6 +144,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
   // === NOTIFY CHANGE OF GRID CHILD ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
+
+  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -190,41 +180,25 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService,
-    private route: ActivatedRoute,
-    private safeAuthService: SafeAuthService,
-    private safeGridService: SafeGridService
+    private downloadService: SafeDownloadService
   ) {
     this.apiUrl = environment.API_URL;
-    this.checkFieldsUpdated = false;
-    this.isAdmin = false;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    // Creation of the unique id (in order to identify the grid in the local storage)
-    this.route.params.subscribe((params) => {
-      this.dashboardId = params.id;
-    });
-    this.id = this.dashboardId.toString() + this.widgetId;
-
-    // initialization of storedObj (it represent the localStorage)
-    this.storedObj = JSON.parse(localStorage.getItem(this.id) || '{}');
-
-    // Update columns filters
-    this.filter = this.storedObj.filter;
+    if (this.layout?.filter) {
+      this.filter = this.layout.filter;
+    }
+    if (this.layout?.sort) {
+      this.sort = this.layout.sort;
+    }
     this.loadItems();
-
-    console.log(this.settings);
-    this.settings.layout = 'yes';
-    console.log(this.settings);
-    console.log('TEEEEEST');
   }
 
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
-    console.log(this.settings);
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -250,44 +224,39 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
-  ngAfterViewChecked(): void {
-    // checkFieldsUpdated enable us to not have to call again and again the updateFeature methode
-    // because the ngAfterViewChecked() methode is called many times
-    // but we have to use ngAfterViewChecked() because before that the grid fields are not initialized
-    if (!this.checkFieldsUpdated){
-      // Update columns: order, width and display
-      this.updateFeature('columnsOrder');
-      this.updateFeature('columnsWidth');
-      this.updateFeature('columnsDisplay');
-    }
-  }
-
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
+    const cachedFields = this.layout?.fields || {};
+
     return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      const fullName = prefix ? `${prefix}.${f.name}` : f.name;
+      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
+          const metaData = this.metaFields[fullName] || null;
+          const cachedField = cachedFields[fullName] || null;
+          const title = f.label ? f.label : prettifyLabel(f.name);
           return {
             name: fullName,
-            title: f.label ? f.label : f.name,
+            title: f.label ? f.label : prettifyLabel(f.name),
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
             filter: this.getFilter(f.type),
-            meta: this.metaFields[fullName],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[fullName].readOnly,
-            order: 0
+            meta: metaData,
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            hidden: cachedField?.hidden || false,
+            width: cachedField?.width || title.length * 7 + 50,
+            order: cachedField?.order,
           };
         }
       }
-    }));
+    })).sort((a, b) => a.order - b.order);
   }
 
   private convertDateFields(items: any[]): void {
@@ -344,10 +313,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
             }
           }
         },
-        () => {
-          this.queryError = true;
-          this.loading = false;
-        });
+          () => {
+            this.queryError = true;
+            this.loading = false;
+          });
       } else {
         this.loading = false;
       }
@@ -616,6 +585,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   */
   public sortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
+    this.layout.sort = sort;
+    this.layoutChanged.emit(this.layout);
     this.skip = 0;
     this.loadItems();
   }
@@ -636,10 +607,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   /*  Detect filtering events and update the items loaded.
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
-    this.isAdmin = this.safeAuthService.userIsAdmin;
     this.filter = filter;
-    this.storedObj.filter = this.filter;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+    this.layout.filter = this.filter;
+    this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
 
@@ -699,17 +669,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     });
   }
 
-  /* Opens the record on a read-only modal.
+  /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
   */
-  public onShowDetails(id: string): void {
-    this.dialog.open(SafeRecordModalComponent, {
+  public onShowDetails(item: any): void {
+    const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: id,
-        locale: 'en'
+        recordId: item.id,
+        locale: 'en',
+        canUpdate: item.canUpdate
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.onUpdateRow(item.id);
+      }
     });
   }
 
@@ -839,7 +815,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
-    console.log('GAAAAAANG!');
     let rowsIndexToModify = [...this.selectedRowsIndex];
 
     if (options.autoSave && options.modifySelectedRows) {
@@ -1038,6 +1013,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    this.filter = {
+      logic: 'and',
+      filters: []
+    };
+    this.loadItems();
     if (this.showFilter) {
       this.fields.filter(x => !x.disabled).forEach((field, index) => {
         if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
@@ -1065,7 +1045,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       const item = this.gridData.data[index];
       body += this.buildBodyRow(item, fields);
       body += '______________________\n';
-      i ++;
+      i++;
     }
     return body;
   }
@@ -1102,238 +1082,72 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   /**
-   * Update the feature we want we want
-   * @param storedObjFieldArg the feature we want to update (storage side)
-   * (for the moment, only: columnsOrder, columnsWidth, columnsDisplay)
+   * Set and emit new grid configuration after column reorder event.
+   * @param e ColumnReorderEvent
    */
-  updateFeature(storedObjFieldArg: string): void {
-    if (this.grid?.columns.toArray().length !== 0
-      && (storedObjFieldArg === 'columnsOrder'
-        || storedObjFieldArg === 'columnsWidth'
-        || storedObjFieldArg === 'columnsDisplay')){
-      if (this.storedObj[storedObjFieldArg] !== null && this.storedObj[storedObjFieldArg] !== undefined){
-        if (this.storedObj[storedObjFieldArg].length !== 0){
-          const storedField = this.storedObj[storedObjFieldArg];
-          let verify = false;
-          const fieldsToAdd = [];
-          const fieldsToRemove = [];
+  columnReorder(e: ColumnReorderEvent): void {
+    if ((e.oldIndex !== e.newIndex)) {
+      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
 
-          // fields to remove
-          for (const sf of storedField) {
-            for (const f of this.fields) {
-              if ((storedObjFieldArg === 'columnsOrder' && f.name === sf.name)
-                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
-                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
-                verify = true;
-              }
-            }
-            if (!verify){
-              fieldsToRemove.push(sf);
-            }
-            verify = false;
-          }
-
-          // fields to add
-          for (const f of this.fields) {
-            for (const sf of storedField) {
-              if ((storedObjFieldArg === 'columnsOrder' && f.name === sf.name)
-                || (storedObjFieldArg === 'columnsWidth' && f.title === sf.title)
-                || (storedObjFieldArg === 'columnsDisplay' && f.title === sf.title)){
-                verify = true;
-              }
-            }
-            if (!verify){
-              fieldsToAdd.push(f);
-            }
-            verify = false;
-          }
-
-          if (fieldsToAdd.length !== 0 || fieldsToRemove.length !== 0) {
-            for (const f of fieldsToAdd) {
-              storedField.push(f);
-            }
-            for (const f of fieldsToRemove) {
-              storedField.pop(f);
-            }
-            this[storedObjFieldArg] = storedField.filter((el: any) => {
-              return el != null;
-            });
-          }
-          else {
-            this[storedObjFieldArg] = storedField;
-          }
-
-          // we need to turn off reorderEvent, because when we update it we don't want it to react
-          // we want it to react only when the user drag and drop columns
-          if (storedObjFieldArg === 'columnsOrder'){
-            this.stopReorderEvent = true;
-          }
-
-          // update features
-          for (const [i, field] of this[storedObjFieldArg].entries()) {
-            this.grid?.columns.forEach((c, n, a) => {
-              // not sure if it's the best methode to identify the column
-              // but I can't get c.field so...
-              if (c.title === field.title){
-                // +1 because getFields() doesn't return the first column (checkbox column)
-                // btw he doesn't take the last two column too
-                if (storedObjFieldArg === 'columnsOrder'){
-                  this.grid?.reorderColumn(c, i + 1);
-                }
-                else if (storedObjFieldArg === 'columnsWidth'){
-                  c.width = field.width;
-                }
-                else if (storedObjFieldArg === 'columnsDisplay'){
-                  c.hidden = field.display;
-                }
-              }
-            });
-          }
-          if (storedObjFieldArg === 'columnsOrder'){
-            this.stopReorderEvent = false;
-          }
-        }
-        // if no localstorage
-        else {
-          this.noLocalStorage(storedObjFieldArg);
-        }
-      }
-      // if no localstorage
-      else {
-        this.noLocalStorage(storedObjFieldArg);
-      }
-      if (storedObjFieldArg === 'columnsOrder'){
-        this.checkFieldsUpdated = true;
-      }
-    }
-  }
-
-  /**
-   * Methode to call if there is no localstorage
-   * @param storedObjFieldArg the local storage field
-   */
-  noLocalStorage(storedObjFieldArg: string): void {
-    if (storedObjFieldArg === 'columnsOrder'){
-      this.columnsOrder = this.fields;
-    }
-    else if (storedObjFieldArg === 'columnsWidth'){
-      this.fillColumnWidth();
-    }
-    else if (storedObjFieldArg === 'columnsDisplay'){
-      this.fillColumnDisplay();
-    }
-  }
-
-  /**
-   * Order columns event
-   * @param e event parameter (oldIndex, newIndex)
-   */
-  columnReorder(e: any): void {
-    this.isAdmin = this.safeAuthService.userIsAdmin;
-    if (!this.stopReorderEvent){
       const tempFields: any[] = [];
       let j = 0;
-      // shift by 1 because the old and new index take in account the first checkbox column
-      const oldIndex = e.oldIndex - 1;
-      const newIndex = e.newIndex - 1;
+      const oldIndex = e.oldIndex;
+      const newIndex = e.newIndex;
 
       for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex){
+        if (i === newIndex) {
           if (oldIndex < newIndex) {
             tempFields[j] = this.columnsOrder[i];
             j++;
             tempFields[j] = this.columnsOrder[oldIndex];
           }
-          if (oldIndex > newIndex){
+          if (oldIndex > newIndex) {
             tempFields[j] = this.columnsOrder[oldIndex];
             j++;
             tempFields[j] = this.columnsOrder[i];
           }
-
           j++;
         }
-        else if (i !== oldIndex){
+        else if (i !== oldIndex) {
           tempFields[j] = this.columnsOrder[i];
           j++;
         }
       }
-
-      this.columnsOrder = tempFields;
-      this.storedObj.columnsOrder = this.columnsOrder;
-      localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+      this.columnsOrder = tempFields.filter(x => x !== undefined);
+      this.setColumnsConfig();
     }
   }
 
   /**
-   * Resize columns width event
-   * @param e event parameter (oldWidth, newWidth)
+   * Set and emit new grid configuration after column resize event.
    */
-  columnResize(e: Array<ColumnResizeArgs>): void {
-    this.isAdmin = this.safeAuthService.userIsAdmin;
-    this.columnsWidth.forEach((c, i, a) => {
-      if (c.title === e[0].column.title){
-        c.width = e[0].newWidth;
-      }
-    });
-    this.storedObj.columnsWidth = this.columnsWidth;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+  columnResize(): void {
+    this.setColumnsConfig();
   }
 
   /**
-   * Display columns event
-   * @param e event parameter
+   * Set and emit new grid configuration after column visibility event.
    */
-  columnVisibilityChange(e: ColumnVisibilityChangeEvent): void {
-    this.isAdmin = this.safeAuthService.userIsAdmin;
-    this.columnsDisplay.forEach((c, i, a) => {
-      if (c.title === e.columns[0].title){
-        c.display = e.columns[0].hidden;
-      }
-    });
-    this.storedObj.columnsDisplay = this.columnsDisplay;
-    localStorage.setItem(this.id, JSON.stringify(this.storedObj));
+  columnVisibilityChange(): void {
+    this.setColumnsConfig();
   }
 
   /**
-   * Fill columnsWidth variable with grid columns base properties (used when there is no localStorage)
+   * Generate the cached fields config from the grid columns.
    */
-  fillColumnWidth(): void {
-    this.grid?.columns.forEach((c, i, a) => {
-      if (c.title !== undefined){
-        this.columnsWidth.push({title: c.title, width: c.width});
-      }
-    });
-  }
-
-  /**
-   * Fill columnsDisplay variable with grid columns base properties (used when there is no localStorage)
-   */
-  fillColumnDisplay(): void {
-    this.grid?.columns.forEach((c, i, a) => {
-      if (c.title !== undefined){
-        if (c.hidden === undefined){
-          this.columnsDisplay.push({title: c.title, display: false});
+  private setColumnsConfig(): void {
+    this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+      return {
+        ...obj,
+        [c.field]: {
+          field: c.field,
+          title: c.title,
+          width: c.width,
+          hidden: c.hidden,
+          order: this.columnsOrder.findIndex((x) => x === c.field)
         }
-        else {
-          this.columnsDisplay.push({title: c.title, display: c.hidden});
-        }
-      }
-    });
-  }
-
-  saveGridStatus(e: any): void {
-    console.log('Save status');
-    console.log(e);
-    // this.safeGridService.layoutObservable.emit(this.storedObj);
-    // this.safeGridService.layout = this.storedObj;
-    // this.storedObjToSend.next(this.storedObj);
-
-    this.safeGridService.DataSource.next(this.storedObj);
-
-    // this.safeGridService.layoutObservable = new Observable((observer) => {
-    //   return this.storedObj;
-    // });
-    //
-    // this.safeGridService.layoutObservable = this.storedObj;
+      };
+    }, {});
+    this.layoutChanged.emit(this.layout);
   }
 }

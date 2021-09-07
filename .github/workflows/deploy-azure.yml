@@ -25,9 +25,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build Back-office
-      run: npm run build:az
+      run: npm run build:az:uat:back
     - name: Build Front-office
-      run: npm run build:az front-office
+      run: npm run build:az:uat:front
     - name: Archive build Back-office
       if: success()
       uses: actions/upload-artifact@v2

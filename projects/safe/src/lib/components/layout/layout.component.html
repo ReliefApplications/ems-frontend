@@ -1,10 +1,8 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="nav.toggle()" *ngIf="!largeDevice">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <button mat-icon-button (click)="goBack()" *ngIf="largeDevice && route">
-    <mat-icon>keyboard_backspace</mat-icon>
-  </button>
+  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" *ngIf="!largeDevice">
+  </safe-button>
+  <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="largeDevice && route">
+  </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">{{title}}</h1>
   </ng-container>
@@ -22,9 +20,9 @@
     <div class="account-property">{{account ? account.name : ''}}</div>
     <div class="account-property">{{account ? account.userName : ''}}</div>
   </div>
-  <button mat-icon-button [matMenuTriggerFor]="accountMenu">
-    <mat-icon>account_circle</mat-icon>
-  </button>
+  <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
+  </safe-button>
+<!-- TODO: style problems related with the red round notification sticker => can't replace it -->
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
     <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn"
       [matBadgeHidden]="notifications.length == 0">
@@ -66,11 +64,10 @@
                 <a [routerLink]="item.path" routerLinkActive="active-link"
                   (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
                   <ng-container *ngIf="item.isAddPage">
-                    <button mat-stroked-button class="add-page-button" color="primary"
+                    <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
                       [class]="item.class ? item.class : ''">
-                      <mat-icon>add</mat-icon>
                       Add a Page
-                    </button>
+                    </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">
                     <mat-icon mat-list-icon class="nav-icon">
@@ -80,7 +77,7 @@
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                    <button mat-icon-button class="nav-action" *ngIf="item.action" 
+                    <button mat-icon-button class="nav-action" *ngIf="item.action"
                     (click)="onClick(item.action.callback, $event)">
                     <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
                   </button>
