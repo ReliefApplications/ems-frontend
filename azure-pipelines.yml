@@ -20,6 +20,7 @@ steps:
     npm install
     ng build --prod safe
     npm run build:az:uat:front
+    npm run build:az:uat:back
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
@@ -30,16 +31,22 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)//dist/back-office'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
     ArtifactName: 'front-office-drop'
     publishLocation: 'Container'
 
-- task: AzureRmWebAppDeployment@4
+- task: PublishBuildArtifacts@1
   inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'SC-EMSSAFE-T-WEU-RG01'
-    appType: 'webApp'
-    WebAppName: 'emssafe-t-frontofficewebapp'
-    packageForLinux: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
+    ArtifactName: 'back-office-drop'
+    publishLocation: 'Container'
