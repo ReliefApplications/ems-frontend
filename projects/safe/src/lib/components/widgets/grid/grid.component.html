@@ -26,6 +26,9 @@
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+            <span kendoTooltip>
+              <button title="It will save and show by default this layout for all the grids of this type" class='k-button' [disabled]="!isAdmin" (click)="saveGridStatus($event)">Save layout</button>
+            </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
                     (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
