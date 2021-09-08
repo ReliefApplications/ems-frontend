@@ -35,3 +35,11 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
     ArtifactName: 'front-office-drop'
     publishLocation: 'Container'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'SC-EMSSAFE-T-WEU-RG01'
+    appType: 'webApp'
+    WebAppName: 'emssafe-t-frontofficewebapp'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
