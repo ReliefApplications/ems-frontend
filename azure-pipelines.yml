@@ -20,33 +20,18 @@ steps:
     npm install
     ng build --prod safe
     npm run build:az:uat:front
-    npm run build:az:uat:back
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)/dist/front-office'
-    includeRootFolder: true
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)//dist/front-office'
+    includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
-    replaceExistingArchive: true
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)/dist/back-office'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
     ArtifactName: 'front-office-drop'
-    publishLocation: 'Container'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
-    ArtifactName: 'back-office-drop'
     publishLocation: 'Container'
