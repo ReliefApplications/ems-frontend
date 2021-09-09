@@ -8,6 +8,7 @@ import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
+import {Dashboard} from '../models/dashboard.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -666,4 +667,61 @@ export const GET_WORKFLOW_BY_ID = gql`
 export interface GetWorkflowByIdQueryResponse {
   loading: boolean;
   workflow: Workflow;
+}
+
+// === GET DASHBOARD BY ID ===
+export const GET_DASHBOARD_BY_ID = gql`
+  query GetDashboardById($id: ID!){
+    dashboard(id: $id){
+      id
+      name
+      createdAt
+      structure
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canCreate {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      page {
+        id
+        application {
+          id
+        }
+        canUpdate
+      }
+      step {
+        id
+        workflow {
+          id
+          page {
+            id
+            application {
+              id
+            }
+          }
+        }
+        canUpdate
+      }
+    }
+  }
+`;
+
+export interface GetDashboardByIdQueryResponse {
+  loading: boolean;
+  dashboard: Dashboard;
 }
