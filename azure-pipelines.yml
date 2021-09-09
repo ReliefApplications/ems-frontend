@@ -17,7 +17,6 @@ steps:
 
 - script: |
     npm install -g @angular/cli
-    npm install
     ng build --prod safe
     npm run build:az:uat:front
     npm run build:az:uat:back
