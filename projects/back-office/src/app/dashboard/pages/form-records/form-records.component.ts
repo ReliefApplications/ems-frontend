@@ -9,7 +9,9 @@ import {
   EditRecordMutationResponse,
   EDIT_RECORD,
   DeleteRecordMutationResponse,
-  DELETE_RECORD
+  DELETE_RECORD,
+  RestoreRecordMutationResponse,
+  RESTORE_RECORD
 } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
 import {
@@ -37,6 +39,9 @@ export class FormRecordsComponent implements OnInit {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
+
+  // === DELETED RECORDS VIEW ===
+  public showDeletedRecords = false;
 
   @ViewChild('xlsxFile') xlsxFile: any;
 
@@ -67,7 +72,8 @@ export class FormRecordsComponent implements OnInit {
       query: GET_FORM_BY_ID,
       variables: {
         id: this.id,
-        display: false
+        display: false,
+        showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
       this.form = res.data.form;
@@ -98,7 +104,8 @@ export class FormRecordsComponent implements OnInit {
     this.apollo.mutate<DeleteRecordMutationResponse>({
       mutation: DELETE_RECORD,
       variables: {
-        id
+        id,
+        hard: this.showDeletedRecords
       }
     }).subscribe(res => {
       this.dataSource = this.dataSource.filter(x => {
@@ -189,6 +196,28 @@ export class FormRecordsComponent implements OnInit {
     }, (error: any) => {
       this.snackBar.openSnackBar(error.error, {error: true});
       this.xlsxFile.nativeElement.value = '';
+    });
+  }
+
+  onSwitchView(): void {
+    this.showDeletedRecords = !this.showDeletedRecords;
+    this.getFormData();
+  }
+
+  restoreRecord(id: string, e: any): void {
+    e.stopPropagation();
+    this.apollo.mutate<RestoreRecordMutationResponse>({
+      mutation: RESTORE_RECORD,
+      variables: {
+        id,
+      }
+    }).subscribe(res => {
+      this.dataSource = this.dataSource.filter(x => {
+        return x.id !== id;
+      });
+      if (id === this.historyId) {
+        this.layoutService.setRightSidenav(null);
+      }
     });
   }
 }
