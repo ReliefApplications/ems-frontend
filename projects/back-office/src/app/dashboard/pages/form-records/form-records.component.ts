@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, ComponentFactory, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
@@ -20,13 +20,14 @@ import {
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService } from '../../../../../../safe/src/lib/services/download.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-form-records',
   templateUrl: './form-records.component.html',
   styleUrls: ['./form-records.component.scss']
 })
-export class FormRecordsComponent implements OnInit {
+export class FormRecordsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
@@ -36,6 +37,7 @@ export class FormRecordsComponent implements OnInit {
   dataSource: any[] = [];
   public showSidenav = true;
   private historyId = '';
+  private formSubscription?: Subscription;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -68,7 +70,10 @@ export class FormRecordsComponent implements OnInit {
 
   private getFormData(): void {
     this.loading = true;
-    this.apollo.watchQuery<GetFormByIdQueryResponse>({
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+    this.formSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
       query: GET_FORM_BY_ID,
       variables: {
         id: this.id,
@@ -97,10 +102,30 @@ export class FormRecordsComponent implements OnInit {
     this.displayedColumns = columns;
   }
 
-  /*  Delete a record if authorized.
+  /*  Delete a record if authorized, open a confirmation modal if it's a hard delete.
   */
-  deleteRecord(id: any, e: any): void {
+  onDeleteRecord(id: string, e: any): void {
     e.stopPropagation();
+    if (this.showDeletedRecords) {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: 'Hard delete record',
+          content: `Do you confirm the hard deletion of this record ?`,
+          confirmText: 'Delete',
+          confirmColor: 'warn'
+        }
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.deleteRecord(id);
+        }
+      });
+    } else {
+      this.deleteRecord(id);
+    }
+  }
+
+  private deleteRecord(id: string): void {
     this.apollo.mutate<DeleteRecordMutationResponse>({
       mutation: DELETE_RECORD,
       variables: {
@@ -204,6 +229,8 @@ export class FormRecordsComponent implements OnInit {
     this.getFormData();
   }
 
+  /*  Restore a deleted record.
+  */
   restoreRecord(id: string, e: any): void {
     e.stopPropagation();
     this.apollo.mutate<RestoreRecordMutationResponse>({
@@ -219,5 +246,11 @@ export class FormRecordsComponent implements OnInit {
         this.layoutService.setRightSidenav(null);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
   }
 }

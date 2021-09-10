@@ -193,12 +193,12 @@ export interface GetFormByIdQueryResponse {
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
+    records(filters: $filters, deleted: $showDeletedRecords) {
       id
       data(display: $display)
     }
