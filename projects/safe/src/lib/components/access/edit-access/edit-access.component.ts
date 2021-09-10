@@ -2,9 +2,13 @@ import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
 import { Role } from '../../../models/user.model';
+
+interface DialogData {
+  access: any;
+  application: string;
+}
 
 @Component({
   selector: 'safe-edit-access',
@@ -24,10 +28,7 @@ export class SafeEditAccessComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeEditAccessComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      access: any,
-      application: string
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   /*  Get list of roles, and build the form.

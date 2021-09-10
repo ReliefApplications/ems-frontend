@@ -1,7 +1,6 @@
 <div [matMenuTriggerFor]="menu" class="dashboard-menu">
-  <button mat-mini-fab color="primary">
-    <mat-icon>add</mat-icon>
-  </button>
+  <safe-button [isIcon]="true" icon="add" category="secondary" variant="primary">
+  </safe-button>
   <span class="primary">Add Widget</span>
 </div>
 <mat-menu #menu="matMenu">

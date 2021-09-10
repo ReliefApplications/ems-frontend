@@ -1,12 +1,11 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{'field-form': isField}">
-    <button mat-icon-button (click)="onCloseField()" *ngIf="isField">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
+    <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()" *ngIf="isField">
+    </safe-button>
 
-      <mat-form-field appearance="outline" *ngIf="!isField">
+      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
         <mat-label>Select a data set</mat-label>
-        <input [readonly]="canSelectDataSet !== true" type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+        <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           <mat-option *ngFor="let option of filteredQueries" [value]="option">
             {{option}}

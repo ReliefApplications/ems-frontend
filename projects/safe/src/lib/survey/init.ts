@@ -13,15 +13,24 @@ import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { DomService } from '../services/dom.service';
 import { FormBuilder } from '@angular/forms';
+import { SafeAuthService } from '../services/auth.service';
 
 /*  Execute all init methods of custom SurveyJS.
 */
-export function initCustomWidgets(Survey: any, domService: DomService, dialog: MatDialog, apollo: Apollo, formBuilder: FormBuilder): void {
+export function initCustomWidgets(
+    Survey: any,
+    domService: DomService,
+    dialog: MatDialog,
+    apollo: Apollo,
+    formBuilder: FormBuilder,
+    authService: SafeAuthService,
+    environment: any
+  ): void {
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, apollo, dialog, formBuilder);
-  initCustomWidget(Survey, domService, dialog);
-  addCustomFunctions(Survey);
+  initCustomWidget(Survey, domService, dialog, environment);
+  addCustomFunctions(Survey, authService);
 }

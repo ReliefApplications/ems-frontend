@@ -120,7 +120,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       data: {
         user,
         availableRoles: this.roles,
-        multiple: Boolean(!this.applicationService),
+        multiple: true,
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });

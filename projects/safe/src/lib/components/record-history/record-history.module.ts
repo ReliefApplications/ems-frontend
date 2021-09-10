@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
@@ -23,7 +24,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    MatMenuModule
+    MatMenuModule,
+    SafeButtonModule
   ],
   exports: [SafeRecordHistoryComponent]
 })

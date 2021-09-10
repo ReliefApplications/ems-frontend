@@ -5,20 +5,20 @@ import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 
 export const AVAILABLE_TILES = [
-  {
-    name: 'BAR CHART',
-    icon: 'bar_chart',
-    settings: {
-      title: 'Bar chart',
-      chart: {
-        type: 'bar'
-      }
-    },
-    defaultCols: 3,
-    defaultRows: 3,
-    component: 'chart',
-    settingsTemplate: SafeChartSettingsComponent
-  },
+  // {
+  //   name: 'BAR CHART',
+  //   icon: 'bar_chart',
+  //   settings: {
+  //     title: 'Bar chart',
+  //     chart: {
+  //       type: 'bar'
+  //     }
+  //   },
+  //   defaultCols: 3,
+  //   defaultRows: 3,
+  //   component: 'chart',
+  //   settingsTemplate: SafeChartSettingsComponent
+  // },
   {
     name: 'DONUT CHART',
     icon: 'donut_small',

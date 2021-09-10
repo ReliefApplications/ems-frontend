@@ -12,10 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
-import { SafeConfirmModalModule } from '@safe/builder';
+import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [SubscriptionsComponent, SubscriptionModalComponent],
@@ -34,7 +34,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatProgressSpinnerModule,
     MatTableModule,
     SafeConfirmModalModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDividerModule,
+    SafeButtonModule
   ]
 })
 export class SubscriptionsModule { }

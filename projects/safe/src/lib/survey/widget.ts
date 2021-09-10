@@ -4,6 +4,7 @@ import { DomService } from '../services/dom.service';
 import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
 import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
+import { ChoicesRestful } from 'survey-angular';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -12,7 +13,7 @@ function addZero(i: any): string {
   return i;
 }
 
-export function init(Survey: any, domService: DomService, dialog: MatDialog): void {
+export function init(Survey: any, domService: DomService, dialog: MatDialog, environment: any): void {
   const widget = {
     name: 'custom-widget',
     widgetIsLoaded(): boolean {
@@ -49,6 +50,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
         category: 'general',
         required: true,
       });
+      // Pass token before the request to fetch choices by URL if it's targeting SAFE API
+      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: {request: XMLHttpRequest}) => {
+        if (sender.url.includes(environment.API_URL)) {
+          const token = localStorage.getItem('msal.idtoken');
+          options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
+      };
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
@@ -141,6 +149,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                 const e = new CustomEvent('saveResourceFromEmbed',
                   { detail: { resource: res.data, template: res.template } });
                 document.dispatchEvent(e);
+                question.value = res.data.id;
               }
             });
           };
@@ -226,6 +235,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog): vo
                       });
                       document.dispatchEvent(e);
                     }
+                    // there we really change the value and so trigger the method
+                    question.value = question.value.concat(res.data.id);
                   }
                 });
               };

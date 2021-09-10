@@ -18,6 +18,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
@@ -40,6 +42,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatRippleModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
+    SafeButtonModule,
     MatTooltipModule
   ],
   exports: [SafeUsersComponent]

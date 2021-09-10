@@ -1,15 +1,19 @@
 {
   "name": "@safe/builder",
-  "version": "0.0.3",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ReliefApplications/emrs-safe-frontend.git"
+  },
   "peerDependencies": {
-    "@angular/common": "^10.2.0",
-    "@angular/core": "^10.2.0"
+    "@angular/common": "~11.2.8",
+    "@angular/core": "~11.2.8"
   },
   "dependencies": {
     "tslib": "^2.0.0"
   },
   "publishConfig": {
-    "@safe:registry": "https://gitlab.com/api/v4/projects/22249341/packages/npm/"
+    "@ReliefApplications:registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "@types/uuid": "^8.3.0"

@@ -6,6 +6,12 @@ import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../graphql/queries'
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 
+interface DialogData {
+  targetForm: Form;
+  targetFormField: string;
+  targetFormQuery: any;
+}
+
 @Component({
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',
@@ -28,11 +34,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      targetForm: Form,
-      targetFormField: string,
-      targetFormQuery: any
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {

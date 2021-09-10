@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { prettifyLabel } from '../utils/prettify';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
@@ -199,10 +200,11 @@ export class QueryBuilderService {
     return str + ']';
   }
 
-  public createQueryForm(value: any): FormGroup {
+  public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
-      name: [value ? value.name : '', Validators.required],
-      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [], Validators.required),
+      name: [value ? value.name : '', validators ? Validators.required : null],
+      fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
+       validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
@@ -258,7 +260,7 @@ export class QueryBuilderService {
           name: [{ value: field.name, disabled: true }],
           type: [{ value: newField ? field.type.name : field.type, disabled: true }],
           kind: [newField ? field.type.kind : field.kind],
-          label: [field.label ? field.label : field.name, Validators.required]
+          label: [field.label ? field.label : prettifyLabel(field.name), Validators.required]
         });
       }
     }

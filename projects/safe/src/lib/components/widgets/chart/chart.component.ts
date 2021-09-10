@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
-import { ChartComponent } from '@progress/kendo-angular-charts';
 import { Subscription } from 'rxjs';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
+import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
+import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -27,13 +29,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @Input() settings: any = null;
 
   // === CHART ===
-  @ViewChild('chart')
-  private chart?: ChartComponent;
-
-  public categoryAxis: any = {
-    type: 'date',
-    maxDivisions: 10
-  };
+  @ViewChild('chartWrapper')
+  private chartWrapper?: SafeLineChartComponent | SafePieChartComponent | SafeDonutChartComponent;
 
   constructor(
     private aggregationBuilder: AggregationBuilderService
@@ -41,21 +38,23 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /*  Detect changes of the settings to reload the data.
   */
-  ngOnChanges(): void {
-    this.loading = false;
-    this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
-    if (this.dataQuery) {
-      this.getData();
-    } else {
-      this.loading = false;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.settings?.firstChange || changes.settings.currentValue.chart.pipeline !== changes.settings.previousValue.chart.pipeline) {
+      this.loading = true;
+      this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
+      if (this.dataQuery) {
+        this.getData();
+      } else {
+        this.loading = false;
+      }
     }
   }
 
   public onExport(): void {
-    this.chart?.exportImage({
+    this.chartWrapper?.chart?.exportImage({
       width: 1200,
       height: 800
-    }).then((dataURI) => {
+    }).then((dataURI: string) => {
       saveAs(dataURI, this.settings.name ? `${this.settings.name}.png` : DEFAULT_FILE_NAME);
     });
   }
@@ -67,7 +66,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       if (['pie', 'donut', 'line'].includes(this.settings.chart.type)) {
         this.series = [
           {
-            data: res.data.recordsAggregation
+            data: JSON.parse(JSON.stringify(res.data.recordsAggregation))
           }
         ];
       } else {

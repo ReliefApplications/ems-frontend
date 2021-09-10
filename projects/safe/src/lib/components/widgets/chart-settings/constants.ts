@@ -1,11 +1,11 @@
 import { Pie } from './charts/pie';
 
 export const CHART_TYPES = [
-    {
-        name: 'bar',
-        icon: 'bar_chart',
-        class: Pie
-    },
+    // {
+    //     name: 'bar',
+    //     icon: 'bar_chart',
+    //     class: Pie
+    // },
     {
         name: 'donut',
         icon: 'donut_small',

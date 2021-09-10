@@ -12,6 +12,7 @@ export * from './lib/services/workflow.service';
 export * from './lib/services/form.service';
 export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
+export * from './lib/services/dashboard.service';
 
 // === CONST ===
 export * from './lib/const/notifications';
@@ -64,6 +65,9 @@ export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
 export * from './lib/components/config-display-grid-fields-modal/public-api';
+
+// === UI ===
+export * from './lib/components/ui/button/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

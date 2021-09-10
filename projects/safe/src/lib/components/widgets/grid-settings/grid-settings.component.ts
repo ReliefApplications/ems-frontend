@@ -1,9 +1,14 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GetChannelsQueryResponse, GetRelatedFormsQueryResponse, GET_CHANNELS, GET_RELATED_FORMS } from '../../../graphql/queries';
+import {
+  GetChannelsQueryResponse,
+  GetRelatedFormsQueryResponse,
+  GET_CHANNELS,
+  GET_RELATED_FORMS
+} from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
@@ -16,7 +21,7 @@ import { Form } from '../../../models/form.model';
 })
 /*  Modal content for the settings of the grid widgets.
 */
-export class SafeGridSettingsComponent implements OnInit {
+export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -70,41 +75,17 @@ export class SafeGridSettingsComponent implements OnInit {
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
 
-    this.change.emit(this.tileForm);
-    this.tileForm.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
-
-    this.applicationService.application.subscribe((application: Application | null) => {
-      if (application) {
-        this.apollo.watchQuery<GetChannelsQueryResponse>({
-          query: GET_CHANNELS,
-          variables: {
-            application: application.id
-          }
-        }).valueChanges.subscribe(res => {
-          this.channels = res.data.channels;
-        });
-      } else {
-        this.apollo.watchQuery<GetChannelsQueryResponse>({
-          query: GET_CHANNELS,
-        }).valueChanges.subscribe(res => {
-          this.channels = res.data.channels;
-        });
-      }
-    });
-
-    this.queryName = this.tileForm.get('query')?.value.name;
-
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications in floating button if any
+        // Check if the query changed to clean modifications and fields for email in floating button if any
         if (this.fields && (res.name !== this.queryName)) {
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
             modifications.clear();
             this.tileForm?.get('floatingButton.modifySelectedRows')?.setValue(false);
+            const bodyFields = floatingButton.get('bodyFields') as FormArray;
+            bodyFields.clear();
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
@@ -138,6 +119,35 @@ export class SafeGridSettingsComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    if (this.tileForm) {
+      this.tileForm.valueChanges.subscribe(() => {
+        this.change.emit(this.tileForm);
+      });
+
+      this.applicationService.application.subscribe((application: Application | null) => {
+        if (application) {
+          this.apollo.watchQuery<GetChannelsQueryResponse>({
+            query: GET_CHANNELS,
+            variables: {
+              application: application.id
+            }
+          }).valueChanges.subscribe(res => {
+            this.channels = res.data.channels;
+          });
+        } else {
+          this.apollo.watchQuery<GetChannelsQueryResponse>({
+            query: GET_CHANNELS,
+          }).valueChanges.subscribe(res => {
+            this.channels = res.data.channels;
+          });
+        }
+      });
+
+      this.queryName = this.tileForm.get('query')?.value.name;
+    }
+  }
+
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
@@ -155,32 +165,30 @@ export class SafeGridSettingsComponent implements OnInit {
       attachToRecord: [value && value.attachToRecord ? value.attachToRecord : false],
       targetForm: [value && value.targetForm ? value.targetForm : null],
       targetFormField: [value && value.targetFormField ? value.targetFormField : null],
-      targetFormQuery: this.queryBuilder.createQueryForm(value?.targetFormQuery || null),
+      targetFormQuery: this.queryBuilder.createQueryForm(value && value.targetFormQuery ? value.targetFormQuery : null,
+        Boolean(value && value.targetForm)),
       notify: [value && value.notify ? value.notify : false],
       notificationChannel: [value && value.notificationChannel ? value.notificationChannel : null,
-      value && value.notify ? Validators.required : null],
+        value && value.notify ? Validators.required : null],
       notificationMessage: [value && value.notificationMessage ? value.notificationMessage : 'Records update'],
       publish: [value && value.publish ? value.publish : false],
       publicationChannel: [value && value.publicationChannel ? value.publicationChannel : null,
-      value && value.publish ? Validators.required : null],
+        value && value.publish ? Validators.required : null],
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [value && value.distributionList ? value.distributionList : [],
-      value && value.sendMail ? Validators.required : null],
+        value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
-      value && value.sendMail ? Validators.required : null],
+        value && value.sendMail ? Validators.required : null],
+      bodyFields: this.formBuilder.array(value && value.bodyFields ? value.bodyFields : [],
+        value && value.sendMail ? Validators.required : null),
       // attachment: [value && value.attachment ? value.attachment : false]
-    });
-    buttonForm.get('targetForm')?.valueChanges.subscribe(target => {
-      const queryName = this.queryBuilder.getQueryNameFromResourceName(target?.name || '');
-      buttonForm.get('targetFormQuery')?.get('name')?.setValue(queryName);
     });
     return buttonForm;
   }
 
   public addFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.push(this.createFloatingButtonForm({ show: true }));
-    this.tabIndex = floatingButtons.length - 1;
+    floatingButtons.push(this.createFloatingButtonForm({show: true}));
   }
 
   public deleteFloatingButton(): void {

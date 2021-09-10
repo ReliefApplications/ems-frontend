@@ -8,7 +8,7 @@
       </mat-form-field>
     </div>
     <div class="form-group">
-      
+
       <safe-query-builder [form]="$any(tileForm.controls.query)"></safe-query-builder>
     </div>
     <div formGroupName="actions" class="form-group">
@@ -28,18 +28,22 @@
     </div>
     <div class="form-group">
       <div class="form-group-title">Quick action buttons</div>
-      <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions below.</div>
-      <button mat-button color="primary" class="add-button" (click)="addFloatingButton()">
-        <mat-icon>add</mat-icon>
+      <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions
+        below.</div>
+      <safe-button icon="add" variant="primary" class="add-button" (click)="addFloatingButton()">
         Add a button
-      </button>
-      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px" [(selectedIndex)]="tabIndex"
-      *ngIf="floatingButtons.length > 0">
+      </safe-button>
+      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px"
+        [(selectedIndex)]="tabIndex" *ngIf="floatingButtons.length > 0">
         <ng-container *ngFor="let floatingButton of floatingButtons.controls">
-          <mat-tab [label]="floatingButton.value.name">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="form-error" *ngIf="floatingButton.invalid">error</mat-icon>
+              {{ floatingButton.value.name }}
+            </ng-template>
             <ng-template matTabContent>
-              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels" [relatedForms]="relatedForms"
-                                             (deleteButton)="deleteFloatingButton()"></safe-floating-button-settings>
+              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels"
+                [relatedForms]="relatedForms" (deleteButton)="deleteFloatingButton()"></safe-floating-button-settings>
             </ng-template>
           </mat-tab>
         </ng-container>

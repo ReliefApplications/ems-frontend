@@ -19,12 +19,31 @@ mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     data(display: $display)
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
   }
 }`;
 
 export interface EditRecordMutationResponse {
   loading: boolean;
   editRecord: Record;
+}
+
+// === EDIT RECORDS ===
+export const EDIT_RECORDS = gql`
+mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
+  editRecords(ids: $ids, data: $data) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+  }
+}`;
+
+export interface EditRecordsMutationResponse {
+  loading: boolean;
+  editRecords: Record[];
 }
 
 // === CONVERT RECORD ===
@@ -49,11 +68,17 @@ mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data(display: $display)
     form {
       uniqueRecord {
         id
         modifiedAt
+        createdBy {
+          name
+        }
         data
       }
     }
@@ -74,46 +99,6 @@ mutation uploadFile($file: Upload!, $form: ID!) {
 export interface UploadFileMutationResponse {
   loading: boolean;
   uploadFile: string;
-}
-
-// === EDIT FORM ===
-export const EDIT_FORM_STRUCTURE = gql`
-mutation editForm($id: ID!, $structure: JSON!) {
-  editForm(id: $id, structure: $structure) {
-    id
-    name
-    createdAt
-    status
-    versions {
-      id
-      createdAt
-      data
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
-  }
-}`;
-
-export interface EditFormMutationResponse {
-  loading: boolean;
-  editForm: Form;
 }
 
 // === EDIT USER ===
@@ -165,7 +150,7 @@ export interface EditUserProfileMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
   addPage(name: $name, type: $type, content: $content, application: $application){
     id
     name
@@ -367,7 +352,7 @@ export interface DeletePageMutationResponse {
 }
 
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
   editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
@@ -471,6 +456,20 @@ export interface AddChannelMutationResponse {
   addChannel: Channel;
 }
 
+// === EDIT CHANNEL ===
+export const EDIT_CHANNEL = gql`
+mutation editChannel($id: ID!, $title: String!) {
+  editChannel(id: $id, title: $title){
+    id
+    title
+  }
+}`;
+
+export interface EditChannelMutationResponse {
+  loading: boolean;
+  editChannel: Channel;
+}
+
 // === DELETE CHANNEL ===
 export const DELETE_CHANNEL = gql`
 mutation deleteChannel($id: ID!) {
@@ -535,6 +534,17 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === DELETE RECORD ===
+export const DELETE_RECORDS = gql`
+mutation deleteRecords($ids: [ID]!) {
+  deleteRecords(ids: $ids)
+}`;
+
+export interface DeleteRecordsMutationResponse {
+  loading: boolean;
+  deleteRecords: number;
 }
 
 // === ADD SUBSCRIPTION ===

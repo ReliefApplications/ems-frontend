@@ -38,6 +38,9 @@ query GetRoles($all: Boolean, $application: ID) {
       type
     }
     usersCount
+    application {
+      name
+    }
   }
 }`;
 
@@ -123,6 +126,7 @@ query GetShortFormById($id: ID!) {
   form(id: $id) {
     id
     name
+    core
     structure
     fields
     status
@@ -131,6 +135,24 @@ query GetShortFormById($id: ID!) {
       id
       modifiedAt
       data
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
     }
     canUpdate
   }
@@ -254,8 +276,10 @@ query GetRecordById($id: ID!) {
     id
     createdAt
     modifiedAt
+    createdBy {
+      name
+    }
     data
-    modifiedAt
     form {
       id
       structure

@@ -31,17 +31,18 @@ export class SafeChartSettingsComponent implements OnInit {
   public chart?: Chart;
   public type: any;
 
+  // === DISPLAY PREVIEW ===
+  private pipeline?: string;
+  public pipelineChanged = false;
+  public settings: any;
+
+
   public get chartForm(): FormGroup {
     return this.tileForm?.controls.chart as FormGroup || null;
   }
 
-  // public get type(): object {
-  //   return this.types.find(x => x.name === this.tileForm.value.chart.type);
-  // }
-
   constructor(
-    private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService
+    private formBuilder: FormBuilder
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
@@ -72,38 +73,24 @@ export class SafeChartSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    // if (this.tileForm.value.query.name) {
-    //   this.selectedFields = this.getFields(this.tileForm.value.query.fields);
-    // }
-
     const chartForm = this.tileForm?.get('chart') as FormGroup;
     chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find(x => x.name === value);
     });
 
-    // queryForm.controls.name.valueChanges.subscribe(() => {
-    //   this.tileForm.controls.xAxis.setValue('');
-    //   this.tileForm.controls.yAxis.setValue('');
-    // });
-    // queryForm.valueChanges.subscribe((res) => {
-    //   this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-    // });
+    this.pipeline = chartSettings.pipeline;
+    this.settings = this.tileForm?.value;
+    chartForm.controls.pipeline.valueChanges.subscribe((value) => {
+      this.pipelineChanged = value !== this.pipeline;
+    });
+    chartForm.valueChanges.subscribe((value) => {
+      this.settings = { chart: { ...value, ...{ pipeline: this.pipeline } } };
+    });
   }
 
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
-  }
-
-  private getFields(fields: any[], prefix?: string): any[] {
-    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, f.name);
-        }
-        default: {
-          return prefix ? `${prefix}.${f.name}` : f.name;
-        }
-      }
-    }));
+  public refreshPipeline(): void {
+    this.pipeline = this.tileForm?.get('chart.pipeline')?.value;
+    this.settings = this.tileForm?.value;
+    this.pipelineChanged = false;
   }
 }

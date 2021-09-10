@@ -1,6 +1,8 @@
 SAFE Front-end
 =======
 [![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)](https://img.shields.io/github/v/release/ReliefApplications/emrs-safe-frontend)
+[![Build](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/build.yml)
+[![CodeQL](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ReliefApplications/emrs-safe-frontend/actions/workflows/codeql-analysis.yml)
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
@@ -122,12 +124,12 @@ Deployment of the npm @safe/builder package is a 3-steps process:
 
 - Build the package:
 ```
-ng build --project=safe
+ng build --prod safe
 ```
 
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
 ```
-npm publish ./projects/safe
+npm publish ./dist/safe
 ```
 
 ## Build the web components
@@ -141,6 +143,32 @@ Then, a bundle can be generated from the files using this command:
 ```
 npm run bundle:elem
 ```
+
+## Deploy a release
+
+[Standard Version library](https://github.com/conventional-changelog/standard-version) is used by the project.
+
+In order to increase the versions of the code, you can use the related commands:
+
+- For a minor version:
+
+```
+npm run release:minor
+```
+
+- For a patch:
+
+```
+npm run release:patch
+```
+
+- For a major version:
+
+```
+npm run release:major
+```
+
+The cli should indicate the next command to run, in order to deploy the version.
 
 ## Running unit tests
 
@@ -164,3 +192,4 @@ You can use this command to serve the front-end if the error occurs:
 ```
 node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
 ```
+

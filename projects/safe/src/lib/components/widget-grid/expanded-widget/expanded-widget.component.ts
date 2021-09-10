@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+interface DialogData {
+  widget: any;
+}
+
 @Component({
   selector: 'safe-expanded-widget',
   templateUrl: './expanded-widget.component.html',
@@ -15,9 +19,7 @@ export class SafeExpandedWidgetComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedWidgetComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      widget: any
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   ngOnInit(): void {

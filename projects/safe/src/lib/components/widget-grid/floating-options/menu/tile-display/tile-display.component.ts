@@ -2,6 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+interface DialogData {
+  tile: any;
+}
+
 @Component({
   selector: 'safe-tile-display',
   templateUrl: './tile-display.component.html',
@@ -17,9 +21,7 @@ export class SafeTileDisplayComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeTileDisplayComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      tile: any
-    }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   /*  Build the form.
