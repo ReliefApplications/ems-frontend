@@ -3,6 +3,7 @@ import { Dashboard } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Apollo} from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../graphql/queries';
+import {EDIT_DASHBOARD, EditDashboardMutationResponse} from '../graphql/mutations';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,8 @@ export class SafeDashboardService {
           // is dashboard
           console.log('*** IF: res.data.dashboard');
           console.log(res.data.dashboard);
+          console.log('*** res');
+          console.log(res);
         } else {
           // no dashboard
           console.log('*** ELSE: res');
@@ -57,6 +60,25 @@ export class SafeDashboardService {
 
   saveWidgetLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
+    console.log('### => layout');
+    console.log(layout);
+    console.log(JSON.parse(JSON.stringify(layout)));
+    this.apollo.mutate<EditDashboardMutationResponse>({
+      mutation: EDIT_DASHBOARD,
+      variables: {
+        id: dashboardId,
+        structure: this.dashboard.getValue()?.structure,
+        layout: JSON.parse(JSON.stringify(layout))
+        // structure: this.tiles
+      }
+    }).subscribe(res => {
+      console.log('*** res.data?.editDashboard');
+      console.log(res.data?.editDashboard);
+      console.log(res);
+      // this.tiles = res.data?.editDashboard.structure;
+      // this.loading = false;
+    }, error => console.log(error));
+    console.log('AFTER');
     return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify(layout));
   }
 }

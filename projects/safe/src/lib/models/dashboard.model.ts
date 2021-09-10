@@ -9,6 +9,7 @@ export interface Dashboard {
     createdAt?: Date;
     modifiedAt?: Date;
     structure?: any;
+    layout?: any;
     permissions?: any;
     canSee?: boolean;
     canCreate?: boolean;
