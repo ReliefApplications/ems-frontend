@@ -618,57 +618,13 @@ export interface ToggleApplicationLockMutationResponse {
   toggleApplicationLock: Application;
 }
 
-// // === EDIT DASHBOARD ===
-// export const EDIT_DASHBOARD = gql`
-// mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
-//   editDashboard(id: $id, structure: $structure, name: $name) {
-//     id
-//     name
-//     structure
-//     modifiedAt
-//     permissions {
-//       canSee {
-//         id
-//         title
-//       }
-//       canCreate {
-//         id
-//         title
-//       }
-//       canUpdate {
-//         id
-//         title
-//       }
-//       canDelete {
-//         id
-//         title
-//       }
-//     }
-//     canSee
-//     canUpdate
-//     page {
-//       id
-//       name
-//       application {
-//         id
-//       }
-//     }
-//   }
-// }`;
-//
-// export interface EditDashboardMutationResponse {
-//   loading: boolean;
-//   editDashboard: Dashboard;
-// }
-
 // === EDIT DASHBOARD ===
 export const EDIT_DASHBOARD = gql`
-mutation editDashboard($id: ID!, $structure: JSON, $name: String, $layout: JSON) {
-  editDashboard(id: $id, structure: $structure, name: $name, layout: $layout) {
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
     id
     name
     structure
-    layout
     modifiedAt
     permissions {
       canSee {
@@ -704,17 +660,3 @@ export interface EditDashboardMutationResponse {
   loading: boolean;
   editDashboard: Dashboard;
 }
-
-// // === EDIT DASHBOARD ===
-// export const EDIT_DASHBOARD = gql`
-// mutation editDashboard($id: ID!, $layout: JSON) {
-//   editDashboard(id: $id, layout: $layout) {
-//     id
-//     layout
-//   }
-// }`;
-//
-// export interface EditDashboardMutationResponse {
-//   loading: boolean;
-//   editDashboard: Dashboard;
-// }
