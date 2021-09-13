@@ -1,11 +1,11 @@
 <div class="page-header">
-    <h1 class="page-title">{{showDeletedRecords ? 'List of deleted records' : 'List of records'}}</h1>
+    <h1 class="page-title">{{showDeletedRecords ? 'List of deleted records' : 'List of active records'}}</h1>
     <div class="actions">
-        <safe-button *ngIf="form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView()">
+        <safe-button *ngIf="form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
             Show deleted records
         </safe-button>
-        <safe-button *ngIf="form.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView()">
-            Show records
+        <safe-button *ngIf="form.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
+            Show active records
         </safe-button>
         <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
             Download records
@@ -20,7 +20,6 @@
         </safe-button>
         <mat-menu #matUploadMenu="matMenu">
             <button mat-menu-item (click)="downloadTemplate()">Download template</button>
-            <!--        <button mat-menu-item (click)="onDownload('csv')">.csv</button>-->
             <input #xlsxFile type="file" data-max-size="5120" accept=".xlsx" (change)="onFileChange($event)" />
         </mat-menu>
     </div>
@@ -54,7 +53,7 @@
                             <mat-icon>delete_forever</mat-icon>
                             Delete permanently
                         </button>
-                        <button *ngIf="showDeletedRecords" mat-menu-item (click)="restoreRecord(element.id, $event)">
+                        <button *ngIf="showDeletedRecords" mat-menu-item (click)="onRestoreRecord(element.id, $event)">
                             <mat-icon>unarchive</mat-icon>
                             Restore
                         </button>

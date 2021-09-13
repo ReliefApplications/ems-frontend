@@ -172,7 +172,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
       createdAt
       data
     }
-    records(filters: $filters, deleted: $showDeletedRecords) {
+    records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
       versions {
@@ -198,7 +198,7 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
     id
     name
     createdAt
-    records(filters: $filters, deleted: $showDeletedRecords) {
+    records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
     }

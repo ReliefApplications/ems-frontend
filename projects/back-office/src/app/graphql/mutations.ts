@@ -201,8 +201,8 @@ export interface DeleteResourceMutationResponse{
 
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
-mutation deleteRecord($id: ID!, $hard: Boolean) {
-  deleteRecord(id: $id, hard: $hard) {
+mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
+  deleteRecord(id: $id, hardDelete: $hardDelete) {
     id
   }
 }`;

@@ -11,7 +11,7 @@
                 Show deleted records
             </safe-button>
             <safe-button *ngIf="resource.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
-                Show records
+                Show active records
             </safe-button>
             <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu" >
               Download records
@@ -51,7 +51,7 @@
                                     <mat-icon>delete_forever</mat-icon>
                                     Delete permanently
                                 </button>
-                                <button *ngIf="showDeletedRecords" mat-menu-item (click)="restoreRecord(element.id, $event)">
+                                <button *ngIf="showDeletedRecords" mat-menu-item (click)="onRestoreRecord(element.id, $event)">
                                     <mat-icon>unarchive</mat-icon>
                                     Restore
                                 </button>

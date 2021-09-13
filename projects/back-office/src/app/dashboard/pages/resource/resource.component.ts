@@ -52,9 +52,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Load resoource data.
-  */
-  getResourceData(): void {
+  /**
+   * Loads resoource data.
+   */
+  private getResourceData(): void {
     if (this.resourceSubscription) {
       this.resourceSubscription.unsubscribe();
     }
@@ -82,8 +83,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*  Change the list of displayed columns.
-  */
+  /**
+   * Changes the list of displayed columns.
+   * @param core Is the form core.
+   */
   private setDisplayedColumns(core: boolean): void {
     const columns = [];
     if (core) {
@@ -103,14 +106,17 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.setDisplayedColumns(event.value);
   }
 
-  /*  Delete a record if authorized, open a confirmation modal if it's a hard delete.
-  */
-  onDeleteRecord(id: string, e: any): void {
+  /**
+   * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
+   * @param id Id of record to delete.
+   * @param e click event.
+   */
+  public onDeleteRecord(id: string, e: any): void {
     e.stopPropagation();
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Hard delete record',
+          title: 'Delete record permanently',
           content: `Do you confirm the hard deletion of this record ?`,
           confirmText: 'Delete',
           confirmColor: 'warn'
@@ -126,12 +132,16 @@ export class ResourceComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Sends mutation to delete record.
+   * @param id Id of record to delete.
+   */
   private deleteRecord(id: string): void {
     this.apollo.mutate<DeleteRecordMutationResponse>({
       mutation: DELETE_RECORD,
       variables: {
         id,
-        hard: this.showDeletedRecords
+        hardDelete: this.showDeletedRecords
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { duration: 1000 });
@@ -181,17 +191,22 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 
-  /*  Switch view between records and deleted records.
-  */
+  /**
+   * Toggle archive / active view.
+   * @param e click event.
+   */
   onSwitchView(e: any): void {
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
     this.getResourceData();
   }
 
-  /*  Restore a deleted record.
-  */
-  restoreRecord(id: string, e: any): void {
+  /**
+   * Restores a deleted record.
+   * @param id Id of record to restore.
+   * @param e click event.
+   */
+  public onRestoreRecord(id: string, e: any): void {
     e.stopPropagation();
     this.apollo.mutate<RestoreRecordMutationResponse>({
       mutation: RESTORE_RECORD,
@@ -205,6 +220,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Unsubscribe to subscriptions before destroying component.
+   */
   ngOnDestroy(): void {
     if (this.resourceSubscription) {
       this.resourceSubscription.unsubscribe();
