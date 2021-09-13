@@ -68,48 +68,27 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       data: {
         roles: this.roles,
         users: this.users.data,
+        downloadPath: this.applicationService ? this.applicationService.usersDownloadPath : 'download/invite',
+        uploadPath: this.applicationService ? this.applicationService.usersUploadPath : 'upload/invite',
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        if (value.length) {
-          this.apollo.mutate<AddUsersMutationResponse>({
-            mutation: ADD_USERS,
-            variables: {
-              users: value,
-              application: this.roles[0].application?.id
-            }
-          }).subscribe(res => {
-            if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
-              this.users.data = this.users.data.concat(res?.data?.addUsers || []);
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
-            }
-          });
-        } else {
-          // remove duplicated emails form array
-          value.email = Array.from(new Set(value.email));
-          if (this.applicationService) {
-            this.applicationService.inviteUser(value);
-          } else {
-            this.apollo.mutate<AddRoleToUsersMutationResponse>({
-              mutation: ADD_ROLE_TO_USERS,
-              variables: {
-                usernames: value.email,
-                role: value.role
-              }
-            }).subscribe((res: any) => {
-              if (!res.errors) {
-                this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
-                this.users.data = this.users.data.concat(res.data.addRoleToUsers);
-              } else {
-                this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
-              }
-            });
+        this.apollo.mutate<AddUsersMutationResponse>({
+          mutation: ADD_USERS,
+          variables: {
+            users: value,
+            application: this.roles[0].application?.id
           }
-        }
+        }).subscribe(res => {
+          if (!res.errors) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
+            this.users.data = this.users.data.concat(res?.data?.addUsers || []);
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
+          }
+        });
       }
     });
   }

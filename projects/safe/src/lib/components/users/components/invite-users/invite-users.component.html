@@ -1,6 +1,11 @@
 <h1 mat-dialog-title>Invite users</h1>
 <div mat-dialog-content>
-    <label class="invite-label">Select existing users, invite new users or import from Excel file</label>
+    <div class="invite-label">Select existing users, invite new users or import from Excel file</div>
+    <!-- DOWNLOAD TEMPLATE / UPLOAD -->
+    <div class="file-row">
+        <input type="file" #fileReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" />
+        <button mat-button (click)="onDownload()" color="primary">Get template</button>
+      </div>
     <kendo-grid [data]="gridData" (cellClick)="cellClickHandler($event)" (add)="onAdd()">
         <ng-template kendoGridToolbarTemplate>
             <button kendoGridAddCommand>Invite new user</button>
@@ -42,5 +47,5 @@
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button type="submit" mat-flat-button color="primary" [mat-dialog-close]="gridData.data" [disabled]="gridData.data.length == 0">Invite users</button>
+    <button type="submit" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="gridData.data.length == 0">Invite users</button>
 </div>

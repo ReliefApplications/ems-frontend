@@ -5,14 +5,17 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
+import { NOTIFICATIONS } from '../../../../const/notifications';
+import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeDownloadService } from '../../../../services/download.service';
 
 interface DialogData {
   roles: Role[];
   users: User[];
   positionAttributeCategories?: PositionAttributeCategory[];
+  uploadPath: string;
+  downloadPath: string;
 }
-
-const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
 @Component({
   selector: 'safe-invite-users',
@@ -25,11 +28,12 @@ export class SafeInviteUsersComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   private editedRowIndex = 0;
   private editionActive = false;
-  private docClickSubscription: any;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(GridComponent)
   private grid?: GridComponent;
+
+  @ViewChild('fileReader') fileReader: any;
 
   get positionAttributes(): FormArray | null {
     return this.formGroup.get('positionAttributes') as FormArray;
@@ -37,15 +41,15 @@ export class SafeInviteUsersComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
+    private downloadService: SafeDownloadService,
+    private snackBar: SafeSnackBarService,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
-  ngOnInit(): void {
-    this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
-  }
+  ngOnInit(): void {}
 
   /**
    * Closes the modal.
@@ -75,14 +79,52 @@ export class SafeInviteUsersComponent implements OnInit {
     this.gridData.data.splice(index, 1);
   }
 
-  onUpload(): void { }
+  onUpload($event: any): void {
+    const files = $event.target.files;
+    if (files[0] && this.isValidFile(files[0])) {
+      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(res => {
+        this.gridData.data = this.gridData.data.concat(res);
+      });
+    } else {
+      if (files.length > 0) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {error: true});
+        this.resetFileInput();
+      }
+    }
+  }
 
-  onDownload(): void { }
+  onDownload(): void {
+    this.downloadService.getFile(this.data.downloadPath, `text/xlsx;charset=utf-8;`, 'users.xlsx');
+  }
+
+  /**
+   * Deletes the file.
+   */
+  private resetFileInput(): void {
+    this.fileReader.nativeElement.value = '';
+  }
+
+  /**
+   * Closes the modal submitting the data.
+   */
+  onSubmit(): void {
+    if (this.editionActive) {
+      this.closeEditor();
+    }
+    this.dialogRef.close(this.gridData.data);
+  }
 
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
-    this.formGroup = this.createFormGroup(dataItem);
-    this.editedRowIndex = rowIndex;
-    this.grid?.editRow(rowIndex, this.formGroup);
+    if (!this.editionActive) {
+      this.formGroup = this.createFormGroup(dataItem);
+      this.editionActive = true;
+      this.editedRowIndex = rowIndex;
+      this.grid?.editRow(rowIndex, this.formGroup);
+    } else {
+      if (rowIndex !== this.editedRowIndex) {
+        this.closeEditor();
+      }
+    }
   }
 
   public createFormGroup(dataItem: any): FormGroup {
@@ -102,18 +144,24 @@ export class SafeInviteUsersComponent implements OnInit {
     return this.formBuilder.group(formGroup);
   }
 
-  private onDocumentClick(e: any): void {
-    if (this.formGroup && this.editionActive && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
-        this.closeEditor();
-    }
-  }
-
+  /**
+   * Closes opened form group.
+   */
   private closeEditor(): void {
     this.grid?.closeRow(this.editedRowIndex);
     this.grid?.cancelCell();
+    this.gridData.data.splice(this.editedRowIndex, 1, this.formGroup.value);
     this.editedRowIndex = 0;
     this.editionActive = false;
     this.formGroup = new FormGroup({});
+  }
+
+  /**
+   * Check that the file can be considered as valid.
+   * @param file File to check extension of.
+   * @returns does the file have correct extension.
+   */
+  private isValidFile(file: any): any {
+    return file.name.endsWith('.xlsx');
   }
 }

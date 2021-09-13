@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
-import { SafeInviteUserComponent } from './components/invite-user/invite-user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -24,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 
 @NgModule({
-  declarations: [SafeUsersComponent, SafeEditUserComponent, SafeInviteUserComponent],
+  declarations: [SafeUsersComponent, SafeEditUserComponent],
   imports: [
     CommonModule,
     FormsModule,

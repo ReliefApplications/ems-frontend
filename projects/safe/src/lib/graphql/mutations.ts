@@ -207,7 +207,7 @@ export interface AddRoleToUsersMutationResponse {
 }
 
 export const ADD_USERS = gql`
-mutation addUsers($users: [UserInputType]!, $application: ID!) {
+mutation addUsers($users: [UserInputType]!, $application: ID) {
   addUsers(users: $users, application: $application) {
     id
     username
