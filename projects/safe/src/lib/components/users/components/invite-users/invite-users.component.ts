@@ -58,6 +58,9 @@ export class SafeInviteUsersComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  /**
+   * Opens a modal to invite a new user.
+   */
   onAdd(): void {
     const invitedUsers = this.gridData.data.map(x => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
@@ -75,10 +78,18 @@ export class SafeInviteUsersComponent implements OnInit {
     });
   }
 
+  /**
+   * Removes an user from the invitation list.
+   * @param index index of user to remove.
+   */
   onRemove(index: number): void {
     this.gridData.data.splice(index, 1);
   }
 
+  /**
+   * Uploads a list of users as xlsx file.
+   * @param $event Event of file upload.
+   */
   onUpload($event: any): void {
     const files = $event.target.files;
     if (files[0] && this.isValidFile(files[0])) {
@@ -93,6 +104,9 @@ export class SafeInviteUsersComponent implements OnInit {
     }
   }
 
+  /**
+   * Download template for users invite.
+   */
   onDownload(): void {
     this.downloadService.getFile(this.data.downloadPath, `text/xlsx;charset=utf-8;`, 'users.xlsx');
   }
@@ -114,6 +128,10 @@ export class SafeInviteUsersComponent implements OnInit {
     this.dialogRef.close(this.gridData.data);
   }
 
+  /**
+   * Handles cell click events. Creates form group for edition.
+   * @param param0 cell click event.
+   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     if (!this.editionActive) {
       this.formGroup = this.createFormGroup(dataItem);
@@ -127,6 +145,11 @@ export class SafeInviteUsersComponent implements OnInit {
     }
   }
 
+  /**
+   * Creates a form group for inline edition of a row.
+   * @param dataItem Row data.
+   * @returns Form group created from row data.
+   */
   public createFormGroup(dataItem: any): FormGroup {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
