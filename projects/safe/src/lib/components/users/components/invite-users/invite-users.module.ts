@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
+import { SafeAddUserModule } from '../add-user/add-user.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
     MatDialogModule,
     DropDownsModule,
     ButtonModule,
-    ButtonsModule
+    ButtonsModule,
+    SafeAddUserModule
   ],
   exports: [SafeInviteUsersComponent]
 })
