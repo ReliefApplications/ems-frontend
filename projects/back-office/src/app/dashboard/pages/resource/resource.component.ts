@@ -202,7 +202,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Restores a deleted record.
+   * Restores an archived record.
    * @param id Id of record to restore.
    * @param e click event.
    */

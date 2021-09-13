@@ -8,7 +8,7 @@
         <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></safe-access>
         <div class="actions">
             <safe-button *ngIf="resource.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
-                Show deleted records
+                Show archived records
             </safe-button>
             <safe-button *ngIf="resource.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
                 Show active records
