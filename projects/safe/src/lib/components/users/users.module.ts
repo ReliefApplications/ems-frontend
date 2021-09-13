@@ -21,6 +21,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent, SafeInviteUserComponent],
@@ -44,7 +45,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatProgressSpinnerModule,
     MatDividerModule,
     SafeButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SafeInviteUsersModule
   ],
   exports: [SafeUsersComponent]
 })

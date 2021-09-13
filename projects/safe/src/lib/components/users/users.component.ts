@@ -1,6 +1,5 @@
 import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -13,12 +12,12 @@ import {
   DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
 } from '../../graphql/mutations';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
-import { SafeInviteUserComponent } from './components/invite-user/invite-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NOTIFICATIONS } from '../../const/notifications';
+import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 
 @Component({
   selector: 'safe-users',
@@ -64,7 +63,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onInvite(): void {
-    const dialogRef = this.dialog.open(SafeInviteUserComponent, {
+    const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       panelClass: 'add-dialog',
       data: {
         roles: this.roles,

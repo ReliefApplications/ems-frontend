@@ -33,7 +33,7 @@ export class SafeInviteUserComponent implements OnInit {
 
   // === DATA ===
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, TAB];
-  private users: User[] = [];
+  public users: User[] = [];
   public filteredUsers?: Observable<User[]>;
   public emails: any[] = [];
   public formValues: any;

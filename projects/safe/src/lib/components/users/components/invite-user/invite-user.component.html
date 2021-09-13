@@ -8,6 +8,7 @@
         <input type="file" #csvReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" />
         <button mat-button (click)="onDownloadTemplate()">Get template</button>
       </div>
+      <!-- ROWS -->
       <mat-form-field class="chip-list">
         <mat-chip-list #chipList aria-label="Email invitation">
           <mat-chip *ngFor="let email of emails" [selectable]="true" [removable]="true" (removed)="remove(email)">

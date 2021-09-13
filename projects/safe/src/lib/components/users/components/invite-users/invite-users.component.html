@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Invite users</h1>
+<div mat-dialog-content>
+    <label class="invite-label">Select existing users, invite new users or import from Excel file</label>
+    <kendo-grid [data]="gridData">
+        <kendo-grid-column field="email" title="Email"></kendo-grid-column>
+        <kendo-grid-column field="role" title="Role"></kendo-grid-column>
+        <kendo-grid-column-group title="Attributes"
+            *ngIf="data.positionAttributeCategories && data.positionAttributeCategories.length > 0">
+            <ng-container *ngFor="let attribute of data.positionAttributeCategories">
+                <kendo-grid-column [field]="attribute.id || ''" [title]="attribute.title || ''"></kendo-grid-column>
+            </ng-container>
+        </kendo-grid-column-group>
+    </kendo-grid>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button type="submit" mat-flat-button color="primary">Invite users</button>
+</div>
