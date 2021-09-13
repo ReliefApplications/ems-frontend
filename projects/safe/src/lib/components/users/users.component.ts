@@ -1,6 +1,5 @@
 import {Apollo} from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -10,15 +9,15 @@ import {
   ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
-  DELETE_USERS, DeleteUsersMutationResponse
+  DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
 } from '../../graphql/mutations';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
-import { SafeInviteUserComponent } from './components/invite-user/invite-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NOTIFICATIONS } from '../../const/notifications';
+import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 
 @Component({
   selector: 'safe-users',
@@ -64,36 +63,32 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onInvite(): void {
-    const dialogRef = this.dialog.open(SafeInviteUserComponent, {
+    const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       panelClass: 'add-dialog',
       data: {
         roles: this.roles,
         users: this.users.data,
+        downloadPath: this.applicationService ? this.applicationService.usersDownloadPath : 'download/invite',
+        uploadPath: this.applicationService ? this.applicationService.usersUploadPath : 'upload/invite',
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        // remove duplicated emails form array
-        value.email = Array.from(new Set(value.email));
-        if (this.applicationService) {
-          this.applicationService.inviteUser(value);
-        } else {
-          this.apollo.mutate<AddRoleToUsersMutationResponse>({
-            mutation: ADD_ROLE_TO_USERS,
-            variables: {
-              usernames: value.email,
-              role: value.role
-            }
-          }).subscribe((res: any) => {
-            if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
-              this.users.data = this.users.data.concat(res.data.addRoleToUsers);
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
-            }
-          });
-        }
+        this.apollo.mutate<AddUsersMutationResponse>({
+          mutation: ADD_USERS,
+          variables: {
+            users: value,
+            application: this.roles[0].application?.id
+          }
+        }).subscribe(res => {
+          if (!res.errors) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
+            this.users.data = this.users.data.concat(res?.data?.addUsers || []);
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
+          }
+        });
       }
     });
   }
