@@ -59,7 +59,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
-
+    console.log(tileSettings.actions);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
@@ -70,7 +70,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         history: [hasActions ? tileSettings.actions.history : true],
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update : true],
-        inlineUpdate: [hasActions ? tileSettings.actions.inlineUpdate : true],
+        inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
