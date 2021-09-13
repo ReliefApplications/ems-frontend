@@ -2,7 +2,6 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { Role, User, AddUser } from '../../../../models/user.model';
 import { GetUsersQueryResponse, GET_USERS } from '../../../../graphql/queries';
 import { Observable } from 'rxjs';
@@ -13,6 +12,7 @@ import { COMMA, ENTER, TAB } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { NOTIFICATIONS } from '../../../../const/notifications';
+import { SafeDownloadService } from '../../../../services/download.service';
 
 interface DialogData {
   roles: Role[];
@@ -80,6 +80,7 @@ export class SafeInviteUserComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeInviteUserComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
   }
@@ -162,10 +163,32 @@ export class SafeInviteUserComponent implements OnInit {
     }
   }
 
-  uploadListener($event: any): void {
+  onDownloadTemplate(): void {
+    const path = `download/application/60114d4abcd1df0029e5453a/invite`;
+    this.downloadService.getFile(path, `text/xlsx;charset=utf-8;`, 'application-users.xlsx');
+  }
+
+  onUpload($event: any): void {
+    const files = $event.target.files;
+    if (files[0] && this.isValidXLSXFile(files[0])) {
+      console.log('ok');
+      const path = `upload/application/60114d4abcd1df0029e5453a/invite`;
+      this.downloadService.uploadFile(path, files[0]).subscribe(res => {
+        console.log(res);
+      });
+    } else {
+      console.log('not ok');
+      if (files.length > 0) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {error: true});
+      }
+      this.fileReset();
+    }
+  }
+
+  onUpload2($event: any): void {
     const files = $event.target.files;
 
-    if (files[0] && this.isValidCSVFile(files[0])) {
+    if (files[0] && this.isValidXLSXFile(files[0])) {
 
       const input = $event.target;
       const reader = new FileReader();
@@ -257,7 +280,7 @@ export class SafeInviteUserComponent implements OnInit {
 
     } else {
       if (files.length > 0) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.isFormatValid, {error: true});
+        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {error: true});
       }
       this.fileReset();
     }
@@ -268,8 +291,8 @@ export class SafeInviteUserComponent implements OnInit {
     this.csvRecords = [];
   }
 
-  private isValidCSVFile(file: any): any {
-    return file.name.endsWith('.csv');
+  private isValidXLSXFile(file: any): any {
+    return file.name.endsWith('.xlsx');
   }
 
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any): any {

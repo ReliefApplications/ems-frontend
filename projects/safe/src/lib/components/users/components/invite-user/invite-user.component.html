@@ -2,8 +2,12 @@
 <div mat-dialog-content>
   <form [formGroup]="inviteForm" *ngIf="!allowMultipleInvites">
     <div class="form-group">
-      <label class="invite-label">Select existing users, invite new users or import from csv list</label>
-      <input type="file" #csvReader name="Upload CSV" class="file-select" (change)="uploadListener($event)" accept=".csv" />
+      <label class="invite-label">Select existing users, invite new users or import from Excel file</label>
+      <!-- DOWNLOAD TEMPLATE / UPLOAD -->
+      <div class="file-row">
+        <input type="file" #csvReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" />
+        <button mat-button (click)="onDownloadTemplate()">Get template</button>
+      </div>
       <mat-form-field class="chip-list">
         <mat-chip-list #chipList aria-label="Email invitation">
           <mat-chip *ngFor="let email of emails" [selectable]="true" [removable]="true" (removed)="remove(email)">
