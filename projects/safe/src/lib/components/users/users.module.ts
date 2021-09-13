@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
-import { SafeInviteUserComponent } from './components/invite-user/invite-user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -19,31 +18,35 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import {SafeButtonModule} from '../ui/button/button.module';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 
 @NgModule({
-  declarations: [SafeUsersComponent, SafeEditUserComponent, SafeInviteUserComponent],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatTableModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatSortModule,
-        MatChipsModule,
-        MatRippleModule,
-        MatCheckboxModule,
-        MatProgressSpinnerModule,
-        MatDividerModule,
-        SafeButtonModule
-    ],
+  declarations: [SafeUsersComponent, SafeEditUserComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatTableModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatSortModule,
+    MatChipsModule,
+    MatRippleModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
+    MatDividerModule,
+    SafeButtonModule,
+    MatTooltipModule,
+    SafeInviteUsersModule
+  ],
   exports: [SafeUsersComponent]
 })
 export class SafeUsersModule { }

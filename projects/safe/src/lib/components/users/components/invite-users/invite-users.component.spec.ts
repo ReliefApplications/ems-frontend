@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InviteUserComponent } from './invite-user.component';
+import { SafeInviteUsersComponent } from './invite-users.component';
 
-describe('InviteUserComponent', () => {
-  let component: InviteUserComponent;
-  let fixture: ComponentFixture<InviteUserComponent>;
+describe('SafeInviteUsersComponent', () => {
+  let component: SafeInviteUsersComponent;
+  let fixture: ComponentFixture<SafeInviteUsersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InviteUserComponent ]
+      declarations: [ SafeInviteUsersComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InviteUserComponent);
+    fixture = TestBed.createComponent(SafeInviteUsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
