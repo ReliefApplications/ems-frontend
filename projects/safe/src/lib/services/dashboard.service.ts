@@ -66,24 +66,17 @@ export class SafeDashboardService {
     console.log(id);
     console.log(this.dashboard.getValue()?.structure[id]);
     console.log(this.dashboard.getValue()?.structure[id].settings);
-    let dashboardStructureTemp = this.dashboard.getValue()?.structure;
+    const dashboardStructureTemp = this.dashboard.getValue()?.structure;
     // dashboardStructureTemp[id].settings.defaultLayout = layout;
     const settingTemp = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
     const widgetTemp = {...dashboardStructureTemp[id], settings: settingTemp};
-    const structureToSend = [];
+    const structureToSend = [...dashboardStructureTemp];
     structureToSend[id] = widgetTemp;
+    console.log('structureToSend');
     console.log(structureToSend);
-    let j = 0;
-    for (let i = 0; i < dashboardStructureTemp; i++){
-      if (i !== id) {
-        structureToSend[j] = dashboardStructureTemp[i];
-        j++;
-      }
-    }
-    console.log(structureToSend);
-    dashboardStructureTemp = [widgetTemp, ...dashboardStructureTemp];
-    console.log(dashboardStructureTemp);
-    dashboardStructureTemp[id].settings = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
+    // dashboardStructureTemp = [widgetTemp, ...dashboardStructureTemp];
+    // console.log(dashboardStructureTemp);
+    // dashboardStructureTemp[id].settings = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
