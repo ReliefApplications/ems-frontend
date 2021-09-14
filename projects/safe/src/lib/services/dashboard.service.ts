@@ -38,38 +38,26 @@ export class SafeDashboardService {
       console.log(JSON.parse(cachedLayout));
       return JSON.parse(cachedLayout);
     }
-    console.log('HE HO');
+    let defaultLayout = {};
     // if no localstorage but default layout
-    await this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
+    await this.apollo.query<GetDashboardByIdQueryResponse>({
       query: GET_DASHBOARD_BY_ID,
       variables: {
         id: dashboardId
       }
-    }).valueChanges.subscribe((res) => {
-        console.log('res');
-        console.log(res);
-        if (res.data.dashboard.structure[id].settings.defaultLayout) {
-          console.log('IN');
-          // if default layout
-          console.log('*** IF: res.data.dashboard');
-          console.log(res.data.dashboard);
-          console.log('*** res.data.dashboard.structure[id].settings.defaultLayout');
-          console.log(res.data.dashboard.structure[id].settings.defaultLayout);
-          return res.data.dashboard.structure[id].settings.defaultLayout;
-        } else {
-          // else
-          console.log('*** ELSE: res');
-          console.log(res);
-        }
-      },
-      (err) => {
-        // error
-        console.log('ERROR : GET_DASHBOARD_BY_ID');
+    }).toPromise().then((res) => {
+      console.log(res);
+      // if no localstorage layout AND default layout
+      if (res.data.dashboard.structure[id].settings.defaultLayout){
+        console.log(res.data.dashboard.structure[id].settings.defaultLayout);
+        defaultLayout = res.data.dashboard.structure[id].settings.defaultLayout;
       }
-    );
-    // if no localstorage layout and no default layout
-    console.log('$$$ THE END $$$');
-    return {};
+      // if no localstorage layout AND no default layout
+      else {
+        defaultLayout = {};
+      }
+    });
+    return defaultLayout;
   }
 
   saveWidgetLayout(id: number, layout: any): void {
