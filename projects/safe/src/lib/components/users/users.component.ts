@@ -151,7 +151,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             variables: { ids }
           }).subscribe(res => {
             this.loading = false;
-            if (res.data) {
+            if (res.data?.deleteUsers) {
               this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers), { duration: 3000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             } else {
