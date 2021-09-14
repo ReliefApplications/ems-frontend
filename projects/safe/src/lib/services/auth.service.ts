@@ -36,7 +36,7 @@ export class SafeAuthService {
   userHasClaim(permission: string): boolean {
     const user = this._user.getValue();
     if (user) {
-      if (user.permissions && (!permission || user.permissions.find(x => x.type === permission))) {
+      if (user.permissions && (!permission || user.permissions.find(x => x.type === permission && x.global))) {
         return true;
       }
       return false;
