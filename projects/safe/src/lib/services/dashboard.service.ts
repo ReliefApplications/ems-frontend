@@ -29,11 +29,9 @@ export class SafeDashboardService {
   }
 
   async getWidgetLayout(id: number): Promise<any> {
-    console.log('*** getWidgetLayout');
     const dashboardId = this.dashboard.getValue()?.id;
     // if localstorage layout
     const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${id}`);
-    console.log(cachedLayout);
     if (cachedLayout) {
       console.log(JSON.parse(cachedLayout));
       return JSON.parse(cachedLayout);
@@ -49,36 +47,19 @@ export class SafeDashboardService {
       console.log(res);
       // if no localstorage layout AND default layout
       if (res.data.dashboard.structure[id].settings.defaultLayout){
-        console.log(res.data.dashboard.structure[id].settings.defaultLayout);
-        defaultLayout = res.data.dashboard.structure[id].settings.defaultLayout;
+        defaultLayout = {...res.data.dashboard.structure[id].settings.defaultLayout};
       }
       // if no localstorage layout AND no default layout
       else {
         defaultLayout = {};
       }
     });
+    console.log(defaultLayout);
     return defaultLayout;
   }
 
   saveWidgetLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
-    // const dashboardStructureTemp = this.dashboard.getValue()?.structure;
-    // const settingTemp = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
-    // const widgetTemp = {...dashboardStructureTemp[id], settings: settingTemp};
-    // const structureToSend = [...dashboardStructureTemp];
-    // structureToSend[id] = widgetTemp;
-    // this.apollo.mutate<EditDashboardMutationResponse>({
-    //   mutation: EDIT_DASHBOARD,
-    //   variables: {
-    //     id: dashboardId,
-    //     structure: structureToSend,
-    //   }
-    // }).subscribe(res => {
-    //   console.log('*** res');
-    //   console.log(res);
-    //   // this.tiles = res.data?.editDashboard.structure;
-    //   // this.loading = false;
-    // }, error => console.log(error));
     return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify(layout));
   }
 
