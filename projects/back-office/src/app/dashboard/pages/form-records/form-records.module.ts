@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SafeRecordHistoryModule, SafeButtonModule } from '@safe/builder';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -20,7 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeRecordHistoryModule,
     MatDividerModule,
     MatTooltipModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatProgressSpinnerModule
   ],
   exports: [FormRecordsComponent]
 })

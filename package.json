@@ -1,6 +1,6 @@
 {
   "name": "safe-front",
-  "version": "0.1.12",
+  "version": "0.1.13-alpha.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -134,14 +134,38 @@
   },
   "standard-version": {
     "types": [
-      {"type": "feat", "section": "Features"},
-      {"type": "fix", "section": "Bug Fixes"},
-      {"type": "chore", "hidden": true},
-      {"type": "docs", "hidden": true},
-      {"type": "style", "hidden": true},
-      {"type": "refactor", "hidden": true},
-      {"type": "perf", "hidden": true},
-      {"type": "test", "hidden": true}
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "chore",
+        "hidden": true
+      },
+      {
+        "type": "docs",
+        "hidden": true
+      },
+      {
+        "type": "style",
+        "hidden": true
+      },
+      {
+        "type": "refactor",
+        "hidden": true
+      },
+      {
+        "type": "perf",
+        "hidden": true
+      },
+      {
+        "type": "test",
+        "hidden": true
+      }
     ],
     "commitUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/commits/{{hash}}",
     "compareUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/compare/{{previousTag}}...{{currentTag}}"
