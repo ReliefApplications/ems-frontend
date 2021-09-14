@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.14-alpha.0) (2021-09-14)
+
+
+### Features
+
+* add line and donut component ([0194bed](https://github.com/ReliefApplications/emrs-safe-frontend/commits/0194bedb6006aa71c86105102850b0082f973b88))
+* add pie chart ([a7a8ac3](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a7a8ac3828336e6b9523c196a0eafb6efe95b1b0))
+* add title and edit properties of charts ([687c3a8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/687c3a8b29dc70c2918317f458fe733f72fd29b4))
+
+
+### Bug Fixes
+
+* cannot view line charts because of data not extensible ([921a71f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/921a71f270032f55efbf90fb91b3c84ccf127d99))
+
 ### [0.1.13](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.13) (2021-09-14)
 
 
