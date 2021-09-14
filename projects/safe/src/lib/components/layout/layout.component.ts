@@ -108,7 +108,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   /* Load the user and update availables navGroups accordingly
   */
-  private loadUserAndUpdateLayout() {
+  private loadUserAndUpdateLayout(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
