@@ -310,7 +310,7 @@ export class SafeApplicationService {
           application: application.id
         }
       }).subscribe(res => {
-        if (res.data) {
+        if (res.data?.addPage) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
@@ -318,6 +318,8 @@ export class SafeApplicationService {
           this.router.navigate([(value.type === ContentType.form) ?
             `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
             `/applications/${application.id}/${value.type}/${content}`]);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
