@@ -617,7 +617,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
-    console.log(this.layout);
     this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
@@ -1157,7 +1156,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       };
     }, {});
-    console.log(this.layout);
     this.layoutChanged.emit(this.layout);
   }
 

@@ -33,7 +33,6 @@ export class SafeDashboardService {
     // if localstorage layout
     const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${id}`);
     if (cachedLayout) {
-      console.log(JSON.parse(cachedLayout));
       return JSON.parse(cachedLayout);
     }
     let defaultLayout = {};
@@ -44,7 +43,6 @@ export class SafeDashboardService {
         id: dashboardId
       }
     }).toPromise().then((res) => {
-      console.log(res);
       // if no localstorage layout AND default layout
       if (res.data.dashboard.structure[id].settings.defaultLayout){
         defaultLayout = {...res.data.dashboard.structure[id].settings.defaultLayout};
@@ -54,7 +52,6 @@ export class SafeDashboardService {
         defaultLayout = {};
       }
     });
-    console.log(defaultLayout);
     return defaultLayout;
   }
 
@@ -76,9 +73,6 @@ export class SafeDashboardService {
         id: dashboardId,
         structure: structureToSend,
       }
-    }).subscribe(res => {
-      console.log('*** res');
-      console.log(res);
-    }, error => console.log(error));
+    }).subscribe();
   }
 }
