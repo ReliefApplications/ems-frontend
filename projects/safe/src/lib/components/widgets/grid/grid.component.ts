@@ -195,6 +195,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+  }
+
+  /*  Detect changes of the settings to (re)load the data.
+  */
+  ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
       this.filter = this.layout.filter;
     }
@@ -202,11 +207,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.loadItems();
-  }
-
-  /*  Detect changes of the settings to (re)load the data.
-  */
-  ngOnChanges(): void {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -617,6 +617,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
+    console.log(this.layout);
     this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
@@ -1156,6 +1157,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       };
     }, {});
+    console.log(this.layout);
     this.layoutChanged.emit(this.layout);
   }
 
