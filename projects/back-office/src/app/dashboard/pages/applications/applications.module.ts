@@ -20,32 +20,34 @@ import { DuplicateApplicationModule } from '../../../components/duplicate-applic
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
-  imports: [
-    CommonModule,
-    ApplicationsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatSortModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatIconModule,
-    MatChipsModule,
-    SafeConfirmModalModule,
-    SafeAccessModule,
-    DuplicateApplicationModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatDividerModule,
-    SafeButtonModule
-  ],
+    imports: [
+        CommonModule,
+        ApplicationsRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        MatDialogModule,
+        MatMenuModule,
+        MatIconModule,
+        MatChipsModule,
+        SafeConfirmModalModule,
+        SafeAccessModule,
+        DuplicateApplicationModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatDividerModule,
+        SafeButtonModule,
+        MatButtonModule
+    ],
   exports: [ApplicationsComponent]
 })
 export class ApplicationsModule { }
