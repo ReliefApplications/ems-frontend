@@ -1,6 +1,12 @@
 <div class="page-header">
-    <h1 class="page-title">List of records</h1>
-    <div class="actions">
+    <h1 class="page-title">{{showDeletedRecords ? 'List of archived records' : 'List of active records'}}</h1>
+    <div class="actions" *ngIf="!loading">
+        <safe-button *ngIf="form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
+            Show archived records
+        </safe-button>
+        <safe-button *ngIf="form.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
+            Show active records
+        </safe-button>
         <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
             Download records
         </safe-button>
@@ -14,11 +20,11 @@
         </safe-button>
         <mat-menu #matUploadMenu="matMenu">
             <button mat-menu-item (click)="downloadTemplate()">Download template</button>
-            <!--        <button mat-menu-item (click)="onDownload('csv')">.csv</button>-->
             <input #xlsxFile type="file" data-max-size="5120" accept=".xlsx" (change)="onFileChange($event)" />
         </mat-menu>
     </div>
 </div>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
     <table mat-table [dataSource]="dataSource">
         <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
@@ -39,9 +45,17 @@
                             History
                         </button>
                         <mat-divider></mat-divider>
-                        <button mat-menu-item (click)="deleteRecord(element.id, $event)">
+                        <button *ngIf="!showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
                             <mat-icon>delete</mat-icon>
                             Delete
+                        </button>
+                        <button *ngIf="showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
+                            <mat-icon>delete_forever</mat-icon>
+                            Delete permanently
+                        </button>
+                        <button *ngIf="showDeletedRecords" mat-menu-item (click)="onRestoreRecord(element.id, $event)">
+                            <mat-icon>unarchive</mat-icon>
+                            Restore
                         </button>
                     </mat-menu>
                 </td>

@@ -65,10 +65,21 @@ export class SafeApplicationService {
   private notificationSubscription?: Subscription;
   private lockSubscription?: Subscription;
 
-  /*  Return the application as an Observable.
-*/
+  /**
+   * Return the application as an Observable.
+   */
   get application(): Observable<Application | null> {
     return this._application.asObservable();
+  }
+
+  get usersDownloadPath(): string {
+    const id = this._application.getValue()?.id;
+    return `download/application/${id}/invite`;
+  }
+
+  get usersUploadPath(): string {
+    const id = this._application.getValue()?.id;
+    return `upload/application/${id}/invite`;
   }
 
   get isUnlocked(): boolean {

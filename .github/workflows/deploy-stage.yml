@@ -1,9 +1,9 @@
-name: Front-end CD Azure
+name: Front-end CD
 
 on:
   push:
     branches:
-      - 'azure'
+      - 'stage'
 
 jobs:
   build:
@@ -20,32 +20,31 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name:
+    - name: Install Dependencies
       run: npm ci
     - name: Build Shared Library
       run: npm run build -- --prod safe
-    - name: Build Back-office
-      run: npm run build:az:uat:back
-    - name: Build Front-office
-      run: npm run build:az:uat:front
-    - name: Archive build Back-office
+    - name: Build RA Back-office
+      run: npm run build:ci:ra
+    - name: Build RA Front-office
+      run: npm run build:ci:ra -- --project=front-office
+    - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
       with:
         name: deploy_dist_back_office
         path: dist/back-office
-    - name: Archive build Front-office
+    - name: Archive build RA Front-office
       if: success()
       uses: actions/upload-artifact@v2
       with:
         name: deploy_dist_front_office
         path: dist/front-office
 
-  deploy_back_office_azure:
-    name: Deploy Back-office
+  deploy_stage_back_office:
+    name: Deploy STAGE Back-office 🚀
     runs-on: ubuntu-latest
     needs: build
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -54,19 +53,19 @@ jobs:
       with:
         name: deploy_dist_back_office
         path: dist/back-office
-    - name: Deploy on Azure
-      uses: azure/CLI@v1
+    - name: Setup SSH Keys and known_hosts
+      uses: webfactory/ssh-agent@v0.4.1
       with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az storage blob delete-batch --source '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
-          az storage blob upload-batch -s dist/back-office/ -d '$web' --account-name safebackoffice --account-key ${{ secrets.ACCOUNT_KEY_BACK_OFFICE }}
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+    - name: Deploy
+      run: ./CI/deploy-back-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
 
-  deploy_front_office_azure:
-    name: Deploy Front-office
+  deploy_stage_front_office:
+    name: Deploy STAGE Front-office 🚀
     runs-on: ubuntu-latest
     needs: build
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -75,10 +74,11 @@ jobs:
       with:
         name: deploy_dist_front_office
         path: dist/front-office
-    - name: Deploy on Azure
-      uses: azure/CLI@v1
+    - name: Setup SSH Keys and known_hosts
+      uses: webfactory/ssh-agent@v0.4.1
       with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az storage blob delete-batch --source '$web' --account-name safefrontoffice --account-key ${{ secrets.ACCOUNT_KEY_FRONT_OFFICE }}
-          az storage blob upload-batch -s dist/front-office/ -d '$web' --account-name safefrontoffice --account-key ${{ secrets.ACCOUNT_KEY_FRONT_OFFICE }}
+        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+    - name: Deploy
+      run: ./CI/deploy-front-office.sh
+      env:
+        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
