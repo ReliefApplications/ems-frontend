@@ -1,10 +1,10 @@
 <div class="page-header">
     <h1 class="page-title">{{showDeletedRecords ? 'List of archived records' : 'List of active records'}}</h1>
     <div class="actions">
-        <safe-button *ngIf="form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
+        <safe-button *ngIf="form && form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
             Show archived records
         </safe-button>
-        <safe-button *ngIf="form.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
+        <safe-button *ngIf="form && form.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
             Show active records
         </safe-button>
         <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
