@@ -6,9 +6,17 @@
         <mat-label>Title</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
+      <ng-container *ngIf="tileForm.value.resource && templates.length > 1">
+        <mat-form-field appearance="outline">
+          <mat-label>Template</mat-label>
+          <mat-select formControlName="template">
+            <mat-option>-- Default --</mat-option>
+            <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
     </div>
     <div class="form-group">
-
       <safe-query-builder [form]="$any(tileForm.controls.query)"></safe-query-builder>
     </div>
     <div formGroupName="actions" class="form-group">

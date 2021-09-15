@@ -42,6 +42,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
+  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  public templates: Form[] = [];
+
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
@@ -59,12 +62,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
-    console.log(tileSettings.actions);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       resource: [tileSettings && tileSettings.resource ? tileSettings.resource : null],
+      template: [tileSettings && tileSettings.template ? tileSettings.template : null],
       actions: this.formBuilder.group({
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
@@ -105,14 +108,17 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               }).subscribe(res2 => {
                 if (res2.errors) {
                   this.relatedForms = [];
+                  this.templates = [];
                 } else {
                   this.relatedForms = res2.data.resource.relatedForms || [];
+                  this.templates = res2.data.resource.forms || [];
                 }
               });
             }
           });
         } else {
           this.relatedForms = [];
+          this.templates = [];
         }
       } else {
         this.fields = [];
