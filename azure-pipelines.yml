@@ -28,7 +28,7 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/front-office'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/uat/front-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: ArchiveFiles@2
@@ -36,17 +36,17 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/back-office'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/uat/back-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/front-office/$(Build.BuildId).zip'
-    ArtifactName: 'front-office-drop'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/uat/front-office/$(Build.BuildId).zip'
+    ArtifactName: 'uat-front-office'
     publishLocation: 'Container'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/back-office/$(Build.BuildId).zip'
-    ArtifactName: 'back-office-drop'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/uat/back-office/$(Build.BuildId).zip'
+    ArtifactName: 'uat-back-office'
     publishLocation: 'Container'
