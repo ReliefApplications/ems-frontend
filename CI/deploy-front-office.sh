@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Remove files
-REMOTE_PATH=/var/www/html/ems-front-office
+REMOTE_PATH=/var/www/html/safe-app
 OUT=dist/front-office
-CONNECTION=reliefapps@92.243.25.191
+CONNECTION=bob@92.243.24.59
 
 set -e
 
