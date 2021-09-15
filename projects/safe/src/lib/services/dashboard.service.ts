@@ -57,14 +57,12 @@ export class SafeDashboardService {
   }
 
   saveWidgetDefaultLayout(id: number, layout: any): void {
-    console.log('defaukt layout changed');
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructureTemp = this.dashboard.getValue()?.structure;
     const settingTemp = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
     const widgetTemp = {...dashboardStructureTemp[id], settings: settingTemp};
     const structureToSend = [...dashboardStructureTemp];
     structureToSend[id] = widgetTemp;
-    console.log(structureToSend);
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -72,8 +70,6 @@ export class SafeDashboardService {
         structure: structureToSend,
       }
     }).subscribe(res => {
-      console.log('*** res');
-      console.log(res);
     }, error => console.log(error));
   }
 }
