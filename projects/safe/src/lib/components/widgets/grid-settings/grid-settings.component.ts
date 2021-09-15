@@ -59,7 +59,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
-    console.log(tileSettings.actions);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],

@@ -158,7 +158,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 this.loading = false;
                 this.fields = this.getFields(fields);
-                console.log(this.fields);
                 this.items = cloneData(res.data[field] ? res.data[field] : []);
                 this.convertDateFields(this.items);
                 this.detailsField = fields.find((x: any) => x.kind === 'LIST');
