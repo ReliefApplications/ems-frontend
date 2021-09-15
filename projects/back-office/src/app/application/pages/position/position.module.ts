@@ -13,28 +13,30 @@ import { MatTableModule } from '@angular/material/table';
 import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 import { MatIconModule } from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   declarations: [
     PositionComponent,
     AddPositionComponent
   ],
-  imports: [
-    CommonModule,
-    PositionRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatDialogModule,
-    MatIconModule,
-    MatMenuModule,
-    SafeConfirmModalModule,
-    SafeButtonModule
-  ],
+    imports: [
+        CommonModule,
+        PositionRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatDialogModule,
+        MatIconModule,
+        MatMenuModule,
+        SafeConfirmModalModule,
+        SafeButtonModule,
+        MatButtonModule
+    ],
   exports: [PositionComponent]
 })
 export class PositionModule { }
