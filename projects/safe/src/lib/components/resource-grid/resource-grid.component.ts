@@ -61,7 +61,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   // === INPUTS ===
   public id = '';
-  public field = '';
   public readOnly = false;
 
   // === DATA ===
