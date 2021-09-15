@@ -81,7 +81,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
-      console.log(res.errors);
       if (res.data.form) {
         this.form = res.data.form;
         this.dataSource = this.form.records;
