@@ -81,10 +81,16 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
-      this.form = res.data.form;
-      this.dataSource = this.form.records;
-      this.setDisplayedColumns();
-      this.loading = res.loading;
+      if (res.data.form) {
+        this.form = res.data.form;
+        this.dataSource = this.form.records;
+        this.setDisplayedColumns();
+        this.loading = res.loading;
+      }
+      if (res.errors) {
+        // TO-DO: Check why it's not working as intended.
+        this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('records', res.errors[0].message), { error: true });
+      }
     });
   }
 

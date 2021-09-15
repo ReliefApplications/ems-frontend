@@ -188,7 +188,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
-  errors: any;
 }
 
 // === GET RESOURCE BY ID ===
@@ -262,6 +261,7 @@ export const GET_RESOURCES_EXTENDED = gql`
     name
     createdAt
     recordsCount
+    canDelete
   }
 }`;
 
