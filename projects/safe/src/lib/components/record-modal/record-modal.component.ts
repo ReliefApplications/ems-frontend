@@ -5,10 +5,9 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
-import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../graphql/queries';
+import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID, GetFormByIdQueryResponse, GET_FORM_STRUCTURE } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
-import { EditRecordMutationResponse, EDIT_RECORD } from '../../graphql/mutations';
 import { SafeAuthService } from '../../services/auth.service';
 
 interface DialogData {
@@ -16,6 +15,7 @@ interface DialogData {
   locale?: string;
   compareTo?: any;
   canUpdate?: boolean;
+  template?: string;
 }
 
 @Component({
@@ -38,8 +38,6 @@ export class SafeRecordModalComponent implements OnInit {
   public containerId: string;
   public containerNextId = '';
 
-  private temporaryFilesStorage: any = {};
-
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
@@ -57,7 +55,7 @@ export class SafeRecordModalComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey
       .StylesManager
@@ -68,66 +66,82 @@ export class SafeRecordModalComponent implements OnInit {
     Survey
       .StylesManager
       .applyTheme();
-
-    this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+    const promises: Promise<GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void>[] = [];
+    // Fetch structure from template if needed
+    if (this.data.template) {
+      promises.push(this.apollo.query<GetFormByIdQueryResponse>({
+        query: GET_FORM_STRUCTURE,
+        variables: {
+          id: this.data.template
+        }
+      }).toPromise().then(res => {
+        this.form = res.data.form;
+      }));
+    }
+    // Fetch record data
+    promises.push(this.apollo.query<GetRecordByIdQueryResponse>({
       query: GET_RECORD_BY_ID,
       variables: {
         id: this.data.recordId
       }
-    }).valueChanges.subscribe(res => {
+    }).toPromise().then(res => {
       this.record = res.data.record;
       this.modifiedAt = this.record.modifiedAt || null;
-      this.form = this.record.form;
-      this.loading = res.loading;
-      addCustomFunctions(Survey, this.authService, this.record);
-      this.survey = new Survey.Model(this.form?.structure);
-      for (const page of this.survey.pages) {
-        if (page.isVisible) {
-          this.formPages.push(page);
-        }
+      if (!this.data.template) {
+        this.form = this.record.form;
       }
+    }));
+    await Promise.all(promises);
+    // INIT SURVEY
+    addCustomFunctions(Survey, this.authService, this.record);
+    this.survey = new Survey.Model(this.form?.structure);
+    for (const page of this.survey.pages) {
+      if (page.isVisible) {
+        this.formPages.push(page);
+      }
+    }
+    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey.data = this.record.data;
+    this.survey.locale = this.data.locale ? this.data.locale : 'en';
+    this.survey.mode = 'display';
+    this.survey.showNavigationButtons = 'none';
+    this.survey.showProgressBar = 'off';
+    this.survey.render(this.containerId);
+    if (this.data.compareTo) {
+      this.surveyNext = new Survey.Model(this.form?.structure);
       this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-      this.survey.data = this.record.data;
-      this.survey.locale = this.data.locale ? this.data.locale : 'en';
-      this.survey.mode = 'display';
-      this.survey.showNavigationButtons = 'none';
-      this.survey.showProgressBar = 'off';
-      this.survey.render(this.containerId);
-      if (this.data.compareTo) {
-        this.surveyNext = new Survey.Model(this.form?.structure);
-        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-        this.surveyNext.data = this.data.compareTo.data;
-        this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
-        this.surveyNext.mode = 'display';
-        this.surveyNext.showNavigationButtons = 'none';
-        this.surveyNext.showProgressBar = 'off';
-        // Set list of updated questions
-        const updatedQuestions: string[] = [];
-        const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
-        for (const question of allQuestions) {
-          const valueNext = this.surveyNext.data[question];
-          const value = this.survey.data[question];
-          if (!valueNext && !value) {
-            continue;
-          } else {
-            if (valueNext !== value) {
-              updatedQuestions.push(question);
-            }
+      this.surveyNext.data = this.data.compareTo.data;
+      this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
+      this.surveyNext.mode = 'display';
+      this.surveyNext.showNavigationButtons = 'none';
+      this.surveyNext.showProgressBar = 'off';
+      // Set list of updated questions
+      const updatedQuestions: string[] = [];
+      const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
+      for (const question of allQuestions) {
+        const valueNext = this.surveyNext.data[question];
+        const value = this.survey.data[question];
+        if (!valueNext && !value) {
+          continue;
+        } else {
+          if (valueNext !== value) {
+            updatedQuestions.push(question);
           }
         }
-        this.survey.onAfterRenderQuestion.add((survey, options): void => {
-          if (updatedQuestions.includes(options.question.valueName)) {
-            options.htmlElement.style.background = '#b2ebbf';
-          }
-        });
-        this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
-          if (updatedQuestions.includes(options.question.valueName)) {
-            options.htmlElement.style.background = '#EBB2B2';
-          }
-        });
-        this.surveyNext.render(this.containerNextId);
       }
-    });
+      this.survey.onAfterRenderQuestion.add((survey, options): void => {
+        if (updatedQuestions.includes(options.question.valueName)) {
+          options.htmlElement.style.background = '#b2ebbf';
+        }
+      });
+      this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
+        if (updatedQuestions.includes(options.question.valueName)) {
+          options.htmlElement.style.background = '#EBB2B2';
+        }
+      });
+      this.surveyNext.render(this.containerNextId);
+    }
+    this.loading = false;
   }
 
   public onShowPage(i: number): void {

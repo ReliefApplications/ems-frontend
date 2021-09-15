@@ -639,7 +639,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
-        locale: 'en'
+        locale: 'en',
+        template: this.settings.template
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -664,7 +665,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           record: res.data.record,
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
-          }
+          },
+          template: this.settings.template
         },
       });
     });
@@ -677,7 +679,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: item.id,
         locale: 'en',
-        canUpdate: item.canUpdate
+        canUpdate: item.canUpdate,
+        template: this.settings.template
       },
       height: '98%',
       width: '100vw',
