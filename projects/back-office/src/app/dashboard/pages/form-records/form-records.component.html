@@ -35,7 +35,7 @@
                 </td>
             </ng-container>
             <ng-container *ngIf="column === '_actions'">
-                <th mat-header-cell *matHeaderCellDef class="action-column"> Actions</th>
+                <th mat-header-cell *matHeaderCellDef class="action-column"></th>
                 <td mat-cell *matCellDef="let element" class="action-column">
                     <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
                     </safe-button>
