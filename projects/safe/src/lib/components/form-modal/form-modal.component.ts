@@ -22,6 +22,7 @@ interface DialogData {
   template?: string;
   recordId?: string | [];
   locale?: string;
+  from?: string;
 }
 
 @Component({
@@ -60,6 +61,8 @@ export class SafeFormModalComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('init');
+    console.log('this.data');
+    console.log(this.data);
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -140,8 +143,17 @@ export class SafeFormModalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(async value => {
       if (value) {
+        console.log(value);
         if (this.data.recordId) {
+          console.log('survey');
+          console.log(survey);
+          console.log('survey.data');
+          console.log(survey.data);
+          console.log('this.data.recordId');
+          console.log(this.data.recordId);
           await this.uploadFiles(survey);
+          console.log('this.isMultiEdition');
+          console.log(this.isMultiEdition);
           if (this.isMultiEdition) {
             this.updateMultipleData(this.data.recordId, survey);
           } else {
@@ -181,6 +193,8 @@ export class SafeFormModalComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.data) {
+        console.log('res.data');
+        console.log(res.data);
         this.dialogRef.close({ template: this.form?.id, data: res.data.editRecord });
       }
     });

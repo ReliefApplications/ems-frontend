@@ -338,6 +338,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     Create a record if result not empty.
   */
   public onAdd(): void {
+    console.log('GRID 1');
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         template: this.settings.addTemplate,
@@ -636,6 +637,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdateRow(items: number | number[]): void {
     const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
       (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
+    console.log('GRID 2');
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
@@ -961,10 +963,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             const record = res2.data.editRecord;
             if (record) {
               this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
+              console.log('GRID 3');
               this.dialog.open(SafeFormModalComponent, {
                 data: {
                   recordId: record.id,
-                  locale: 'en'
+                  locale: 'en',
+                  from: 'atr'
                 }
               });
             }

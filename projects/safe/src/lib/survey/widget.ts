@@ -129,6 +129,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
+        console.log('WIDGET RESSOURCE');
         const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
@@ -138,10 +139,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         btnEl.style.width = '150px';
         if (question.canAddNew && question.addTemplate) {
           btnEl.onclick = () => {
+            console.log('WIDGET 1');
             const dialogRef = dialog.open(SafeFormModalComponent, {
               data: {
                 template: question.addTemplate,
-                locale: question.resource.value
+                locale: question.resource.value,
+                from: 'anr-wid-resource'
               }
             });
             dialogRef.afterClosed().subscribe(res => {
@@ -206,6 +209,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           }
           if (question.survey.mode !== 'display') {
+            console.log('WIDGET display');
             const mainDiv = document.createElement('div');
             mainDiv.id = 'addRecordDiv';
             const btnEl = document.createElement('button');
@@ -213,10 +217,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             btnEl.style.width = '150px';
             if (question.canAddNew && question.addTemplate) {
               btnEl.onclick = () => {
+                console.log('WIDGET 2');
                 const dialogRef = dialog.open(SafeFormModalComponent, {
                   data: {
                     template: question.addTemplate,
-                    locale: question.resource
+                    locale: question.resource,
+                    from: 'anr-wid-resources'
                   }
                 });
                 dialogRef.afterClosed().subscribe(res => {
