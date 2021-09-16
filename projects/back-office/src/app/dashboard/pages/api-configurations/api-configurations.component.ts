@@ -78,6 +78,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
   clearAllFilters(): void {
     this.searchText = '';
     this.statusFilter = '';
+    this.applyFilter('', null)
   }
 
   /*  Display the AddApiConfiguration modal.
