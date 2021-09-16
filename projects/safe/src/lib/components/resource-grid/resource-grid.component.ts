@@ -322,7 +322,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.gridData.data[index].id,
-      }
+        locale: 'en',
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
     });
   }
 
