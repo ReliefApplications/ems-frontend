@@ -39,7 +39,8 @@
                             <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="recMenu" (click)="$event.stopPropagation()">
                             </safe-button>
                             <mat-menu #recMenu="matMenu">
-                                <button mat-menu-item [routerLink]="['./update', element.id]">
+                                <button mat-menu-item [routerLink]="['./update', element.id]"
+                                [matTooltip]="'Edit as ' + element.form.name" matTooltipPosition="above">
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>
@@ -61,7 +62,7 @@
                                 </button>
                             </mat-menu>
                             <mat-menu #templates="matMenu">
-                                <ng-container *ngFor="let form of resource.forms">
+                                <ng-container *ngFor="let form of filterTemplates(element)">
                                     <button mat-menu-item [routerLink]="['./update', element.id]" [state]="{ template: form.id }">{{form.name}}</button>
                                 </ng-container>
                             </mat-menu>

@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS, SafeConfirmModalComponent } from '@safe/builder';
+import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS, SafeConfirmModalComponent, Record, Form } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE, RestoreRecordMutationResponse, RESTORE_RECORD } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
@@ -218,6 +218,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
         return x.id !== id;
       });
     });
+  }
+
+  public filterTemplates(element: Record): Form[] {
+    return this.resource.forms.filter((x: Form) => x.id !== element.form?.id);
+
   }
 
   /**

@@ -209,6 +209,10 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
     records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
+      form {
+        id
+        name
+      }
     }
     fields
     forms {
