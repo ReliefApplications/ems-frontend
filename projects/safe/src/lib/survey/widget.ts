@@ -144,7 +144,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
               data: {
                 template: question.addTemplate,
                 locale: question.resource.value,
-                from: 'anr-wid-resource'
+                from: 'wid-anr-resource'
               }
             });
             dialogRef.afterClosed().subscribe(res => {
@@ -222,7 +222,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                   data: {
                     template: question.addTemplate,
                     locale: question.resource,
-                    from: 'anr-wid-resources'
+                    from: 'wid-anr-resources'
                   }
                 });
                 dialogRef.afterClosed().subscribe(res => {

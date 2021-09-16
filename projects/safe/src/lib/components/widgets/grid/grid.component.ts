@@ -968,7 +968,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
                 data: {
                   recordId: record.id,
                   locale: 'en',
-                  from: 'atr'
+                  from: 'grid-atr'
                 }
               });
             }

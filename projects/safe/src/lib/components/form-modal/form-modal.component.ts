@@ -133,55 +133,64 @@ export class SafeFormModalComponent implements OnInit {
       }
     }
     survey.data = data;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
-    });
-    dialogRef.afterClosed().subscribe(async value => {
-      if (value) {
-        console.log(value);
-        if (this.data.recordId) {
-          console.log('survey');
-          console.log(survey);
-          console.log('survey.data');
-          console.log(survey.data);
-          console.log('this.data.recordId');
-          console.log(this.data.recordId);
-          await this.uploadFiles(survey);
-          console.log('this.isMultiEdition');
-          console.log(this.isMultiEdition);
-          if (this.isMultiEdition) {
-            this.updateMultipleData(this.data.recordId, survey);
-          } else {
-            this.updateData(this.data.recordId, survey);
-          }
-        } else {
-          await this.uploadFiles(survey);
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.data.template,
-              data: survey.data,
-              display: true
-            }
-          }).subscribe(res => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
-              this.dialogRef.close();
-            } else {
-              this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
-            }
-          });
+    if ((this.data.from === 'wid-anr-resource') || (this.data.from === 'wid-anr-resources') || (this.data.from === 'grid-atr')) {
+      this.updateDataGlobal(survey);
+    }
+    else {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
+          content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
         }
-        survey.showCompletedPage = true;
+      });
+      dialogRef.afterClosed().subscribe(async value => {
+        if (value) {
+          console.log(value);
+          await this.updateDataGlobal(survey);
+        } else {
+          this.dialogRef.close();
+        }
+      });
+    }
+  }
+
+  public async updateDataGlobal(survey: any): Promise<void> {
+    if (this.data.recordId) {
+      console.log('survey');
+      console.log(survey);
+      console.log('survey.data');
+      console.log(survey.data);
+      console.log('this.data.recordId');
+      console.log(this.data.recordId);
+      await this.uploadFiles(survey);
+      console.log('this.isMultiEdition');
+      console.log(this.isMultiEdition);
+      if (this.isMultiEdition) {
+        this.updateMultipleData(this.data.recordId, survey);
       } else {
-        this.dialogRef.close();
+        this.updateData(this.data.recordId, survey);
       }
-    });
+    } else {
+      await this.uploadFiles(survey);
+      this.apollo.mutate<AddRecordMutationResponse>({
+        mutation: ADD_RECORD,
+        variables: {
+          form: this.data.template,
+          data: survey.data,
+          display: true
+        }
+      }).subscribe(res => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {error: true});
+          this.dialogRef.close();
+        } else {
+          this.dialogRef.close({template: this.data.template, data: res.data?.addRecord});
+        }
+      });
+    }
+    survey.showCompletedPage = true;
   }
 
   public updateData(id: any, survey: any): void {
