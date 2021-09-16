@@ -338,7 +338,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     Create a record if result not empty.
   */
   public onAdd(): void {
-    console.log('GRID 1');
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         template: this.settings.addTemplate,
@@ -637,7 +636,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdateRow(items: number | number[]): void {
     const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
       (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
-    console.log('GRID 2');
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
@@ -923,6 +921,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(
+    // come from 'attach to record' button from grid component
     selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
@@ -963,7 +962,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             const record = res2.data.editRecord;
             if (record) {
               this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
-              console.log('GRID 3');
               this.dialog.open(SafeFormModalComponent, {
                 data: {
                   recordId: record.id,

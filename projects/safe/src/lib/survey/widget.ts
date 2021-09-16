@@ -127,9 +127,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           });
         }
       }
-      // Display of add button for resource question
       if (question.getType() === 'resource') {
-        console.log('WIDGET RESSOURCE');
+        // come from 'add new record' button from resources question
         const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
@@ -139,7 +138,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         btnEl.style.width = '150px';
         if (question.canAddNew && question.addTemplate) {
           btnEl.onclick = () => {
-            console.log('WIDGET 1');
             const dialogRef = dialog.open(SafeFormModalComponent, {
               data: {
                 template: question.addTemplate,
@@ -209,7 +207,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           }
           if (question.survey.mode !== 'display') {
-            console.log('WIDGET display');
+            // come from 'add new record' button from resources question
             const mainDiv = document.createElement('div');
             mainDiv.id = 'addRecordDiv';
             const btnEl = document.createElement('button');
@@ -217,7 +215,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             btnEl.style.width = '150px';
             if (question.canAddNew && question.addTemplate) {
               btnEl.onclick = () => {
-                console.log('WIDGET 2');
                 const dialogRef = dialog.open(SafeFormModalComponent, {
                   data: {
                     template: question.addTemplate,
