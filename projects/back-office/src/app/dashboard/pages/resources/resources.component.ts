@@ -121,6 +121,5 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.searchText = '';
     this.recordsFilter = '';
     this.clearDateFilter();
-    this.applyFilter('', null);
   }
 }
