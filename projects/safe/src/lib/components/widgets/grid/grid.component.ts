@@ -424,7 +424,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data
+          data,
+          template: this.settings.template
         }
       }).toPromise());
     }
@@ -907,7 +908,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: record.id,
-          data
+          data,
+          template: this.settings.template
         }
       }).toPromise());
     }

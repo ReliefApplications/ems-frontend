@@ -13,8 +13,8 @@ import { Step } from '../models/step.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
-  editRecord(id: $id, data: $data, version: $version) {
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $template: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version, template: $template) {
     id
     data(display: $display)
     createdAt
@@ -32,8 +32,8 @@ export interface EditRecordMutationResponse {
 
 // === EDIT RECORDS ===
 export const EDIT_RECORDS = gql`
-mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
-  editRecords(ids: $ids, data: $data) {
+mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID, $display: Boolean) {
+  editRecords(ids: $ids, data: $data, template: $template) {
     id
     data(display: $display)
     createdAt

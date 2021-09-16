@@ -86,7 +86,7 @@ export class SafeFormModalComponent implements OnInit {
         if (!this.data.template) {
           this.form = this.record.form;
         }
-        
+
       }));
     }
     if (!this.data.recordId || this.data.template) {
@@ -104,7 +104,7 @@ export class SafeFormModalComponent implements OnInit {
     this.loading = false;
   }
 
-  private initSurvey() {
+  private initSurvey(): void {
     this.survey = new Survey.Model(this.form?.structure);
     this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
@@ -182,7 +182,8 @@ export class SafeFormModalComponent implements OnInit {
       mutation: EDIT_RECORD,
       variables: {
         id,
-        data: survey.data
+        data: survey.data,
+        template: this.data.template
       }
     }).subscribe(res => {
       if (res.data) {
@@ -196,7 +197,8 @@ export class SafeFormModalComponent implements OnInit {
       mutation: EDIT_RECORDS,
       variables: {
         ids,
-        data: survey.data
+        data: survey.data,
+        template: this.data.template
       }
     }).subscribe(res => {
       if (res.data) {
