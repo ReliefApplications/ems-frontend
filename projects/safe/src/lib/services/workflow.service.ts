@@ -62,7 +62,7 @@ export class SafeWorkflowService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('step', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('step', value.name), { expires: true, duration: 5000 });
           this.loadWorkflow(workflow.id);
           if (value.type === ContentType.form) {
             this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });
@@ -88,7 +88,7 @@ export class SafeWorkflowService {
         }
         return x;
       }) };
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name), { error: true, expires: true, duration: 5000 });
       this._workflow.next(newWorkflow);
     }
   }

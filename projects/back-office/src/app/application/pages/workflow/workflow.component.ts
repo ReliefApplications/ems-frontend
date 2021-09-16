@@ -152,7 +152,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'), { duration: 1000 });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'), { expires: true, duration: 5000 });
             this.steps = this.steps.filter(x => {
               return x.id !== res.data?.deleteStep.id;
             });
@@ -187,7 +187,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: this.steps.map(step => step.id)
         }
       }).subscribe(() => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'), { expires: true, duration: 5000 });
       });
     }
   }
@@ -233,7 +233,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.selectedStepIndex = 0;
       this.selectedStep = this.steps[this.selectedStepIndex];
       this.navigateToSelectedStep();
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name), { expires: true, duration: 5000 });
     } else {
       this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
     }

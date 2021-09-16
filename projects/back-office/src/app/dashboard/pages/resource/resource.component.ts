@@ -144,7 +144,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         hardDelete: this.showDeletedRecords
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'), { expires: true, duration: 5000 });
       this.dataSourceRecords = this.dataSourceRecords.filter(x => {
         return x.id !== id;
       });
@@ -161,7 +161,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { expires: true, duration: 5000 });
       this.dataSourceForms = this.dataSourceForms.filter(x => {
         return x.id !== id;
       });

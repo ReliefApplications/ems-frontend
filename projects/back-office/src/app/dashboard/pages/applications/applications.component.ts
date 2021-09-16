@@ -110,7 +110,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { expires: true, duration: 5000 });
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -140,7 +140,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
             }
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'), { expires: true, duration: 5000 });
             const id = res.data?.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
@@ -160,7 +160,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }).subscribe((res) => {
       if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', element.name));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', element.name), { expires: true, duration: 5000 });
         const index = this.applications.data.findIndex(x => x.id === element.id);
         this.applications.data[index] = res.data.editApplication;
         this.applications.data = this.applications.data;

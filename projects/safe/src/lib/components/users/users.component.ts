@@ -83,7 +83,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           }
         }).subscribe(res => {
           if (!res.errors) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
+            this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length), { expires: true, duration: 5000 });
             this.users.data = this.users.data.concat(res?.data?.addUsers || []);
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
@@ -115,7 +115,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             }
           }).subscribe(res => {
             if (res.data) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
+              this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username), { expires: true, duration: 5000 });
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
                   x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
@@ -152,7 +152,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           }).subscribe(res => {
             this.loading = false;
             if (res.data?.deleteUsers) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers), { duration: 3000 });
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers), { expires: true, duration: 5000 });
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             } else {
               this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });

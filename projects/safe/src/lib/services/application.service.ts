@@ -204,7 +204,7 @@ export class SafeApplicationService {
         if (res.errors) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Application', res.errors[0].message));
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('application', value.name), { expires: true, duration: 5000 });
           if (res.data?.editApplication) {
             const newApplication = { ...application,
               name: res.data.editApplication.name,
@@ -231,7 +231,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.appPublished(res.data.editApplication.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.appPublished(res.data.editApplication.name), { expires: true, duration: 5000 });
           this.router.navigate(['/applications']);
         }
       });
@@ -250,7 +250,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'), { expires: true, duration: 5000 });
           const app = this._application.getValue();
           if (app) {
             const newApplication = { ...app, pages: app.pages?.filter(x => x.id !== res.data?.deletePage.id) };
@@ -274,7 +274,7 @@ export class SafeApplicationService {
           pages
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'), { expires: true, duration: 5000 });
       });
     }
   }
@@ -311,7 +311,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data?.addPage) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'), { expires: true, duration: 5000 });
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
@@ -338,7 +338,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'), { expires: true, duration: 5000 });
           const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
           this._application.next(newApplication);
         }
@@ -361,7 +361,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             roles: application.roles?.map(x => {
@@ -400,7 +400,7 @@ export class SafeApplicationService {
           id: role.id
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title), { expires: true, duration: 5000 });
         const newApplication = { ...application, roles: application.roles?.filter(x => x.id !== role.id) };
         this._application.next(newApplication);
       });
@@ -421,7 +421,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
-          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { duration: 3000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { expires: true, duration: 5000 });
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
           this._application.next(newApplication);
         } else {
@@ -446,7 +446,7 @@ export class SafeApplicationService {
         }
       }).subscribe((res: any) => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length), { expires: true, duration: 5000 });
           const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
           this._application.next(newApplication);
         } else {
@@ -471,7 +471,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const newUser = res.data.editUser;
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username), { expires: true, duration: 5000 });
           const index = application?.users?.indexOf(user);
           if (application?.users && index) {
             const newApplication: Application = {
@@ -498,7 +498,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'position category'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'position category'), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory])
@@ -522,7 +522,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(positionCategory.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(positionCategory.title), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
@@ -550,7 +550,7 @@ export class SafeApplicationService {
         if (res.errors) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('position category', value.title), { error: true });
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('position category', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('position category', value.title), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.map(pos => {
@@ -579,7 +579,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title), { expires: true, duration: 5000 });
           const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
           this._application.next(newApplication);
         }
@@ -598,7 +598,7 @@ export class SafeApplicationService {
       }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title), { expires: true, duration: 5000 });
           const newApplication: Application = { ...application,
             channels: application?.channels?.map(x => {
               if (x.id === channel.id) {
@@ -624,7 +624,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(channel.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(channel.title), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id)
@@ -651,7 +651,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', value.title), { expires: true, duration: 5000 });
           const newApplication: Application = {
             ...application,
             subscriptions: application.subscriptions?.concat([res.data.addSubscription])
@@ -675,7 +675,7 @@ export class SafeApplicationService {
           routingKey: value
         }
       }).subscribe(res => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'), { expires: true, duration: 5000 });
         const newApplication = { ...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value) };
         this._application.next(newApplication);
       });
@@ -700,7 +700,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const subscription = res.data.editSubscription;
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('subscription', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('subscription', value.title), { expires: true, duration: 5000 });
           const newApplication = {
             ...application, subscriptions: application.subscriptions?.map(sub => {
               if (sub.routingKey === previousSubscription) {

@@ -127,7 +127,7 @@ export class FormComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message));
         } else {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName), { expires: true, duration: 5000 });
             this.step = { ...this.step, name: res.data.editStep.name };
             this.workflowService.updateStepName(res.data.editStep);
           }
@@ -145,7 +145,7 @@ export class FormComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message));
         } else {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName), { expires: true, duration: 5000 });
             const newPage = { ...this.page, name: res.data.editPage.name };
             this.page = newPage;
             this.applicationService.updatePageName(res.data.editPage);

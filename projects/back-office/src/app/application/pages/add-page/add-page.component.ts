@@ -138,7 +138,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           const id = res.data?.addForm.id || '';
           this.pageForm.controls.content.setValue(id);
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', value.name), { expires: true, duration: 5000 });
 
           this.onSubmit();
         }, (err) => {

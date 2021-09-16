@@ -176,7 +176,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           }
         }).subscribe((res) => {
           this.layoutService.setRightSidenav(null);
-          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered, { expires: true, duration: 5000 });
         });
 
       }
@@ -228,7 +228,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     this.downloadService.uploadFile(path, file).subscribe(res => {
       this.xlsxFile.nativeElement.value = '';
       if (res.status === 'OK') {
-        this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
+        this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess, { expires: true, duration: 5000 });
         this.getFormData();
       }
     }, (error: any) => {

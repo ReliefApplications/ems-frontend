@@ -110,7 +110,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               title: value.title
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('role', value.title));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('role', value.title), { expires: true, duration: 5000 });
             this.getRoles();
           }, (err) => {
             console.log(err);
@@ -144,7 +144,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               title: value.title,
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('role', role.title), { expires: true, duration: 5000 });
             this.getRoles();
           });
         }
@@ -175,7 +175,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               id: item.id
             }
           }).subscribe(res => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(item.title));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(item.title), { expires: true, duration: 5000 });
             this.getRoles();
           });
         }

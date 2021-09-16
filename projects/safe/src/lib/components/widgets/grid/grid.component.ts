@@ -712,7 +712,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).subscribe((res) => {
           this.reloadData();
           this.layoutService.setRightSidenav(null);
-          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered, { expires: true, duration: 5000 });
         });
 
       }
@@ -960,7 +960,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           if (res2.data) {
             const record = res2.data.editRecord;
             if (record) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
+              this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]), { expires: true, duration: 5000 });
               this.dialog.open(SafeFormModalComponent, {
                 data: {
                   recordId: record.id,

@@ -59,7 +59,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+        this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved, { expires: true, duration: 5000 });
         this.user.name = res.data.editUserProfile.name;
       }
     });
@@ -80,7 +80,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved, { expires: true, duration: 5000 });
           this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }
       });

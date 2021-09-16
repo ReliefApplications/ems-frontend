@@ -64,7 +64,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'), { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'), { expires: true, duration: 5000 });
         this.dashboards = this.dashboards.filter(x => {
           return x.id !== res.data?.deleteDashboard.id;
         });
@@ -85,7 +85,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
             name: value.name
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('dashboard', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('dashboard', value.name), { expires: true, duration: 5000 });
           const id = res.data?.addDashboard.id;
           this.router.navigate(['/dashboards', id]);
         });

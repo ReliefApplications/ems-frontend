@@ -150,7 +150,7 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name), { expires: true, duration: 5000 });
           this.form = { ...res.data?.editForm, structure };
           this.structure = structure;
           localStorage.removeItem(`form:${this.id}`);
@@ -186,7 +186,7 @@ export class FormBuilderComponent implements OnInit {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
         statusModal.close();
       } else {
-        this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value), { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value), { expires: true, duration: 5000 });
         this.form = { ...this.form, status: res.data?.editForm.status };
         statusModal.close();
       }
@@ -248,7 +248,7 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName), { expires: true, duration: 5000 });
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
         }
@@ -276,7 +276,7 @@ export class FormBuilderComponent implements OnInit {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
         statusModal.close();
       } else {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''), { expires: true, duration: 5000 });
         this.form = { ...res.data?.editForm, structure: this.structure };
         statusModal.close();
       }

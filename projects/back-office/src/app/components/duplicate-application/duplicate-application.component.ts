@@ -44,7 +44,7 @@ export class DuplicateApplicationComponent implements OnInit {
       if (res.errors) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDuplicated('App', res.errors[0].message));
       } else {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDuplicated('App', this.currentApp.name));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDuplicated('App', this.currentApp.name), { expires: true, duration: 5000 });
         this.dialogRef.close(res.data?.duplicateApplication);
       }
     });

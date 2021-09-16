@@ -83,7 +83,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             stepper.next();
           } else if (this.selectedIndex + 1 === this.steps.length) {
             stepper.selectedIndex = 0;
-            this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+            this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name), { expires: true, duration: 5000 });
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
           }

@@ -101,7 +101,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
     this.isFromCacheData = !(!cachedData);
     if (this.isFromCacheData) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'), { expires: true, duration: 5000 });
     }
 
     this.isStep = this.router.url.includes('/workflow/');

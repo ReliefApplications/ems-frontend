@@ -85,7 +85,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           variables
         }).subscribe(res => {
           if (res.data?.addPullJob) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name), { expires: true, duration: 5000 });
             this.pullJobs = this.pullJobs.concat([res.data?.addPullJob]);
             this.applicationService.updatePullJobs(this.pullJobs);
           }
@@ -114,7 +114,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             }
           }).subscribe(res => {
             if (res.data?.deletePullJob) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'));
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'), { expires: true, duration: 5000 });
               this.pullJobs = this.pullJobs.filter(x => x.id !== res.data?.deletePullJob.id);
               this.applicationService.updatePullJobs(this.pullJobs);
             }
@@ -163,7 +163,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           variables
         }).subscribe(res => {
           if (res.data?.editPullJob) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('pull job', value.name));
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('pull job', value.name), { expires: true, duration: 5000 });
             this.pullJobs = this.pullJobs.map((pullJob: PullJob) => {
               if (pullJob.id === res.data?.editPullJob.id) {
                 pullJob = res.data?.editPullJob || pullJob;
