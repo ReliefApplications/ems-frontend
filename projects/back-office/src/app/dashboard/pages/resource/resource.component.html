@@ -43,6 +43,10 @@
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>
+                                <button *ngIf="resource.forms.length > 1" mat-menu-item [matMenuTriggerFor]="templates">
+                                    <mat-icon>edit_note</mat-icon>
+                                    Edit as
+                                </button>
                                 <button *ngIf="!showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
                                     <mat-icon>delete</mat-icon>
                                     Delete
@@ -55,6 +59,11 @@
                                     <mat-icon>unarchive</mat-icon>
                                     Restore
                                 </button>
+                            </mat-menu>
+                            <mat-menu #templates="matMenu">
+                                <ng-container *ngFor="let form of resource.forms">
+                                    <button mat-menu-item [routerLink]="['./update', element.id]" [state]="{ template: form.id }">{{form.name}}</button>
+                                </ng-container>
                             </mat-menu>
                         </td>
                     </ng-container>
