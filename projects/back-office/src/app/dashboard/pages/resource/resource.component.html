@@ -39,8 +39,8 @@
                             <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="recMenu" (click)="$event.stopPropagation()">
                             </safe-button>
                             <mat-menu #recMenu="matMenu">
-                                <button mat-menu-item [routerLink]="['./update', element.id]"
-                                [matTooltip]="'Edit as ' + element.form.name" matTooltipPosition="above">
+                                <button mat-menu-item [routerLink]="['./update', element.id]" [matTooltip]="'Edit as ' + element.form.name"
+                                matTooltipPosition="above" [matTooltipDisabled]="resource.forms.length <= 1">
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>
