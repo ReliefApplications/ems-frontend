@@ -67,7 +67,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       resource: [tileSettings && tileSettings.resource ? tileSettings.resource : null],
-      template: [tileSettings && tileSettings.template ? tileSettings.template : null],
       actions: this.formBuilder.group({
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],

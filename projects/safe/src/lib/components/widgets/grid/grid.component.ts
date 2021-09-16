@@ -425,7 +425,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         variables: {
           id: item.id,
           data,
-          template: this.settings.template
+          template: this.settings.query.template
         }
       }).toPromise());
     }
@@ -641,7 +641,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids,
         locale: 'en',
-        template: this.settings.template
+        template: this.settings.query.template
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -667,7 +667,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
           },
-          template: this.settings.template
+          template: this.settings.query.template
         },
       });
     });
@@ -681,7 +681,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: item.canUpdate,
-        template: this.settings.template
+        template: this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -909,7 +909,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         variables: {
           id: record.id,
           data,
-          template: this.settings.template
+          template: this.settings.query.template
         }
       }).toPromise());
     }
