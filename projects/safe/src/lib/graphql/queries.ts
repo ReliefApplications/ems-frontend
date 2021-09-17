@@ -488,6 +488,24 @@ export interface GetApplicationByIdQueryResponse {
   application: Application;
 }
 
+// === GET APPLICATIONS ===
+export const GET_APPLICATIONS = gql`
+{
+  applications {
+    id
+    name
+    roles {
+      id
+      title
+    }
+  }
+}`;
+
+export interface GetApplicationsQueryResponse {
+  loading: boolean;
+  applications: Application[];
+}
+
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
 query GetPermissions($application: Boolean) {

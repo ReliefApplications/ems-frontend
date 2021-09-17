@@ -7,3 +7,9 @@
 ::ng-deep .sv_q {
     padding-bottom: 0.5em !important;
 }
+
+::ng-deep .sv_row {
+    div {
+        min-width: 0px !important;
+    }
+}
