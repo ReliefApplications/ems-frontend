@@ -51,7 +51,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     console.log(history.state);
     const newPageNumber = history.state.pagesNumber + 1;
     this.pageForm = this.formBuilder.group({
-      name: ['page' + newPageNumber],
+      name: ['new'],
       type: ['', Validators.required],
       content: [''],
       newForm: [false]
@@ -96,6 +96,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     console.log('this.pageForm : onSubmit');
     console.log(this.pageForm.value);
+    this.pageForm.value.name = 'new ' + this.pageForm.value.type;
     this.applicationService.addPage(this.pageForm.value);
   }
 
