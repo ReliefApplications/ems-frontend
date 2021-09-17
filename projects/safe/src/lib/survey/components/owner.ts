@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 
 export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
-    
+
     const getApplications = () => apollo.query<GetApplicationsQueryResponse>({
         query: GET_APPLICATIONS,
     });
@@ -32,11 +32,6 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
         },
         applications: new BehaviorSubject<Application[]>([]),
         onInit: function (): void {
-            getApplications().subscribe(
-                (res) => {
-                    this.applications.next(res.data.applications);
-                }
-            );
             Survey.Serializer.addProperty('owner', {
                 name: 'applications:set',
                 category: 'Owner properties',
@@ -44,7 +39,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                 visibleIndex: 3,
                 required: true,
                 choices: () => {
-                  return this.applications.value.map(application => { return { value: application.id, text: application.name }; });
+                    return this.applications.value.map(application => ({ value: application.id, text: application.name }));
                 }
             });
             const setGridFieldsBtn = {
@@ -61,14 +56,16 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                   };
                 }
               };
-        
-            // SurveyCreator
+
+            // SurveyCreator`
             //     .SurveyPropertyEditorFactory
             //     .registerCustomEditor('availableFieldsBtn', setGridFieldsBtn);
         },
         onLoaded(question: any): void {
-            this.applications.subscribe(applications => {
-                if (applications) {
+            getApplications().subscribe(
+                (res) => {
+                    const applications = res.data.applications
+                    this.applications.next(applications);
                     const roles = [];
                     for (const application of applications.filter(x => question.applications.includes(x.id))) {
                         if (application.roles && application.roles.length > 0) {
@@ -79,7 +76,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
                     }
                     question.contentQuestion.choices = roles;
                 }
-            })
+            );
         },
         onAfterRender(question: any, el: any): void {
 
