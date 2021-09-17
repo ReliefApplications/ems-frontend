@@ -131,8 +131,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-    console.log('this.filteredNavGroups');
-    console.log(this.filteredNavGroups);
   }
 
   ngOnChanges(): void {
