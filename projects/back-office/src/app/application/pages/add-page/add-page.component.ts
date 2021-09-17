@@ -45,8 +45,13 @@ export class AddPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('this.forms');
+    console.log(this.forms);
+    console.log('history.state.data');
+    console.log(history.state);
+    const newPageNumber = history.state.pagesNumber + 1;
     this.pageForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['page' + newPageNumber],
       type: ['', Validators.required],
       content: [''],
       newForm: [false]
@@ -77,12 +82,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
   isStepValid(step: number): boolean {
     switch (step) {
       case 1: {
-        return this.pageForm.controls.name.valid;
-      }
-      case 2: {
         return this.pageForm.controls.type.valid;
       }
-      case 3: {
+      case 2: {
         return this.pageForm.controls.content.valid;
       }
       default: {
@@ -92,6 +94,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    console.log('this.pageForm : onSubmit');
+    console.log(this.pageForm.value);
     this.applicationService.addPage(this.pageForm.value);
   }
 
@@ -102,14 +106,10 @@ export class AddPageComponent implements OnInit, OnDestroy {
   onNext(): void {
     switch (this.step) {
       case 1: {
-        this.step += 1;
-        break;
-      }
-      case 2: {
         this.pageForm.controls.type.value === ContentType.form ? this.step += 1 : this.onSubmit();
         break;
       }
-      case 3: {
+      case 2: {
         this.onSubmit();
         break;
       }
