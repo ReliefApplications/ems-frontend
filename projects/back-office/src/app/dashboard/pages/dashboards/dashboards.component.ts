@@ -64,7 +64,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'), { duration: 1000 });
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'));
         this.dashboards = this.dashboards.filter(x => {
           return x.id !== res.data?.deleteDashboard.id;
         });
