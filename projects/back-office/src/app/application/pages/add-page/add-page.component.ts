@@ -45,9 +45,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const newPageNumber = history.state.pagesNumber + 1;
     this.pageForm = this.formBuilder.group({
-      name: ['new'],
       type: ['', Validators.required],
       content: [''],
       newForm: [false]
@@ -90,7 +88,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.pageForm.value.name = 'new ' + this.pageForm.value.type;
     this.applicationService.addPage(this.pageForm.value);
   }
 

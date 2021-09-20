@@ -150,8 +150,8 @@ export interface EditUserProfileMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
-  addPage(name: $name, type: $type, content: $content, application: $application){
+mutation addPage($type: ContentEnumType!, $content: ID, $application: ID!) {
+  addPage(type: $type, content: $content, application: $application){
     id
     name
     type
