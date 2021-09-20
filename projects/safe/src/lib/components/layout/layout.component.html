@@ -61,27 +61,21 @@
           <ng-container *ngFor="let item of group.navItems">
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
               <mat-list-item class="nav-item">
-
-                <ng-container *ngIf="item.isAddPage">
-                  <a [routerLink]="item.path" [state]="{pagesNumber: group.navItems.length-1}" routerLinkActive="active-link"
-                     (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                <a [routerLink]="item.path" routerLinkActive="active-link"
+                  (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                  <ng-container *ngIf="item.isAddPage">
                     <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
-                                 [class]="item.class ? item.class : ''">
+                      [class]="item.class ? item.class : ''">
                       Add a Page
                     </safe-button>
-                  </a>
-                </ng-container>
-
-                <ng-container *ngIf="!item.isAddPage">
-                  <a [routerLink]="item.path" routerLinkActive="active-link"
-                     (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                  </ng-container>
+                  <ng-container *ngIf="!item.isAddPage">
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
                     <div mat-line>{{ item.name }}</div>
-                  </a>
-                </ng-container>
-
+                  </ng-container>
+                </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
                     <button mat-icon-button class="nav-action" *ngIf="item.action"
                     (click)="onClick(item.action.callback, $event)">

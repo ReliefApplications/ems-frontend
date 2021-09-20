@@ -606,8 +606,8 @@ export interface DeleteSubscriptionMutationResponse {
 
 // === ADD STEP ===
 export const ADD_STEP = gql`
-mutation addStep($name: String, $type: String!, $content: ID, $workflow: ID!) {
-  addStep(name: $name, type: $type, content: $content, workflow: $workflow){
+mutation addStep($type: String!, $content: ID, $workflow: ID!) {
+  addStep(type: $type, content: $content, workflow: $workflow){
     id
     name
     type

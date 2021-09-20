@@ -310,7 +310,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data?.addPage) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', res.data.addPage.name));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
