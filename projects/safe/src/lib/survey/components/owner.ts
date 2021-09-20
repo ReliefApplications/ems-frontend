@@ -24,6 +24,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           choices: [] as any[],
         },
         applications: new BehaviorSubject<Application[]>([]),
+        // tslint:disable-next-line: object-literal-shorthand
         onInit: function(): void {
             Survey.Serializer.addProperty('owner', {
                 name: 'applications:set',
