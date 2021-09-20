@@ -202,7 +202,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.skip, this.pageSize);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe((res: any) => {
@@ -601,8 +601,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
-    this.loadItems();
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.skip, this.pageSize);
+    this.getRecords();
     this.loading = false;
+
   }
 
   /*  Detect filtering events and update the items loaded.
@@ -805,7 +807,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.dataSubscription) {
         this.dataSubscription.unsubscribe();
       }
-      this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.skip, this.pageSize);
       this.getRecords();
     } else {
       this.childChanged.emit();

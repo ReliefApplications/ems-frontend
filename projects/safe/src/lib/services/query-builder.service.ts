@@ -128,17 +128,18 @@ export class QueryBuilderService {
     }));
   }
 
-  public buildQuery(settings: any): any {
+  public buildQuery(settings: any, skip?: any, take?: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {
           ${builtQuery.name}(
           sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
           sortOrder: "${builtQuery.sort?.order || '' }",
-          filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
+          filter: ${this.objToString(this.buildFilter(builtQuery.filter))},
+          perPage: ${take ? take*3 : 25},
+          page: ${skip ? skip/take : 0}
           ) {
           ${fields}
         }
