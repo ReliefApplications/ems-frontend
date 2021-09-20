@@ -304,14 +304,13 @@ export class SafeApplicationService {
       this.apollo.mutate<AddPageMutationResponse>({
         mutation: ADD_PAGE,
         variables: {
-          name: value.name,
           type: value.type,
           content: value.content,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data?.addPage) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', res.data.addPage.name));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);

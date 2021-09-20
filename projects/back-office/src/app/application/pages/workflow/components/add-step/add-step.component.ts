@@ -34,7 +34,6 @@ export class AddStepComponent implements OnInit, OnDestroy {
   public assetsPath = '';
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -48,7 +47,6 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.stepForm = this.formBuilder.group({
-      name: ['', Validators.required],
       type: ['', Validators.required],
       content: [''],
     });
@@ -78,12 +76,9 @@ export class AddStepComponent implements OnInit, OnDestroy {
   isStageValid(stage: number): boolean {
     switch (stage) {
       case 1: {
-        return this.stepForm.controls.name.valid;
-      }
-      case 2: {
         return this.stepForm.controls.type.valid;
       }
-      case 3: {
+      case 2: {
         return this.stepForm.controls.content.valid;
       }
       default: {
@@ -103,14 +98,10 @@ export class AddStepComponent implements OnInit, OnDestroy {
   onNext(): void {
     switch (this.stage) {
       case 1: {
-        this.stage += 1;
-        break;
-      }
-      case 2: {
         this.stepForm.controls.type.value === ContentType.form ? this.stage += 1 : this.onSubmit();
         break;
       }
-      case 3: {
+      case 2: {
         this.onSubmit();
         break;
       }
