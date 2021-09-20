@@ -123,28 +123,36 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     Add a new application once closed, if result exists.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApplicationComponent);
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<AddApplicationMutationResponse>({
-          mutation: ADD_APPLICATION,
-          variables: {
-            name: value.name
-          }
-        }).subscribe(res => {
-          if (res.errors) {
-            if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
+    let appName = '';
+    let num = 0;
+    let continueLoop = true;
+    while (continueLoop){
+      continueLoop = false;
+      num ++;
+      this.applications.data.forEach((v, i, a) => {
+        appName = 'application ' + num;
+        if (v.name === appName){
+          continueLoop = true;
+        }
+      });
+    }
+    this.apollo.mutate<AddApplicationMutationResponse>({
+      mutation: ADD_APPLICATION,
+      variables: {
+        name: appName
+      }
+    }).subscribe(res => {
+      if (res.errors) {
+        if (res.errors[0].message.includes('duplicate key error')) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', name), { error: true });
 
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
-            }
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
-            const id = res.data?.addApplication.id;
-            this.router.navigate(['/applications', id]);
-          }
-        });
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
+        }
+      } else {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(name, 'application'));
+        const id = res.data?.addApplication.id;
+        this.router.navigate(['/applications', id]);
       }
     });
   }
