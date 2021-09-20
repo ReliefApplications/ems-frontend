@@ -54,11 +54,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.users.filterPredicate = (data: any) => {
-      return ((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+      return (
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
-          data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
+            data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0))
+      );
     };
   }
 
