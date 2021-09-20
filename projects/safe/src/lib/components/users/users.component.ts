@@ -53,14 +53,15 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    // this.users.filterPredicate = (data: any) => {
-    //   console.log(data);
-    //   return ((this.searchText.trim().length === 0 ||
-    //     (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-    //     (this.roleFilter.trim().toLowerCase().length === 0 ||
-    //       (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
-    //       data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
-    // };
+    this.users.filterPredicate = (data: any) => {
+      return (
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.roleFilter.trim().toLowerCase().length === 0 ||
+          (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
+            data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0))
+      );
+    };
   }
 
   onInvite(): void {
@@ -175,12 +176,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.users.filter = '##';
-    console.log(this.searchText);
-    this.searchText = this.searchText.trim(); // Remove whitespace
-    console.log(this.searchText);
-    this.searchText = this.searchText.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    console.log(this.searchText);
-    this.users.filter = this.searchText;
   }
 
   clearAllFilters(): void {
