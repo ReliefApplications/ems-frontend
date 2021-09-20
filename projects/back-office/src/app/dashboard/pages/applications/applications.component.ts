@@ -2,14 +2,12 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS } from '@safe/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
-import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -50,7 +48,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private applicationService: SafeApplicationService,
     private previewService: PreviewService
   ) { }
 
@@ -110,7 +107,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -123,28 +120,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     Add a new application once closed, if result exists.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApplicationComponent);
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<AddApplicationMutationResponse>({
-          mutation: ADD_APPLICATION,
-          variables: {
-            name: value.name
-          }
-        }).subscribe(res => {
-          if (res.errors) {
-            if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
-
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
-            }
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
-            const id = res.data?.addApplication.id;
-            this.router.navigate(['/applications', id]);
-          }
-        });
+    this.apollo.mutate<AddApplicationMutationResponse>({
+      mutation: ADD_APPLICATION
+    }).subscribe(res => {
+      if (res.errors) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
+      } else {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(res.data.addApplication.name, 'application'));
+          const id = res.data.addApplication.id;
+          this.router.navigate(['/applications', id]);
+        }
       }
     });
   }
