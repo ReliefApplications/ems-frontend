@@ -129,6 +129,7 @@ export class QueryBuilderService {
   }
 
   public buildQuery(settings: any, skip?: any, take?: any): any {
+    // adapter tous les res de buildQuery pour mettre res.result resource grid component, map component, grid component,
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
@@ -139,9 +140,12 @@ export class QueryBuilderService {
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))},
           perPage: ${take ? take : 25},
-          page: ${skip ? skip/take : 0}
+          page: ${skip ? skip / take : 0}
           ) {
-          ${fields}
+            result {
+              ${fields}
+            }
+            count
         }
         }
       `;

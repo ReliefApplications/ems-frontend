@@ -133,9 +133,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.data = [];
       this.selectedItem = null;
       this.markersLayer.clearLayers();
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].map((x: any) => this.drawMarkers(myIcon, x));
+      for (const field in res.data[this.settings.query.name].result) {
+        if (Object.prototype.hasOwnProperty.call(res.data[this.settings.query.name].result, field)) {
+          res.data[this.settings.query.name].result[field].map((x: any) => this.drawMarkers(myIcon, x));
         }
       }
     });

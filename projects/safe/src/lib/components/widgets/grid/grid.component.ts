@@ -103,6 +103,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private metaFields: any;
   public detailsField: any;
   public canEdit = false;
+  public count = 0;
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
@@ -298,16 +299,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
           this.queryError = false;
+          this.count = res.data[this.settings.query.name].count;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              this.items = cloneData(res.data[field] ? res.data[field] : []);
+              this.items = cloneData(res.data[field].result ? res.data[field].result : []);
               // to only load and show the number of record required
               if (this.skip !== 0) {
-                for (let i=0; i<this.skip; i++) {
-                  this.items.unshift({})
+                for (let i = 0; i < this.skip; i++) {
+                  this.items.unshift({});
                 }
               }
               this.convertDateFields(this.items);
@@ -337,7 +339,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
         (this.filter ? filterBy(this.items, this.filter) : this.items))
         .slice(this.skip, this.skip + this.pageSize),
-      total: 50
+      total: this.count
     };
   }
 

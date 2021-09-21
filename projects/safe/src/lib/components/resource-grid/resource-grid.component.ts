@@ -117,9 +117,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe((res: any) => {
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.metaFields = res.data[field];
+        for (const field in res.data[this.settings.query.name].result) {
+          if (Object.prototype.hasOwnProperty.call(res.data[this.settings.query.name].result, field)) {
+            this.metaFields = res.data[this.settings.query.name].result[field];
           }
         }
         this.getRecords();
@@ -155,10 +155,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
             const fields = this.settings.query.fields;
             for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              if (Object.prototype.hasOwnProperty.call(res.data[this.settings.query.name].result, field)) {
                 this.loading = false;
                 this.fields = this.getFields(fields);
-                this.items = cloneData(res.data[field] ? res.data[field] : []);
+                this.items = cloneData(res.data[this.settings.query.name].result[field]
+                   ? res.data[this.settings.query.name].result[field] : []);
                 this.convertDateFields(this.items);
                 this.detailsField = fields.find((x: any) => x.kind === 'LIST');
                 if (this.detailsField) {
