@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
 import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
+import {SafeSnackBarService} from '../../../../../../safe/src/lib/services/snackbar.service';
+import {NOTIFICATIONS} from '../../../../../../safe/src/lib/const/notifications';
 
 @Component({
   selector: 'app-form',
@@ -34,7 +36,8 @@ export class FormComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: SafeSnackBarService
   ) {
     this.page = {};
   }
@@ -78,6 +81,15 @@ export class FormComponent implements OnInit, OnDestroy {
           }).valueChanges.subscribe((res2) => {
             if (res2.data) {
               this.form = res2.data.form;
+            }
+            if (!this.isStep && (this.form.status !== 'active') && this.page.canSee){
+              this.snackBar.openSnackBar(NOTIFICATIONS.formStatusNotActive, { error: true });
+            }
+            if (!this.isStep && (this.form.status === 'active') && !this.page.canSee){
+              this.snackBar.openSnackBar(NOTIFICATIONS.noCanSeeFormPagePermission, { error: true });
+            }
+            if (!this.isStep && (this.form.status !== 'active') && !this.page.canSee){
+              this.snackBar.openSnackBar(NOTIFICATIONS.noPermissionAndNoActiveStatus, { error: true });
             }
             this.loading = res2.data.loading;
           });

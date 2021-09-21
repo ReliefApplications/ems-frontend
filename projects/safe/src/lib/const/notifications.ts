@@ -34,5 +34,8 @@ export const NOTIFICATIONS = {
     appEdited: 'This application has been updated by someone else.',
     pingResponseAuthToken: 'Authentication token fetched, ping again to get the actual response.',
     pingResponseReceived: 'Received positive response from ping request.',
-    pingResponseError: 'ERROR during the PING request.'
+    pingResponseError: 'ERROR during the PING request.',
+    noCanSeeFormPagePermission: 'You don\'t have the permission to see this form',
+    formStatusNotActive: 'You can\'t see this form because it is not active',
+    noPermissionAndNoActiveStatus: 'You can\'t see this form because you don\'t have the permission for this and it is not active'
 };
