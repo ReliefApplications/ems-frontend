@@ -138,7 +138,7 @@ export class QueryBuilderService {
           sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))},
-          perPage: ${take ? take*3 : 25},
+          perPage: ${take ? take : 25},
           page: ${skip ? skip/take : 0}
           ) {
           ${fields}

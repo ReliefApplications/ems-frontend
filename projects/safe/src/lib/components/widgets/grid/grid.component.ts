@@ -7,7 +7,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent
+  ColumnReorderEvent,
+  PageSizeItem
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -303,6 +304,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               this.loading = false;
               this.fields = this.getFields(fields);
               this.items = cloneData(res.data[field] ? res.data[field] : []);
+              // to only load and show the number of record required
+              if (this.skip !== 0) {
+                for (let i=0; i<this.skip; i++) {
+                  this.items.unshift({})
+                }
+              }
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
@@ -330,7 +337,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
         (this.filter ? filterBy(this.items, this.filter) : this.items))
         .slice(this.skip, this.skip + this.pageSize),
-      total: this.items.length
+      total: 50
     };
   }
 
@@ -595,7 +602,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect pagination events and update the items loaded.
   */
   public pageChange(event: PageChangeEvent): void {
-    this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
     this.selectedRowsIndex = [];
@@ -603,8 +609,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.canDeleteSelectedRows = false;
     this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.skip, this.pageSize);
     this.getRecords();
-    this.loading = false;
-
   }
 
   /*  Detect filtering events and update the items loaded.
