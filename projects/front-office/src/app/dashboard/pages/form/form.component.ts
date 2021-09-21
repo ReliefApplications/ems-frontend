@@ -24,7 +24,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public hideNewRecord = false;
 
   // === ROUTER ===
-  public page?: Page;
+  public page: Page;
   public step?: Step;
 
   // === ROUTE ===
@@ -35,7 +35,9 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {
+    this.page = {};
+  }
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -57,6 +59,8 @@ export class FormComponent implements OnInit, OnDestroy {
             }
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
+            console.log('this.form: 1');
+            console.log(this.form);
             this.loading = res2.data.loading;
           });
         });
@@ -76,6 +80,8 @@ export class FormComponent implements OnInit, OnDestroy {
           }).valueChanges.subscribe((res2) => {
             if (res2.data) {
               this.form = res2.data.form;
+              console.log('this.form: 2');
+              console.log(this.form);
             }
             this.loading = res2.data.loading;
           });
