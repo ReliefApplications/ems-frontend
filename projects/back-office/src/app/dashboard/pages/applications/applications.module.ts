@@ -11,7 +11,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,7 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
-  declarations: [ApplicationsComponent, AddApplicationComponent, ChoseRoleComponent],
+  declarations: [ApplicationsComponent, ChoseRoleComponent],
     imports: [
         CommonModule,
         ApplicationsRoutingModule,
