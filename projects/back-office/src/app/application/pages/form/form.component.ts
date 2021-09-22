@@ -104,6 +104,7 @@ export class FormComponent implements OnInit, OnDestroy {
           }
         }).valueChanges.subscribe((res) => {
           this.page = res.data.page;
+          console.log(this.page);
           this.apollo.watchQuery<GetFormByIdQueryResponse>({
             query: GET_SHORT_FORM_BY_ID,
             variables: {
@@ -111,6 +112,7 @@ export class FormComponent implements OnInit, OnDestroy {
             }
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
+            console.log(this.form);
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page?.name, Validators.required)
             });
@@ -191,6 +193,10 @@ export class FormComponent implements OnInit, OnDestroy {
 
   public isUserHasCanManageAppPermission(p: Permission): boolean {
     return (p.type === 'can_manage_applications');
+  }
+
+  public isUserHasCanManageFormsPermission(p: Permission): boolean {
+    return (p.type === 'can_manage_forms');
   }
 
   /*  Edit the permissions layer.
