@@ -74,11 +74,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications and fields for email in floating button if any
-        if (this.fields && (res.name !== this.queryName)) {
+        // Check if the query changed to clean modifications and fields for email in floating button
+        if (res.name !== this.queryName) {
+          this.queryName = res.name;
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
@@ -89,7 +91,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
-        this.queryName = res.name;
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
           query.subscribe((res1: { data: any }) => {
@@ -143,8 +144,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           });
         }
       });
-
-      this.queryName = this.tileForm.get('query')?.value.name;
     }
   }
 

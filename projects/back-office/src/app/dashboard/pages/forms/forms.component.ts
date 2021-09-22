@@ -122,7 +122,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             id
           }
         }).subscribe((res: any) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
           this.dataSource.data = this.dataSource.data.filter(x => {
             return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
           });

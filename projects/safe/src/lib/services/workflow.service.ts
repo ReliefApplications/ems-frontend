@@ -55,14 +55,13 @@ export class SafeWorkflowService {
       this.apollo.mutate<AddStepMutationResponse>({
         mutation: ADD_STEP,
         variables: {
-          name: value.name,
           type: value.type,
           content: value.content,
           workflow: workflow.id
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('step', value.name));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('step', res.data.addStep.name));
           this.loadWorkflow(workflow.id);
           if (value.type === ContentType.form) {
             this.router.navigate(['../' + value.type + '/' + res.data.addStep.id], { relativeTo: route.parent });

@@ -152,7 +152,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'), { duration: 1000 });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'));
             this.steps = this.steps.filter(x => {
               return x.id !== res.data?.deleteStep.id;
             });

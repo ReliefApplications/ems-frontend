@@ -125,7 +125,7 @@ export class SafeApplicationService {
     }).subscribe(() => {
       const snackBar = this.snackBar.openSnackBar(NOTIFICATIONS.appEdited, {
         action: 'Reload',
-        expires: false
+        duration: 0
       });
       snackBar.onAction().subscribe(() => window.location.reload());
     });
@@ -304,20 +304,21 @@ export class SafeApplicationService {
       this.apollo.mutate<AddPageMutationResponse>({
         mutation: ADD_PAGE,
         variables: {
-          name: value.name,
           type: value.type,
           content: value.content,
           application: application.id
         }
       }).subscribe(res => {
-        if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
+        if (res.data?.addPage) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', res.data.addPage.name));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
           this.router.navigate([(value.type === ContentType.form) ?
             `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
             `/applications/${application.id}/${value.type}/${content}`]);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
@@ -419,7 +420,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
-          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { duration: 3000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
           this._application.next(newApplication);
         } else {

@@ -3,7 +3,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
-import { Resource, SafeConfirmModalComponent } from '@safe/builder';
+import { Resource, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -38,7 +38,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
   constructor(
     private dialog: MatDialog,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService,
   ) { }
 
   /*  Load the resources.
@@ -88,7 +89,12 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             id: resource.id
           }
         }).subscribe(res => {
-          this.dataSource.data = this.dataSource.data.filter(x => x.id !== resource.id);
+          if (!res.errors) {
+            this.dataSource.data = this.dataSource.data.filter(x => x.id !== resource.id);
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('ressource'));
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('ressource', res.errors[0].message), { error: true });
+          }
         });
       }
     });
