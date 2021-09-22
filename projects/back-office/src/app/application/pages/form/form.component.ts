@@ -60,15 +60,12 @@ export class FormComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
   ) {
-    // this.account = this.authService.account;
-    // console.log(this.account);
     this.user = {
       permissions: []
     };
   }
 
   ngOnInit(): void {
-    console.log('we are here boi: page/form');
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.formActive = false;
       this.loading = true;
@@ -104,7 +101,6 @@ export class FormComponent implements OnInit, OnDestroy {
           }
         }).valueChanges.subscribe((res) => {
           this.page = res.data.page;
-          console.log(this.page);
           this.apollo.watchQuery<GetFormByIdQueryResponse>({
             query: GET_SHORT_FORM_BY_ID,
             variables: {
@@ -112,7 +108,6 @@ export class FormComponent implements OnInit, OnDestroy {
             }
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
-            console.log(this.form);
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page?.name, Validators.required)
             });
@@ -121,8 +116,7 @@ export class FormComponent implements OnInit, OnDestroy {
           });
         });
       }
-
-      // console.log(this.authService.userIsAdmin);
+      // If we didn't call the userIsAdmin() function, the user() function called just after won't work (I don't know why)
       const isAdmin = this.authService.userIsAdmin;
       if (this.userSubscription) {
         this.userSubscription.unsubscribe();
@@ -130,8 +124,6 @@ export class FormComponent implements OnInit, OnDestroy {
       this.userSubscription = this.authService.user.subscribe((user) => {
         if (user) {
           this.user = { ...user };
-          console.log('1: user: page/form');
-          console.log(user);
         }
       });
 
