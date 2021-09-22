@@ -108,6 +108,7 @@ export class FormComponent implements OnInit, OnDestroy {
             }
           }).valueChanges.subscribe((res2) => {
             this.form = res2.data.form;
+            console.log(this.form);
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page?.name, Validators.required)
             });
@@ -125,6 +126,7 @@ export class FormComponent implements OnInit, OnDestroy {
         if (user) {
           this.user = { ...user };
         }
+        console.log(user);
       });
 
     });
