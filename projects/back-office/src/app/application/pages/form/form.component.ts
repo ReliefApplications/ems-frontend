@@ -14,6 +14,9 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE
 } from '../../../graphql/mutations';
+import {Permission, PermissionsManagement, PermissionType, User} from '../../../../../../safe/src/lib/models/user.model';
+import {Account} from 'msal';
+import {SafeAuthService} from '../../../../../../safe/src/lib/services/auth.service';
 
 @Component({
   selector: 'app-form',
@@ -33,6 +36,11 @@ export class FormComponent implements OnInit, OnDestroy {
   public completed = false;
   public hideNewRecord = false;
 
+  // === USER INFO ===
+  // account: Account | null;
+  public user: User;
+  private userSubscription?: Subscription;
+
   // === TAB NAME EDITION ===
   public formActive = false;
   public tabNameForm: FormGroup = new FormGroup({});
@@ -49,10 +57,18 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
-  ) { }
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
+  ) {
+    // this.account = this.authService.account;
+    // console.log(this.account);
+    this.user = {
+      permissions: []
+    };
+  }
 
   ngOnInit(): void {
+    console.log('we are here boi: page/form');
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.formActive = false;
       this.loading = true;
@@ -103,6 +119,20 @@ export class FormComponent implements OnInit, OnDestroy {
           });
         });
       }
+
+      // console.log(this.authService.userIsAdmin);
+      const isAdmin = this.authService.userIsAdmin;
+      if (this.userSubscription) {
+        this.userSubscription.unsubscribe();
+      }
+      this.userSubscription = this.authService.user.subscribe((user) => {
+        if (user) {
+          this.user = { ...user };
+          console.log('1: user: page/form');
+          console.log(user);
+        }
+      });
+
     });
   }
 
@@ -153,6 +183,14 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  public isUserHasCanSeeAppPermission(p: Permission): boolean {
+    return (p.type === 'can_see_applications');
+  }
+
+  public isUserHasCanManageAppPermission(p: Permission): boolean {
+    return (p.type === 'can_manage_applications');
   }
 
   /*  Edit the permissions layer.
