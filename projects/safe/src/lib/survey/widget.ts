@@ -111,8 +111,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of tooltip
       if (question.tooltip) {
-        // console.log('question.tooltip');
-        // console.log(question.tooltip);
         const header = el.parentElement.parentElement.querySelector('h5');
         if (header) {
           header.title = question.tooltip;
