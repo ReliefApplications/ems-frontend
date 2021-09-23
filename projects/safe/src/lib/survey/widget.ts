@@ -111,6 +111,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of tooltip
       if (question.tooltip) {
+        // console.log('question.tooltip');
+        // console.log(question.tooltip);
         const header = el.parentElement.parentElement.querySelector('h5');
         if (header) {
           header.title = question.tooltip;
@@ -119,6 +121,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           span.className = 'material-icons';
           span.style.fontSize = '1em';
           span.style.cursor = 'pointer';
+          span.style.color = '#008DC9';
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
