@@ -66,27 +66,33 @@
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Authentication target URL
+                  Access token URL
                 </mat-label>
                 <input matInput formControlName="authTargetUrl" type='text' placeholder="Enter the authentication target URL" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  External API client ID
+                  Client ID
                 </mat-label>
                 <input matInput formControlName="apiClientID" type='text' placeholder="Enter the external API client ID" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  SAFE secret
+                  Client secret
                 </mat-label>
                 <input matInput formControlName="safeSecret" type='text' placeholder="Enter the SAFE secret" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  SAFE ID
+                  Consumer ID
                 </mat-label>
                 <input matInput formControlName="safeID" type='text' placeholder="Enter the SAFE ID" onfocus="this.value=''"/>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>
+                  Scope
+                </mat-label>
+                <input matInput formControlName="scope" type='text' placeholder="Enter the SAFE ID" onfocus="this.value=''"/>
               </mat-form-field>
             </div>
           </ng-container>
