@@ -220,8 +220,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
   }
 
-  public filterTemplates(element: Record): Form[] {
-    return this.resource.forms.filter((x: Form) => x.id !== element.form?.id);
+  /**
+   * Get list of forms filtering by record form.
+   * @param record Record to filter templates with.
+   * @returns list of different forms than the one used to create the record.
+   */
+  public filterTemplates(record: Record): Form[] {
+    return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
 
   }
 

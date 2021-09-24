@@ -15,8 +15,8 @@ export class UpdateRecordComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public id = '';
-  public record: Record = {};
-  public form: Form = {};
+  public record?: Record;
+  public form?: Form;
   public backPath = '';
 
   constructor(
