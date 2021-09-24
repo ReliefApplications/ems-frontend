@@ -222,7 +222,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         mutation: EDIT_RECORD,
         variables: {
           id: recordId,
-          data: this.survey.data
+          data: this.survey.data,
+          template: this.form.id !== this.record?.form?.id ? this.form.id : null
         }
       });
     } else {

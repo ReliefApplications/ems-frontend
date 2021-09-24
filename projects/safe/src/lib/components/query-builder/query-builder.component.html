@@ -3,15 +3,23 @@
     <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()" *ngIf="isField">
     </safe-button>
 
-      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-        <mat-label>Select a data set</mat-label>
-        <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
-            {{option}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
+      <mat-label>Select a data set</mat-label>
+      <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredQueries" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet && (templates.length > 0)">
+      <mat-label>Template</mat-label>
+      <mat-select formControlName="template">
+        <mat-option>-- Default --</mat-option>
+        <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
     <mat-form-field appearance="outline" *ngIf="isField">
       <mat-label>Field name</mat-label>
