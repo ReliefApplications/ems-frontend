@@ -19,33 +19,35 @@ import { DuplicateApplicationModule } from '../../../components/duplicate-applic
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent],
     imports: [
-        CommonModule,
-        ApplicationsRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSortModule,
-        MatDialogModule,
-        MatMenuModule,
-        MatIconModule,
-        MatChipsModule,
-        SafeConfirmModalModule,
-        SafeAccessModule,
-        DuplicateApplicationModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatDividerModule,
-        SafeButtonModule,
-        MatButtonModule
+      CommonModule,
+      ApplicationsRoutingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatSelectModule,
+      MatProgressSpinnerModule,
+      MatTableModule,
+      MatSortModule,
+      MatDialogModule,
+      MatMenuModule,
+      MatIconModule,
+      MatChipsModule,
+      SafeConfirmModalModule,
+      SafeAccessModule,
+      DuplicateApplicationModule,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatDividerModule,
+      SafeButtonModule,
+      MatButtonModule,
+      MatPaginatorModule
     ],
   exports: [ApplicationsComponent]
 })

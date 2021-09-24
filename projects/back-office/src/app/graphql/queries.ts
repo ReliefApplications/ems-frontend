@@ -185,6 +185,14 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
   }
 }`;
 
+export const GET_FORM_STRUCTURE = gql`
+query GetFormStructure($id: ID!) {
+  form(id: $id) {
+    id
+    structure
+  }
+}`;
+
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
@@ -200,6 +208,10 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
     records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
+      form {
+        id
+        name
+      }
     }
     fields
     forms {
@@ -352,37 +364,58 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    createdAt
-    modifiedAt
-    status
-    permissions {
-      canSee {
+query GetApplications($first: Int, $afterCursor: String){
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
-        title
+        name
+        createdAt
+        modifiedAt
+        status
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
+        usersCount
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  applications: Application[];
+  // applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===
