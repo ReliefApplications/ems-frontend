@@ -6,3 +6,7 @@
 ::ng-deep .sv_q {
     padding-bottom: 0.5em !important;
 }
+
+::ng-deep .sv_q_required_text {
+    color: red;
+}

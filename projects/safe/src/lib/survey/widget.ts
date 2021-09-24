@@ -111,11 +111,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of tooltip
       if (question.tooltip) {
-        const header = el.parentElement.parentElement.querySelector('h5');
+        const header = el.parentElement.parentElement.querySelector('.sv-title-actions__title');
         if (header) {
           header.title = question.tooltip;
           const span = document.createElement('span');
-          span.innerText = 'info';
+          span.innerText = 'help';
           span.className = 'material-icons';
           span.style.fontSize = '1em';
           span.style.cursor = 'pointer';
