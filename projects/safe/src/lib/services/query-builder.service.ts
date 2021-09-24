@@ -203,6 +203,7 @@ export class QueryBuilderService {
   public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
+      template: [value ? value.template : '', null],
       fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
        validators ? Validators.required : null),
       sort: this.formBuilder.group({

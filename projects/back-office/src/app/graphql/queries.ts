@@ -185,6 +185,14 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
   }
 }`;
 
+export const GET_FORM_STRUCTURE = gql`
+query GetFormStructure($id: ID!) {
+  form(id: $id) {
+    id
+    structure
+  }
+}`;
+
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
@@ -200,6 +208,10 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
     records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
+      form {
+        id
+        name
+      }
     }
     fields
     forms {
