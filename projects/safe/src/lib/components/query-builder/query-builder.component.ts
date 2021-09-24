@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { Form } from '../../models/form.model';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -44,6 +45,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() form?: FormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
+  @Input() templates: Form[] = [];
 
   // === FIELD EDITION ===
   public isField = false;
