@@ -29,7 +29,8 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <input [ngModel]="recordsFilter" matInput (keyup)="applyFilter('recordsCount', $event)" type="number" placeholder="Users">
+      <input [ngModel]="recordsFilter" matInput (keyup)="applyFilter('recordsCount', $event)"
+      (change)="applyFilter('recordsCount', $event)" type="number" placeholder="Records">
     </mat-form-field>
 
     <safe-button variant="danger"(click)="clearAllFilters()">Clear Filters</safe-button>
@@ -66,7 +67,8 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-          <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+          <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"
+            [disabled]="!element.canDelete">
           </safe-button>
           <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="onDelete(element)">

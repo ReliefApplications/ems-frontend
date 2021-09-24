@@ -3,7 +3,7 @@
 export const NOTIFICATIONS = {
     appPublished(name: any): string { return `Application ${name} published.`; } ,
     userInvalidActions(action: any): string  { return `User could not be ${action}.`; } ,
-    accessNotProvided(type: any): string  { return `No access provided to this ${type}.`; } ,
+    accessNotProvided(type: any, error?: any): string  { return `No access provided to this ${type}. ${error}`; } ,
     userRolesUpdated(username: any): string  { return `${username} roles updated.`; },
     usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; }, //
     objectNotUpdated(type: any, error: any): string  { return `${type} is locked for edition. ${error}`; },
@@ -14,6 +14,7 @@ export const NOTIFICATIONS = {
     objectCreated(type: any, name: any): string  { return `${name} ${type} created.`; },
     objectNotCreated(type: any, error: any): string  { return `The ${type} was not created. ${error}`; },
     objectDeleted(value: any): string  { return `${value} deleted.`; },
+    objectNotDeleted(value: any, error: any): string  { return `The ${value} was not deleted. ${error}`; },
     objectReordered(type: any): string  { return `${type} reordered.`; },
     objectLoadedFromCache(type: string): string { return `${type} loaded from cache.`; },
     objectIsLocked(name: any): string { return `${name} edition is locked by another user.`; },

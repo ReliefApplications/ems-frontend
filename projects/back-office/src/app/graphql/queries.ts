@@ -196,7 +196,6 @@ query GetFormStructure($id: ID!) {
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
-  errors: any;
 }
 
 // === GET RESOURCE BY ID ===
@@ -274,6 +273,7 @@ export const GET_RESOURCES_EXTENDED = gql`
     name
     createdAt
     recordsCount
+    canDelete
   }
 }`;
 
@@ -364,37 +364,58 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    createdAt
-    modifiedAt
-    status
-    permissions {
-      canSee {
+query GetApplications($first: Int, $afterCursor: String){
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
-        title
+        name
+        createdAt
+        modifiedAt
+        status
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
+        usersCount
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  applications: Application[];
+  // applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===

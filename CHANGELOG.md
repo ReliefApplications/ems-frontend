@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.0...v0.1.14-alpha.1) (2021-09-22)
+
+
+### Bug Fixes
+
+* create standard for snackbar notifications ([6183727](https://github.com/ReliefApplications/emrs-safe-frontend/commits/61837278739bc5be4183bdc550d92ef379dd8bab))
+
 ### [0.1.14-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.14-alpha.0) (2021-09-14)
 
 

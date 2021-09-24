@@ -33,10 +33,10 @@ export class SafeAuthService {
   /*  Check if user has permission.
     If user profile is empty, try to get it.
   */
-  userHasClaim(permission: string): boolean {
+  userHasClaim(permission: string, global: boolean = true): boolean {
     const user = this._user.getValue();
     if (user) {
-      if (user.permissions && (!permission || user.permissions.find(x => x.type === permission))) {
+      if (user.permissions && (!permission || user.permissions.find(x => x.type === permission && x.global === global))) {
         return true;
       }
       return false;
