@@ -402,8 +402,8 @@ export interface DeleteApplicationMutationResponse {
 
 // === ADD APPLICATION ===
 export const ADD_APPLICATION = gql`
-mutation addApplication($name: String!) {
-  addApplication(name: $name){
+mutation addApplication {
+  addApplication {
     id
     name
     pages {
