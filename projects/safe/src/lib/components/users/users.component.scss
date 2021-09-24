@@ -1,0 +1,35 @@
+.actions {
+  text-align: right;
+  margin: 10px 0 16px;
+}
+
+.searchbar {
+  float: left;
+
+  .filters-toggle {
+    margin-left: 12px;
+  }
+
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+.filters {
+  clear: both;
+  float: left;
+  margin-left: -12px;
+  padding-top: 30px;
+
+  .mat-form-field {
+    margin-left: 12px;
+  }
+}
+
+.mat-checkbox {
+  margin-right: 12px;
+}
+
+.move-right {
+  float: right;
+}

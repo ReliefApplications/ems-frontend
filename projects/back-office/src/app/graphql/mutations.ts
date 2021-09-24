@@ -1,5 +1,6 @@
-import gql from 'graphql-tag';
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, Channel } from '@who-ems/builder';
+import {gql} from 'apollo-angular';
+
+import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, ApiConfiguration, PullJob } from '@safe/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
@@ -200,8 +201,8 @@ export interface DeleteResourceMutationResponse{
 
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
-mutation deleteRecord($id: ID!) {
-  deleteRecord(id: $id) {
+mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
+  deleteRecord(id: $id, hardDelete: $hardDelete) {
     id
   }
 }`;
@@ -209,6 +210,19 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === RESTORE RECORD ===
+export const RESTORE_RECORD = gql`
+mutation restoreRecord($id: ID!) {
+  restoreRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface RestoreRecordMutationResponse {
+  loading: boolean;
+  restoreRecord: Record;
 }
 
 // === EDIT FORM ===
@@ -219,6 +233,8 @@ mutation editForm($id: ID!, $structure: JSON!) {
     name
     createdAt
     status
+    core
+    fields
     versions {
       id
       createdAt
@@ -247,7 +263,7 @@ mutation editForm($id: ID!, $structure: JSON!) {
 }`;
 
 export const EDIT_FORM_STATUS = gql`
-mutation editForm($id: ID!, $status: String!) {
+mutation editForm($id: ID!, $status: Status!) {
   editForm(id: $id, status: $status) {
     status
   }
@@ -386,8 +402,8 @@ export interface DeleteApplicationMutationResponse {
 
 // === ADD APPLICATION ===
 export const ADD_APPLICATION = gql`
-mutation addApplication($name: String!) {
-  addApplication(name: $name){
+mutation addApplication {
+  addApplication {
     id
     name
     pages {
@@ -408,7 +424,7 @@ export interface AddApplicationMutationResponse {
 
 // === EDIT APPLICATION ===
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID], $permissions: JSON, $description: String) {
+mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
   editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
     id
     description
@@ -416,6 +432,8 @@ mutation editApplication($id: ID!, $name: String, $status: String, $pages: [ID],
     createdAt
     modifiedAt
     status
+    locked
+    lockedByUser
     pages {
       id
       name
@@ -499,7 +517,7 @@ export interface DeletePageMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: String!, $content: ID, $application: ID!) {
+mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
   addPage(name: $name, type: $type, content: $content, application: $application){
     id
     name
@@ -610,4 +628,189 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
 export interface EditStepMutationResponse {
   loading: boolean;
   editStep: Step;
+}
+
+// === EDIT RECORD ===
+export const EDIT_RECORD = gql`
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version) {
+    id
+    data(display: $display)
+    createdAt
+    modifiedAt
+    createdBy {
+      name
+    }
+  }
+}`;
+
+export interface EditRecordMutationResponse {
+  loading: boolean;
+  editRecord: Record;
+}
+
+// === ADD API CONFIGURATION ===
+export const ADD_API_CONFIGURATIION = gql`
+mutation addApiConfiguration($name: String!) {
+  addApiConfiguration(name: $name) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface AddApiConfigurationMutationResponse {
+  loading: boolean;
+  addApiConfiguration: ApiConfiguration;
+}
+
+// === DELETE API CONFIGURATION ===
+export const DELETE_API_CONFIGURATIION = gql`
+mutation deleteApiConfiguration($id: ID!) {
+  deleteApiConfiguration(id: $id) {
+    id
+  }
+}`;
+
+export interface DeleteApiConfigurationMutationResponse {
+  loading: boolean;
+  deleteApiConfiguration: ApiConfiguration;
+}
+
+// === EDIT API CONFIGURATION ===
+export const EDIT_API_CONFIGURATION = gql`
+mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
+  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface EditApiConfigurationMutationResponse {
+  loading: boolean;
+  editApiConfiguration: ApiConfiguration;
+}
+
+// === ADD PULL JOB ===
+export const ADD_PULL_JOB = gql`
+mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+    id
+    name
+    status
+    apiConfiguration {
+      id
+      name
+    }
+    schedule
+    convertTo {
+      id
+      name
+    }
+    mapping
+    uniqueIdentifiers
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface AddPullJobMutationResponse {
+  loading: boolean;
+  addPullJob: PullJob;
+}
+
+// === DELETE PULL JOB ===
+export const DELETE_PULL_JOB = gql`
+mutation deletePullJob($application: ID!, $id: ID!) {
+  deletePullJob(application: $application, id: $id) {
+    id
+  }
+}`;
+
+export interface DeletePullJobMutationResponse {
+  loading: boolean;
+  deletePullJob: PullJob;
+}
+
+// === EDIT PULL JOB ===
+export const EDIT_PULL_JOB = gql`
+mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+    id
+    name
+    status
+    apiConfiguration {
+      id
+      name
+    }
+    schedule
+    convertTo {
+      id
+      name
+    }
+    mapping
+    uniqueIdentifiers
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+export interface EditPullJobMutationResponse {
+  loading: boolean;
+  editPullJob: PullJob;
 }

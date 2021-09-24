@@ -2,14 +2,13 @@
 <ng-container *ngIf="!loading && form">
     <div class="tab-name-container">
         <ng-container *ngIf="!formActive">
-            <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step.name}}</h1>
-            <who-access [access]="page ? page.permissions : step ? step.permissions : null"
-                [application]="page ? page.application.id : step ? step.workflow.page.application.id : null"
-                (save)="saveAccess($event)" *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></who-access>
-            <button mat-flat-button color="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
-                <mat-icon>edit</mat-icon>
+            <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step ? step.name : ''}}</h1>
+            <safe-access [access]="page ? page.permissions : step ? step.permissions : null"
+                         [application]="applicationId" (save)="saveAccess($event)"
+                         *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"></safe-access>
+            <safe-button icon="edit" category="secondary" variant="primary" class="edit-button" (click)="editForm()" *ngIf="form.canUpdate">
                 Edit form
-            </button>
+            </safe-button>
         </ng-container>
         <ng-container *ngIf="formActive">
             <form [formGroup]="tabNameForm" (ngSubmit)="saveName()">
@@ -17,17 +16,15 @@
                     <mat-label>Name</mat-label>
                     <input matInput formControlName="tabName" type="string">
                 </mat-form-field>
-                <button type="submit" mat-icon-button color="primary" [disabled]="!tabNameForm.valid">
-                    <mat-icon>save</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="toggleFormActive()">
-                    <mat-icon>close</mat-icon>
-                </button>
+                <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!tabNameForm.valid">
+                </safe-button>
+                <safe-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
+                </safe-button>
             </form>
         </ng-container>
     </div>
-    <who-form [form]="form" (save)="onComplete($event)"></who-form>
-</ng-container>
-<ng-container *ngIf="completed && !form.uniqueRecord">
-    <button mat-flat-button (click)="clearForm()">New record</button>
+    <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+    <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
+        <safe-button category="secondary" (click)="clearForm()">New record</safe-button>
+    </ng-container>
 </ng-container>

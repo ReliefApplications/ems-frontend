@@ -6,13 +6,11 @@
     justify-content: flex-end;
 
     .toolbar-buttons {
-        button:first-child {
+        display: flex;
+        align-items: center;
+
+        safe-button:first-child {
             margin: 0 8px;
         }
     }
-}
-
-.danger-button {
-    background-color: #AF0120;
-    color:white;
 }

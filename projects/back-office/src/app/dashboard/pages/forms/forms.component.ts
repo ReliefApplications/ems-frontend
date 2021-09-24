@@ -1,17 +1,19 @@
+import { Apollo } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { GetFormsQueryResponse, GET_FORMS } from '../../../graphql/queries';
+
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
-  WhoSnackBarService,
-  WhoAuthService,
+  SafeSnackBarService,
+  SafeAuthService,
   PermissionsManagement,
   PermissionType,
-  WhoConfirmModalComponent,
+  SafeConfirmModalComponent,
+  NOTIFICATIONS,
   Form
-} from '@who-ems/builder';
+} from '@safe/builder';
 import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -28,45 +30,43 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === DATA ===
   public loading = true;
-  displayedColumns = ['name', 'createdAt', 'status', 'versions', 'recordsCount', 'core', 'actions'];
+  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
   dataSource = new MatTableDataSource<Form>([]);
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription: Subscription;
+  private authSubscription?: Subscription;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
+  public filtersDate = { startDate: '', endDate: '' };
   public showFilters = false;
   public searchText = '';
   public statusFilter = '';
   public coreFilter = '';
 
 
-
-  @ViewChild('startDate', { read: MatStartDate}) startDate: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate: MatEndDate<string>;
+  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
+  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
 
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private authService: WhoAuthService
-  ) { }
+    private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService
+  ) {}
 
   /*  Load the forms.
     Check user permission to add new forms.
   */
   ngOnInit(): void {
-
     this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS
-    }).valueChanges.subscribe(res => {
+      query: GET_SHORT_FORMS,
+    }).valueChanges.subscribe((res: any) => {
       this.dataSource.data = res.data.forms;
       this.loading = res.loading;
       this.filterPredicate();
@@ -91,7 +91,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -103,11 +103,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   /*  Remove a form if authorized.
   */
   onDelete(element: any, e: any): void {
+    const warning = 'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ?`,
+        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : ''}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
@@ -120,10 +121,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           variables: {
             id
           }
-        }).subscribe(res => {
-          this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+        }).subscribe((res: any) => {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
           this.dataSource.data = this.dataSource.data.filter(x => {
-            return x.id !== element.id;
+            return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
           });
         });
       }
@@ -150,10 +151,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           variables: data
         }).subscribe(res => {
           if (res.errors) {
-            this.snackBar.openSnackBar('The Form was not created. ' + res.errors[0].message, { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('form', res.errors[0].message), { error: true });
           } else {
-            const { id } = res.data.addForm;
-            this.router.navigate(['/forms/builder', id]);
+            if (res.data) {
+              const { id } = res.data.addForm;
+              this.router.navigate(['/forms/builder', id]);
+            }
           }
         }, (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -167,7 +170,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else if (column === 'core') {
       this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else{
+    } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
     }
     this.dataSource.filter = '##';

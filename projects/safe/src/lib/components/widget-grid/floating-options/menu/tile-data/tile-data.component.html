@@ -1,0 +1,10 @@
+<safe-button [isIcon]="true" icon="close" variant="danger" mat-icon-button mat-dialog-close class="close-settings">
+</safe-button>
+<h1 mat-dialog-title>Data settings</h1>
+<div mat-dialog-content class="mat-dialog-content">
+    <template #settingsContainer></template>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions" align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-flat-button (click)="onSubmit()" cdkFocusInitial color="primary" [disabled]="!tileForm || !tileForm.valid">Save</button>
+</div>

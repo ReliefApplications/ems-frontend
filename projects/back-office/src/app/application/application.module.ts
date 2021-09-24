@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
-import { WhoLayoutModule, WhoConfirmModalModule } from '@who-ems/builder';
+import { SafeLayoutModule, SafeConfirmModalModule } from '@safe/builder';
 import { ApplicationToolbarModule } from './components/application-toolbar/application-toolbar.module';
 
 @NgModule({
@@ -13,8 +13,8 @@ import { ApplicationToolbarModule } from './components/application-toolbar/appli
     CommonModule,
     ApplicationRoutingModule,
     ApplicationToolbarModule,
-    WhoLayoutModule,
-    WhoConfirmModalModule
+    SafeLayoutModule,
+    SafeConfirmModalModule
   ],
   exports: [ApplicationComponent]
 })

@@ -4,12 +4,11 @@ import { AddStepRoutingModule } from './add-step-routing.module';
 import { AddStepComponent } from './add-step.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { SafeButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [AddStepComponent],
@@ -20,11 +19,10 @@ import { MatRippleModule } from '@angular/material/core';
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
     MatRadioModule,
     AddStepRoutingModule,
-    MatRippleModule
+    MatRippleModule,
+    SafeButtonModule
   ]
 })
 export class AddStepModule { }

@@ -1,5 +1,21 @@
-<form [formGroup]="settingsForm" *ngIf="settingsForm">
+<form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
   <h1>General</h1>
+  <div class="app-status">
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="active">
+          Active
+        </mat-option>
+        <mat-option value="pending">
+          Pending
+        </mat-option>
+        <mat-option value="archived">
+          Archived
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <div class="form-group">
     <div class="form-group-row">
       <mat-form-field appearance="outline" style="flex: 2;">
@@ -8,7 +24,7 @@
         </mat-label>
         <input matInput formControlName="name" type='text' placeholder="Enter a name for the application" />
       </mat-form-field>
-  
+
       <mat-form-field appearance="outline" style="flex: 1;">
         <mat-label>
           Application ID
@@ -22,20 +38,18 @@
         Description
       </mat-label>
       <textarea matInput formControlName="description" placeholder="Please enter a description for the application"
-        matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5"></textarea>
+        [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5"></textarea>
     </mat-form-field>
   </div>
-  <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="settingsForm.invalid || !settingsForm.dirty">Save changes</button>
+  <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="settingsForm.invalid || !settingsForm.dirty">Save changes</safe-button>
 </form>
 
 <div class="action-list" *ngIf="application && (application.canUpdate || application.canDelete)">
   <h1 class="header">Actions</h1>
-  <button mat-stroked-button (click)="onDuplicate()" color="primary" *ngIf="application.canUpdate">
-    <mat-icon class="button-icon">file_copy</mat-icon>
+  <safe-button icon="file_copy" category="tertiary" variant="primary" (click)="onDuplicate()" *ngIf="application.canUpdate">
     Duplicate Application
-  </button>
-  <button mat-stroked-button (click)="onDelete()" color="warn" *ngIf="application.canDelete">
-    <mat-icon class="button-icon">delete</mat-icon>
+  </safe-button>
+  <safe-button icon="delete" category="tertiary" variant="danger" (click)="onDelete()" *ngIf="application.canDelete">
     Delete Application
-  </button>
+  </safe-button>
 </div>

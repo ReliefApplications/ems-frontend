@@ -11,16 +11,15 @@
                 <input type="text" placeholder="Select a routing key" matInput formControlName="routingKey"
                     [matAutocomplete]="auto">
                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name">
+                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name || ''">
                         <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
                             {{channel.title}}
                         </mat-option>
                     </mat-optgroup>
                 </mat-autocomplete>
-                <button mat-button *ngIf="routingKey" matSuffix mat-icon-button aria-label="Clear"
+                <safe-button *ngIf="routingKey" matSuffix [isIcon]="true" icon="close" aria-label="Clear"
                     (click)="routingKey=''">
-                    <mat-icon>close</mat-icon>
-                </button>
+                </safe-button>
                 <mat-hint>Message broker routing key</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">

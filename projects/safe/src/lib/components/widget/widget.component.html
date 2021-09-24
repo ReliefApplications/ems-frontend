@@ -1,0 +1,17 @@
+<ng-container *ngIf="widget.component === 'chart'">
+    <safe-chart class="widget-content" [header]="header" [settings]="widget.settings"></safe-chart>
+</ng-container>
+<ng-container *ngIf="widget.component === 'scheduler'">
+    <safe-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></safe-scheduler>
+</ng-container>
+<ng-container *ngIf="widget.component === 'grid'">
+    <safe-grid class="widget-content" [header]="header" [layout]="layout" [settings]="widget.settings"
+        (goToNextStep)="goToNextStep.emit($event)" (layoutChanged)="onLayoutChanged($event)"></safe-grid>
+</ng-container>
+<ng-container *ngIf="widget.component === 'map'">
+    <safe-map class="widget-content" [header]="header" [settings]="widget.settings"></safe-map>
+</ng-container>
+<ng-container *ngIf="widget.component === 'editor'">
+    <safe-editor class="widget-content" [header]="header" [title]="widget.settings.title" [text]="widget.settings.text">
+    </safe-editor>
+</ng-container>

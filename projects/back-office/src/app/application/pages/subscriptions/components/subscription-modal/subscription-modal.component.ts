@@ -1,10 +1,15 @@
+import {Apollo} from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo } from 'apollo-angular';
-import { Application, Channel, Form, Subscription } from '@who-ems/builder';
+
+import { Application, Channel, Form, Subscription } from '@safe/builder';
 import { Observable } from 'rxjs';
-import { GetFormsQueryResponse, GetRoutingKeysQueryResponse, GET_FORMS, GET_ROUTING_KEYS } from '../../../../../graphql/queries';
+import {
+  GetRoutingKeysQueryResponse,
+  GET_ROUTING_KEYS,
+  GET_FORM_NAMES, GetFormsQueryResponse
+} from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -15,13 +20,13 @@ import { map, startWith } from 'rxjs/operators';
 export class SubscriptionModalComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  subscriptionForm: FormGroup;
+  subscriptionForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  public forms: Form[];
+  public forms: Form[] = [];
   // === DATA ===
-  private applications: Application[];
-  public filteredApplications: Observable<Application[]>;
+  private applications: Application[] = [];
+  public filteredApplications!: Observable<Application[]>;
 
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
@@ -49,14 +54,14 @@ export class SubscriptionModalComponent implements OnInit {
       channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
     });
     this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS
-    }).valueChanges.subscribe(res => {
+      query: GET_FORM_NAMES
+    }).valueChanges.subscribe((res: any) => {
       this.forms = res.data.forms;
     });
     this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
       query: GET_ROUTING_KEYS
     }).valueChanges.subscribe(res => {
-      this.applications = res.data.applications.filter(x => x.channels.length > 0);
+      this.applications = res.data.applications.filter(x => x.channels ? x.channels.length > 0 : false);
     });
     this.filteredApplications = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
       startWith(''),
@@ -67,7 +72,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   private filter(value: string): Application[] {
     const filterValue = value.toLowerCase();
-    return this.applications ? this.applications.filter(x => x.name.toLowerCase().indexOf(filterValue) === 0) : this.applications;
+    return this.applications ? this.applications.filter(x => x.name?.toLowerCase().indexOf(filterValue) === 0) : this.applications;
   }
 
   /*  Close the modal without sending any data.

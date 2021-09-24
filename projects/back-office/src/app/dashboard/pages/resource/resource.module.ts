@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ResourceRoutingModule } from './resource-routing.module';
 import { ResourceComponent } from './resource.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
-import { WhoAccessModule, WhoPreviousButtonModule } from '@who-ems/builder';
+import { SafeAccessModule, SafePreviousButtonModule, SafeButtonModule } from '@safe/builder';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -20,12 +18,12 @@ import { WhoAccessModule, WhoPreviousButtonModule } from '@who-ems/builder';
     MatProgressSpinnerModule,
     MatTabsModule,
     MatTableModule,
-    MatButtonModule,
     MatIconModule,
     MatMenuModule,
     MatChipsModule,
-    WhoAccessModule,
-    WhoPreviousButtonModule
+    SafeAccessModule,
+    SafePreviousButtonModule,
+    SafeButtonModule
   ],
   exports: [ResourceComponent]
 })

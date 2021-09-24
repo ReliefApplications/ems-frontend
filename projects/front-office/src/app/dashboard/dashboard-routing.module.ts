@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WhoPermissionGuard } from '@who-ems/builder';
 import { DashboardComponent } from './dashboard.component';
 
 /*  Divide the dashboard module into three modules:
@@ -10,47 +9,52 @@ import { DashboardComponent } from './dashboard.component';
     Use lazy loading for performance.
 */
 export const routes = [
-    {
-        path: '',
-        component: DashboardComponent,
+  {
+    path: '',
+    component: DashboardComponent,
+    children: [
+      {
+        path: 'profile',
+        loadChildren: () => import('./pages/profile/profile.module')
+          .then(m => m.ProfileModule),
+      },
+      {
+        path: 'dashboard/:id',
+        loadChildren: () => import('./pages/dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
+      },
+      {
+        path: 'form/:id',
+        loadChildren: () => import('./pages/form/form.module')
+          .then(m => m.FormModule),
+      },
+      {
+        path: 'workflow/:id',
+        loadChildren: () => import('./pages/workflow/workflow.module')
+          .then(m => m.WorkflowModule),
+      },
+      {
+        path: 'settings',
         children: [
-            {
-                path: 'dashboard/:id',
-                loadChildren: () => import('./pages/dashboard/dashboard.module')
-                    .then(m => m.DashboardModule),
-            },
-            {
-                path: 'form/:id',
-                loadChildren: () => import('./pages/form/form.module')
-                    .then(m => m.FormModule),
-            },
-            {
-                path: 'workflow/:id',
-                loadChildren: () => import('./pages/workflow/workflow.module')
-                    .then(m => m.WorkflowModule),
-            },
-            {
-                path: 'settings',
-                children: [
-                  {
-                    path: 'roles',
-                    loadChildren: () => import('./pages/roles/roles.module')
-                      .then(m => m.RolesModule),
-                    // canActivate: [WhoPermissionGuard]
-                  },
-                  {
-                    path: 'users',
-                    loadChildren: () => import('./pages/users/users.module')
-                      .then(m => m.UsersModule),
-                    // canActivate: [WhoPermissionGuard]
-                  },
-                ]
-              }
+          {
+            path: 'roles',
+            loadChildren: () => import('./pages/roles/roles.module')
+              .then(m => m.RolesModule),
+            // canActivate: [WhoPermissionGuard]
+          },
+          {
+            path: 'users',
+            loadChildren: () => import('./pages/users/users.module')
+              .then(m => m.UsersModule),
+            // canActivate: [WhoPermissionGuard]
+          },
         ]
-    }
+      }
+    ]
+  }
 ];
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class DashboardRoutingModule { }

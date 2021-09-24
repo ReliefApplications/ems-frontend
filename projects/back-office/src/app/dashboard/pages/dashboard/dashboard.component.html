@@ -2,12 +2,10 @@
 <ng-container *ngIf="!loading && dashboard">
     <div *ngIf="!formActive" class="dashboard-name-container">
         <h1 class="dashboard-name" (click)="toggleFormActive()">{{dashboard.name}}</h1>
-        <who-access [access]="dashboard.permissions"
-        [application]="dashboard.page ? dashboard.page.application.id : dashboard.step ? dashboard.step.workflow.page.application.id : null"
-        (save)="saveAccess($event)" *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false"></who-access>
-        <button mat-icon-button class="share-button" (click)="onShare()">
-            <mat-icon matTooltipPosition="above" matTooltip="Share Dashboard">share</mat-icon>
-        </button>
+        <safe-access [access]="dashboard.permissions" [application]="applicationId"
+                     (save)="saveAccess($event)" *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false"></safe-access>
+        <safe-button [isIcon]="true" icon="share" matTooltipPosition="above" matTooltip="Share Dashboard" class="share-button" (click)="onShare()">
+        </safe-button>
     </div>
     <ng-container *ngIf="formActive">
         <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">
@@ -15,14 +13,12 @@
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="dashboardName" type="string">
             </mat-form-field>
-            <button type="submit" mat-icon-button color="primary" [disabled]="!dashboardNameForm.valid">
-                <mat-icon>save</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="toggleFormActive()">
-                <mat-icon>close</mat-icon>
-            </button>
+            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!dashboardNameForm.valid">
+            </safe-button>
+            <safe-button mat-icon-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
+            </safe-button>
         </form>
     </ng-container>
-    <who-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate" (move)="onMove()" (edit)="onEditTile($event)"
-        (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (addNewWidget)="onAdd($event)"></who-widget-grid>
+    <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" (move)="onMove()" (edit)="onEditTile($event)"
+                      (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (addNewWidget)="onAdd($event)"></safe-widget-grid>
 </ng-container>

@@ -1,77 +1,96 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { WhoDownloadService, WhoSnackBarService } from '@who-ems/builder';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS, SafeConfirmModalComponent } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
-  DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE } from '../../../graphql/mutations';
+  DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE, RestoreRecordMutationResponse, RESTORE_RECORD } from '../../../graphql/mutations';
 import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
-import { environment } from '../../../../environments/environment';
+import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-resource',
   templateUrl: './resource.component.html',
   styleUrls: ['./resource.component.scss']
 })
-export class ResourceComponent implements OnInit {
+export class ResourceComponent implements OnInit, OnDestroy {
 
   // === DATA ===
+  private resourceSubscription?: Subscription;
   public loading = true;
-  public id: string;
+  public id = '';
   public resource: any;
 
   // === RECORDS ASSOCIATED ===
   displayedColumnsRecords: string[] = [];
-  dataSourceRecords = [];
+  dataSourceRecords: any[] = [];
 
   // === FORMS ASSOCIATED ===
   displayedColumnsForms: string[] = ['name', 'createdAt', 'status', 'recordsCount', 'core', '_actions'];
-  dataSourceForms = [];
+  dataSourceForms: any[] = [];
+
+  // === SHOW DELETED RECORDS ===
+  showDeletedRecords = false;
 
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: WhoSnackBarService,
-    private downloadService: WhoDownloadService
+    private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService,
+    private dialog: MatDialog
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
   */
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: this.id,
-          display: true
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.resource) {
-          this.resource = res.data.resource;
-          this.dataSourceRecords = this.resource.records;
-          this.dataSourceForms = this.resource.forms;
-          this.setDisplayedColumns(false);
-          this.loading = res.loading;
-        } else {
-          this.snackBar.openSnackBar('No access provided to this resource.', { error: true });
-          this.router.navigate(['/resources']);
-        }
-      }, (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/resources']);
-      });
+      this.getResourceData();
     } else {
       this.router.navigate(['/resources']);
     }
   }
 
-  /*  Change the list of displayed columns.
-  */
+  /**
+   * Loads resoource data.
+   */
+  private getResourceData(): void {
+    if (this.resourceSubscription) {
+      this.resourceSubscription.unsubscribe();
+    }
+    this.resourceSubscription = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+      query: GET_RESOURCE_BY_ID,
+      variables: {
+        id: this.id,
+        display: true,
+        showDeletedRecords: this.showDeletedRecords
+      }
+    }).valueChanges.subscribe((res) => {
+      if (res.data.resource) {
+        this.resource = res.data.resource;
+        this.dataSourceRecords = this.resource.records;
+        this.dataSourceForms = this.resource.forms;
+        this.setDisplayedColumns(false);
+        this.loading = res.loading;
+      } else {
+        this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('resource'), { error: true });
+        this.router.navigate(['/resources']);
+      }
+    }, (err) => {
+      this.snackBar.openSnackBar(err.message, { error: true });
+      this.router.navigate(['/resources']);
+    });
+  }
+
+  /**
+   * Changes the list of displayed columns.
+   * @param core Is the form core.
+   */
   private setDisplayedColumns(core: boolean): void {
     const columns = [];
     if (core) {
-      for (const field of this.resource.fields.filter(x => x.isRequired === true)) {
+      for (const field of this.resource.fields.filter((x: any) => x.isRequired === true)) {
         columns.push(field.name);
       }
     } else {
@@ -87,17 +106,45 @@ export class ResourceComponent implements OnInit {
     this.setDisplayedColumns(event.value);
   }
 
-  /*  Delete a record if authorized.
-  */
-  deleteRecord(id: any, e: any): void {
+  /**
+   * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
+   * @param id Id of record to delete.
+   * @param e click event.
+   */
+  public onDeleteRecord(id: string, e: any): void {
     e.stopPropagation();
+    if (this.showDeletedRecords) {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: 'Delete record permanently',
+          content: `Do you confirm the hard deletion of this record ?`,
+          confirmText: 'Delete',
+          confirmColor: 'warn'
+        }
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.deleteRecord(id);
+        }
+      });
+    } else {
+      this.deleteRecord(id);
+    }
+  }
+
+  /**
+   * Sends mutation to delete record.
+   * @param id Id of record to delete.
+   */
+  private deleteRecord(id: string): void {
     this.apollo.mutate<DeleteRecordMutationResponse>({
       mutation: DELETE_RECORD,
       variables: {
-        id
+        id,
+        hardDelete: this.showDeletedRecords
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Record deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'));
       this.dataSourceRecords = this.dataSourceRecords.filter(x => {
         return x.id !== id;
       });
@@ -114,7 +161,7 @@ export class ResourceComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.snackBar.openSnackBar('Form deleted', { duration: 1000 });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
       this.dataSourceForms = this.dataSourceForms.filter(x => {
         return x.id !== id;
       });
@@ -131,13 +178,54 @@ export class ResourceComponent implements OnInit {
         permissions: e
       }
     }).subscribe(res => {
-      this.resource = res.data.editResource;
+      if (res.data) {
+        this.resource = res.data.editResource;
+      }
     });
   }
 
-  onDownload(): void {
-    const url = `${environment.API_URL}/download/resource/records/${this.id}`;
-    const fileName = `${this.resource.name}.csv`;
-    this.downloadService.getFile(url, 'text/csv;charset=utf-8;', fileName);
+  onDownload(type: string): void {
+    const path = `download/resource/records/${this.id}`;
+    const fileName = `${this.resource.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+  }
+
+  /**
+   * Toggle archive / active view.
+   * @param e click event.
+   */
+  onSwitchView(e: any): void {
+    e.stopPropagation();
+    this.showDeletedRecords = !this.showDeletedRecords;
+    this.getResourceData();
+  }
+
+  /**
+   * Restores an archived record.
+   * @param id Id of record to restore.
+   * @param e click event.
+   */
+  public onRestoreRecord(id: string, e: any): void {
+    e.stopPropagation();
+    this.apollo.mutate<RestoreRecordMutationResponse>({
+      mutation: RESTORE_RECORD,
+      variables: {
+        id,
+      }
+    }).subscribe(res => {
+      this.dataSourceRecords = this.dataSourceRecords.filter(x => {
+        return x.id !== id;
+      });
+    });
+  }
+
+  /**
+   * Unsubscribe to subscriptions before destroying component.
+   */
+  ngOnDestroy(): void {
+    if (this.resourceSubscription) {
+      this.resourceSubscription.unsubscribe();
+    }
   }
 }

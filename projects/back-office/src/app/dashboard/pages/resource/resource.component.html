@@ -1,22 +1,31 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && resource">
     <div class="page-header">
-        <who-previous-button path="/resources"></who-previous-button>
+        <safe-previous-button path="/resources"></safe-previous-button>
         <h1 class="page-title">
             {{resource.name}}
         </h1>
-        <who-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></who-access>
+        <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></safe-access>
         <div class="actions">
-            <button mat-flat-button color="primary" (click)="onDownload()">
-              <mat-icon>file_download</mat-icon>
+            <safe-button *ngIf="resource.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
+                Show archived records
+            </safe-button>
+            <safe-button *ngIf="resource.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
+                Show active records
+            </safe-button>
+            <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu" >
               Download records
-            </button>
+            </safe-button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+              <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+            </mat-menu>
         </div>
     </div>
     <mat-tab-group dynamicHeight>
         <mat-tab>
             <ng-template mat-tab-label>
-                Records ( {{resource.records.length}} )
+                Records ( {{dataSourceRecords.length}} )
             </ng-template>
             <table mat-table [dataSource]="dataSourceRecords">
                 <ng-container *ngFor="let column of displayedColumnsRecords" [matColumnDef]="column">
@@ -27,17 +36,24 @@
                     <ng-container *ngIf="column === '_actions'">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-icon-button [matMenuTriggerFor]="recMenu" (click)="$event.stopPropagation()">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
+                            <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="recMenu" (click)="$event.stopPropagation()">
+                            </safe-button>
                             <mat-menu #recMenu="matMenu">
                                 <button mat-menu-item [routerLink]="['./update', element.id]">
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>
-                                <button mat-menu-item (click)="deleteRecord(element.id, $event)">
+                                <button *ngIf="!showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
                                     <mat-icon>delete</mat-icon>
                                     Delete
+                                </button>
+                                <button *ngIf="showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
+                                    <mat-icon>delete_forever</mat-icon>
+                                    Delete permanently
+                                </button>
+                                <button *ngIf="showDeletedRecords" mat-menu-item (click)="onRestoreRecord(element.id, $event)">
+                                    <mat-icon>unarchive</mat-icon>
+                                    Restore
                                 </button>
                             </mat-menu>
                         </td>
@@ -99,9 +115,8 @@
                     <ng-container matColumnDef="_actions">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-icon-button [matMenuTriggerFor]="resMenu" (click)="$event.stopPropagation()" [disabled]="!(element.canUpdate || element.canDelete )">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
+                            <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="resMenu" (click)="$event.stopPropagation()" [disabled]="!(element.canUpdate || element.canDelete )">
+                            </safe-button>
                             <mat-menu #resMenu="matMenu">
                                 <button mat-menu-item [routerLink]="['/forms/builder', element.id]" *ngIf="element.canUpdate">
                                     <mat-icon>edit</mat-icon>

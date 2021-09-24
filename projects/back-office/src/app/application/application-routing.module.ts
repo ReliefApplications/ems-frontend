@@ -11,13 +11,13 @@ const routes: Routes = [
         path: '',
         loadChildren: () => import('./pages/home/home.module')
           .then(m => m.HomeModule),
-        // canActivate: [WhoPermissionGuard]
+        // canActivate: [SafePermissionGuard]
       },
       {
         path: 'add-page',
         loadChildren: () => import('./pages/add-page/add-page.module')
           .then(m => m.AddPageModule),
-        // canActivate: [WhoPermissionGuard]
+        // canActivate: [SafePermissionGuard]
       },
       {
         path: 'settings',
@@ -31,31 +31,48 @@ const routes: Routes = [
             path: 'roles',
             loadChildren: () => import('./pages/roles/roles.module')
               .then(m => m.RolesModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           },
           {
             path: 'users',
             loadChildren: () => import('./pages/users/users.module')
               .then(m => m.UsersModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           },
           {
             path: 'position',
-            loadChildren: () => import('./pages/position/position.module')
-              .then(m => m.PositionModule),
-            // canActivate: [WhoPermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () => import('./pages/position/position.module')
+                .then(m => m.PositionModule),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () => import('./pages/position-attributes/position-attributes.module')
+                  .then(m => m.PositionAttributesModule),
+                // canActivate: [SafePermissionGuard]
+              },
+            ]
           },
           {
             path: 'channels',
             loadChildren: () => import('./pages/channels/channels.module')
               .then(m => m.ChannelsModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           },
           {
             path: 'subscriptions',
             loadChildren: () => import('./pages/subscriptions/subscriptions.module')
               .then(m => m.SubscriptionsModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
+          },
+          {
+            path: 'pull-jobs',
+            loadChildren: () => import('./pages/pull-jobs/pull-jobs.module')
+              .then(m => m.PullJobsModule),
+            // canActivate: [SafePermissionGuard]
           }
         ]
       },
@@ -63,13 +80,13 @@ const routes: Routes = [
         path: 'dashboard/:id',
         loadChildren: () => import('../dashboard/pages/dashboard/dashboard.module')
           .then(m => m.DashboardModule),
-        // canActivate: [WhoPermissionGuard]
+        // canActivate: [SafePermissionGuard]
       },
       {
         path: 'workflow/:id',
         loadChildren: () => import('./pages/workflow/workflow.module')
           .then(m => m.WorkflowModule),
-        // canActivate: [WhoPermissionGuard]
+        // canActivate: [SafePermissionGuard]
       },
       {
         path: 'form/:id',
@@ -78,13 +95,13 @@ const routes: Routes = [
             path: '',
             loadChildren: () => import('./pages/form/form.module')
               .then(m => m.FormModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           },
           {
             path: 'builder/:id',
             loadChildren: () => import('../dashboard/pages/form-builder/form-builder.module')
               .then(m => m.FormBuilderModule),
-            // canActivate: [WhoPermissionGuard]
+            // canActivate: [SafePermissionGuard]
           }
         ]
       }

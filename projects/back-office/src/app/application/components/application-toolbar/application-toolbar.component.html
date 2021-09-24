@@ -1,7 +1,9 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
-        <button mat-button color="warn" (click)="onClose()">Cancel</button>
-        <button mat-flat-button class="success-button" (click)="onPublish()" [disabled]="!canPublish">Publish</button>
+        <safe-button *ngIf="locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
+        </safe-button>
+        <safe-button variant="danger" (click)="onClose()">Close</safe-button>
+        <safe-button category="secondary" variant="success" (click)="onPublish()" [disabled]="!canPublish">Publish</safe-button>
     </div>
 </div>
 <mat-divider></mat-divider>

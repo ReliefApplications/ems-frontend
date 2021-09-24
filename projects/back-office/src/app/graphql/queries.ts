@@ -1,5 +1,8 @@
-import gql from 'graphql-tag';
-import { Dashboard, Form, Permission, Resource, Role, User, Record, Application, Page, Workflow, Step } from '@who-ems/builder';
+import { gql } from 'apollo-angular';
+import {
+  Dashboard, Form, Permission, Resource, Role, User, Record,
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
+} from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
@@ -35,6 +38,9 @@ query GetRoles($all: Boolean, $application: ID) {
       type
     }
     usersCount
+    application {
+      name
+    }
   }
 }`;
 
@@ -77,21 +83,35 @@ export interface GetDashboardsQueryResponse {
 }
 
 // === GET FORMS ===
-export const GET_FORMS = gql`
-{
+export const GET_FORM_NAMES = gql`
+query GetFormNames {
+  forms {
+    id
+    name
+  }
+}`;
+
+export const GET_SHORT_FORMS = gql`
+query GetShortForms {
   forms {
     id
     name
     createdAt
     status
-    versions {
-      id
-    }
+    versionsCount
     recordsCount
     core
+    canSee
     canCreate
     canUpdate
     canDelete
+    resource {
+      id
+      coreForm {
+        id
+        name
+      }
+    }
   }
 }`;
 
@@ -100,14 +120,84 @@ export interface GetFormsQueryResponse {
   forms: Form[];
 }
 
+// === GET FORM BY ID ===
+export const GET_SHORT_FORM_BY_ID = gql`
+query GetShortFormById($id: ID!) {
+  form(id: $id) {
+    id
+    name
+    core
+    structure
+    fields
+    status
+    canCreateRecords
+    uniqueRecord {
+      id
+      modifiedAt
+      data
+    }
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export const GET_FORM_BY_ID = gql`
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+  form(id: $id) {
+    id
+    name
+    createdAt
+    structure
+    fields
+    status
+    versions {
+      id
+      createdAt
+      data
+    }
+    records(filters: $filters, archived: $showDeletedRecords) {
+      id
+      data(display: $display)
+      versions {
+        id
+        createdAt
+        data
+      }
+    }
+    canUpdate
+  }
+}`;
+
+export interface GetFormByIdQueryResponse {
+  loading: boolean;
+  form: Form;
+}
+
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
+    records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
     }
@@ -171,6 +261,7 @@ export const GET_RESOURCES_EXTENDED = gql`
     name
     createdAt
     recordsCount
+    canDelete
   }
 }`;
 
@@ -179,76 +270,17 @@ export interface GetResourcesQueryResponse {
   resources: Resource[];
 }
 
-// === GET FORM BY ID ===
-
-export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
-  form(id: $id) {
-    id
-    name
-    createdAt
-    structure
-    status
-    fields
-    versions {
-      id
-      createdAt
-      data
-    }
-    records(filters: $filters) {
-      id
-      data(display: $display)
-      versions {
-        id
-        createdAt
-        data
-      }
-    }
-    resource{
-      id
-    }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canCreate {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canCreate
-    canUpdate
-    canCreateRecords
-    uniqueRecord {
-      id
-      modifiedAt
-      data
-    }
-  }
-}`;
-
-export interface GetFormByIdQueryResponse {
-  loading: boolean;
-  form: Form;
-  errors: any;
-}
-
 // === GET RECORD BY ID ===
 export const GET_RECORD_BY_ID = gql`
 query GetRecordById($id: ID!) {
   record(id: $id) {
     id
-    data
+    createdAt
     modifiedAt
+    createdBy {
+      name
+    }
+    data
     form {
       id
       structure
@@ -320,45 +352,58 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    createdAt
-    modifiedAt
-    status
-    pages {
-      id
-      name
-      createdAt
-      type
-      content
+query GetApplications($first: Int, $afterCursor: String){
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        createdAt
+        modifiedAt
+        status
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
+        usersCount
+      }
+      cursor
     }
-    settings
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
   }
 }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  applications: Application[];
+  // applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===
@@ -419,6 +464,7 @@ export const GET_APPLICATION_BY_ID = gql`
       }
       canSee
       canUpdate
+      isLocked
     }
   }
 `;
@@ -602,7 +648,136 @@ query GetRoutingKeys {
   }
 }`;
 
-export interface GetRoutingKeysQueryResponse{
+export interface GetRoutingKeysQueryResponse {
   loading: boolean;
   applications: Application[];
+}
+
+// === GET POSITION ATTRIBUTES FORM CATEGORY ===
+export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
+query GetPositionAttributesFromCategory($id: ID!) {
+  positionAttributes(category: $id) {
+    value
+    category {
+      title
+    }
+    usersCount
+  }
+}`;
+
+export interface GetPositionAttributesFromCategoryQueryResponse {
+  loading: boolean;
+  positionAttributes: PositionAttribute[];
+}
+
+// === GET RECORD DETAILS ===
+export const GET_RECORD_DETAILS = gql`
+query GetRecordDetails($id: ID!) {
+  record(id: $id) {
+    id
+    data
+    createdAt
+    modifiedAt
+    form {
+      id
+      name
+      createdAt
+      structure
+      fields
+      core
+    }
+    versions {
+      id
+      createdAt
+      data
+      createdBy {
+        name
+      }
+    }
+  }
+}`;
+
+export interface GetRecordDetailsQueryResponse {
+  loading: boolean;
+  record: Record;
+}
+
+// === GET API CONFIGURATIONS ===
+export const GET_API_CONFIGURATIONS = gql`
+query GetApiConfigurations {
+  apiConfigurations {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationsQueryResponse {
+  loading: boolean;
+  apiConfigurations: ApiConfiguration[];
+}
+
+// === GET API CONFIGURATION ===
+export const GET_API_CONFIGURATION = gql`
+query GetApiConfiguration($id: ID!) {
+  apiConfiguration(id: $id) {
+    id
+    name
+    status
+    authType
+    endpoint
+    pingUrl
+    settings
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canCreate {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    canDelete
+  }
+}`;
+
+export interface GetApiConfigurationQueryResponse {
+  loading: boolean;
+  apiConfiguration: ApiConfiguration;
 }

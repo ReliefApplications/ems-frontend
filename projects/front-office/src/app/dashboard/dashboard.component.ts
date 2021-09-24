@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Application, User, WhoAuthService, WhoSnackBarService, WhoApplicationService, Permission, Permissions, ContentType } from '@who-ems/builder';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Application, User, Role, SafeAuthService, SafeSnackBarService, SafeApplicationService,
+  Permission, Permissions, ContentType, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,42 +12,56 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // === HEADER TITLE ===
-  public title: string;
+  public title = '';
   public applications: Application[] = [];
 
   // === SUBSCRIPTIONS ===
-  private authSubscription: Subscription;
-  public application: Application;
-  private applicationSubscription: Subscription;
+  private authSubscription?: Subscription;
+  public application: Application | null = null;
+  private applicationSubscription?: Subscription;
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  private permissions: Permission[];
-  public navGroups = [];
+  private permissions: Permission[] = [];
+  private roles: Role[] = [];
+  public navGroups: any[] = [];
+
+  private firstLoad = true;
 
   constructor(
-    private authService: WhoAuthService,
-    private applicationService: WhoApplicationService,
-    private snackBar: WhoSnackBarService,
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
+    public route: ActivatedRoute,
+    private snackBar: SafeSnackBarService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user.subscribe((user: User) => {
+    this.authSubscription = this.authService.user.subscribe((user: User | null) => {
       if (user) {
-        if (user.applications.length > 0) {
-          this.applications = user.applications;
-          this.applicationService.loadApplication(user.applications[0].id);
-          this.permissions = user.permissions;
+        const applications = user.applications || [];
+        if (applications.length > 0) {
+          this.applications = applications;
+          if (this.firstLoad) {
+            this.firstLoad = false;
+            if (user.favoriteApp) {
+              this.applicationService.loadApplication(user.favoriteApp);
+            } else {
+              this.applicationService.loadApplication(applications[0].id || '');
+            }
+          }
+          this.roles = user.roles || [];
+          this.permissions = user.permissions || [];
         } else {
-          this.snackBar.openSnackBar('No access provided to the platform.', { error: true });
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
         }
       }
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.title = application.name;
-        const adminNavItems = [];
-        if (this.permissions.some(x => (x.type === Permissions.canSeeUsers && !x.global)
+        this.title = application.name || '';
+        const adminNavItems: any[] = [];
+        if (this.permissions.some(x => (x.type === Permissions.canSeeUsers
+          && this.roles.some(y => y.application?.id === application.id && y.permissions?.some(perm => perm.id === x.id)))
           || (x.type === Permissions.canManageApplications && x.global))) {
           adminNavItems.push({
             name: 'Users',
@@ -54,7 +69,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             icon: 'supervisor_account'
           });
         }
-        if (this.permissions.some(x => (x.type === Permissions.canSeeRoles && !x.global)
+        if (this.permissions.some(x => (x.type === Permissions.canSeeRoles
+          && this.roles.some(y => y.application?.id === application.id && y.permissions?.some(perm => perm.id === x.id)))
           || (x.type === Permissions.canManageApplications && x.global))) {
           adminNavItems.push({
             name: 'Roles',
@@ -65,11 +81,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages.filter(x => x.content).map(x => {
+            navItems: application.pages?.filter(x => x.content).map(x => {
               return {
                 name: x.name,
-                path: `/${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type)
+                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
+                icon: this.getNavIcon(x.type || '')
               };
             })
           },
@@ -79,11 +95,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         ];
         if (!this.application || application.id !== this.application.id) {
-          const { pages: [firstPage, ..._]} = application;
-          if (firstPage) {
-            this.router.navigate([`/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`]);
-          } else {
-            this.router.navigate([`/`]);
+          const [firstPage, ..._] = application.pages || [];
+          if (this.router.url.endsWith('/') || (application.id !== this.application?.id) || !firstPage) {
+            if (firstPage) {
+              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
+              { relativeTo: this.route });
+            } else {
+              this.router.navigate([`./`], { relativeTo: this.route });
+            }
           }
         }
         this.application = application;
@@ -94,7 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onOpenApplication(application: Application): void {
-    this.applicationService.loadApplication(application.id);
+    this.applicationService.loadApplication(application.id || '');
   }
 
   private getNavIcon(type: string): string {

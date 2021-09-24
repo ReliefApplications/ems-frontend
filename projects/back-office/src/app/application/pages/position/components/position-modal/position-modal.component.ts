@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class AddPositionComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  positionForm: FormGroup;
+  positionForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,

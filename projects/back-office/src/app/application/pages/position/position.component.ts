@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, WhoApplicationService, PositionAttributeCategory, WhoConfirmModalComponent } from '@who-ems/builder';
+import { Application, SafeApplicationService, PositionAttributeCategory, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 
@@ -13,20 +13,20 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  public positionCategories = [];
+  public positionCategories: any[] = [];
   public displayedColumns = ['title', 'actions'];
-  private applicationSubscription: Subscription;
+  private applicationSubscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
-    private applicationService: WhoApplicationService
+    private applicationService: SafeApplicationService
   ) { }
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application) => {
+    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
-        this.positionCategories = application.positionAttributeCategories;
+        this.positionCategories = application.positionAttributeCategories || [];
       } else {
         this.positionCategories = [];
       }
@@ -62,7 +62,7 @@ export class PositionComponent implements OnInit, OnDestroy {
   }
 
   onDelete(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(WhoConfirmModalComponent, {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete position attribute',
         content: `Do you confirm the deletion of the position attribute ${positionCategory.title} ?`,
