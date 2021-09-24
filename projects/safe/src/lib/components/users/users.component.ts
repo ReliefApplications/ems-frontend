@@ -54,11 +54,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.users.filterPredicate = (data: any) => {
-      return ((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+      return (
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
-          data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0)));
+            data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0))
+      );
     };
   }
 
@@ -152,7 +154,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           }).subscribe(res => {
             this.loading = false;
             if (res.data?.deleteUsers) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers), { duration: 3000 });
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers));
               this.users.data = this.users.data.filter(u => !ids.includes(u.id));
             } else {
               this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
