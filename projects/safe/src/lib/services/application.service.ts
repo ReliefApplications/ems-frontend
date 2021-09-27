@@ -13,8 +13,6 @@ import {
   ADD_PAGE,
   AddRoleMutationResponse,
   ADD_ROLE,
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   DeletePageMutationResponse,
   DELETE_PAGE,
   DeleteRoleMutationResponse,
@@ -46,7 +44,9 @@ import {
   EditChannelMutationResponse,
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
-  TOGGLE_APPLICATION_LOCK
+  TOGGLE_APPLICATION_LOCK,
+  AddUsersMutationResponse,
+  ADD_USERS
 } from '../graphql/mutations';
 import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
@@ -433,31 +433,31 @@ export class SafeApplicationService {
 
   /* Invite an user to the opened application.
   */
-  inviteUser(value: any): void {
+  inviteUser(value: any, resolved: any): void {
     const application = this._application.getValue();
     if (application && this.isUnlocked) {
-      this.apollo.mutate<AddRoleToUsersMutationResponse>({
-        mutation: ADD_ROLE_TO_USERS,
+      this.apollo.mutate<AddUsersMutationResponse>({
+        mutation: ADD_USERS,
         variables: {
-          usernames: value.email,
-          role: value.role,
-          ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter((x: any) => x.value) }
+          users: value,
+          application: application.id
         }
-      }).subscribe((res: any) => {
+      }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
-          const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data?.addUsers?.length));
+          const newApplication = { ...application, users: application.users?.concat(res.data?.addUsers) };
           this._application.next(newApplication);
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
         }
+        resolved();
       });
     }
   }
 
   /* Edit an user that has access to the application.
   */
-  editUser(user: User, value: any): void {
+  editUser(user: User, value: any, resolved?: any): void {
     const application = this._application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditUserMutationResponse>({
@@ -471,15 +471,18 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const newUser = res.data.editUser;
+          newUser.roles = newUser.roles?.filter(x => x.application?.id === application.id);
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('user', user.username));
-          const index = application?.users?.indexOf(user);
-          if (application?.users && index) {
+          if (application?.users && newUser) {
             const newApplication: Application = {
               ...application,
               users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
             };
             this._application.next(newApplication);
           }
+        }
+        if (resolved) {
+          resolved();
         }
       });
     }

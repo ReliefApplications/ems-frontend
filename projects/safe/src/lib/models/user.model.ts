@@ -1,5 +1,6 @@
 import { Application } from './application.model';
 import { Channel } from './channel.model';
+import { PositionAttribute } from './position-attribute.model';
 
 /*  Model for Permission object.
 */
@@ -126,12 +127,4 @@ export class PermissionsManagement {
         }
         return (value as any)[type];
     }
-}
-
-/*  Model for Position Attributes Object.
-*/
-export interface PositionAttribute {
-    id?: string;
-    value?: string;
-    category?: string;
 }

@@ -1,34 +1,30 @@
 <h1 mat-dialog-title>Update User</h1>
 <div mat-dialog-content>
     <form [formGroup]="userForm">
-        <div>
-            <mat-form-field>
-                <h3>Roles</h3>
-                <mat-select formControlName="roles" *ngIf="data.multiple" multiple>
-                    <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
-                        {{role.title}}
-                    </mat-option>
-                </mat-select>
-                <mat-select formControlName="role" *ngIf="!data.multiple">
-                    <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
-                        {{role.title}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div *ngIf="positionAttributes">
+        <mat-form-field appearance="outline">
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="roles" *ngIf="data.multiple" multiple>
+                <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
+                    {{role.title}}
+                </mat-option>
+            </mat-select>
+            <mat-select formControlName="role" *ngIf="!data.multiple">
+                <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
+                    {{role.title}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <ng-container *ngIf="positionAttributes ? positionAttributes.length > 0 : false">
+            <h2>Attributes</h2>
             <ng-container formArrayName="positionAttributes">
-                <h3>Position Attributes</h3>
-                <div>
-                    <mat-grid-list [cols]="3" rowHeight="1:1">
-                        <mat-form-field appearance="outline" *ngFor="let category of positionAttributes.controls; let index = index;" [formGroup]="category">
-                            <mat-label>{{ data.positionAttributeCategories[index].title | titlecase }}</mat-label>
-                            <input matInput formControlName="value" type="text" placeholder="Enter a value for the category"/>
-                        </mat-form-field>
-                    </mat-grid-list>
-                </div>
+                <mat-grid-list [cols]="3" rowHeight="1:1">
+                    <mat-form-field appearance="outline" *ngFor="let category of positionAttributes?.controls; let index = index;" [formGroup]="$any(category)">
+                        <mat-label>{{ categoryTitle(index) }}</mat-label>
+                        <input matInput formControlName="value" type="text" placeholder="Enter a value for the category"/>
+                    </mat-form-field>
+                </mat-grid-list>
             </ng-container>
-        </div>
+        </ng-container>
     </form>
 </div>
 <div mat-dialog-actions align="end">

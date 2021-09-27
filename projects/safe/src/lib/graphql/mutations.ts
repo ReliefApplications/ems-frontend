@@ -115,6 +115,13 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID, $positionAttributes
         id
       }
     }
+    positionAttributes {
+      value
+      category {
+        id
+        title
+      }
+    }
     oid
   }
 }`;
@@ -194,25 +201,6 @@ export interface AddRoleMutationResponse {
   addRole: Role;
 }
 
-export const ADD_ROLE_TO_USERS = gql`
-mutation addRoleToUsers($usernames: [String]!, $role: ID!, $positionAttributes: [PositionAttributeInputType]) {
-  addRoleToUsers(usernames: $usernames, role: $role, positionAttributes: $positionAttributes) {
-    id
-    username
-    name
-    roles {
-      id
-      title
-    }
-    oid
-  }
-}`;
-
-export interface AddRoleToUsersMutationResponse {
-  loading: boolean;
-  addRoleToUsers: User[];
-}
-
 export const ADD_USERS = gql`
 mutation addUsers($users: [UserInputType]!, $application: ID) {
   addUsers(users: $users, application: $application) {
@@ -222,6 +210,13 @@ mutation addUsers($users: [UserInputType]!, $application: ID) {
     roles {
       id
       title
+    }
+    positionAttributes {
+      value
+      category {
+        id
+        title
+      }
     }
     oid
   }

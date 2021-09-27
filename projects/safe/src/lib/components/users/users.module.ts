@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
@@ -43,6 +44,7 @@ import { SafeInviteUsersModule } from './components/invite-users/invite-users.mo
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatDividerModule,
+    MatGridListModule,
     SafeButtonModule,
     MatTooltipModule,
     SafeInviteUsersModule
