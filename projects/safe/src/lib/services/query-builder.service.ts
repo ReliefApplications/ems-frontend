@@ -145,7 +145,7 @@ export class QueryBuilderService {
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
           ) {
-          ${fields}
+            ${fields}
         }
         }
       `;
