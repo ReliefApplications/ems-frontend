@@ -10,3 +10,19 @@
 ::ng-deep .sv_q_required_text {
     color: red;
 }
+
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
+  margin: 0;
+}
+
+::ng-deep .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]){
+  background-color: transparent;
+  border-width: 0;
+  font-weight: bold;
+  order: 2;
+}
+
+.sv_qstn .content-left {
+  display: flex;
+  flex-direction: column;
+}
