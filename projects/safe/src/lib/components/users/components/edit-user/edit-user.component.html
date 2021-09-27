@@ -1,7 +1,7 @@
-<h1 mat-dialog-title>Update user roles</h1>
+<h1 mat-dialog-title>Update User</h1>
 <div mat-dialog-content>
     <form [formGroup]="userForm">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Roles</mat-label>
             <mat-select formControlName="roles" *ngIf="data.multiple" multiple>
                 <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
@@ -14,6 +14,17 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <ng-container *ngIf="positionAttributes ? positionAttributes.length > 0 : false">
+            <h2>Attributes</h2>
+            <ng-container formArrayName="positionAttributes">
+                <mat-grid-list [cols]="3" rowHeight="1:1">
+                    <mat-form-field appearance="outline" *ngFor="let category of positionAttributes?.controls; let index = index;" [formGroup]="$any(category)">
+                        <mat-label>{{ categoryTitle(index) }}</mat-label>
+                        <input matInput formControlName="value" type="text" placeholder="Enter a value for the category"/>
+                    </mat-form-field>
+                </mat-grid-list>
+            </ng-container>
+        </ng-container>
     </form>
 </div>
 <div mat-dialog-actions align="end">
