@@ -42,6 +42,8 @@ export enum Permissions {
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
     canManageForms = 'can_manage_forms',
+    canCreateForms = 'can_create_forms',
+    canCreateResources = 'can_create_resources',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
     canManageApiConfigurations = 'can_manage_api_configurations'
@@ -62,11 +64,11 @@ export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
             access: Permissions.canSeeResources,
-            create: Permissions.canManageResources
+            create: Permissions.canCreateResources
         },
         forms: {
             access: Permissions.canSeeForms,
-            create: Permissions.canManageForms
+            create: Permissions.canCreateForms,
         },
         settings: {
             users: {
