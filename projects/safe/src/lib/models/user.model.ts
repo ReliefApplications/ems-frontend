@@ -1,5 +1,6 @@
 import { Application } from './application.model';
 import { Channel } from './channel.model';
+import { PositionAttribute } from './position-attribute.model';
 
 /*  Model for Permission object.
 */
@@ -31,8 +32,10 @@ export interface User {
     permissions?: Permission[];
     oid?: string;
     applications?: Application[];
+    positionAttributes?: PositionAttribute[];
     favoriteApp?: string;
 }
+
 
 /*  Enum of admin permissions.
 */
@@ -125,11 +128,3 @@ export class PermissionsManagement {
         return (value as any)[type];
     }
 }
-
-/*  Interface for Adding new users.
-*/
-export interface AddUser {
-    email: string;
-    roles: string[];
-    attributes: { value: string, category: string };
-  }

@@ -3,10 +3,9 @@ import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/cor
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeApplicationService } from '../../services/application.service';
 import { User, Role } from '../../models/user.model';
 import {
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
   DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
@@ -30,10 +29,10 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
-  @Input() applicationService: any;
+  @Input() applicationService?: SafeApplicationService;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'username', 'name', 'oid', 'attributes', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -77,20 +76,25 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.apollo.mutate<AddUsersMutationResponse>({
-          mutation: ADD_USERS,
-          variables: {
-            users: value,
-            application: this.roles[0].application?.id
-          }
-        }).subscribe(res => {
-          if (!res.errors) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
-            this.users.data = this.users.data.concat(res?.data?.addUsers || []);
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
-          }
-        });
+        this.loading = true;
+        if (this.applicationService) {
+          this.applicationService.inviteUser(value, () => this.loading = false);
+        } else {
+          this.apollo.mutate<AddUsersMutationResponse>({
+            mutation: ADD_USERS,
+            variables: {
+              users: value
+            }
+          }).subscribe(res => {
+            if (!res.errors) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res?.data?.addUsers.length));
+              this.users.data = this.users.data.concat(res?.data?.addUsers || []);
+            } else {
+              this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
+            }
+            this.loading = false;
+          });
+        }
       }
     });
   }
@@ -106,14 +110,16 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        this.loading = true;
         if (this.applicationService) {
-          this.applicationService.editUser(user, value);
+          this.applicationService.editUser(user, value, () => this.loading = false);
         } else {
           this.apollo.mutate<EditUserMutationResponse>({
             mutation: EDIT_USER,
             variables: {
               id: user.id,
-              roles: value.roles
+              roles: value.roles,
+              ...value.positionAttributes && { positionAttributes: value.positionAttributes }
             }
           }).subscribe(res => {
             if (res.data) {
@@ -125,6 +131,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                 return x;
               });
             }
+            this.loading = false;
           });
         }
       }
