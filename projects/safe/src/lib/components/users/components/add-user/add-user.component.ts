@@ -58,49 +58,11 @@ export class SafeAddUserComponent implements OnInit {
       map(x => this.filterUsers(x))
     );
 
-    // this.filteredUsers.forEach((u: any) => u.forEach( (u2: any) => console.log(u2)));
-
-
-    // console.log('gm');
-    // this.apollo.watchQuery<GetUsersQueryResponse>({
-    //   query: GET_USERS
-    // }).valueChanges.subscribe(res => {
-    //   this.allAppUsers = res;
-    //   console.log(this.allAppUsers.data.users);
-    //   if (this.filteredUsers && this.allAppUsers){
-    //     console.log('in');
-    //     if (this.filteredUsers[0] === 0){
-    //
-    //     }
-    //     this.filteredUsers.forEach((userList) => {
-    //       console.log(userList);
-    //       userList.forEach((u) => {
-    //         console.log('loop2');
-    //         console.log(u);
-    //         if (!this.allAppUsers.data.users.some((aau: any) => aau.id === u.id)){
-    //           console.log(u);
-    //           console.log('in 2');
-    //           this.notInvitedUsers.push(u);
-    //         }
-    //         else{
-    //           console.log('nope');
-    //         }
-    //       });
-    //       console.log('out');
-    //     });
-    //   }
-    //   console.log(this.notInvitedUsers);
-    // }, error => console.log(error));
-    // console.log('gm ser');
-
-    console.log('gm');
     this.apollo.watchQuery<GetUsersQueryResponse>({
       query: GET_USERS
     }).valueChanges.subscribe(res => {
       this.allAppUsers = res;
-      console.log(this.allAppUsers.data.users);
       if (this.filteredUsers && this.allAppUsers){
-        console.log('in');
         this.allAppUsers.data.users.forEach((aU: any) => {
           this.filteredUsers?.forEach((userList) => {
             if (!userList.some((u) => u.id === aU.id)) {
@@ -109,9 +71,7 @@ export class SafeAddUserComponent implements OnInit {
           });
         });
       }
-      console.log(this.notInvitedUsers);
-    }, error => console.log(error));
-    console.log('gm ser');
+    });
   }
 
   private filterUsers(value: string): User[] {
