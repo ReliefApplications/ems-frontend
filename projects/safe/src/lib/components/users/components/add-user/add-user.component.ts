@@ -25,7 +25,7 @@ export class SafeAddUserComponent implements OnInit {
   form: FormGroup = new FormGroup({});
   public filteredUsers?: Observable<User[]>;
   private allAppUsers: any = [];
-  private notInvitedUsers: any = [];
+  public notInvitedUsers: any = [];
 
   get positionAttributes(): FormArray | null {
     return this.form.get('positionAttributes') ? this.form.get('positionAttributes') as FormArray : null;

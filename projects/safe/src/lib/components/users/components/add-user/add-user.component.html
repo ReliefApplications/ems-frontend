@@ -6,7 +6,7 @@
                 <mat-label>Email</mat-label>
                 <input matInput placeholder="Enter user's email" #emailInput formControlName="email" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
+                    <mat-option *ngFor="let user of notInvitedUsers" [value]="user.username">
                         {{user.username}}
                     </mat-option>
                 </mat-autocomplete>
