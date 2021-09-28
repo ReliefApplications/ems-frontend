@@ -92,32 +92,52 @@ query GetFormNames {
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms {
-  forms {
-    id
-    name
-    createdAt
-    status
-    versionsCount
-    recordsCount
-    core
-    canSee
-    canCreate
-    canUpdate
-    canDelete
-    resource {
-      id
-      coreForm {
+query GetShortForms($first: Int, $afterCursor: String) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edge {
+      node {
         id
         name
+        createdAt
+        status
+        versionsCount
+        recordsCount
+        core
+        canSee
+        canCreate
+        canUpdate
+        canDelete
+        resource {
+          id
+          coreForm {
+            id
+            name
+          }
+        }
       }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
-  forms: Form[];
+  forms: {
+    edges: {
+      node: Form;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET FORM BY ID ===
