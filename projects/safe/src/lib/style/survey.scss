@@ -1,28 +1,25 @@
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
-    .sv-boolean__switch {
-        background-color: rgba(64, 64, 64, 0.5) !important;
-    }
+  .sv-boolean__switch {
+    background-color: rgba(64, 64, 64, 0.5) !important;
+  }
 }
 ::ng-deep .sv_q {
-    padding-bottom: 0.5em !important;
+  padding-bottom: 0.5em !important;
 }
 
 ::ng-deep .sv_q_required_text {
-    color: red;
+  color: red;
 }
 
-::ng-deep .sv_main .sv_p_root .sv_row .sv_q.sv_qstn:first-child:last-child > .content-left {
+::ng-deep .safe-qst-content {
   display: flex;
   flex-direction: column;
-}
 
-::ng-deep .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]){
-  background-color: transparent;
-  border-width: 0;
-  font-weight: bold;
-  order: 2;
-}
-
-::ng-deep .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
-  padding: 0;
+  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
+    background-color: transparent;
+    border: none;
+    order: 2;
+    padding: 0 0 0 8px !important;
+    margin: 8px 0 !important;
+  }
 }
