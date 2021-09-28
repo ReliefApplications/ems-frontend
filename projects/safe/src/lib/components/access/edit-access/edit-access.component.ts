@@ -43,9 +43,9 @@ export class SafeEditAccessComponent implements OnInit {
       this.roles = res.data.roles;
       this.loading = res.loading;
     });
+    console.log("this data access = ", this.data.access);
     this.accessForm = this.formBuilder.group({
       canSee: [this.data.access.canSee ? this.data.access.canSee.map((x: any) => x.id) : null],
-      canCreate: [this.data.access.canCreate ? this.data.access.canCreate.map((x: any) => x.id) : null],
       canUpdate: [this.data.access.canUpdate ? this.data.access.canUpdate.map((x: any) => x.id) : null],
       canDelete: [this.data.access.canDelete ? this.data.access.canDelete.map((x: any) => x.id) : null]
     });
