@@ -42,7 +42,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'page',
   'titleLocation',
   'descriptionLocation',
-  'state'
+  'state',
+  'defaultValue',
+  'defaultValueExpression'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
