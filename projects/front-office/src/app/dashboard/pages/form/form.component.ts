@@ -79,7 +79,7 @@ export class FormComponent implements OnInit, OnDestroy {
             if (res2.data) {
               this.form = res2.data.form;
             }
-            if (this.form.status !== 'active' || !this.form.canCreateRecords) {
+            if (!this.form || this.form.status !== 'active' || !this.form.canCreateRecords) {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectAccessDenied('form'), { error: true });
             } else {
               this.canCreateRecords = true;
