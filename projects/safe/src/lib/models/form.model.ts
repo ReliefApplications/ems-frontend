@@ -33,7 +33,6 @@ export interface Form {
     permissions?: any;
     resource?: Resource;
     canSee?: boolean;
-    canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
     canCreateRecords?: boolean;
