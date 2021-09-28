@@ -39,7 +39,7 @@ export class AddFormComponent implements OnInit {
     this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES
     }).valueChanges.subscribe(res => {
-      this.resources = res.data.resources;
+      this.resources = res.data.resources.edges.map(x => x.node);
     });
   }
 

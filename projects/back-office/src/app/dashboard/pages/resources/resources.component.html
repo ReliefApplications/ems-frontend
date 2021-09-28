@@ -84,4 +84,7 @@
             [routerLink]="['/resources', row.id]">
           </tr>
     </table>
+    <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of applications"
+    (page)="onPage($event)">
+  </mat-paginator>
 </ng-container>

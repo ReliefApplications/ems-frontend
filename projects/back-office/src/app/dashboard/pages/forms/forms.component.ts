@@ -90,10 +90,39 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loading = res.loading;
       this.filterPredicate();
     });
-    
+
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedForms.length) {
+      this.formsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            forms: {
+              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+              pageInfo: fetchMoreResult.forms.pageInfo,
+              totalCount: fetchMoreResult.forms.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource.data = this.cachedForms.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   private filterPredicate(): void {
