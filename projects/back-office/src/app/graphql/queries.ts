@@ -102,6 +102,7 @@ query GetShortForms {
     recordsCount
     core
     canSee
+    canCreateRecords
     canUpdate
     canDelete
     resource {
@@ -218,6 +219,7 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
       core
       canUpdate
       canDelete
+      canCreateRecords
     }
     permissions {
       canSee {
