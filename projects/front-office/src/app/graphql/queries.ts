@@ -104,6 +104,7 @@ query GetFormById($id: ID!) {
     name
     structure
     fields
+    status
     canUpdate
     canCreateRecords
     uniqueRecord {

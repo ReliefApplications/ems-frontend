@@ -1,10 +1,10 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
 import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
+import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
   selector: 'app-form',
@@ -22,6 +22,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public form: Form = {};
   public completed = false;
   public hideNewRecord = false;
+  public canCreateRecords = false;
 
   // === ROUTER ===
   public page?: Page;
@@ -34,7 +35,8 @@ export class FormComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -77,6 +79,11 @@ export class FormComponent implements OnInit, OnDestroy {
             if (res2.data) {
               this.form = res2.data.form;
             }
+            if (!this.form || this.form.status !== 'active' || !this.form.canCreateRecords) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAccessDenied('form'), { error: true });
+            } else {
+              this.canCreateRecords = true;
+            }
             this.loading = res2.data.loading;
           });
         });
@@ -84,7 +91,7 @@ export class FormComponent implements OnInit, OnDestroy {
     });
   }
 
-  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+  onComplete(e: { completed: boolean, hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
@@ -95,7 +102,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.routeSubscription) {
-     this.routeSubscription.unsubscribe();
+      this.routeSubscription.unsubscribe();
     }
   }
 }
