@@ -23,7 +23,6 @@ export interface Application {
     permissions?: any;
     channels?: Channel[];
     canSee?: boolean;
-    canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
     subscriptions?: Subscription[];

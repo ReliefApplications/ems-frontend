@@ -53,9 +53,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Loads resoource data.
+   * Loads resource data.
    */
   private getResourceData(): void {
+    this.loading = true;
     if (this.resourceSubscription) {
       this.resourceSubscription.unsubscribe();
     }
