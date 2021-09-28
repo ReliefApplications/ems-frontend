@@ -109,6 +109,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add((_, opt) => this.onSetCustomCss(opt));
+    this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
+      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) => this.onSetCustomCss(opt2));
+    });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -199,7 +203,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.save.emit(this.surveyCreator.text);
     })
       .catch((error) => {
-        this.snackBar.openSnackBar(error.message, {error: true});
+        this.snackBar.openSnackBar(error.message, { error: true });
       });
   }
 
@@ -280,8 +284,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           return {
             name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
             title: x.title ? x.title : (x.name ? x.name : x),
-            ...x.cellType && {cellType: x.cellType},
-            ...x.isRequired && {isRequired: true}
+            ...x.cellType && { cellType: x.cellType },
+            ...x.isRequired && { isRequired: true }
           };
         });
         element.rows = element.rows.map((x: any) => {
@@ -292,5 +296,15 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         });
       }
     }
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 }

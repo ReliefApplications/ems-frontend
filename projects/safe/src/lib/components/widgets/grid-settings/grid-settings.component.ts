@@ -42,6 +42,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
+  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  public templates: Form[] = [];
+
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
@@ -105,14 +108,17 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               }).subscribe(res2 => {
                 if (res2.errors) {
                   this.relatedForms = [];
+                  this.templates = [];
                 } else {
                   this.relatedForms = res2.data.resource.relatedForms || [];
+                  this.templates = res2.data.resource.forms || [];
                 }
               });
             }
           });
         } else {
           this.relatedForms = [];
+          this.templates = [];
         }
       } else {
         this.fields = [];
