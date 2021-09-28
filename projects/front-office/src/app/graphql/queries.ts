@@ -35,10 +35,6 @@ export const GET_DASHBOARD_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -108,7 +104,6 @@ query GetFormById($id: ID!) {
     name
     structure
     fields
-    canCreate
     canUpdate
     canCreateRecords
     uniqueRecord {
@@ -145,10 +140,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         canUpdate
         permissions {
           canSee {
-            id
-            title
-          }
-          canCreate {
             id
             title
           }

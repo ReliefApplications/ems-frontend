@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeAccessModule, SafePreviousButtonModule, SafeButtonModule } from '@safe/builder';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -23,7 +24,8 @@ import { SafeAccessModule, SafePreviousButtonModule, SafeButtonModule } from '@s
     MatChipsModule,
     SafeAccessModule,
     SafePreviousButtonModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatTooltipModule
   ],
   exports: [ResourceComponent]
 })

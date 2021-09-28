@@ -37,7 +37,8 @@ export class QueryBuilderService {
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
+    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getFieldsFromType(typeName: string): any[] {
@@ -45,22 +46,26 @@ export class QueryBuilderService {
       return this.userFields;
     }
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name)) : [];
+    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST') : [];
+    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST')
+      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getFilter(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.args.find((x: any) => x.name === 'filter').type.inputFields : [];
+    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
+      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getFilterFromType(typeName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.args.find((x: any) => x.name === 'filter').type.inputFields : [];
+    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
+      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   private buildFilter(filter: any): any {
@@ -203,6 +208,7 @@ export class QueryBuilderService {
   public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
+      template: [value ? value.template : '', null],
       fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
        validators ? Validators.required : null),
       sort: this.formBuilder.group({

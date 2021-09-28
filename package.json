@@ -1,6 +1,6 @@
 {
   "name": "safe-front",
-  "version": "0.1.14-alpha.0",
+  "version": "0.1.14-alpha.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
