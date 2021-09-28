@@ -19,7 +19,7 @@ import {
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeDownloadService } from '../../../../../../safe/src/lib/services/download.service';
+import { SafeDownloadService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({

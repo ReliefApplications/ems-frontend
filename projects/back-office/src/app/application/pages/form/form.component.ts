@@ -1,8 +1,7 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
 import { Subscription } from 'rxjs';
 import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import {
@@ -14,9 +13,6 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE
 } from '../../../graphql/mutations';
-import {Permission, PermissionsManagement, PermissionType, User} from '../../../../../../safe/src/lib/models/user.model';
-import {Account} from 'msal';
-import {SafeAuthService} from '../../../../../../safe/src/lib/services/auth.service';
 
 @Component({
   selector: 'app-form',
@@ -36,11 +32,6 @@ export class FormComponent implements OnInit, OnDestroy {
   public completed = false;
   public hideNewRecord = false;
 
-  // === USER INFO ===
-  // account: Account | null;
-  public user: User;
-  private userSubscription?: Subscription;
-
   // === TAB NAME EDITION ===
   public formActive = false;
   public tabNameForm: FormGroup = new FormGroup({});
@@ -57,13 +48,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
-  ) {
-    this.user = {
-      permissions: []
-    };
-  }
+    private snackBar: SafeSnackBarService
+  ) { }
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -116,17 +102,6 @@ export class FormComponent implements OnInit, OnDestroy {
           });
         });
       }
-      // If we didn't call the userIsAdmin() function, the user() function called just after won't work (I don't know why)
-      const isAdmin = this.authService.userIsAdmin;
-      if (this.userSubscription) {
-        this.userSubscription.unsubscribe();
-      }
-      this.userSubscription = this.authService.user.subscribe((user) => {
-        if (user) {
-          this.user = { ...user };
-        }
-      });
-
     });
   }
 
@@ -152,7 +127,7 @@ export class FormComponent implements OnInit, OnDestroy {
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
-            this.step = { ...this.step, name: res.data.editStep.name };
+            this.step = { ...this.step, name: res.data.editStep.name };
             this.workflowService.updateStepName(res.data.editStep);
           }
         }
@@ -179,18 +154,6 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public isUserHasCanSeeAppPermission(p: Permission): boolean {
-    return (p.type === 'can_see_applications');
-  }
-
-  public isUserHasCanManageAppPermission(p: Permission): boolean {
-    return (p.type === 'can_manage_applications');
-  }
-
-  public isUserHasCanManageFormsPermission(p: Permission): boolean {
-    return (p.type === 'can_manage_forms');
-  }
-
   /*  Edit the permissions layer.
   */
   saveAccess(e: any): void {
@@ -202,7 +165,7 @@ export class FormComponent implements OnInit, OnDestroy {
           permissions: e
         }
       }).subscribe(res => {
-        this.form = { ...this.form, permissions: res.data?.editStep.permissions };
+        this.form = { ...this.form, permissions: res.data?.editStep.permissions };
       });
     } else {
       this.apollo.mutate<EditPageMutationResponse>({
@@ -217,7 +180,7 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+  onComplete(e: { completed: boolean, hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
@@ -238,7 +201,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.routeSubscription) {
-     this.routeSubscription.unsubscribe();
+      this.routeSubscription.unsubscribe();
     }
   }
 }

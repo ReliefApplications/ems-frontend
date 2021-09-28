@@ -19,6 +19,7 @@ export const NOTIFICATIONS = {
     objectLoadedFromCache(type: string): string { return `${type} loaded from cache.`; },
     objectIsLocked(name: any): string { return `${name} edition is locked by another user.`; },
     objectUnlocked(name: any): string { return `${name} edition has been unlocked by another user.`; },
+    objectAccessDenied(type: string): string { return `You don't have permission to see the ${type}.`; },
     goToStep(step: any): string  { return `Back to ${step} step.`; },
     statusUpdated(status: any): string  { return `Status updated to ${status}.`; },
     noObjectOpened(value: any): string  { return `No opened ${value}.`; },
@@ -34,8 +35,5 @@ export const NOTIFICATIONS = {
     appEdited: 'This application has been updated by someone else.',
     pingResponseAuthToken: 'Authentication token fetched, ping again to get the actual response.',
     pingResponseReceived: 'Received positive response from ping request.',
-    pingResponseError: 'ERROR during the PING request.',
-    noCanSeeFormPagePermission: 'You don\'t have the permission to see this form',
-    formStatusNotActive: 'You can\'t see this form because it is not active',
-    noPermissionAndNoActiveStatus: 'You can\'t see this form because you don\'t have the permission for this and it is not active'
+    pingResponseError: 'ERROR during the PING request.'
 };
