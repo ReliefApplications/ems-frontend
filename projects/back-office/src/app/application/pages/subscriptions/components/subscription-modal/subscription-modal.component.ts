@@ -1,16 +1,18 @@
-import {Apollo} from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {Apollo, QueryRef} from 'apollo-angular';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { Application, Channel, Form, Subscription } from '@safe/builder';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
   GET_FORM_NAMES, GetFormsQueryResponse
 } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
+import { MatSelect } from '@angular/material/select';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-subscription-modal',
@@ -23,7 +25,17 @@ export class SubscriptionModalComponent implements OnInit {
   subscriptionForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  public forms: Form[] = [];
+  private forms = new BehaviorSubject<Form[]>([]);
+  public forms$!: Observable<Form[]>;
+  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  private pageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
+  private loading = true;
+
+  @ViewChild('formSelect') formSelect?: MatSelect;
+
   // === DATA ===
   private applications: Application[] = [];
   public filteredApplications!: Observable<Application[]>;
@@ -53,11 +65,21 @@ export class SubscriptionModalComponent implements OnInit {
       convertTo: [( this.data.subscription && this.data.subscription.convertTo ) ? this.data.subscription.convertTo.id : ''],
       channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
     });
-    this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORM_NAMES
-    }).valueChanges.subscribe((res: any) => {
-      this.forms = res.data.forms;
+    // Get forms and set pagination logic
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORM_NAMES,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
     });
+
+    this.forms$ = this.forms.asObservable();
+    this.formsQuery.valueChanges.subscribe(res => {
+      this.forms.next(res.data.forms.edges.map(x => x.node));
+      this.pageInfo = res.data.forms.pageInfo;
+      this.loading = res.loading;
+    });
+
     this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
       query: GET_ROUTING_KEYS
     }).valueChanges.subscribe(res => {
@@ -81,4 +103,42 @@ export class SubscriptionModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  /**
+   * Adds scroll listener to select.
+   * @param e open select event.
+   */
+   onOpenSelect(e: any): void {
+    if (e && this.formSelect) {
+      const panel = this.formSelect.panel.nativeElement;
+      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+    }
+  }
+
+  /**
+   * Fetches more forms on scroll.
+   * @param e scroll event.
+   */
+  private loadOnScroll(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      if (!this.loading && this.pageInfo.hasNextPage) {
+        this.loading = true;
+        this.formsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.pageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              forms: {
+                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+                pageInfo: fetchMoreResult.forms.pageInfo,
+                totalCount: fetchMoreResult.forms.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
+  }
 }
