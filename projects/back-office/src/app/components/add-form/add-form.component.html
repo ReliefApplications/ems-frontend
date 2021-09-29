@@ -14,7 +14,7 @@
             <ng-container *ngIf="addForm.controls.binding.value === 'fromResource'">
                 <mat-form-field>
                     <mat-label>From resource</mat-label>
-                    <mat-select #resourceSelect formControlName="resource" (openedChange)="onOpenResourceSelect($event)"
+                    <mat-select #resourceSelect formControlName="resource" (openedChange)="onOpenSelect($event)"
                         (selectionChange)="getResource($event)">
                         <mat-option *ngFor="let resource of resources$ | async" [value]="resource.id">
                             {{resource.name}}

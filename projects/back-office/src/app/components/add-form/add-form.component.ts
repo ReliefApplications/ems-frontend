@@ -22,16 +22,16 @@ export class AddFormComponent implements OnInit {
   // === DATA ===
   private resources = new BehaviorSubject<Resource[]>([]);
   public resources$!: Observable<Resource[]>;
-  public templates: any[] = [];
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-
-  @ViewChild('resourceSelect') resourceSelect?: MatSelect;
-
   private pageInfo = {
     endCursor: '',
     hasNextPage: true
   };
   private loading = true;
+
+  public templates: any[] = [];
+
+  @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -59,8 +59,7 @@ export class AddFormComponent implements OnInit {
 
     this.resources$ = this.resources.asObservable();
     this.resourcesQuery.valueChanges.subscribe(res => {
-      const resources = res.data.resources.edges.map(x => x.node);
-      this.resources.next(resources);
+      this.resources.next(res.data.resources.edges.map(x => x.node));
       this.pageInfo = res.data.resources.pageInfo;
       this.loading = res.loading;
     });
@@ -86,18 +85,25 @@ export class AddFormComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onOpenResourceSelect(e: any): void {
+  /**
+   * Adds scroll listener to select.
+   * @param e open select event.
+   */
+  onOpenSelect(e: any): void {
     if (e && this.resourceSelect) {
       const panel = this.resourceSelect.panel.nativeElement;
       panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
     }
   }
 
+  /**
+   * Fetches more resources on scroll.
+   * @param e scroll event.
+   */
   private loadOnScroll(e: any): void {
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        console.log(this.resourcesQuery);
         this.resourcesQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,

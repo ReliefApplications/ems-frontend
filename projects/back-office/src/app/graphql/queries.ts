@@ -84,10 +84,20 @@ export interface GetDashboardsQueryResponse {
 
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
-query GetFormNames {
-  forms {
-    id
-    name
+query GetFormNames($first: Int, $afterCursor: ID) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
