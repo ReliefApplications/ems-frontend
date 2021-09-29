@@ -53,6 +53,7 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 import { NOTIFICATIONS } from '../const/notifications';
 import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { SafeAuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +97,7 @@ export class SafeApplicationService {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private router: Router
   ) { }
 
@@ -479,6 +481,7 @@ export class SafeApplicationService {
             };
             this._application.next(newApplication);
           }
+          this.authService.getProfile();
         }
       });
     }

@@ -5,8 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
 import {
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
   DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
@@ -18,6 +16,7 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SelectionModel } from '@angular/cdk/collections';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
+import { SafeAuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'safe-users',
@@ -49,6 +48,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     public dialog: MatDialog
   ) { }
 
@@ -120,10 +120,14 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
-                  x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
+                  // use a shallow copy to edit the read-only object
+                  let dataCopy = JSON.parse(JSON.stringify(x));
+                  dataCopy = res.data?.editUser?.roles?.filter(role => !role.application);
+                  x = dataCopy;
                 }
                 return x;
               });
+              this.authService.getProfile();
             }
           });
         }
