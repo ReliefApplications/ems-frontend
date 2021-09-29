@@ -104,6 +104,7 @@ query GetShortForms($first: Int, $afterCursor: String) {
         recordsCount
         core
         canSee
+        canCreate
         canUpdate
         canDelete
         resource {
@@ -157,10 +158,6 @@ query GetShortFormById($id: ID!) {
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -240,16 +237,12 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
+      canCreateRecords
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -262,7 +255,6 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedR
         title
       }
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -364,10 +356,6 @@ export const GET_DASHBOARD_BY_ID = gql`
       structure
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -510,10 +498,6 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -547,10 +531,6 @@ export const GET_PAGE_BY_ID = gql`
       content
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -591,10 +571,6 @@ export const GET_WORKFLOW_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -617,10 +593,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         canUpdate
         permissions {
           canSee {
-            id
-            title
-          }
-          canCreate {
             id
             title
           }
@@ -667,10 +639,6 @@ export const GET_STEP_BY_ID = gql`
       }
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -779,10 +747,6 @@ query GetApiConfigurations {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -816,10 +780,6 @@ query GetApiConfiguration($id: ID!) {
     settings
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }

@@ -12,7 +12,6 @@ export interface Resource {
     records?: Record[];
     fields?: any;
     canSee?: boolean;
-    canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
     coreForm?: Form;

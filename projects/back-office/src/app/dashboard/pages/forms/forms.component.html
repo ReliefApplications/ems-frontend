@@ -186,8 +186,8 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{'clickable': ( row.canCreate && (row.status === 'active') )}"
-      [routerLink]="( row.canCreate && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
+      [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
+      [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
   </table>
   <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of forms"
     (page)="onPage($event)">

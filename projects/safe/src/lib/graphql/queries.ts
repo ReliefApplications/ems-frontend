@@ -78,7 +78,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     resource{
       id
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -129,16 +128,11 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -151,7 +145,6 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
         title
       }
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -175,7 +168,6 @@ export const GET_FORMS = gql`
     }
     recordsCount
     core
-    canCreate
     canUpdate
     canDelete
   }
@@ -416,10 +408,6 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -617,10 +605,6 @@ export const GET_WORKFLOW_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -643,10 +627,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         canUpdate
         permissions {
           canSee {
-            id
-            title
-          }
-          canCreate {
             id
             title
           }

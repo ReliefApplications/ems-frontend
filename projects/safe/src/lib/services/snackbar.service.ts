@@ -32,7 +32,6 @@ export class SafeSnackBarService {
     message: string,
     config?: SnackBar): MatSnackBarRef<TextOnlySnackBar> {
     config = { ...DEFAULT_SNACKBAR, ...config };
-    console.log(config);
     const snackBar = this.snackBar.open(message, config.action, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
