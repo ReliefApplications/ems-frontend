@@ -2,22 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.1.14](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.1...v0.1.14) (2021-09-29)
-
-
-### Features
-
-* order filters by name in query builder ([fc7bd11](https://github.com/ReliefApplications/emrs-safe-frontend/commits/fc7bd11951902f905aeb9574ff4330cfb8307733))
-* set initial order for grid available field list ([e3815d7](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e3815d731bf527cf1b26fe25eb2f922f38d551f7))
-
-
-### Bug Fixes
-
-* cannot reorder pages ([f69fad6](https://github.com/ReliefApplications/emrs-safe-frontend/commits/f69fad6e688c22594de0e0e4bd5a766ff1763524))
-* disable the focus of the first input of the add user modal ([7fa84c8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/7fa84c8cfbe95aa94de81e61955c3734fcc35e10))
-* question error message style changed ([8fe35bf](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8fe35bfb2e5c8b19927c7b23f6f1a82d522738f9))
-* records placeholder was replaced by users in resources component ([dd4ce84](https://github.com/ReliefApplications/emrs-safe-frontend/commits/dd4ce84e47a83cffa2a75a280bccdd4b103b656a))
-
 ### [0.1.14-alpha.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.0...v0.1.14-alpha.1) (2021-09-22)
 
 
