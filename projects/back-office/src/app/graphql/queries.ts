@@ -92,7 +92,7 @@ query GetFormNames {
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms($first: Int, $afterCursor: String) {
+query GetShortForms($first: Int, $afterCursor: ID) {
   forms(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -104,7 +104,7 @@ query GetShortForms($first: Int, $afterCursor: String) {
         recordsCount
         core
         canSee
-        canCreate
+        canCreateRecords
         canUpdate
         canDelete
         resource {
@@ -266,7 +266,7 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
-query GetResources($first: Int, $afterCursor: String){
+query GetResources($first: Int, $afterCursor: ID){
   resources(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -288,7 +288,7 @@ query GetResources($first: Int, $afterCursor: String){
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-query GetResourcesExtended($first: Int, $afterCursor: String){
+query GetResourcesExtended($first: Int, $afterCursor: ID){
   resources(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -401,7 +401,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: String){
+query GetApplications($first: Int, $afterCursor: ID){
   applications(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
