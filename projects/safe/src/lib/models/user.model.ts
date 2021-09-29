@@ -1,6 +1,5 @@
 import { Application } from './application.model';
 import { Channel } from './channel.model';
-import { PositionAttribute } from './position-attribute.model';
 
 /*  Model for Permission object.
 */
@@ -32,10 +31,8 @@ export interface User {
     permissions?: Permission[];
     oid?: string;
     applications?: Application[];
-    positionAttributes?: PositionAttribute[];
     favoriteApp?: string;
 }
-
 
 /*  Enum of admin permissions.
 */
@@ -44,7 +41,10 @@ export enum Permissions {
     canSeeForms = 'can_see_forms',
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
+    canSeeApplications = 'can_see_applications',
     canManageForms = 'can_manage_forms',
+    canCreateForms = 'can_create_forms',
+    canCreateResources = 'can_create_resources',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
     canManageApiConfigurations = 'can_manage_api_configurations'
@@ -65,11 +65,11 @@ export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
             access: Permissions.canSeeResources,
-            create: Permissions.canManageResources
+            create: Permissions.canCreateResources
         },
         forms: {
             access: Permissions.canSeeForms,
-            create: Permissions.canManageForms
+            create: Permissions.canCreateForms,
         },
         settings: {
             users: {
@@ -99,7 +99,8 @@ export class PermissionsManagement {
             }
         },
         applications: {
-            create: Permissions.canManageApplications
+            create: Permissions.canManageApplications,
+            access: Permissions.canSeeApplications
         },
         'add-page': {
             access: Permissions.canManageApplications
@@ -128,3 +129,11 @@ export class PermissionsManagement {
         return (value as any)[type];
     }
 }
+
+/*  Interface for Adding new users.
+*/
+export interface AddUser {
+    email: string;
+    roles: string[];
+    attributes: { value: string, category: string };
+  }

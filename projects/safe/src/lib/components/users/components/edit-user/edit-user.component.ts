@@ -34,32 +34,23 @@ export class SafeEditUserComponent implements OnInit {
   /*  Load the roles and build the form.
   */
   ngOnInit(): void {
-    const controls = {};
-    Object.assign(controls,
-      this.data.multiple && { roles: [this.data.user.roles ? this.data.user.roles.map(x => x.id) : null] },
-      !this.data.multiple && { role: this.data.user?.roles ? this.data.user.roles[0].id : '' },
-      this.data.positionAttributeCategories &&
-      {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
-          const attributeValue = this.data?.user?.positionAttributes?.find(element => {
-            return x.id === (Object(element.category).id);
-          });
-          return this.formBuilder.group({
-            value: [attributeValue ? attributeValue.value : ''],
-            category: [x.id, Validators.required]
-          });
-        }))
-      }
-    );
-    this.userForm = this.formBuilder.group(controls);
-  }
-
-  public categoryTitle(id: number): string {
-    const out: PositionAttributeCategory | undefined = this.data?.positionAttributeCategories && this.data?.positionAttributeCategories[id];
-    if (out) {
-      return out.title ? out.title : '';
+    if (this.data.multiple) {
+      this.userForm = this.formBuilder.group({
+        roles: [this.data.user.roles ? this.data.user.roles.map(x => x.id) : null]
+      });
     } else {
-      return '';
+      this.userForm = this.formBuilder.group({
+        role: this.data.user?.roles ? this.data.user.roles[0].id : '',
+        ...this.data.positionAttributeCategories &&
+        {
+          positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
+            return this.formBuilder.group({
+              value: [''],
+              category: [x.id, Validators.required]
+            });
+          }))
+        }
+      });
     }
   }
 

@@ -5,6 +5,9 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import {GetUsersQueryResponse} from '../../../../graphql/queries';
+import { GET_USERS } from '../../../../graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 interface DialogData {
   roles: Role[];
@@ -21,6 +24,7 @@ export class SafeAddUserComponent implements OnInit {
 
   form: FormGroup = new FormGroup({});
   public filteredUsers?: Observable<User[]>;
+  private users: User[] = [];
 
   get positionAttributes(): FormArray | null {
     return this.form.get('positionAttributes') ? this.form.get('positionAttributes') as FormArray : null;
@@ -29,7 +33,8 @@ export class SafeAddUserComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private apollo: Apollo
   ) { }
 
   ngOnInit(): void {
@@ -51,11 +56,23 @@ export class SafeAddUserComponent implements OnInit {
       map(value => typeof value === 'string' ? value : ''),
       map(x => this.filterUsers(x))
     );
+
+    this.apollo.watchQuery<GetUsersQueryResponse>({
+      query: GET_USERS
+    }).valueChanges.subscribe(res => {
+      const flatInvitedUsers = this.data.users.map(x => x.username);
+      this.users = res.data.users.filter(x => !flatInvitedUsers.includes(x.username));
+      this.filteredUsers = this.form.controls.email.valueChanges.pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : ''),
+        map(x => this.filterUsers(x))
+      );
+    });
   }
 
   private filterUsers(value: string): User[] {
     const filterValue = value.toLowerCase();
-    return this.data.users.filter(x => x.username?.toLowerCase().indexOf(filterValue) === 0);
+    return this.users.filter(x => x.username?.toLowerCase().indexOf(filterValue) === 0);
   }
 
   onClose(): void {
