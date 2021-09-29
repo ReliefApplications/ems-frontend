@@ -85,6 +85,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       this.form.fields?.forEach(field => {
@@ -324,6 +325,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       };
       xhr.send();
     }
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 
   public onShowPage(i: number): void {
