@@ -73,18 +73,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
-      console.log('this.cachedApplications');
-      console.log(this.cachedApplications);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-      console.log('this.applications.data');
-      console.log(this.cachedApplications.slice(ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
-      console.log('$$$ this.pageInfo');
-      console.log(this.pageInfo);
-      console.log(res.data.applications);
       this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {

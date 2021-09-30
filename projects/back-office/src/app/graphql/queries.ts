@@ -6,7 +6,7 @@ import {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-query GetUsers($first: Int, $afterCursor: String){
+query GetUsers($first: Int, $afterCursor: ID){
   users(first: $first, afterCursor: $afterCursor) {
     edges {
       node {

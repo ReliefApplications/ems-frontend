@@ -48,11 +48,6 @@ export class UsersComponent implements OnInit {
 
     this.usersQuery.valueChanges.subscribe(res => {
       this.cachedUsers = res.data.users.edges.map(x => x.node);
-      // console.log('res');
-      // console.log(res);
-      console.log('this.cachedUsers');
-      console.log(this.cachedUsers);
-      // console.log(this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)));
       // line below useless?
       this.users.data = this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.users.totalCount;
@@ -69,12 +64,8 @@ export class UsersComponent implements OnInit {
   }
 
   onPage(e: any): void {
-    console.log('SEND REQUEST');
-    console.log('e');
-    console.log(e);
     this.pageInfo.pageIndex = e.pageIndex;
     if (e.pageIndex > e.previousPageIndex && e.length > this.cachedUsers.length) {
-      console.log('IF');
       this.usersQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
@@ -83,7 +74,7 @@ export class UsersComponent implements OnInit {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            applications: {
+            users: {
               edges: [...prev.users.edges, ...fetchMoreResult.users.edges],
               pageInfo: fetchMoreResult.users.pageInfo,
               totalCount: fetchMoreResult.users.totalCount
@@ -92,7 +83,6 @@ export class UsersComponent implements OnInit {
         }
       });
     } else {
-      console.log('ELSE');
       this.users.data = this.cachedUsers.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
