@@ -1,5 +1,5 @@
 import {Apollo} from 'apollo-angular';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, Output, ViewChild, EventEmitter} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -31,6 +31,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService: any;
+
+  @Input() pageInfo: any;
+
+  // == OUTPUT ==
+  @Output() onPageEvent = new EventEmitter<any>();
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
@@ -204,5 +209,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  onPage(e: any): void {
+    console.log(e);
+    this.onPageEvent.emit(e);
+    // this.pageInfo.pageInfo = e.pageIndex; // have to send again pageInfo
+
   }
 }

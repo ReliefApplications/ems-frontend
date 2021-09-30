@@ -21,32 +21,34 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatTableModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSortModule,
-    MatChipsModule,
-    MatRippleModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatDividerModule,
-    SafeButtonModule,
-    MatTooltipModule,
-    SafeInviteUsersModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatTableModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSortModule,
+        MatChipsModule,
+        MatRippleModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule,
+        MatDividerModule,
+        SafeButtonModule,
+        MatTooltipModule,
+        SafeInviteUsersModule,
+        MatPaginatorModule
+    ],
   exports: [SafeUsersComponent]
 })
 export class SafeUsersModule { }
