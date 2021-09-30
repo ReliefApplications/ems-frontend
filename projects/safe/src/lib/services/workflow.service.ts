@@ -2,7 +2,7 @@ import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../graphql/queries';
 import { AddStepMutationResponse, ADD_STEP } from '../graphql/mutations';
 import { Workflow } from '../models/workflow.model';
@@ -19,8 +19,21 @@ export class SafeWorkflowService {
 
   // tslint:disable-next-line: variable-name
   private _workflow = new BehaviorSubject<Workflow | null>(null);
+  private workflowSubscription?: Subscription;
   // tslint:disable-next-line: variable-name
   private _records = new BehaviorSubject<Record[]>([]);
+
+  /*  Return the workflow as an Observable.
+  */
+  get workflow(): Observable<Workflow | null> {
+    return this._workflow.asObservable();
+  }
+
+  /*  Return records as an Observable.
+  */
+  get records(): Observable<Record[]> {
+    return this._records.asObservable();
+  }
 
   constructor(
     private apollo: Apollo,
@@ -31,20 +44,14 @@ export class SafeWorkflowService {
   /*  Get the workflow from the database, using GraphQL.
   */
   loadWorkflow(id: any): void {
-    this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
-    query: GET_WORKFLOW_BY_ID,
-    variables: {
-      id
-    }
-    }).valueChanges.subscribe(res => {
-    this._workflow.next(res.data.workflow);
+    this.workflowSubscription = this.apollo.query<GetWorkflowByIdQueryResponse>({
+      query: GET_WORKFLOW_BY_ID,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      this._workflow.next(res.data.workflow);
     });
-  }
-
-  /*  Return the workflow as an Observable.
-  */
-  get workflow(): Observable<Workflow | null> {
-    return this._workflow.asObservable();
   }
 
   /* Add a step to the opened workflow and navigate to it.
@@ -87,7 +94,7 @@ export class SafeWorkflowService {
         }
         return x;
       }) };
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name));
       this._workflow.next(newWorkflow);
     }
   }
@@ -96,11 +103,5 @@ export class SafeWorkflowService {
   */
   storeRecords(records: Record[]): void {
     this._records.next(records);
-  }
-
-  /*  Return records as an Observable.
-  */
-  get records(): Observable<Record[]> {
-    return this._records.asObservable();
   }
 }
