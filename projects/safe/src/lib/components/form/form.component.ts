@@ -107,7 +107,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.isStep = this.router.url.includes('/workflow/');
     if (this.isStep) {
-      this.recordsSubscription = this.workflowService.records.subscribe(records => {
+      this.recordsSubscription = this.workflowService.records$.subscribe(records => {
         if (records.length > 0) {
           const mergedData = this.mergedData(records);
           cachedData = Object.assign({}, mergedData);
