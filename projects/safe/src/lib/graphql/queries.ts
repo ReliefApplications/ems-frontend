@@ -1,5 +1,4 @@
-import {gql} from 'apollo-angular';
-
+import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
 import { Role, User, Permission } from '../models/user.model';
@@ -131,6 +130,9 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
       canUpdate
       canDelete
     }
+    coreForm {
+      uniqueRecord { id }
+    }
     permissions {
       canSee {
         id
@@ -179,21 +181,13 @@ export interface GetFormsQueryResponse {
 }
 
 // === GET RESOURCES ===
-
 export const GET_RESOURCES = gql`
-{
-  resources {
+query GetResources($first: Int, $afterCursor: ID) {
+  resources(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
         id
         name
-        forms {
-          id
-          name
-        }
-        coreForm {
-          uniqueRecord { id }
-        }
       }
       cursor
     }

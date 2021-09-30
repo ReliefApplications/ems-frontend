@@ -10,6 +10,8 @@ import * as SurveyCreator from 'survey-creator';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
+import { DomService } from '../../services/dom.service';
 
 export const resourcesFilterValues =
   new BehaviorSubject<{ field: string, operator: string, value: string }[]>([{field: '', operator: '', value: ''}]);
@@ -24,11 +26,7 @@ export const resourceConditions = [
   {value: '<=', text: 'less or equals'}
 ];
 
-export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
-  let resourcesForms: any[] = [];
-  const getResources = () => apollo.query<GetResourcesQueryResponse>({
-    query: GET_RESOURCES,
-  });
+export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
 
   const getResourceById = (data: {
     id: string, filters?:
@@ -43,8 +41,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
     });
   };
 
-  const hasUniqueRecord = ((id: string) =>
-    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
+  const hasUniqueRecord = ((id: string) => false);
+    // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   let filters: { field: string, operator: string, value: string }[] = [{
     field: '',
@@ -68,22 +66,28 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
       Survey.Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
+        type: 'resourcesDropdown',
         visibleIndex: 3,
-        required: true,
-        choices: (obj: any, choicesCallback: any) => {
-          console.log(obj);
-          getResources().subscribe((response) => {
-            const serverRes = response.data.resources.edges.map(x => x.node);
-            resourcesForms = response.data.resources.edges.map(x => x.node);
-            const res = [];
-            res.push({value: null});
-            for (const item of serverRes) {
-              res.push({value: item.id, text: item.name});
-            }
-            choicesCallback(res);
-          });
-        },
+        required: true
       });
+
+      const resourceEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(SafeResourceDropdownComponent, htmlElement);
+          const instance: SafeResourceDropdownComponent = dropdown.instance;
+          instance.resource = question.resource;
+          instance.choice.subscribe(res => {
+            return editor.onChanged(res);
+          });
+        }
+      };
+
+      SurveyCreator
+        .SurveyPropertyEditorFactory
+        .registerCustomEditor('resourcesDropdown', resourceEditor);
+
+
       Survey.Serializer.addProperty('resources', {
         name: 'displayField',
         category: 'Custom Questions',
@@ -120,7 +124,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
         .metaData
         .addProperty('resources', {
           name: 'Search resource table',
-          type: 'availableFieldsBtn',
+          type: 'resourcesFields',
           isRequired: true,
           category: 'Custom Questions',
           dependsOn: 'resource',
@@ -128,7 +132,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           visibleIndex: 4
         });
 
-      const setGridFieldsBtn = {
+      const availableFieldsEditor = {
         render: (editor: any, htmlElement: any) => {
           const btn = document.createElement('button');
           btn.innerText = 'Available grid fields';
@@ -171,7 +175,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
 
       SurveyCreator
         .SurveyPropertyEditorFactory
-        .registerCustomEditor('availableFieldsBtn', setGridFieldsBtn);
+        .registerCustomEditor('resourcesFields', availableFieldsEditor);
 
 
       Survey.Serializer.addProperty('resources', {

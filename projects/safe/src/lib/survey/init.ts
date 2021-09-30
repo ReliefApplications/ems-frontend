@@ -30,7 +30,7 @@ export function initCustomWidgets(
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
   initResourceComponent(Survey, apollo, dialog, formBuilder);
-  initResourcesComponent(Survey, apollo, dialog, formBuilder);
+  initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
   initCustomWidget(Survey, domService, dialog, environment);
   addCustomFunctions(Survey, authService);
 }

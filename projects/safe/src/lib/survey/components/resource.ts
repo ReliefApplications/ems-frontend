@@ -52,12 +52,11 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
     resourceFieldsName: [] as any[],
     onInit(): void {
       Survey.Serializer.addProperty('resource', {
-        name: 'resource:select2',
+        name: 'resource',
         category: 'Custom Questions',
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-          console.log(obj);
           getResources().subscribe((response) => {
             const serverRes = response.data.resources.edges.map(x => x.node);
             resourcesForms = response.data.resources.edges.map(x => x.node);
@@ -107,7 +106,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
         .metaData
         .addProperty('resource', {
           name: 'Search resource table',
-          type: 'availableFieldsBn',
+          type: 'resourceFields',
           isRequired: true,
           category: 'Custom Questions',
           dependsOn: ['resource'],
@@ -115,7 +114,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           visibleIndex: 4
         });
 
-      const setGridFieldsBtn = {
+      const availableFieldsEditor = {
         render: (editor: any, htmlElement: any) => {
           const btn = document.createElement('button');
           btn.innerText = 'Available grid fields';
@@ -149,7 +148,7 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
 
       SurveyCreator
         .SurveyPropertyEditorFactory
-        .registerCustomEditor('availableFieldsBn', setGridFieldsBtn);
+        .registerCustomEditor('resourceFields', availableFieldsEditor);
 
       Survey.Serializer.addProperty('resource', {
         name: 'test service',
