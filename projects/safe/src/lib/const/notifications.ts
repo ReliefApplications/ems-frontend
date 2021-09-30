@@ -3,7 +3,7 @@
 export const NOTIFICATIONS = {
     appPublished(name: any): string { return `Application ${name} published.`; } ,
     userInvalidActions(action: any): string  { return `User could not be ${action}.`; } ,
-    accessNotProvided(type: any, error?: any): string  { return `No access provided to this ${type}. ${error}`; } ,
+    accessNotProvided(type: any, error?: any): string  { return `No access provided to this ${type}. ${error ? error : ''}`; } ,
     userRolesUpdated(username: any): string  { return `${username} roles updated.`; },
     usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; }, //
     objectNotUpdated(type: any, error: any): string  { return `${type} is locked for edition. ${error}`; },
