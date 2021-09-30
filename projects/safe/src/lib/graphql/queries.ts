@@ -108,6 +108,14 @@ export interface GetRelatedFormsQueryResponse {
   resource: Resource;
 }
 
+export const GET_SHORT_RESOURCE_BY_ID = gql`
+query GetShortResourceById($id: ID!) {
+  resource(id: $id) {
+    id
+    name
+  }
+}`;
+
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
 query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {

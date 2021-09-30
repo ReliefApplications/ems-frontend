@@ -1,21 +1,17 @@
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
-  GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
+  GetResourceByIdQueryResponse
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
+import { DomService } from '../../services/dom.service';
 
-export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
-  let resourcesForms: any[] = [];
-  const getResources = () => apollo.query<GetResourcesQueryResponse>({
-    query: GET_RESOURCES,
-  });
+export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
 
   const getResourceById = (data: {
     id: string, filters?:
@@ -34,8 +30,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
     value: ''
   }];
 
-  const hasUniqueRecord = ((id: string) =>
-    resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
+  // const hasUniqueRecord = ((id: string) => false);
+    // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   const component = {
     name: 'resource',
@@ -54,21 +50,27 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
       Survey.Serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
+        type: 'resourceDropdown',
         visibleIndex: 3,
-        required: true,
-        choices: (obj: any, choicesCallback: any) => {
-          getResources().subscribe((response) => {
-            const serverRes = response.data.resources.edges.map(x => x.node);
-            resourcesForms = response.data.resources.edges.map(x => x.node);
-            const res = [];
-            res.push({value: null});
-            for (const item of serverRes) {
-              res.push({value: item.id, text: item.name});
-            }
-            choicesCallback(res);
+        required: true
+      });
+
+      const resourceEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(SafeResourceDropdownComponent, htmlElement);
+          const instance: SafeResourceDropdownComponent = dropdown.instance;
+          instance.resource = question.resource;
+          instance.choice.subscribe(res => {
+            return editor.onChanged(res);
           });
         }
-      });
+      };
+
+      SurveyCreator
+        .SurveyPropertyEditorFactory
+        .registerCustomEditor('resourceDropdown', resourceEditor);
+
       Survey.Serializer.addProperty('resource', {
         name: 'displayField',
         category: 'Custom Questions',
@@ -185,7 +187,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           if (!obj || !obj.resource) {
             return false;
           } else {
-            return !hasUniqueRecord(obj.resource);
+            return true;
+            // return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
@@ -198,7 +201,8 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
           if (!obj || !obj.canAddNew) {
             return false;
           } else {
-            return !hasUniqueRecord(obj.resource);
+            return true;
+            // return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,

@@ -3,7 +3,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
-import { GetResourcesQueryResponse, GET_RESOURCES } from '../../graphql/queries';
+import { GetResourceByIdQueryResponse, GetResourcesQueryResponse, GET_RESOURCES, GET_SHORT_RESOURCE_BY_ID } from '../../graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 
@@ -27,6 +27,7 @@ export class SafeResourceDropdownComponent implements OnInit {
   @Input() resource = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
+  public selectedResource: Resource | null = null;
   private resources = new BehaviorSubject<Resource[]>([]);
   public resources$!: Observable<Resource[]>;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -41,6 +42,20 @@ export class SafeResourceDropdownComponent implements OnInit {
   constructor(private apollo: Apollo) { }
 
   ngOnInit(): void {
+
+    if (this.resource) {
+      this.apollo.query<GetResourceByIdQueryResponse>({
+        query: GET_SHORT_RESOURCE_BY_ID,
+        variables: {
+          id: this.resource
+        }
+      }).subscribe(res => {
+        if (res.data.resource) {
+          this.selectedResource = res.data.resource;
+        }
+      });
+    }
+
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -90,6 +105,13 @@ export class SafeResourceDropdownComponent implements OnInit {
           },
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
+            if (this.selectedResource) {
+              console.log('yes');
+              if (fetchMoreResult.resources.edges.find(x => x.node.id === this.selectedResource?.id)) {
+                console.log('yes');
+                this.selectedResource = null;
+              }
+            }
             return Object.assign({}, prev, {
               resources: {
                 edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],

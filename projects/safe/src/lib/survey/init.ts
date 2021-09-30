@@ -29,7 +29,7 @@ export function initCustomWidgets(
   widgets.select2tagbox(Survey);
   initCountryComponent(Survey);
   initCountriesComponent(Survey);
-  initResourceComponent(Survey, apollo, dialog, formBuilder);
+  initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
   initCustomWidget(Survey, domService, dialog, environment);
   addCustomFunctions(Survey, authService);

@@ -1,9 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
-  GET_RESOURCES,
-  GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse
+  GetResourceByIdQueryResponse
 } from '../../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
@@ -41,7 +39,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
     });
   };
 
-  const hasUniqueRecord = ((id: string) => false);
+  // const hasUniqueRecord = ((id: string) => false);
     // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   let filters: { field: string, operator: string, value: string }[] = [{
@@ -226,7 +224,8 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           if (!obj || !obj.resource) {
             return false;
           } else {
-            return !hasUniqueRecord(obj.resource);
+            return true;
+            // return !hasUniqueRecord(obj.resource);
           }
         },
         visibleIndex: 3,
@@ -239,11 +238,12 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           if (!obj.resource || !obj.canAddNew) {
             return false;
           } else {
-            const uniqueRecord = hasUniqueRecord(obj.resource);
-            if (uniqueRecord) {
-              obj.canAddNew = false;
-            }
-            return !uniqueRecord;
+            return true;
+            // const uniqueRecord = hasUniqueRecord(obj.resource);
+            // if (uniqueRecord) {
+            //   obj.canAddNew = false;
+            // }
+            // return !uniqueRecord;
           }
         },
         visibleIndex: 3,
