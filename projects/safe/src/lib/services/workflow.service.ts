@@ -17,22 +17,19 @@ import { NOTIFICATIONS } from '../const/notifications';
 })
 export class SafeWorkflowService {
 
-  // tslint:disable-next-line: variable-name
-  private _workflow = new BehaviorSubject<Workflow | null>(null);
-  private workflowSubscription?: Subscription;
-  // tslint:disable-next-line: variable-name
-  private _records = new BehaviorSubject<Record[]>([]);
+  private workflow = new BehaviorSubject<Workflow | null>(null);
+  private records = new BehaviorSubject<Record[]>([]);
 
   /*  Return the workflow as an Observable.
   */
-  get workflow(): Observable<Workflow | null> {
-    return this._workflow.asObservable();
+  get workflow$(): Observable<Workflow | null> {
+    return this.workflow.asObservable();
   }
 
   /*  Return records as an Observable.
   */
-  get records(): Observable<Record[]> {
-    return this._records.asObservable();
+  get records$(): Observable<Record[]> {
+    return this.records.asObservable();
   }
 
   constructor(
@@ -44,20 +41,20 @@ export class SafeWorkflowService {
   /*  Get the workflow from the database, using GraphQL.
   */
   loadWorkflow(id: any): void {
-    this.workflowSubscription = this.apollo.query<GetWorkflowByIdQueryResponse>({
+    this.apollo.query<GetWorkflowByIdQueryResponse>({
       query: GET_WORKFLOW_BY_ID,
       variables: {
         id
       }
     }).subscribe(res => {
-      this._workflow.next(res.data.workflow);
+      this.workflow.next(res.data.workflow);
     });
   }
 
   /* Add a step to the opened workflow and navigate to it.
   */
   addStep(value: any, route: ActivatedRoute): void {
-    const workflow = this._workflow.getValue();
+    const workflow = this.workflow.getValue();
     if (workflow) {
       this.apollo.mutate<AddStepMutationResponse>({
         mutation: ADD_STEP,
@@ -86,7 +83,7 @@ export class SafeWorkflowService {
   /* Update a specific step name in the opened workflow.
   */
   updateStepName(step: Step): void {
-    const workflow = this._workflow.getValue();
+    const workflow = this.workflow.getValue();
     if (workflow) {
       const newWorkflow: Workflow = { ...workflow, steps: workflow.steps?.map(x => {
         if (x.id === step.id) {
@@ -95,13 +92,13 @@ export class SafeWorkflowService {
         return x;
       }) };
       this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name));
-      this._workflow.next(newWorkflow);
+      this.workflow.next(newWorkflow);
     }
   }
 
   /*  Store records used to prefill next step form
   */
   storeRecords(records: Record[]): void {
-    this._records.next(records);
+    this.records.next(records);
   }
 }

@@ -106,9 +106,7 @@ export class SafeResourceDropdownComponent implements OnInit {
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
             if (this.selectedResource) {
-              console.log('yes');
               if (fetchMoreResult.resources.edges.find(x => x.node.id === this.selectedResource?.id)) {
-                console.log('yes');
                 this.selectedResource = null;
               }
             }
