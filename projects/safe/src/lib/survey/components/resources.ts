@@ -71,9 +71,10 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
+          console.log(obj);
           getResources().subscribe((response) => {
-            const serverRes = response.data.resources;
-            resourcesForms = response.data.resources;
+            const serverRes = response.data.resources.edges.map(x => x.node);
+            resourcesForms = response.data.resources.edges.map(x => x.node);
             const res = [];
             res.push({value: null});
             for (const item of serverRes) {

@@ -1,9 +1,9 @@
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
-  GET_RESOURCES,
   GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse
+  GetResourcesQueryResponse,
+  GET_RESOURCES,
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
@@ -52,23 +52,22 @@ export function init(Survey: any, apollo: Apollo, dialog: MatDialog, formBuilder
     resourceFieldsName: [] as any[],
     onInit(): void {
       Survey.Serializer.addProperty('resource', {
-        name: 'resource',
+        name: 'resource:select2',
         category: 'Custom Questions',
         visibleIndex: 3,
         required: true,
         choices: (obj: any, choicesCallback: any) => {
-          getResources().subscribe(
-            (response: any) => {
-              const serverRes = response.data.resources;
-              resourcesForms = response.data.resources;
-              const res = [];
-              res.push({value: null});
-              for (const item of serverRes) {
-                res.push({value: item.id, text: item.name});
-              }
-              choicesCallback(res);
+          console.log(obj);
+          getResources().subscribe((response) => {
+            const serverRes = response.data.resources.edges.map(x => x.node);
+            resourcesForms = response.data.resources.edges.map(x => x.node);
+            const res = [];
+            res.push({value: null});
+            for (const item of serverRes) {
+              res.push({value: item.id, text: item.name});
             }
-          );
+            choicesCallback(res);
+          });
         }
       });
       Survey.Serializer.addProperty('resource', {

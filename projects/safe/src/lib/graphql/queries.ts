@@ -183,21 +183,41 @@ export interface GetFormsQueryResponse {
 export const GET_RESOURCES = gql`
 {
   resources {
-    id
-    name
-    forms {
-      id
-      name
+    edges {
+      node {
+        id
+        name
+        forms {
+          id
+          name
+        }
+        coreForm {
+          uniqueRecord { id }
+        }
+      }
+      cursor
     }
-    coreForm {
-      uniqueRecord { id }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetResourcesQueryResponse {
   loading: boolean;
-  resources: Resource[];
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET RECORD BY ID ===
