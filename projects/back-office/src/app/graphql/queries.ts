@@ -6,25 +6,45 @@ import {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
-    id
-    username
-    name
-    roles {
-      id
-      title
-      application {
+query GetUsers($first: Int, $afterCursor: String){
+  users(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
+        username
+        roles {
+          id
+          title
+          application {
+            id
+          }
+        }
+        oid
       }
+      cursor
     }
-    oid
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetUsersQueryResponse {
   loading: boolean;
-  users: User[];
+  // users: User[];
+  users: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET ROLES ===

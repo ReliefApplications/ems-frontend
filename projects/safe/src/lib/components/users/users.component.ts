@@ -212,9 +212,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onPage(e: any): void {
-    console.log(e);
     this.onPageEvent.emit(e);
-    // this.pageInfo.pageInfo = e.pageIndex; // have to send again pageInfo
-
   }
 }

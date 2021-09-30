@@ -46,20 +46,18 @@ export class UsersComponent implements OnInit {
       }
     });
 
-    console.log('before sub');
-
-    this.usersQuery.valueChanges.subscribe(resUsers => {
-      console.log('in');
-      console.log('resUsers');
-      console.log(resUsers);
-      this.loading = true;
-
-      this.cachedUsers = resUsers.data.users;
-      this.users.data = this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    this.usersQuery.valueChanges.subscribe(res => {
+      this.cachedUsers = res.data.users.edges.map(x => x.node);
+      // console.log('res');
+      // console.log(res);
       console.log('this.cachedUsers');
       console.log(this.cachedUsers);
-
-      this.pageInfo.length = resUsers.data.users.length;
+      // console.log(this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)));
+      // line below useless?
+      this.users.data = this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.users.totalCount;
+      this.pageInfo.endCursor = res.data.users.pageInfo.endCursor;
+      this.loading = res.loading;
 
       this.apollo.watchQuery<GetRolesQueryResponse>({
         query: GET_ROLES
@@ -68,41 +66,35 @@ export class UsersComponent implements OnInit {
         this.loading = resRoles.loading;
       });
     });
-
-    // this.usersQuery.valueChanges.subscribe(res => {
-    //   this.cachedUsers = res.data.users;
-    //   this.users.data = this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-    //   console.log('this.cachedUsers');
-    //   console.log(this.cachedUsers);
-    //   console.log('this.users.data');
-    //   console.log(this.users.data);
-    // });
   }
 
   onPage(e: any): void {
+    console.log('SEND REQUEST');
     console.log('e');
     console.log(e);
-    console.log(this.usersQuery);
-    // if (e.pageIndex > e.previousPageIndex && e.length > this.cachedUsers.length) {
-    //   this.usersQuery.fetchMore({
-    //     variables: {
-    //       first: ITEMS_PER_PAGE,
-    //       afterCursor: this.pageInfo.endCursor
-    //     },
-    //     updateQuery: (prev, { fetchMoreResult }) => {
-    //       if (!fetchMoreResult) { return prev; }
-    //       return Object.assign({}, prev, {
-    //         applications: {
-    //           edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
-    //           pageInfo: fetchMoreResult.applications.pageInfo,
-    //           totalCount: fetchMoreResult.applications.totalCount
-    //         }
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   this.applications.data = this.cachedApplications.slice(
-    //     ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-    // }
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedUsers.length) {
+      console.log('IF');
+      this.usersQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            applications: {
+              edges: [...prev.users.edges, ...fetchMoreResult.users.edges],
+              pageInfo: fetchMoreResult.users.pageInfo,
+              totalCount: fetchMoreResult.users.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      console.log('ELSE');
+      this.users.data = this.cachedUsers.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 }

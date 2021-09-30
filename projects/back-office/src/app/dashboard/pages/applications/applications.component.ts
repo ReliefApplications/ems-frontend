@@ -78,7 +78,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       console.log('this.applications.data');
-      console.log(this.applications.data);
+      console.log(this.cachedApplications.slice(ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
