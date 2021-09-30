@@ -35,7 +35,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() pageInfo: any;
 
   // == OUTPUT ==
-  @Output() onPageEvent = new EventEmitter<any>();
+  @Output() pageEvent = new EventEmitter<any>();
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
@@ -212,6 +212,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onPage(e: any): void {
-    this.onPageEvent.emit(e);
+    this.pageEvent.emit(e);
   }
 }
