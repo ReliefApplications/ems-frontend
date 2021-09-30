@@ -84,40 +84,70 @@ export interface GetDashboardsQueryResponse {
 
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
-query GetFormNames {
-  forms {
-    id
-    name
+query GetFormNames($first: Int, $afterCursor: ID) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms {
-  forms {
-    id
-    name
-    createdAt
-    status
-    versionsCount
-    recordsCount
-    core
-    canSee
-    canCreateRecords
-    canUpdate
-    canDelete
-    resource {
-      id
-      coreForm {
+query GetShortForms($first: Int, $afterCursor: ID) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
         name
+        createdAt
+        status
+        versionsCount
+        recordsCount
+        core
+        canSee
+        canCreateRecords
+        canUpdate
+        canDelete
+        resource {
+          id
+          coreForm {
+            id
+            name
+          }
+        }
       }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
-  forms: Form[];
+  forms: {
+    edges: {
+      node: Form;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET FORM BY ID ===
@@ -246,31 +276,61 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
-{
-  resources {
-    id
-    name
-    forms {
-      id
-      name
+query GetResources($first: Int, $afterCursor: ID){
+  resources(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        forms {
+          id
+          name
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-{
-  resources {
-    id
-    name
-    createdAt
-    recordsCount
-    canDelete
+query GetResourcesExtended($first: Int, $afterCursor: ID){
+  resources(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        createdAt
+        recordsCount
+        canDelete
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetResourcesQueryResponse {
   loading: boolean;
-  resources: Resource[];
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET RECORD BY ID ===
@@ -351,7 +411,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: String){
+query GetApplications($first: Int, $afterCursor: ID){
   applications(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
