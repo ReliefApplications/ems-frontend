@@ -1,25 +1,33 @@
-import {Apollo, QueryRef} from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../graphql/queries';
-import { MatSelect } from '@angular/material/select';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Resource } from '../../models/resource.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Resource } from '@safe/builder';
+import { MatSelect } from '@angular/material/select';
+import { GetResourceByIdQueryResponse, GetResourcesQueryResponse, GET_RESOURCES, GET_SHORT_RESOURCE_BY_ID } from '../../graphql/queries';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 
 const ITEMS_PER_PAGE = 10;
 
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+  const block = () => overlay.scrollStrategies.block();
+  return block;
+}
+
 @Component({
-  selector: 'app-add-form',
-  templateUrl: './add-form.component.html',
-  styleUrls: ['./add-form.component.scss']
+  selector: 'safe-resource-dropdown',
+  templateUrl: './resource-dropdown.component.html',
+  styleUrls: ['./resource-dropdown.component.scss'],
+  providers: [
+    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+  ]
 })
-export class AddFormComponent implements OnInit {
+export class SafeResourceDropdownComponent implements OnInit {
 
-  // === REACTIVE FORM ===
-  public addForm: FormGroup = new FormGroup({});
+  @Input() resource = '';
+  @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
-  // === DATA ===
+  public selectedResource: Resource | null = null;
   private resources = new BehaviorSubject<Resource[]>([]);
   public resources$!: Observable<Resource[]>;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -29,26 +37,24 @@ export class AddFormComponent implements OnInit {
   };
   private loading = true;
 
-  public templates: any[] = [];
-
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddFormComponent>,
-    private apollo: Apollo,
-  ) { }
+  constructor(private apollo: Apollo) { }
 
-  /*  Load the resources and build the form.
-  */
   ngOnInit(): void {
-    this.addForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      binding: ['', Validators.required],
-      resource: [null],
-      inheritsTemplate: [false],
-      template: [null]
-    });
+
+    if (this.resource) {
+      this.apollo.query<GetResourceByIdQueryResponse>({
+        query: GET_SHORT_RESOURCE_BY_ID,
+        variables: {
+          id: this.resource
+        }
+      }).subscribe(res => {
+        if (res.data.resource) {
+          this.selectedResource = res.data.resource;
+        }
+      });
+    }
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
@@ -65,31 +71,19 @@ export class AddFormComponent implements OnInit {
     });
   }
 
-  /*  Called on resource input change.
-    Load the templates linked to that resource.
-  */
-  getResource(e: any): void {
-    this.apollo.query<GetResourceByIdQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
-      variables: {
-        id: e.value
-      }
-    }).subscribe(res => {
-      this.templates = res.data.resource.forms || [];
-    });
-  }
-
-  /*  Close the modal without sending any data.
-  */
-  onClose(): void {
-    this.dialogRef.close();
+  /**
+   * Emits the selected resource id.
+   * @param e select event.
+   */
+  onSelect(e: any): void {
+    this.choice.emit(e.value);
   }
 
   /**
    * Adds scroll listener to select.
    * @param e open select event.
    */
-  onOpenSelect(e: any): void {
+   onOpenSelect(e: any): void {
     if (e && this.resourceSelect) {
       const panel = this.resourceSelect.panel.nativeElement;
       panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
@@ -111,6 +105,13 @@ export class AddFormComponent implements OnInit {
           },
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
+            if (this.selectedResource) {
+              console.log('yes');
+              if (fetchMoreResult.resources.edges.find(x => x.node.id === this.selectedResource?.id)) {
+                console.log('yes');
+                this.selectedResource = null;
+              }
+            }
             return Object.assign({}, prev, {
               resources: {
                 edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],

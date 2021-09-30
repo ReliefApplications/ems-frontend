@@ -65,35 +65,35 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   /*  Load the list of resources or forms.
   */
   getSources(e: any, init?: boolean): void {
-    if (e.value === 'resource') {
-      this.apollo.query<GetResourcesQueryResponse>({
-        query: GET_RESOURCES
-      }).subscribe(res => {
-        this.sources = res.data.resources.map(source => source = { id: source.id, name: source.name });
-        if (!init) {
-          this.tileForm.get('source')?.setValue(null);
-          this.tileForm.get('events.title')?.setValue(null);
-          this.tileForm.get('events.description')?.setValue(null);
-          this.tileForm.get('events.startDate')?.setValue(null);
-          this.tileForm.get('events.endDate')?.setValue(null);
-        }
-        this.fields = [];
-      });
-    } else {
-      this.apollo.query<GetFormsQueryResponse>({
-        query: GET_FORMS
-      }).subscribe(res => {
-        this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
-        if (!init) {
-          this.tileForm.get('source')?.setValue(null);
-          this.tileForm.get('events.title')?.setValue(null);
-          this.tileForm.get('events.description')?.setValue(null);
-          this.tileForm.get('events.startDate')?.setValue(null);
-          this.tileForm.get('events.endDate')?.setValue(null);
-        }
-        this.fields = [];
-      });
-    }
+    // if (e.value === 'resource') {
+    //   this.apollo.query<GetResourcesQueryResponse>({
+    //     query: GET_RESOURCES
+    //   }).subscribe(res => {
+    //     this.sources = res.data.resources.edges.map(x => x.node.source = { id: source.id, name: source.name });
+    //     if (!init) {
+    //       this.tileForm.get('source')?.setValue(null);
+    //       this.tileForm.get('events.title')?.setValue(null);
+    //       this.tileForm.get('events.description')?.setValue(null);
+    //       this.tileForm.get('events.startDate')?.setValue(null);
+    //       this.tileForm.get('events.endDate')?.setValue(null);
+    //     }
+    //     this.fields = [];
+    //   });
+    // } else {
+    //   this.apollo.query<GetFormsQueryResponse>({
+    //     query: GET_FORMS
+    //   }).subscribe(res => {
+    //     this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
+    //     if (!init) {
+    //       this.tileForm.get('source')?.setValue(null);
+    //       this.tileForm.get('events.title')?.setValue(null);
+    //       this.tileForm.get('events.description')?.setValue(null);
+    //       this.tileForm.get('events.startDate')?.setValue(null);
+    //       this.tileForm.get('events.endDate')?.setValue(null);
+    //     }
+    //     this.fields = [];
+    //   });
+    // }
   }
 
   /*  Load a resource or a form.
