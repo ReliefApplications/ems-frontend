@@ -2,9 +2,7 @@
     <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 1 }">
         <ng-container *ngSwitchCase="1">
             <h2>Select what type of page you want to create</h2>
-            <mat-radio-group formControlName="type">
-                <safe-content-choice [contentTypes]="contentTypes" [form]="pageForm" [assetsPath]="assetsPath"></safe-content-choice>
-            </mat-radio-group>
+            <safe-content-choice formControlName="type" [contentTypes]="contentTypes"></safe-content-choice>
         </ng-container>
         <ng-container *ngSwitchCase="2">
             <h2>Available forms</h2>
@@ -20,7 +18,7 @@
         </ng-container>
     </div>
 </form>
-<div class="add-page-stepper">
+<div class="add-page-stepper" *ngIf="step !== 1">
     <safe-button [disabled]="step <= 1" (click)="onBack()">Back</safe-button>
     <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</safe-button>
 </div>

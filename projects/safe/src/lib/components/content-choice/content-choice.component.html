@@ -1,12 +1,7 @@
-
-<div class="content-choice">
-    <div class="content-type" *ngFor="let type of contentTypes">
-        <label>
-            <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
-            <div class="img-choice" matRipple [ngClass]="{'img-selected': type === form.value.type }">
-                <img src="{{assetsPath}}/{{type}}.svg">
-            </div>
-        </label>
+<div class="safe-content-choice">
+    <div class="safe-content-type" *ngFor="let type of contentTypes" (click)="onSelect(type.value)" matRipple [style.background]="type.color">
+        <img [src]="type.img">
+        <span>{{ type.name | titlecase }}</span>
+        <div *ngIf="type.value === selected" [style.background]="type.focusColor" class="safe-type-selected"></div>
     </div>
-</div>
-
+</div> 
