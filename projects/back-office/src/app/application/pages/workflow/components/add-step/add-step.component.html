@@ -2,16 +2,7 @@
     <div class="form-group" [ngSwitch]="stage"  [ngClass]="{'content-choice-step': stage === 1 }">
         <ng-container *ngSwitchCase="1">
             <h2>Select which type of step you want to create</h2>
-            <mat-radio-group class="content-choice" formControlName="type">
-                <div class="content-type" *ngFor="let type of contentTypes">
-                    <label>
-                        <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
-                        <div class="img-choice" matRipple [ngClass]="{'img-selected': type === stepForm.value.type }">
-                            <img src="{{assetsPath}}/{{type}}.svg">
-                        </div>
-                    </label>
-                </div>
-            </mat-radio-group>
+            <safe-content-choice formControlName="type" [contentTypes]="contentTypes"></safe-content-choice>
         </ng-container>
         <ng-container *ngSwitchCase="2">
             <h2>Available forms</h2>
@@ -27,7 +18,7 @@
         </ng-container>
     </div>
 </form>
-<div class="add-step-stepper">
+<div class="add-step-stepper" *ngIf="stage !== 1">
     <safe-button [disabled]="stage <= 1" (click)="onBack()">Back</safe-button>
     <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</safe-button>
 </div>
