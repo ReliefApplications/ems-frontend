@@ -13,13 +13,6 @@ export class SafeGridService {
   // === LIST OF DEFAULT WIDGETS AVAILABLE ===
   public availableTiles = AVAILABLE_TILES;
 
-  public layout: any;
-
-  public layoutObservable: any = new Observable();
-
-  public DataSource: Subject<any> = new Subject<any>();
-  public Data = this.DataSource.asObservable();
-
   constructor() { }
 
   /*  Find the settings component from the widget passed as 'tile'.
