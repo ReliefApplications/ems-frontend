@@ -57,12 +57,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
+      this.apollo.query<GetDashboardByIdQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id
         }
-      }).valueChanges.subscribe((res) => {
+      }).subscribe((res) => {
         if (res.data.dashboard) {
           this.dashboard = res.data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
