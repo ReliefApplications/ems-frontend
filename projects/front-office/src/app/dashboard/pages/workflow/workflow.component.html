@@ -2,7 +2,7 @@
 <ng-container *ngIf="!loading && workflow">
     <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper>
         <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
-            <router-outlet *ngIf="i === selectedIndex" (activate)="onActivate($event, stepper)"></router-outlet>
+            <router-outlet *ngIf="i === selectedStepIndex" (activate)="onActivate($event, stepper)"></router-outlet>
         </mat-step>
     </mat-horizontal-stepper>
 </ng-container>

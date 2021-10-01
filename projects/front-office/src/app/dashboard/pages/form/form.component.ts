@@ -58,7 +58,14 @@ export class FormComponent implements OnInit, OnDestroy {
               id: this.step.content
             }
           }).valueChanges.subscribe((res2) => {
-            this.form = res2.data.form;
+            if (res2.data) {
+              this.form = res2.data.form;
+            }
+            if (!this.form || this.form.status !== 'active' || !this.form.canCreateRecords) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectAccessDenied('form'), { error: true });
+            } else {
+              this.canCreateRecords = true;
+            }
             this.loading = res2.data.loading;
           });
         });
