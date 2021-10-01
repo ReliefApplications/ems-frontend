@@ -81,29 +81,11 @@ export class PermissionsManagement {
             apiconfigurations: {
                 create: Permissions.canManageApiConfigurations,
                 access: Permissions.canManageApiConfigurations
-            },
-            edit: {
-                access: Permissions.canManageApplications
-            },
-            position: {
-                access: Permissions.canSeeRoles
-            },
-            channels: {
-                access: Permissions.canManageApplications
-            },
-            subscriptions: {
-                access: Permissions.canManageApplications
-            },
-            'pull-jobs': {
-                access: Permissions.canManageApplications
             }
         },
         applications: {
             create: Permissions.canManageApplications
         },
-        'add-page': {
-            access: Permissions.canManageApplications
-        }
     };
 
     public static getRightFromPath(path: string, type: PermissionType): string {

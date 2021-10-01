@@ -54,6 +54,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public otherOffice = '';
   private environment: any;
+  private inApplication = false;
 
   constructor(
     @Inject('environment') environment: any,
@@ -70,6 +71,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     if (this.environment.module === 'backoffice') {
+      this.inApplication = this.router.url.includes('/applications/');
       this.otherOffice = 'front office';
     } else {
       this.otherOffice = 'back office';
@@ -119,6 +121,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {
+          if (this.inApplication) {
+            return true;
+          }
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
           return this.authService.userHasClaim(permission);
         });
