@@ -19,7 +19,7 @@ export class SafeWidgetComponent implements OnInit {
     private dashboardService: SafeDashboardService
   ) { }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 

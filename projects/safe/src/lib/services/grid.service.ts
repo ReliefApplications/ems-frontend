@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AVAILABLE_TILES } from '../utils/available-tiles';
-import {Observable, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

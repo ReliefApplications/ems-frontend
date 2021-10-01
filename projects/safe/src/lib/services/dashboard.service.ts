@@ -28,48 +28,41 @@ export class SafeDashboardService {
     this.dashboard.next(null);
   }
 
-  async getWidgetLayout(widget: any): Promise<any> {
+  getWidgetLayout(widget: any): any {
+    const defaultLayout = JSON.parse(JSON.stringify(widget.settings.defaultLayout || {}));
+    const defaultDate = new Date(defaultLayout.timestamp || null);
     const dashboardId = this.dashboard.getValue()?.id;
-    const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${widget.id}`);
-    console.log(widget);
-    return cachedLayout ? JSON.parse(cachedLayout) : {};
-    // if (cachedLayout) {
-    //   return JSON.parse(cachedLayout);
-    // }
-    // let defaultLayout = {};
-    // await this.apollo.query<GetDashboardByIdQueryResponse>({
-    //   query: GET_DASHBOARD_BY_ID,
-    //   variables: {
-    //     id: dashboardId
-    //   }
-    // }).toPromise().then((res) => {
-    //   if (res.data.dashboard.structure[id].settings.defaultLayout){
-    //     defaultLayout = {...res.data.dashboard.structure[id].settings.defaultLayout};
-    //   }
-    //   else {
-    //     defaultLayout = {};
-    //   }
-    // });
-    // return defaultLayout;
+    const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+    const cachedDate = new Date(cachedLayout.timestamp || null);
+    if (defaultDate > cachedDate) {
+      return defaultLayout;
+    } else {
+      return cachedLayout;
+    }
   }
 
   saveWidgetLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
-    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify(layout));
+    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
   }
 
   saveWidgetDefaultLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
-    const dashboardStructureTemp = this.dashboard.getValue()?.structure;
-    const settingTemp = {...dashboardStructureTemp[id].settings, defaultLayout: layout};
-    const widgetTemp = {...dashboardStructureTemp[id], settings: settingTemp};
-    const structureToSend = [...dashboardStructureTemp];
-    structureToSend[id] = widgetTemp;
+    const dashboardStructure = this.dashboard.getValue()?.structure;
+    const widgetTemp = {
+      ...dashboardStructure[id],
+      settings: {
+        ...dashboardStructure[id].settings,
+        defaultLayout: { ...layout, timestamp: + new Date() }
+      }
+    };
+    const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
+    updatedDashboardStructure[id] = widgetTemp;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
         id: dashboardId,
-        structure: structureToSend,
+        structure: updatedDashboardStructure,
       }
     }).subscribe(res => {
     }, error => console.log(error));
