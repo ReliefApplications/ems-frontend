@@ -186,8 +186,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           id: this.id,
           steps: this.steps.map(step => step.id)
         }
-      }).subscribe(() => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+      }).subscribe(res => {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotEdited('Workflow', res.errors ? res.errors[0].message : ''));
+        }
       });
     }
   }

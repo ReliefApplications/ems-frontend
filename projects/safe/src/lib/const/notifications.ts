@@ -7,7 +7,8 @@ export const NOTIFICATIONS = {
     userRolesUpdated(username: any): string  { return `${username} roles updated.`; },
     usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; }, //
     objectNotUpdated(type: any, error: any): string  { return `${type} is locked for edition. ${error}`; },
-    objectEdited(type: any, name: any): string  { return `${name} ${type} edited.`; }, //
+    objectEdited(type: any, name: any): string  { return `${name} ${type} edited.`; },
+    objectNotEdited(type: any, error: any): string  { return `${type} not edited. ${error}`; },
     objectDuplicated(type: any, name: any): string  { return `The ${type} ${name} was successfully  duplicated.`; },
     objectNotDuplicated(type: any, error: any): string  { return `The ${type} was not duplicated. ${error}`; },
     objectAlreadyExists(type: any, value: any): string  { return `The ${type} ${value} already exists on this application.`; },

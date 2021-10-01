@@ -102,7 +102,6 @@ query GetShortForms {
     recordsCount
     core
     canSee
-    canCreate
     canUpdate
     canDelete
     resource {

@@ -68,6 +68,8 @@ export class SafeWorkflowService {
           } else {
             this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotEdited('Workflow', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     } else {
@@ -87,7 +89,7 @@ export class SafeWorkflowService {
         }
         return x;
       }) };
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name));
       this._workflow.next(newWorkflow);
     }
   }

@@ -209,9 +209,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
         if (res.data?.editStep) {
+          this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
           this.workflowService.updateStepName(res.data.editStep);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors ? res.errors[0].message : ''));
         }
       });
     } else {

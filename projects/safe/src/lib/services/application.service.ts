@@ -257,6 +257,8 @@ export class SafeApplicationService {
             this._application.next(newApplication);
             this.router.navigate([`./applications/${app.id}`]);
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
