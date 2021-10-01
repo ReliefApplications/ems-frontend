@@ -650,10 +650,6 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title

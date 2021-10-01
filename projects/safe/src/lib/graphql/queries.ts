@@ -678,10 +678,6 @@ export const GET_DASHBOARD_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title

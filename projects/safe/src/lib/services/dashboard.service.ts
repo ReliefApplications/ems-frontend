@@ -28,27 +28,29 @@ export class SafeDashboardService {
     this.dashboard.next(null);
   }
 
-  async getWidgetLayout(id: number): Promise<any> {
+  async getWidgetLayout(widget: any): Promise<any> {
     const dashboardId = this.dashboard.getValue()?.id;
-    const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${id}`);
-    if (cachedLayout) {
-      return JSON.parse(cachedLayout);
-    }
-    let defaultLayout = {};
-    await this.apollo.query<GetDashboardByIdQueryResponse>({
-      query: GET_DASHBOARD_BY_ID,
-      variables: {
-        id: dashboardId
-      }
-    }).toPromise().then((res) => {
-      if (res.data.dashboard.structure[id].settings.defaultLayout){
-        defaultLayout = {...res.data.dashboard.structure[id].settings.defaultLayout};
-      }
-      else {
-        defaultLayout = {};
-      }
-    });
-    return defaultLayout;
+    const cachedLayout = localStorage.getItem(`widget:${dashboardId}:${widget.id}`);
+    console.log(widget);
+    return cachedLayout ? JSON.parse(cachedLayout) : {};
+    // if (cachedLayout) {
+    //   return JSON.parse(cachedLayout);
+    // }
+    // let defaultLayout = {};
+    // await this.apollo.query<GetDashboardByIdQueryResponse>({
+    //   query: GET_DASHBOARD_BY_ID,
+    //   variables: {
+    //     id: dashboardId
+    //   }
+    // }).toPromise().then((res) => {
+    //   if (res.data.dashboard.structure[id].settings.defaultLayout){
+    //     defaultLayout = {...res.data.dashboard.structure[id].settings.defaultLayout};
+    //   }
+    //   else {
+    //     defaultLayout = {};
+    //   }
+    // });
+    // return defaultLayout;
   }
 
   saveWidgetLayout(id: number, layout: any): void {
