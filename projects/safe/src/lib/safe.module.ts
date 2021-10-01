@@ -26,6 +26,7 @@ import { SafeStatusModalModule } from './components/status-modal/status-modal.mo
 import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
+import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 
 @NgModule({
   exports: [
@@ -55,6 +56,8 @@ import { SafeButtonModule } from './components/ui/button/button.module';
     SafeRecordModalModule,
     SafeProfileModule,
     SafeSearchResourceGridModalModule,
-    SafeButtonModule
-  ]})
+    SafeButtonModule,
+    SafeContentChoiceModule
+  ],
+  declarations: []})
 export class SafeModule { }

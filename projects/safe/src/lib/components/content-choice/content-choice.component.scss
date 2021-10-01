@@ -1,0 +1,23 @@
+.radio-hidden {
+    position:absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.content-choice {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 32px;
+    .content-type {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+            height: 196px;
+            width: 196px;
+            cursor: pointer;
+        }
+    }
+}

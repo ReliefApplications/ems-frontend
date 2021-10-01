@@ -173,13 +173,12 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid transparent;
     border-radius: 8px;
     box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   }
 
   .img-selected {
-    border-color: mat-color($primary);
+    border-bottom: 4px solid mat-color($primary);
   }
 }
 

@@ -2,15 +2,8 @@
     <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 1 }">
         <ng-container *ngSwitchCase="1">
             <h2>Select what type of page you want to create</h2>
-            <mat-radio-group class="content-choice" formControlName="type">
-                <div class="content-type" *ngFor="let type of contentTypes">
-                    <label>
-                        <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
-                        <div class="img-choice" matRipple [ngClass]="{'img-selected': type === pageForm.value.type }">
-                            <img src="{{assetsPath}}/{{type}}.svg">
-                        </div>
-                    </label>
-                </div>
+            <mat-radio-group formControlName="type">
+                <safe-content-choice [contentTypes]="contentTypes" [form]="pageForm" [assetsPath]="assetsPath"></safe-content-choice>
             </mat-radio-group>
         </ng-container>
         <ng-container *ngSwitchCase="2">
