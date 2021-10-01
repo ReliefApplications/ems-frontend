@@ -1,21 +1,21 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import { Subscription } from 'rxjs';
 import { Application, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, SafeApplicationService, NOTIFICATIONS } from '@safe/builder';
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../../graphql/queries';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION, AddApplicationMutationResponse,
   ADD_APPLICATION, EditApplicationMutationResponse, EDIT_APPLICATION } from '../../../graphql/mutations';
-import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-applications',
@@ -26,8 +26,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
+  private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
+  public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
@@ -36,6 +39,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public searchText = '';
   public statusFilter = '';
   public showFilters = false;
+
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
@@ -50,21 +60,58 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private applicationService: SafeApplicationService,
     private previewService: PreviewService
   ) { }
 
   ngOnInit(): void {
-    this.apollo.watchQuery<GetApplicationsQueryResponse>({
-      query: GET_APPLICATIONS
-    }).valueChanges.subscribe(res => {
-      this.applications.data = res.data.applications;
+    this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      query: GET_APPLICATIONS,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    this.applicationsQuery.valueChanges.subscribe(res => {
+      this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      this.applications.data = this.cachedApplications.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.applications.totalCount;
+      this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApplications.length) {
+      this.applicationsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            applications: {
+              edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
+              pageInfo: fetchMoreResult.applications.pageInfo,
+              totalCount: fetchMoreResult.applications.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.applications.data = this.cachedApplications.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   private filterPredicate(): void {
@@ -110,7 +157,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             id
           }
         }).subscribe(res => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'), { duration: 1000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
           this.applications.data = this.applications.data.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
@@ -123,28 +170,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     Add a new application once closed, if result exists.
   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApplicationComponent);
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.apollo.mutate<AddApplicationMutationResponse>({
-          mutation: ADD_APPLICATION,
-          variables: {
-            name: value.name
-          }
-        }).subscribe(res => {
-          if (res.errors) {
-            if (res.errors[0].message.includes('duplicate key error')) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectAlreadyExists('app', value.name), { error: true });
-
-            } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
-            }
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'application'));
-            const id = res.data?.addApplication.id;
-            this.router.navigate(['/applications', id]);
-          }
-        });
+    this.apollo.mutate<AddApplicationMutationResponse>({
+      mutation: ADD_APPLICATION
+    }).subscribe(res => {
+      if (res.errors) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
+      } else {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(res.data.addApplication.name, 'application'));
+          const id = res.data.addApplication.id;
+          this.router.navigate(['/applications', id]);
+        }
       }
     });
   }

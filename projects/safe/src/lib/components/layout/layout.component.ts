@@ -3,7 +3,7 @@ import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnC
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeLayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
-import { PermissionsManagement, PermissionType } from '../../models/user.model';
+import { PermissionsManagement, PermissionType, User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,20 +37,22 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
 
   filteredNavGroups: any[] = [];
+  private reordering = false;
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
   notificationsSubscription?: Subscription;
 
-  // === AZURE ACCOUNT ===
+  // === USER INFO ===
   account: Account | null;
+  public user?: User;
+  private userSubscription?: Subscription;
 
   // === DISPLAY ===
   public largeDevice: boolean;
 
   public showSidenav = false;
 
-  public user: any;
   public otherOffice = '';
   private environment: any;
 
@@ -68,30 +70,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authService.user.subscribe((user) => {
-      if (user) {
-        this.user = { ...user};
-        if (this.environment.module === 'backoffice') {
-          this.otherOffice = 'front office';
-        } else {
-          this.otherOffice = 'back office';
-        }
-      }
-      this.filteredNavGroups = [];
-      for (const group of this.navGroups) {
-        const navItems = group.navItems.filter((item: any) => {
-          const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
-          return this.authService.userHasClaim(permission);
-        });
-        if (navItems.length > 0) {
-          const filteredGroup = {
-            name: group.name,
-            navItems
-          };
-          this.filteredNavGroups.push(filteredGroup);
-        }
-      }
-    });
+    if (this.environment.module === 'backoffice') {
+      this.otherOffice = 'front office';
+    } else {
+      this.otherOffice = 'back office';
+    }
+    this.loadUserAndUpdateLayout();
     this.notificationService.initNotifications();
     this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
       if (notifications) {
@@ -123,13 +107,21 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnChanges(): void {
-    this.authService.user.subscribe(() => {
+  /* Load the user and update availables navGroups accordingly
+  */
+  private loadUserAndUpdateLayout(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    this.userSubscription = this.authService.user.subscribe((user) => {
+      if (user) {
+        this.user = { ...user };
+      }
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
-          return this.authService.userHasClaim(permission);
+          return this.authService.userHasClaim(permission, this.environment.module === 'backoffice');
         });
         if (navItems.length > 0) {
           const filteredGroup = {
@@ -143,9 +135,20 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  ngOnChanges(): void {
+    if (this.reordering) {
+      this.reordering = false;
+    } else {
+      this.loadUserAndUpdateLayout();
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.notificationsSubscription) {
       this.notificationsSubscription.unsubscribe();
+    }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
     }
   }
 
@@ -175,6 +178,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   drop(event: any, group: any): void {
+    this.reordering = true;
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     group.callback(group.navItems);
   }

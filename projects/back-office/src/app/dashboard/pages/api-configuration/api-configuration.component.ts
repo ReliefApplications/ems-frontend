@@ -93,7 +93,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         safeSecret: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeSecret
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
         safeID: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeID
-          ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)]
+          ? '●●●●●●●●●●●●●' : '', null],
+        scope: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.scope
+          ? '●●●●●●●●●●●●●' : '', null],
       });
     } else if (type === authType.userToService) {
       return this.formBuilder.group({

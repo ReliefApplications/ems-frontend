@@ -1,9 +1,13 @@
-import {Apollo} from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import {Apollo, QueryRef} from 'apollo-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-
 import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../graphql/queries';
+import { MatSelect } from '@angular/material/select';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Resource } from '@safe/builder';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-add-form',
@@ -13,11 +17,21 @@ import { GetResourcesQueryResponse, GET_RESOURCES, GetResourceByIdQueryResponse,
 export class AddFormComponent implements OnInit {
 
   // === REACTIVE FORM ===
-  addForm: FormGroup = new FormGroup({});
+  public addForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  resources: any[] = [];
-  templates: any[] = [];
+  private resources = new BehaviorSubject<Resource[]>([]);
+  public resources$!: Observable<Resource[]>;
+  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  private pageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
+  private loading = true;
+
+  public templates: any[] = [];
+
+  @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,10 +50,18 @@ export class AddFormComponent implements OnInit {
       template: [null]
     });
 
-    this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES
-    }).valueChanges.subscribe(res => {
-      this.resources = res.data.resources;
+    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+      query: GET_RESOURCES,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    this.resources$ = this.resources.asObservable();
+    this.resourcesQuery.valueChanges.subscribe(res => {
+      this.resources.next(res.data.resources.edges.map(x => x.node));
+      this.pageInfo = res.data.resources.pageInfo;
+      this.loading = res.loading;
     });
   }
 
@@ -61,5 +83,44 @@ export class AddFormComponent implements OnInit {
   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  /**
+   * Adds scroll listener to select.
+   * @param e open select event.
+   */
+  onOpenSelect(e: any): void {
+    if (e && this.resourceSelect) {
+      const panel = this.resourceSelect.panel.nativeElement;
+      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+    }
+  }
+
+  /**
+   * Fetches more resources on scroll.
+   * @param e scroll event.
+   */
+  private loadOnScroll(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      if (!this.loading && this.pageInfo.hasNextPage) {
+        this.loading = true;
+        this.resourcesQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.pageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              resources: {
+                edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],
+                pageInfo: fetchMoreResult.resources.pageInfo,
+                totalCount: fetchMoreResult.resources.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
   }
 }

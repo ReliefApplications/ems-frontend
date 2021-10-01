@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14...v0.1.14-alpha.2) (2021-09-29)
+
+### [0.1.14-alpha.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.0...v0.1.14-alpha.1) (2021-09-22)
+
+
+### Bug Fixes
+
+* create standard for snackbar notifications ([6183727](https://github.com/ReliefApplications/emrs-safe-frontend/commits/61837278739bc5be4183bdc550d92ef379dd8bab))
+
+### [0.1.14-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.14-alpha.0) (2021-09-14)
+
+
+### Features
+
+* add line and donut component ([0194bed](https://github.com/ReliefApplications/emrs-safe-frontend/commits/0194bedb6006aa71c86105102850b0082f973b88))
+* add pie chart ([a7a8ac3](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a7a8ac3828336e6b9523c196a0eafb6efe95b1b0))
+* add title and edit properties of charts ([687c3a8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/687c3a8b29dc70c2918317f458fe733f72fd29b4))
+
+
+### Bug Fixes
+
+* cannot view line charts because of data not extensible ([921a71f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/921a71f270032f55efbf90fb91b3c84ccf127d99))
+
+### [0.1.13](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.13) (2021-09-14)
+
+
+### Features
+
+* add line and donut component ([0194bed](https://github.com/ReliefApplications/emrs-safe-frontend/commits/0194bedb6006aa71c86105102850b0082f973b88))
+* add pie chart ([a7a8ac3](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a7a8ac3828336e6b9523c196a0eafb6efe95b1b0))
+* add title and edit properties of charts ([687c3a8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/687c3a8b29dc70c2918317f458fe733f72fd29b4))
+
+
+### Bug Fixes
+
+* cannot view line charts because of data not extensible ([921a71f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/921a71f270032f55efbf90fb91b3c84ccf127d99))
+
+### [0.1.13-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.13-alpha.0) (2021-09-14)
+
+
+### Features
+
+* add line and donut component ([0194bed](https://github.com/ReliefApplications/emrs-safe-frontend/commits/0194bedb6006aa71c86105102850b0082f973b88))
+* add pie chart ([a7a8ac3](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a7a8ac3828336e6b9523c196a0eafb6efe95b1b0))
+* add title and edit properties of charts ([687c3a8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/687c3a8b29dc70c2918317f458fe733f72fd29b4))
+
+
+### Bug Fixes
+
+* cannot view line charts because of data not extensible ([921a71f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/921a71f270032f55efbf90fb91b3c84ccf127d99))
+
 ### 0.1.12 (2021-08-27)
 
 

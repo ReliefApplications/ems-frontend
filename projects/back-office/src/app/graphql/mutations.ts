@@ -152,16 +152,11 @@ mutation editResource($id: ID!, $permissions: JSON) {
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -201,8 +196,8 @@ export interface DeleteResourceMutationResponse{
 
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
-mutation deleteRecord($id: ID!) {
-  deleteRecord(id: $id) {
+mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
+  deleteRecord(id: $id, hardDelete: $hardDelete) {
     id
   }
 }`;
@@ -210,6 +205,19 @@ mutation deleteRecord($id: ID!) {
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
+}
+
+// === RESTORE RECORD ===
+export const RESTORE_RECORD = gql`
+mutation restoreRecord($id: ID!) {
+  restoreRecord(id: $id) {
+    id
+  }
+}`;
+
+export interface RestoreRecordMutationResponse {
+  loading: boolean;
+  restoreRecord: Record;
 }
 
 // === EDIT FORM ===
@@ -229,10 +237,6 @@ mutation editForm($id: ID!, $structure: JSON!) {
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -273,10 +277,6 @@ mutation editForm($id: ID!, $name: String!){
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -304,10 +304,6 @@ mutation editForm($id: ID!, $permissions: JSON!){
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -340,10 +336,6 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
     modifiedAt
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -389,8 +381,8 @@ export interface DeleteApplicationMutationResponse {
 
 // === ADD APPLICATION ===
 export const ADD_APPLICATION = gql`
-mutation addApplication($name: String!) {
-  addApplication(name: $name){
+mutation addApplication {
+  addApplication {
     id
     name
     pages {
@@ -533,10 +525,6 @@ mutation editPage($id: ID!, $name: String, $permissions: JSON) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -596,10 +584,6 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -652,10 +636,6 @@ mutation addApiConfiguration($name: String!) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -702,10 +682,6 @@ mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authTyp
     settings
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }

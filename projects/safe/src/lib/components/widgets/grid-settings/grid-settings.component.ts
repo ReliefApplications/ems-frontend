@@ -42,6 +42,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
+  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  public templates: Form[] = [];
+
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
@@ -59,7 +62,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
-
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
@@ -69,16 +71,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         delete: [hasActions ? tileSettings.actions.delete : true],
         history: [hasActions ? tileSettings.actions.history : true],
         convert: [hasActions ? tileSettings.actions.convert : true],
-        update: [hasActions ? tileSettings.actions.update : true]
+        update: [hasActions ? tileSettings.actions.update : true],
+        inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications and fields for email in floating button if any
-        if (this.fields && (res.name !== this.queryName)) {
+        // Check if the query changed to clean modifications and fields for email in floating button
+        if (res.name !== this.queryName) {
+          this.queryName = res.name;
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
@@ -89,7 +94,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
-        this.queryName = res.name;
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
           query.subscribe((res1: { data: any }) => {
@@ -104,14 +108,17 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               }).subscribe(res2 => {
                 if (res2.errors) {
                   this.relatedForms = [];
+                  this.templates = [];
                 } else {
                   this.relatedForms = res2.data.resource.relatedForms || [];
+                  this.templates = res2.data.resource.forms || [];
                 }
               });
             }
           });
         } else {
           this.relatedForms = [];
+          this.templates = [];
         }
       } else {
         this.fields = [];
@@ -143,8 +150,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           });
         }
       });
-
-      this.queryName = this.tileForm.get('query')?.value.name;
     }
   }
 

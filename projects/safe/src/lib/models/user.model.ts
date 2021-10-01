@@ -41,7 +41,10 @@ export enum Permissions {
     canSeeForms = 'can_see_forms',
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
+    canSeeApplications = 'can_see_applications',
     canManageForms = 'can_manage_forms',
+    canCreateForms = 'can_create_forms',
+    canCreateResources = 'can_create_resources',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
     canManageApiConfigurations = 'can_manage_api_configurations'
@@ -62,11 +65,11 @@ export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
             access: Permissions.canSeeResources,
-            create: Permissions.canManageResources
+            create: [Permissions.canCreateResources, Permissions.canManageResources]
         },
         forms: {
             access: Permissions.canSeeForms,
-            create: Permissions.canManageForms
+            create: [Permissions.canCreateForms, Permissions.canManageForms]
         },
         settings: {
             users: {
@@ -76,11 +79,31 @@ export class PermissionsManagement {
                 access: Permissions.canSeeRoles
             },
             apiconfigurations: {
-                create: Permissions.canManageApiConfigurations
+                create: Permissions.canManageApiConfigurations,
+                access: Permissions.canManageApiConfigurations
+            },
+            edit: {
+                access: Permissions.canManageApplications
+            },
+            position: {
+                access: Permissions.canSeeRoles
+            },
+            channels: {
+                access: Permissions.canManageApplications
+            },
+            subscriptions: {
+                access: Permissions.canManageApplications
+            },
+            'pull-jobs': {
+                access: Permissions.canManageApplications
             }
         },
         applications: {
-            create: Permissions.canManageApplications
+            create: Permissions.canManageApplications,
+            access: Permissions.canSeeApplications
+        },
+        'add-page': {
+            access: Permissions.canManageApplications
         }
     };
 
@@ -106,3 +129,11 @@ export class PermissionsManagement {
         return (value as any)[type];
     }
 }
+
+/*  Interface for Adding new users.
+*/
+export interface AddUser {
+    email: string;
+    roles: string[];
+    attributes: { value: string, category: string };
+  }

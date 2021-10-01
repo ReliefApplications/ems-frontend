@@ -84,40 +84,70 @@ export interface GetDashboardsQueryResponse {
 
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
-query GetFormNames {
-  forms {
-    id
-    name
+query GetFormNames($first: Int, $afterCursor: ID) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms {
-  forms {
-    id
-    name
-    createdAt
-    status
-    versionsCount
-    recordsCount
-    core
-    canSee
-    canCreate
-    canUpdate
-    canDelete
-    resource {
-      id
-      coreForm {
+query GetShortForms($first: Int, $afterCursor: ID) {
+  forms(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
         name
+        createdAt
+        status
+        versionsCount
+        recordsCount
+        core
+        canSee
+        canCreateRecords
+        canUpdate
+        canDelete
+        resource {
+          id
+          coreForm {
+            id
+            name
+          }
+        }
       }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
-  forms: Form[];
+  forms: {
+    edges: {
+      node: Form;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET FORM BY ID ===
@@ -141,10 +171,6 @@ query GetShortFormById($id: ID!) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -159,7 +185,7 @@ query GetShortFormById($id: ID!) {
 }`;
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
   form(id: $id) {
     id
     name
@@ -172,7 +198,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
       createdAt
       data
     }
-    records(filters: $filters) {
+    records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
       versions {
@@ -181,25 +207,37 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
         data
       }
     }
+    canUpdate
+  }
+}`;
+
+export const GET_FORM_STRUCTURE = gql`
+query GetFormStructure($id: ID!) {
+  form(id: $id) {
+    id
+    structure
   }
 }`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
-  errors: any;
 }
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
+    records(filters: $filters, archived: $showDeletedRecords) {
       id
       data(display: $display)
+      form {
+        id
+        name
+      }
     }
     fields
     forms {
@@ -209,16 +247,12 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
+      canCreateRecords
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -231,7 +265,6 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
         title
       }
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -243,30 +276,61 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
-{
-  resources {
-    id
-    name
-    forms {
-      id
-      name
+query GetResources($first: Int, $afterCursor: ID){
+  resources(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        forms {
+          id
+          name
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-{
-  resources {
-    id
-    name
-    createdAt
-    recordsCount
+query GetResourcesExtended($first: Int, $afterCursor: ID){
+  resources(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        createdAt
+        recordsCount
+        canDelete
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetResourcesQueryResponse {
   loading: boolean;
-  resources: Resource[];
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET RECORD BY ID ===
@@ -302,10 +366,6 @@ export const GET_DASHBOARD_BY_ID = gql`
       structure
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -351,37 +411,58 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    createdAt
-    modifiedAt
-    status
-    permissions {
-      canSee {
+query GetApplications($first: Int, $afterCursor: ID){
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
-        title
+        name
+        createdAt
+        modifiedAt
+        status
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
+        usersCount
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  applications: Application[];
+  // applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===
@@ -427,10 +508,6 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -464,10 +541,6 @@ export const GET_PAGE_BY_ID = gql`
       content
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -508,10 +581,6 @@ export const GET_WORKFLOW_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -534,10 +603,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         canUpdate
         permissions {
           canSee {
-            id
-            title
-          }
-          canCreate {
             id
             title
           }
@@ -584,10 +649,6 @@ export const GET_STEP_BY_ID = gql`
       }
       permissions {
         canSee {
-          id
-          title
-        }
-        canCreate {
           id
           title
         }
@@ -696,10 +757,6 @@ query GetApiConfigurations {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -733,10 +790,6 @@ query GetApiConfiguration($id: ID!) {
     settings
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }

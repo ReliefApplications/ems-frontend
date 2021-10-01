@@ -357,7 +357,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Inline edition of the data.
   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
-    if (!this.gridData.data[rowIndex].canUpdate || isEdited || (this.formGroup && !this.formGroup.valid)) {
+    if (!this.gridData.data[rowIndex].canUpdate || this.settings.actions.inlineEdition === false ||
+      isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
 
@@ -431,7 +432,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data
+          data,
+          template: this.settings.query.template
         }
       }).toPromise());
     }
@@ -646,7 +648,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
-        locale: 'en'
+        locale: 'en',
+        template: this.settings.query.template
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -671,7 +674,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           record: res.data.record,
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
-          }
+          },
+          template: this.settings.query.template
         },
       });
     });
@@ -684,7 +688,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: item.id,
         locale: 'en',
-        canUpdate: item.canUpdate
+        canUpdate: item.canUpdate,
+        template: this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -911,7 +916,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: record.id,
-          data
+          data,
+          template: this.settings.query.template
         }
       }).toPromise());
     }

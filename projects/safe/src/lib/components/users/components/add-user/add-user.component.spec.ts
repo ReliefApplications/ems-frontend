@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddApplicationComponent } from './add-application.component';
+import { SafeAddUserComponent } from './add-user.component';
 
-describe('AddApplicationComponent', () => {
-  let component: AddApplicationComponent;
-  let fixture: ComponentFixture<AddApplicationComponent>;
+describe('SafeAddUserComponent', () => {
+  let component: SafeAddUserComponent;
+  let fixture: ComponentFixture<SafeAddUserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddApplicationComponent ]
+      declarations: [ SafeAddUserComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddApplicationComponent);
+    fixture = TestBed.createComponent(SafeAddUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

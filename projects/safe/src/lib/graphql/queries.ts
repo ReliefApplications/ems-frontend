@@ -1,5 +1,4 @@
-import {gql} from 'apollo-angular';
-
+import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
 import { Role, User, Permission } from '../models/user.model';
@@ -79,7 +78,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     resource{
       id
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -94,6 +92,10 @@ export interface GetFormByIdQueryResponse {
 export const GET_RELATED_FORMS = gql`
 query GetRelatedForms($resource: ID!) {
   resource(id: $resource) {
+    forms {
+      id
+      name
+    }
     relatedForms {
       id
       name
@@ -106,6 +108,14 @@ export interface GetRelatedFormsQueryResponse {
   loading: boolean;
   resource: Resource;
 }
+
+export const GET_SHORT_RESOURCE_BY_ID = gql`
+query GetShortResourceById($id: ID!) {
+  resource(id: $id) {
+    id
+    name
+  }
+}`;
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
@@ -126,16 +136,14 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
     }
+    coreForm {
+      uniqueRecord { id }
+    }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -148,7 +156,6 @@ query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
         title
       }
     }
-    canCreate
     canUpdate
   }
 }`;
@@ -172,7 +179,6 @@ export const GET_FORMS = gql`
     }
     recordsCount
     core
-    canCreate
     canUpdate
     canDelete
   }
@@ -184,35 +190,37 @@ export interface GetFormsQueryResponse {
 }
 
 // === GET RESOURCES ===
-
 export const GET_RESOURCES = gql`
-{
-  resources {
-    id
-    name
-    forms {
-      id
-      name
+query GetResources($first: Int, $afterCursor: ID) {
+  resources(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
     }
-    coreForm {
-      uniqueRecord { id }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
-  }
-}`;
-
-export const GET_RESOURCES_EXTENDED = gql`
-{
-  resources {
-    id
-    name
-    createdAt
-    recordsCount
   }
 }`;
 
 export interface GetResourcesQueryResponse {
   loading: boolean;
-  resources: Resource[];
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET RECORD BY ID ===
@@ -413,10 +421,6 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -614,10 +618,6 @@ export const GET_WORKFLOW_BY_ID = gql`
           id
           title
         }
-        canCreate {
-          id
-          title
-        }
         canUpdate {
           id
           title
@@ -640,10 +640,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         canUpdate
         permissions {
           canSee {
-            id
-            title
-          }
-          canCreate {
             id
             title
           }
