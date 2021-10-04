@@ -19,6 +19,7 @@ export const NOTIFICATIONS = {
     objectLoadedFromCache(type: string): string { return `${type} loaded from cache.`; },
     objectIsLocked(name: any): string { return `${name} edition is locked by another user.`; },
     objectUnlocked(name: any): string { return `${name} edition has been unlocked by another user.`; },
+    objectAccessDenied(type: string): string { return `You don't have permission to see the ${type}.`; },
     goToStep(step: any): string  { return `Back to ${step} step.`; },
     statusUpdated(status: any): string  { return `Status updated to ${status}.`; },
     noObjectOpened(value: any): string  { return `No opened ${value}.`; },

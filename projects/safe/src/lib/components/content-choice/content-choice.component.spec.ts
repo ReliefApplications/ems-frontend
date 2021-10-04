@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddApplicationComponent } from './add-application.component';
+import { SafeContentChoiceComponent } from './content-choice.component';
 
-describe('AddApplicationComponent', () => {
-  let component: AddApplicationComponent;
-  let fixture: ComponentFixture<AddApplicationComponent>;
+describe('ContentChoiceComponent', () => {
+  let component: SafeContentChoiceComponent;
+  let fixture: ComponentFixture<SafeContentChoiceComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddApplicationComponent ]
+      declarations: [ SafeContentChoiceComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddApplicationComponent);
+    fixture = TestBed.createComponent(SafeContentChoiceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

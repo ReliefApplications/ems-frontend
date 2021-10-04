@@ -1,13 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelect } from '@angular/material/select';
 import { ApiConfiguration, Channel, Form, PullJob, status } from '@safe/builder';
-import { Apollo } from 'apollo-angular';
-import { GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS,
-   GetFormByIdQueryResponse, GET_FORM_BY_ID,
-   GetFormsQueryResponse, GET_FORM_NAMES } from 'projects/back-office/src/app/graphql/queries';
-import { Subscription } from 'rxjs';
+import { Apollo, QueryRef } from 'apollo-angular';
+import {
+  GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS,
+  GetFormByIdQueryResponse, GET_FORM_BY_ID,
+  GetFormsQueryResponse, GET_FORM_NAMES
+} from 'projects/back-office/src/app/graphql/queries';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SubscriptionModalComponent } from '../../../subscriptions/components/subscription-modal/subscription-modal.component';
+
+const ITEMS_PER_PAGE = 10;
+
 @Component({
   selector: 'app-pull-job-modal',
   templateUrl: './pull-job-modal.component.html',
@@ -19,8 +25,18 @@ export class PullJobModalComponent implements OnInit {
   pullJobForm: FormGroup = new FormGroup({});
 
   // === DATA ===
+  private formsLoading = true;
+  private forms = new BehaviorSubject<Form[]>([]);
+  public forms$!: Observable<Form[]>;
+  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  private pageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
   public loading = true;
-  public forms: Form[] = [];
+
+  @ViewChild('formSelect') formSelect?: MatSelect;
+
   public apiConfigurations: ApiConfiguration[] = [];
   public statusChoices = Object.values(status);
   public fields: any[] = [];
@@ -57,20 +73,26 @@ export class PullJobModalComponent implements OnInit {
       rawMapping: [this.data.pullJob && this.data.pullJob.mapping ? JSON.stringify(this.data.pullJob?.mapping, null, 2) : ''],
       uniqueIdentifiers: [this.data.pullJob && this.data.pullJob.uniqueIdentifiers ? this.data.pullJob.uniqueIdentifiers : []]
     });
-    this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORM_NAMES
-    }).valueChanges.subscribe((res: any) => {
-      if (res) {
-        this.forms = res.data.forms;
-        this.loading = res.data.loading || this.apiConfigurations.length === 0;
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORM_NAMES,
+      variables: {
+        first: ITEMS_PER_PAGE
       }
     });
+
+    this.forms$ = this.forms.asObservable();
+    this.formsQuery.valueChanges.subscribe(res => {
+      this.forms.next(res.data.forms.edges.map(x => x.node));
+      this.pageInfo = res.data.forms.pageInfo;
+      this.formsLoading = res.loading;
+    });
+
     this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS
-    }).valueChanges.subscribe( res => {
+    }).valueChanges.subscribe(res => {
       if (res) {
         this.apiConfigurations = res.data.apiConfigurations;
-        this.loading = res.data.loading || this.forms.length === 0;
+        this.loading = res.data.loading;
       }
     });
 
@@ -162,5 +184,44 @@ export class PullJobModalComponent implements OnInit {
       this.pullJobForm.get('rawMapping')?.setValue(JSON.stringify(mapping, null, 2));
     }
     return this.pullJobForm.value;
+  }
+
+  /**
+   * Adds scroll listener to select.
+   * @param e open select event.
+   */
+  onOpenSelect(e: any): void {
+    if (e && this.formSelect) {
+      const panel = this.formSelect.panel.nativeElement;
+      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+    }
+  }
+
+  /**
+   * Fetches more forms on scroll.
+   * @param e scroll event.
+   */
+  private loadOnScroll(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      if (!this.formsLoading && this.pageInfo.hasNextPage) {
+        this.formsLoading = true;
+        this.formsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.pageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              forms: {
+                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+                pageInfo: fetchMoreResult.forms.pageInfo,
+                totalCount: fetchMoreResult.forms.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
   }
 }

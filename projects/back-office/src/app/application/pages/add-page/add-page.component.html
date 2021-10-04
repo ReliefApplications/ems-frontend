@@ -1,31 +1,15 @@
 <form [formGroup]="pageForm">
-    <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 2 }">
+    <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 1 }">
         <ng-container *ngSwitchCase="1">
-            <h2>Enter a name for the page</h2>
-            <mat-form-field>
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="name" type="text" placeholder="Enter a name for the page"/>
-            </mat-form-field>
+            <h2>Select what type of page you want to create</h2>
+            <safe-content-choice formControlName="type" [contentTypes]="contentTypes"></safe-content-choice>
         </ng-container>
         <ng-container *ngSwitchCase="2">
-            <h2>Select what type of page you want to create</h2>
-            <mat-radio-group class="content-choice" formControlName="type">
-                <div class="content-type" *ngFor="let type of contentTypes">
-                    <label>
-                        <mat-radio-button class="radio-hidden" [value]="type"></mat-radio-button>
-                        <div class="img-choice" matRipple [ngClass]="{'img-selected': type === pageForm.value.type }">
-                            <img src="{{assetsPath}}/{{type}}.svg">
-                        </div>
-                    </label>
-                </div>
-            </mat-radio-group>
-        </ng-container>
-        <ng-container *ngSwitchCase="3">
             <h2>Available forms</h2>
             <mat-form-field appearance="outline">
                 <mat-label>Select a form</mat-label>
-                <mat-select formControlName="content">
-                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                <mat-select #formSelect formControlName="content" (openedChange)="onOpenSelect($event)">
+                    <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" [disabled]=!canCreateForm>
@@ -34,7 +18,7 @@
         </ng-container>
     </div>
 </form>
-<div class="add-page-stepper">
+<div class="add-page-stepper" *ngIf="step !== 1">
     <safe-button [disabled]="step <= 1" (click)="onBack()">Back</safe-button>
     <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStepValid(step)">Next</safe-button>
 </div>

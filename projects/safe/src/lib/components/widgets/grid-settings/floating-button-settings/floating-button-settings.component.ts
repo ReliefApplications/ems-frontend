@@ -68,7 +68,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.isDashboard = true;
     } else {
       const currentStepContent = this.router.url.split('/').pop();
-      this.workflowSubscription = this.workflowService.workflow.subscribe(workflow => {
+      this.workflowSubscription = this.workflowService.workflow$.subscribe(workflow => {
         if (workflow) {
           const steps = workflow.steps || [];
           const currentStepIndex = steps.findIndex(x => x.content === currentStepContent);

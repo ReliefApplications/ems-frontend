@@ -41,6 +41,7 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
+import {SafeAuthService} from '../../../services/auth.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -111,6 +112,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
 
+  // === VERIFICATION IF USER IS ADMIN ===
+  public isAdmin: boolean;
+
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
@@ -148,6 +152,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -181,13 +187,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private safeAuthService: SafeAuthService
   ) {
     this.apiUrl = environment.API_URL;
+    this.isAdmin = this.safeAuthService.userIsAdmin;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+  }
+
+  /*  Detect changes of the settings to (re)load the data.
+  */
+  ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
       this.filter = this.layout.filter;
     }
@@ -195,11 +208,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.loadItems();
-  }
-
-  /*  Detect changes of the settings to (re)load the data.
-  */
-  ngOnChanges(): void {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -425,7 +433,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data
+          data,
+          template: this.settings.query.template
         }
       }).toPromise());
     }
@@ -650,7 +659,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
-        locale: 'en'
+        locale: 'en',
+        template: this.settings.query.template
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -675,7 +685,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           record: res.data.record,
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
-          }
+          },
+          template: this.settings.query.template
         },
       });
     });
@@ -688,7 +699,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: item.id,
         locale: 'en',
-        canUpdate: item.canUpdate
+        canUpdate: item.canUpdate,
+        template: this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -915,7 +927,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mutation: EDIT_RECORD,
         variables: {
           id: record.id,
-          data
+          data,
+          template: this.settings.query.template
         }
       }).toPromise());
     }
@@ -1161,5 +1174,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     }, {});
     this.layoutChanged.emit(this.layout);
+  }
+
+  /**
+   * Save the current layout of the grid as default layout
+   */
+  saveDefaultLayout(): void {
+    this.defaultLayoutChanged.emit(this.layout);
   }
 }
