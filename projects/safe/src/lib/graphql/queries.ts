@@ -394,14 +394,26 @@ export const GET_APPLICATION_BY_ID = gql`
         }
       }
       users {
-        id
-        username
-        name
-        roles {
-          id
-          title
+        edges {
+          node {
+            id
+            username
+            roles {
+              id
+              title
+              application {
+                id
+              }
+            }
+            oid
+          }
+          cursor
         }
-        oid
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
       permissions {
         canSee {

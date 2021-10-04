@@ -65,6 +65,8 @@ export class SafeApplicationService {
   private notificationSubscription?: Subscription;
   private lockSubscription?: Subscription;
 
+  public cachedUsers: User[] = [];
+
   /**
    * Return the application as an Observable.
    */
@@ -109,8 +111,15 @@ export class SafeApplicationService {
         asRole
       }
     }).subscribe(res => {
+      console.log('res');
+      console.log(res);
       this._application.next(res.data.application);
       const application = this._application.getValue();
+      // console.log(res.data.application.users);
+      // if (res.data.application.users.edges){
+      //   this.cachedUsers = res.data.application.users.edges.map(x => x.node);
+      // }
+      // this.cachedUsers = res.data.application.users.edges.map(x => x.node);
       if (res.data.application.locked) {
         if (!application?.lockedByUser) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
@@ -421,7 +430,8 @@ export class SafeApplicationService {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
           this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
-          const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
+          const newApplication = { ...application, users: application.users.edges?.filter((u: any) => !deletedUsers.includes(u.id)) };
+          console.log(newApplication);
           this._application.next(newApplication);
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
@@ -458,8 +468,13 @@ export class SafeApplicationService {
   /* Edit an user that has access to the application.
   */
   editUser(user: User, value: any): void {
+    console.log('user');
+    console.log(user);
+    console.log('value');
+    console.log(value);
     const application = this._application.getValue();
     if (application && this.isUnlocked) {
+      application.users.edges?.map((x: any) => console.log(x.node.id));
       this.apollo.mutate<EditUserMutationResponse>({
         mutation: EDIT_USER,
         variables: {
@@ -468,15 +483,27 @@ export class SafeApplicationService {
           application: application.id
         }
       }).subscribe(res => {
+        console.log('res');
+        console.log(res);
         if (res.data) {
-          const newUser = res.data.editUser;
+          const newUser = {...res.data.editUser, __typename: 'UserEdge'};
+          console.log(newUser);
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
-          const index = application?.users?.indexOf(user);
+          const index = application?.users.edges?.indexOf(user);
+          console.log('application.users.edges');
+          console.log(application.users.edges);
           if (application?.users && index) {
             const newApplication: Application = {
               ...application,
-              users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
+              users: {
+                ...application.users,
+                // edges: application.users.edges?.map((x: any) => String(x.node.id) === String(user.id) ? newUser || null : x) || []
+                edges: application.users.edges?.map(
+                  (x: any) => String(x.node.id) === String(user.id) ? {...x, node: newUser} || null : x) || []
+              }
             };
+            console.log('newApplication');
+            console.log(newApplication);
             this._application.next(newApplication);
           }
         }

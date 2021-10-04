@@ -16,7 +16,7 @@ export interface Application {
     modifiedAt?: Date;
     pages?: Page[];
     roles?: Role[];
-    users?: User[];
+    users?: any;
     status?: status;
     usersCount?: number;
     settings?: any;

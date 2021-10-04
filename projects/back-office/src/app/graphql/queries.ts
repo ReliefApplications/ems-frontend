@@ -489,6 +489,7 @@ export interface GetApplicationByIdQueryResponse {
   application: Application;
 }
 
+
 // === GET PAGE BY ID ===
 export const GET_PAGE_BY_ID = gql`
   query GetPageById($id: ID!){

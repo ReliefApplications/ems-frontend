@@ -37,8 +37,12 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       console.log('application');
       console.log(application);
-      if (application) {
-        this.users.data = application.users || [];
+      if (application && application.users) {
+        this.cachedUsers = application.users.edges.map((x: any) => x.node);
+        this.users.data = this.cachedUsers.slice( ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.length = application.users.totalCount;
+        this.pageInfo.endCursor = application.users.pageInfo.endCursor;
+
         this.roles = application.roles || [];
         this.positionAttributeCategories = application.positionAttributeCategories || [];
       } else {
@@ -52,5 +56,30 @@ export class UsersComponent implements OnInit, OnDestroy {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }
+  }
+
+  onPage(e: any) {
+    // this.pageInfo.pageIndex = e.pageIndex;
+    // if (e.pageIndex > e.previousPageIndex && e.length > this.cachedUsers.length) {
+    //   this.usersQuery.fetchMore({
+    //     variables: {
+    //       first: ITEMS_PER_PAGE,
+    //       afterCursor: this.pageInfo.endCursor
+    //     },
+    //     updateQuery: (prev, { fetchMoreResult }) => {
+    //       if (!fetchMoreResult) { return prev; }
+    //       return Object.assign({}, prev, {
+    //         users: {
+    //           edges: [...prev.users.edges, ...fetchMoreResult.users.edges],
+    //           pageInfo: fetchMoreResult.users.pageInfo,
+    //           totalCount: fetchMoreResult.users.totalCount
+    //         }
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   this.users.data = this.cachedUsers.slice(
+    //     ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    // }
   }
 }
