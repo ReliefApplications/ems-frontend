@@ -16,7 +16,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public loading = true;
   public steps: Step[] = [];
   public assetsPath = '';
-  
+
   public workflow?: Workflow;
   private workflowSubscription?: Subscription;
 

@@ -92,7 +92,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
         this.workflow = workflow;
-        console.log("this steps = ", this.steps);
       } else {
         this.steps = [];
       }
@@ -143,7 +142,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete step',
-        content: `Are you sure you want to delete ${step.name}?` + 
+        content: `Are you sure you want to delete ${step.name}?` +
         `\n This action cannot be undone.`,
         confirmText: 'Delete',
         confirmColor: 'warn'
