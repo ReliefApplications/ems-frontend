@@ -1,8 +1,21 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && workflow">
-    <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper>
-        <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
-            <router-outlet *ngIf="i === selectedStepIndex" (activate)="onActivate($event, stepper)"></router-outlet>
-        </mat-step>
-    </mat-horizontal-stepper>
+    <div class="step-list-container">
+        <mat-divider></mat-divider>
+        <div class="step-list" >
+            <div class="step-box" *ngFor="let step of steps" (click)="stepChange(step)"
+                [style.background-color]="step === selectedStep ? step.type === 'form' ? '#EBF3F9' : '#F9EFE2' : ''"
+                [style.border-bottom]="step === selectedStep ? step.type === 'form' ? '4px solid #92ADFF' : '4px solid #F6C481' : ''"
+                [class.selected]="step === selectedStep">
+                <div class="step-img" matRipple>
+                    <img *ngIf="step === selectedStep" src="{{assetsPath}}/{{step.type}}-icon.svg">
+                    <img *ngIf="step != selectedStep" src="{{assetsPath}}/{{step.type}}-icon-grey.svg">
+                </div>
+                <div class="step-name">{{step.name}}</div>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
 </ng-container>
+<router-outlet (activate)="onActivate($event)"></router-outlet>
+

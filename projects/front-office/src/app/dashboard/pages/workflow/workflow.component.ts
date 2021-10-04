@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS, SafeWorkflowService } from '@safe/builder';
+import { environment } from 'projects/front-office/src/environments/environment';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -15,7 +15,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public loading = true;
   public steps: Step[] = [];
-
+  public assetsPath = '';
+  
   public workflow?: Workflow;
   private workflowSubscription?: Subscription;
 
@@ -26,14 +27,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public selectedStep?: Step;
   public selectedStepIndex = 0;
 
-  @ViewChild('stepper') stepper!: MatStepper;
-
   constructor(
     private workflowService: SafeWorkflowService,
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router
-  ) { }
+  ) {
+    this.assetsPath = `${environment.frontOfficeUri}assets`;
+
+  }
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -49,7 +51,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (this.workflow.id !== previousId) {
           if (this.steps.length > 0) {
-            this.stepChange({selectedIndex: 0});
+            this.stepChange(this.steps[0]);
           } else {
             this.steps = [];
             this.router.navigate([`./`], { relativeTo: this.route });
@@ -63,32 +65,46 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /* Display selected step
   */
-  stepChange(e: any): void {
-    this.selectedStep = this.steps[e.selectedIndex];
-    this.selectedStepIndex = e.selectedIndex;
-    if (this.selectedStep.type === ContentType.form) {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
-    } else {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+  stepChange(step: Step): void {
+    if (this.selectedStep !== step) {
+      this.selectedStep = step;
+      this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
+      this.navigateToSelectedStep();
     }
   }
 
   /* Trigger step changes from grid widgets
   */
-  onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
+  onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
           if (this.selectedStepIndex + 1 < this.steps.length) {
-            stepper.next();
+            this.selectedStepIndex += 1;
+            this.selectedStep = this.steps[this.selectedStepIndex];
+            this.navigateToSelectedStep();
           } else if (this.selectedStepIndex + 1 === this.steps.length) {
-            stepper.selectedIndex = 0;
+            this.selectedStepIndex = 0;
+            this.selectedStep = this.steps[this.selectedStepIndex];
+            this.navigateToSelectedStep();
             this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
           }
         }
       });
+    }
+  }
+
+  /* Navigate to selected step
+  */
+  private navigateToSelectedStep(): void {
+    if (this.selectedStep) {
+      if (this.selectedStep.type === ContentType.form) {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+      }
     }
   }
 

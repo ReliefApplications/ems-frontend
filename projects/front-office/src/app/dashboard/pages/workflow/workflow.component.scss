@@ -1,14 +1,49 @@
-.mat-stepper-vertical, .mat-stepper-horizontal {
-    background-color: transparent;
+.step-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4px;
+    border: 1px solid #E5E5E5;
+    border-width: 1px 0px;
 }
 
-.nav-buttons {
-    margin-top: 20px;
-    .next-button {
-        float: right;
+.step-list {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 10px 0px;
+}
+
+.step-box {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background: #FFFFFF;
+    border: 1px solid rgba(47, 56, 62, 0.2);
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin: 0px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  
+    img {
+      height: 46px;
+      width: 46px;
     }
-    
-    .back-button {
-        float: left;
+  
+    .step-img {
+      max-height: 70%;
+    }
+  
+    .step-name {
+      max-height: 30%;
+      text-align: center;
     }
 }
