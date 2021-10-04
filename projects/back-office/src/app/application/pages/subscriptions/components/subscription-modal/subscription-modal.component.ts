@@ -11,6 +11,7 @@ import {
 } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -28,17 +29,26 @@ export class SubscriptionModalComponent implements OnInit {
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  private pageInfo = {
+  private formsPageInfo = {
     endCursor: '',
     hasNextPage: true
   };
-  private loading = true;
+  private formsLoading = true;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === DATA ===
-  private applications: Application[] = [];
-  public filteredApplications!: Observable<Application[]>;
+  private applications = new BehaviorSubject<Application[]>([]);
+  public filteredApplications$!: Observable<Application[]>;
+  public applications$!: Observable<Application[]>;
+  private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private applicationsPageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
+  private applicationsLoading = true;
+
+  @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
@@ -76,25 +86,35 @@ export class SubscriptionModalComponent implements OnInit {
     this.forms$ = this.forms.asObservable();
     this.formsQuery.valueChanges.subscribe(res => {
       this.forms.next(res.data.forms.edges.map(x => x.node));
-      this.pageInfo = res.data.forms.pageInfo;
-      this.loading = res.loading;
+      this.formsPageInfo = res.data.forms.pageInfo;
+      this.formsLoading = res.loading;
     });
 
-    this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
-      query: GET_ROUTING_KEYS
-    }).valueChanges.subscribe(res => {
-      this.applications = res.data.applications.filter(x => x.channels ? x.channels.length > 0 : false);
+    // Get applications and set pagination logic
+    this.applicationsQuery = this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      query: GET_ROUTING_KEYS,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
     });
-    this.filteredApplications = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
-      startWith(''),
-      map(value => typeof value === 'string' ? value : value.name),
-      map(x => this.filter(x))
-    );
+
+    // this.applications$ = this.applications.asObservable();
+    this.applicationsQuery.valueChanges.subscribe(res => {
+      this.applications.next(res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false));
+      this.applicationsPageInfo = res.data.applications.pageInfo;
+      this.applicationsLoading = res.loading;
+      this.applications$ = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(x => this.filter(x))
+      );
+    });
   }
 
   private filter(value: string): Application[] {
     const filterValue = value.toLowerCase();
-    return this.applications ? this.applications.filter(x => x.name?.toLowerCase().indexOf(filterValue) === 0) : this.applications;
+    const applications = this.applications.getValue();
+    return applications ? applications.filter(x => x.name?.toLowerCase().indexOf(filterValue) === 0) : applications;
   }
 
   /*  Close the modal without sending any data.
@@ -107,10 +127,10 @@ export class SubscriptionModalComponent implements OnInit {
    * Adds scroll listener to select.
    * @param e open select event.
    */
-   onOpenSelect(e: any): void {
+   onOpenFormSelect(e: any): void {
     if (e && this.formSelect) {
       const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) => this.loadOnScrollForm(event));
     }
   }
 
@@ -118,14 +138,14 @@ export class SubscriptionModalComponent implements OnInit {
    * Fetches more forms on scroll.
    * @param e scroll event.
    */
-  private loadOnScroll(e: any): void {
+  private loadOnScrollForm(e: any): void {
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
+      if (!this.formsLoading && this.formsPageInfo.hasNextPage) {
+        this.formsLoading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor
+            afterCursor: this.formsPageInfo.endCursor
           },
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
@@ -134,6 +154,47 @@ export class SubscriptionModalComponent implements OnInit {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
                 totalCount: fetchMoreResult.forms.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  /**
+   * Adds scroll listener to auto complete.
+   */
+   onOpenApplicationSelect(): void {
+    if (this.applicationSelect) {
+      const panel = this.applicationSelect.panel.nativeElement;
+      if (panel) {
+        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
+      }
+    }
+  }
+
+  /**
+   * Fetches more forms on scroll.
+   * @param e scroll event.
+   */
+  private loadOnScrollApplication(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      console.log(this.applicationsPageInfo.hasNextPage);
+      if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
+        this.applicationsLoading = true;
+        this.applicationsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.applicationsPageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              applications: {
+                edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
+                pageInfo: fetchMoreResult.applications.pageInfo,
+                totalCount: fetchMoreResult.applications.totalCount
               }
             });
           }
