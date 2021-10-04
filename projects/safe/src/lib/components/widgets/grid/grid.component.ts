@@ -22,7 +22,8 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse, GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -68,7 +69,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -589,6 +591,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
     return this.formBuilder.group(formGroup);
+  }
+
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
+  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
+    if (Array.isArray(value)) {
+      return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+    } else {
+      return choices.find(x => x.value === value)?.text || '';
+    }
   }
 
   /*  Detect sort events and update the items loaded.

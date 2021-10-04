@@ -411,7 +411,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID){
+query GetApplications($first: Int, $afterCursor: ID) {
   applications(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -451,7 +451,6 @@ query GetApplications($first: Int, $afterCursor: ID){
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  // applications: Application[];
   applications: {
     edges: {
       node: Application;

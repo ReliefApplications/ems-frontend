@@ -43,6 +43,10 @@
           <!-- In order to display the div -->
           <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
         </ng-template>
+        <!-- DISPLAY ( dropdown / radiogroup ) -->
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
+          {{ getDisplayText(field.meta.choices, dataItem[field.name]) }}
+        </ng-template>
       </ng-container>
       <!-- EDITION ( text / color / comment - resource - dropdown ) -->
       <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"

@@ -2,10 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MatSelect } from '@angular/material/select';
+import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
 import { GetResourceByIdQueryResponse, GetResourcesQueryResponse, GET_RESOURCES, GET_SHORT_RESOURCE_BY_ID } from '../../graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -42,7 +41,6 @@ export class SafeResourceDropdownComponent implements OnInit {
   constructor(private apollo: Apollo) { }
 
   ngOnInit(): void {
-
     if (this.resource) {
       this.apollo.query<GetResourceByIdQueryResponse>({
         query: GET_SHORT_RESOURCE_BY_ID,
