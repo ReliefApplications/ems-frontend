@@ -2,10 +2,9 @@ import { Apollo } from 'apollo-angular';
 import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { Application } from '../../models/application.model';
-import { BehaviorSubject } from 'rxjs';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
+import { GetApplicationsQueryResponse, GET_APPLICATIONS_ROLES } from '../../graphql/queries';
 
 /**
  * Inits the owner component.
@@ -16,6 +15,10 @@ import { SafeApplicationDropdownComponent } from '../../components/application-d
  * @param formBuilder Form Builder service.
  */
 export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
+
+    const getApplications = () => apollo.query<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS_ROLES,
+    });
 
     const component = {
         name: 'owner',
@@ -28,8 +31,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             choicesOrder: 'asc',
             choices: [] as any[],
         },
-        applications: new BehaviorSubject<Application[]>([]),
-        // tslint:disable-next-line: object-literal-shorthand
         onInit: (): void => {
             Survey.Serializer.addProperty('owner', {
                 name: 'applications',
@@ -57,21 +58,27 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 .registerCustomEditor('applicationsDropdown', applicationEditor);
         },
         onLoaded(question: any): void {
-            // getApplications().subscribe(
-            //     (res) => {
-            //         const applications = res.data.applications;
-            //         this.applications.next(applications);
-            //         const roles = [];
-            //         for (const application of applications.filter(x => question.applications.includes(x.id))) {
-            //             if (application.roles && application.roles.length > 0) {
-            //                 for (const role of application.roles) {
-            //                     roles.push({ value: role.id, text: `${application.name} - ${role.title}` });
-            //                 }
-            //             }
-            //         }
-            //         question.contentQuestion.choices = roles;
-            //     }
-            // );
+            apollo.query<GetApplicationsQueryResponse>({
+                query: GET_APPLICATIONS_ROLES,
+                variables: {
+                    filters: {
+                        ids: question.applications
+                    }
+                }
+            }).subscribe(
+                (res) => {
+                    const applications = res.data.applications.edges.map(x => x.node);
+                    const roles = [];
+                    for (const application of applications) {
+                        if (application.roles && application.roles.length > 0) {
+                            for (const role of application.roles) {
+                                roles.push({ value: role.id, text: `${application.name} - ${role.title}` });
+                            }
+                        }
+                    }
+                    question.contentQuestion.choices = roles;
+                }
+            );
         },
         onAfterRender(question: any, el: any): void {}
     };
