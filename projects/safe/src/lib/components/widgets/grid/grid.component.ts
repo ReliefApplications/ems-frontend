@@ -288,7 +288,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Child grid
     if (!!this.parent) {
-      this.items = this.parent[this.settings.name];
+      this.items = cloneData(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -600,10 +600,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @returns text value of the question.
    */
   public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
-    if (Array.isArray(value)) {
-      return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+    if (value) {
+      if (Array.isArray(value)) {
+        return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+      } else {
+        return choices.find(x => x.value === value)?.text || '';
+      }
     } else {
-      return choices.find(x => x.value === value)?.text || '';
+      return '';
     }
   }
 
@@ -705,7 +709,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: item.canUpdate,
-        template: this.settings.query.template
+        template: this.parent ? null : this.settings.query.template
       },
       height: '98%',
       width: '100vw',

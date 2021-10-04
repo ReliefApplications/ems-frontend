@@ -25,8 +25,8 @@
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
-            <span kendotooltip>
-              <button title="It will save the current layout as default for this grid for all the admin users" class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
+            <span kendotooltip *ngIf="!parent">
+              <button title="Saving will store the current grid layout as default layout for other users" class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
