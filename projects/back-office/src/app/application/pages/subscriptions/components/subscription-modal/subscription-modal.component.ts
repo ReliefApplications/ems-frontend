@@ -39,6 +39,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   // === DATA ===
   private applications = new BehaviorSubject<Application[]>([]);
+  public filteredApplications$!: Observable<Application[]>;
   public applications$!: Observable<Application[]>;
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
   private applicationsPageInfo = {
@@ -102,12 +103,12 @@ export class SubscriptionModalComponent implements OnInit {
       this.applications.next(res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false));
       this.applicationsPageInfo = res.data.applications.pageInfo;
       this.applicationsLoading = res.loading;
+      this.applications$ = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(x => this.filter(x))
+      );
     });
-    this.applications$ = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
-      startWith(''),
-      map(value => typeof value === 'string' ? value : value.name),
-      map(x => this.filter(x))
-    );
   }
 
   private filter(value: string): Application[] {
@@ -165,11 +166,10 @@ export class SubscriptionModalComponent implements OnInit {
    * Adds scroll listener to auto complete.
    */
    onOpenApplicationSelect(): void {
-    console.log(this.applicationSelect);
     if (this.applicationSelect) {
-      const panel = this.applicationSelect.panel.nativeElement.parentElement;
+      const panel = this.applicationSelect.panel.nativeElement;
       if (panel) {
-        panel.addEventListener('scroll', (event: any) => this.loadOnScrollApplication(event));
+        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
       }
     }
   }
@@ -179,7 +179,6 @@ export class SubscriptionModalComponent implements OnInit {
    * @param e scroll event.
    */
   private loadOnScrollApplication(e: any): void {
-    console.log('haha')
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
       console.log(this.applicationsPageInfo.hasNextPage);
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
