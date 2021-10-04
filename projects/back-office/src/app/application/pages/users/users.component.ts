@@ -58,7 +58,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPage(e: any) {
+  onPage(e: any): void {
     // this.pageInfo.pageIndex = e.pageIndex;
     // if (e.pageIndex > e.previousPageIndex && e.length > this.cachedUsers.length) {
     //   this.usersQuery.fetchMore({
