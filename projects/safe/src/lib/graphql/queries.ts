@@ -495,20 +495,36 @@ export interface GetApplicationByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-{
-  applications {
-    id
-    name
-    roles {
-      id
-      title
+query GetApplications($first: Int, $afterCursor: ID) {
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET PERMISSIONS ===

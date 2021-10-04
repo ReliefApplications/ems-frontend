@@ -70,6 +70,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
 };
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -592,8 +593,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.formBuilder.group(formGroup);
   }
 
-  /* Display text instead of values for selectable fields
-  */
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
   public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
     if (Array.isArray(value)) {
       return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);

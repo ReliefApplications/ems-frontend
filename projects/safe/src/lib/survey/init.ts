@@ -32,7 +32,7 @@ export function initCustomWidgets(
   initCountriesComponent(Survey);
   initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
-  initOwnerComponent(Survey, apollo, dialog, formBuilder);
+  initOwnerComponent(Survey, domService, apollo, dialog, formBuilder);
   initCustomWidget(Survey, domService, dialog, environment);
   addCustomFunctions(Survey, authService);
 }
