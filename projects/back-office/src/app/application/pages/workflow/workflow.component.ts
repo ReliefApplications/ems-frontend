@@ -13,6 +13,7 @@ import {
   DeleteStepMutationResponse, DELETE_STEP,
   EditWorkflowMutationResponse, EDIT_WORKFLOW
 } from '../../../graphql/mutations';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-workflow',
@@ -25,6 +26,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public loading = true;
   public steps: Step[] = [];
+  public assetsPath = '';
 
   // === WORKFLOW ===
   public workflow?: Workflow;
@@ -56,7 +58,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService
-  ) { }
+  ) {
+    this.assetsPath = `${environment.backOfficeUri}assets`;
+  }
 
   ngOnInit(): void {
     this.formActive = false;
@@ -88,6 +92,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
         this.workflow = workflow;
+        console.log("this steps = ", this.steps);
       } else {
         this.steps = [];
       }
@@ -138,7 +143,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete step',
-        content: `Do you confirm the deletion of the step ${step.name} ?`,
+        content: `Are you sure you want to delete ${step.name}?` + 
+        `\n This action cannot be undone.`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }

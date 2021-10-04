@@ -22,55 +22,81 @@
 }
 
 .step-list-container {
-  margin: 0 -24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4px;
+  border: 1px solid #E5E5E5;
+  border-width: 1px 0px;
 }
 
 .step-list {
-  min-height: 60px;
   display: flex;
   flex-direction: row;
-  overflow-x: auto;
-  padding: 0 0px;
+  align-items: flex-start;
+  padding: 0px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 10px 0px;
 }
 
 .step-box {
-  padding: 20px 32px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  text-align: center;
-  font-size: 16px;
   position: relative;
-  z-index: 1;
-  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+  width: 100px;
+  height: 100px;
+  background: #FFFFFF;
+  border: 1px solid rgba(47, 56, 62, 0.2);
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin: 0px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  img {
+    height: 46px;
+    width: 46px;
+  }
 
   .step-handle {
     color: transparent;
     cursor: move;
     position: absolute;
-    left: -4px;
+    right: 0;
   }
 
   .delete-button {
     color: transparent;
-    cursor: pointer;
     position: absolute;
-    right: -4px;
+    left: 0;
   }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
     .step-handle {
-      color: #aeaeaf;
+      color: #3B8CC4;
+      ::ng-deep button {
+        background: rgba(59, 140, 196, 0.2);
+      }
     }
     .delete-button {
-      color: #aeaeaf;
+      color: #F14343;
+      ::ng-deep button {
+        background: rgba(241, 67, 67, 0.19);
+      }
     }
   }
-}
 
-.step-box.selected {
-  background-color: rgba(0, 0, 0, 0.04);
+  .step-img {
+    max-height: 70%;
+  }
+
+  .step-name {
+    max-height: 30%;
+    text-align: center;
+  }
 }
 
 .step-placeholder {
@@ -90,7 +116,13 @@
 }
 
 .step-box:last-child {
+  background:#EBF3F9;
   border: none;
+  color: #3B8CC4;
+  font-weight: 500;
+  .mat-icon {
+    font-size: 24px;
+  }
 }
 
 .step-list.cdk-drop-list-dragging .step-box:not(.cdk-drag-placeholder) {

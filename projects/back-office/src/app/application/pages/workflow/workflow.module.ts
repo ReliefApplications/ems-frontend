@@ -17,6 +17,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeButtonModule } from '@safe/builder';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { SafeButtonModule } from '@safe/builder';
     MatTableModule,
     MatStepperModule,
     MatDividerModule,
+    MatIconModule,
     DragDropModule,
     SafeButtonModule
   ],
