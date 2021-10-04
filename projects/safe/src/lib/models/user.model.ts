@@ -47,7 +47,8 @@ export enum Permissions {
     canManageForms = 'can_manage_forms',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
-    canManageApiConfigurations = 'can_manage_api_configurations'
+    canManageApiConfigurations = 'can_manage_api_configurations',
+    canCreateApplications = 'can_create_applications'
 }
 
 /*  Enum of permissions types.
@@ -56,7 +57,8 @@ export enum PermissionType {
     access = 'access',
     create = 'create',
     update = 'update',
-    delete = 'delete'
+    delete = 'delete',
+    manage = 'manage'
 }
 
 /*  Class to check for routes and methods what is the needed admin permission.
@@ -84,7 +86,8 @@ export class PermissionsManagement {
             }
         },
         applications: {
-            create: Permissions.canManageApplications
+            create: Permissions.canCreateApplications,
+            manage: Permissions.canManageApplications
         },
     };
 

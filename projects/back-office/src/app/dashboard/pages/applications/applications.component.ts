@@ -81,7 +81,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
+      this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create))
+        || this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.manage));
     });
   }
 
@@ -173,8 +174,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apollo.mutate<AddApplicationMutationResponse>({
       mutation: ADD_APPLICATION
     }).subscribe(res => {
-      if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message));
+      console.log('re.errors', res.errors);
+      if (res.errors?.length) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message), { error: true });
       } else {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(res.data.addApplication.name, 'application'));
