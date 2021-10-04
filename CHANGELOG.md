@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.3](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.2...v0.1.14-alpha.3) (2021-10-04)
+
+
+### Bug Fixes
+
+* permissions not working if two permissions can be linked to the same one ([9460e81](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9460e816ad2b72f7cabe114f0e3805da31177658))
+
+### [0.1.14-alpha.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14...v0.1.14-alpha.2) (2021-09-29)
+
+### [0.1.14-alpha.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.0...v0.1.14-alpha.1) (2021-09-22)
+
+
+### Bug Fixes
+
+* create standard for snackbar notifications ([6183727](https://github.com/ReliefApplications/emrs-safe-frontend/commits/61837278739bc5be4183bdc550d92ef379dd8bab))
+
 ### [0.1.14-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.12...v0.1.14-alpha.0) (2021-09-14)
 
 

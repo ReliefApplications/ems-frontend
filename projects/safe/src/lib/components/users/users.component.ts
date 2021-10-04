@@ -181,6 +181,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   clearAllFilters(): void {
     this.searchText = '';
     this.roleFilter = '';
+    this.applyFilter('', null);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

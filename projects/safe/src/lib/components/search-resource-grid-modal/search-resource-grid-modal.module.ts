@@ -5,6 +5,8 @@ import { SafeResourceGridModalComponent } from './search-resource-grid-modal.com
 import { SafeResourceGridModule } from '../resource-grid/resource-grid.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
+import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
@@ -14,6 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
     SafeResourceGridModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    SafeResourceDropdownModule,
+    SafeApplicationDropdownModule
   ],
   exports: [SafeResourceGridModalComponent]
 })

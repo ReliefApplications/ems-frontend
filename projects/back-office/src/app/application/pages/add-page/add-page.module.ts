@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRippleModule } from '@angular/material/core';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
 
 @NgModule({
   declarations: [AddPageComponent],
@@ -24,7 +24,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatDialogModule,
     AddPageRoutingModule,
     MatRippleModule,
-    SafeButtonModule
+    SafeButtonModule,
+    SafeContentChoiceModule
   ]
 })
 export class AddPageModule { }

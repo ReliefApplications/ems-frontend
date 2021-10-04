@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiConfiguration, authType, NOTIFICATIONS, SafeSnackBarService } from '@safe/builder';
+import { ApiConfiguration, authType, NOTIFICATIONS, SafeSnackBarService, SafeApiProxyService, status } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { SafeApiProxyService, status } from 'projects/safe/src/public-api';
 import { Subscription } from 'rxjs';
 import { EditApiConfigurationMutationResponse, EDIT_API_CONFIGURATION } from '../../../graphql/mutations';
 import { GetApiConfigurationQueryResponse, GET_API_CONFIGURATION } from '../../../graphql/queries';
@@ -93,7 +92,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         safeSecret: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeSecret
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
         safeID: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeID
-          ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)]
+          ? '●●●●●●●●●●●●●' : '', null],
+        scope: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.scope
+          ? '●●●●●●●●●●●●●' : '', null],
       });
     } else if (type === authType.userToService) {
       return this.formBuilder.group({

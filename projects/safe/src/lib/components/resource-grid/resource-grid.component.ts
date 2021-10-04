@@ -13,7 +13,7 @@ import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -33,7 +33,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   styleUrls: ['./resource-grid.component.scss'],
   providers: [
     PopupService,
-    {provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]},
+    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ]
 })
@@ -64,7 +64,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public readOnly = false;
 
   // === DATA ===
-  public gridData: GridDataResult = {data: [], total: 0};
+  public gridData: GridDataResult = { data: [], total: 0 };
   public availableRecords: any[] = [];
   public canDeleteSelectedRows = false;
 
@@ -99,7 +99,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
@@ -153,27 +153,27 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-            const fields = this.settings.query.fields;
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                this.loading = false;
-                this.fields = this.getFields(fields);
-                this.items = cloneData(res.data[field] ? res.data[field] : []);
-                this.convertDateFields(this.items);
-                this.detailsField = fields.find((x: any) => x.kind === 'LIST');
-                if (this.detailsField) {
-                  this.detailsField = {...this.detailsField, actions: this.settings.actions};
-                }
-                this.gridData = {
-                  data: this.items,
-                  total: this.items.length
-                };
-                if (!this.readOnly) {
-                  this.getSelectedRows();
-                }
+          const fields = this.settings.query.fields;
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.loading = false;
+              this.fields = this.getFields(fields);
+              this.items = cloneData(res.data[field] ? res.data[field] : []);
+              this.convertDateFields(this.items);
+              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
+              if (this.detailsField) {
+                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
+              }
+              this.gridData = {
+                data: this.items,
+                total: this.items.length
+              };
+              if (!this.readOnly) {
+                this.getSelectedRows();
               }
             }
-          },
+          }
+        },
           () => this.loading = false);
       } else {
         this.loading = false;
@@ -321,7 +321,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.gridData.data[index].id,
-      }
+        locale: 'en',
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
     });
   }
 
@@ -342,6 +346,20 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       data: filteredData,
       total: filteredData.length
     };
+  }
+
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
+  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
+    if (Array.isArray(value)) {
+      return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+    } else {
+      return choices.find(x => x.value === value)?.text || '';
+    }
   }
 
   /* Dialog to open if text or comment overlows

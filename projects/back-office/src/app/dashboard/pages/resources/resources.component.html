@@ -29,8 +29,8 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <input [ngModel]="recordsFilter" matInput (change)="applyFilter('recordsCount', $event)" 
-      (keyup)="applyFilter('recordsCount', $event)"type="number" placeholder="Users">
+      <input [ngModel]="recordsFilter" matInput (keyup)="applyFilter('recordsCount', $event)"
+      (change)="applyFilter('recordsCount', $event)" type="number" placeholder="Records">
     </mat-form-field>
 
     <safe-button variant="danger"(click)="clearAllFilters()">Clear Filters</safe-button>
@@ -84,4 +84,7 @@
             [routerLink]="['/resources', row.id]">
           </tr>
     </table>
+    <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of applications"
+    (page)="onPage($event)">
+  </mat-paginator>
 </ng-container>

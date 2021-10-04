@@ -10,11 +10,12 @@ import { Channel } from '../models/channel.model';
 import { Subscription } from '../models/subscription.model';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import { Step } from '../models/step.model';
+import {Dashboard} from '../models/dashboard.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
-  editRecord(id: $id, data: $data, version: $version) {
+mutation editRecord($id: ID!, $data: JSON, $version: ID, $template: ID, $display: Boolean) {
+  editRecord(id: $id, data: $data, version: $version, template: $template) {
     id
     data(display: $display)
     createdAt
@@ -32,8 +33,8 @@ export interface EditRecordMutationResponse {
 
 // === EDIT RECORDS ===
 export const EDIT_RECORDS = gql`
-mutation editRecords($ids: [ID]!, $data: JSON!, $display: Boolean) {
-  editRecords(ids: $ids, data: $data) {
+mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID, $display: Boolean) {
+  editRecords(ids: $ids, data: $data, template: $template) {
     id
     data(display: $display)
     createdAt
@@ -634,4 +635,43 @@ mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
 export interface ToggleApplicationLockMutationResponse {
   loading: boolean;
   toggleApplicationLock: Application;
+}
+
+// === EDIT DASHBOARD ===
+export const EDIT_DASHBOARD = gql`
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
+    id
+    name
+    structure
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    page {
+      id
+      name
+      application {
+        id
+      }
+    }
+  }
+}`;
+
+export interface EditDashboardMutationResponse {
+  loading: boolean;
+  editDashboard: Dashboard;
 }

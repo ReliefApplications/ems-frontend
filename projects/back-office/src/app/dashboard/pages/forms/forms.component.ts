@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-forms',
@@ -30,8 +31,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === DATA ===
   public loading = true;
+  private formsQuery!: QueryRef<GetFormsQueryResponse>;
   displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
   dataSource = new MatTableDataSource<Form>([]);
+  public cachedForms: Form[] = [];
+
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -47,6 +51,12 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   public statusFilter = '';
   public coreFilter = '';
 
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
@@ -64,16 +74,55 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     Check user permission to add new forms.
   */
   ngOnInit(): void {
-    this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_SHORT_FORMS,
-    }).valueChanges.subscribe((res: any) => {
-      this.dataSource.data = res.data.forms;
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    this.formsQuery.valueChanges.subscribe(res => {
+      this.cachedForms = res.data.forms.edges.map(x => x.node);
+      this.dataSource.data = this.cachedForms.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.forms.totalCount;
+      this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
     });
+
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedForms.length) {
+      this.formsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            forms: {
+              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+              pageInfo: fetchMoreResult.forms.pageInfo,
+              totalCount: fetchMoreResult.forms.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource.data = this.cachedForms.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   private filterPredicate(): void {
