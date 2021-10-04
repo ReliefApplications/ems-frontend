@@ -23,10 +23,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 })
 export class SafeApplicationDropdownComponent implements OnInit {
 
-  @Input() application = '';
+  @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
-  public selectedApplication: Application | null = null;
+  public selectedApplications: Application[] = [];
   private applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
@@ -41,6 +41,19 @@ export class SafeApplicationDropdownComponent implements OnInit {
   constructor(private apollo: Apollo) { }
 
   ngOnInit(): void {
+    if (this.value.length > 0) {
+      this.apollo.query<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          filters: {
+            ids: this.value
+          }
+        }
+      }).subscribe(res => {
+        this.selectedApplications = res.data.applications.edges.map(x => x.node);
+      });
+    }
+
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS,
       variables: {
@@ -51,6 +64,12 @@ export class SafeApplicationDropdownComponent implements OnInit {
     this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.applications.next(res.data.applications.edges.map(x => x.node));
+      if (this.selectedApplications.length > 0) {
+        const applicationsIds = this.applications.getValue().map(x => x.id);
+        this.selectedApplications = this.selectedApplications.filter(x => {
+          return applicationsIds.indexOf(x.id) < 0;
+        });
+      }
       this.pageInfo = res.data.applications.pageInfo;
       this.loading = res.loading;
     });
@@ -90,11 +109,6 @@ export class SafeApplicationDropdownComponent implements OnInit {
           },
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
-            if (this.selectedApplication) {
-              if (fetchMoreResult.applications.edges.find(x => x.node.id === this.selectedApplication?.id)) {
-                this.selectedApplication = null;
-              }
-            }
             return Object.assign({}, prev, {
               applications: {
                 edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],

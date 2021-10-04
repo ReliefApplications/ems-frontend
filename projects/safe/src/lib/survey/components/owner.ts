@@ -45,7 +45,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                     const question = editor.object;
                     const dropdown = domService.appendComponentToBody(SafeApplicationDropdownComponent, htmlElement);
                     const instance: SafeApplicationDropdownComponent = dropdown.instance;
-                    instance.application = question.applications;
+                    instance.value = question.applications;
                     instance.choice.subscribe(res => {
                         return editor.onChanged(res);
                     });
