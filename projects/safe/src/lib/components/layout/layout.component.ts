@@ -130,6 +130,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         if (navItems.length > 0) {
           const filteredGroup = {
             name: group.name,
+            callback: group.callback,
             navItems
           };
           this.filteredNavGroups.push(filteredGroup);
