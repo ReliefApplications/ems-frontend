@@ -27,18 +27,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         name: 'tooltip:text',
         category: 'general'
       });
-      Survey.Serializer.addProperty('resource', {
-        name: 'relatedName',
-        category: 'general',
-        required: true,
-        description: 'unique name for this resource question'
-      });
-      Survey.Serializer.addProperty('resources', {
-        name: 'relatedName',
-        category: 'general',
-        required: true,
-        description: 'unique name for this resources question'
-      });
       Survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
