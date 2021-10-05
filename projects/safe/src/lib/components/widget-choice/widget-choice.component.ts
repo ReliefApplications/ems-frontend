@@ -21,7 +21,7 @@ export class SafeWidgetChoiceComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public onSelect(id: string): void {
-    this.add.emit(id);
+  public onSelect(e: any): void {
+    this.add.emit(e);
   }
 }

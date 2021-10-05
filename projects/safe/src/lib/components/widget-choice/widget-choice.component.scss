@@ -1,7 +1,8 @@
 .safe-widget-choice {
-    display: grid;
-    grid-gap: 16px;
-    grid-auto-flow: column;
+    display: flex;
+    flex-wrap: wrap;
+    margin: -8px;
+    justify-content: space-around;
 
     .safe-widget-type {
         display: flex;
@@ -14,6 +15,7 @@
         border-radius: 8px;
         background-color: white;
         border: 1px solid #2F383E33;
+        margin: 8px;
 
         img {
             height: 90px;
@@ -39,6 +41,7 @@
     border-radius: 8px;
     height: 64px;
     max-width: 568px;
+    margin: auto;
 
     .safe-widget-type {
         height: 36px;

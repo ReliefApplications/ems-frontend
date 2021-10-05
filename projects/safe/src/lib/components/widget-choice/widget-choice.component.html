@@ -2,8 +2,8 @@
 
 <ng-template #listTemplate>
     <div class="safe-widget-choice">
-        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type.id)" matRipple
-            [ngStyle]="hovered === type.id && { 'border-color': type.color }" (mouseover)="hovered = type.id"
+        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)" matRipple
+            [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null" (mouseover)="hovered = type.id"
             (mouseout)="hovered = ''">
             <img [src]="type.icon">
             <span>{{ type.name | titlecase }}</span>
@@ -13,7 +13,7 @@
 
 <ng-template #floatingTemplate>
     <div class="safe-floating-widget-choice">
-        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type.id)"
+        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)"
             [matTooltip]="type.name" matTooltipPosition="above" (mouseover)="hovered = type.id"
             (mouseout)="hovered = ''">
             <img [src]="type.icon">
