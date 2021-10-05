@@ -30,4 +30,13 @@ export class SafeApiProxyService {
     }
     return null;
   }
+
+  public promisedRequestWithHeaders(url: string): Promise<any> {
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get(url, { headers }).toPromise();
+  }
 }
