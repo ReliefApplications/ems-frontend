@@ -670,6 +670,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       name
       createdAt
       modifiedAt
+      canUpdate
       permissions {
         canSee {
           id
@@ -690,6 +691,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         type
         content
         createdAt
+        canDelete
       }
       page {
         id

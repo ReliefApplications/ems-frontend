@@ -1,6 +1,5 @@
 import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../graphql/queries';
@@ -72,6 +71,8 @@ export class SafeWorkflowService {
           } else {
             this.router.navigate(['../' + value.type + '/' + res.data.addStep.content], { relativeTo: route.parent });
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotEdited('Workflow', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     } else {

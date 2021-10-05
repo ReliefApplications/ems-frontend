@@ -47,7 +47,8 @@ export enum Permissions {
     canCreateResources = 'can_create_resources',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
-    canManageApiConfigurations = 'can_manage_api_configurations'
+    canManageApiConfigurations = 'can_manage_api_configurations',
+    canCreateApplications = 'can_create_applications'
 }
 
 /*  Enum of permissions types.
@@ -56,7 +57,8 @@ export enum PermissionType {
     access = 'access',
     create = 'create',
     update = 'update',
-    delete = 'delete'
+    delete = 'delete',
+    manage = 'manage'
 }
 
 /*  Class to check for routes and methods what is the needed admin permission.
@@ -81,30 +83,13 @@ export class PermissionsManagement {
             apiconfigurations: {
                 create: Permissions.canManageApiConfigurations,
                 access: Permissions.canManageApiConfigurations
-            },
-            edit: {
-                access: Permissions.canManageApplications
-            },
-            position: {
-                access: Permissions.canSeeRoles
-            },
-            channels: {
-                access: Permissions.canManageApplications
-            },
-            subscriptions: {
-                access: Permissions.canManageApplications
-            },
-            'pull-jobs': {
-                access: Permissions.canManageApplications
             }
         },
         applications: {
-            create: Permissions.canManageApplications,
+            create: Permissions.canCreateApplications,
+            manage: Permissions.canManageApplications,
             access: Permissions.canSeeApplications
         },
-        'add-page': {
-            access: Permissions.canManageApplications
-        }
     };
 
     public static getRightFromPath(path: string, type: PermissionType): string {

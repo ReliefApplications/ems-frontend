@@ -177,11 +177,13 @@ export class SafeApplicationService {
       }
     }).subscribe((res) => {
       if (res.data?.toggleApplicationLock) {
-        const newApplication = { ...application,
-          locked: res.data?.toggleApplicationLock.locked,
-          lockedByUser: res.data?.toggleApplicationLock.lockedByUser
-        };
-        this._application.next(newApplication);
+        if (!res.data.toggleApplicationLock.lockedByUser) {
+          const newApplication = { ...application,
+            locked: res.data?.toggleApplicationLock.locked,
+            lockedByUser: res.data?.toggleApplicationLock.lockedByUser
+          };
+          this._application.next(newApplication);
+        }
       }
     });
   }
@@ -257,6 +259,8 @@ export class SafeApplicationService {
             this._application.next(newApplication);
             this.router.navigate([`./applications/${app.id}`]);
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
@@ -275,6 +279,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+        this._application.next({ ...application, ...{ pages: res.data?.editApplication.pages }});
       });
     }
   }
