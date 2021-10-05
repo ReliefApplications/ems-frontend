@@ -62,6 +62,8 @@ export class SafeInviteUsersComponent implements OnInit {
    * Opens a modal to invite a new user.
    */
   onAdd(): void {
+    console.log('this.gridData.data');
+    console.log(this.gridData.data);
     const invitedUsers = this.gridData.data.map(x => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
       panelClass: 'add-dialog',

@@ -428,7 +428,13 @@ export class SafeApplicationService {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
           this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
-          const newApplication = { ...application, users: application.users.edges?.filter((u: any) => !deletedUsers.includes(u.id)) };
+          const newApplication = { ...application,
+            users: {
+              ...application.users,
+              edges:
+                application.users.edges?.map((x: any) => x.node).filter((u: any) => !deletedUsers.includes(u.id)) }
+            };
+          console.log('DELETE USER: newApplication');
           console.log(newApplication);
           this._application.next(newApplication);
         } else {
@@ -484,18 +490,19 @@ export class SafeApplicationService {
         console.log('res');
         console.log(res);
         if (res.data) {
-          const newUser = {...res.data.editUser, __typename: 'UserEdge'};
+          const newUser = res.data.editUser;
           console.log(newUser);
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('roles', user.username));
-          const index = application?.users.edges?.indexOf(user);
+          const index = application?.users.edges?.map((x: any) => x.node).indexOf(user);
           console.log('application.users.edges');
           console.log(application.users.edges);
+          console.log('GAAAANG application');
+          console.log(application);
           if (application?.users && index) {
             const newApplication: Application = {
               ...application,
               users: {
                 ...application.users,
-                // edges: application.users.edges?.map((x: any) => String(x.node.id) === String(user.id) ? newUser || null : x) || []
                 edges: application.users.edges?.map(
                   (x: any) => String(x.node.id) === String(user.id) ? {...x, node: newUser} || null : x) || []
               }
