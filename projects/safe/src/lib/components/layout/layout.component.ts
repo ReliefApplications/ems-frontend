@@ -1,5 +1,5 @@
 import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy,
-  OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+  OnInit, Output, SimpleChanges, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeLayoutService } from '../../services/layout.service';
 import { Account } from 'msal';
@@ -35,9 +35,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
+  @Output() reorder: EventEmitter<any> = new EventEmitter();
+
 
   filteredNavGroups: any[] = [];
-  private reordering = false;
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
@@ -55,6 +56,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   public otherOffice = '';
   private environment: any;
+  private inApplication = false;
 
   constructor(
     @Inject('environment') environment: any,
@@ -71,6 +73,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     if (this.environment.module === 'backoffice') {
+      this.inApplication = this.router.url.includes('/applications/');
       this.otherOffice = 'front office';
     } else {
       this.otherOffice = 'back office';
@@ -120,6 +123,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {
+          if (this.inApplication) {
+            return true;
+          }
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
           return this.authService.userHasClaim(permission, this.environment.module === 'backoffice');
         });
@@ -129,18 +135,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
             callback: group.callback,
             navItems
           };
-          this.filteredNavGroups.push(filteredGroup);
+          this.filteredNavGroups.push(JSON.parse(JSON.stringify(filteredGroup)));
         }
       }
     });
   }
 
-  ngOnChanges(): void {
-    if (this.reordering) {
-      this.reordering = false;
-    } else {
-      this.loadUserAndUpdateLayout();
-    }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.loadUserAndUpdateLayout();
   }
 
   ngOnDestroy(): void {
@@ -178,9 +180,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   drop(event: any, group: any): void {
-    this.reordering = true;
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
-    group.callback(group.navItems);
+    this.reorder.emit(group.navItems);
   }
 
   /*  Call logout method of authService.

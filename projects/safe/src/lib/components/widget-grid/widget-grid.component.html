@@ -1,4 +1,8 @@
 <div class="grid-container">
+    <div class="widget-choice-wrapper" *ngIf="canUpdate" [ngClass]="{'floating-widget-choice-wrapper': widgets.length > 0}">
+        <h2 *ngIf="widgets.length === 0">Add a widget</h2>
+        <safe-widget-choice [floating]="widgets.length > 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)"></safe-widget-choice>
+    </div>
     <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
             [colspan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
@@ -15,12 +19,6 @@
                     </safe-button>
                 </div>
             </cdk-drop-list>
-
         </mat-grid-tile>
-
-        <mat-grid-tile colspan="1" [rowspan]="dashboardMenuRowSpan">
-          <safe-dashboard-menu (add)="addNewWidget.emit($event)" *ngIf="canUpdate"></safe-dashboard-menu>
-        </mat-grid-tile>
-
     </mat-grid-list>
 </div>

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeDashboardMenuComponent } from './dashboard-menu.component';
+import { SafeWidgetChoiceComponent } from './widget-choice.component';
 
-describe('DashboardMenuComponent', () => {
-  let component: SafeDashboardMenuComponent;
-  let fixture: ComponentFixture<SafeDashboardMenuComponent>;
+describe('SafeWidgetChoiceComponent', () => {
+  let component: SafeWidgetChoiceComponent;
+  let fixture: ComponentFixture<SafeWidgetChoiceComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeDashboardMenuComponent ]
+      declarations: [ SafeWidgetChoiceComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeDashboardMenuComponent);
+    fixture = TestBed.createComponent(SafeWidgetChoiceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

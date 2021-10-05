@@ -39,77 +39,78 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name || '';
-        const navItems: any[] = [];
+        let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => {
+          return {
+            id: x.id,
+            name: x.name,
+            path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
+            icon: this.getNavIcon(x.type || ''),
+            class: null,
+            orderable: true,
+            action: x.canDelete && {
+              icon: 'delete',
+              toolTip: 'Delete the page',
+              callback: () => this.onDelete(x)
+            }
+          };
+        }) || [];
+        let adminNavItems: any[] = [];
+        if (application.canUpdate) {
+          displayNavItems = displayNavItems.concat(
+            {
+              name: 'Add a page',
+              path: './add-page',
+              icon: 'add_circle',
+              class: 'nav-item-add',
+              isAddPage: true
+            }
+          );
+          adminNavItems = adminNavItems.concat([
+            {
+              name: 'Settings',
+              path: './settings/edit',
+              icon: 'settings'
+            },
+            {
+              name: 'Users',
+              path: './settings/users',
+              icon: 'supervisor_account'
+            },
+            {
+              name: 'Roles',
+              path: './settings/roles',
+              icon: 'admin_panel_settings'
+            },
+            {
+              name: 'Attributes',
+              path: './settings/position',
+              icon: 'manage_accounts'
+            },
+            {
+              name: 'Channels',
+              path: './settings/channels',
+              icon: 'edit_notifications'
+            },
+            {
+              name: 'Subscriptions',
+              path: './settings/subscriptions',
+              icon: 'move_to_inbox'
+            },
+            {
+              name: 'Pull jobs',
+              path: './settings/pull-jobs',
+              icon: 'cloud_download'
+            }
+          ]);
+        }
         this.navGroups = [
           {
             name: 'Display',
-            callback: (event: any) => this.onReorder(event),
-            navItems: navItems
-            .concat(application.pages?.filter((x: any) => x.content).map((x: any) => {
-              return {
-                id: x.id,
-                name: x.name,
-                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type || ''),
-                class: null,
-                orderable: true,
-                action: {
-                  icon: 'delete',
-                  toolTip: 'Delete the page',
-                  callback: () => this.onDelete(x)
-                }
-              };
-            }))
-            .concat(
-              {
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add',
-                isAddPage: true
-              }
-            )
+            navItems: displayNavItems
           },
           {
             name: 'Administration',
-            navItems: [
-              {
-                name: 'Settings',
-                path: './settings/edit',
-                icon: 'settings'
-              }
-              ,
-              {
-                name: 'Users',
-                path: './settings/users',
-                icon: 'supervisor_account'
-              },
-              {
-                name: 'Roles',
-                path: './settings/roles',
-                icon: 'admin_panel_settings'
-              },
-              {
-                name: 'Attributes',
-                path: './settings/position',
-                icon: 'manage_accounts'
-              },
-              {
-                name: 'Channels',
-                path: './settings/channels',
-                icon: 'edit_notifications'
-              },
-              {
-                name: 'Subscriptions',
-                path: './settings/subscriptions',
-                icon: 'move_to_inbox'
-              },
-              {
-                name: 'Pull jobs',
-                path: './settings/pull-jobs',
-                icon: 'cloud_download'
-              }
-            ]
+            navItems: adminNavItems
           }
         ];
         if (!this.application || application.id !== this.application.id) {
