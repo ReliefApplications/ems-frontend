@@ -37,6 +37,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
 
   filteredNavGroups: any[] = [];
+  private reordering = false;
 
   // === NOTIFICATIONS ===
   notifications: Notification[] = [];
@@ -125,7 +126,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
             return true;
           }
           const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
-          return this.authService.userHasClaim(permission);
+          return this.authService.userHasClaim(permission, this.environment.module === 'backoffice');
         });
         if (navItems.length > 0) {
           const filteredGroup = {
@@ -140,7 +141,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
-    this.loadUserAndUpdateLayout();
+    if (this.reordering) {
+      this.reordering = false;
+    } else {
+      this.loadUserAndUpdateLayout();
+    }
   }
 
   ngOnDestroy(): void {
@@ -178,6 +183,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   drop(event: any, group: any): void {
+    this.reordering = true;
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     group.callback(group.navItems);
   }

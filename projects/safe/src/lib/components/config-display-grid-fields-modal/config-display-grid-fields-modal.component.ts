@@ -41,6 +41,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryBuilder.availableQueries.subscribe((res) => {
+      console.log(res);
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
         const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
@@ -50,6 +51,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
           sort: hasDataForm ? this.data.form.value.sort : {},
           filter: hasDataForm ? this.data.form.value.filter : {}
         });
+        console.log(this.form);
         this.loading = false;
       }
     });

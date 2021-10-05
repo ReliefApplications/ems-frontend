@@ -22,7 +22,8 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse, GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -40,6 +41,8 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
+import { SafeAuthService } from '../../../services/auth.service';
+import { SafeApiProxyService } from '../../../services/api-proxy.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -67,7 +70,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -110,6 +114,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
 
+  // === VERIFICATION IF USER IS ADMIN ===
+  public isAdmin: boolean;
+
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
@@ -147,6 +154,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -180,13 +189,21 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private safeAuthService: SafeAuthService,
+    private apiProxyService: SafeApiProxyService
   ) {
     this.apiUrl = environment.API_URL;
+    this.isAdmin = this.safeAuthService.userIsAdmin;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+  }
+
+  /*  Detect changes of the settings to (re)load the data.
+  */
+  ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
       this.filter = this.layout.filter;
     }
@@ -194,22 +211,18 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.loadItems();
-  }
-
-  /*  Detect changes of the settings to (re)load the data.
-  */
-  ngOnChanges(): void {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
-      this.metaQuery.subscribe((res: any) => {
+      this.metaQuery.subscribe(async (res: any) => {
         this.queryError = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.metaFields = res.data[field];
+            this.metaFields = Object.assign({}, res.data[field]);
+            await this.populateMetaFields();
           }
         }
         this.getRecords();
@@ -222,6 +235,46 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.queryError = true;
     }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+  }
+
+  /**
+   * Fetch choices from URL if needed
+   */
+  private async populateMetaFields(): Promise<void> {
+    for (const fieldName of  Object.keys(this.metaFields)) {
+      const meta = this.metaFields[fieldName];
+      if (meta.choicesByUrl) {
+        const url: string = meta.choicesByUrl.url;
+        const localRes = localStorage.getItem(url);
+        if (localRes) {
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
+          };
+        } else {
+          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
+          localStorage.setItem(url, JSON.stringify(res));
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(res, meta.choicesByUrl)
+          };
+        }
+      }
+    }
+  }
+
+  /**
+   * Extracts choices using choicesByUrl properties
+   * @param res Result of http request.
+   * @param choicesByUrl Choices By Url property.
+   * @returns list of choices.
+   */
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    return choices ? choices.map((x: any) => ({
+      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
+      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+    })) : [];
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -278,7 +331,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Child grid
     if (!!this.parent) {
-      this.items = this.parent[this.settings.name];
+      this.items = cloneData(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -524,14 +577,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.fields.filter(x => !x.disabled).forEach((field, index) => {
       if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
-          this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-            this.fields[index] = {
-              ...field,
-              meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
-            };
-          });
-        }
       } else {
         if (field.meta.type === 'multipletext') {
           const fieldGroup: any = {};
@@ -581,6 +626,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
     return this.formBuilder.group(formGroup);
+  }
+
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
+  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+    if (meta.choices) {
+      if (Array.isArray(value)) {
+        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+      } else {
+        return meta.choices.find(x => x.value === value)?.text || '';
+      }
+    } else {
+      return value;
+    }
   }
 
   /*  Detect sort events and update the items loaded.
@@ -681,7 +744,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: item.canUpdate,
-        template: this.settings.query.template
+        template: this.parent ? null : this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -900,7 +963,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        data[modification.field.name] = modification.value;
+        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
+          data[modification.field.name] = new Date();
+        } else {
+          data[modification.field.name] = modification.value;
+        }
       }
       delete data.id;
       delete data.__typename;
@@ -1155,5 +1222,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     }, {});
     this.layoutChanged.emit(this.layout);
+  }
+
+  /**
+   * Save the current layout of the grid as default layout
+   */
+  saveDefaultLayout(): void {
+    this.defaultLayoutChanged.emit(this.layout);
   }
 }

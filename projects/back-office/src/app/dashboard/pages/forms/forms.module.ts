@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule as AngularFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [FormsComponent],
@@ -40,7 +41,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSelectModule,
     AngularFormsModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatPaginatorModule
   ],
   exports: [FormsComponent]
 })

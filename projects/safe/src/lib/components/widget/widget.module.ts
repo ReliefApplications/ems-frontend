@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeWidgetComponent } from './widget.component';
-import { SafeChartModule } from '../widgets/chart/public-api';
-import { SafeEditorModule } from '../widgets/editor/public-api';
-import { SafeGridModule } from '../widgets/grid/public-api';
+import { SafeChartModule } from '../widgets/chart/chart.module';
+import { SafeEditorModule } from '../widgets/editor/editor.module';
+import { SafeGridModule } from '../widgets/grid/grid.module';
 import { SafeMapModule } from '../widgets/map/map.module';
-import { SafeSchedulerModule } from '../widgets/scheduler/public-api';
+import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
 import 'hammerjs';
 
 @NgModule({

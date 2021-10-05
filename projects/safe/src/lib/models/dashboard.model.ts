@@ -11,7 +11,6 @@ export interface Dashboard {
     structure?: any;
     permissions?: any;
     canSee?: boolean;
-    canCreate?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;
     page?: Page;
