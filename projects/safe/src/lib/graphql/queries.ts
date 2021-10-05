@@ -325,18 +325,45 @@ export interface GetRolesQueryResponse {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
-    id
-    username
-    name
-    oid
+query GetUsers($first: Int, $afterCursor: ID){
+  users(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        username
+        roles {
+          id
+          title
+          application {
+            id
+          }
+        }
+        oid
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetUsersQueryResponse {
   loading: boolean;
-  users: User[];
+  // users: User[];
+  users: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET NOTIFICATIONS ===
