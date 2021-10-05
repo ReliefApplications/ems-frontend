@@ -58,6 +58,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('HEREEEEEE this.users');
+    console.log(this.users);
     this.users.filterPredicate = (data: any) => {
       return (
         (this.searchText.trim().length === 0 ||
@@ -139,6 +141,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(users: User[]): void {
+    console.log('hey');
+    console.log('+++users');
+    console.log(users);
+    console.log('THEEEENNN this.users');
+    // there the this.users is perfect
+    console.log(this.users);
+    const hello = 'hello';
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete user',
@@ -148,7 +157,14 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       }
     });
     dialogRef.afterClosed().subscribe(value => {
+      console.log('ONE');
       if (value) {
+        console.log(hello);
+        console.log('TWO');
+        // But when we have closed the modal, the this.users is filled by a lot of undefine users
+        console.log(this.users);
+        console.log('THREE');
+        console.log(users);
         const ids = users.map(u => u.id);
         this.loading = true;
         this.selection.clear();
@@ -159,6 +175,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             mutation: DELETE_USERS,
             variables: { ids }
           }).subscribe(res => {
+            console.log('=> res <=');
+            console.log(res);
             this.loading = false;
             if (res.data?.deleteUsers) {
               this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers));

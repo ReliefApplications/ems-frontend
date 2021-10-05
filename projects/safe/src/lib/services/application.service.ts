@@ -426,7 +426,11 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         if (res.data) {
+          console.log('res.data');
+          console.log(res.data);
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
+          console.log('application.users.edges?.map((x: any) => x.node).filter((u: any) => !deletedUsers.includes(u.id))');
+          console.log(application.users.edges?.map((x: any) => x.node).filter((u: any) => !deletedUsers.includes(u.id)));
           this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
           const newApplication = { ...application,
             users: {

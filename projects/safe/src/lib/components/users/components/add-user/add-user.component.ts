@@ -38,8 +38,6 @@ export class SafeAddUserComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('this.users');
-    console.log(this.users);
     this.form = this.formBuilder.group({
       email: ['', Validators.minLength(1)],
       role: ['', Validators.required],
@@ -59,22 +57,17 @@ export class SafeAddUserComponent implements OnInit {
       map(x => this.filterUsers(x))
     );
 
-    console.log('BEFFFF');
     this.apollo.watchQuery<GetUsersQueryResponse>({
       query: GET_USERS
     }).valueChanges.subscribe(res => {
-      console.log('res');
-      console.log(res);
       const flatInvitedUsers = this.data.users.map(x => x.username);
       this.users = res.data.users.edges.map((x: any) => x.node).filter((x: any) => !flatInvitedUsers.includes(x.username));
-      // this.users = res.data.users.filter(x => !flatInvitedUsers.includes(x.username));
       this.filteredUsers = this.form.controls.email.valueChanges.pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : ''),
         map(x => this.filterUsers(x))
       );
     });
-    console.log('AFTTTTT');
   }
 
   private filterUsers(value: string): User[] {

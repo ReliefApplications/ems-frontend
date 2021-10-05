@@ -50,6 +50,8 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.roles = [];
       }
     });
+    console.log('?????');
+    console.log(this.users);
   }
 
   ngOnDestroy(): void {
