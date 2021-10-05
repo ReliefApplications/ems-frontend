@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SafeGridService } from '../../../services/grid.service';
 @Component({
   selector: 'safe-dashboard-menu',
@@ -7,9 +7,11 @@ import { SafeGridService } from '../../../services/grid.service';
 })
 export class SafeDashboardMenuComponent implements OnInit {
 
+  @Input() empty: any;
+
   // === WIDGETS ===
   public items: any[] = [];
-  
+
   // === EMIT THE WIDGET TO ADD ===
   @Output() add: EventEmitter<any> = new EventEmitter();
 
@@ -21,7 +23,6 @@ export class SafeDashboardMenuComponent implements OnInit {
   */
   ngOnInit(): void {
     this.items = this.gridService.availableTiles;
-    console.log("this.items = ", this.items);
   }
 
   /*  Emit a widget.

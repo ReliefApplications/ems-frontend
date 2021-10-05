@@ -18,8 +18,10 @@
         </mat-grid-tile>
 
         <mat-grid-tile colspan="1" [rowspan]="dashboardMenuRowSpan">
-          <safe-dashboard-menu (add)="addNewWidget.emit($event)" *ngIf="canUpdate"></safe-dashboard-menu>
+          <safe-dashboard-menu *ngIf="widgets.length === 0 && canUpdate" [empty]="true" (add)="addNewWidget.emit($event)"></safe-dashboard-menu>
         </mat-grid-tile>
-
     </mat-grid-list>
+    <div class="add-widget" *ngIf="widgets.length != 0 && canUpdate">
+        <safe-dashboard-menu [empty]="false" (add)="addNewWidget.emit($event)"></safe-dashboard-menu>
+    </div>
 </div>

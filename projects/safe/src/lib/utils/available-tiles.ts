@@ -20,7 +20,7 @@ export const AVAILABLE_TILES = [
   //   settingsTemplate: SafeChartSettingsComponent
   // },
   {
-    name: 'Donut_chart',
+    name: 'Donut chart',
     icon: 'donut',
     settings: {title: 'Donut chart', chart: {
       type: 'donut'

@@ -31,3 +31,37 @@
     }
   }
 }
+
+.widget-container-reduce {
+  padding: 8px 40px;
+  margin: 20px 0;
+  width: 568px;
+  height: 64px;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
+  border-radius: 10px;
+
+  .widget-list-reduce {
+    position: static;
+    width: 488px;
+    height: 48px;
+    display: flex;
+    margin: 10px 0px;
+
+    .widget-box-reduce {
+      position: static;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 48px;
+      width: 48px;
+      flex: none;
+      margin: 0px 25px;
+      cursor: pointer;
+
+      &:hover {
+        border-bottom: 4px solid #3B8CC4;
+      }
+    }
+  }
+}
