@@ -493,6 +493,63 @@ export interface GetApplicationByIdQueryResponse {
   application: Application;
 }
 
+// === GET APPLICATIONS ===
+export const GET_APPLICATIONS = gql`
+query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}`;
+
+// === GET APPLICATIONS ===
+export const GET_APPLICATIONS_ROLES = gql`
+query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+    edges {
+      node {
+        id
+        name
+        roles {
+          id
+          title
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}`;
+
+export interface GetApplicationsQueryResponse {
+  loading: boolean;
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
+}
+
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
 query GetPermissions($application: Boolean) {

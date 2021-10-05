@@ -22,7 +22,8 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse, GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -68,7 +69,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -286,7 +288,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Child grid
     if (!!this.parent) {
-      this.items = this.parent[this.settings.name];
+      this.items = cloneData(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -591,6 +593,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.formBuilder.group(formGroup);
   }
 
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
+  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
+    if (value) {
+      if (Array.isArray(value)) {
+        return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+      } else {
+        return choices.find(x => x.value === value)?.text || '';
+      }
+    } else {
+      return '';
+    }
+  }
+
   /*  Detect sort events and update the items loaded.
   */
   public sortChange(sort: SortDescriptor[]): void {
@@ -689,7 +709,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: item.canUpdate,
-        template: this.settings.query.template
+        template: this.parent ? null : this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -908,7 +928,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        data[modification.field.name] = modification.value;
+        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
+          data[modification.field.name] = new Date();
+        } else {
+          data[modification.field.name] = modification.value;
+        }
       }
       delete data.id;
       delete data.__typename;

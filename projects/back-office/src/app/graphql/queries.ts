@@ -411,7 +411,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID){
+query GetApplications($first: Int, $afterCursor: ID) {
   applications(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -451,7 +451,6 @@ query GetApplications($first: Int, $afterCursor: ID){
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  // applications: Application[];
   applications: {
     edges: {
       node: Application;
@@ -675,21 +674,41 @@ export interface GetStepByIdQueryResponse {
 
 // === GET ROUTING KEYS ===
 export const GET_ROUTING_KEYS = gql`
-query GetRoutingKeys {
-  applications {
-    id
-    name
-    channels {
-      id
-      title
-      routingKey
+query GetRoutingKeys($first: Int, $afterCursor: ID) {
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        channels {
+          id
+          title
+          routingKey
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetRoutingKeysQueryResponse {
   loading: boolean;
-  applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET POSITION ATTRIBUTES FORM CATEGORY ===

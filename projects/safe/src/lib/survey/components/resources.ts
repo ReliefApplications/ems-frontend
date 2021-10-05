@@ -116,6 +116,22 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
       });
 
+      Survey.Serializer.addProperty('resources', {
+        name: 'relatedName',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        required: true,
+        description: 'unique name for this resource question',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 4
+      });
+
       // Build set available grid fields button
       Survey
         .JsonObject
@@ -127,7 +143,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           category: 'Custom Questions',
           dependsOn: 'resource',
           visibleIf: (obj: any) => !!obj && !!obj.resource,
-          visibleIndex: 4
+          visibleIndex: 5
         });
 
       const availableFieldsEditor = {
