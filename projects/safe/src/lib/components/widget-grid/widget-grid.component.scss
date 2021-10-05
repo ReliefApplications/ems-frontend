@@ -86,6 +86,12 @@
     display: none;
 }
 
+.mat-grid-tile:last-child {
+    ::ng-deep.mat-figure {
+        align-items: unset;
+        justify-content: unset;
+    }
+}
 // safe-dashboard-menu {
 //   position: absolute;
 //   left: 0;

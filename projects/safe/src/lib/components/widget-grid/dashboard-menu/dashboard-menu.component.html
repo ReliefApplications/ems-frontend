@@ -1,12 +1,8 @@
-<div [matMenuTriggerFor]="menu" class="dashboard-menu">
-  <safe-button [isIcon]="true" icon="add" category="secondary" variant="primary">
-  </safe-button>
-  <span class="primary">Add Widget</span>
+<div class="widget-list">
+  <div class="widget-box" *ngFor="let item of items" (click)="onAdd(item)">
+      <div class="widget-img" matRipple>
+          <img src="/assets/{{item.icon}}.svg">
+      </div>
+      <div class="widget-name">{{item.name}}</div>
+  </div>
 </div>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item *ngFor="let item of items" (click)="onAdd(item)">
-    <mat-icon>{{ item.icon }}</mat-icon>
-    <span>{{ item.name }}</span>
-  </button>
-</mat-menu>
-

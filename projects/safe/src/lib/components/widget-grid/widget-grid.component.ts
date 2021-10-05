@@ -42,6 +42,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
+    console.log("widget = ", this.widgets);
   }
 
   /*  Material grid once template ready.

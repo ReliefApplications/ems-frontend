@@ -20,8 +20,8 @@ export const AVAILABLE_TILES = [
   //   settingsTemplate: SafeChartSettingsComponent
   // },
   {
-    name: 'DONUT CHART',
-    icon: 'donut_small',
+    name: 'Donut_chart',
+    icon: 'donut',
     settings: {title: 'Donut chart', chart: {
       type: 'donut'
     }},
@@ -31,8 +31,8 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeChartSettingsComponent
   },
   {
-    name: 'LINE CHART',
-    icon: 'show_chart',
+    name: 'Line chart',
+    icon: 'line',
     settings: {title: 'Line chart', chart: {
       type: 'line'
     }},
@@ -42,8 +42,8 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeChartSettingsComponent
   },
   {
-    name: 'PIE CHART',
-    icon: 'pie_chart',
+    name: 'Pie chart',
+    icon: 'pie',
     settings: {title: 'Pie chart', chart: {
       type: 'pie'
     }},
@@ -73,8 +73,8 @@ export const AVAILABLE_TILES = [
   //   settingsTemplate: SafeSchedulerSettingsComponent
   // },
   {
-    name: 'GRID',
-    icon: 'view_column',
+    name: 'Grid',
+    icon: 'grid',
     settings: {
       title: 'New grid',
       sortable: false,
@@ -91,8 +91,8 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeGridSettingsComponent
   },
   {
-    name: 'MAP',
-    icon: 'explore',
+    name: 'Map',
+    icon: 'map',
     settings: {},
     defaultCols: 4,
     defaultRows: 4,
@@ -100,8 +100,8 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeMapSettingsComponent
   },
   {
-    name: 'TEXT',
-    icon: 'text_fields',
+    name: 'Text',
+    icon: 'text',
     settings: {title: 'Enter a title', text: 'Enter a content'},
     defaultCols: 3,
     defaultRows: 3,
