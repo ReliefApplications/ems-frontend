@@ -174,7 +174,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apollo.mutate<AddApplicationMutationResponse>({
       mutation: ADD_APPLICATION
     }).subscribe(res => {
-      console.log('re.errors', res.errors);
       if (res.errors?.length) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('App', res.errors[0].message), { error: true });
       } else {

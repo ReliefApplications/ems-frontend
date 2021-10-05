@@ -142,7 +142,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     this.loadUserAndUpdateLayout();
   }
 
