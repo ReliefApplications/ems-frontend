@@ -217,12 +217,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
-      this.metaQuery.subscribe((res: any) => {
+      this.metaQuery.subscribe(async (res: any) => {
         this.queryError = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = Object.assign({}, res.data[field]);
-            this.populateMetaFields();
+            await this.populateMetaFields();
           }
         }
         this.getRecords();
@@ -240,7 +240,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Fetch choices from URL if needed
    */
-  private populateMetaFields(): void {
+  private async populateMetaFields(): Promise<void> {
     for (const fieldName of  Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
@@ -252,32 +252,33 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
           };
         } else {
-          let request: Promise<any>;
+          let res: any;
           // Use token to access back end if needed
           if (url.includes(this.apiUrl)) {
-            request = this.apiProxyService.promisedRequestWithHeaders(url);
+            res = await this.apiProxyService.promisedRequestWithHeaders(url);
           } else {
-            request = this.http.get(meta.choicesByUrl.url).toPromise();
+            res = await this.http.get(meta.choicesByUrl.url).toPromise();
           }
-          request.then((res: any) => {
-            localStorage.setItem(url, JSON.stringify(res));
-            this.metaFields[fieldName] = {
-              ...meta,
-              choices: this.extractChoices(res, meta.choicesByUrl)
-            };
-          });
+          localStorage.setItem(url, JSON.stringify(res));
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(res, meta.choicesByUrl)
+          };
         }
       }
     }
   }
 
   /**
-   * Extract choices using choicesByUrl properties
+   * Extracts choices using choicesByUrl properties
+   * @param res Result of http request.
+   * @param choicesByUrl Choices By Url property.
+   * @returns list of choices.
    */
   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     return choices ? choices.map((x: any) => ({
-      value: choicesByUrl.value ? x[choicesByUrl.value] : x,
+      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
       text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
     })) : [];
   }
@@ -968,7 +969,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        data[modification.field.name] = modification.value;
+        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
+          data[modification.field.name] = new Date();
+        } else {
+          data[modification.field.name] = modification.value;
+        }
       }
       delete data.id;
       delete data.__typename;
