@@ -1,4 +1,4 @@
-<safe-layout [title]="title" [navGroups]="navGroups" [toolbar]="toolbar" [route]="route"></safe-layout>
+<safe-layout [title]="title" [navGroups]="navGroups" [toolbar]="toolbar" [route]="route" (reorder)="onReorder($event)"></safe-layout>
 <ng-template #toolbar>
     <app-application-toolbar></app-application-toolbar>
 </ng-template>

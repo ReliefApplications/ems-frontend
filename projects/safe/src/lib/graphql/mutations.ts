@@ -367,6 +367,9 @@ mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID],
       createdAt
       type
       content
+      canDelete
+      canSee
+      canUpdate
     }
     settings
     permissions {
