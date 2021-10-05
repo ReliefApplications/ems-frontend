@@ -252,13 +252,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
           };
         } else {
-          let res: any;
-          // Use token to access back end if needed
-          if (url.includes(this.apiUrl)) {
-            res = await this.apiProxyService.promisedRequestWithHeaders(url);
-          } else {
-            res = await this.http.get(meta.choicesByUrl.url).toPromise();
-          }
+          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
           localStorage.setItem(url, JSON.stringify(res));
           this.metaFields[fieldName] = {
             ...meta,
