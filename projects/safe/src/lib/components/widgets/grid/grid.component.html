@@ -25,7 +25,9 @@
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
-            <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+            <span kendotooltip *ngIf="!parent">
+              <button title="Saving will store the current grid layout as default layout for other users" class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
+            </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
                     (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
@@ -93,6 +95,10 @@
                                 </div>
                             </div>
                         </ng-template> -->
+                        <!-- DISPLAY ( dropdown / radiogroup ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
+                            {{ getDisplayText(field.meta.choices, dataItem[field.name]) }}
+                        </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
@@ -135,7 +141,7 @@
                             (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
                     </ng-template>
                 </kendo-grid-column>
-                <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox ) -->
+                <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner ) -->
                 <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                     [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
                     [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50">
@@ -154,7 +160,7 @@
                         </safe-array-filter>
                     </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                        {{ dataItem[field.name] }}
+                        {{ getDisplayText(field.meta.choices, dataItem[field.name]) }}
                     </ng-template>
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                         <kendo-multiselect [data]="field.meta.choices"

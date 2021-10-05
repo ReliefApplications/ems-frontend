@@ -6,7 +6,7 @@
 </ng-container>
 <ng-container *ngIf="widget.component === 'grid'">
     <safe-grid class="widget-content" [header]="header" [layout]="layout" [settings]="widget.settings"
-        (goToNextStep)="goToNextStep.emit($event)" (layoutChanged)="onLayoutChanged($event)"></safe-grid>
+        (goToNextStep)="goToNextStep.emit($event)" (defaultLayoutChanged)="onDefaultLayoutChanged($event)" (layoutChanged)="onLayoutChanged($event)"></safe-grid>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
     <safe-map class="widget-content" [header]="header" [settings]="widget.settings"></safe-map>

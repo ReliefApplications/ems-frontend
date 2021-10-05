@@ -22,7 +22,8 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse, GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -40,6 +41,7 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
+import {SafeAuthService} from '../../../services/auth.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -67,7 +69,8 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -110,6 +113,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
 
+  // === VERIFICATION IF USER IS ADMIN ===
+  public isAdmin: boolean;
+
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
@@ -147,6 +153,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -180,13 +188,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private safeAuthService: SafeAuthService
   ) {
     this.apiUrl = environment.API_URL;
+    this.isAdmin = this.safeAuthService.userIsAdmin;
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+  }
+
+  /*  Detect changes of the settings to (re)load the data.
+  */
+  ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
       this.filter = this.layout.filter;
     }
@@ -194,11 +209,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.loadItems();
-  }
-
-  /*  Detect changes of the settings to (re)load the data.
-  */
-  ngOnChanges(): void {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -278,7 +288,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Child grid
     if (!!this.parent) {
-      this.items = this.parent[this.settings.name];
+      this.items = cloneData(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -583,6 +593,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.formBuilder.group(formGroup);
   }
 
+  /**
+   * Displays text instead of values for questions with select.
+   * @param choices list of choices.
+   * @param value question value.
+   * @returns text value of the question.
+   */
+  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
+    if (value) {
+      if (Array.isArray(value)) {
+        return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+      } else {
+        return choices.find(x => x.value === value)?.text || '';
+      }
+    } else {
+      return '';
+    }
+  }
+
   /*  Detect sort events and update the items loaded.
   */
   public sortChange(sort: SortDescriptor[]): void {
@@ -681,7 +709,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: item.canUpdate,
-        template: this.settings.query.template
+        template: this.parent ? null : this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -1155,5 +1183,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     }, {});
     this.layoutChanged.emit(this.layout);
+  }
+
+  /**
+   * Save the current layout of the grid as default layout
+   */
+  saveDefaultLayout(): void {
+    this.defaultLayoutChanged.emit(this.layout);
   }
 }
