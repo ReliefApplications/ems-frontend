@@ -41,7 +41,8 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
-import {SafeAuthService} from '../../../services/auth.service';
+import { SafeAuthService } from '../../../services/auth.service';
+import { SafeApiProxyService } from '../../../services/api-proxy.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -189,7 +190,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
-    private safeAuthService: SafeAuthService
+    private safeAuthService: SafeAuthService,
+    private apiProxyService: SafeApiProxyService
   ) {
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin;
@@ -219,7 +221,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.queryError = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.metaFields = res.data[field];
+            this.metaFields = Object.assign({}, res.data[field]);
+            this.populateMetaFields();
           }
         }
         this.getRecords();
@@ -232,6 +235,51 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.queryError = true;
     }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+  }
+
+  /**
+   * Fetch choices from URL if needed
+   */
+  private populateMetaFields(): void {
+    for (const fieldName of  Object.keys(this.metaFields)) {
+      const meta = this.metaFields[fieldName];
+      if (meta.choicesByUrl) {
+        const url: string = meta.choicesByUrl.url;
+        const localRes = localStorage.getItem(url);
+        if (localRes) {
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
+          };
+        } else {
+          let request: Promise<any>;
+          // Use token to access back end if needed
+          if (url.includes(this.apiUrl)) {
+            request = this.apiProxyService.promisedRequestWithHeaders(url);
+          } else {
+            request = this.http.get(meta.choicesByUrl.url).toPromise();
+          }
+          request.then((res: any) => {
+            localStorage.setItem(url, JSON.stringify(res));
+            this.metaFields[fieldName] = {
+              ...meta,
+              choices: this.extractChoices(res, meta.choicesByUrl)
+            };
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Extract choices using choicesByUrl properties
+   */
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    return choices ? choices.map((x: any) => ({
+      value: choicesByUrl.value ? x[choicesByUrl.value] : x,
+      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+    })) : [];
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -534,14 +582,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.fields.filter(x => !x.disabled).forEach((field, index) => {
       if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
         formGroup[field.name] = [dataItem[field.name]];
-        if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
-          this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-            this.fields[index] = {
-              ...field,
-              meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
-            };
-          });
-        }
       } else {
         if (field.meta.type === 'multipletext') {
           const fieldGroup: any = {};
@@ -599,15 +639,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param value question value.
    * @returns text value of the question.
    */
-  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
-    if (value) {
+  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+    if (meta.choices) {
       if (Array.isArray(value)) {
-        return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
       } else {
-        return choices.find(x => x.value === value)?.text || '';
+        return meta.choices.find(x => x.value === value)?.text || '';
       }
     } else {
-      return '';
+      return value;
     }
   }
 
