@@ -111,8 +111,6 @@ export class SafeApplicationService {
         asRole
       }
     }).subscribe(res => {
-      console.log('res');
-      console.log(res);
       this._application.next(res.data.application);
       const application = this._application.getValue();
       // console.log(res.data.application.users);
