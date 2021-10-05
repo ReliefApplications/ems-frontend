@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AVAILABLE_TILES } from '../utils/available-tiles';
+import { WIDGET_TYPES } from '../models/dashboard.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ import { AVAILABLE_TILES } from '../utils/available-tiles';
 export class SafeGridService {
 
   // === LIST OF DEFAULT WIDGETS AVAILABLE ===
-  public availableTiles = AVAILABLE_TILES;
+  public availableTiles = WIDGET_TYPES;
 
   constructor() { }
 
