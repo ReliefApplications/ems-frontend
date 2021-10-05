@@ -38,6 +38,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     });
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
+        console.log(application.pages);
         this.title = application.name || '';
         let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => {
           return {
@@ -106,7 +107,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         this.navGroups = [
           {
             name: 'Display',
-            callback: (event: any) => this.onReorder(event),
             navItems: displayNavItems
           },
           {
