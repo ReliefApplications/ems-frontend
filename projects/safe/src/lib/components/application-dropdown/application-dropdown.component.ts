@@ -41,7 +41,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
   constructor(private apollo: Apollo) { }
 
   ngOnInit(): void {
-    if (this.value && this.value.length > 0) {
+    if (Array.isArray(this.value) && this.value.length > 0) {
       this.apollo.query<GetApplicationsQueryResponse>({
         query: GET_APPLICATIONS,
         variables: {
