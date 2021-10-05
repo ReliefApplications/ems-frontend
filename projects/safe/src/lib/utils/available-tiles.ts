@@ -5,21 +5,8 @@ import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 
 export const AVAILABLE_TILES = [
-  // {
-  //   name: 'BAR CHART',
-  //   icon: 'bar_chart',
-  //   settings: {
-  //     title: 'Bar chart',
-  //     chart: {
-  //       type: 'bar'
-  //     }
-  //   },
-  //   defaultCols: 3,
-  //   defaultRows: 3,
-  //   component: 'chart',
-  //   settingsTemplate: SafeChartSettingsComponent
-  // },
   {
+    id: 'donut-chart',
     name: 'Donut chart',
     icon: 'donut',
     settings: {title: 'Donut chart', chart: {
@@ -31,6 +18,7 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeChartSettingsComponent
   },
   {
+    id: 'line-chart',
     name: 'Line chart',
     icon: 'line',
     settings: {title: 'Line chart', chart: {
@@ -42,6 +30,7 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeChartSettingsComponent
   },
   {
+    id: 'pie-chart',
     name: 'Pie chart',
     icon: 'pie',
     settings: {title: 'Pie chart', chart: {
@@ -52,27 +41,8 @@ export const AVAILABLE_TILES = [
     component: 'chart',
     settingsTemplate: SafeChartSettingsComponent
   },
-  // {
-  //   name: 'SCATTER PLOT',
-  //   icon: 'scatter_plot',
-  //   settings: {title: 'Scatter chart', chart: {
-  //     type: 'scatter'
-  //   }},
-  //   defaultCols: 2,
-  //   defaultRows: 2,
-  //   component: 'chart',
-  //   settingsTemplate: SafeChartSettingsComponent
-  // },
-  // {
-  //   name: 'SCHEDULER',
-  //   icon: 'schedule',
-  //   settings: {title: 'Scheduler'},
-  //   defaultCols: 3,
-  //   defaultRows: 3,
-  //   component: 'scheduler',
-  //   settingsTemplate: SafeSchedulerSettingsComponent
-  // },
   {
+    id: 'grid',
     name: 'Grid',
     icon: 'grid',
     settings: {
@@ -91,6 +61,7 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeGridSettingsComponent
   },
   {
+    id: 'map',
     name: 'Map',
     icon: 'map',
     settings: {},
@@ -100,6 +71,7 @@ export const AVAILABLE_TILES = [
     settingsTemplate: SafeMapSettingsComponent
   },
   {
+    id: 'text',
     name: 'Text',
     icon: 'text',
     settings: {title: 'Enter a title', text: 'Enter a content'},
