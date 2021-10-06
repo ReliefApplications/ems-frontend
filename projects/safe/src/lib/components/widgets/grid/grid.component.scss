@@ -4,8 +4,10 @@
 }
 
 .widget-header {
-    display: flex;
     justify-content: space-between;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
 }
 
 :host ::ng-deep .k-grid-content,

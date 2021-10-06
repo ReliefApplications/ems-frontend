@@ -338,6 +338,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   line-height: 40px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  //overflow: hidden;
   padding: 0 40px;
   border-bottom: 1px solid #d8d8d8;
 }
