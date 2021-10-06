@@ -304,8 +304,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
-          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
-            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
           }

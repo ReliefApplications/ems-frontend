@@ -350,8 +350,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
-          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
-            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
           }
@@ -454,10 +452,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (!!options.value || options.question.customQuestion) {
-                  const valueType = options.question.customQuestion ? options.question.customQuestion.name :
-                    question.survey.getQuestionByName(question.selectQuestion).inputType;
-                  const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
-                  setAdvanceFilter(value, question);
+                  setAdvanceFilter(options.value, question);
                   if (question.displayAsGrid) {
                     resourcesFilterValues.next(filters);
                   } else {
