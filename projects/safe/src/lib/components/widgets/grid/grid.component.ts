@@ -630,7 +630,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Displays text instead of values for questions with select.
-   * @param choices list of choices.
+   * @param meta meta data of the question.
    * @param value question value.
    * @returns text value of the question.
    */

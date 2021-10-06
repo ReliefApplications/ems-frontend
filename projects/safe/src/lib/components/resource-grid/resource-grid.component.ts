@@ -10,6 +10,7 @@ import { QueryBuilderService } from '../../services/query-builder.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { SafeApiProxyService } from '../../services/api-proxy.service';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -98,7 +99,8 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private apiProxyService: SafeApiProxyService
   ) { }
 
   ngOnInit(): void {
@@ -116,10 +118,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
-      this.metaQuery.subscribe((res: any) => {
+      this.metaQuery.subscribe(async (res: any) => {
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.metaFields = res.data[field];
+            this.metaFields = Object.assign({}, res.data[field]);
+            await this.populateMetaFields();
           }
         }
         this.getRecords();
@@ -350,15 +353,19 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   /**
    * Displays text instead of values for questions with select.
-   * @param choices list of choices.
+   * @param meta meta data of the question.
    * @param value question value.
    * @returns text value of the question.
    */
-  public getDisplayText(choices: { value: string, text: string }[], value: string | string[]): string | string[] {
-    if (Array.isArray(value)) {
-      return choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+    if (meta.choices) {
+      if (Array.isArray(value)) {
+        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+      } else {
+        return meta.choices.find(x => x.value === value)?.text || '';
+      }
     } else {
-      return choices.find(x => x.value === value)?.text || '';
+      return value;
     }
   }
 
@@ -374,11 +381,52 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   //   return (e.offsetWidth < e.scrollWidth);
   // }
 
-  /* Download the file.
-*/
+  /**
+   * Downloads the file.
+   * @param file file to download.
+   */
   public onDownload(file: any): void {
     const path = `download/file/${file.content}`;
     this.downloadService.getFile(path, file.type, file.name);
   }
 
+  /**
+   * Fetch choices from URL if needed
+   */
+  private async populateMetaFields(): Promise<void> {
+    for (const fieldName of Object.keys(this.metaFields)) {
+      const meta = this.metaFields[fieldName];
+      if (meta.choicesByUrl) {
+        const url: string = meta.choicesByUrl.url;
+        const localRes = localStorage.getItem(url);
+        if (localRes) {
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
+          };
+        } else {
+          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
+          localStorage.setItem(url, JSON.stringify(res));
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(res, meta.choicesByUrl)
+          };
+        }
+      }
+    }
+  }
+
+  /**
+   * Extracts choices using choicesByUrl properties
+   * @param res Result of http request.
+   * @param choicesByUrl Choices By Url property.
+   * @returns list of choices.
+   */
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
+    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    return choices ? choices.map((x: any) => ({
+      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
+      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+    })) : [];
+  }
 }
