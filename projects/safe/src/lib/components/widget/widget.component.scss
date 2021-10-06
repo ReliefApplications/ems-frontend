@@ -5,28 +5,7 @@
 }
 
 .widget-content {
-    //flex: 1;
+    flex: 1;
     max-height: 100% !important;
     max-width: 100%;
 }
-
-.widget-content .widget-container {
-background-color: #269ed1;
-}
-
-//.widget-content .widget-container .widget-header {
-//  display: initial;
-//  justify-content: space-between;
-//  overflow: hidden;
-//  text-overflow: ellipsis;
-//  white-space:nowrap;
-//  background-color: #78d237;
-//}
-
-safe-grid {
-    overflow-x: hidden;
-}
-
-//.k-chart-content {
-//  overflow-y: hidden
-//}
