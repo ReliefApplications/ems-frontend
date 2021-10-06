@@ -630,7 +630,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Displays text instead of values for questions with select.
-   * @param choices list of choices.
+   * @param meta meta data of the question.
    * @param value question value.
    * @returns text value of the question.
    */
@@ -1128,7 +1128,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const field of fields) {
       switch (field.kind) {
         case 'LIST':
-          body += `${tabs}${field.name}:\n`;
+          body += `${tabs}${field.label ? field.label : field.name}:\n`;
           const list = item ? item[field.name] || [] : [];
           list.forEach((element: any, index: number) => {
             body += this.buildBodyRow(element, field.fields, tabs + '\t');
@@ -1138,11 +1138,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           });
           break;
         case 'OBJECT':
-          body += `${tabs}${field.name}:\n`;
+          body += `${tabs}${field.label ? field.label : field.name}:\n`;
           body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
           break;
         default:
-          body += `${tabs}${field.name}:   ${item ? item[field.name] : ''}\n`;
+          body += `${tabs}${field.label ? field.label : field.name}:   ${item ? item[field.name] : ''}\n`;
       }
     }
     return body;

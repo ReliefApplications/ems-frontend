@@ -45,7 +45,7 @@
         </ng-template>
         <!-- DISPLAY ( dropdown / radiogroup ) -->
         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-          {{ getDisplayText(field.meta.choices, dataItem[field.name]) }}
+          {{ getDisplayText(dataItem[field.name], field.meta) }}
         </ng-template>
       </ng-container>
       <!-- EDITION ( text / color / comment - resource - dropdown ) -->
@@ -95,7 +95,7 @@
       [editor]="field.editor" [editable]="!field.disabled" [width]="field.title.length * 7 + 50"
       [minResizableWidth]="50">
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-        {{ dataItem[field.name] }}
+        {{ getDisplayText(dataItem[field.name], field.meta) }}
       </ng-template>
       <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
         <kendo-multiselect [data]="field.meta.choices"
