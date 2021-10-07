@@ -16,6 +16,7 @@ export class SafeDropdownFilterComponent extends BaseFilterCellComponent impleme
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
 
@@ -31,6 +32,7 @@ export class SafeDropdownFilterComponent extends BaseFilterCellComponent impleme
   }
 
   ngOnInit(): void {
+    this.choices = this.data.slice();
   }
 
   public onChange(value: any): void {
@@ -43,5 +45,9 @@ export class SafeDropdownFilterComponent extends BaseFilterCellComponent impleme
           value,
         })
     );
+  }
+
+  public handleFilter(value: string): void {
+    this.choices = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 }

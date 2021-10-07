@@ -13,6 +13,8 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices1: any[] = [];
+  public choices2: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
@@ -70,6 +72,8 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.choices1 = this.data.slice();
+    this.choices2 = this.data.slice();
     this.form = this.fb.group({
       logic: this.filter.logic,
       filters: this.fb.array([
@@ -88,5 +92,13 @@ export class SafeArrayFilterMenuComponent implements OnInit {
     this.form.valueChanges.subscribe(value => {
       this.filterService?.filter(value);
     });
+  }
+
+  public handleFilter(value: string, index: number): void {
+    if (index === 1) {
+      this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    } else {
+      this.choices2 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    }
   }
 }

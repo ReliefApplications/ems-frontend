@@ -17,6 +17,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
 
@@ -32,6 +33,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
   }
 
   ngOnInit(): void {
+    this.choices = this.data.slice();
   }
 
   public onChange(value: any): void {
@@ -44,5 +46,9 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
           value,
         })
     );
+  }
+
+  public handleFilter(value: string): void {
+    this.choices = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 }

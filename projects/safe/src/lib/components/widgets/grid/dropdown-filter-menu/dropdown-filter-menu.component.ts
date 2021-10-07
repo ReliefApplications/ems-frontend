@@ -12,6 +12,8 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices1: any[] = [];
+  public choices2: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
@@ -53,23 +55,33 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.choices1 = this.data.slice();
+    this.choices2 = this.data.slice();
     this.form = this.fb.group({
       logic: this.filter.logic,
       filters: this.fb.array([
         this.fb.group({
           field: this.field,
           operator: this.filter.filters[0] ? this.filter.filters[0].operator : 'eq',
-          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : [])
+          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : '')
         }),
         this.fb.group({
           field: this.field,
           operator: this.filter.filters[1] ? this.filter.filters[1].operator : 'eq',
-          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : [])
+          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : '')
         })
       ])
     });
     this.form.valueChanges.subscribe(value => {
       this.filterService?.filter(value);
     });
+  }
+
+  public handleFilter(value: string, index: number): void {
+    if (index === 1) {
+      this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    } else {
+      this.choices2 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    }
   }
 }
