@@ -332,6 +332,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     // Child grid
     if (!!this.parent) {
       this.items = cloneData(this.parent[this.settings.name]);
+      // cloneData(this.parent[this.settings.name].map((r: any) => console.log(r)));
+      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign( Object.create(r), {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
+      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.create({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r}))));
+      this.items = cloneData(this.parent[this.settings.name].map(((r: any) => JSON.parse(JSON.stringify({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r})))));
+      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}, ...r))));
+      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign(r, {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
+      // console.log('a');
+      // console.log(a);
+      console.log('this.items');
+      console.log(this.items);
+      console.log('this.parent');
+      console.log(this.parent);
+      console.log(this.parent.canUpdate);
+      console.log(this.parent.canDelete);
+      console.log('this.settings');
+      console.log(this.settings);
+      console.log('this.parent[this.settings.nam]');
+      console.log(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -385,6 +403,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         .slice(this.skip, this.skip + this.pageSize),
       total: this.items.length
     };
+    console.log('this.fields');
+    console.log(this.fields);
+    console.log('this.gridData');
+    console.log(this.gridData);
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -739,6 +761,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
   */
   public onShowDetails(item: any): void {
+    console.log(item);
+    console.log(item.canUpdate);
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: item.id,
