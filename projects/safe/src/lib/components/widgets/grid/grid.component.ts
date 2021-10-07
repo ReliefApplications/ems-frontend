@@ -404,7 +404,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Inline edition of the data.
   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
-    if (!this.gridData.data[rowIndex].canUpdate || this.settings.actions.inlineEdition === false ||
+    if (!this.gridData.data[rowIndex].canUpdate || !this.settings.actions.inlineEdition ||
       isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
@@ -927,7 +927,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      if (options.sendMail) {
+      if (options.sendMail && selectedRecords.length > 0) {
         const emailSettings = { query: {
           name: this.settings.query.name,
           fields: options.bodyFields,
@@ -1099,20 +1099,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       filters: []
     };
     this.loadItems();
-    if (this.showFilter) {
-      this.fields.filter(x => !x.disabled).forEach((field, index) => {
-        if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
-          if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
-            this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-              this.fields[index] = {
-                ...field,
-                meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
-              };
-            });
-          }
-        }
-      });
-    }
+    // if (this.showFilter) {
+    //   this.fields.filter(x => !x.disabled).forEach((field, index) => {
+    //     if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
+    //       if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
+    //         this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
+    //           this.fields[index] = {
+    //             ...field,
+    //             meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
+    //           };
+    //         });
+    //       }
+    //     }
+    //   });
+    // }
   }
 
   ngOnDestroy(): void {

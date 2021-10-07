@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { FilterService } from '@progress/kendo-angular-grid';
-import { contains, equals, notContains, notEquals } from '../../../../utils/array-filter';
 
 @Component({
-  selector: 'safe-array-filter-menu',
-  templateUrl: './array-filter-menu.component.html',
-  styleUrls: ['./array-filter-menu.component.scss']
+  selector: 'safe-dropdown-filter-menu',
+  templateUrl: './dropdown-filter-menu.component.html',
+  styleUrls: ['./dropdown-filter-menu.component.scss']
 })
-export class SafeArrayFilterMenuComponent implements OnInit {
+export class SafeDropdownFilterMenuComponent implements OnInit {
 
   @Input() public field = '';
   @Input() public filter: any;
@@ -45,28 +44,12 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   public operators = [
     {
       text: 'Is equal to',
-      value: equals
+      value: 'eq'
     },
     {
       text: 'Is not equal to',
-      value: notEquals
-    },
-    {
-      text: 'Contains',
-      value: contains
-    },
-    {
-      text: 'Does not contain',
-      value: notContains
-    },
-    // {
-    //   text: 'Is empty',
-    //   value: empty
-    // },
-    // {
-    //   text: 'Is not empty',
-    //   value: notEmpty
-    // }
+      value: 'neq'
+    }
   ];
 
   constructor(private fb: FormBuilder) { }
@@ -79,13 +62,13 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       filters: this.fb.array([
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[0] ? this.filter.filters[0].operator : 'contains',
-          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : [])
+          operator: this.filter.filters[0] ? this.filter.filters[0].operator : 'eq',
+          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : '')
         }),
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[1] ? this.filter.filters[1].operator : 'contains',
-          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : [])
+          operator: this.filter.filters[1] ? this.filter.filters[1].operator : 'eq',
+          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : '')
         })
       ])
     });
