@@ -23,8 +23,8 @@
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
-            <button class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
-            <button class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
+            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
+            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <span kendotooltip *ngIf="!parent">
               <button title="Saving will store the current grid layout as default layout for other users" class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
             </span>
