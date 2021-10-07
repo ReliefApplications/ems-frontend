@@ -1,5 +1,7 @@
 <div class="widget-container">
-    <div class="widget-header" *ngIf="header">{{(settings && settings.title) ? settings.title : 'New scheduler'}}</div>
+    <div class="widget-header" *ngIf="header">
+        <div class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : 'New scheduler'}}</div>
+    </div>
         <kendo-scheduler class="widget-content" [kendoSchedulerBinding]="events" [selectedDate]="selectedDate" scrollTime="08:00"
             [selectedViewIndex]="1"
             >
