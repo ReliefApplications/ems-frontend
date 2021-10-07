@@ -404,7 +404,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Inline edition of the data.
   */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
-    if (!this.gridData.data[rowIndex].canUpdate || this.settings.actions.inlineEdition === false ||
+    if (!this.gridData.data[rowIndex].canUpdate || !this.settings.actions.inlineEdition ||
       isEdited || (this.formGroup && !this.formGroup.valid)) {
       return;
     }
