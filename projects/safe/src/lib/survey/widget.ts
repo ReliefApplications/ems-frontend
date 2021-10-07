@@ -292,6 +292,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       };
       mainDiv.appendChild(btnEl);
     }
+    mainDiv.style.display = question.isReadOnly ? 'none' : '';
     return mainDiv;
   }
 
