@@ -43,6 +43,8 @@ import { prettifyLabel } from '../../../utils/prettify';
 import { GridLayout } from './models/grid-layout.model';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
+import { SafeEmailService } from '../../../services/email.service';
+import get from 'lodash/get';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -105,7 +107,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public fields: any[] = [];
   private metaFields: any;
   public detailsField: any;
-  public canEdit = false;
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
@@ -191,10 +192,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private emailService: SafeEmailService
   ) {
     this.apiUrl = environment.API_URL;
-    this.isAdmin = this.safeAuthService.userIsAdmin;
+    this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
@@ -291,12 +293,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
-          const metaData = this.metaFields[fullName] || null;
-          const cachedField = cachedFields[fullName] || null;
+          const metaData = get(this.metaFields, fullName);
+          const cachedField = get(cachedFields, fullName);
           const title = f.label ? f.label : prettifyLabel(f.name);
           return {
             name: fullName,
-            title: f.label ? f.label : prettifyLabel(f.name),
+            title,
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
@@ -926,8 +928,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail) {
-        const body = this.buildBody(this.selectedRowsIndex, options.bodyFields);
-        window.location.href = `mailto:${options.distributionList}?subject=${options.subject}&body=${encodeURIComponent(body)}`;
+        const emailSettings = { query: {
+          name: this.settings.query.name,
+          fields: options.bodyFields,
+          filter: {
+            ids: selectedRecords.map(x => x.id)
+          }
+        }};
+        this.emailService.sendMail(options.distributionList, options.subject, emailSettings);
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
@@ -1105,47 +1113,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
     }
-  }
-
-  /*
-   * Build email body in plain text from selected rows
-   */
-  private buildBody(rowsIndex: number[], fields: any): string {
-    let body = '';
-    let i = 1;
-    for (const index of rowsIndex) {
-      body += `######   ${i}   ######\n`;
-      const item = this.gridData.data[index];
-      body += this.buildBodyRow(item, fields);
-      body += '______________________\n';
-      i++;
-    }
-    return body;
-  }
-
-  private buildBodyRow(item: any, fields: any, tabs = ''): string {
-    let body = '';
-    for (const field of fields) {
-      switch (field.kind) {
-        case 'LIST':
-          body += `${tabs}${field.label ? field.label : field.name}:\n`;
-          const list = item ? item[field.name] || [] : [];
-          list.forEach((element: any, index: number) => {
-            body += this.buildBodyRow(element, field.fields, tabs + '\t');
-            if (index < (list.length - 1)) {
-              body += `${tabs + '\t'}______________________\n`;
-            }
-          });
-          break;
-        case 'OBJECT':
-          body += `${tabs}${field.label ? field.label : field.name}:\n`;
-          body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
-          break;
-        default:
-          body += `${tabs}${field.label ? field.label : field.name}:   ${item ? item[field.name] : ''}\n`;
-      }
-    }
-    return body;
   }
 
   ngOnDestroy(): void {
