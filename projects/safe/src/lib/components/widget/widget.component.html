@@ -1,5 +1,5 @@
-<ng-container aria-label="cont" *ngIf="widget.component === 'chart'">
-    <safe-chart aria-label="gm" class="widget-content" [header]="header" [settings]="widget.settings"></safe-chart>
+<ng-container *ngIf="widget.component === 'chart'">
+    <safe-chart class="widget-content" [header]="header" [settings]="widget.settings"></safe-chart>
 </ng-container>
 <ng-container *ngIf="widget.component === 'scheduler'">
     <safe-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></safe-scheduler>
