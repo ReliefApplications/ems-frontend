@@ -162,6 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.tiles = res.data?.editDashboard.structure;
+      this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
       this.loading = false;
     }, error => this.loading = false);
   }
