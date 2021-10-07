@@ -44,7 +44,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'descriptionLocation',
   'state',
   'defaultValue',
-  'defaultValueExpression'
+  'defaultValueExpression',
+  'relatedName',
+  'visible'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
