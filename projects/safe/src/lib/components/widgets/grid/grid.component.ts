@@ -332,7 +332,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     // Child grid
     if (!!this.parent) {
       this.items = cloneData(this.parent[this.settings.name]);
-      // cloneData(this.parent[this.settings.name].map((r: any) => console.log(r)));
       // const a = cloneData(this.parent[this.settings.name].map(
       //   ((r: any) => Object.assign( Object.create(r), {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
       // const a = cloneData(this.parent[this.settings.name].map((
