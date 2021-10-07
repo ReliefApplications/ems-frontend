@@ -927,7 +927,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         }).toPromise());
       }
-      if (options.sendMail) {
+      if (options.sendMail && selectedRecords.length > 0) {
         const emailSettings = { query: {
           name: this.settings.query.name,
           fields: options.bodyFields,
