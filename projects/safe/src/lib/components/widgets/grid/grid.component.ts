@@ -333,11 +333,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.items = cloneData(this.parent[this.settings.name]);
       // cloneData(this.parent[this.settings.name].map((r: any) => console.log(r)));
-      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign( Object.create(r), {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
-      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.create({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r}))));
-      this.items = cloneData(this.parent[this.settings.name].map(((r: any) => JSON.parse(JSON.stringify({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r})))));
-      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}, ...r))));
-      // const a = cloneData(this.parent[this.settings.name].map(((r: any) => Object.assign(r, {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
+      // const a = cloneData(this.parent[this.settings.name].map(
+      //   ((r: any) => Object.assign( Object.create(r), {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
+      // const a = cloneData(this.parent[this.settings.name].map((
+      //   (r: any) => Object.create({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r}))));
+      this.items = cloneData(this.parent[this.settings.name].map((
+        (r: any) => JSON.parse(JSON.stringify({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r})))));
+      // const a = cloneData(this.parent[this.settings.name].map(
+      //   ((r: any) => Object.assign({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}, ...r))));
+      // const a = cloneData(this.parent[this.settings.name].map(
+      //   ((r: any) => Object.assign(r, {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
       // console.log('a');
       // console.log(a);
       console.log('this.items');
