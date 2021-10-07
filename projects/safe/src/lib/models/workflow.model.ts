@@ -11,4 +11,7 @@ export interface Workflow {
     steps?: Step[];
     permissions?: any;
     page?: Page;
+    canSee?: boolean;
+    canUpdate?: boolean;
+    canDelete?: boolean;
 }

@@ -161,13 +161,6 @@
           <h2>Select fields to write in body</h2>
           <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
             [factory]="factory"></safe-tab-fields>
-          <!-- <span class="radio-row">
-            <mat-radio-group formControlName="attachment">
-              Link records:
-              <mat-radio-button [value]="false">In body</mat-radio-button>
-              <mat-radio-button [value]="true">In attachment</mat-radio-button>
-            </mat-radio-group>
-          </span> -->
         </div>
       </ng-container>
     </div>
