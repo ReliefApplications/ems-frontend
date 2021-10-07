@@ -135,7 +135,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
             callback: group.callback,
             navItems
           };
-          this.filteredNavGroups.push(JSON.parse(JSON.stringify(filteredGroup)));
+          this.filteredNavGroups.push(filteredGroup);
         }
       }
     });
