@@ -21,6 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeArrayFilterModule } from './array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu.module';
 import { MatDividerModule } from '@angular/material/divider';
+import { SafeDropdownFilterModule } from './dropdown-filter/dropdown-filter.module';
+import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-filter-menu.module';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { MatDividerModule } from '@angular/material/divider';
     ButtonsModule,
     SafeArrayFilterModule,
     SafeArrayFilterMenuModule,
+    SafeDropdownFilterModule,
+    SafeDropdownFilterMenuModule,
     MatDividerModule
   ],
   exports: [SafeGridComponent]

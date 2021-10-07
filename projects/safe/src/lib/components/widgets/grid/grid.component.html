@@ -23,11 +23,14 @@
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export</button>
-            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
-            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
+            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
+                (click)="onSaveChanges()">Save</button>
+            <button *ngIf="this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
+                (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <span kendotooltip *ngIf="!parent">
-              <button title="Saving will store the current grid layout as default layout for other users" class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
+                <button title="Saving will store the current grid layout as default layout for other users"
+                    class='k-button' [disabled]="!isAdmin" (click)="saveDefaultLayout()">Save Layout as default</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
@@ -59,6 +62,24 @@
                     [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                     [filter]="field.filter" [filterable]="field.filter" [width]="field.width" [hidden]="field.hidden"
                     [minResizableWidth]="50">
+                    <!-- FILTER -->
+                    <ng-container *ngIf="field.meta">
+                        <!-- FILTER ( dropdown / radiogroup ) -->
+                        <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
+                            <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                                let-filterService="filterService">
+                                <safe-dropdown-filter-menu [filter]="filter" [filterService]="filterService"
+                                    [data]="field.meta.choices" [field]="field.name" textField="text"
+                                    valueField="value">
+                                </safe-dropdown-filter-menu>
+                            </ng-template>
+                            <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
+                                <safe-dropdown-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
+                                    textField="text" valueField="value">
+                                </safe-dropdown-filter>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
                     <!-- DISPLAY -->
                     <ng-container *ngIf="field.meta">
                         <!-- DISPLAY ( text / comment ) -->
@@ -97,7 +118,8 @@
                             </div>
                         </ng-template> -->
                         <!-- DISPLAY ( dropdown / radiogroup ) -->
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                             {{ getDisplayText(dataItem[field.name], field.meta) }}
                         </ng-template>
                     </ng-container>
@@ -118,7 +140,7 @@
                         <!-- EDITION ( dropdown / radiogroup ) -->
                         <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                             <kendo-dropdownlist [data]="field.meta.choices" textField="text" valueField="value"
-                            [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
+                                [valuePrimitive]="true" [formControl]="formGroup.get(field.name)"></kendo-dropdownlist>
                         </ng-container>
                     </ng-template>
                     <!-- EDITION ( date ) -->
@@ -191,9 +213,8 @@
                     </ng-container>
                     <!-- QUESTION COLUMNS / ITEMS -->
                     <ng-container *ngFor="let column of (field.meta.columns ? field.meta.columns : field.meta.items)">
-                        <kendo-grid-column [title]="column.label" [columnMenu]="false"
-                            [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50"
-                            [editable]="!field.disabled">
+                        <kendo-grid-column [title]="column.label" [columnMenu]="false" [width]="field.width"
+                            [hidden]="field.hidden" [minResizableWidth]="50" [editable]="!field.disabled">
                             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                                 <!-- DISPLAY ( matrix / matrixdropdown / matrixdynamic ) -->
                                 <ng-container *ngIf="field.meta.type !== 'multipletext'">
