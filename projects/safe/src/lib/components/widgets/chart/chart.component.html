@@ -1,5 +1,7 @@
 <div class="widget-container">
-    <div class="widget-header" matTooltip="{{settings.title}}" matTooltipShowDelay="2000" *ngIf="header">{{settings.title}}</div>
+    <div class="widget-header" *ngIf="header">
+        <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
+    </div>
     <safe-button *ngIf="export" [isIcon]="true" icon="get_app" class="export-button" (click)="onExport()">
     </safe-button>
     <safe-line-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'line'" [title]="settings.chart.title"

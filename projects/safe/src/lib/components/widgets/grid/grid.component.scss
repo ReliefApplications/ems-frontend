@@ -3,10 +3,6 @@
     max-height: calc(100% - 41px);
 }
 
-.widget-header {
-  overflow: hidden;
-}
-
 :host ::ng-deep .k-grid-content,
 .k-grid-content-locked,
 .k-pager-wrap {
