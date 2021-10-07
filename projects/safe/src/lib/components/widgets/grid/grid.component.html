@@ -169,11 +169,11 @@
                     <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                         let-filterService="filterService">
                         <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
-                            [data]="field.meta.choices" [field]="field.name" textField="text" valueField="value">
+                            [data]="field.meta.choices || []" [field]="field.name" textField="text" valueField="value">
                         </safe-array-filter-menu>
                     </ng-template>
                     <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                        <safe-array-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
+                        <safe-array-filter [filter]="filter" [data]="field.meta.choices || []" [field]="field.name"
                             textField="text" valueField="value">
                         </safe-array-filter>
                     </ng-template>
