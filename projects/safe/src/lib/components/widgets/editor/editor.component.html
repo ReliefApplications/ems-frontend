@@ -1,4 +1,6 @@
 <div class="widget-container">
-    <div class="widget-header" *ngIf="header">{{title}}</div>
+    <div class="widget-header" *ngIf="header">
+        <div class="widget-title" [title]="title">{{title}}</div>
+    </div>
     <div class="widget-content" [innerHtml] = "safeText"></div>
 </div>
