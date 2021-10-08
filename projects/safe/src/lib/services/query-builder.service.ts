@@ -142,14 +142,16 @@ export class QueryBuilderService {
     }));
   }
 
-  public buildQuery(settings: any): any {
+  public buildQuery(settings: any, first?: number): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
-        query GetCustomQuery {
+        query GetCustomQuery($first: Int, $skip: Int) {
           ${builtQuery.name}(
+          first: $first,
+          skip: $skip,
           sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
@@ -165,7 +167,9 @@ export class QueryBuilderService {
       `;
       return this.apollo.watchQuery<any>({
         query,
-        variables: {}
+        variables: {
+          first: first || 25
+        }
       });
     } else {
       return null;

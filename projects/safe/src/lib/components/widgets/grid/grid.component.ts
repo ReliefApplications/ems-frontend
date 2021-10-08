@@ -217,7 +217,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
@@ -386,8 +386,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private loadItems(): void {
     this.gridData = {
       data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-        (this.filter ? filterBy(this.items, this.filter) : this.items))
-        .slice(this.skip, this.skip + this.pageSize),
+        (this.filter ? filterBy(this.items, this.filter) : this.items)),
       total: this.totalCount
     };
   }
@@ -661,7 +660,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loadItems();
   }
 
-  /*  Detect pagination events and update the items loaded.
+ /**
+  * Detects pagination events and update the items loaded.
+  * @param event Page change event.
   */
   public pageChange(event: PageChangeEvent): void {
     this.loading = true;
@@ -670,8 +671,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
-    this.loadItems();
-    this.loading = false;
+    this.dataQuery.fetchMore({
+      variables: {
+        first: this.pageSize,
+        skip: this.skip
+      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        if (!fetchMoreResult) { return prev; }
+        for (const field in fetchMoreResult) {
+          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+            return Object.assign({}, prev, {
+              [field]: {
+                edges: fetchMoreResult[field].edges,
+                totalCount: fetchMoreResult[field].totalCount
+              }
+            });
+          }
+        }
+        return prev;
+      }
+    });
   }
 
   /*  Detect filtering events and update the items loaded.
@@ -877,7 +896,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.dataSubscription) {
         this.dataSubscription.unsubscribe();
       }
-      this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
       this.getRecords();
     } else {
       this.childChanged.emit();
@@ -1102,20 +1121,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       filters: []
     };
     this.loadItems();
-    // if (this.showFilter) {
-    //   this.fields.filter(x => !x.disabled).forEach((field, index) => {
-    //     if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
-    //       if ((field.meta.type === 'dropdown' || this.multiSelectTypes.includes(field.meta.type)) && field.meta.choicesByUrl) {
-    //         this.http.get(field.meta.choicesByUrl.url).toPromise().then((res: any) => {
-    //           this.fields[index] = {
-    //             ...field,
-    //             meta: { ...field.meta, choices: field.meta.choicesByUrl.path ? res[field.meta.choicesByUrl.path] : res }
-    //           };
-    //         });
-    //       }
-    //     }
-    //   });
-    // }
   }
 
   ngOnDestroy(): void {
