@@ -130,6 +130,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
+        // console.log('question.canSearch');
+        // console.log(question.canSearch);
+        // const searchBtn = question.canSearch ? buildSearchButton(question, question.gridFieldsSettings, false) : null;
+        // console.log(searchBtn);
         const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
@@ -156,6 +160,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           };
         }
         mainDiv.appendChild(btnEl);
+        // if (searchBtn) {
+        //   el.parentElement.insertBefore(searchBtn, el);
+        // }
         el.parentElement.insertBefore(searchBtn, el);
         el.parentElement.insertBefore(mainDiv, el);
         mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
@@ -172,9 +179,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       // Display of add button | grid for resources question
       if (question.getType() === 'resources') {
         if (question.resource) {
+          // const searchBtn = question.canSearch ? buildSearchButton(question, question.gridFieldsSettings, false) : null;
+          // console.log(searchBtn);
           const searchBtn = buildSearchButton(question, question.gridFieldsSettings, true);
+          // if (searchBtn) {
+          //   el.parentElement.insertBefore(searchBtn, el);
+          // }
           el.parentElement.insertBefore(searchBtn, el);
-
           let instance: SafeResourceGridComponent;
           if (question.displayAsGrid) {
             const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
@@ -271,28 +282,34 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       btnEl.style.width = '100px';
       btnEl.style.float = 'left';
       btnEl.style.marginRight = '5px';
-      btnEl.onclick = () => {
-        const dialogRef = dialog.open(SafeResourceGridModalComponent, {
-          data: {
-            multiselect,
-            gridSettings: fieldsSettingsForm,
-            selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : []
-          }
-        });
-        dialogRef.afterClosed().subscribe((rows: any[]) => {
-          if (!rows) {
-            return;
-          }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
-          } else {
-            question.value = null;
-          }
-        });
-      };
+      if (question.canSearch) {
+        btnEl.onclick = () => {
+          const dialogRef = dialog.open(SafeResourceGridModalComponent, {
+            data: {
+              multiselect,
+              gridSettings: fieldsSettingsForm,
+              selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : []
+            }
+          });
+          dialogRef.afterClosed().subscribe((rows: any[]) => {
+            if (!rows) {
+              return;
+            }
+            if (rows.length > 0) {
+              question.value = multiselect ? rows : rows[0];
+            } else {
+              question.value = null;
+            }
+          });
+        };
+      }
       mainDiv.appendChild(btnEl);
+      mainDiv.style.display = !question.canSearch || question.isReadOnly ? 'none' : '';
+      question.registerFunctionOnPropertyValueChanged('canSearch',
+        () => {
+          mainDiv.style.display = !question.canSearch ? 'none' : '';
+        });
     }
-    mainDiv.style.display = question.isReadOnly ? 'none' : '';
     return mainDiv;
   }
 
