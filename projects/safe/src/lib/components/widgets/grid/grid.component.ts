@@ -345,6 +345,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.fields = [];
         this.detailsField = '';
       }
+      this.totalCount = this.items.length;
       this.loadItems();
       this.loading = false;
 
@@ -384,11 +385,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    this.gridData = {
-      data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-        (this.filter ? filterBy(this.items, this.filter) : this.items)),
-      total: this.totalCount
-    };
+    if (!!this.parent) {
+      this.gridData = {
+        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+          (this.filter ? filterBy(this.items, this.filter) : this.items)).slice(this.skip, this.skip + this.pageSize),
+        total: this.totalCount
+      };
+    } else {
+      this.gridData = {
+        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
+          (this.filter ? filterBy(this.items, this.filter) : this.items)),
+        total: this.totalCount
+      };
+    }
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -671,26 +680,31 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        if (!fetchMoreResult) { return prev; }
-        for (const field in fetchMoreResult) {
-          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-            return Object.assign({}, prev, {
-              [field]: {
-                edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount
-              }
-            });
+    if (!!this.parent) {
+      this.loadItems();
+      this.loading = false;
+    } else {
+      this.dataQuery.fetchMore({
+        variables: {
+          first: this.pageSize,
+          skip: this.skip
+        },
+        updateQuery: (prev: any, { fetchMoreResult }: any) => {
+          if (!fetchMoreResult) { return prev; }
+          for (const field in fetchMoreResult) {
+            if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+              return Object.assign({}, prev, {
+                [field]: {
+                  edges: fetchMoreResult[field].edges,
+                  totalCount: fetchMoreResult[field].totalCount
+                }
+              });
+            }
           }
+          return prev;
         }
-        return prev;
-      }
-    });
+      });
+    }
   }
 
   /*  Detect filtering events and update the items loaded.
