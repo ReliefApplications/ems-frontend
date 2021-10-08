@@ -95,6 +95,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DATA ===
   public gridData: GridDataResult = { data: [], total: 0 };
+  private totalCount = 0;
   private items: any[] = [];
   private originalItems: any[] = [];
   private updatedItems: any[] = [];
@@ -357,7 +358,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.loading = false;
               this.fields = this.getFields(fields);
-              this.items = cloneData(res.data[field] ? res.data[field] : []);
+              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              this.totalCount = res.data[field].totalCount;
+              this.items = cloneData(nodes);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
@@ -385,7 +388,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
         (this.filter ? filterBy(this.items, this.filter) : this.items))
         .slice(this.skip, this.skip + this.pageSize),
-      total: this.items.length
+      total: this.totalCount
     };
   }
 

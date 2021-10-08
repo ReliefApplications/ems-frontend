@@ -16,10 +16,15 @@ export class QueryBuilderService {
 
   // tslint:disable-next-line: variable-name
   public __availableQueries = new BehaviorSubject<any[]>([]);
+  public availableTypes = new BehaviorSubject<any[]>([]);
   private userFields = [];
 
   get availableQueries(): Observable<any> {
     return this.__availableQueries.asObservable();
+  }
+
+  get availableTypes$(): Observable<any> {
+    return this.availableTypes.asObservable();
   }
 
   constructor(
@@ -30,14 +35,16 @@ export class QueryBuilderService {
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
       this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
-      this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
-        .type.ofType.fields.filter((x: any) => USER_FIELDS.includes(x.name));
+      this.availableTypes.next(res.data.__schema.types);
+      this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name))
     });
   }
 
   public getFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const typeName = query.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
@@ -45,14 +52,16 @@ export class QueryBuilderService {
     if (typeName === 'User') {
       return this.userFields;
     }
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
     const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST')
+    const typeName = query.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => x.type.kind === 'LIST')
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
@@ -63,7 +72,8 @@ export class QueryBuilderService {
   }
 
   public getFilterFromType(typeName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
+    console.log(typeName);
+    const query = this.__availableQueries.getValue().find(x => x.type.name === typeName + 'Connection');
     return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
@@ -145,7 +155,12 @@ export class QueryBuilderService {
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
           ) {
-          ${fields}
+            edges {
+              node {
+                ${fields}
+              }
+            }
+            totalCount
         }
         }
       `;
