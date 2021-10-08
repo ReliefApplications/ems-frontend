@@ -198,7 +198,7 @@ export class QueryBuilderService {
 
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
-    return this.availableQueries.getValue().find(x => x.type.ofType.name.toLowerCase() === nameTrimmed)?.name || '';
+    return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
   }
 
   private objToString(obj: any): string {
