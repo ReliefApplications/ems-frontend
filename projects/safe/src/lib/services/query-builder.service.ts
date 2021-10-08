@@ -135,11 +135,8 @@ export class QueryBuilderService {
 
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
-    console.log('builtQuery');
-    console.log(builtQuery);
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      console.log(fields);
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomQuery {
