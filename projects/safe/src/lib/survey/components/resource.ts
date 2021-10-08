@@ -479,8 +479,8 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         this.filters = [];
         this.resourceFieldsName = [];
         question.canAddNew = false;
-        question.canSearch = false;
         question.addTemplate = null;
+        question.canSearch = true;
       }
     },
     populateChoices(question: any): void {
