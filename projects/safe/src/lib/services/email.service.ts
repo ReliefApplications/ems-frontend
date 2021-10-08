@@ -23,8 +23,8 @@ export class SafeEmailService {
    * @param subject subject of the email.
    * @param settings query settings.
    */
-  public sendMail(recipient: string, subject: string, settings: any): void {
-    const dataQuery = this.queryBuilder.buildQuery(settings);
+  public sendMail(recipient: string, subject: string, settings: any, totalCount: number): void {
+    const dataQuery = this.queryBuilder.buildQuery(settings, totalCount);
     const metaQuery = this.queryBuilder.buildMetaQuery(settings, false);
     let metaFields: any = [];
     let fields: any = [];
@@ -40,7 +40,8 @@ export class SafeEmailService {
               for (const field in res2.data) {
                 if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
                   fields = this.getFields(metaFields, fields);
-                  items = cloneData(res2.data[field] ? res2.data[field] : []);
+                  const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
+                  items = cloneData(nodes);
                   this.convertDateFields(fields, items);
                 }
               }

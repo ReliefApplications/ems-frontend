@@ -511,30 +511,6 @@ query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
     }
   }
 }`;
-
-// === GET APPLICATIONS ===
-export const GET_APPLICATIONS_ROLES = gql`
-query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
-  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
-    edges {
-      node {
-        id
-        name
-        roles {
-          id
-          title
-        }
-      }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-  }
-}`;
-
 export interface GetApplicationsQueryResponse {
   loading: boolean;
   applications: {
@@ -548,6 +524,20 @@ export interface GetApplicationsQueryResponse {
     },
     totalCount: number;
   };
+}
+
+// === GET ROLES FROM APPLICATION ===
+export const GET_ROLES_FROM_APPLICATIONS = gql`
+query GetRolesFromApplications($applications: [ID]!) {
+  rolesFromApplications(applications: $applications) {
+    id
+    title(appendApplicationName: true)
+  }
+}`;
+
+export interface GetRolesFromApplicationsQueryResponse {
+  loading: boolean;
+  rolesFromApplications: Role[];
 }
 
 // === GET PERMISSIONS ===
@@ -569,6 +559,44 @@ export interface GetPermissionsQueryResponse {
 export const GET_QUERY_TYPES = gql`
 query GetQueryTypes {
   __schema {
+    types {
+      name
+      kind
+      fields {
+        name
+        args {
+          name
+          type {
+            name
+            kind
+            inputFields {
+              name
+              type {
+                name
+                kind
+              }
+            }
+          }
+        }
+        type {
+          name
+          kind
+          ofType {
+            name
+            fields {
+              name
+              type {
+                name
+                kind
+                ofType {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     queryType {
       name
       kind
