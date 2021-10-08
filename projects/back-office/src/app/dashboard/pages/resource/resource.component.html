@@ -75,6 +75,8 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords;"></tr>
                 </table>
+                <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of records"
+                    (page)="onPage($event)"></mat-paginator>
             </div>
         </mat-tab>
         <mat-tab>

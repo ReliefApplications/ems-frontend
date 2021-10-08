@@ -1,9 +1,9 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS
+  GetRecordDetailsQueryResponse, GetRecordsQueryResponse, GET_FORM_BY_ID, GET_RECORDS, GET_RECORD_DETAILS
 } from '../../../graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -19,8 +19,10 @@ import {
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeDownloadService } from '@safe/builder';
+import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-form-records',
@@ -31,6 +33,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
+  private recordsQuery!: QueryRef<GetRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -38,12 +41,21 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   public showSidenav = true;
   private historyId = '';
   private formSubscription?: Subscription;
+  public cachedRecords: Record[] = [];
+
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
+
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   @ViewChild('xlsxFile') xlsxFile: any;
 
@@ -73,17 +85,35 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
     }
+    // get the records linked to the form
+    this.recordsQuery = this.apollo.watchQuery<GetRecordsQueryResponse>({
+      query: GET_RECORDS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        id: this.id,
+        display: false,
+        isForm: true,
+      }
+    });
+
+    this.recordsQuery.valueChanges.subscribe(res => {
+      this.cachedRecords = res.data.records.edges.map(x => x.node);
+      this.dataSource = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.records.totalCount;
+      this.pageInfo.endCursor = res.data.records.pageInfo.endCursor;
+      this.loading = res.loading;
+    });
+
+    // get the form detail
     this.formSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
       query: GET_FORM_BY_ID,
       variables: {
         id: this.id,
-        display: false,
-        showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
       if (res.data.form) {
         this.form = res.data.form;
-        this.dataSource = this.form.records;
         this.setDisplayedColumns();
         this.loading = res.loading;
       }
@@ -92,6 +122,35 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('records', res.errors[0].message), { error: true });
       }
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedRecords.length) {
+      this.recordsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            records: {
+              edges: [...prev.records.edges, ...fetchMoreResult.records.edges],
+              pageInfo: fetchMoreResult.records.pageInfo,
+              totalCount: fetchMoreResult.records.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   /*  Modify the list of columns.

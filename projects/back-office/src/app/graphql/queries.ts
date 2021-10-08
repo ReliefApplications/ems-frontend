@@ -831,3 +831,41 @@ export interface GetApiConfigurationQueryResponse {
   loading: boolean;
   apiConfiguration: ApiConfiguration;
 }
+
+// === GET RECORDS ===
+export const GET_RECORDS = gql`
+query GetRecords($first: Int, $afterCursor: ID, $id: ID!, $isForm: Boolean!, $display: Boolean) {
+  records(first: $first, afterCursor: $afterCursor, id: $id, isForm: $isForm) {
+    edges {
+      node {
+        id
+        data(display: $display)
+        form {
+          id
+          name
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}`;
+
+export interface GetRecordsQueryResponse {
+  loading: boolean;
+  records: {
+    edges: {
+      node: Record;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
+}
