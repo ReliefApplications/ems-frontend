@@ -215,6 +215,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    console.log('this.dataQuery 1');
+    console.log(this.dataQuery);
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
@@ -329,6 +331,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
 
+    console.log('this.settings');
+    console.log(this.settings);
+
     // Child grid
     if (!!this.parent) {
       this.items = cloneData(this.parent[this.settings.name]);
@@ -336,24 +341,25 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       //   ((r: any) => Object.assign( Object.create(r), {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
       // const a = cloneData(this.parent[this.settings.name].map((
       //   (r: any) => Object.create({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r}))));
-      this.items = cloneData(this.parent[this.settings.name].map((
-        (r: any) => JSON.parse(JSON.stringify({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r})))));
+      // this.items = cloneData(this.parent[this.settings.name].map((
+      //   (r: any) => JSON.parse(JSON.stringify({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate, ...r})))));
       // const a = cloneData(this.parent[this.settings.name].map(
       //   ((r: any) => Object.assign({canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}, ...r))));
       // const a = cloneData(this.parent[this.settings.name].map(
       //   ((r: any) => Object.assign(r, {canDelete: this.parent.canDelete, canUpdate: this.parent.canUpdate}))));
       // console.log('a');
       // console.log(a);
-      console.log('this.items');
-      console.log(this.items);
-      console.log('this.parent');
-      console.log(this.parent);
-      console.log(this.parent.canUpdate);
-      console.log(this.parent.canDelete);
-      console.log('this.settings');
-      console.log(this.settings);
-      console.log('this.parent[this.settings.nam]');
-      console.log(this.parent[this.settings.name]);
+
+      // console.log('this.items');
+      // console.log(this.items);
+      // console.log('this.parent');
+      // console.log(this.parent);
+      // console.log(this.parent.canUpdate);
+      // console.log(this.parent.canDelete);
+      // console.log('this.settings');
+      // console.log(this.settings);
+      // console.log('this.parent[this.settings.nam]');
+      // console.log(this.parent[this.settings.name]);
       if (this.items.length > 0) {
         this.fields = this.getFields(this.settings.fields);
         this.convertDateFields(this.items);
@@ -371,6 +377,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+          console.log('===> res');
+          console.log(res);
           this.queryError = false;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
@@ -407,10 +415,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         .slice(this.skip, this.skip + this.pageSize),
       total: this.items.length
     };
-    console.log('this.fields');
-    console.log(this.fields);
-    console.log('this.gridData');
-    console.log(this.gridData);
+    // console.log('this.fields');
+    // console.log(this.fields);
+    // console.log('this.gridData');
+    // console.log(this.gridData);
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -726,11 +734,21 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdateRow(items: number | number[]): void {
     const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
       (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
+    console.log('$$$ this.settings');
+    console.log(this.settings);
+    // console.log('€€€ this.settings.query.template');
+    // console.log(this.settings.query.template);
+    let templateTemp: any = null;
+    if (('query' in this.settings)){
+      if (('template' in this.settings.query)){
+        templateTemp = this.settings.query.template;
+      }
+    }
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
         locale: 'en',
-        template: this.settings.query.template
+        template: templateTemp
       }
     });
     dialogRef.afterClosed().subscribe(value => {
@@ -765,8 +783,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
   */
   public onShowDetails(item: any): void {
-    console.log(item);
-    console.log(item.canUpdate);
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: item.id,
@@ -901,6 +917,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.dataSubscription.unsubscribe();
       }
       this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+      console.log('this.dataQuery');
+      console.log(this.dataQuery);
       this.getRecords();
     } else {
       this.childChanged.emit();
