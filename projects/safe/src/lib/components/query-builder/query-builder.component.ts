@@ -73,7 +73,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           this.queryBuilder.createFilterGroup(this.form?.value.filter, this.availableFilters));
       }
     } else {
-      this.availableQueries = this.queryBuilder.availableQueries;
+      this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
           this.allQueries = res.map(x => x.name);

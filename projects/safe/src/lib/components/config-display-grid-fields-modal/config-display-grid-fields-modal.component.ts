@@ -40,7 +40,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.queryBuilder.availableQueries.subscribe((res) => {
+    this.queryBuilder.availableQueries$.subscribe((res) => {
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
         const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
