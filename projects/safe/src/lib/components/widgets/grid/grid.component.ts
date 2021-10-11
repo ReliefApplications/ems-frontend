@@ -1137,7 +1137,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       logic: 'and',
       filters: []
     };
-    this.layout.filter = this.filter;
     this.layoutChanged.emit(this.layout);
     this.loadItems();
   }
