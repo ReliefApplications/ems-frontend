@@ -213,6 +213,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.layout?.sort) {
       this.sort = this.layout.sort;
     }
+    this.showFilter = !!this.layout?.showFilter;
     this.loadItems();
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
@@ -1130,6 +1131,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    this.layout.showFilter = this.showFilter;
     this.filter = {
       logic: 'and',
       filters: []
