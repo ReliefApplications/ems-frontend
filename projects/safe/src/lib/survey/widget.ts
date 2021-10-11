@@ -183,7 +183,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           containerDiv.id = 'containerDiv';
           containerDiv.style.display = 'flex';
           containerDiv.style.marginBottom = '0.5em';
-          containerDiv.appendChild(searchBtn)
+          containerDiv.appendChild(searchBtn);
 
           let instance: SafeResourceGridComponent;
           if (question.displayAsGrid) {
