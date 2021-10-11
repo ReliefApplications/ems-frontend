@@ -144,7 +144,6 @@ export class SafeFormModalComponent implements OnInit {
         }
       }
     }
-    console.log(data);
     survey.data = data;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
