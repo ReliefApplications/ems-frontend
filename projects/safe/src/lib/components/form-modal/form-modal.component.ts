@@ -138,7 +138,7 @@ export class SafeFormModalComponent implements OnInit {
           if (questions[field].getType() !== 'boolean') {
             data[key] = null;
           }
-          if (questions[field].readOnly) {
+          if (questions[field].readOnly || !questions[field].visible) {
             delete data[key];
           }
         }
