@@ -1,3 +1,4 @@
+import { X } from '@angular/cdk/keycodes';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -29,6 +30,7 @@ export class PullJobModalComponent implements OnInit {
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true
@@ -37,7 +39,9 @@ export class PullJobModalComponent implements OnInit {
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 
-  public apiConfigurations: ApiConfiguration[] = [];
+  private apiConfigurationsLoading = true;
+  public apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);
+  public apiConfigurations$!: Observable<ApiConfiguration[]>;
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
@@ -87,13 +91,18 @@ export class PullJobModalComponent implements OnInit {
       this.formsLoading = res.loading;
     });
 
-    this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
-      query: GET_API_CONFIGURATIONS
-    }).valueChanges.subscribe(res => {
-      if (res) {
-        this.apiConfigurations = res.data.apiConfigurations;
-        this.loading = res.data.loading;
-      }
+    this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      query: GET_API_CONFIGURATIONS,
+        variables: {
+          first: ITEMS_PER_PAGE
+        }
+    })
+      
+    this.apiConfigurations$ = this.apiConfigurations.asObservable();
+    this.apiConfigurationsQuery.valueChanges.subscribe(res => {
+      this.apiConfigurations.next(res.data.apiConfigurations.edges.map(x => x.node));
+      this.pageInfo = res.data.apiConfigurations.pageInfo;
+      this.apiConfigurationsLoading = res.data.loading;
     });
 
     // Fetch form fields if any for mapping
@@ -203,8 +212,9 @@ export class PullJobModalComponent implements OnInit {
    */
   private loadOnScroll(e: any): void {
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
-      if (!this.formsLoading && this.pageInfo.hasNextPage) {
+      if (!this.formsLoading && this.pageInfo.hasNextPage && !this.apiConfigurationsLoading) {
         this.formsLoading = true;
+        this.apiConfigurationsLoading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
@@ -217,6 +227,22 @@ export class PullJobModalComponent implements OnInit {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
                 totalCount: fetchMoreResult.forms.totalCount
+              }
+            });
+          }
+        });
+        this.apiConfigurationsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.pageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              apiConfigurations: {
+                edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
+                pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
+                totalCount: fetchMoreResult.apiConfigurations.totalCount
               }
             });
           }

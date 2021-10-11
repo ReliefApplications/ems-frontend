@@ -764,36 +764,56 @@ export interface GetRecordDetailsQueryResponse {
 export const GET_API_CONFIGURATIONS = gql`
 query GetApiConfigurations {
   apiConfigurations {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
+    edges {
+      node {
         id
-        title
+        name
+        status
+        authType
+        endpoint
+        pingUrl
+        settings
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
-  apiConfigurations: ApiConfiguration[];
+  apiConfigurations: {
+    edges: {
+      node: ApiConfiguration;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET API CONFIGURATION ===

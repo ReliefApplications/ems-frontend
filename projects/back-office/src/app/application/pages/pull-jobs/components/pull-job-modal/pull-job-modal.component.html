@@ -23,7 +23,7 @@
                 <mat-form-field appearance="outline" style="flex: 1;">
                     <mat-label>API Configuration used</mat-label>
                     <mat-select formControlName="apiConfiguration">
-                        <mat-option *ngFor="let apiConfiguration of apiConfigurations" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
+                        <mat-option *ngFor="let apiConfiguration of apiConfigurations$ | async" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
