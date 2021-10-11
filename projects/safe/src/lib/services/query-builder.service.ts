@@ -14,12 +14,16 @@ const USER_FIELDS = ['id', 'name', 'username'];
 })
 export class QueryBuilderService {
 
-  // tslint:disable-next-line: variable-name
-  public __availableQueries = new BehaviorSubject<any[]>([]);
+  private availableQueries = new BehaviorSubject<any[]>([]);
+  private availableTypes = new BehaviorSubject<any[]>([]);
   private userFields = [];
 
-  get availableQueries(): Observable<any> {
-    return this.__availableQueries.asObservable();
+  get availableQueries$(): Observable<any> {
+    return this.availableQueries.asObservable();
+  }
+
+  get availableTypes$(): Observable<any> {
+    return this.availableTypes.asObservable();
   }
 
   constructor(
@@ -29,15 +33,17 @@ export class QueryBuilderService {
     this.apollo.watchQuery<GetQueryTypes>({
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
-      this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
-      this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
-        .type.ofType.fields.filter((x: any) => USER_FIELDS.includes(x.name));
+      this.availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
+      this.availableTypes.next(res.data.__schema.types);
+      this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name));
     });
   }
 
   public getFields(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const query = this.availableQueries.getValue().find(x => x.name === queryName);
+    const typeName = query?.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
@@ -45,25 +51,28 @@ export class QueryBuilderService {
     if (typeName === 'User') {
       return this.userFields;
     }
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST')
+    const query = this.availableQueries.getValue().find(x => x.name === queryName);
+    const typeName = query?.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => x.type.kind === 'LIST')
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getFilter(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
+    const query = this.availableQueries.getValue().find(x => x.name === queryName);
     return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getFilterFromType(typeName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
+    console.log(typeName);
+    const query = this.availableQueries.getValue().find(x => x.type.name === typeName + 'Connection');
     return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
@@ -133,25 +142,34 @@ export class QueryBuilderService {
     }));
   }
 
-  public buildQuery(settings: any): any {
+  public buildQuery(settings: any, first?: number): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
-        query GetCustomQuery {
+        query GetCustomQuery($first: Int, $skip: Int) {
           ${builtQuery.name}(
+          first: $first,
+          skip: $skip,
           sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
           sortOrder: "${builtQuery.sort?.order || '' }",
           filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
           ) {
-          ${fields}
+            edges {
+              node {
+                ${fields}
+              }
+            }
+            totalCount
         }
         }
       `;
       return this.apollo.watchQuery<any>({
         query,
-        variables: {}
+        variables: {
+          first: first || 25
+        }
       });
     } else {
       return null;
@@ -180,7 +198,7 @@ export class QueryBuilderService {
 
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
-    return this.__availableQueries.getValue().find(x => x.type.ofType.name.toLowerCase() === nameTrimmed)?.name || '';
+    return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
   }
 
   private objToString(obj: any): string {
@@ -273,7 +291,7 @@ export class QueryBuilderService {
   }
 
   public sourceQuery(queryName: string): any {
-    const queries = this.__availableQueries.getValue().map(x => x.name);
+    const queries = this.availableQueries.getValue().map(x => x.name);
     if (queries.includes(queryName)) {
       const query = gql`
         query GetCustomSourceQuery {

@@ -21,7 +21,7 @@
                     <div>
                         <span>{{ field.name }}</span>
                         <safe-button [isIcon]="true" icon="error" class="field-error" (click)="onEdit(index)"
-                            *ngIf="form.at(index).invalid && field.type">
+                            *ngIf="form.at(index)?.invalid && field.type">
                         </safe-button>
                         <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
                             matTooltip="Invalid field. Please click to remove.">
