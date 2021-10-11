@@ -208,11 +208,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
-      this.filter = this.layout.filter;
+      const filter = this.lintFilter(this.layout.filter);
+      this.filter = filter;
     }
     if (this.layout?.sort) {
       this.sort = this.layout.sort;
     }
+    this.showFilter = !!this.layout?.showFilter;
     this.loadItems();
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
@@ -1130,6 +1132,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
+    this.layout.showFilter = this.showFilter;
     this.filter = {
       logic: 'and',
       filters: []
@@ -1218,5 +1221,29 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   saveDefaultLayout(): void {
     this.defaultLayoutChanged.emit(this.layout);
+  }
+
+  /**
+   * Removes operator set with a method, that cannot be cached.
+   * @param filter filter to clean.
+   * @returns cleaned filter.
+   */
+  private lintFilter(filter: any): any {
+    if (filter.filters) {
+      const filters = filter.filters.map((x: any) => this.lintFilter(x)).filter((x: any) => x);
+      if (filters.length > 0) {
+        return { ...filter, filters };
+      } else {
+        return;
+      }
+    } else {
+      if (filter.field) {
+        if (filter.operator) {
+          return filter;
+        } else {
+          return;
+        }
+      }
+    }
   }
 }
