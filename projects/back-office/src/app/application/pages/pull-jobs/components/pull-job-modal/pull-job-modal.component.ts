@@ -96,8 +96,8 @@ export class PullJobModalComponent implements OnInit {
         variables: {
           first: ITEMS_PER_PAGE
         }
-    })
-      
+    });
+
     this.apiConfigurations$ = this.apiConfigurations.asObservable();
     this.apiConfigurationsQuery.valueChanges.subscribe(res => {
       this.apiConfigurations.next(res.data.apiConfigurations.edges.map(x => x.node));
