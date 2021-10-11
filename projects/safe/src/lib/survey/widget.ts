@@ -131,6 +131,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       // Display of add button for resource question
       if (question.getType() === 'resource') {
         const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
+        const containerDiv = document.createElement('div');
+        containerDiv.id = 'containerDiv';
+        containerDiv.style.display = 'flex';
+        containerDiv.style.marginBottom = '0.5em';
         const mainDiv = document.createElement('div');
         mainDiv.id = 'addRecordDiv';
         const btnEl = document.createElement('button');
@@ -156,8 +160,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           };
         }
         mainDiv.appendChild(btnEl);
-        el.parentElement.insertBefore(searchBtn, el);
-        el.parentElement.insertBefore(mainDiv, el);
+        containerDiv.appendChild(mainDiv);
+        containerDiv.appendChild(searchBtn);
+        el.parentElement.insertBefore(containerDiv, el);
         mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
 
         question.registerFunctionOnPropertyValueChanged('addTemplate',
@@ -173,7 +178,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       if (question.getType() === 'resources') {
         if (question.resource) {
           const searchBtn = buildSearchButton(question, question.gridFieldsSettings, true);
-          el.parentElement.insertBefore(searchBtn, el);
+
+          const containerDiv = document.createElement('div');
+          containerDiv.id = 'containerDiv';
+          containerDiv.style.display = 'flex';
+          containerDiv.style.marginBottom = '0.5em';
+          containerDiv.appendChild(searchBtn)
 
           let instance: SafeResourceGridComponent;
           if (question.displayAsGrid) {
@@ -242,8 +252,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                 });
               };
             }
-            mainDiv.appendChild(btnEl);
-            el.parentElement.insertBefore(mainDiv, el);
+            containerDiv.appendChild(btnEl);
             mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
 
             question.registerFunctionOnPropertyValueChanged('addTemplate',
@@ -255,6 +264,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                 mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
               });
           }
+          el.parentElement.insertBefore(containerDiv, el);
         }
       }
     }
@@ -264,7 +274,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     const mainDiv = document.createElement('div');
     mainDiv.id = 'searchDiv';
     mainDiv.style.height = '23px';
-    mainDiv.style.marginBottom = '0.5em';
+    mainDiv.style.margin = '0px 10px';
     if (fieldsSettingsForm) {
       const btnEl = document.createElement('button');
       btnEl.innerText = 'Search';
