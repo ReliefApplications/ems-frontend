@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule, SafeNewAppButtonModule } from '@safe/builder';
+import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule, SafeNewAppButtonModule, SafeRecentAppButtonModule } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -48,7 +48,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
       SafeButtonModule,
       MatButtonModule,
       MatPaginatorModule,
-      SafeNewAppButtonModule
+      SafeNewAppButtonModule,
+      SafeRecentAppButtonModule
     ],
   exports: [ApplicationsComponent]
 })

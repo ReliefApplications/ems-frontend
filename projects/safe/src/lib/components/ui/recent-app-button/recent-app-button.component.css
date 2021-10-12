@@ -1,13 +1,13 @@
 .container {
-  position: relative;
-
   display: flex;
   flex-direction: column;
 
   height: 192px;
   width: 192px;
   border-radius: 10px;
-  background-color: #EBF3F9;
+  border: 1px solid rgba(47, 56, 62, 0.2);
+  box-sizing: border-box;
+  background-color: #FFFFFF;
 
   cursor: pointer;
 }
@@ -26,8 +26,7 @@
 
 .icon mat-icon {
   color: #3B8CC4;
-  //font-size: 50px;
-  transform: scale(2);
+  font-size: 28px;
 }
 
 .title {
@@ -46,5 +45,5 @@
 }
 
 .title div {
-  padding-bottom: 15px;
+  padding: 10px;
 }

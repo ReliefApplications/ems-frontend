@@ -28,7 +28,8 @@ import { SafeSearchResourceGridModalModule } from './components/search-resource-
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeNewAppButtonModule } from './components/ui/new-app-button/safe-new-app-button.module';
-import {MatIconModule} from '@angular/material/icon';
+import {SafeRecentAppButtonModule} from './components/ui/recent-app-button/safe-recent-app-button.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     exports: [
@@ -60,7 +61,8 @@ import {MatIconModule} from '@angular/material/icon';
         SafeSearchResourceGridModalModule,
         SafeButtonModule,
         SafeContentChoiceModule,
-        SafeNewAppButtonModule
+        SafeNewAppButtonModule,
+        SafeRecentAppButtonModule
     ],
     imports: [
         MatIconModule

@@ -70,6 +70,7 @@ export * from './lib/components/content-choice/public-api';
 // === UI ===
 export * from './lib/components/ui/button/public-api';
 export * from './lib/components/ui/new-app-button/public-api';
+export * from './lib/components/ui/recent-app-button/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

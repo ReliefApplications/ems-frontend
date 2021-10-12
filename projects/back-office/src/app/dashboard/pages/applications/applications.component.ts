@@ -261,4 +261,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.statusFilter = '';
     this.clearDateFilter();
   }
+
+  test($event: any): void {
+    console.log('TESSSST');
+  }
 }
