@@ -1,6 +1,6 @@
 <kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [pageable]="pagerSettings" [height]="410"
   [selectable]="!readOnly && selectableSettings" (pageChange)="pageChange($event)" kendoGridSelectBy [selectedKeys]="selectedRowsIndex"
-  (selectionChange)="selectionChange($event)" [pageSize]="pageSize" [skip]="skip">
+  (selectionChange)="selectionChange($event)" [pageSize]="pageSize" [skip]="skip" [resizable]="true">
   <ng-template kendoGridToolbarTemplate>
     <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
   </ng-template>
