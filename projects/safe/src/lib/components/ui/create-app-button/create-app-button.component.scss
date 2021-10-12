@@ -1,12 +1,9 @@
 .container {
+  position: relative;
+
   display: flex;
   flex-direction: column;
-  //align-items: center;
-  //justify-content: center;
-  //justify-content: space-between;
 
-
-  position: relative;
   height: 192px;
   width: 192px;
   border-radius: 10px;
@@ -14,45 +11,35 @@
 }
 
 .space {
-  //order: 1;
-  //flex-grow: 1;
-  //height: 64px;
   height: 100%;
-  background-color: #2f3131;
 }
 
 .icon {
   display: flex;
-  color: #3B8CC4;
-  height: 100%;
   align-items: center;
   justify-content: center;
-  //order: 2;
-  //flex-grow: 1;
-  //height: 64px;
-  background-color: #78d237;
+
+  height: 100%;
+}
+
+.icon mat-icon {
+  color: #3B8CC4;
+  font-size: 28px;
 }
 
 .title {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  //padding: 10px;
-  //order: 3;
-  //flex-grow: 1;
-  //height: 64px;
 
-  //text-align: center;
+  height: 100%;
+
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
 
   color: #3B8CC4;
-
-
-  background-color: #9b001d;
 }
 
 .title div {
