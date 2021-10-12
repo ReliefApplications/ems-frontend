@@ -50,7 +50,7 @@
 <!--  <safe-button class="create-app buttons-app" icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">-->
 <!--    Create an application-->
 <!--  </safe-button>-->
-  <safe-new-app-button *ngIf="canAdd">
+  <safe-new-app-button (onClickEvent)="onAdd()" *ngIf="canAdd">
     Create an application
   </safe-new-app-button>
   <table mat-table [dataSource]="applications" matSort>
