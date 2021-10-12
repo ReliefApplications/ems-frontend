@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SafeApiProxyService } from './api-proxy.service';
 import { QueryBuilderService } from './query-builder.service';
+import { SafeSnackBarService } from './snackbar.service';
 import get from 'lodash/get';
+import { NOTIFICATIONS } from '../const/notifications';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -14,7 +16,8 @@ export class SafeEmailService {
 
   constructor(
     private apiProxyService: SafeApiProxyService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private snackBar: SafeSnackBarService
   ) { }
 
   /**
@@ -46,7 +49,16 @@ export class SafeEmailService {
                 }
               }
               const body = this.buildBody(items, fields);
-              window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
+              try {
+                window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
+              } catch (error) {
+                this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
+                try {
+                  window.location.href = `mailto:${recipient}?subject=${subject}`;
+                } catch (error) {
+                  this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
+                }
+              }
             });
           }
         }
