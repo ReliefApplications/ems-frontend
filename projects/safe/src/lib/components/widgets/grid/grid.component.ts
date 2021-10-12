@@ -222,11 +222,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds custom query.
     if (!this.parent) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      const filters = [this.filter];
+      if (this.settings.query.filter) {
+        filters.push(this.settings.query.filter);
+      }
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
           first: this.pageSize,
-          filter: this.filter
+          filter: { logic: 'and', filters }
         }
       });
     }
@@ -365,7 +369,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-          console.log(res);
           this.queryError = false;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
@@ -696,11 +699,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loadItems();
       this.loading = false;
     } else {
+      const filters = [this.filter];
+      if (this.settings.query.filter) {
+        filters.push(this.settings.query.filter);
+      }
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
           skip: this.skip,
-          filter: this.filter
+          filter: { logic: 'and', filters }
         },
         updateQuery: (prev: any, { fetchMoreResult }: any) => {
           if (!fetchMoreResult) { return prev; }

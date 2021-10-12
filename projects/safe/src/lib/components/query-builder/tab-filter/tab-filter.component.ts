@@ -119,7 +119,6 @@ export class SafeTabFilterComponent implements OnInit {
       if (x.field) {
         const field = this.fields.find(y => y.name === x.field);
         if (field) {
-          console.log(field);
           // this.selectedFields.push({
 
           // });
