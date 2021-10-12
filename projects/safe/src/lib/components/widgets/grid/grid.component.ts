@@ -226,9 +226,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.settings.query.filter) {
         filters.push(this.settings.query.filter);
       }
-      const sortField = (this.sort && this.sort[0].dir) ? this.sort[0].field :
+      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
@@ -712,9 +712,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.settings.query.filter) {
         filters.push(this.settings.query.filter);
       }
-      const sortField = (this.sort && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
