@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateAppButtonComponent } from './create-app-button.component';
+import { NewAppButtonComponent } from './new-app-button.component';
 import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
-    CreateAppButtonComponent
+    NewAppButtonComponent
   ],
   imports: [
     CommonModule,
     MatIconModule,
   ],
   exports: [
-    CreateAppButtonComponent
+    NewAppButtonComponent
   ]
 })
-export class SafeCreateAppButtonModule { }
+export class SafeNewAppButtonModule { }

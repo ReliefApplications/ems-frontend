@@ -27,7 +27,7 @@ import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
-import { SafeCreateAppButtonModule } from './components/ui/create-app-button/safe-create-app-button.module';
+import { SafeNewAppButtonModule } from './components/ui/new-app-button/safe-new-app-button.module';
 import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
@@ -60,7 +60,7 @@ import {MatIconModule} from '@angular/material/icon';
         SafeSearchResourceGridModalModule,
         SafeButtonModule,
         SafeContentChoiceModule,
-        SafeCreateAppButtonModule
+        SafeNewAppButtonModule
     ],
     imports: [
         MatIconModule
