@@ -142,11 +142,10 @@ export class QueryBuilderService {
     }));
   }
 
-  public buildQuery(settings: any, first?: number): any {
+  public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const metaFields = this.buildMetaFields(builtQuery.fields);
       // filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
       const query = gql`
         query GetCustomQuery($first: Int, $skip: Int, $filter: JSON) {
@@ -166,12 +165,7 @@ export class QueryBuilderService {
         }
         }
       `;
-      return this.apollo.watchQuery<any>({
-        query,
-        variables: {
-          first: first || 25
-        }
-      });
+      return query;
     } else {
       return null;
     }

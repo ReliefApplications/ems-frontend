@@ -219,7 +219,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: {
+        first: this.pageSize,
+        filter: this.filter
+      }
+    });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
@@ -919,7 +926,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.dataSubscription) {
         this.dataSubscription.unsubscribe();
       }
-      this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.pageSize,
+          filter: this.filter
+        }
+      });
       this.getRecords();
     } else {
       this.childChanged.emit();

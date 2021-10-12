@@ -50,6 +50,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   constructor(
+    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
     this.mapId = this.generateUniqueId();
@@ -73,8 +74,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   */
   ngAfterViewInit(): void {
     this.drawMap();
-
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    const builtQuery =  this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery
+    });
 
     if (this.dataQuery) {
       this.getData();

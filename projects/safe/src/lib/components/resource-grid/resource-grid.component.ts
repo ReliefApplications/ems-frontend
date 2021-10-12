@@ -11,6 +11,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
+import { Apollo } from 'apollo-angular';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -110,6 +111,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public editionActive = false;
 
   constructor(
+    private apollo: Apollo,
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService,
@@ -128,7 +130,13 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   public init(): void {
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: {
+        first: this.pageSize
+      }
+    });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
