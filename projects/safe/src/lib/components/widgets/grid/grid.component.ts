@@ -208,8 +208,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(changes: any): void {
     if (this.layout?.filter) {
-      const filter = this.lintFilter(this.layout.filter);
-      this.filter = filter;
+      // const filter = this.lintFilter(this.layout.filter);
+      this.filter = this.layout.filter;
     }
     if (this.layout?.sort) {
       this.sort = this.layout.sort;
@@ -355,6 +355,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (this.dataQuery) {
         this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+          console.log(res);
           this.queryError = false;
           const fields = this.settings.query.fields;
           for (const field in res.data) {
@@ -395,8 +396,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     } else {
       this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)),
+        data: (this.sort ? orderBy(this.items, this.sort) : this.items),
         total: this.totalCount
       };
     }
@@ -689,7 +689,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
-          skip: this.skip
+          skip: this.skip,
+          filter: this.filter
         },
         updateQuery: (prev: any, { fetchMoreResult }: any) => {
           if (!fetchMoreResult) { return prev; }
@@ -709,13 +710,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Detect filtering events and update the items loaded.
+ /**
+  * Detects filtering events and update the items loaded.
+  * @param filter composite filter created by Kendo.
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
     this.layoutChanged.emit(this.layout);
-    this.loadItems();
+    if (!!this.parent) {
+      this.loadItems();
+    } else {
+      this.pageChange({skip: 0, take: this.pageSize});
+    }
   }
 
   /* Detect selection event and display actions available on rows.
@@ -1230,22 +1237,22 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param filter filter to clean.
    * @returns cleaned filter.
    */
-  private lintFilter(filter: any): any {
-    if (filter.filters) {
-      const filters = filter.filters.map((x: any) => this.lintFilter(x)).filter((x: any) => x);
-      if (filters.length > 0) {
-        return { ...filter, filters };
-      } else {
-        return;
-      }
-    } else {
-      if (filter.field) {
-        if (filter.operator) {
-          return filter;
-        } else {
-          return;
-        }
-      }
-    }
-  }
+  // private lintFilter(filter: any): any {
+  //   if (filter.filters) {
+  //     const filters = filter.filters.map((x: any) => this.lintFilter(x)).filter((x: any) => x);
+  //     if (filters.length > 0) {
+  //       return { ...filter, filters };
+  //     } else {
+  //       return;
+  //     }
+  //   } else {
+  //     if (filter.field) {
+  //       if (filter.operator) {
+  //         return filter;
+  //       } else {
+  //         return;
+  //       }
+  //     }
+  //   }
+  // }
 }
