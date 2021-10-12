@@ -1,27 +1,65 @@
 <form [formGroup]="form">
-    <!-- <ng-container *ngFor="let filter of filters">
+    <div class="filter-header">
         <mat-form-field appearance="outline">
-            <mat-label>{{filter.name}}</mat-label>
-            <ng-container *ngIf="filter.type.name === 'Int'">
-                <input matInput [formControlName]="filter.name" type="number" />
-            </ng-container>
-            <ng-container *ngIf="filter.type.name === 'Boolean'">
-                <mat-select [formControlName]="filter.name">
-                    <mat-option>-- None --</mat-option>
-                    <mat-option [value]="true">True</mat-option>
-                    <mat-option [value]="false">False</mat-option>
-                </mat-select>
-            </ng-container>
-            <ng-container
-                *ngIf="!['DateTime', 'Date', 'Int', 'Boolean'].includes(filter.type.name)">
-                <input matInput [formControlName]="filter.name" type="string" />
-            </ng-container>
-            <ng-container *ngIf="['Date', 'DateTime'].includes(filter.type.name)">
-                <input matInput matTooltip="First enter the year then month and day" [matTooltipPosition]="'above'"
-                    maxlength="10" [formControlName]="filter.name" type="text" (keyup)="onKey($event, filter.name)" />
-            </ng-container>
-            <mat-icon *ngIf="['Date', 'DateTime'].includes(filter.type.name)" color="primary" matSuffix matTooltip="Always update to today's date"
-                [matTooltipPosition]="'above'" (click)="setCurrentDate(filter.name)">calendar_today</mat-icon>
+            <mat-label>Filter logic</mat-label>
+            <mat-select formControlName="logic">
+                <mat-option value="or">Or</mat-option>
+                <mat-option value="and">And</mat-option>
+            </mat-select>
         </mat-form-field>
-    </ng-container> -->
+        <safe-button [isIcon]="true" icon="delete" (click)="delete.emit(true)" variant="danger"></safe-button>
+    </div>
+    <div formArrayName="filters" class="filter-list">
+        <div *ngFor="let filter of filters.controls; let i = index;">
+            <ng-container *ngIf="filters.at(i).value.logic">
+                <safe-tab-filter [form]="$any(filters.at(i))" [fields]="fields" (delete)="onDeleteFilterGroup(i)"></safe-tab-filter>
+            </ng-container>
+            <ng-container *ngIf="!filters.at(i).value.logic">
+                <div [formGroup]="$any(filters.at(i))" class="filter-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Field</mat-label>
+                        <mat-select formControlName="field" (selectionChange)="onSetField($event, i)">
+                            <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <ng-container *ngIf="selectedFields[i].name">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Operator</mat-label>
+                            <mat-select formControlName="operator">
+                                <mat-option *ngFor="let operator of types[selectedFields[i].type].operators" [value]="operators[operator].value">{{ operators[operator].label }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Value</mat-label>
+                            <ng-container *ngIf="selectedFields[i].type === 'Int'">
+                                <input matInput formControlName="value" type="number" />
+                            </ng-container>
+                            <ng-container *ngIf="selectedFields[i].type === 'Boolean'">
+                                <mat-select formControlName="value">
+                                    <mat-option [value]="true">True</mat-option>
+                                    <mat-option [value]="false">False</mat-option>
+                                </mat-select>
+                            </ng-container>
+                            <ng-container *ngIf="!['DateTime', 'Date', 'Int', 'Boolean'].includes(selectedFields[i].type)">
+                                <input matInput formControlName="value" type="string" />
+                            </ng-container>
+                            <ng-container *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)">
+                                <input matInput matTooltip="First enter the year then month and day" [matTooltipPosition]="'above'"
+                                    maxlength="10" formControlName="value" type="text"/>
+                                <!-- <input matInput matTooltip="First enter the year then month and day" [matTooltipPosition]="'above'"
+                                    maxlength="10" formControlName="value" type="text" (keyup)="onKey($event, filter.name)" /> -->
+                            </ng-container>
+                            <!-- <mat-icon *ngIf="['Date', 'DateTime'].includes(filter.type.name)" color="primary" matSuffix matTooltip="Always update to today's date"
+                                [matTooltipPosition]="'above'" (click)="setCurrentDate(filter.name)">calendar_today</mat-icon> -->
+                        </mat-form-field>
+                    </ng-container>
+                    <safe-button [isIcon]="true" icon="delete" (click)="onDeleteFilter(i)" variant="danger"></safe-button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="filter-buttons">
+        <safe-button (click)="onAddFilter()" category="tertiary">Add new filter</safe-button>
+        <safe-button (click)="onAddFilterGroup()" category="tertiary">Add new filter group</safe-button>
+    </div>
 </form>
