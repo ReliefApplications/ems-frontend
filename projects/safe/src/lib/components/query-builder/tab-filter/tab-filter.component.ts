@@ -9,13 +9,14 @@ import { FormGroup } from '@angular/forms';
 export class SafeTabFilterComponent implements OnInit {
 
   @Input() form: FormGroup = new FormGroup({});
-  @Input() filters: any[] = [];
+  @Input() fields: any[] = [];
 
   private inputs = '';
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.fields);
   }
 
   setCurrentDate(filterName: string): void {

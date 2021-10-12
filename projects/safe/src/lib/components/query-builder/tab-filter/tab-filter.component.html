@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-    <ng-container *ngFor="let filter of filters">
+    <!-- <ng-container *ngFor="let filter of filters">
         <mat-form-field appearance="outline">
             <mat-label>{{filter.name}}</mat-label>
             <ng-container *ngIf="filter.type.name === 'Int'">
@@ -23,5 +23,5 @@
             <mat-icon *ngIf="['Date', 'DateTime'].includes(filter.type.name)" color="primary" matSuffix matTooltip="Always update to today's date"
                 [matTooltipPosition]="'above'" (click)="setCurrentDate(filter.name)">calendar_today</mat-icon>
         </mat-form-field>
-    </ng-container>
+    </ng-container> -->
 </form>
