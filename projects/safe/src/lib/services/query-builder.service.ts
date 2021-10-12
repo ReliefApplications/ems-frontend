@@ -64,18 +64,6 @@ export class QueryBuilderService {
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
-  private buildFilter(filter: any): any {
-    return filter ? Object.keys(filter).reduce((o, key) => {
-      if (filter[key] || filter[key] === false) {
-        if (filter[key] === 'today()') {
-          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
-        }
-        return { ...o, [key]: filter[key] };
-      }
-      return { ...o };
-    }, {}) : null;
-  }
-
   private buildFields(fields: any[]): any {
     return ['id\n'].concat(fields.map(x => {
       switch (x.kind) {
@@ -83,10 +71,10 @@ export class QueryBuilderService {
           return x.name + '\n';
         }
         case 'LIST': {
-          return `${x.name}(
+          return `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
             sortOrder: "${x.sort.order}",
-            filter: ${this.objToString(this.buildFilter(x.filter))}
+            filter: ${this.filterToString(x.filter)}
           ) {
             ${this.buildFields(x.fields)}
           }` + '\n';
@@ -101,6 +89,14 @@ export class QueryBuilderService {
         }
       }
     }));
+  }
+
+  private filterToString(filter: any): string {
+    if (filter.filters) {
+      return `{ logic: "${filter.logic}", filters: [${filter.filters.map((x: any) => this.filterToString(x))}]}`;
+    } else {
+      return `{ field: "${filter.field}", operator: "${filter.operator}", value: "${filter.value}" }`;
+    }
   }
 
   private buildMetaFields(fields: any[]): any {
@@ -195,20 +191,6 @@ export class QueryBuilderService {
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
     return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
-  }
-
-  private objToString(obj: any): string {
-    let str = '{';
-    for (const p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        str += p + ': ' + (
-            typeof obj[p] === 'string' ? `"${obj[p]}"` :
-            Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
-            obj[p]
-          ) + ',\n';
-      }
-    }
-    return str + '}';
   }
 
   private arrayToString(array: any): string {
