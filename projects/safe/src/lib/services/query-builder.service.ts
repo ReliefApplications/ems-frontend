@@ -71,7 +71,6 @@ export class QueryBuilderService {
   }
 
   public getFilterFromType(typeName: string): any[] {
-    console.log(typeName);
     const query = this.availableQueries.getValue().find(x => x.type.name === typeName + 'Connection');
     return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];

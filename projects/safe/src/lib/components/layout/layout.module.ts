@@ -14,6 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -31,7 +32,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatDividerModule,
     SafeConfirmModalModule,
     MatTooltipModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatPaginatorModule
   ],
   exports: [SafeLayoutComponent]
 })

@@ -24,7 +24,7 @@
   </safe-button>
 <!-- TODO: style problems related with the red round notification sticker => can't replace it -->
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
-    <mat-icon [matBadge]="notifications.length" matBadgeSize="small" matBadgeColor="warn"
+    <mat-icon class="mat-badge-notification" matBadge="&#8288;" matBadgeSize="small" matBadgeColor="warn"
       [matBadgeHidden]="notifications.length == 0">
       notifications</mat-icon>
   </button>
@@ -45,6 +45,9 @@
         notification.action }} -
         {{ notification.createdAt | date }}</button>
     </div>
+    <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of notifications"
+    (page)="onPage($event)">
+    </mat-paginator>
   </mat-menu>
 </mat-toolbar>
 

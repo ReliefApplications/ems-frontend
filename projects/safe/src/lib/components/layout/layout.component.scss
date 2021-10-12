@@ -111,3 +111,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.mat-badge-notification {
+    ::ng-deep .mat-badge-content {
+        width: 10px;
+        height: 10px;
+    }
+}

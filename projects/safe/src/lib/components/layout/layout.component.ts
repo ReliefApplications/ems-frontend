@@ -13,6 +13,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
+const ITEMS_PER_PAGE = 10;
+
 @Component({
   selector: 'safe-layout',
   templateUrl: './layout.component.html',
@@ -58,6 +60,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private environment: any;
   private inApplication = false;
 
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
+
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -80,6 +89,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.loadUserAndUpdateLayout();
     this.notificationService.initNotifications();
+    this.pageInfo = this.notificationService.pageInfo;
     this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
       if (notifications) {
         this.notifications = notifications;
@@ -108,6 +118,36 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
+  }
+
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.notificationService.cachedNotifications.length) {
+      this.notificationService.notificationsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            notifications: {
+              edges: [...prev.notifications.edges, ...fetchMoreResult.notifications.edges],
+              pageInfo: fetchMoreResult.notifications.pageInfo,
+              totalCount: fetchMoreResult.notifications.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.notifications = this.notificationService.cachedNotifications.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   /* Load the user and update availables navGroups accordingly
@@ -222,9 +262,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
+    this.pageInfo.length--;
   }
 
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+    this.pageInfo.length = 0;
   }
 }
