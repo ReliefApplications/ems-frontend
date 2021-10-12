@@ -31,6 +31,7 @@ export const NOTIFICATIONS = {
     recordDoesNotMatch: 'Selected records do not match with any fields from this form.',
     recordUploadSuccess: 'Records upload successful.',
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
+    emailTooLong(error: any): string { return `Failed to open your email client with selected records in the body. Either your browser or your email client does not support such long mailto command. ${error}`; },
     dataRecovered: 'The data has been recovered',
     profileSaved: 'Preferences saved.',
     appEdited: 'This application has been updated by someone else.',
