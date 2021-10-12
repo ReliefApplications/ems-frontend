@@ -10,6 +10,8 @@ export class RecentAppButtonComponent implements OnInit {
 
   @Output() onClickEvent: EventEmitter<any> = new EventEmitter();
 
+  userCount = 0;
+
   constructor() { }
 
   ngOnInit(): void {

@@ -1,5 +1,11 @@
 <div class="container" (click)="onClick($event)">
-  <div class="space"></div>
-  <div class="icon"> <mat-icon>add</mat-icon> </div>
-  <div class="title"> <div> Recent app </div> </div>
+  <div class="top-bar">
+    <div class="users">
+      <div> <mat-icon>person</mat-icon> </div>
+      <div [innerText]="userCount.toString()"></div>
+    </div>
+    <div class="status"></div>
+  </div>
+  <div class="app-name"> </div>
+  <div class="bottom-bar"> </div>
 </div>
