@@ -234,7 +234,7 @@ export class QueryBuilderService {
   }
 
   public createFilterGroup(filter: any, fields: any): FormGroup {
-    if (filter.filter) {
+    if (filter.filters) {
       const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
       return this.formBuilder.group({
         logic: filter.logic || 'and',

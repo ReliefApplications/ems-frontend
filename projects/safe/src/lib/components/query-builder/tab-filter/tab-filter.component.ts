@@ -98,6 +98,7 @@ export class SafeTabFilterComponent implements OnInit {
 
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
+  @Input() canDelete = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
@@ -115,14 +116,20 @@ export class SafeTabFilterComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.form.value?.filters.map((x: any) => {
+    this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
         const field = this.fields.find(y => y.name === x.field);
-        if (field) {
-          // this.selectedFields.push({
-
-          // });
+        if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
+          const type = field.type.name;
+          this.selectedFields.splice(index, 1, {
+            name: field.name,
+            type
+          });
+        } else {
+          this.selectedFields.splice(index, 1, {});
         }
+      } else {
+        this.selectedFields.splice(index, 1, {});
       }
     });
   }
@@ -182,6 +189,8 @@ export class SafeTabFilterComponent implements OnInit {
           name: field.name,
           type
         });
+      } else {
+        this.selectedFields.splice(index, 1, {});
       }
     } else {
       this.selectedFields.splice(index, 1, {});
