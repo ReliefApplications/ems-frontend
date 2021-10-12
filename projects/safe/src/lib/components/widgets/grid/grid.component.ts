@@ -724,6 +724,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           sortOrder
         },
         updateQuery: (prev: any, { fetchMoreResult }: any) => {
+          this.loading = false;
           if (!fetchMoreResult) { return prev; }
           for (const field in fetchMoreResult) {
             if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
