@@ -135,10 +135,12 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
-      variables: {
+      variables: { ...builtQuery.variables, ...{
         first: this.pageSize,
-        filter: this.filter
-      }
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
+      }}
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
@@ -219,8 +221,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   private getSelectedRows(): void {
     this.selectedRowsIndex = [];
     if (this.selectedRows.length > 0) {
-      this.gridData.data.forEach((row: any, index: number) => {
+      this.items.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
+          console.log(row.id);
           this.selectedRowsIndex.push(index + this.skip);
         }
       });
@@ -475,7 +478,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       variables: {
         first: this.pageSize,
         skip: this.skip,
-        filter: this.filter
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         if (!fetchMoreResult) { return prev; }

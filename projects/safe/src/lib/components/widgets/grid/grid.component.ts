@@ -230,7 +230,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         query: builtQuery,
         variables: {
           first: this.pageSize,
-          filter: { logic: 'and', filters }
+          filter: { logic: 'and', filters },
+          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+          sortOrder: this.settings.query.sort?.order || ''
         }
       });
     }
@@ -707,7 +709,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         variables: {
           first: this.pageSize,
           skip: this.skip,
-          filter: { logic: 'and', filters }
+          filter: { logic: 'and', filters },
+          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+          sortOrder: this.settings.query.sort?.order || ''
         },
         updateQuery: (prev: any, { fetchMoreResult }: any) => {
           if (!fetchMoreResult) { return prev; }
@@ -933,18 +937,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public reloadData(): void {
     if (!this.parent) {
-      if (this.dataSubscription) {
-        this.dataSubscription.unsubscribe();
-      }
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      this.dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: this.filter
-        }
-      });
-      this.getRecords();
+      this.pageChange({skip: 0, take: this.pageSize});
     } else {
       this.childChanged.emit();
     }

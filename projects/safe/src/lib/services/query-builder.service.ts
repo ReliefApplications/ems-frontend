@@ -129,14 +129,13 @@ export class QueryBuilderService {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      // filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
       const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON) {
+        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
           ${builtQuery.name}(
           first: $first,
           skip: $skip,
-          sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
-          sortOrder: "${builtQuery.sort?.order || '' }",
+          sortField: $sortField,
+          sortOrder: $sortOrder,
           filter: $filter
           ) {
             edges {
