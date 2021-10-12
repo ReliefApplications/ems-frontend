@@ -319,7 +319,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
-            filter: this.getFilter(f.type),
+            filter: (this.parent || prefix) ? '' : this.getFilter(f.type),
             meta: metaData,
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
