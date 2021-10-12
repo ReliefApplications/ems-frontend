@@ -492,6 +492,8 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
                 totalCount: fetchMoreResult[field].totalCount
               }
             });
+          } else {
+            return prev;
           }
         }
         return prev;

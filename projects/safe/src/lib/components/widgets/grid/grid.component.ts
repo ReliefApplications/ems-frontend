@@ -226,13 +226,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.settings.query.filter) {
         filters.push(this.settings.query.filter);
       }
+      const sortField = (this.sort && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      const sortOrder = (this.sort && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
           first: this.pageSize,
           filter: { logic: 'and', filters },
-          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-          sortOrder: this.settings.query.sort?.order || ''
+          sortField,
+          sortOrder
         }
       });
     }
@@ -375,7 +378,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.loading = false;
               this.fields = this.getFields(fields);
               const nodes = res.data[field].edges.map((x: any) => x.node) || [];
               this.totalCount = res.data[field].totalCount;
@@ -389,6 +391,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               this.loadItems();
             }
           }
+          this.loading = false;
         },
           () => {
             this.queryError = true;
@@ -411,7 +414,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     } else {
       this.gridData = {
-        data: (this.sort ? orderBy(this.items, this.sort) : this.items),
+        data: this.items,
         total: this.totalCount
       };
     }
@@ -683,7 +686,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.layout.sort = sort;
     this.layoutChanged.emit(this.layout);
     this.skip = 0;
-    this.loadItems();
+    if (!!this.parent) {
+      this.loadItems();
+    } else {
+      this.pageChange({skip: 0, take: this.pageSize});
+    }
   }
 
  /**
@@ -705,13 +712,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.settings.query.filter) {
         filters.push(this.settings.query.filter);
       }
+      const sortField = (this.sort && this.sort[0].dir) ? this.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      const sortOrder = (this.sort && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
           skip: this.skip,
           filter: { logic: 'and', filters },
-          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-          sortOrder: this.settings.query.sort?.order || ''
+          sortField,
+          sortOrder
         },
         updateQuery: (prev: any, { fetchMoreResult }: any) => {
           if (!fetchMoreResult) { return prev; }
