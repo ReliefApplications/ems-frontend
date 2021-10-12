@@ -47,13 +47,12 @@
     </div>
   </div>
 
-  <div>
-    <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        Create an application
-      </safe-button>
-    </div>
-  </div>
+<!--  <safe-button class="create-app buttons-app" icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">-->
+<!--    Create an application-->
+<!--  </safe-button>-->
+  <safe-create-app-button *ngIf="canAdd">
+    Create an application
+  </safe-create-app-button>
   <table mat-table [dataSource]="applications" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
