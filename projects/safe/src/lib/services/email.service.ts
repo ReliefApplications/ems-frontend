@@ -3,6 +3,7 @@ import { SafeApiProxyService } from './api-proxy.service';
 import { QueryBuilderService } from './query-builder.service';
 import { SafeSnackBarService } from './snackbar.service';
 import get from 'lodash/get';
+import { Apollo } from 'apollo-angular';
 import { NOTIFICATIONS } from '../const/notifications';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
@@ -15,6 +16,7 @@ const OPTION_QUESTIONS = ['dropdown', 'radiogroup', 'tagbox', 'checkbox', 'owner
 export class SafeEmailService {
 
   constructor(
+    private apollo: Apollo,
     private apiProxyService: SafeApiProxyService,
     private queryBuilder: QueryBuilderService,
     private snackBar: SafeSnackBarService
@@ -27,29 +29,36 @@ export class SafeEmailService {
    * @param settings query settings.
    */
   public sendMail(recipient: string, subject: string, settings: any, totalCount: number): void {
-    const dataQuery = this.queryBuilder.buildQuery(settings, totalCount);
-    const metaQuery = this.queryBuilder.buildMetaQuery(settings, false);
-    let metaFields: any = [];
-    let fields: any = [];
-    let items: any = [];
-    if (metaQuery) {
-      metaQuery.subscribe(async (res: any) => {
-        for (const metaField in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, metaField)) {
-            metaFields = Object.assign({}, res.data[metaField]);
-            await this.populateMetaFields(metaFields);
-            dataQuery.valueChanges.subscribe((res2: any) => {
-              fields = settings.query.fields;
-              for (const field in res2.data) {
-                if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
-                  fields = this.getFields(metaFields, fields);
-                  const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
-                  items = cloneData(nodes);
-                  this.convertDateFields(fields, items);
+    const builtQuery = this.queryBuilder.buildQuery(settings);
+    if (builtQuery) {
+      const dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: totalCount
+        }
+      });
+      const metaQuery = this.queryBuilder.buildMetaQuery(settings, false);
+      let metaFields: any = [];
+      let fields: any = [];
+      let items: any = [];
+      if (metaQuery) {
+        metaQuery.subscribe(async (res: any) => {
+          for (const metaField in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, metaField)) {
+              metaFields = Object.assign({}, res.data[metaField]);
+              await this.populateMetaFields(metaFields);
+              dataQuery.valueChanges.subscribe((res2: any) => {
+                fields = settings.query.fields;
+                for (const field in res2.data) {
+                  if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
+                    fields = this.getFields(metaFields, fields);
+                    const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
+                    items = cloneData(nodes);
+                    this.convertDateFields(fields, items);
+                  }
                 }
-              }
-              const body = this.buildBody(items, fields);
-              try {
+                const body = this.buildBody(items, fields);
+                try {
                 window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
               } catch (error) {
                 this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
@@ -59,10 +68,11 @@ export class SafeEmailService {
                   this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
                 }
               }
-            });
+              });
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 
