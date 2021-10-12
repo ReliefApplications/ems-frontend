@@ -53,7 +53,11 @@ export class SafeEmailService {
                 window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
               } catch (error) {
                 this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
-                window.location.href = `mailto:${recipient}?subject=${subject}`;
+                try {
+                  window.location.href = `mailto:${recipient}?subject=${subject}`;
+                } catch (error) {
+                  this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
+                }
               }
             });
           }
