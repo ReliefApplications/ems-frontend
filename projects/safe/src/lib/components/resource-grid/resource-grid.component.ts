@@ -96,6 +96,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public queryError = false;
 
   public fields: any[] = [];
+  private filter: any;
 
   public fieldForms: any[] = [];
 
@@ -130,11 +131,13 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   public init(): void {
+    this.filter = this.settings.query.filter || {};
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
       variables: {
-        first: this.pageSize
+        first: this.pageSize,
+        filter: this.filter
       }
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
@@ -471,7 +474,8 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,
-        skip: this.skip
+        skip: this.skip,
+        filter: this.filter
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         if (!fetchMoreResult) { return prev; }
