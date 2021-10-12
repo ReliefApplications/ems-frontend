@@ -254,20 +254,6 @@ export class QueryBuilderService {
         });
       }
     }
-    // if (availableFilter) {
-    //   const group = availableFilter.reduce((o: any, key: any) => {
-    //     return ({
-    //       ...o,
-    //       [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)]
-    //     });
-    //   }, {});
-    //   return this.formBuilder.group(group);
-    // } else {
-    //   const group = Object.keys(filter).reduce((o, key) => {
-    //     return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
-    //   }, {});
-    //   return this.formBuilder.group(group);
-    // }
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {
