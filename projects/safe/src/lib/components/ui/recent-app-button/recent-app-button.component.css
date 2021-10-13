@@ -19,7 +19,7 @@
   display: flex;
   justify-content: space-between;
 
-  background-color: #78d237;
+  background-color: #d25b37;
 }
 
 .users {
@@ -52,9 +52,20 @@
 
 
 .status {
-  justify-content: flex-start;
-  height: fit-content;
-  background-color: #2d73f5;
+  /*justify-content: flex-start;*/
+  /*height: fit-content;*/
+  /*background-color: #2d73f5;*/
+
+  display: flex;
+  flex-direction: column;
+  text-align: center; /* horizontal */
+  justify-content: center; /* vertical */
+
+  width: 32px;
+  height: 32px;
+
+  background: rgba(149, 221, 101, 0.2);
+  border-radius: 100px;
 }
 
 /*.status-wrapper {*/
@@ -73,15 +84,11 @@
   font-size: 20px;
   line-height: 23px;
 
-  display: flex;
-  flex-direction: column;
-  text-align: center; /* horizontal */
-  justify-content: center; /* vertical */
 
-  width: 32px;
-  height: 32px;
-  background: rgba(149, 221, 101, 0.2);
-  border-radius: 100px;
+
+
+  /*background: rgba(149, 221, 101, 0.2);*/
+  /*border-radius: 100px;*/
 }
 
 
