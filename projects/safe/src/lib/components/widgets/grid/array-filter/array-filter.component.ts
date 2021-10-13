@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
-import { contains } from '../../../../utils/array-filter';
 
 @Component({
   selector: 'safe-array-filter',
@@ -42,7 +41,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
         ? this.removeFilter(this.valueField)
         : this.updateFilter({
           field: this.field,
-          operator: contains,
+          operator: 'contains',
           value,
         })
     );
