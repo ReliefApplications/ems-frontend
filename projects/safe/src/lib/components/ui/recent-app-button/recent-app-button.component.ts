@@ -12,6 +12,8 @@ export class RecentAppButtonComponent implements OnInit {
 
   userCount = 25;
   status = 'A';
+  appName = 'Signal';
+  creationDate = 'Created: ';
 
   constructor() { }
 

@@ -1,7 +1,7 @@
 <div class="container" (click)="onClick($event)">
   <div class="top-bar">
     <div class="users">
-      <div>
+      <div class="user-wrapper">
         <mat-icon>person</mat-icon>
         <div> <div [innerText]="userCount.toString()"></div> </div>
       </div>
@@ -12,6 +12,11 @@
       </div>
     </div>
   </div>
-  <div class="app-name"> </div>
-  <div class="bottom-bar"> </div>
+  <div class="app-name" [innerText]="appName"> </div>
+  <div class="bottom-bar">
+    <div>
+      <div> <div [innerText]="creationDate"> </div> </div>
+      <mat-icon>more_vert</mat-icon>
+    </div>
+  </div>
 </div>
