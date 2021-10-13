@@ -368,7 +368,7 @@ export interface GetNotificationsQueryResponse {
 
 // === GET APPLICATION BY ID ===
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!, $asRole: ID){
+  query GetApplicationById($id: ID!, $asRole: ID, $first: Int, $afterCursor: ID){
     application(id: $id, asRole: $asRole){
       id
       name
@@ -430,8 +430,10 @@ export const GET_APPLICATION_BY_ID = gql`
           title
         }
       }
-      channels {
-        id
+      channels(first: $first, afterCursor: $afterCursor) {
+        edges {
+          node {
+            id
         title
         subscribedRoles {
           id
@@ -441,6 +443,14 @@ export const GET_APPLICATION_BY_ID = gql`
             name
           }
           usersCount
+        }
+          }
+          cursor
+        }
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
         }
       }
       subscriptions {

@@ -21,7 +21,17 @@ export interface Application {
     usersCount?: number;
     settings?: any;
     permissions?: any;
-    channels?: Channel[];
+    channels?: {
+        edges: {
+            node: Channel;
+            cursor: string;
+        }[];
+        pageInfo: {
+        endCursor: string;
+        hasNextPage: boolean;
+        },
+        totalCount: number;
+    }
     canSee?: boolean;
     canUpdate?: boolean;
     canDelete?: boolean;

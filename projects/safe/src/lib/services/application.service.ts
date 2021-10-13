@@ -54,6 +54,8 @@ import { NOTIFICATIONS } from '../const/notifications';
 import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
 
+const ITEMS_PER_PAGE = 10;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -106,7 +108,8 @@ export class SafeApplicationService {
       query: GET_APPLICATION_BY_ID,
       variables: {
         id,
-        asRole
+        asRole,
+        first: ITEMS_PER_PAGE
       }
     }).subscribe(res => {
       this._application.next(res.data.application);
@@ -378,11 +381,11 @@ export class SafeApplicationService {
               }
               return x;
             }),
-            channels: application.channels?.map(x => {
-              if (value.channels.includes(x.id)) {
-                x = { ...x, subscribedRoles: x.subscribedRoles?.concat([role]) };
-              } else if (x.subscribedRoles?.some(subRole => subRole.id === role.id)) {
-                x = { ...x, subscribedRoles: x.subscribedRoles.filter(subRole => subRole.id !== role.id) };
+            channels: application.channels?.edges.map(x => {
+              if (value.channels.includes(x.node.id)) {
+                x.node = { ...x, subscribedRoles: x.node.subscribedRoles?.concat([role]) };
+              } else if (x.node.subscribedRoles?.some(subRole => subRole.id === role.id)) {
+                x.node = { ...x, subscribedRoles: x.node.subscribedRoles.filter(subRole => subRole.id !== role.id) };
               }
               return x;
             })
@@ -584,7 +587,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
-          const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
+          const newApplication: Application = { ...application, channels: application.channels?.edges.concat([res.data.addChannel]) };
           this._application.next(newApplication);
         }
       });
@@ -604,9 +607,9 @@ export class SafeApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('Channel', title));
           const newApplication: Application = { ...application,
-            channels: application?.channels?.map(x => {
-              if (x.id === channel.id) {
-                x = { ...x, title: res.data?.editChannel.title };
+            channels: application?.channels?.edges.map(x => {
+              if (x.node.id === channel.id) {
+                x.node = { ...x, title: res.data?.editChannel.title };
               }
               return x;
             })
@@ -631,7 +634,7 @@ export class SafeApplicationService {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(channel.title));
           const newApplication: Application = {
             ...application,
-            channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id)
+            channels: application.channels?.edges.filter(x => x.node.id !== res.data?.deleteChannel.id)
           };
           this._application.next(newApplication);
         }
