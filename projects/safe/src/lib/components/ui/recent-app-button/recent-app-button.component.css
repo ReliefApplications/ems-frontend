@@ -17,6 +17,7 @@
 .top-bar {
   height: 100%;
   display: flex;
+  justify-content: space-between;
   /*align-items: center;*/
   /*justify-content: center;*/
   background-color: #78d237;
@@ -25,7 +26,7 @@
 .users {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  /*width: 100%;*/
 
   background-color: #9b001d;
 }
@@ -56,25 +57,27 @@
 
 
 .status {
-  width: 100%;
+  /*width: 100%;*/
   /*margin-left: 64px;*/
   /*display: flex;*/
   /*flex-direction: row;*/
   /*justify-content: flex-end;*/
-  position: relative;
+
+  /*position: relative;*/
 
   background-color: #2d73f5;
 }
 
-.status div {
+.status-wrapper {
   /*margin-left: 50%;*/
   /*background-color: #3f3c3c;*/
   /*justify-content: center;*/
-  position: absolute;
-  right: 0;
+
+  /*position: absolute;*/
+  /*right: 0;*/
 }
 
-.status div div {
+.status-wrapper div {
   color: #95DD65;
   font-style: normal;
   font-weight: 500;
