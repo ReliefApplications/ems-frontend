@@ -13,15 +13,19 @@ export class RecentAppButtonComponent implements OnInit {
   userCount = 25;
   status = 'A';
   appName = 'Signal';
-  creationDate = 'Created: ';
+  creationDate = 'Created: Oct 13, 2021';
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onClick($event: any): void {
+  appClick($event: any): void {
     console.log('click');
     this.onClickEvent.emit();
+  }
+
+  moreClick($event: any): void {
+    console.log('more click');
   }
 }

@@ -1,4 +1,4 @@
-<div class="container" (click)="onClick($event)">
+<div class="container" (click)="appClick($event)">
   <div class="top-bar">
     <div class="users">
       <div class="users-wrapper">
@@ -14,7 +14,11 @@
   <div class="bottom-bar">
     <div>
       <div> <div [innerText]="creationDate"> </div> </div>
-      <mat-icon>more_vert</mat-icon>
+      <!-- if we put matt-icon, it will be the more similar to figma  -->
+      <!-- else if we put the safe button there will be a little margin on the bottom and the right (because of the button itself  -->
+      <!-- I decided to use safe button -->
+      <safe-button [isIcon]="true" icon="more_vert" (click)="moreClick($event)"></safe-button>
+<!--      <mat-icon>more_vert</mat-icon>-->
     </div>
   </div>
 </div>
