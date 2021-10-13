@@ -47,9 +47,8 @@
         notification.action }} -
         {{ notification.createdAt | date }}</button>
     </div>
-    <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of notifications"
-    (page)="onPage($event)">
-    </mat-paginator>
+    <safe-button *ngIf="hasMoreNotifications" category="primary" variant="primary" [block]="true"
+      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">Load more</safe-button>
   </mat-menu>
 </mat-toolbar>
 
@@ -66,8 +65,8 @@
           <ng-container *ngFor="let item of group.navItems">
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
               <mat-list-item class="nav-item">
-                <a [routerLink]="item.path" routerLinkActive="active-link"
-                  (click)="largeDevice ? null : nav.toggle()" [class]="item.class ? item.class : ''">
+                <a [routerLink]="item.path" routerLinkActive="active-link" (click)="largeDevice ? null : nav.toggle()"
+                  [class]="item.class ? item.class : ''">
                   <ng-container *ngIf="item.isAddPage">
                     <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
                       [class]="item.class ? item.class : ''">
@@ -82,7 +81,7 @@
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                    <button mat-icon-button class="nav-action" *ngIf="item.action"
+                  <button mat-icon-button class="nav-action" *ngIf="item.action"
                     (click)="onClick(item.action.callback, $event)">
                     <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
                   </button>

@@ -13,8 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { IndicatorsModule } from "@progress/kendo-angular-indicators";
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -32,7 +31,6 @@ import { IndicatorsModule } from "@progress/kendo-angular-indicators";
     SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
-    MatPaginatorModule,
     IndicatorsModule
   ],
   exports: [SafeLayoutComponent]

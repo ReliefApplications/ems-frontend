@@ -13,8 +13,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
-const ITEMS_PER_PAGE = 10;
-
 @Component({
   selector: 'safe-layout',
   templateUrl: './layout.component.html',
@@ -43,8 +41,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   filteredNavGroups: any[] = [];
 
   // === NOTIFICATIONS ===
-  notifications: Notification[] = [];
-  notificationsSubscription?: Subscription;
+  public notifications: Notification[] = [];
+  private notificationsSubscription?: Subscription;
+  public hasMoreNotifications = false;
+  private hasMoreNotificationsSubscription?: Subscription;
+  public loadingNotifications = false;
 
   // === USER INFO ===
   account: Account | null;
@@ -59,13 +60,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public otherOffice = '';
   private environment: any;
   private inApplication = false;
-
-  public pageInfo = {
-    pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
-    length: 0,
-    endCursor: ''
-  };
 
   constructor(
     @Inject('environment') environment: any,
@@ -88,14 +82,19 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.otherOffice = 'back office';
     }
     this.loadUserAndUpdateLayout();
-    this.notificationService.initNotifications();
-    this.pageInfo = this.notificationService.pageInfo;
-    this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
+    this.notificationService.init();
+    this.notificationsSubscription = this.notificationService.notifications$.subscribe((notifications: Notification[]) => {
       if (notifications) {
         this.notifications = notifications;
       } else {
         this.notifications = [];
       }
+      console.log(this.notifications);
+    });
+
+    this.hasMoreNotificationsSubscription = this.notificationService.hasNextPage$.subscribe(res => {
+      this.hasMoreNotifications = res;
+      this.loadingNotifications = false;
     });
 
     this.layoutService.rightSidenav.subscribe(view => {
@@ -118,36 +117,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-  }
-
-
-  /**
-   * Handles page event.
-   * @param e page event.
-   */
-   onPage(e: any): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.notificationService.cachedNotifications.length) {
-      this.notificationService.notificationsQuery.fetchMore({
-        variables: {
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
-          return Object.assign({}, prev, {
-            notifications: {
-              edges: [...prev.notifications.edges, ...fetchMoreResult.notifications.edges],
-              pageInfo: fetchMoreResult.notifications.pageInfo,
-              totalCount: fetchMoreResult.notifications.totalCount
-            }
-          });
-        }
-      });
-    } else {
-      this.notifications = this.notificationService.cachedNotifications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-    }
   }
 
   /* Load the user and update availables navGroups accordingly
@@ -191,6 +160,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.hasMoreNotificationsSubscription) {
+      this.hasMoreNotificationsSubscription.unsubscribe();
     }
   }
 
@@ -260,13 +232,17 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  public onLoadMoreNotifications(e: any): void {
+    e.stopPropagation();
+    this.notificationService.fetchMore();
+    this.loadingNotifications = true;
+  }
+
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
-    this.pageInfo.length--;
   }
 
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
-    this.pageInfo.length = 0;
   }
 }
