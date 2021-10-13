@@ -18,7 +18,7 @@
         (pageChange)="pageChange($event)" [filterable]="showFilter ? true : 'menu'" [filter]="filter"
         (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true"
         (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
-        (columnVisibilityChange)="columnVisibilityChange()">
+        (columnVisibilityChange)="columnVisibilityChange()" translate="no">
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
@@ -85,7 +85,7 @@
                         <!-- DISPLAY ( text / comment ) -->
                         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'text'">
-                            <div class="textbox-container">
+                            <div translate="yes" class="textbox-container">
                                 <div #refSpan class="textbox">
                                     {{dataItem[field.name]}}
                                 </div>
@@ -128,7 +128,7 @@
                         *ngIf="field.editor === 'text'">
                         <!-- EDITION ( text / comment ) -->
                         <ng-container *ngIf="field.meta.type === 'text'">
-                            <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable
+                            <textarea translate="yes" rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable
                                 [name]="field.name" class="k-textbox"></textarea>
                         </ng-container>
                         <!-- EDITION ( color ) -->
@@ -245,7 +245,7 @@
                                 </ng-container>
                                 <!-- DISPLAY ( multipletext ) -->
                                 <ng-container *ngIf="field.meta.type === 'multipletext' && dataItem[field.name]">
-                                    {{ dataItem[field.name][column.name] }}
+                                    <span translate="yes">{{ dataItem[field.name][column.name] }}</span>
                                 </ng-container>
                             </ng-template>
                             <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
@@ -309,7 +309,7 @@
                                 </ng-container>
                                 <!-- EDITION ( multipletext ) -->
                                 <ng-container *ngIf="field.meta.type === 'multipletext'">
-                                    <textarea rows="2" [formControl]="formGroup.get([field.name, column.name])"
+                                    <textarea translate="yes" rows="2" [formControl]="formGroup.get([field.name, column.name])"
                                         kendoGridFocusable [name]="column.name" class="k-textbox"></textarea>
                                 </ng-container>
                             </ng-template>
