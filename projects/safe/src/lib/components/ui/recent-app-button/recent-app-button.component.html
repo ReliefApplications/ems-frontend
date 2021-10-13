@@ -1,4 +1,4 @@
-<div class="container" (click)="appClick($event)">
+<div class="container">
   <div class="top-bar">
     <div class="users">
       <div class="users-wrapper">
@@ -10,7 +10,7 @@
       <div [innerText]="status"> </div>
     </div>
   </div>
-  <div class="app-name" [innerText]="appName"> </div>
+  <div class="app-name" [innerText]="appName" (click)="appClick($event)"> </div>
   <div class="bottom-bar">
     <div>
       <div> <div [innerText]="creationDate"> </div> </div>

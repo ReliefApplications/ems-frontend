@@ -20,12 +20,12 @@ export class RecentAppButtonComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  appClick($event: any): void {
+  appClick(e: any): void {
     console.log('click');
     this.onClickEvent.emit();
   }
 
-  moreClick($event: any): void {
+  moreClick(e: any): void {
     console.log('more click');
   }
 }

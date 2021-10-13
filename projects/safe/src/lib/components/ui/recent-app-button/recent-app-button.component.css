@@ -9,8 +9,6 @@
   box-sizing: border-box;
   background-color: #FFFFFF;
 
-  cursor: pointer;
-
   padding: 10px;
 }
 
@@ -82,6 +80,8 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 23px;
+
+  cursor: pointer;
 }
 
 
@@ -92,6 +92,10 @@
   justify-content: flex-end;
 
   height: 100%;
+}
+
+.bottom-bar safe-button {
+  color: rgba(47, 56, 62, 0.7);
 }
 
 .bottom-bar div {
