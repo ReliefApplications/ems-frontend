@@ -1,15 +1,13 @@
 <div class="container" (click)="onClick($event)">
   <div class="top-bar">
     <div class="users">
-      <div class="user-wrapper">
+      <div class="users-wrapper">
         <mat-icon>person</mat-icon>
-        <div> <div [innerText]="userCount.toString()"></div> </div>
+        <div class="users-count"> <div [innerText]="userCount.toString()"></div> </div>
       </div>
     </div>
     <div class="status">
-      <div class="status-wrapper">
-        <div [innerText]="status"> </div>
-      </div>
+      <div [innerText]="status"> </div>
     </div>
   </div>
   <div class="app-name" [innerText]="appName"> </div>
