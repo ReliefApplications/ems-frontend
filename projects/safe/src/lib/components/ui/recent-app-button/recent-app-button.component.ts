@@ -10,7 +10,8 @@ export class RecentAppButtonComponent implements OnInit {
 
   @Output() onClickEvent: EventEmitter<any> = new EventEmitter();
 
-  userCount = 0;
+  userCount = 25;
+  status = 'A';
 
   constructor() { }
 
