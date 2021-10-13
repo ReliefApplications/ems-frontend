@@ -22,11 +22,13 @@
   </div>
   <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
   </safe-button>
-<!-- TODO: style problems related with the red round notification sticker => can't replace it -->
   <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
-    <mat-icon class="mat-badge-notification" matBadge="&#8288;" matBadgeSize="small" matBadgeColor="warn"
-      [matBadgeHidden]="notifications.length == 0">
-      notifications</mat-icon>
+    <mat-icon class="mat-badge-notification">
+      <kendo-badge-container>
+        notifications
+        <kendo-badge shape="dot" themeColor="error" *ngIf="notifications.length > 0"></kendo-badge>
+      </kendo-badge-container>
+    </mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">Profile</button>

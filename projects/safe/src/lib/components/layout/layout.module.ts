@@ -9,12 +9,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { IndicatorsModule } from "@progress/kendo-angular-indicators";
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -28,12 +28,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatSidenavModule,
     MatListModule,
     DragDropModule,
-    MatBadgeModule,
     MatDividerModule,
     SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    IndicatorsModule
   ],
   exports: [SafeLayoutComponent]
 })
