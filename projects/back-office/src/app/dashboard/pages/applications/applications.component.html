@@ -50,8 +50,10 @@
 <!--  <safe-button class="create-app buttons-app" icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">-->
 <!--    Create an application-->
 <!--  </safe-button>-->
-  <safe-new-app-button (onClickEvent)="onAdd()" *ngIf="canAdd"></safe-new-app-button>
-  <safe-recent-app-button (onClickEvent)="test($event)"></safe-recent-app-button>
+  <div class="recent-app">
+    <safe-new-app-button (onClickEvent)="onAdd()" *ngIf="canAdd"></safe-new-app-button>
+    <safe-recent-app-button *ngFor="let app of this.recentApps" [id]="app.id" [name]="app.name" [creationDate]="app.createdAt" [status]="app.status" [users]="app.usersCount" (appClickEvent)="launchApp($event)"></safe-recent-app-button>
+  </div>
   <table mat-table [dataSource]="applications" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>

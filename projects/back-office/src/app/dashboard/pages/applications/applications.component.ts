@@ -30,6 +30,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+  public recentApps: Application[] = [];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -73,12 +74,25 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      this.recentApps = this.cachedApplications.slice(0, 4);
+      // this.cachedApplications.forEach((v, i, a) => {
+      //   if (i < 5) {
+      //     this.recentApps.push(v);
+      //   }
+      //   else {
+      //     break;
+      //   }
+      // });
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
+
+      console.log('$$$ this.cachedApplications');
+      console.log(this.cachedApplications);
+      console.log(this.applications);
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create))
@@ -264,5 +278,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   test($event: any): void {
     console.log('TESSSST');
+  }
+
+  launchApp(id: any): void {
+    // laucnh app
+    console.log('*** launchApp');
+    console.log(id);
+    // console.log(this.router.getCurrentNavigation());
+    // this.router.navigateByUrl(this.router.getCurrentNavigation());
+    this.router.navigate(['/applications', id]);
   }
 }

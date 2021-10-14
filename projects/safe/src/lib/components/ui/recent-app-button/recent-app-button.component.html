@@ -3,17 +3,19 @@
     <div class="users">
       <div class="users-wrapper">
         <mat-icon>person</mat-icon>
-        <div class="users-count"> <div [innerText]="userCount.toString()"></div> </div>
+        <div class="users-count"> <div [innerText]="users ? users.toString() : '?'"></div> </div>
       </div>
     </div>
-    <div class="status">
-      <div [innerText]="status"> </div>
+<!--    <div class="status" [ngStyle]="{'background-color': status=='active'? 'background: rgba(149, 221, 101, 0.2);' : status=='pending'? 'background: rgba(244, 174, 82, 0.2);' : status=='archived'? 'red' : 'white'}">-->
+    <div class="status" [ngStyle]="{'background-color': this.badge.backgroundColor}">
+<!--      <div [innerText]="status?.slice(0, 1)?.toUpperCase()" [ngStyle]="{'color': this.badge.color}"> </div>-->
+      <div [innerText]="this.badge.letter" [ngStyle]="{'color': this.badge.color}"> </div>
     </div>
   </div>
-  <div class="app-name" [innerText]="appName" (click)="appClick($event)"> </div>
+  <div class="app-name" [innerText]="name? name : '?'" (click)="appClick($event)"> </div>
   <div class="bottom-bar">
     <div>
-      <div> <div [innerText]="creationDate"> </div> </div>
+      <div> <div [innerText]="this.creationDate"> </div> </div>
       <!-- if we put matt-icon, it will be the more similar to figma  -->
       <!-- else if we put the safe button there will be a little margin on the bottom and the right (because of the button itself  -->
       <!-- I decided to use safe button -->
