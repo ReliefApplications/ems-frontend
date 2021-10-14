@@ -23,8 +23,6 @@ export class RecentAppButtonComponent implements OnInit {
     backgroundColor: string;
   };
 
-  // date = '';
-
   constructor() {
     this.badge = {letter: '?', color: 'black', backgroundColor: 'white'};
   }
@@ -40,6 +38,11 @@ export class RecentAppButtonComponent implements OnInit {
     // console.log(new Date(this.creationDate.toString()).getTime());
     // this.date = new Date(this.creationDate).toLocaleDateString('en-US');
     // console.log(this.date);
+
+    console.log(this.numberFormatter(9800000));
+    console.log(this.numberFormatter(3200));
+    console.log(this.numberFormatter(320));
+    console.log(this.numberFormatter(2));
 
 
     this.convertStatus();
@@ -67,6 +70,18 @@ export class RecentAppButtonComponent implements OnInit {
         this.badge.color = 'black';
         this.badge.backgroundColor = 'white';
         break;
+    }
+  }
+
+  numberFormatter(num: number): string {
+    if (num > 999999) {
+      return (num / 1000000).toFixed(1) + 'M';
+    }
+    else if (num > 999) {
+      return (num / 1000).toFixed(1) + 'k';
+    }
+    else {
+      return num.toString();
     }
   }
 
