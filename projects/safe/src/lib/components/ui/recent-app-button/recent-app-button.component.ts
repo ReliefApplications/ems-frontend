@@ -39,9 +39,9 @@ export class RecentAppButtonComponent implements OnInit {
     // this.date = new Date(this.creationDate).toLocaleDateString('en-US');
     // console.log(this.date);
 
-    console.log(this.numberFormatter(9800000));
-    console.log(this.numberFormatter(3200));
-    console.log(this.numberFormatter(320));
+    console.log(this.numberFormatter(9812345));
+    console.log(this.numberFormatter(3212));
+    console.log(this.numberFormatter(329));
     console.log(this.numberFormatter(2));
 
 
@@ -73,6 +73,17 @@ export class RecentAppButtonComponent implements OnInit {
     }
   }
 
+  // numberFormatter(num: number): string {
+  //   if (num > 999999) {
+  //     return (num / 1000000).toFixed(1) + 'M';
+  //   }
+  //   else if (num > 999) {
+  //     return (num / 1000).toFixed(1) + 'k';
+  //   }
+  //   else {
+  //     return num.toString();
+  //   }
+  // }
   numberFormatter(num: number): string {
     if (num > 999999) {
       return (num / 1000000).toFixed(1) + 'M';

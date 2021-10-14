@@ -74,7 +74,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
-      this.recentApps = this.cachedApplications.slice(0, 4);
+      this.recentApps = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
