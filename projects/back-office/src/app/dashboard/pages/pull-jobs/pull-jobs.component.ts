@@ -39,7 +39,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe(res => {
       this.pullJobs = res.data.pullJobs;
       this.loading = res.loading;
-      console.log('PJ', res);
     });
     /*
     this.authSubscription = this.authService.user.subscribe(() => {
