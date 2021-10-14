@@ -1,5 +1,6 @@
 <h1 mat-dialog-title>{{data.pullJob ? 'Edit Pull job' : 'New Pull job'}}</h1>
-<div mat-dialog-content>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<div mat-dialog-content *ngIf="!loading">
     <form [formGroup]="pullJobForm">
         <div class="form-group">
             <div class="form-group-row">

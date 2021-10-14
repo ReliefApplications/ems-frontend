@@ -46,6 +46,7 @@ export class PullJobModalComponent implements OnInit {
     hasNextPage: true
   };
 
+  public loading = true;
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
@@ -108,6 +109,7 @@ export class PullJobModalComponent implements OnInit {
       }
       this.formsPageInfo = res.data.forms.pageInfo;
       this.formsLoading = res.loading;
+      this.loading = false && this.apiConfigurationsLoading;
     });
 
     this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
@@ -125,6 +127,7 @@ export class PullJobModalComponent implements OnInit {
       }
       this.apiPageInfo = res.data.apiConfigurations.pageInfo;
       this.apiConfigurationsLoading = res.loading;
+      this.loading = false && this.formsLoading;
     });
 
     // Fetch form fields if any for mapping
