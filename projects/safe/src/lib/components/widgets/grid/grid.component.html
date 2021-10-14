@@ -128,7 +128,7 @@
                         *ngIf="field.editor === 'text'">
                         <!-- EDITION ( text / comment ) -->
                         <ng-container *ngIf="field.meta.type === 'text'">
-                            <textarea translate="yes" rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable
+                            <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable
                                 [name]="field.name" class="k-textbox"></textarea>
                         </ng-container>
                         <!-- EDITION ( color ) -->
@@ -309,7 +309,7 @@
                                 </ng-container>
                                 <!-- EDITION ( multipletext ) -->
                                 <ng-container *ngIf="field.meta.type === 'multipletext'">
-                                    <textarea translate="yes" rows="2" [formControl]="formGroup.get([field.name, column.name])"
+                                    <textarea rows="2" [formControl]="formGroup.get([field.name, column.name])"
                                         kendoGridFocusable [name]="column.name" class="k-textbox"></textarea>
                                 </ng-container>
                             </ng-template>
