@@ -250,6 +250,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
+        default: true,
         visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
@@ -538,7 +539,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         this.resourceFieldsName = [];
         question.canAddNew = false;
         question.addTemplate = null;
-        question.canSearch = true;
       }
     },
     onAfterRender(question: any, el: any): void {
@@ -546,26 +546,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         // hide tagbox if grid view is enable
         const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
         element.style.display = 'none';
-      }
-
-      if (question.canAddNew && question.addTemplate) {
-        document.addEventListener('saveResourceFromEmbed', (e: any) => {
-          const detail = e.detail;
-          if (detail.template === question.addTemplate && question.resource) {
-            getResourceById({id: question.resource}).subscribe((response) => {
-              const serverRes = response.data.resource.records || [];
-              const res = [];
-              for (const item of serverRes) {
-                res.push({
-                  value: item.id,
-                  text: item.data[question.displayField],
-                });
-              }
-              question.contentQuestion.choices = res;
-              question.survey.render();
-            });
-          }
-        });
       }
     }
   };

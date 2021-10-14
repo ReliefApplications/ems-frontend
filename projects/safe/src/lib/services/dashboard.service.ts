@@ -29,14 +29,20 @@ export class SafeDashboardService {
   }
 
   getWidgetLayout(widget: any): any {
-    const defaultLayout = JSON.parse(JSON.stringify(widget.settings.defaultLayout || {}));
-    const defaultDate = new Date(defaultLayout.timestamp || null);
-    const dashboardId = this.dashboard.getValue()?.id;
-    const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-    const cachedDate = new Date(cachedLayout.timestamp || null);
-    if (defaultDate > cachedDate) {
-      return defaultLayout;
-    } else {
+    try {
+      const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
+      const defaultDate = new Date(defaultLayout.timestamp || null);
+      const dashboardId = this.dashboard.getValue()?.id;
+      const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+      const cachedDate = new Date(cachedLayout.timestamp || null);
+      if (defaultDate > cachedDate) {
+        return defaultLayout;
+      } else {
+        return cachedLayout;
+      }
+    } catch {
+      const dashboardId = this.dashboard.getValue()?.id;
+      const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
       return cachedLayout;
     }
   }
@@ -49,11 +55,12 @@ export class SafeDashboardService {
   saveWidgetDefaultLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
+    const defaultLayout = { ...layout, timestamp: + new Date() };
     const widgetTemp = {
       ...dashboardStructure[id],
       settings: {
         ...dashboardStructure[id].settings,
-        defaultLayout: { ...layout, timestamp: + new Date() }
+        defaultLayout: JSON.stringify(defaultLayout)
       }
     };
     const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
