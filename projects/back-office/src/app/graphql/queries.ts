@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration, PullJob
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -830,4 +830,35 @@ query GetApiConfiguration($id: ID!) {
 export interface GetApiConfigurationQueryResponse {
   loading: boolean;
   apiConfiguration: ApiConfiguration;
+}
+
+// === GET PULL JOBS ===
+export const GET_PULL_JOBS = gql`
+query GetPullJobs {
+  pullJobs {
+    id
+    name
+    status
+    apiConfiguration {
+      id
+      name
+    }
+    schedule
+    convertTo {
+      id
+      name
+    }
+    mapping
+    uniqueIdentifiers
+    channel {
+      id
+      title
+    }
+  }
+}`;
+
+
+export interface GetPullJobsQueryResponse {
+  loading: boolean;
+  pullJobs: PullJob[];
 }

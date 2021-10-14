@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Application, Channel, PullJob, SafeApplicationService, status, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
+import { GetPullJobsQueryResponse, GET_API_CONFIGURATIONS, GET_PULL_JOBS } from '../../../graphql/queries';
 import { AddPullJobMutationResponse, ADD_PULL_JOB,
   DeletePullJobMutationResponse, DELETE_PULL_JOB,
   EditPullJobMutationResponse, EDIT_PULL_JOB } from '../../../graphql/mutations';
@@ -22,11 +23,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = ['name', 'status', 'apiConfiguration', 'convertTo', 'actions'];
 
   // === SUBSCRIPTIONS ===
-  private applicationSubscription?: Subscription;
   private channels: Channel[] = [];
 
   constructor(
-    private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
@@ -34,15 +33,20 @@ export class PullJobsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
-      if (application) {
-        this.applicationId = application.id || '';
-        this.pullJobs = application.pullJobs ? [...application.pullJobs] : [];
-        this.channels = application.channels || [];
-      } else {
-        this.pullJobs = [];
-      }
+
+    this.apollo.watchQuery<GetPullJobsQueryResponse>({
+      query: GET_PULL_JOBS,
+    }).valueChanges.subscribe(res => {
+      this.pullJobs = res.data.pullJobs;
+      this.loading = res.loading;
+      console.log("PJ", res)
     });
+    /*
+    this.authSubscription = this.authService.user.subscribe(() => {
+      this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
+    });
+    */
+    
   }
 
   /* Display the AddSubscription modal.
@@ -68,7 +72,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     }) => {
       if (value) {
         const variables = {
-          application: this.applicationId,
           name: value.name,
           status: value.status,
           apiConfiguration: value.apiConfiguration
@@ -87,7 +90,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           if (res.data?.addPullJob) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name));
             this.pullJobs = this.pullJobs.concat([res.data?.addPullJob]);
-            this.applicationService.updatePullJobs(this.pullJobs);
           }
         });
       }
@@ -109,14 +111,12 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           this.apollo.mutate<DeletePullJobMutationResponse>({
             mutation: DELETE_PULL_JOB,
             variables: {
-              application: this.applicationId,
               id: element.id
             }
           }).subscribe(res => {
             if (res.data?.deletePullJob) {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'));
               this.pullJobs = this.pullJobs.filter(x => x.id !== res.data?.deletePullJob.id);
-              this.applicationService.updatePullJobs(this.pullJobs);
             }
           });
         }
@@ -170,7 +170,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               }
               return pullJob;
             });
-            this.applicationService.updatePullJobs(this.pullJobs);
           }
         });
       }
@@ -178,8 +177,10 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    /*
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }
+    */
   }
 }

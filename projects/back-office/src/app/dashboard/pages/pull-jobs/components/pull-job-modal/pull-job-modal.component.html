@@ -34,13 +34,18 @@
                         <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" style="flex: 1;">
+                
+                <mat-form-field appearance="outline">
                     <mat-label>Notify on</mat-label>
-                    <mat-select formControlName="channel">
-                        <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}
-                        </mat-option>
+                    <mat-select #channelSelect formControlName="channel" placeholder="Select a channel" (opened)="onOpenApplicationSelect()">
+                        <mat-optgroup *ngFor="let application of applications | async" [label]="application.name || ''">
+                            <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
+                                {{channel.title}}
+                            </mat-option>
+                        </mat-optgroup>
                     </mat-select>
                 </mat-form-field>
+                
             </div>
             <mat-expansion-panel [expanded]="false" [disabled]="!pullJobForm.value.convertTo" class="input-list">
                 <mat-expansion-panel-header>
