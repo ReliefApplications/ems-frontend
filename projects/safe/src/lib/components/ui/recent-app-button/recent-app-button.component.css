@@ -37,6 +37,8 @@
   display: flex;
   align-items: center;
   margin-left: 3px;
+
+  color: rgba(47, 56, 62, 0.7);
 }
 
 .users-count div{
@@ -80,6 +82,8 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 23px;
+
+  color: #2F383E;
 
   cursor: pointer;
 }
