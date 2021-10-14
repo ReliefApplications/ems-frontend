@@ -209,6 +209,21 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resource', {
+        name: 'canSearch:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        default: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+            // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],
@@ -480,27 +495,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.contentQuestion.choices = [];
       }
     },
-    onAfterRender(question: any, el: any): void {
-      if (question.canAddNew && question.addTemplate) {
-        document.addEventListener('saveResourceFromEmbed', (e: any) => {
-          const detail = e.detail;
-          if (detail.template === question.addTemplate && question.resource) {
-            getResourceById({id: question.resource}).subscribe(response => {
-              const serverRes = response.data.resource.records || [];
-              const res = [];
-              for (const item of serverRes) {
-                res.push({
-                  value: item.id,
-                  text: item.data[question.displayField],
-                });
-              }
-              question.contentQuestion.choices = res;
-              question.survey.render();
-            });
-          }
-        });
-      }
-    },
+    onAfterRender(question: any, el: any): void {},
     convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
       if (!gridSettingsRaw.fields) {
         return null;

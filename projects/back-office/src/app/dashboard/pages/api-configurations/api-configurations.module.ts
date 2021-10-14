@@ -15,7 +15,8 @@ import { AddApiConfigurationComponent } from './components/add-api-configuration
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeButtonModule } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {MatButtonModule} from '@angular/material/button';
         MatDialogModule,
         SafeButtonModule,
         MatIconModule,
-        MatButtonModule
+        MatButtonModule,
+        MatPaginatorModule
     ],
   exports: [ApiConfigurationsComponent]
 })
