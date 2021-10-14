@@ -1,6 +1,5 @@
 <h1 mat-dialog-title>{{data.pullJob ? 'Edit Pull job' : 'New Pull job'}}</h1>
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<div mat-dialog-content *ngIf="!loading">
+<div mat-dialog-content>
     <form [formGroup]="pullJobForm">
         <div class="form-group">
             <div class="form-group-row">
@@ -22,7 +21,7 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
                     <mat-label>API Configuration used</mat-label>
-                    <mat-select formControlName="apiConfiguration">
+                    <mat-select #apiSelect formControlName="apiConfiguration" (openedChange)="onOpenApiSelect($event)">
                         <mat-option *ngFor="let apiConfiguration of apiConfigurations$ | async" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -30,7 +29,7 @@
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
                     <mat-label>Convert to</mat-label>
-                    <mat-select #formSelect formControlName="convertTo" (openedChange)="onOpenSelect($event)">
+                    <mat-select #formSelect formControlName="convertTo" (openedChange)="onOpenFormsSelect($event)">
                         <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
