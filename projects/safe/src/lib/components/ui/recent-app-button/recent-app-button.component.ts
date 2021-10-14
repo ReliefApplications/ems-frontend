@@ -9,13 +9,13 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class RecentAppButtonComponent implements OnInit {
 
   @Output() appClickEvent: EventEmitter<any> = new EventEmitter();
-  @Output() moreClickEvent: EventEmitter<any> = new EventEmitter();
 
-  @Input() id: any;
-  @Input() users: any;
-  @Input() status: string | undefined;
-  @Input() name: string | undefined;
-  @Input() creationDate: any;
+  @Output() onPreviewEvent: EventEmitter<any> = new EventEmitter();
+  @Output() saveAccessEvent: EventEmitter<any> = new EventEmitter();
+  @Output() onDuplicateEvent: EventEmitter<any> = new EventEmitter();
+  @Output() onDeleteEvent: EventEmitter<any> = new EventEmitter();
+
+  @Input() app: any;
 
   badge: {
     letter: string;
@@ -31,7 +31,7 @@ export class RecentAppButtonComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('this.users');
-    console.log(this.users);
+    // console.log(this.users);
     // const a = new Date(this.creationDate);
     // console.log(this.creationDate);
     // console.log(this.creationDate.toString());
@@ -46,7 +46,7 @@ export class RecentAppButtonComponent implements OnInit {
   }
 
   convertStatus(): void {
-    switch (this.status) {
+    switch (this.app.status) {
       case 'active':
         this.badge.letter = 'A';
         this.badge.color = '#95DD65';
@@ -72,11 +72,6 @@ export class RecentAppButtonComponent implements OnInit {
 
   appClick(e: any): void {
     console.log('click');
-    this.appClickEvent.emit(this.id);
-  }
-
-  moreClick(e: any): void {
-    console.log('more click');
-    this.moreClickEvent.emit();
+    this.appClickEvent.emit(this.app.id);
   }
 }
