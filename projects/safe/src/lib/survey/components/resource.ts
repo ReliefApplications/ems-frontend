@@ -209,6 +209,21 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resource', {
+        name: 'canSearch:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        default: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+            // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],
@@ -304,8 +319,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
-          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
-            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
           }

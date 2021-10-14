@@ -144,21 +144,26 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
-          actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
+          () => {
+            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+          });
+          question.registerFunctionOnPropertyValueChanged('canSearch',
             () => {
-              searchBtn.style.display = !question.gridFieldsSettings ? 'none' : '';
+              searchBtn.style.display = question.canSearch ? '' : 'none';
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
           question.registerFunctionOnPropertyValueChanged('canAddNew',
             () => {
-              addBtn.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
-        }
+          }
       }
       // Display of add button | grid for resources question
       if (question.getType() === 'resources' && question.resource) {
@@ -178,19 +183,23 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
-          actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
-              searchBtn.style.display = !question.gridFieldsSettings ? 'none' : '';
+              searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('canSearch',
+            () => {
+              searchBtn.style.display = question.canSearch ? '' : 'none';
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
           question.registerFunctionOnPropertyValueChanged('canAddNew',
             () => {
-              addBtn.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -222,7 +231,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
       };
     }
-    searchButton.style.display = question.isReadOnly ? 'none' : '';
+    searchButton.style.display = (!question.isReadOnly && question.canSearch) ? '' : 'none';
     return searchButton;
   };
 
@@ -264,6 +273,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
       };
     }
+    addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
     return addButton;
   };
 
