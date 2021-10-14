@@ -247,6 +247,21 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'canSearch:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        default: true,
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+            // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],

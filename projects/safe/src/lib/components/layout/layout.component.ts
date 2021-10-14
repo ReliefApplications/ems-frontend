@@ -89,7 +89,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         this.notifications = [];
       }
-      console.log(this.notifications);
     });
 
     this.hasMoreNotificationsSubscription = this.notificationService.hasNextPage$.subscribe(res => {
