@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatTabsModule,
     MatGridListModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   exports: [SafeRecordModalComponent]
 })

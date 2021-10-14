@@ -1,4 +1,7 @@
 <ng-container *ngIf="!loading">
+    <button mat-icon-button (click)="onClose()">
+        <mat-icon>keyboard_backspace</mat-icon>
+    </button>
     <div mat-dialog-title>
         <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="formPages.length > 1">
             <mat-tab *ngFor="let page of formPages" [label]="page.title ? page.title : page.name"></mat-tab>
