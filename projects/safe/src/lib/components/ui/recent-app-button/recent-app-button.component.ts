@@ -30,6 +30,8 @@ export class RecentAppButtonComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('this.users');
+    console.log(this.users);
     // const a = new Date(this.creationDate);
     // console.log(this.creationDate);
     // console.log(this.creationDate.toString());
@@ -56,9 +58,9 @@ export class RecentAppButtonComponent implements OnInit {
         this.badge.backgroundColor = 'rgba(244, 174, 82, 0.2)';
         break;
       case 'archived':
-        this.badge.letter = 'Ar';
-        this.badge.color = 'black';
-        this.badge.backgroundColor = 'red';
+        this.badge.letter = 'D';
+        this.badge.color = '#F14343';
+        this.badge.backgroundColor = 'rgba(241, 67, 67, 0.19)';
         break;
       default:
         this.badge.letter = '?';
@@ -75,5 +77,6 @@ export class RecentAppButtonComponent implements OnInit {
 
   moreClick(e: any): void {
     console.log('more click');
+    this.moreClickEvent.emit();
   }
 }
