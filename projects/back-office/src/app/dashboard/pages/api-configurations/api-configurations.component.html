@@ -103,4 +103,7 @@
       class="clickable"
       [routerLink]="['/settings/apiconfigurations', row.id]"></tr>
   </table>
+  <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of forms"
+    (page)="onPage($event)">
+  </mat-paginator>
 </ng-container>

@@ -24,26 +24,47 @@ export class PullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
   pullJobForm: FormGroup = new FormGroup({});
 
-  // === DATA ===
+  // === FORMS ===
+  @ViewChild('formSelect') formSelect?: MatSelect;
   private formsLoading = true;
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  private pageInfo = {
+  private formsPageInfo = {
     endCursor: '',
     hasNextPage: true
   };
+
+  // === API ===
+  @ViewChild('apiSelect') apiSelect?: MatSelect;
+  private apiConfigurationsLoading = true;
+  public apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);
+  public apiConfigurations$!: Observable<ApiConfiguration[]>;
+  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  private apiPageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
+
   public loading = true;
-
-  @ViewChild('formSelect') formSelect?: MatSelect;
-
-  public apiConfigurations: ApiConfiguration[] = [];
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
 
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
+
+  get mappingArray(): FormArray {
+    return this.pullJobForm.get('mapping') as FormArray;
+  }
+
+  get defaultApiConfiguration(): ApiConfiguration | null {
+    return this.data.pullJob?.apiConfiguration || null;
+  }
+
+  get defaultForm(): Form | null {
+    return this.data.pullJob?.convertTo || null;
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,18 +103,31 @@ export class PullJobModalComponent implements OnInit {
 
     this.forms$ = this.forms.asObservable();
     this.formsQuery.valueChanges.subscribe(res => {
-      this.forms.next(res.data.forms.edges.map(x => x.node));
-      this.pageInfo = res.data.forms.pageInfo;
+      const nodes = res.data.forms.edges.map(x => x.node);
+      if (this.defaultForm) {
+        this.forms.next([this.defaultForm, ...nodes.filter(x => x.id !== this.defaultForm?.id)]);
+      }
+      this.formsPageInfo = res.data.forms.pageInfo;
       this.formsLoading = res.loading;
+      this.loading = false && this.apiConfigurationsLoading;
     });
 
-    this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
-      query: GET_API_CONFIGURATIONS
-    }).valueChanges.subscribe(res => {
-      if (res) {
-        this.apiConfigurations = res.data.apiConfigurations;
-        this.loading = res.data.loading;
+    this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      query: GET_API_CONFIGURATIONS,
+        variables: {
+          first: ITEMS_PER_PAGE
+        }
+    });
+
+    this.apiConfigurations$ = this.apiConfigurations.asObservable();
+    this.apiConfigurationsQuery.valueChanges.subscribe(res => {
+      const nodes = res.data.apiConfigurations.edges.map(x => x.node);
+      if (this.defaultApiConfiguration) {
+        this.apiConfigurations.next([this.defaultApiConfiguration, ...nodes.filter(x => x.id !== this.defaultApiConfiguration?.id)]);
       }
+      this.apiPageInfo = res.data.apiConfigurations.pageInfo;
+      this.apiConfigurationsLoading = res.loading;
+      this.loading = false && this.formsLoading;
     });
 
     // Fetch form fields if any for mapping
@@ -107,8 +141,10 @@ export class PullJobModalComponent implements OnInit {
     });
   }
 
-  /*  Get fields from form id.
-  */
+  /**
+   * Get fields from form id.
+   * @param id Id of selected form.
+   */
   private getFields(id: string): void {
     if (this.fieldsSubscription) {
       this.fieldsSubscription.unsubscribe();
@@ -125,23 +161,25 @@ export class PullJobModalComponent implements OnInit {
     });
   }
 
-  get mappingArray(): FormArray {
-    return this.pullJobForm.get('mapping') as FormArray;
-  }
-
-  /*  Filter fields so we cannot add a multiple mapping for the same one
+ /**
+  * Filters fields so we cannot add a multiple mapping for the same one.
+  * @param name Field name.
+  * @returns Filtered fields.
   */
-  filteredFields(name: string): any[] {
+  public filteredFields(name: string): any[] {
     return this.fields.filter(field => field.name === name || !this.pullJobForm.value.mapping.some((x: any) => x.name === field.name));
   }
 
-  /*  Remove element from the mapping
+ /**
+  * Removes element from the mapping
+  * @param index mapping element index.
   */
   onDeleteElement(index: number): void {
     this.mappingArray.removeAt(index);
   }
 
-  /*  Add new element to the mapping.
+ /**
+  * Adds new element to the mapping.
   */
   onAddElement(): void {
     this.mappingArray.push(this.formBuilder.group({
@@ -150,7 +188,8 @@ export class PullJobModalComponent implements OnInit {
     }));
   }
 
-  /*  Toggle the edit mode and update form values accordingly
+ /**
+  * Toggles the edit mode and update form values accordingly.
   */
   toggleRawJSON(): void {
     if (this.openRawJSON) {
@@ -168,13 +207,16 @@ export class PullJobModalComponent implements OnInit {
     this.openRawJSON = !this.openRawJSON;
   }
 
-  /*  Close the modal without sending any data.
+ /**
+  * Closes the modal without sending any data.
   */
   onClose(): void {
     this.dialogRef.close();
   }
 
-  /*  Synchronize mapping values on update button click.
+ /**
+  * Synchronizes mapping values on update button click.
+  * @returns Return form value.
   */
   returnFormValue(): any {
     if (!this.openRawJSON) {
@@ -190,10 +232,10 @@ export class PullJobModalComponent implements OnInit {
    * Adds scroll listener to select.
    * @param e open select event.
    */
-  onOpenSelect(e: any): void {
+  onOpenFormsSelect(e: any): void {
     if (e && this.formSelect) {
       const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) => this.loadFormsOnScroll(event));
     }
   }
 
@@ -201,14 +243,14 @@ export class PullJobModalComponent implements OnInit {
    * Fetches more forms on scroll.
    * @param e scroll event.
    */
-  private loadOnScroll(e: any): void {
+  private loadFormsOnScroll(e: any): void {
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
-      if (!this.formsLoading && this.pageInfo.hasNextPage) {
+      if (!this.formsLoading && this.formsPageInfo.hasNextPage) {
         this.formsLoading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor
+            afterCursor: this.formsPageInfo.endCursor
           },
           updateQuery: (prev, { fetchMoreResult }) => {
             if (!fetchMoreResult) { return prev; }
@@ -217,6 +259,45 @@ export class PullJobModalComponent implements OnInit {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
                 totalCount: fetchMoreResult.forms.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  /**
+   * Adds scroll listener to select.
+   * @param e open select event.
+   */
+   onOpenApiSelect(e: any): void {
+    if (e && this.apiSelect) {
+      const panel = this.apiSelect.panel.nativeElement;
+      panel.addEventListener('scroll', (event: any) => this.loadApiOnScroll(event));
+    }
+  }
+
+  /**
+   * Fetches more API configurations on scroll.
+   * @param e scroll event.
+   */
+  private loadApiOnScroll(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      if (!this.apiConfigurationsLoading && this.apiPageInfo.hasNextPage) {
+        this.apiConfigurationsLoading = true;
+        this.apiConfigurationsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.apiPageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              apiConfigurations: {
+                edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
+                pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
+                totalCount: fetchMoreResult.apiConfigurations.totalCount
               }
             });
           }
