@@ -131,7 +131,7 @@ export class PullJobModalComponent implements OnInit {
 
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges.subscribe(res => {
-      console.log("RESRES", res)
+      console.log('RESRES', res);
       this.applications.next(res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false));
       this.applicationsPageInfo = res.data.applications.pageInfo;
       this.applicationsLoading = res.loading;
@@ -276,7 +276,7 @@ export class PullJobModalComponent implements OnInit {
    */
   private loadOnScrollApplication(e: any): void {
     if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
-      console.log("I'M TRYING TO !!!")
+      console.log('I\'M TRYING TO !!!');
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
         this.applicationsQuery.fetchMore({

@@ -39,14 +39,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe(res => {
       this.pullJobs = res.data.pullJobs;
       this.loading = res.loading;
-      console.log("PJ", res)
+      console.log('PJ', res);
     });
     /*
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
     */
-    
+
   }
 
   /* Display the AddSubscription modal.
