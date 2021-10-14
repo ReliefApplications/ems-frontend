@@ -144,6 +144,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
+
           // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
@@ -320,7 +321,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       return instance;
     }
     return null;
-  }
+  };
 
   Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
 }
