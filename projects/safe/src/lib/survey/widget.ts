@@ -193,12 +193,17 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             // instance.selectedRows = question.value || [];
             instance.readOnly = true;
             const questionQuery = question.gridFieldsSettings || {};
-            const questionFilter = questionQuery.filter || {};
+            // const questionFilter = questionQuery.filter || {};
             instance.settings = {
               query: {
                 ...questionQuery, filter: {
-                  ...questionFilter,
-                  ids: question.value || []
+                  logic: 'and',
+                  filters: [{
+                    field: 'ids',
+                    operator: 'eq',
+                    value: question.value || []
+                  }]
+                  // ...questionFilter
                 }
               }
             };
@@ -207,8 +212,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                 instance.settings = {
                   query: {
                     ...questionQuery, filter: {
-                      ...questionFilter,
-                      ids: options.value || []
+                      logic: 'and',
+                      filters: [{
+                        field: 'ids',
+                        operator: 'eq',
+                        value: question.value || []
+                      }]
+                      // ...questionFilter
                     }
                   }
                 };

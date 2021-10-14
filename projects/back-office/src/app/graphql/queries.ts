@@ -762,8 +762,8 @@ export interface GetRecordDetailsQueryResponse {
 
 // === GET API CONFIGURATIONS ===
 export const GET_API_CONFIGURATIONS = gql`
-query GetApiConfigurations {
-  apiConfigurations {
+query GetApiConfigurations($first: Int, $afterCursor: ID) {
+  apiConfigurations(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
         id
