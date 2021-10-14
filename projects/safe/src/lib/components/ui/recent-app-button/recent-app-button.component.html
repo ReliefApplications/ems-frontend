@@ -21,19 +21,19 @@
       <!-- I decided to use safe button -->
       <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu"></safe-button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onPreviewEvent.emit(app)">
+        <button mat-menu-item (click)="previewEvent.emit(app)">
           <mat-icon>preview</mat-icon>
           Preview
         </button>
         <safe-access [menuItem]="true" [access]="app.permissions" (save)="saveAccessEvent.emit({event: $event, app: app})"
                      *ngIf="app.canUpdate"></safe-access>
-        <button mat-menu-item (click)="onDuplicateEvent.emit(app)" *ngIf="app.canDelete">
+        <button mat-menu-item (click)="duplicateEvent.emit(app)" *ngIf="app.canDelete">
           <mat-icon>file_copy</mat-icon>
           Duplicate
         </button>
         <ng-container *ngIf="app.canDelete">
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="this.onDeleteEvent.emit({event: $event, app: app})">
+          <button mat-menu-item (click)="this.deleteEvent.emit({event: $event, app: app})">
             <mat-icon>delete</mat-icon>
             Delete
           </button>

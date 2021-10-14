@@ -55,10 +55,10 @@
     <safe-new-app-button (onClickEvent)="onAdd()" *ngIf="canAdd"></safe-new-app-button>
     <safe-recent-app-button *ngFor="let app of this.recentApps" [app]="app"
                             (appClickEvent)="launchApp($event)"
-                            (onPreviewEvent)="onPreview($event)"
+                            (previewEvent)="onPreview($event)"
                             (saveAccessEvent)="saveAccess($event.event, $event.app)"
-                            (onDuplicateEvent)="onDuplicate($event)"
-                            (onDeleteEvent)="onDelete($event.app, $event.event)">
+                            (duplicateEvent)="onDuplicate($event)"
+                            (deleteEvent)="onDelete($event.app, $event.event)">
 
     </safe-recent-app-button>
   </div>

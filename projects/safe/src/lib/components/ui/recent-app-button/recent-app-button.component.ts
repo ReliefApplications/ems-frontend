@@ -10,10 +10,10 @@ export class RecentAppButtonComponent implements OnInit {
 
   @Output() appClickEvent: EventEmitter<any> = new EventEmitter();
 
-  @Output() onPreviewEvent: EventEmitter<any> = new EventEmitter();
+  @Output() previewEvent: EventEmitter<any> = new EventEmitter();
   @Output() saveAccessEvent: EventEmitter<any> = new EventEmitter();
-  @Output() onDuplicateEvent: EventEmitter<any> = new EventEmitter();
-  @Output() onDeleteEvent: EventEmitter<any> = new EventEmitter();
+  @Output() duplicateEvent: EventEmitter<any> = new EventEmitter();
+  @Output() deleteEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() app: any;
 
