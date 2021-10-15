@@ -8,15 +8,15 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 export class NewAppButtonComponent implements OnInit {
 
-  @Output() onClickEvent: EventEmitter<any> = new EventEmitter();
+  @Output() clickEvent: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onClick($event: any): void {
+  click($event: any): void {
     console.log('click');
-    this.onClickEvent.emit();
+    this.clickEvent.emit();
   }
 }

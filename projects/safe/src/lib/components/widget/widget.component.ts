@@ -25,7 +25,6 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
-    
   }
 
   public onLayoutChanged(e: any): void {

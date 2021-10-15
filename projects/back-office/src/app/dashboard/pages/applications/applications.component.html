@@ -52,7 +52,7 @@
 <!--  </safe-button>-->
   <div class="recent-app-title"> Recent applications </div>
   <div class="recent-app">
-    <safe-new-app-button (onClickEvent)="onAdd()" *ngIf="canAdd"></safe-new-app-button>
+    <safe-new-app-button (clickEvent)="onAdd()" *ngIf="canAdd"></safe-new-app-button>
     <safe-recent-app-button *ngFor="let app of this.recentApps" [app]="app"
                             (appClickEvent)="launchApp($event)"
                             (previewEvent)="onPreview($event)"
