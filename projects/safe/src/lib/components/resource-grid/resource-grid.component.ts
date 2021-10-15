@@ -223,7 +223,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     if (this.selectedRows.length > 0) {
       this.items.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
-          console.log(row.id);
           this.selectedRowsIndex.push(index + this.skip);
         }
       });
@@ -375,9 +374,16 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canDelete;
       delete auxData.canUpdate;
       delete auxData.__typename;
-      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
-        filteredData.push(data);
-      }
+      Object.keys(auxData).map(function(key, index) {
+        for (const field in auxData[key]) {
+          if (auxData[key][field].toString().toLowerCase().includes(value.value.toLowerCase())) {
+            // prevent filteredData to have duplicates
+            if (filteredData.indexOf(data) === -1) {
+              filteredData.push(data);
+            }
+          }
+        }
+      });
     });
     this.gridData = {
       data: filteredData,

@@ -136,16 +136,16 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
           actionsButtons.style.marginBottom = '0.5em';
-          
+
           const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
           actionsButtons.appendChild(searchBtn);
-  
+
           const addBtn = buildAddButton(question, false);
           actionsButtons.appendChild(addBtn);
-  
+
           el.parentElement.insertBefore(actionsButtons, el);
           actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-  
+
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
               searchBtn.style.display = !question.gridFieldsSettings ? 'none' : '';
@@ -224,7 +224,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     }
     searchButton.style.display = question.isReadOnly ? 'none' : '';
     return searchButton;
-  }
+  };
 
   const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeResourceGridComponent): any => {
     const addButton = document.createElement('button');
@@ -265,7 +265,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       };
     }
     return addButton;
-  }
+  };
 
   const buildRecordsGrid = (question: any, el: any): any => {
     let instance: SafeResourceGridComponent;
@@ -311,7 +311,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       return instance;
     }
     return null;
-  }
+  };
 
   Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
 }
