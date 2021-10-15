@@ -6,9 +6,7 @@
         <div class="users-count"> <div [innerText]="numberFormatter(app.usersCount)"></div> </div>
       </div>
     </div>
-<!--    <div class="status" [ngStyle]="{'background-color': status=='active'? 'background: rgba(149, 221, 101, 0.2);' : status=='pending'? 'background: rgba(244, 174, 82, 0.2);' : status=='archived'? 'red' : 'white'}">-->
     <div class="status" [ngStyle]="{'background-color': this.badge.backgroundColor}">
-<!--      <div [innerText]="status?.slice(0, 1)?.toUpperCase()" [ngStyle]="{'color': this.badge.color}"> </div>-->
       <div [innerText]="this.badge.letter" [ngStyle]="{'color': this.badge.color}"> </div>
     </div>
   </div>
@@ -16,9 +14,6 @@
   <div class="bottom-bar">
     <div>
       <div> <div [innerText]="app.createdAt"> </div> </div>
-      <!-- if we put matt-icon, it will be the more similar to figma  -->
-      <!-- else if we put the safe button there will be a little margin on the bottom and the right (because of the button itself  -->
-      <!-- I decided to use safe button -->
       <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu"></safe-button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="previewEvent.emit(app)">
@@ -39,7 +34,6 @@
           </button>
         </ng-container>
       </mat-menu>
-<!--      <mat-icon>more_vert</mat-icon>-->
     </div>
   </div>
 </div>

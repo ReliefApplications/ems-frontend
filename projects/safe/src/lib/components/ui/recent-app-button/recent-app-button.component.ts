@@ -28,23 +28,6 @@ export class RecentAppButtonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('this.users');
-    // console.log(this.users);
-    // const a = new Date(this.creationDate);
-    // console.log(this.creationDate);
-    // console.log(this.creationDate.toString());
-    // console.log(new Date(this.creationDate));
-    // console.log(new Date(this.creationDate).toString());
-    // console.log(new Date(this.creationDate.toString()).getTime());
-    // this.date = new Date(this.creationDate).toLocaleDateString('en-US');
-    // console.log(this.date);
-
-    console.log(this.numberFormatter(9812345));
-    console.log(this.numberFormatter(3212));
-    console.log(this.numberFormatter(329));
-    console.log(this.numberFormatter(2));
-
-
     this.convertStatus();
   }
 
@@ -73,17 +56,6 @@ export class RecentAppButtonComponent implements OnInit {
     }
   }
 
-  // numberFormatter(num: number): string {
-  //   if (num > 999999) {
-  //     return (num / 1000000).toFixed(1) + 'M';
-  //   }
-  //   else if (num > 999) {
-  //     return (num / 1000).toFixed(1) + 'k';
-  //   }
-  //   else {
-  //     return num.toString();
-  //   }
-  // }
   numberFormatter(num: number): string {
     if (num > 999999) {
       return (num / 1000000).toFixed(1) + 'M';
@@ -97,7 +69,6 @@ export class RecentAppButtonComponent implements OnInit {
   }
 
   appClick(e: any): void {
-    console.log('click');
     this.appClickEvent.emit(this.app.id);
   }
 }

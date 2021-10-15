@@ -15,8 +15,7 @@ export class NewAppButtonComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  click($event: any): void {
-    console.log('click');
+  click(e: any): void {
     this.clickEvent.emit();
   }
 }
