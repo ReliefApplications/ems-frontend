@@ -3,11 +3,14 @@
     <form [formGroup]="apiForm">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+            <input matInput [errorStateMatcher]="matcher" pattern="[a-zA-Z_]*" formControlName="name" type="text" placeholder="Enter a name"/>
+            <mat-error>
+              You must use only High case, Low case, and underscores for the name
+            </mat-error>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="apiForm.value" cdkFocusInitial color="primary" [disabled]="!apiForm.valid">Create</button>
+    <button mat-flat-button (click)="addConfiguration()" cdkFocusInitial color="primary" [disabled]="!apiForm.valid">Create</button>
 </div>
