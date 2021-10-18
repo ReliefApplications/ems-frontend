@@ -51,7 +51,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         required: true,
       });
       // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: {request: XMLHttpRequest}) => {
+      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
         if (sender.url.includes(environment.API_URL)) {
           const token = localStorage.getItem('msal.idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -123,9 +123,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
-          () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
+            () => {
+              span.style.display = !question.tooltip ? 'none' : '';
+            });
         }
       }
       // Display of add button for resource question
@@ -148,9 +148,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
-          () => {
-            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
-          });
+            () => {
+              searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+            });
           question.registerFunctionOnPropertyValueChanged('canSearch',
             () => {
               searchBtn.style.display = question.canSearch ? '' : 'none';
@@ -163,7 +163,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             () => {
               addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
-          }
+        }
       }
       // Display of add button | grid for resources question
       if (question.getType() === 'resources' && question.resource) {
@@ -202,6 +202,54 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
               addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
         }
+      }
+      // Adding an open url icon for urls inputs
+      if (question.inputType === 'url') {
+
+        const svgHtmlPath = './assets/donut.svg';
+        const svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>';
+
+        // Build HTMLElement from string and retrieve only the childNode without body
+        const svgElem = (new DOMParser().parseFromString(svgHtml, 'text/html')).body.childNodes[0];
+
+        // Create the anchor element that will contain the icon
+        const linkContainer = document.createElement('a');
+
+        // Set the default parameters and styling of the anchor
+        linkContainer.target = '_blank';
+        linkContainer.rel = 'noreferrer noopener';
+        linkContainer.style.fill = '#d7d7d7';
+        linkContainer.style.width = '24px';
+        linkContainer.style.height = '24px';
+
+        // Set the default styling of the parent
+        el.parentElement.style.flexDirection = 'row';
+        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.style.alignItems = 'center';
+        el.parentElement. title = 'The URL should start with "http://" or "https://"';
+
+        // Insert the icon in the anchor element
+        linkContainer.appendChild(svgElem);
+
+        // Update the link value when input change and update icon style in consequence
+        el.addEventListener('input', (e: any) => {
+          linkContainer.href = el.value;
+
+          if (linkContainer.host && linkContainer.host !== window.location.host) {
+            linkContainer.style.pointerEvents = 'auto';
+            linkContainer.style.fill = '#008dc9';
+          }
+          else {
+            linkContainer.style.pointerEvents = 'none';
+            linkContainer.style.fill = '#d7d7d7';
+          }
+        });
+
+        // Insert the elements in the DOM
+        el.parentElement.insertBefore(linkContainer, null);
+
+        // Execute the event listener to set the intial value and styling
+        el.dispatchEvent(new Event('input'));
       }
     }
   };
