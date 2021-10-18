@@ -2,6 +2,9 @@
   [selectable]="!readOnly && selectableSettings" (pageChange)="pageChange($event)" kendoGridSelectBy
   [selectedKeys]="selectedRowsIndex" (selectionChange)="selectionChange($event)" [pageSize]="pageSize" [skip]="skip"
   [resizable]="true">
+  <ng-template kendoPagerTemplate>
+    <kendo-pager-page-sizes [pageSizes]="pageSizes"></kendo-pager-page-sizes>
+  </ng-template>
   <ng-template kendoGridToolbarTemplate>
     <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
   </ng-template>
