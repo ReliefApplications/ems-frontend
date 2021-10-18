@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 NAME=$(git branch | grep '*' | sed 's/* //' | sed 's/^AB//')
-if [[ $(NAME:0:1) == '#' ]]
+if [[ ${NAME:0:1} == '#' ]]
 then
     echo $(cat "$1") "$NAME" > "$1"
 else
