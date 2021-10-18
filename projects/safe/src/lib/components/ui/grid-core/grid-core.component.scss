@@ -1,0 +1,54 @@
+:host {
+    display: flex;
+    height: calc(100% - 41px);
+}
+
+.widget-content {
+    flex-grow: 2;
+    max-width: 100%;
+}
+
+:host ::ng-deep .k-grid-content,
+.k-grid-content-locked,
+.k-pager-wrap {
+    white-space: nowrap !important;
+}
+
+textarea {
+    width: 100% !important;
+}
+
+.matrix-cell {
+    padding: unset;
+    margin: unset;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between !important;
+    li {
+        min-height: 20px;
+        .k-dropdown {
+            width: 100%;
+        }
+    }
+}
+
+.textbox-container {
+    display: flex;
+}
+
+.textbox {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.expand-text-button {
+    height: 20px !important;
+    width: 20px !important;
+    vertical-align: top;
+}
+
+.expand-text-icon {
+    font-size: 16px !important;
+    vertical-align: top;
+}

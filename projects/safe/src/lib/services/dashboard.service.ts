@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Dashboard } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Apollo} from 'apollo-angular';
-import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../graphql/queries';
 import {EDIT_DASHBOARD, EditDashboardMutationResponse} from '../graphql/mutations';
 
 @Injectable({
