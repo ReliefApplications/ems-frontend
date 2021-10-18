@@ -11,13 +11,10 @@ import {ErrorStateMatcher} from '@angular/material/core';
 export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
   apiForm: FormGroup = new FormGroup({});
-  regex = new RegExp('[a-zA-Z_]');
-  displayError = false;
-  matcher = new MyErrorStateMatcher();
 
   constructor(
-    private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddApiConfigurationComponent>
+      private formBuilder: FormBuilder,
+      public dialogRef: MatDialogRef<AddApiConfigurationComponent>
   ) { }
 
   /*  Build the form.
@@ -31,25 +28,6 @@ export class AddApiConfigurationComponent implements OnInit {
   /*  Close the modal without sending data.
   */
   onClose(): void {
-    console.log('this.apiForm');
-    console.log(this.apiForm);
     this.dialogRef.close();
-  }
-
-  addConfiguration(): void {
-    if (this.regex.test(this.apiForm.value.name)){
-      this.dialogRef.close(this.apiForm.value);
-    }
-    else {
-      console.log('nathiiiiiiin');
-      this.displayError = true;
-    }
-  }
-}
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  regex = new RegExp('[a-zA-Z_]');
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    return this.regex.test(control?.value.name);
   }
 }
