@@ -74,7 +74,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
 
   // === PAGINATION ===
   public pageSize = 10;
-  public pageSizes = [{text: '10', value: 10}, {text: '50', value: 50}, {text: '100', value : 100}];
   public skip = 0;
 
   // === DATA ===
