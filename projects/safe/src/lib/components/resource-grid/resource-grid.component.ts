@@ -374,13 +374,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canDelete;
       delete auxData.canUpdate;
       delete auxData.__typename;
-      Object.keys(auxData).map(function(key, index) {
+      Object.keys(auxData).map((key, index) => {
         for (const field in auxData[key]) {
           if (auxData[key][field].toString().toLowerCase().includes(value.value.toLowerCase())) {
-            // prevent filteredData to have duplicates
-            if (filteredData.indexOf(data) === -1) {
-              filteredData.push(data);
-            }
+            filteredData.push(data);
+            return;
           }
         }
       });
