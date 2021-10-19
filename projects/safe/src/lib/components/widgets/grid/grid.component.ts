@@ -1263,7 +1263,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async allData(): Promise<ExcelExportData> {
-    let items: any = await this.getAllDataFromGrid();
+    const items: any = await this.getAllDataFromGrid();
     const result: ExcelExportData = {
       data: items
     };
@@ -1275,7 +1275,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const filters = [this.filter];
     const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     const dataQuery = this.apollo.query<any>({
       query: builtQuery,
