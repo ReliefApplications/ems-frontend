@@ -22,10 +22,9 @@
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
-<!--            <button type="button" kendoGridExcelCommand class="k-button">Export</button>-->
-          <kendo-dropdownbutton [data]="exportPageData">
-            Export selected
-          </kendo-dropdownbutton>
+            <kendo-dropdownbutton [data]="exportCurrentPageData">
+              Export current page
+            </kendo-dropdownbutton>
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
                 (click)="onSaveChanges()">Save</button>
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
@@ -48,7 +47,7 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <kendo-dropdownbutton [data]="exportData" style="float: right">
+                <kendo-dropdownbutton [data]="exportSelectedRowData" style="float: right">
                     Export selected
                 </kendo-dropdownbutton>
             </ng-container>
