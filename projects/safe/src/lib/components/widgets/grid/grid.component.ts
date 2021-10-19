@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor, process, State } from '@progress/kendo-data-query';
 import {
   GridComponent as KendoGridComponent,
   GridDataResult,
@@ -17,7 +17,7 @@ import {
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse, DELETE_RECORDS
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { Subscription } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
@@ -45,6 +45,8 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
+import { ExcelExportData } from '@progress/kendo-angular-excel-export';
+import { tap } from 'rxjs/operators';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -194,8 +196,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private apiProxyService: SafeApiProxyService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
   ) {
+    this.allData = this.allData.bind(this);
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -1258,6 +1261,59 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   saveDefaultLayout(): void {
     this.defaultLayoutChanged.emit(this.layout);
+  }
+
+  async allData(): Promise<ExcelExportData> {
+    let items: any = await this.getAllDataFromGrid();
+    console.log("items = ", items);
+    const result: ExcelExportData = {
+      data: process(items, {
+        skip: 0,
+        take: this.gridData.total,
+        filter: this.filter
+      }).data
+    };
+    return result;
+  }
+
+  getAllDataFromGrid(): void {
+    let items: any = [];
+    const filters = [this.filter];
+    const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    //if (builtQuery) {
+      const dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.gridData.total,
+          filter: { logic: 'and', filters },
+          sortField,
+          sortOrder
+        }
+      });
+      const metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
+      //if (metaQuery) {
+        metaQuery.subscribe(async (res: any) => {
+          for (const metaField in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, metaField)) {
+              dataQuery.valueChanges.subscribe((res2: any) => {
+                for (const field in res2.data) {
+                  if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
+                    const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
+                    items = cloneData(nodes);
+                    this.convertDateFields(items);
+                  }
+                }
+                console.log("items on return = ", items);
+                return items;
+              });
+            }
+           }
+        })
+      //}
+    //}
   }
 
   /**

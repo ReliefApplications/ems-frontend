@@ -366,6 +366,6 @@
             {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
         </ng-template>
         <!-- EXCEL EXPORT -->
-        <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
+        <kendo-grid-excel [fileName]="excelFileName" [fetchData]="allData"></kendo-grid-excel>
     </kendo-grid>
 </div>
