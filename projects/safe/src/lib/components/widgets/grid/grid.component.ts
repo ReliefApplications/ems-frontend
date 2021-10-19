@@ -174,6 +174,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
+  public exportPageData: Array<any> = [
+    {
+      text: '.csv',
+      click: () => this.onExportRecord(this.gridData.data.map((v, i, a) => i), 'csv')
+    },
+    {
+      text: '.xlsx',
+      click: () => this.onExportRecord(this.gridData.data.map((v, i, a) => i), 'xlsx')
+    }
+  ];
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -243,6 +253,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
         this.queryError = false;
+        console.log('===> res');
+        console.log(res);
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = Object.assign({}, res.data[field]);
@@ -285,6 +297,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     }
+    console.log('this.metaFields');
+    console.log(this.metaFields);
   }
 
   /**
@@ -382,6 +396,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               const nodes = res.data[field].edges.map((x: any) => x.node) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
+              console.log('FIRST: this.items');
+              console.log(this.items);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
@@ -418,6 +434,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         total: this.totalCount
       };
     }
+    console.log('this.gridData');
+    console.log(this.gridData);
   }
 
   /*  Display an embedded form in a modal to add new record.
@@ -701,6 +719,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    console.log(this.skip);
+    console.log(this.pageSize);
+    console.log('event');
+    console.log(event);
     this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
@@ -901,6 +923,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Export selected records to a csv file
   */
   public onExportRecord(items: number[], type: string): void {
+    console.log('---------- items');
+    console.log(items);
     const ids: any[] = [];
     for (const index of items) {
       const id = this.gridData.data[index].id;
