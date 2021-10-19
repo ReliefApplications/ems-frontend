@@ -16,7 +16,6 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeRecordModalModule } from '../../record-modal/record-modal.module';
-import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeExpandedCommentModule } from './expanded-comment/expanded-comment.module';
 import { SafeArrayFilterModule } from './array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu.module';
@@ -45,7 +44,6 @@ import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-fi
     DateInputsModule,
     DropDownsModule,
     SafeRecordModalModule,
-    SafeChooseRecordModalModule,
     SafeExpandedCommentModule,
     MatTooltipModule,
     ButtonsModule,

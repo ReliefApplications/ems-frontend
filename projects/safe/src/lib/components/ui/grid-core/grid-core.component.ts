@@ -9,7 +9,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent
+  ColumnReorderEvent,
+  RowArgs
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
@@ -36,6 +37,10 @@ import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import get from 'lodash/get';
 import { isEqual } from 'lodash';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { PopupService } from '@progress/kendo-angular-popup';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -65,10 +70,20 @@ const GRADIENT_SETTINGS: GradientSettings = {
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+  const block = () => overlay.scrollStrategies.block();
+  return block;
+}
+
 @Component({
   selector: 'safe-grid-core',
   templateUrl: './grid-core.component.html',
-  styleUrls: ['./grid-core.component.scss']
+  styleUrls: ['./grid-core.component.scss'],
+  providers: [
+    PopupService,
+    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
+  ]
 })
 export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -77,10 +92,20 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   @Input() layout: GridLayout = {}; // Cached layout
   @Input() parent: any; // Parent data for children grid
 
+  // === SELECTION INPUTS ===
+  @Input() singleSelect = false;
+  @Input() selectedRows: string[] = [];
+
+  // === FEATURES INPUTS ===
+
+
   // === OUTPUTS ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+
+  // === SELECTION OUTPUTS ===
+  @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
@@ -178,10 +203,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
   }
-
+  
   /*  Detect changes of the settings to (re)load the data.
   */
-  ngOnChanges(): void {
+ ngOnChanges(): void {
+   console.log('SETTINGS', this.settings);
+    this.selectableSettings.mode = this.singleSelect ? 'single' : 'multiple';
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
       // const filter = this.lintFilter(this.layout.filter);
@@ -365,6 +392,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
               this.loadItems();
+              this.initSelectedRows();
             }
           }
           this.loading = false;
@@ -395,6 +423,21 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       };
     }
   }
+
+  /*  initialize selected rows from input
+  */
+  private initSelectedRows(): void {
+    this.selectedRowsIndex = [];
+    if (this.selectedRows.length > 0) {
+      this.items.forEach((row: any, index: number) => {
+        if (this.selectedRows.includes(row.id)) {
+          this.selectedRowsIndex.push(index + this.skip);
+        }
+      });
+    }
+  }
+
+  public isRowSelected = (row: RowArgs) => this.selectedRowsIndex.includes(row.index);
 
   /*  Display an embedded form in a modal to add new record.
     Create a record if result not empty.
@@ -736,6 +779,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   /* Detect selection event and display actions available on rows.
   */
   public selectionChange(selection: SelectionEvent): void {
+    this.rowSelected.emit(selection);
     const deselectedRows = selection.deselectedRows || [];
     const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
@@ -798,7 +842,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: item.id,
         locale: 'en',
-        canUpdate: item.canUpdate,
+        canUpdate: this.settings.actions.update && item.canUpdate,
         template: this.parent ? null : this.settings.query.template
       },
       height: '98%',

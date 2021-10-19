@@ -151,7 +151,7 @@ export class SafeGridComponent implements OnChanges {
     if (options.goToNextStep) {
       this.goToNextStep.emit(true);
     } else {
-      this.grid?.reloadData();
+      this.grid?.ngOnChanges();
     }
   }
 

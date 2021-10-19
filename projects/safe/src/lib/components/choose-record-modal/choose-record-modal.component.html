@@ -14,9 +14,9 @@
                 </mat-form-field>
             </div>
         </form>
-        <safe-resource-grid *ngIf="isSearchActivated" [settings]="{ query: data.targetFormQuery }" [multiSelect]="false"
-            (rowSelected)="onRowSelected($event)">
-        </safe-resource-grid>
+        <safe-grid-core *ngIf="isSearchActivated" [settings]="settings" [singleSelect]="true" [selectedRows]="selectedRows"
+        (rowSelected)="onRowSelected($event)" style="height: 410px;">
+        </safe-grid-core>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button mat-stroked-button color="primary" (click)="onSearch()" *ngIf="data.targetFormQuery">{{ isSearchActivated ? 'Select' : 'Search' }}</button>

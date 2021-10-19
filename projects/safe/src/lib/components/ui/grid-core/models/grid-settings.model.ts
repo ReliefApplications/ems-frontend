@@ -21,5 +21,6 @@ export interface GridSettings {
     };
     showDetails?: boolean;
     showExport?: boolean;
+    showFilters?: boolean;
     defaultLayout?: any;
 }

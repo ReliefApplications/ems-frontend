@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SafeResourceGridModule } from '../resource-grid/resource-grid.module';
+import { SafeGridCoreModule } from '../ui/grid-core/grid-core.module';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 
@@ -20,7 +20,7 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    SafeResourceGridModule,
+    SafeGridCoreModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule
   ],

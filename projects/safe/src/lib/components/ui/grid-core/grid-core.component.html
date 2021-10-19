@@ -1,7 +1,7 @@
 <!-- GRID HEADER -->
 <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
 [skip]="skip" [loading]="loading" [columnMenu]="{ columnChooser: false, filter: !showFilter }"
-[reorderable]="true" [sortable]="true" [pageable]="pagerSettings" [sort]="sort"
+[reorderable]="true" [sortable]="true" [pageable]="pagerSettings" [sort]="sort" [rowSelected]="isRowSelected"
 [selectable]="selectableSettings" (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)"
 (pageChange)="pageChange($event)" [filterable]="showFilter ? true : 'menu'" [filter]="filter"
 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true"
@@ -306,14 +306,14 @@
             </kendo-grid-column-group>
         </ng-container>
         <!-- ROW DETAILS -->
-        <kendo-grid-column *ngIf="settings.showDetails" [columnMenu]="false" [width]="56" title="Details">
+        <kendo-grid-column *ngIf="settings.showDetails" [columnMenu]="false" [width]="56" [resizable]="false" title="Details">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
                     (click)="onShowDetails(dataItem)" matTooltip="Open detail"></button>
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56">
+        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <button
                     *ngIf="settings.actions && ((settings.actions.update && dataItem.canUpdate) || settings.actions.history ||

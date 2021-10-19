@@ -8,6 +8,10 @@
     max-width: 100%;
 }
 
+.modal-grid {
+    height: 410px;
+}
+
 :host ::ng-deep .k-grid-content,
 .k-grid-content-locked,
 .k-pager-wrap {
