@@ -191,6 +191,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
+        console.log(file);
         const res = await this.apollo.mutate<UploadFileMutationResponse>({
           mutation: UPLOAD_FILE,
           variables: {
@@ -281,6 +282,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     options.callback('success');
   }
 
+  private getFileType(file: { name: string, type: string }): string {
+    if (file.type) {
+      return file.type;
+    } else {
+      const extension = file.name.split('.').pop() || '';
+      switch (extension) {
+        case 'msg': {
+          return 'application/vnd.ms-outlook';
+        }
+        default: {
+          return '';
+        }
+      }
+    }
+  }
+
   private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
     if (this.temporaryFilesStorage[options.name] !== undefined) {
       this.temporaryFilesStorage[options.name].concat(options.files);
@@ -291,12 +308,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     options
       .files
       .forEach((file: any) => {
+        console.log(file);
         const fileReader = new FileReader();
         fileReader.onload = (e) => {
           content = content.concat([
             {
               name: file.name,
-              type: file.type,
+              type: this.getFileType(file),
               content: fileReader.result,
               file
             }
