@@ -28,7 +28,7 @@ const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
   info: true,
-  pageSizes: true,
+  pageSizes: [10, 25, 50, 100],
   previousNext: true
 };
 
@@ -223,7 +223,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     if (this.selectedRows.length > 0) {
       this.items.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
-          console.log(row.id);
           this.selectedRowsIndex.push(index + this.skip);
         }
       });
