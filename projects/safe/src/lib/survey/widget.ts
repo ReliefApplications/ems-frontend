@@ -237,7 +237,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
 
         button.instance.emittedEventSubject.subscribe((eventType: string) => {
-          (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) ? window.open(URLtester.href, '_blank', 'noopener,noreferrer') : null;
+          if (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) {
+            window.open(URLtester.href, '_blank', 'noopener,noreferrer');
+          }
         });
 
         // Execute the event listener to set the intial value and styling
