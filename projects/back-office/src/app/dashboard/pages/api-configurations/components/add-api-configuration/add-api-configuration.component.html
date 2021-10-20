@@ -3,9 +3,9 @@
     <form [formGroup]="apiForm">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput pattern="[a-zA-Z_]*" formControlName="name" type="text" placeholder="Enter a name"/>
-            <mat-error *ngIf="apiForm.get('name')?.hasError('required') || apiForm.get('name')?.hasError('pattern')">
-              Use only normal cases and/or underscores
+            <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+            <mat-error *ngIf="name?.errors">
+              Only letters, hypens, or underscores are accepted
             </mat-error>
         </mat-form-field>
     </form>

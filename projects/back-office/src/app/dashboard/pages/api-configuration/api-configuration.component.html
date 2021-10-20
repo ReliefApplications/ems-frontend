@@ -16,6 +16,9 @@
                 API Configuration Name
               </mat-label>
               <input matInput formControlName="name" type='text' placeholder="Enter a name for the API Configuration" />
+              <mat-error *ngIf="name?.errors">
+                Only letters, hypens, or underscores are accepted
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="flex: 1;">

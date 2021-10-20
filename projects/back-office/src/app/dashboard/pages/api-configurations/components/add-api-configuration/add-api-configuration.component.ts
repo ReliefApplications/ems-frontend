@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import {ErrorStateMatcher} from '@angular/material/core';
 
 @Component({
   selector: 'app-add-api-configuration',
@@ -12,16 +11,20 @@ export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
   apiForm: FormGroup = new FormGroup({});
 
+  get name(): AbstractControl | null {
+    return this.apiForm.get('name');
+  }
+
   constructor(
-      private formBuilder: FormBuilder,
-      public dialogRef: MatDialogRef<AddApiConfigurationComponent>
+    private formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<AddApiConfigurationComponent>
   ) { }
 
   /*  Build the form.
   */
   ngOnInit(): void {
     this.apiForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', [ Validators.required, Validators.pattern('^[a-z\s_-]+$') ]]
     });
   }
 
