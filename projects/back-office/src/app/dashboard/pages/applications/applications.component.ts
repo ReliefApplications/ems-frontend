@@ -30,7 +30,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
-  public recentApps: Application[] = [];
+  public newApplications: Application[] = [];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -75,7 +75,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
       // we take the first five element of cached application to test it (while waiting to find a way to get the most recent apps)
-      this.recentApps = this.cachedApplications.slice(0, 5);
+      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;

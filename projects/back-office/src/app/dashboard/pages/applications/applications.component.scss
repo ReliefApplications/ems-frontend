@@ -14,8 +14,6 @@
 }
 
 .searchbar {
-  float: left;
-
   .filters-toggle {
     margin-left: 12px;
   }
@@ -27,7 +25,6 @@
 
 .filters {
   clear: both;
-  float: left;
   margin-left: -12px;
 
   .mat-form-field {
@@ -35,24 +32,9 @@
   }
 }
 
-.recent-app {
+.new-applications-list {
   display: flex;
   flex-direction: row;
-  float: left;
-  margin-bottom: 20px;
-  width: 100%;
-  justify-content: space-between;
-}
-
-.recent-app-title {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 28px;
-  color: #2F383E;
-
-  width: 100%;
-
-  float: left;
-  margin-bottom: 20px;
+  margin-bottom: 56px;
+  overflow-x: auto;
 }
