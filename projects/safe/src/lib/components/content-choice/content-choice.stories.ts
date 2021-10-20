@@ -22,7 +22,7 @@ export default {
 } as Meta;
 
 const Template: Story<SafeContentChoiceComponent> = args => ({
-    template: '<safe-content-choice [formControl]="type"></safe-content-choice>',
+    template: '<safe-content-choice [formControl]="type" [contentTypes]="contentTypes"></safe-content-choice>',
     props: {
         ...args,
         type: new FormControl('')

@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetApplicationsQueryResponse, GET_APPLICATIONS_ROLES } from '../../graphql/queries';
+import { GetRolesFromApplicationsQueryResponse, GET_ROLES_FROM_APPLICATIONS } from '../../graphql/queries';
 
 /**
  * Inits the owner component.
@@ -15,10 +15,6 @@ import { GetApplicationsQueryResponse, GET_APPLICATIONS_ROLES } from '../../grap
  * @param formBuilder Form Builder service.
  */
 export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
-
-    const getApplications = () => apollo.query<GetApplicationsQueryResponse>({
-        query: GET_APPLICATIONS_ROLES,
-    });
 
     const component = {
         name: 'owner',
@@ -58,25 +54,20 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 .registerCustomEditor('applicationsDropdown', applicationEditor);
         },
         onLoaded(question: any): void {
-            apollo.query<GetApplicationsQueryResponse>({
-                query: GET_APPLICATIONS_ROLES,
+            apollo.query<GetRolesFromApplicationsQueryResponse>({
+                query: GET_ROLES_FROM_APPLICATIONS,
                 variables: {
-                    filters: {
-                        ids: question.applications
-                    }
+                    applications:  question.applications
                 }
             }).subscribe(
                 (res) => {
-                    const applications = res.data.applications.edges.map(x => x.node);
-                    const roles = [];
-                    for (const application of applications) {
-                        if (application.roles && application.roles.length > 0) {
-                            for (const role of application.roles) {
-                                roles.push({ value: role.id, text: `${application.name} - ${role.title}` });
-                            }
+                    if (res.data.rolesFromApplications) {
+                        const roles = [];
+                        for (const role of res.data.rolesFromApplications) {
+                            roles.push({ value: role.id, text: role.title });
                         }
+                        question.contentQuestion.choices = roles;
                     }
-                    question.contentQuestion.choices = roles;
                 }
             );
         },

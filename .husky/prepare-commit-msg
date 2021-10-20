@@ -1,4 +1,10 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx jira-prepare-commit-msg $1
+NAME=$(git branch | grep '*' | sed 's/* //' | sed 's/^AB//')
+if [[ $NAME =~ '#' ]]
+then
+    echo $(cat "$1") "$NAME" > "$1"
+else
+    echo $(cat "$1") > "$1"
+fi
