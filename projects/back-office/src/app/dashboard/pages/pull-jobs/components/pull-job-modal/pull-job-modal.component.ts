@@ -118,6 +118,8 @@ export class PullJobModalComponent implements OnInit {
       const nodes = res.data.forms.edges.map(x => x.node);
       if (this.defaultForm) {
         this.forms.next([this.defaultForm, ...nodes.filter(x => x.id !== this.defaultForm?.id)]);
+      } else {
+        this.forms.next(nodes);
       }
       this.formsPageInfo = res.data.forms.pageInfo;
       this.formsLoading = res.loading;
@@ -136,6 +138,8 @@ export class PullJobModalComponent implements OnInit {
       const nodes = res.data.apiConfigurations.edges.map(x => x.node);
       if (this.defaultApiConfiguration) {
         this.apiConfigurations.next([this.defaultApiConfiguration, ...nodes.filter(x => x.id !== this.defaultApiConfiguration?.id)]);
+      } else {
+        this.apiConfigurations.next(nodes);
       }
       this.apiPageInfo = res.data.apiConfigurations.pageInfo;
       this.apiConfigurationsLoading = res.loading;
