@@ -3,8 +3,8 @@ import { SafeFormModalComponent } from '../components/form-modal/form-modal.comp
 import { DomService } from '../services/dom.service';
 import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
-import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
 import { ChoicesRestful } from 'survey-angular';
+import { SafeGridCoreComponent } from '../components/ui/grid-core/grid-core.component';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -175,15 +175,15 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           const searchBtn = buildSearchButton(question, question.gridFieldsSettings, true);
           el.parentElement.insertBefore(searchBtn, el);
 
-          let instance: SafeResourceGridComponent;
+          let instance: SafeGridCoreComponent;
           if (question.displayAsGrid) {
-            const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
+            const grid = domService.appendComponentToBody(SafeGridCoreComponent, el.parentElement);
             instance = grid.instance;
             instance.multiSelect = true;
+            instance.filterType = 'fullGrid';
             // instance.selectedRows = question.value || [];
             instance.readOnly = true;
             const questionQuery = question.gridFieldsSettings || {};
-            // const questionFilter = questionQuery.filter || {};
             instance.settings = {
               query: {
                 ...questionQuery, filter: {
@@ -192,13 +192,15 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                     field: 'ids',
                     operator: 'eq',
                     value: question.value || []
-                  }]
-                  // ...questionFilter
+                  }],
                 }
               }
             };
+            instance.ngOnChanges();
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.name) {
+                console.log('UPDATE VALUE', question.value);
+                console.log('SURVEY TYPE', typeof survey);
                 instance.settings = {
                   query: {
                     ...questionQuery, filter: {
@@ -207,12 +209,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                         field: 'ids',
                         operator: 'eq',
                         value: question.value || []
-                      }]
-                      // ...questionFilter
+                      }],
                     }
                   }
                 };
-                instance.init();
+                instance.ngOnChanges();
               }
             });
           }
@@ -233,10 +234,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
                 dialogRef.afterClosed().subscribe(res => {
                   if (res) {
                     if (question.displayAsGrid) {
-                      instance.availableRecords.push({
-                        value: res.data.id,
-                        text: res.data.data[question.displayField]
-                      });
+                      question.value = question.value.concat([res.data.id]);
                     } else {
                       const e = new CustomEvent('saveResourceFromEmbed', {
                         detail: {

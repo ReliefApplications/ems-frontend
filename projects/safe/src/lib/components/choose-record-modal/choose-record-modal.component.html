@@ -14,8 +14,8 @@
                 </mat-form-field>
             </div>
         </form>
-        <safe-grid-core *ngIf="isSearchActivated" [settings]="settings" [singleSelect]="true" [selectedRows]="selectedRows"
-        (rowSelected)="onRowSelected($event)" style="height: 410px;">
+        <safe-grid-core *ngIf="isSearchActivated" [settings]="settings" [multiSelect]="false" [selectedRows]="selectedRows"
+        (rowSelected)="onRowSelected($event)" [showExport]="true" filterType="fullGrid" style="height: 410px;">
         </safe-grid-core>
     </div>
     <div mat-dialog-actions align="end">

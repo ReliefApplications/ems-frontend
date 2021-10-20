@@ -34,13 +34,13 @@ import { Form } from '../../../models/form.model';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { GridLayout } from './models/grid-layout.model';
-import { GridSettings } from './models/grid-settings.model';
-import get from 'lodash/get';
-import { isEqual } from 'lodash';
+import { GridSettings, FilterType } from './models/grid-settings.model';
+import { get, isEqual, isEmpty } from 'lodash';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { PopupService } from '@progress/kendo-angular-popup';
+import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -82,7 +82,8 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   providers: [
     PopupService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
+    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
   ]
 })
 export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
@@ -93,11 +94,14 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   @Input() parent: any; // Parent data for children grid
 
   // === SELECTION INPUTS ===
-  @Input() singleSelect = false;
+  @Input() multiSelect = true;
   @Input() selectedRows: string[] = [];
 
   // === FEATURES INPUTS ===
-
+  @Input() readOnly = false;
+  @Input() showDetails = true;
+  @Input() showExport = false;
+  @Input() filterType: FilterType = 'classic';
 
   // === OUTPUTS ===
   @Output() childChanged: EventEmitter<any> = new EventEmitter();
@@ -182,6 +186,10 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
+  get showSaveLayout(): boolean {
+    return !isEmpty(this.layout);
+  }
+
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -203,12 +211,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
   }
-  
+
   /*  Detect changes of the settings to (re)load the data.
   */
- ngOnChanges(): void {
-   console.log('SETTINGS', this.settings);
-    this.selectableSettings.mode = this.singleSelect ? 'single' : 'multiple';
+  ngOnChanges(): void {
+    console.log('SETTINGS', this.settings);
+    this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
       // const filter = this.lintFilter(this.layout.filter);
@@ -218,7 +226,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.showFilter = !!this.layout?.showFilter;
-    this.loadItems();
+    //this.loadItems();
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -267,7 +275,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Fetch choices from URL if needed
    */
-   private async populateMetaFields(): Promise<void> {
+  private async populateMetaFields(): Promise<void> {
     for (const fieldName of  Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
@@ -390,9 +398,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
               if (this.detailsField) {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
+                // this.detailsField = { query: {...this.detailsField}, actions: this.settings.actions };
               }
               this.loadItems();
-              this.initSelectedRows();
+              if (!this.readOnly) {
+                this.initSelectedRows();
+              }
             }
           }
           this.loading = false;
@@ -785,10 +796,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     if (deselectedRows.length > 0) {
       const deselectIndex = deselectedRows.map((item => item.index - this.skip));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
+      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))]
     }
     if (selectedRows.length > 0) {
       const selectedItems = selectedRows.map((item) => item.index - this.skip);
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
+      this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
     this.canDeleteSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canDelete);
@@ -842,7 +855,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: item.id,
         locale: 'en',
-        canUpdate: this.settings.actions.update && item.canUpdate,
+        canUpdate: this.settings.actions && this.settings.actions.update && item.canUpdate,
         template: this.parent ? null : this.settings.query.template
       },
       height: '98%',
@@ -854,6 +867,26 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         this.onUpdateRow(item.id);
       }
     });
+  }
+
+  /* Filter all the columns using the input text.
+  */
+  onFilterFullGrid(value: any): void {
+    const filteredData: any[] = [];
+    this.items.forEach((data: any) => {
+      const auxData = data;
+      delete auxData.canDelete;
+      delete auxData.canUpdate;
+      delete auxData.__typename;
+      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
+        filteredData.push(data);
+      }
+    });
+    this.gridData = {
+      data: filteredData,
+      total: this.totalCount
+    };
+    this.initSelectedRows();
   }
 
   private confirmRevertDialog(record: any, version: any): void {

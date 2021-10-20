@@ -1,5 +1,6 @@
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { GridSettings } from '../ui/grid-core/models/grid-settings.model';
 
 interface DialogData {
   gridSettings: any;
@@ -15,7 +16,7 @@ interface DialogData {
 export class SafeResourceGridModalComponent implements OnInit {
 
   public multiSelect = false;
-  public gridSettings = {};
+  public gridSettings: GridSettings = {};
 
   public selectedRows: any [] = [];
 
@@ -28,9 +29,18 @@ export class SafeResourceGridModalComponent implements OnInit {
     if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
       delete this.data.gridSettings.sort;
     }
-    this.gridSettings = {query: this.data.gridSettings};
+    this.gridSettings = {
+      query: this.data.gridSettings,
+      actions: {
+        delete: false,
+        history: true,
+        convert: false,
+        update: false,
+        inlineEdition: false,
+      }
+    };
     if (this.data.selectedRows) {
-      this.selectedRows = this.data.selectedRows;
+      this.selectedRows = [...this.data.selectedRows];
     }
     this.ref.tick();
   }

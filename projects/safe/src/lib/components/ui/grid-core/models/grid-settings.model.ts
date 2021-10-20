@@ -19,8 +19,10 @@ export interface GridSettings {
         update?: boolean;
         inlineEdition?: boolean;
     };
-    showDetails?: boolean;
-    showExport?: boolean;
-    showFilters?: boolean;
+    // showDetails?: boolean;
+    // showExport?: boolean;
+    // showFilters?: boolean;
     defaultLayout?: any;
 }
+
+export type FilterType = 'classic' | 'fullGrid';

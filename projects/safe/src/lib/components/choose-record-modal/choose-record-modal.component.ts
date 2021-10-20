@@ -63,10 +63,8 @@ export class SafeChooseRecordModalComponent implements OnInit {
         convert: false,
         update: false,
         inlineEdition: false
-      },
-      showDetails: true,
-      showExport: false
-    }
+      }
+    };
   }
 
   onSearch(): void {
