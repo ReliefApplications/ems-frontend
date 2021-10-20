@@ -83,6 +83,10 @@ export class PermissionsManagement {
             apiconfigurations: {
                 create: Permissions.canManageApiConfigurations,
                 access: Permissions.canManageApiConfigurations
+            },
+            pulljobs: {
+                create: Permissions.canManageApiConfigurations,
+                access: Permissions.canManageApiConfigurations
             }
         },
         applications: {

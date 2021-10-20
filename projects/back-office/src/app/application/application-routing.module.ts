@@ -67,12 +67,6 @@ const routes: Routes = [
             loadChildren: () => import('./pages/subscriptions/subscriptions.module')
               .then(m => m.SubscriptionsModule),
             // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'pull-jobs',
-            loadChildren: () => import('./pages/pull-jobs/pull-jobs.module')
-              .then(m => m.PullJobsModule),
-            // canActivate: [SafePermissionGuard]
           }
         ]
       },
