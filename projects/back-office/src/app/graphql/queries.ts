@@ -854,25 +854,35 @@ export interface GetApiConfigurationQueryResponse {
 
 // === GET PULL JOBS ===
 export const GET_PULL_JOBS = gql`
-query GetPullJobs {
-  pullJobs {
-    id
-    name
-    status
-    apiConfiguration {
-      id
-      name
+query GetPullJobs($first: Int, $afterCursor: ID) {
+  pullJobs(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        status
+        apiConfiguration {
+          id
+          name
+        }
+        schedule
+        convertTo {
+          id
+          name
+        }
+        mapping
+        uniqueIdentifiers
+        channel {
+          id
+          title
+        }
+      }
+      cursor
     }
-    schedule
-    convertTo {
-      id
-      name
-    }
-    mapping
-    uniqueIdentifiers
-    channel {
-      id
-      title
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
@@ -880,5 +890,15 @@ query GetPullJobs {
 
 export interface GetPullJobsQueryResponse {
   loading: boolean;
-  pullJobs: PullJob[];
+  pullJobs: {
+    edges: {
+      node: PullJob;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
