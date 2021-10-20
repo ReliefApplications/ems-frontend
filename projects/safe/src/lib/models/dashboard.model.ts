@@ -16,7 +16,7 @@ export const WIDGET_TYPES = [
     {
         id: 'donut-chart',
         name: 'Donut chart',
-        icon: './assets/donut.svg',
+        icon: '/assets/donut.svg',
         color: '#3B8CC4',
         settings: {
             title: 'Donut chart', chart: {
@@ -31,7 +31,7 @@ export const WIDGET_TYPES = [
     {
         id: 'line-chart',
         name: 'Line chart',
-        icon: './assets/line.svg',
+        icon: '/assets/line.svg',
         color: '#F6C481',
         settings: {
             title: 'Line chart', chart: {
@@ -46,7 +46,7 @@ export const WIDGET_TYPES = [
     {
         id: 'pie-chart',
         name: 'Pie chart',
-        icon: './assets/pie.svg',
+        icon: '/assets/pie.svg',
         color: '#8CCDD5',
         settings: {
             title: 'Pie chart', chart: {
@@ -61,7 +61,7 @@ export const WIDGET_TYPES = [
     {
         id: 'grid',
         name: 'Grid',
-        icon: './assets/grid.svg',
+        icon: '/assets/grid.svg',
         color: '#AC8CD5',
         settings: {
             title: 'New grid',
@@ -81,7 +81,7 @@ export const WIDGET_TYPES = [
     {
         id: 'map',
         name: 'Map',
-        icon: './assets/map.svg',
+        icon: '/assets/map.svg',
         color: '#D58CA6',
         settings: {},
         defaultCols: 4,
@@ -92,7 +92,7 @@ export const WIDGET_TYPES = [
     {
         id: 'text',
         name: 'Text',
-        icon: './assets/text.svg',
+        icon: '/assets/text.svg',
         color: '#2F383E',
         settings: { title: 'Enter a title', text: 'Enter a content' },
         defaultCols: 3,

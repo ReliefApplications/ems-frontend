@@ -64,7 +64,7 @@ const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
   info: true,
-  pageSizes: true,
+  pageSizes: [10, 25, 50, 100],
   previousNext: true
 };
 
@@ -428,7 +428,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         template: this.settings.addTemplate,
         locale: 'en'
-      }
+      },
+      autoFocus: false
     });
   }
 
@@ -783,8 +784,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids,
         locale: 'en',
-        template: this.settings.query.template
-      }
+        template: this.settings.query?.template || null
+      },
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
@@ -828,6 +830,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
@@ -1118,7 +1121,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
                 data: {
                   recordId: record.id,
                   locale: 'en'
-                }
+                },
+                autoFocus: false
               });
             }
           }
