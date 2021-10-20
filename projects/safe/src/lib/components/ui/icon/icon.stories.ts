@@ -34,11 +34,12 @@ export default {
 } as Meta;
 
 const Template: Story<SafeIconComponent> = args => ({
-    template: '<safe-icon icon="edit"></safe-icon>',
     props: {
         ...args
     }
 });
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+    icon: 'edit'
+};

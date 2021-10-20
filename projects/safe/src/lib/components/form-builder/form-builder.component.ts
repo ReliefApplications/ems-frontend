@@ -44,7 +44,16 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'descriptionLocation',
   'state',
   'defaultValue',
-  'defaultValueExpression'
+  'defaultValueExpression',
+  'relatedName',
+  'Search resource table',
+  'visible',
+  'readOnly',
+  'isRequired',
+  'placeHolder',
+  'enableIf',
+  'visibleIf',
+  'tooltip'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
