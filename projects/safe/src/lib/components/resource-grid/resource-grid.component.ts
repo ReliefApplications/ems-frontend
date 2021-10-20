@@ -364,6 +364,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 
