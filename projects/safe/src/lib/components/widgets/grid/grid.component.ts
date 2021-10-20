@@ -784,7 +784,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids,
         locale: 'en',
-        template: this.settings.query.template
+        template: this.settings.query?.template || null
       },
       autoFocus: false
     });
