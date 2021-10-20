@@ -310,8 +310,9 @@ export class SafeFormModalComponent implements OnInit {
     classes.content += 'safe-qst-content';
   }
 
-  /* Close the modal without sending any data.
-  */
+  /**
+   * Closes the modal without sending any data.
+   */
   onClose(): void {
     this.dialogRef.close();
   }

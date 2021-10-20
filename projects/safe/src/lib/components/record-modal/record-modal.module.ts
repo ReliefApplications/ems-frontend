@@ -6,6 +6,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeRecordModalComponent],
@@ -16,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
+    SafeButtonModule
   ],
   exports: [SafeRecordModalComponent]
 })
