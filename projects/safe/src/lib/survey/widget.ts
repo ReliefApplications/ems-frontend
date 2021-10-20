@@ -5,6 +5,10 @@ import { SafeResourceGridModalComponent } from '../components/search-resource-gr
 import { FormGroup } from '@angular/forms';
 import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
 import { ChoicesRestful } from 'survey-angular';
+import { SafeButtonComponent } from '../components/ui/button/button.component';
+import { ButtonSize } from '../components/ui/button/button-size.enum';
+import { ButtonCategory } from '../components/ui/button/button-category.enum';
+import { SafeButtonModule } from '../components/ui/button/button.module';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -206,47 +210,35 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       // Adding an open url icon for urls inputs
       if (question.inputType === 'url') {
 
-        const svgHtmlPath = './assets/donut.svg';
-        const svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>';
-
-        // Build HTMLElement from string and retrieve only the childNode without body
-        const svgElem = (new DOMParser().parseFromString(svgHtml, 'text/html')).body.childNodes[0];
-
-        // Create the anchor element that will contain the icon
-        const linkContainer = document.createElement('a');
-
-        // Set the default parameters and styling of the anchor
-        linkContainer.target = '_blank';
-        linkContainer.rel = 'noreferrer noopener';
-        linkContainer.style.fill = '#d7d7d7';
-        linkContainer.style.width = '24px';
-        linkContainer.style.height = '24px';
+        // Generate the dynamic component with its parameters
+        const button = domService.appendComponentToBody(SafeButtonComponent, el.parentElement);
+        button.instance.isIcon = true;
+        button.instance.icon = 'open_in_new';
+        button.instance.size = ButtonSize.SMALL; // No visual difference for now
+        button.instance.category = ButtonCategory.TERTIARY; // No visual difference for now
 
         // Set the default styling of the parent
-        el.parentElement.style.flexDirection = 'row';
-        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.style.display = 'flex';
         el.parentElement.style.alignItems = 'center';
-        el.parentElement. title = 'The URL should start with "http://" or "https://"';
+        el.parentElement.style.flexDirection = 'row';
+        el.parentElement.style.pointerEvents = 'auto';
+        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.title = 'The URL should start with "http://" or "https://"';
 
-        // Insert the icon in the anchor element
-        linkContainer.appendChild(svgElem);
+        // Create an <a> HTMLElement only used to verify the validity of the URL
+        const URLtester = document.createElement('a');
 
         // Update the link value when input change and update icon style in consequence
         el.addEventListener('input', (e: any) => {
-          linkContainer.href = el.value;
 
-          if (linkContainer.host && linkContainer.host !== window.location.host) {
-            linkContainer.style.pointerEvents = 'auto';
-            linkContainer.style.fill = '#008dc9';
-          }
-          else {
-            linkContainer.style.pointerEvents = 'none';
-            linkContainer.style.fill = '#d7d7d7';
-          }
+          // Tests the validity of the URL
+          URLtester.href = el.value;
+          (URLtester.host && URLtester.host !== window.location.host) ? button.instance.disabled = false : button.instance.disabled = true;
         });
 
-        // Insert the elements in the DOM
-        el.parentElement.insertBefore(linkContainer, null);
+        button.instance.emittedEventSubject.subscribe((eventType: string) => {
+          (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) ? window.open(URLtester.href, '_blank', 'noopener,noreferrer') : null;
+        });
 
         // Execute the event listener to set the intial value and styling
         el.dispatchEvent(new Event('input'));

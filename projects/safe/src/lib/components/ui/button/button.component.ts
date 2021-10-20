@@ -1,4 +1,5 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
@@ -29,6 +30,8 @@ export class SafeButtonComponent implements OnInit  {
   @Input() loading = false;
 
   @Input() icon = '';
+
+  public emittedEventSubject: Subject<string> = new Subject();
 
   get color(): string {
     switch (this.variant) {
