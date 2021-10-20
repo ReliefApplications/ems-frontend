@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { GridDataResult, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
+import { GridDataResult, PageChangeEvent, PagerSettings, SelectableSettings, SelectionEvent } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
@@ -11,6 +11,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
+import { Apollo } from 'apollo-angular';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -23,6 +24,13 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return block;
 }
 
+const PAGER_SETTINGS: PagerSettings = {
+  buttonCount: 5,
+  type: 'numeric',
+  info: true,
+  pageSizes: [10, 25, 50, 100],
+  previousNext: true
+};
 
 const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
@@ -64,11 +72,17 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public id = '';
   public readOnly = false;
 
+  // === PAGINATION ===
+  public pageSize = 10;
+  public skip = 0;
+
   // === DATA ===
   public gridData: GridDataResult = { data: [], total: 0 };
+  private totalCount = 0;
   public availableRecords: any[] = [];
   public canDeleteSelectedRows = false;
 
+  public pagerSettings = PAGER_SETTINGS;
   private items: any[] = [];
 
   private metaQuery: any;
@@ -82,6 +96,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public queryError = false;
 
   public fields: any[] = [];
+  private filter: any;
 
   public fieldForms: any[] = [];
 
@@ -97,6 +112,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public editionActive = false;
 
   constructor(
+    private apollo: Apollo,
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService,
@@ -115,7 +131,17 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   public init(): void {
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
+    this.filter = this.settings.query.filter || {};
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: { ...builtQuery.variables, ...{
+        first: this.pageSize,
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
+      }}
+    });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
@@ -159,36 +185,44 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
           const fields = this.settings.query.fields;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.loading = false;
               this.fields = this.getFields(fields);
-              this.items = cloneData(res.data[field] ? res.data[field] : []);
+              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              this.totalCount = res.data[field].totalCount;
+              this.items = cloneData(nodes);
               this.convertDateFields(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
               if (this.detailsField) {
                 this.detailsField = { ...this.detailsField, actions: this.settings.actions };
               }
-              this.gridData = {
-                data: this.items,
-                total: this.items.length
-              };
+              this.loadItems();
               if (!this.readOnly) {
                 this.getSelectedRows();
               }
+              this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
     }
   }
 
+  /*  Set the list of items to display.
+  */
+  private loadItems(): void {
+    this.gridData = {
+      data: this.items,
+      total: this.totalCount
+    };
+  }
+
   private getSelectedRows(): void {
+    this.selectedRowsIndex = [];
     if (this.selectedRows.length > 0) {
-      this.gridData.data.forEach((row: any, index: number) => {
+      this.items.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
-          this.selectedRowsIndex.push(index);
+          this.selectedRowsIndex.push(index + this.skip);
         }
       });
     }
@@ -329,12 +363,11 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 
   onFilter(value: any): void {
-    this.selectedRowsIndex = [];
-    this.selectedRows = [];
     const filteredData: any[] = [];
     this.items.forEach((data: any) => {
       const auxData = data;
@@ -347,8 +380,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     });
     this.gridData = {
       data: filteredData,
-      total: filteredData.length
+      total: this.totalCount
     };
+    this.getSelectedRows();
   }
 
   /**
@@ -428,5 +462,41 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
       text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
     })) : [];
+  }
+
+  /**
+   * Detects pagination events and update the items loaded.
+   * @param event Page change event.
+   */
+  public pageChange(event: PageChangeEvent): void {
+    this.loading = true;
+    this.skip = event.skip;
+    this.pageSize = event.take;
+    this.canDeleteSelectedRows = false;
+    this.dataQuery.fetchMore({
+      variables: {
+        first: this.pageSize,
+        skip: this.skip,
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
+      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        if (!fetchMoreResult) { return prev; }
+        for (const field in fetchMoreResult) {
+          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+            return Object.assign({}, prev, {
+              [field]: {
+                edges: fetchMoreResult[field].edges,
+                totalCount: fetchMoreResult[field].totalCount
+              }
+            });
+          } else {
+            return prev;
+          }
+        }
+        return prev;
+      }
+    });
   }
 }

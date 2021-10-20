@@ -161,6 +161,12 @@ export const routes = [
                         ]
                     },
                     {
+                      path: 'pulljobs',
+                      loadChildren: () => import('./pages/pull-jobs/pull-jobs.module')
+                        .then(m => m.PullJobsModule),
+                      // canActivate: [SafePermissionGuard]
+                    },
+                    {
                         path: '**',
                         pathMatch: 'full',
                         redirectTo: 'users'

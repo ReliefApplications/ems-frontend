@@ -134,7 +134,14 @@ export class SafeFormModalComponent implements OnInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+        if (!data[key]) {
+          if (questions[field].getType() !== 'boolean') {
+            data[key] = null;
+          }
+          if (questions[field].readOnly || !questions[field].visible) {
+            delete data[key];
+          }
+        }
       }
     }
     survey.data = data;
@@ -301,5 +308,12 @@ export class SafeFormModalComponent implements OnInit {
   private onSetCustomCss(options: any): void {
     const classes = options.cssClasses;
     classes.content += 'safe-qst-content';
+  }
+
+  /**
+   * Closes the modal without sending any data.
+   */
+  onClose(): void {
+    this.dialogRef.close();
   }
 }

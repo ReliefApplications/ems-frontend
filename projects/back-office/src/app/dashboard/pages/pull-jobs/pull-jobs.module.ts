@@ -16,31 +16,32 @@ import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
     PullJobsComponent,
     PullJobModalComponent
   ],
-    imports: [
-        CommonModule,
-        PullJobsRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatSelectModule,
-        MatMenuModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        SafeConfirmModalModule,
-        MatExpansionModule,
-        MatDividerModule,
-        SafeButtonModule
-    ]
+  imports: [
+    CommonModule,
+    PullJobsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    SafeConfirmModalModule,
+    MatExpansionModule,
+    MatDividerModule,
+    SafeButtonModule,
+    MatPaginatorModule
+  ]
 })
 export class PullJobsModule { }

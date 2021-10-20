@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { ApiConfiguration, NOTIFICATIONS, PermissionsManagement, PermissionType,
   SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,8 @@ import { AddApiConfigurationComponent } from './components/add-api-configuration
 import { AddApiConfigurationMutationResponse, ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-api-configurations',
@@ -21,8 +23,10 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
 
   // === DATA ===
   public loading = true;
+  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new MatTableDataSource<ApiConfiguration>([]);
+  public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -36,6 +40,13 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
   public searchText = '';
   public statusFilter = '';
 
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -45,16 +56,56 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
   ) { }
 
   ngOnInit(): void {
-    this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+
+    this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS,
-    }).valueChanges.subscribe(res => {
-      this.dataSource.data = res.data.apiConfigurations;
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    this.apiConfigurationsQuery.valueChanges.subscribe(res => {
+      this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(x => x.node);
+      this.dataSource.data = this.cachedApiConfigurations.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.apiConfigurations.totalCount;
+      this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
     });
+
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApiConfigurations.length) {
+      this.apiConfigurationsQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            apiConfigurations: {
+              edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
+              pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
+              totalCount: fetchMoreResult.apiConfigurations.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource.data = this.cachedApiConfigurations.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   private filterPredicate(): void {

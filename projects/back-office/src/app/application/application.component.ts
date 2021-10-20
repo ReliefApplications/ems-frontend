@@ -95,11 +95,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               name: 'Subscriptions',
               path: './settings/subscriptions',
               icon: 'move_to_inbox'
-            },
-            {
-              name: 'Pull jobs',
-              path: './settings/pull-jobs',
-              icon: 'cloud_download'
             }
           ]);
         }

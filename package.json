@@ -1,13 +1,12 @@
 {
   "name": "safe-front",
-  "version": "0.1.14-alpha.3",
+  "version": "0.1.14-alpha.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "build:ci": "ng build --prod --sourceMap=false",
     "build:ci:ra": "ng build --prod --sourceMap=false --configuration=ra",
-    "build:ci:wv": "ng build --prod --sourceMap=false --configuration=wv",
     "build:az:uat:front": "ng build --configuration=azure-uat --sourceMap=false --project=front-office",
     "build:az:uat:back": "ng build --configuration=azure-uat --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:az:prod:front": "ng build --configuration=azure-prod --sourceMap=false --project=front-office",
@@ -29,7 +28,8 @@
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
-    "release:major": "standard-version --release-as major"
+    "release:major": "standard-version --release-as major",
+    "release:alpha": "standard-version --release-as patch --prerelease alpha"
   },
   "private": true,
   "dependencies": {
@@ -57,6 +57,7 @@
     "@progress/kendo-angular-editor": "^1.2.4",
     "@progress/kendo-angular-excel-export": "^3.0.0",
     "@progress/kendo-angular-grid": "^4.8.0",
+    "@progress/kendo-angular-indicators": "^0.2.1",
     "@progress/kendo-angular-inputs": "^6.0.0",
     "@progress/kendo-angular-intl": "^2.0.0",
     "@progress/kendo-angular-l10n": "^2.0.0",
@@ -94,15 +95,16 @@
     "@angular/compiler-cli": "~11.2.8",
     "@babel/core": "^7.14.6",
     "@compodoc/compodoc": "^1.1.11",
-    "@storybook/addon-actions": "^6.3.7",
-    "@storybook/addon-essentials": "^6.3.7",
-    "@storybook/addon-knobs": "^6.3.0",
-    "@storybook/addon-links": "^6.3.7",
-    "@storybook/angular": "^6.3.7",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-knobs": "^6.3.1",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/angular": "^6.3.12",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/leaflet": "^1.5.19",
     "@types/leaflet.markercluster": "^1.4.3",
+    "@types/lodash": "^4.14.175",
     "@types/uuid": "^8.3.0",
     "@types/ws": "^7.4.1",
     "@webcomponents/custom-elements": "^1.4.3",
@@ -112,7 +114,6 @@
     "husky": "^7.0.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "jira-prepare-commit-msg": "^1.4.3",
     "karma": "^6.3.2",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
@@ -124,13 +125,6 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
-  },
-  "jira-prepare-commit-msg": {
-    "messagePattern": "[$J] $M",
-    "jiraTicketPattern": "([A-Z]+-\\d+)",
-    "commentChar": "#",
-    "isConventionalCommit": false,
-    "allowEmptyCommitMessage": false
   },
   "standard-version": {
     "types": [
