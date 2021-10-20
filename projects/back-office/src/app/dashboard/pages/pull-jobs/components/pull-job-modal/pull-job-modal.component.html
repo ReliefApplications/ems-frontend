@@ -39,7 +39,7 @@
                     <mat-label>Notify on</mat-label>
                     <mat-select #channelSelect formControlName="channel" placeholder="Select a channel" (opened)="onOpenApplicationSelect()">
                         <mat-optgroup *ngFor="let application of applications | async" [label]="application.name || ''">
-                            <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
+                            <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
                                 {{channel.title}}
                             </mat-option>
                         </mat-optgroup>

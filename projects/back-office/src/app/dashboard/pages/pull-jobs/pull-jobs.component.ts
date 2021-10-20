@@ -134,7 +134,12 @@ export class PullJobsComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
           if (res.data?.addPullJob) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name));
-            this.cachedPullJobs = this.cachedPullJobs.concat([res.data?.addPullJob]);
+            if (this.cachedPullJobs.length === this.pageInfo.length) {
+              this.cachedPullJobs = this.cachedPullJobs.concat([res.data?.addPullJob]);
+              this.pullJobs.data = this.cachedPullJobs.slice(
+                ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+            }
+            this.pageInfo.length += 1;
           }
         });
       }
@@ -166,6 +171,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             if (res.data?.deletePullJob) {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'));
               this.cachedPullJobs = this.cachedPullJobs.filter(x => x.id !== res.data?.deletePullJob.id);
+              this.pageInfo.length -= 1;
+              this.pullJobs.data = this.cachedPullJobs.slice(
+                ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
             }
           });
         }
@@ -222,6 +230,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               }
               return pullJob;
             });
+            this.pullJobs.data = this.cachedPullJobs.slice(
+              ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
           }
         });
       }

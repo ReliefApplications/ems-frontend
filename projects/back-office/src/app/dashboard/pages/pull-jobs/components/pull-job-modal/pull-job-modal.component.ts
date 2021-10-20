@@ -78,6 +78,10 @@ export class PullJobModalComponent implements OnInit {
     return this.data.pullJob?.convertTo || null;
   }
 
+  get defaultChannel(): Channel | null {
+    return this.data.pullJob?.channel || null;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
@@ -166,7 +170,12 @@ export class PullJobModalComponent implements OnInit {
 
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges.subscribe(res => {
-      this.applications.next(res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false));
+      const nodes = res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false);
+      if (this.defaultChannel) {
+        this.applications.next(nodes);
+      } else {
+        this.applications.next(nodes);
+      }
       this.applicationsPageInfo = res.data.applications.pageInfo;
       this.applicationsLoading = res.loading;
     });
