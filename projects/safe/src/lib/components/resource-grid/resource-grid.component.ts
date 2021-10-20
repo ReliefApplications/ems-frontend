@@ -201,8 +201,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
