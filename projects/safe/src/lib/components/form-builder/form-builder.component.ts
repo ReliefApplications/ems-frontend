@@ -46,11 +46,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'defaultValue',
   'defaultValueExpression',
   'relatedName',
+  'Search resource table',
   'visible',
   'readOnly',
   'isRequired',
   'placeHolder',
-  'enableIf'
+  'enableIf',
+  'visibleIf',
+  'tooltip'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
@@ -148,7 +151,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         const obj = opt.obj;
         if (!obj || !obj.page) { return; }
         // If it is a core field
-        console.log("opt property = ", opt.property.name)
         if (coreFields.includes(obj.valueName) && !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
           opt.canShow = false;
         }
