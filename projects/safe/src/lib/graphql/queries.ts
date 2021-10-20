@@ -341,9 +341,11 @@ export interface GetUsersQueryResponse {
 
 // === GET NOTIFICATIONS ===
 export const GET_NOTIFICATIONS = gql`
-query GetNotifications {
-  notifications {
-    id
+query GetNotifications($first: Int, $afterCursor: ID) {
+  notifications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
     action
     content
     createdAt
@@ -358,12 +360,30 @@ query GetNotifications {
       id
       name
     }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetNotificationsQueryResponse {
   loading: boolean;
-  notifications: Notification[];
+  notifications: {
+    edges: {
+      node: Notification;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===
@@ -453,26 +473,6 @@ export const GET_APPLICATION_BY_ID = gql`
         convertTo {
           id
           name
-        }
-      }
-      pullJobs {
-        id
-        name
-        status
-        apiConfiguration {
-          id
-          name
-        }
-        schedule
-        convertTo {
-          id
-          name
-        }
-        mapping
-        uniqueIdentifiers
-        channel {
-          id
-          title
         }
       }
       canSee

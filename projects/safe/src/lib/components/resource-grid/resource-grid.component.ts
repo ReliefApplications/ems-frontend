@@ -11,6 +11,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
+import { Apollo } from 'apollo-angular';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -27,7 +28,7 @@ const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
   info: true,
-  pageSizes: true,
+  pageSizes: [10, 25, 50, 100],
   previousNext: true
 };
 
@@ -95,6 +96,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public queryError = false;
 
   public fields: any[] = [];
+  private filter: any;
 
   public fieldForms: any[] = [];
 
@@ -110,6 +112,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   public editionActive = false;
 
   constructor(
+    private apollo: Apollo,
     public dialog: MatDialog,
     private queryBuilder: QueryBuilderService,
     private downloadService: SafeDownloadService,
@@ -128,7 +131,17 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   public init(): void {
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings, this.pageSize);
+    this.filter = this.settings.query.filter || {};
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: { ...builtQuery.variables, ...{
+        first: this.pageSize,
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
+      }}
+    });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
@@ -188,8 +201,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
@@ -208,7 +220,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   private getSelectedRows(): void {
     this.selectedRowsIndex = [];
     if (this.selectedRows.length > 0) {
-      this.gridData.data.forEach((row: any, index: number) => {
+      this.items.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
           this.selectedRowsIndex.push(index + this.skip);
         }
@@ -351,6 +363,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 
@@ -463,7 +476,10 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,
-        skip: this.skip
+        skip: this.skip,
+        filter: this.filter,
+        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+        sortOrder: this.settings.query.sort?.order || ''
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         if (!fetchMoreResult) { return prev; }
@@ -475,6 +491,8 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
                 totalCount: fetchMoreResult[field].totalCount
               }
             });
+          } else {
+            return prev;
           }
         }
         return prev;

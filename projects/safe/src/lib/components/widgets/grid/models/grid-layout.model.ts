@@ -4,4 +4,5 @@ export interface GridLayout {
     fields?: any;
     filter?: CompositeFilterDescriptor;
     sort?: SortDescriptor[];
+    showFilter?: boolean;
 }

@@ -41,8 +41,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   filteredNavGroups: any[] = [];
 
   // === NOTIFICATIONS ===
-  notifications: Notification[] = [];
-  notificationsSubscription?: Subscription;
+  public notifications: Notification[] = [];
+  private notificationsSubscription?: Subscription;
+  public hasMoreNotifications = false;
+  private hasMoreNotificationsSubscription?: Subscription;
+  public loadingNotifications = false;
 
   // === USER INFO ===
   account: Account | null;
@@ -79,13 +82,18 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.otherOffice = 'back office';
     }
     this.loadUserAndUpdateLayout();
-    this.notificationService.initNotifications();
-    this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
+    this.notificationService.init();
+    this.notificationsSubscription = this.notificationService.notifications$.subscribe((notifications: Notification[]) => {
       if (notifications) {
         this.notifications = notifications;
       } else {
         this.notifications = [];
       }
+    });
+
+    this.hasMoreNotificationsSubscription = this.notificationService.hasNextPage$.subscribe(res => {
+      this.hasMoreNotifications = res;
+      this.loadingNotifications = false;
     });
 
     this.layoutService.rightSidenav.subscribe(view => {
@@ -151,6 +159,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.hasMoreNotificationsSubscription) {
+      this.hasMoreNotificationsSubscription.unsubscribe();
     }
   }
 
@@ -218,6 +229,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       window.location.href = this.environment.backOfficeUri;
     }
+  }
+
+  public onLoadMoreNotifications(e: any): void {
+    e.stopPropagation();
+    this.notificationService.fetchMore();
+    this.loadingNotifications = true;
   }
 
   onMarkAllNotificationsAsRead(): void {

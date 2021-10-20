@@ -138,7 +138,7 @@ export class SafeFormModalComponent implements OnInit {
           if (questions[field].getType() !== 'boolean') {
             data[key] = null;
           }
-          if (questions[field].readOnly) {
+          if (questions[field].readOnly || !questions[field].visible) {
             delete data[key];
           }
         }
@@ -308,5 +308,12 @@ export class SafeFormModalComponent implements OnInit {
   private onSetCustomCss(options: any): void {
     const classes = options.cssClasses;
     classes.content += 'safe-qst-content';
+  }
+
+  /**
+   * Closes the modal without sending any data.
+   */
+  onClose(): void {
+    this.dialogRef.close();
   }
 }

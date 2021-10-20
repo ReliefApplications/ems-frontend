@@ -64,31 +64,6 @@ export class QueryBuilderService {
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
-  public getFilter(queryName: string): any[] {
-    const query = this.availableQueries.getValue().find(x => x.name === queryName);
-    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
-      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
-  }
-
-  public getFilterFromType(typeName: string): any[] {
-    console.log(typeName);
-    const query = this.availableQueries.getValue().find(x => x.type.name === typeName + 'Connection');
-    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
-      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
-  }
-
-  private buildFilter(filter: any): any {
-    return filter ? Object.keys(filter).reduce((o, key) => {
-      if (filter[key] || filter[key] === false) {
-        if (filter[key] === 'today()') {
-          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
-        }
-        return { ...o, [key]: filter[key] };
-      }
-      return { ...o };
-    }, {}) : null;
-  }
-
   private buildFields(fields: any[]): any {
     return ['id\n'].concat(fields.map(x => {
       switch (x.kind) {
@@ -96,12 +71,12 @@ export class QueryBuilderService {
           return x.name + '\n';
         }
         case 'LIST': {
-          return `${x.name}(
+          return `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
             sortOrder: "${x.sort.order}",
-            filter: ${this.objToString(this.buildFilter(x.filter))}
+            filter: ${this.filterToString(x.filter)}
           ) {
-            ${this.buildFields(x.fields)}
+            ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}
           }` + '\n';
         }
         case 'OBJECT': {
@@ -114,6 +89,14 @@ export class QueryBuilderService {
         }
       }
     }));
+  }
+
+  private filterToString(filter: any): string {
+    if (filter.filters) {
+      return `{ logic: "${filter.logic}", filters: [${filter.filters.map((x: any) => this.filterToString(x))}]}`;
+    } else {
+      return `{ field: "${filter.field}", operator: "${filter.operator}", value: "${filter.value}" }`;
+    }
   }
 
   private buildMetaFields(fields: any[]): any {
@@ -142,19 +125,18 @@ export class QueryBuilderService {
     }));
   }
 
-  public buildQuery(settings: any, first?: number): any {
+  public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int) {
+        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
           ${builtQuery.name}(
           first: $first,
           skip: $skip,
-          sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
-          sortOrder: "${builtQuery.sort?.order || '' }",
-          filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
+          sortField: $sortField,
+          sortOrder: $sortOrder,
+          filter: $filter
           ) {
             edges {
               node {
@@ -162,15 +144,14 @@ export class QueryBuilderService {
               }
             }
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
         }
         }
       `;
-      return this.apollo.watchQuery<any>({
-        query,
-        variables: {
-          first: first || 25
-        }
-      });
+      return query;
     } else {
       return null;
     }
@@ -196,23 +177,23 @@ export class QueryBuilderService {
     }
   }
 
+  public getMetaFields(queryName: string, fields: any): any {
+    const metaFields = this.buildMetaFields(fields);
+    const query = gql`
+      query GetCustomMetaQuery {
+        _${queryName}Meta {
+          ${metaFields}
+        }
+      }
+    `;
+    this.apollo.query<any>({
+      query
+    });
+  }
+
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
     return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
-  }
-
-  private objToString(obj: any): string {
-    let str = '{';
-    for (const p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        str += p + ': ' + (
-            typeof obj[p] === 'string' ? `"${obj[p]}"` :
-            Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
-            obj[p]
-          ) + ',\n';
-      }
-    }
-    return str + '}';
   }
 
   private arrayToString(array: any): string {
@@ -237,20 +218,26 @@ export class QueryBuilderService {
     });
   }
 
-  public createFilterGroup(filter: any, availableFilter: any): FormGroup {
-    if (availableFilter) {
-      const group = availableFilter.reduce((o: any, key: any) => {
-        return ({
-          ...o,
-          [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)]
-        });
-      }, {});
-      return this.formBuilder.group(group);
+  public createFilterGroup(filter: any, fields: any): FormGroup {
+    if (filter.filters) {
+      const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
+      return this.formBuilder.group({
+        logic: filter.logic || 'and',
+        filters: this.formBuilder.array(filters)
+      });
     } else {
-      const group = Object.keys(filter).reduce((o, key) => {
-        return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
-      }, {});
-      return this.formBuilder.group(group);
+      if (filter.field) {
+        return this.formBuilder.group({
+          field: filter.field,
+          operator: filter.operator || 'eq',
+          value: filter.value
+        });
+      } else {
+        return this.formBuilder.group({
+          logic: 'and',
+          filters: this.formBuilder.array([])
+        });
+      }
     }
   }
 
