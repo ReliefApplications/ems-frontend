@@ -51,7 +51,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           this.apiConfiguration = res.data.apiConfiguration;
           this.apiForm = this.formBuilder.group(
             {
-              name: [this.apiConfiguration?.name, [ Validators.required, Validators.pattern('^[a-z\s_-]+$') ]],
+              name: [this.apiConfiguration?.name, [ Validators.required, Validators.pattern('^[A-Za-z-_]+$') ]],
               status: [this.apiConfiguration?.status, Validators.required],
               authType: [this.apiConfiguration?.authType, Validators.required],
               endpoint: [this.apiConfiguration?.endpoint, Validators.required],

@@ -24,7 +24,7 @@ export class AddApiConfigurationComponent implements OnInit {
   */
   ngOnInit(): void {
     this.apiForm = this.formBuilder.group({
-      name: ['', [ Validators.required, Validators.pattern('^[a-z\s_-]+$') ]]
+      name: ['', [ Validators.required, Validators.pattern('^[A-Za-z-_]+$') ]]
     });
   }
 
