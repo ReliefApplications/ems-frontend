@@ -213,16 +213,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    console.log('INIT');
   }
 
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
-    console.log('SETTINGS', this.settings);
-    console.log('CHANGE READONLY', this.readOnly);
     this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
-    console.log('CHANGE SELECTABLE', this.selectableSettings);
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
       // const filter = this.lintFilter(this.layout.filter);
@@ -810,10 +806,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
     this.canDeleteSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canDelete);
-    console.log('SELECTED ROWS', this.selectedRows);
-    console.log('SELECTED ROWS INDEX', this.selectedRowsIndex);
-    console.log('SELECTION', selection);
-    console.log('SELECT MODE', this.selectableSettings);
   }
 
   /* Open the form corresponding to selected row in order to update it
