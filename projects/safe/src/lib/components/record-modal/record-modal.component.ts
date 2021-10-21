@@ -175,7 +175,8 @@ export class SafeRecordModalComponent implements OnInit {
     this.dialogRef.close(true);
   }
 
-  /* Close the modal without sending any data.
+ /**
+  * Closes the modal without sending any data.
   */
   onClose(): void {
     this.dialogRef.close();
