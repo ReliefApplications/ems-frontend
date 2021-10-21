@@ -1,5 +1,5 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
-  Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+  Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -35,13 +35,14 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings, FilterType } from './models/grid-settings.model';
-import { get, isEqual, isEmpty } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { PopupService } from '@progress/kendo-angular-popup';
-import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -83,6 +84,9 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   providers: [
     PopupService,
     ResizeBatchService,
+    CalendarDOMService,
+    MonthViewService,
+    WeekNamesService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
@@ -103,6 +107,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   @Input() readOnly = false;
   @Input() showDetails = true;
   @Input() showExport = false;
+  @Input() showSaveLayout = false;
   @Input() filterType: FilterType = 'classic';
 
   // === OUTPUTS ===
@@ -188,10 +193,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
-  get showSaveLayout(): boolean {
-    return !isEmpty(this.layout);
-  }
-
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -212,6 +213,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+    console.log('INIT');
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -1030,7 +1032,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         title: rowTitle,
         comment: item[rowTitle],
-        readOnly: !this.settings.actions.inlineEdition
+        readOnly: !this.settings.actions || !this.settings.actions.inlineEdition
       },
       autoFocus: false,
       position: {

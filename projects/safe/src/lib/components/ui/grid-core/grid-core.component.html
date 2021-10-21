@@ -335,11 +335,12 @@
                         mat-menu-item color="warn" (click)="onConvertRecord([idx - skip])">
                         Convert
                     </button>
-                    <mat-divider></mat-divider>
-                    <button *ngIf="(!settings.actions || settings.actions.delete) && dataItem.canDelete"
-                        mat-menu-item (click)="onDeleteRow([idx - skip])">
-                        Delete
-                    </button>
+                    <ng-container *ngIf="(!settings.actions || settings.actions.delete) && dataItem.canDelete">
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="onDeleteRow([idx - skip])">
+                            Delete
+                        </button>
+                    </ng-container>
                 </mat-menu>
             </ng-template>
         </kendo-grid-column>

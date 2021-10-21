@@ -233,6 +233,20 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'readOnlyGrid:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayAsGrid'],
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayAsGrid) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+        default: true
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'canAddNew:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',

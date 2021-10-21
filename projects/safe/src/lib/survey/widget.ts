@@ -179,41 +179,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           if (question.displayAsGrid) {
             const grid = domService.appendComponentToBody(SafeGridCoreComponent, el.parentElement);
             instance = grid.instance;
-            instance.multiSelect = true;
-            instance.filterType = 'fullGrid';
-            // instance.selectedRows = question.value || [];
-            instance.readOnly = true;
-            const questionQuery = question.gridFieldsSettings || {};
-            instance.settings = {
-              query: {
-                ...questionQuery, filter: {
-                  logic: 'and',
-                  filters: [{
-                    field: 'ids',
-                    operator: 'eq',
-                    value: question.value || []
-                  }],
-                }
-              }
-            };
-            instance.ngOnChanges();
+            setGridInputs(instance, question);
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.name) {
-                console.log('UPDATE VALUE', question.value);
-                console.log('SURVEY TYPE', typeof survey);
-                instance.settings = {
-                  query: {
-                    ...questionQuery, filter: {
-                      logic: 'and',
-                      filters: [{
-                        field: 'ids',
-                        operator: 'eq',
-                        value: question.value || []
-                      }],
-                    }
-                  }
-                };
-                instance.ngOnChanges();
+                setGridInputs(instance, question);
               }
             });
           }
@@ -302,6 +271,40 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     }
     mainDiv.style.display = question.isReadOnly ? 'none' : '';
     return mainDiv;
+  }
+
+  function setGridInputs(instance: SafeGridCoreComponent, question: any): void {
+    instance.multiSelect = true;
+    instance.readOnly = question.readOnlyGrid;
+    const questionQuery = question.gridFieldsSettings || {};
+    const settings = {
+      query: {
+        ...questionQuery, filter: {
+          logic: 'and',
+          filters: [{
+            field: 'ids',
+            operator: 'eq',
+            value: question.value || []
+          }],
+        }
+      }
+    };
+    if (!question.readOnlyGrid) {
+      Object.assign(settings,{
+        actions: {
+          delete: false,
+          history: true,
+          convert: false,
+          update: true,
+          inlineEdition: true
+        }
+      });
+      instance.filterType = 'classic';
+    } else {
+      instance.filterType = 'fullGrid';
+    }
+    instance.settings = settings;
+    instance.ngOnChanges();
   }
 
   Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
