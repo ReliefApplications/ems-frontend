@@ -25,11 +25,17 @@ export class SafeDownloadService {
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    console.log('url');
+    console.log(url);
     const token = localStorage.getItem('msal.idtoken');
+    console.log('token');
+    console.log(token);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
+    console.log('headers');
+    console.log(headers);
     this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
       const blob = new Blob([res], {type});
       this.saveFile(fileName, blob);

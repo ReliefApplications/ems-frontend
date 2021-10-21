@@ -18,6 +18,7 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SelectionModel } from '@angular/cdk/collections';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
+import {SafeDownloadService} from '../../services/download.service';
 
 @Component({
   selector: 'safe-users',
@@ -49,7 +50,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private downloadService: SafeDownloadService
   ) { }
 
   ngOnInit(): void {
@@ -204,5 +206,19 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  onExport(type: string): void {
+    console.log('export');
+    const path = `download/users`;
+    console.log('path');
+    console.log(path);
+    const fileName = `users.${type}`;
+    console.log('fileName');
+    console.log(fileName);
+    const queryString = new URLSearchParams({type}).toString();
+    console.log('queryString');
+    console.log(queryString);
+    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }

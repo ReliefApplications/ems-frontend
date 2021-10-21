@@ -24,6 +24,13 @@
 </div>
 <div>
   <div class="actions">
+    <safe-button icon="send" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
+      Export users
+    </safe-button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onExport('csv')">.csv</button>
+      <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
+    </mat-menu>
     <safe-button icon="send" category="secondary" variant="primary" (click)="onInvite()">
       Invite users
     </safe-button>
