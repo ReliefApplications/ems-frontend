@@ -811,7 +811,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
           },
-          template: this.settings.query.template
+          template: this.settings.query ? this.settings.query.template : ''
         },
       });
     });
