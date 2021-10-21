@@ -69,7 +69,7 @@ export class SafeChooseRecordModalComponent implements OnInit {
 
   onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
-    const recordSelected = this.chooseRecordForm.get('record')?.value
+    const recordSelected = this.chooseRecordForm.get('record')?.value;
     this.selectedRows = recordSelected ? [recordSelected] : [];
   }
 

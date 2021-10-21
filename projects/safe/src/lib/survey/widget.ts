@@ -290,7 +290,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
     };
     if (!question.readOnlyGrid) {
-      Object.assign(settings,{
+      Object.assign(settings, {
         actions: {
           delete: false,
           history: true,
