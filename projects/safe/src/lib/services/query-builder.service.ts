@@ -76,7 +76,7 @@ export class QueryBuilderService {
             sortOrder: "${x.sort.order}",
             filter: ${this.filterToString(x.filter)}
           ) {
-            ${this.buildFields(x.fields)}
+            ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}
           }` + '\n';
         }
         case 'OBJECT': {
@@ -144,6 +144,10 @@ export class QueryBuilderService {
               }
             }
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
         }
         }
       `;

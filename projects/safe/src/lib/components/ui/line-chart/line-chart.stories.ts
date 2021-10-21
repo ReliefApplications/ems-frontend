@@ -16,11 +16,21 @@ export default {
         }),
         withKnobs
     ],
-    title: 'UI/Line Chart',
+    title: 'UI/Charts/Line Chart',
+    argTypes: {
+        series: {
+            control: { type: 'object' }
+        },
+        legend: {
+            control: { type: 'object' }
+        },
+        title: {
+            control: { type: 'object' }
+        }
+    }
 } as Meta;
 
 const Template: Story<SafeLineChartComponent> = args => ({
-    template: '<safe-line-chart></safe-line-chart>',
     props: {
         ...args
     }

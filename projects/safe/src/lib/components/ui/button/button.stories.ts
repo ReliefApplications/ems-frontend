@@ -59,17 +59,36 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeButtonComponent> = args => ({
-    template: '<safe-button>{{content}}</safe-button>',
+const TemplateWithText: Story<SafeButtonComponent> = args => ({
+    template: '<safe-button [icon]="icon">{{content}}</safe-button>',
     props: {
         ...args,
         content: text('Text', 'This is a button')
     }
 });
 
-export const Default = Template.bind({});
+const TemplateWithoutText: Story<SafeButtonComponent> = args => ({
+    props: {
+        ...args
+    }
+});
+
+export const Default = TemplateWithText.bind({});
 Default.args = {
     category: ButtonCategory.PRIMARY,
     size: ButtonSize.MEDIUM,
     variant: ButtonVariant.DEFAULT
 };
+
+export const IconAndText = TemplateWithText.bind({});
+IconAndText.args = {
+    ...Default.args,
+    icon: 'home'
+};
+
+export const Icon = TemplateWithoutText.bind({});
+Icon.args = {
+    ...Default.args,
+    isIcon: true,
+    icon: 'home'
+}

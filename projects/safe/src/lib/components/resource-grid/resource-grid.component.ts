@@ -201,8 +201,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
@@ -364,6 +363,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 
