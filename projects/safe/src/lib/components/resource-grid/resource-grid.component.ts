@@ -135,12 +135,14 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
-      variables: { ...builtQuery.variables, ...{
-        first: this.pageSize,
-        filter: this.filter,
-        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-        sortOrder: this.settings.query.sort?.order || ''
-      }}
+      variables: {
+        ...builtQuery.variables, ...{
+          first: this.pageSize,
+          filter: this.filter,
+          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+          sortOrder: this.settings.query.sort?.order || ''
+        }
+      }
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
@@ -367,16 +369,41 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFilter(value: any): void {
+  onFilter(filter: any): void {
     const filteredData: any[] = [];
+    const searchText = filter.value.toLowerCase();
     this.items.forEach((data: any) => {
       const auxData = data;
       delete auxData.canDelete;
       delete auxData.canUpdate;
       delete auxData.__typename;
-      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
+      if (Object.keys(auxData).some((key: string, index) => {
+        console.log(this.fields);
+        const meta = this.metaFields[key];
+        if (meta && meta.choices) {
+          return this.getDisplayText(auxData[key], meta).toString().toLowerCase().includes(searchText);
+        } else {
+          return auxData[key].toString().toLowerCase().includes(searchText);
+        }
+      })) {
         filteredData.push(data);
       }
+      // const textValue = auxData[key].toString().toLowerCase();
+      // this.fields) {
+      //   const meta = this.fields[field].meta;
+      //   if (meta && meta.choices) {
+      //     for (const choice of this.fields[field].meta.choices) {
+      //       if (choice.text.toLowerCase().includes(filter.value.toLowerCase()) && textValue.includes(choice.value)) {
+      //         if (!filteredData.includes(data)) {
+      //           filteredData.push(data);
+      //           return;
+      //         }
+      //       }
+      //     }
+      //   } else {
+      //     return 
+      //   }
+      // }
     });
     this.gridData = {
       data: filteredData,
