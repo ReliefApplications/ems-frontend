@@ -209,16 +209,14 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onExport(type: string): void {
-    console.log('export');
-    const path = `download/users`;
-    console.log('path');
-    console.log(path);
-    const fileName = `users.${type}`;
-    console.log('fileName');
-    console.log(fileName);
+    let fileName = `users.${type}`;
+    let path = `download/users`;
+    // if we are in the Users page of an application
+    if (this.applicationService) {
+      fileName = `users_${this.applicationService.application.source._value.name}.${type}`;
+      path = `download/users/${this.applicationService.application.source._value.id}`;
+    }
     const queryString = new URLSearchParams({type}).toString();
-    console.log('queryString');
-    console.log(queryString);
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 }
