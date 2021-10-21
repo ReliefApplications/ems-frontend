@@ -9,6 +9,7 @@ import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { SafeButtonModule } from '../components/ui/button/button.module';
+import { EmbeddedViewRef } from '@angular/core';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -211,11 +212,19 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       if (question.inputType === 'url') {
 
         // Generate the dynamic component with its parameters
+        let instance: SafeButtonComponent;
         const button = domService.appendComponentToBody(SafeButtonComponent, el.parentElement);
-        button.instance.isIcon = true;
-        button.instance.icon = 'open_in_new';
-        button.instance.size = ButtonSize.SMALL; // No visual difference for now
-        button.instance.category = ButtonCategory.TERTIARY; // No visual difference for now
+        instance = button.instance;
+        instance.isIcon = true;
+        instance.icon = 'open_in_new';
+        instance.size = ButtonSize.SMALL;
+        instance.category = ButtonCategory.TERTIARY;
+        instance.variant = 'default';
+        // we override the css of the component
+        const domElem = (button.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+        (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
+        (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
+        (domElem.firstChild as HTMLElement).style.color = 'black';
 
         // Set the default styling of the parent
         el.parentElement.style.display = 'flex';
@@ -227,13 +236,14 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
         const URLtester = document.createElement('a');
+        URLtester.href = el.value;
+        (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
 
-        // Update the link value when input change and update icon style in consequence
-        el.addEventListener('input', (e: any) => {
-
-          // Tests the validity of the URL
-          URLtester.href = el.value;
-          (URLtester.host && URLtester.host !== window.location.host) ? button.instance.disabled = false : button.instance.disabled = true;
+        question.survey.onValueChanged.add((survey: any, options: any) => {
+          if (options.question.name === question.name) {
+            URLtester.href = el.value;
+            (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+          }
         });
 
         button.instance.emittedEventSubject.subscribe((eventType: string) => {
@@ -241,9 +251,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             window.open(URLtester.href, '_blank', 'noopener,noreferrer');
           }
         });
-
-        // Execute the event listener to set the intial value and styling
-        el.dispatchEvent(new Event('input'));
       }
     }
   };
