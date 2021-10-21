@@ -388,22 +388,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       })) {
         filteredData.push(data);
       }
-      // const textValue = auxData[key].toString().toLowerCase();
-      // this.fields) {
-      //   const meta = this.fields[field].meta;
-      //   if (meta && meta.choices) {
-      //     for (const choice of this.fields[field].meta.choices) {
-      //       if (choice.text.toLowerCase().includes(filter.value.toLowerCase()) && textValue.includes(choice.value)) {
-      //         if (!filteredData.includes(data)) {
-      //           filteredData.push(data);
-      //           return;
-      //         }
-      //       }
-      //     }
-      //   } else {
-      //     return 
-      //   }
-      // }
     });
     this.gridData = {
       data: filteredData,
