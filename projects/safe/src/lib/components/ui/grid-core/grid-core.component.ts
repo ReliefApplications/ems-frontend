@@ -37,9 +37,10 @@ import { GridLayout } from './models/grid-layout.model';
 import { GridSettings, FilterType } from './models/grid-settings.model';
 import { get, isEqual, isEmpty } from 'lodash';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
-import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -81,9 +82,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   styleUrls: ['./grid-core.component.scss'],
   providers: [
     PopupService,
+    ResizeBatchService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay]}
+    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
 export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
@@ -216,7 +218,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   */
   ngOnChanges(): void {
     console.log('SETTINGS', this.settings);
-    this.selectableSettings.mode = this.multiSelect ? 'multiple' : 'single';
+    console.log('CHANGE READONLY', this.readOnly);
+    this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
+    console.log('CHANGE SELECTABLE', this.selectableSettings);
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
       // const filter = this.lintFilter(this.layout.filter);
@@ -226,7 +230,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.layout.sort;
     }
     this.showFilter = !!this.layout?.showFilter;
-    //this.loadItems();
+    this.loadItems();
     this.hasEnabledActions = !this.settings.actions ||
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -435,12 +439,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  initialize selected rows from input
+  /*  Initialize selected rows from input
   */
   private initSelectedRows(): void {
     this.selectedRowsIndex = [];
     if (this.selectedRows.length > 0) {
-      this.items.forEach((row: any, index: number) => {
+      this.gridData.data.forEach((row: any, index: number) => {
         if (this.selectedRows.includes(row.id)) {
           this.selectedRowsIndex.push(index + this.skip);
         }
@@ -731,7 +735,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
     if (!!this.parent) {
@@ -796,7 +799,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     if (deselectedRows.length > 0) {
       const deselectIndex = deselectedRows.map((item => item.index - this.skip));
       this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
-      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))]
+      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))];
     }
     if (selectedRows.length > 0) {
       const selectedItems = selectedRows.map((item) => item.index - this.skip);
@@ -805,6 +808,10 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
     this.canDeleteSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canDelete);
+    console.log('SELECTED ROWS', this.selectedRows);
+    console.log('SELECTED ROWS INDEX', this.selectedRowsIndex);
+    console.log('SELECTION', selection);
+    console.log('SELECT MODE', this.selectableSettings);
   }
 
   /* Open the form corresponding to selected row in order to update it

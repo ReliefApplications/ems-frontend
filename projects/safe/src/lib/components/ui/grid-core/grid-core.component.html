@@ -1,24 +1,22 @@
 <!-- GRID HEADER -->
 <kendo-grid id="customGrid" class="widget-content" [autoSize]="false" [data]="gridData" [pageSize]="pageSize"
-[skip]="skip" [loading]="loading" [columnMenu]="!readOnly && filterType === 'classic' && { columnChooser: false, filter: !showFilter }"
+[skip]="skip" [loading]="loading" [columnMenu]="!readOnly && filterType === 'classic' ? { columnChooser: false, filter: !showFilter } : false"
 [reorderable]="!readOnly" [sortable]="!readOnly" [pageable]="pagerSettings" [sort]="sort" [rowSelected]="isRowSelected"
-[selectable]="!readOnly && selectableSettings" (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)"
+[selectable]="!readOnly ? selectableSettings : false" (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)"
 (pageChange)="pageChange($event)" [filterable]="filterType === 'classic' ? showFilter ? true : 'menu' : false" [filter]="filter"
 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="!readOnly"
 (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
 (columnVisibilityChange)="columnVisibilityChange()">
-    <ng-template kendoGridToolbarTemplate *ngIf="filterType === 'fullGrid'">
-        <input placeholder="Search in all columns..." kendoTextBox (input)="onFilterFullGrid($event.target)" />
-    </ng-template>
     <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
         <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
         <kendo-grid-column-chooser></kendo-grid-column-chooser>
         <button *ngIf="showExport" type="button" kendoGridExcelCommand class="k-button">Export</button>
         <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
-            (click)="onSaveChanges()">Save</button>
+        (click)="onSaveChanges()">Save</button>
         <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
-            (click)="onCancelChanges()">Cancel</button>
-        <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+        (click)="onCancelChanges()">Cancel</button>
+        <button *ngIf="filterType === 'classic'" kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+        <input *ngIf="filterType === 'fullGrid'" placeholder="Search in all columns..." kendoTextBox (input)="onFilterFullGrid($event.target)" />
         <span kendotooltip *ngIf="!parent && isAdmin && showSaveLayout">
             <button title="Saving will store the current grid layout as default layout for other users"
                 class='k-button' (click)="saveDefaultLayout()" [disabled]="!hasLayoutChanges">Save Layout as default</button>
