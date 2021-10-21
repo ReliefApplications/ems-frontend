@@ -375,10 +375,19 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canUpdate;
       delete auxData.__typename;
       Object.keys(auxData).map((key, index) => {
-        for (const field in auxData[key]) {
-          if (auxData[key][field].toString().toLowerCase().includes(value.value.toLowerCase())) {
-            filteredData.push(data);
-            return;
+        if (auxData[key].toString().toLowerCase().includes(value.value.toLowerCase())) {
+          filteredData.push(data);
+          return;
+        } else  {
+          for (const field in this.fields) {
+            if (this.fields[field].meta.choices) {
+              for (const choice of this.fields[field].meta.choices) {
+                if (choice.text.toLowerCase().includes(value.value.toLowerCase()) && auxData[key].includes(choice.value)) {
+                  filteredData.push(data);
+                  return;
+                }
+              }
+            }
           }
         }
       });
