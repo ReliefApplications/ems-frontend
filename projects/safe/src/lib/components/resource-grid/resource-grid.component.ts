@@ -28,7 +28,7 @@ const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
   info: true,
-  pageSizes: true,
+  pageSizes: [10, 25, 50, 100],
   previousNext: true
 };
 
@@ -201,8 +201,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
@@ -364,6 +363,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 

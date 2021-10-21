@@ -3,13 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { ApiConfiguration, NOTIFICATIONS, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
+import {
+  ApiConfiguration, NOTIFICATIONS, PermissionsManagement, PermissionType,
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS } from '../../../graphql/queries';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
-import { AddApiConfigurationMutationResponse, ADD_API_CONFIGURATIION,
-  DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION } from '../../../graphql/mutations';
+import {
+  AddApiConfigurationMutationResponse, ADD_API_CONFIGURATIION,
+  DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION
+} from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 
 const ITEMS_PER_PAGE = 10;
@@ -83,7 +87,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
    * Handles page event.
    * @param e page event.
    */
-   onPage(e: any): void {
+  onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApiConfigurations.length) {
       this.apiConfigurationsQuery.fetchMore({
@@ -92,7 +96,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
           afterCursor: this.pageInfo.endCursor
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
             apiConfigurations: {
               edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
@@ -113,7 +117,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
       return (((this.searchText.trim().length === 0 ||
         (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.statusFilter.trim().length === 0 ||
-        (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))));
+          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))));
     };
   }
 
@@ -136,13 +140,13 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
       Create a new apiConfiguration on closed if result.
   */
   onAdd(): void {
-   const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-   dialogRef.afterClosed().subscribe(value => {
-     if (value) {
-       this.apollo.mutate<AddApiConfigurationMutationResponse>({
-         mutation: ADD_API_CONFIGURATIION,
-         variables: {
-           name: value.name
+    const dialogRef = this.dialog.open(AddApiConfigurationComponent);
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<AddApiConfigurationMutationResponse>({
+          mutation: ADD_API_CONFIGURATIION,
+          variables: {
+            name: value.name
           }
         }).subscribe(res => {
           if (res.errors) {

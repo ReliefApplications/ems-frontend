@@ -286,7 +286,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           data: {
             template: question.addTemplate,
             locale: question.resource.value
-          }
+          },
+          autoFocus: false
         });
         dialogRef.afterClosed().subscribe(res => {
           if (res) {
