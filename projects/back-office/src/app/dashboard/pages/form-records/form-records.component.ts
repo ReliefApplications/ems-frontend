@@ -207,14 +207,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
-    console.log('path');
-    console.log(path);
     const fileName = `${this.form.name}.${type}`;
-    console.log('fileName');
-    console.log(fileName);
     const queryString = new URLSearchParams({type}).toString();
-    console.log('queryString');
-    console.log(queryString);
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 
