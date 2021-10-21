@@ -680,6 +680,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Get the field name and its value to display inside the grid
+   * @param item meta data of the question.
+   * @param field question value.
+   * @returns text value of the question.
+   */
+  public getDisplayTextInObject(item: any, fieldName: any): string | string[] {
+    const fieldObject = fieldName.split('.');
+    return item[fieldObject[0]][fieldObject[1]];
+  }
+
   /*  Detect sort events and update the items loaded.
   */
   public sortChange(sort: SortDescriptor[]): void {

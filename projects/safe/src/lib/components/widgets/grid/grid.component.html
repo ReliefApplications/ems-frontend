@@ -97,6 +97,9 @@
                                     </button>
                                 </div>
                             </div>
+                            <div *ngIf="!dataItem[field.name]" #refSpan class="textbox">
+                                {{ getDisplayTextInObject(dataItem, field.name) }}
+                            </div>
                         </ng-template>
                         <!-- DISPLAY ( boolean ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
