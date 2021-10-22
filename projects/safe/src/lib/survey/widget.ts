@@ -65,6 +65,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
+      if (question.inputType === 'text' || question.getType() === 'comment') {
+        el.classList.add("translate");
+      }
       // Correction of date inputs
       if (question.value && ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType)) {
         const date = new Date(question.value);
