@@ -65,7 +65,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
-      if (question.inputType === 'text' || question.getType() === 'comment') {
+      // allow to translate read only input on record details
+      if ((question.inputType === 'text' || question.getType() === 'comment') && question.survey.mode === 'display') {
         el.classList.add("translate");
       }
       // Correction of date inputs
