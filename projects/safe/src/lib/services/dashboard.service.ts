@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Dashboard } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../graphql/queries';
-import {EDIT_DASHBOARD, EditDashboardMutationResponse} from '../graphql/mutations';
+import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
 
 @Injectable({
   providedIn: 'root'
@@ -47,15 +47,24 @@ export class SafeDashboardService {
     }
   }
 
+  resetDefaultWidgetLayout(widgetId: number): any {
+    try {
+      const dashboardId = this.dashboard.getValue()?.id;
+      localStorage.removeItem(`widget:${dashboardId}:${widgetId}`);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   saveWidgetLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
-    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
+    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
   }
 
   saveWidgetDefaultLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    const defaultLayout = { ...layout, timestamp: + new Date() };
+    const defaultLayout = { ...layout, timestamp: + new Date() };
     const widgetTemp = {
       ...dashboardStructure[id],
       settings: {
