@@ -37,7 +37,6 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
 
   public onDefaultLayoutReset(e: any): void {
     this.dashboardService.resetDefaultWidgetLayout(this.widget.id);
-    // Not sure if it will still be needed once the reloading issue is fixed
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 }
