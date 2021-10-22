@@ -22,8 +22,10 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
-  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import {
+  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID
+} from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -50,7 +52,28 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
-const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+const cloneData = (data: any[]) => data.map(item => Object.assign({}, flattenItem(item)));
+
+const flattenItem = (item: any) => {
+  const res: any = {};
+  for (const i in item) {
+    if (!item.hasOwnProperty(i)) { continue; }
+    if ((typeof item[i] === 'object')) {
+      const flatObject = flattenItem(item[i]);
+      for (const j in flatObject) {
+        if (!flatObject.hasOwnProperty(j)) { continue; }
+        res[i + '.' + j] = flatObject[j];
+      }
+    } else {
+      if (Array.isArray(item[i])) {
+        res[i] = item[i].map((x: any) => flattenItem(x));
+      } else {
+        res[i] = item[i];
+      }
+    }
+  }
+  return res;
+};
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -227,13 +250,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         filters.push(this.settings.query.filter);
       }
       const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
       const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
           first: this.pageSize,
-          filter: { logic: 'and', filters },
+          filter: { logic: 'and', filters },
           sortField,
           sortOrder
         }
@@ -265,7 +288,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Fetch choices from URL if needed
    */
   private async populateMetaFields(): Promise<void> {
-    for (const fieldName of  Object.keys(this.metaFields)) {
+    for (const fieldName of Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
@@ -293,7 +316,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
@@ -382,6 +405,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               const nodes = res.data[field].edges.map((x: any) => x.node) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
+              console.log(this.items);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.detailsField = fields.find((x: any) => x.kind === 'LIST');
@@ -680,17 +704,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /**
-   * Get the field name and its value to display inside the grid
-   * @param item meta data of the question.
-   * @param field question value.
-   * @returns text value of the question.
-   */
-  public getDisplayTextInObject(item: any, fieldName: any): string | string[] {
-    const fieldObject = fieldName.split('.');
-    return item[fieldObject[0]][fieldObject[1]];
-  }
-
   /*  Detect sort events and update the items loaded.
   */
   public sortChange(sort: SortDescriptor[]): void {
@@ -701,14 +714,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     }
   }
 
- /**
-  * Detects pagination events and update the items loaded.
-  * @param event Page change event.
-  */
+  /**
+   * Detects pagination events and update the items loaded.
+   * @param event Page change event.
+   */
   public pageChange(event: PageChangeEvent): void {
     this.loading = true;
     this.skip = event.skip;
@@ -725,19 +738,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         filters.push(this.settings.query.filter);
       }
       const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
       const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
           skip: this.skip,
-          filter: { logic: 'and', filters },
+          filter: { logic: 'and', filters },
           sortField,
           sortOrder
         },
-        updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        updateQuery: (prev: any, { fetchMoreResult }: any) => {
           this.loading = false;
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) { return prev; }
           for (const field in fetchMoreResult) {
             if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
               return Object.assign({}, prev, {
@@ -754,10 +767,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
- /**
-  * Detects filtering events and update the items loaded.
-  * @param filter composite filter created by Kendo.
-  */
+  /**
+   * Detects filtering events and update the items loaded.
+   * @param filter composite filter created by Kendo.
+   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
@@ -765,7 +778,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     }
   }
 
@@ -962,7 +975,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public reloadData(): void {
     if (!this.parent) {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     } else {
       this.childChanged.emit();
     }
@@ -1015,14 +1028,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail && selectedRecords.length > 0) {
-        const emailSettings = { query: {
-          name: this.settings.query.name,
-          fields: options.bodyFields,
-          filter: {
-            ids: selectedRecords.map(x => x.id)
+        const emailSettings = {
+          query: {
+            name: this.settings.query.name,
+            fields: options.bodyFields,
+            filter: {
+              ids: selectedRecords.map(x => x.id)
+            }
           }
-        }};
-        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id).length );
+        };
+        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id).length);
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
