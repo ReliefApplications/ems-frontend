@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration, PullJob
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -762,38 +762,58 @@ export interface GetRecordDetailsQueryResponse {
 
 // === GET API CONFIGURATIONS ===
 export const GET_API_CONFIGURATIONS = gql`
-query GetApiConfigurations {
-  apiConfigurations {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
+query GetApiConfigurations($first: Int, $afterCursor: ID) {
+  apiConfigurations(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
-        title
+        name
+        status
+        authType
+        endpoint
+        pingUrl
+        settings
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
-  apiConfigurations: ApiConfiguration[];
+  apiConfigurations: {
+    edges: {
+      node: ApiConfiguration;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET API CONFIGURATION ===
@@ -832,17 +852,29 @@ export interface GetApiConfigurationQueryResponse {
   apiConfiguration: ApiConfiguration;
 }
 
-// === GET RECORDS ===
-export const GET_RECORDS = gql`
-query GetRecords($first: Int, $afterCursor: ID, $id: ID!, $isForm: Boolean!, $display: Boolean) {
-  records(first: $first, afterCursor: $afterCursor, id: $id, isForm: $isForm) {
+// === GET PULL JOBS ===
+export const GET_PULL_JOBS = gql`
+query GetPullJobs($first: Int, $afterCursor: ID) {
+  pullJobs(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
         id
-        data(display: $display)
-        form {
+        name
+        status
+        apiConfiguration {
           id
           name
+        }
+        schedule
+        convertTo {
+          id
+          name
+        }
+        mapping
+        uniqueIdentifiers
+        channel {
+          id
+          title
         }
       }
       cursor
@@ -855,11 +887,12 @@ query GetRecords($first: Int, $afterCursor: ID, $id: ID!, $isForm: Boolean!, $di
   }
 }`;
 
-export interface GetRecordsQueryResponse {
+
+export interface GetPullJobsQueryResponse {
   loading: boolean;
-  records: {
+  pullJobs: {
     edges: {
-      node: Record;
+      node: PullJob;
       cursor: string;
     }[];
     pageInfo: {

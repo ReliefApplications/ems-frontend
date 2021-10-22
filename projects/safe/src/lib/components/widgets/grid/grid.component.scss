@@ -30,6 +30,10 @@ textarea {
 
 .textbox-container {
     display: flex;
+
+    &>.url-container {
+        text-decoration: underline;
+    }
 }
 
 .textbox {
