@@ -5,6 +5,11 @@ import { SafeResourceGridModalComponent } from '../components/search-resource-gr
 import { FormGroup } from '@angular/forms';
 import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
 import { ChoicesRestful } from 'survey-angular';
+import { SafeButtonComponent } from '../components/ui/button/button.component';
+import { ButtonSize } from '../components/ui/button/button-size.enum';
+import { ButtonCategory } from '../components/ui/button/button-category.enum';
+import { SafeButtonModule } from '../components/ui/button/button.module';
+import { EmbeddedViewRef } from '@angular/core';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -51,7 +56,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         required: true,
       });
       // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: {request: XMLHttpRequest}) => {
+      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
         if (sender.url.includes(environment.API_URL)) {
           const token = localStorage.getItem('msal.idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -123,9 +128,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
-          () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
+            () => {
+              span.style.display = !question.tooltip ? 'none' : '';
+            });
         }
       }
       // Display of add button for resource question
@@ -148,9 +153,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
-          () => {
-            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
-          });
+            () => {
+              searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+            });
           question.registerFunctionOnPropertyValueChanged('canSearch',
             () => {
               searchBtn.style.display = question.canSearch ? '' : 'none';
@@ -163,7 +168,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             () => {
               addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
-          }
+        }
       }
       // Display of add button | grid for resources question
       if (question.getType() === 'resources' && question.resource) {
@@ -202,6 +207,50 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
               addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
         }
+      }
+      // Adding an open url icon for urls inputs
+      if (question.inputType === 'url') {
+
+        // Generate the dynamic component with its parameters
+        let instance: SafeButtonComponent;
+        const button = domService.appendComponentToBody(SafeButtonComponent, el.parentElement);
+        instance = button.instance;
+        instance.isIcon = true;
+        instance.icon = 'open_in_new';
+        instance.size = ButtonSize.SMALL;
+        instance.category = ButtonCategory.TERTIARY;
+        instance.variant = 'default';
+        // we override the css of the component
+        const domElem = (button.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+        (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
+        (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
+        (domElem.firstChild as HTMLElement).style.color = 'black';
+
+        // Set the default styling of the parent
+        el.parentElement.style.display = 'flex';
+        el.parentElement.style.alignItems = 'center';
+        el.parentElement.style.flexDirection = 'row';
+        el.parentElement.style.pointerEvents = 'auto';
+        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.title = 'The URL should start with "http://" or "https://"';
+
+        // Create an <a> HTMLElement only used to verify the validity of the URL
+        const URLtester = document.createElement('a');
+        URLtester.href = el.value;
+        (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+
+        question.survey.onValueChanged.add((survey: any, options: any) => {
+          if (options.question.name === question.name) {
+            URLtester.href = el.value;
+            (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+          }
+        });
+
+        button.instance.emittedEventSubject.subscribe((eventType: string) => {
+          if (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) {
+            window.open(URLtester.href, '_blank', 'noopener,noreferrer');
+          }
+        });
       }
     }
   };

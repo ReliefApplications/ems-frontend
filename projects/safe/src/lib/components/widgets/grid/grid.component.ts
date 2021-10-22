@@ -734,7 +734,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
               return Object.assign({}, prev, {
                 [field]: {
                   edges: fetchMoreResult[field].edges,
-                  totalCount: fetchMoreResult[field].totalCount
+                  totalCount: fetchMoreResult[field].totalCount,
+                  pageInfo: fetchMoreResult[field].pageInfo
                 }
               });
             }

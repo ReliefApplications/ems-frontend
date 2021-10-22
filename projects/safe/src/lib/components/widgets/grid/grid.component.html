@@ -102,6 +102,25 @@
                                 </div>
                             </div>
                         </ng-template>
+                        <!-- DISPLAY ( url ) -->
+                        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'url'">
+                            <div class="textbox-container">
+                                <a class="url-container textbox" href="{{dataItem[field.name]}}" target="_blank"
+                                    rel="noopener noreferrer">
+                                    <div #refSpan>
+                                        {{dataItem[field.name]}}
+                                    </div>
+                                </a>
+                                <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
+                                    <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
+                                        mat-icon-button>
+                                        <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
+                                        </mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
                         <!-- DISPLAY ( boolean ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'boolean'">
@@ -130,8 +149,8 @@
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                         *ngIf="field.editor === 'text'">
-                        <!-- EDITION ( text / comment ) -->
-                        <ng-container *ngIf="field.meta.type === 'text'">
+                        <!-- EDITION ( text / comment / url ) -->
+                        <ng-container *ngIf="field.meta.type === 'text' || field.meta.type === 'url'">
                             <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable
                                 [name]="field.name" class="k-textbox"></textarea>
                         </ng-container>
