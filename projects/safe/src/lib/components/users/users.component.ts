@@ -1,12 +1,10 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
 import {
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
   DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
@@ -16,8 +14,10 @@ import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { NOTIFICATIONS } from '../../const/notifications';
+import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
+import { SafeDownloadService } from '../../services/download.service';
+import { Application } from '../../models/application.model';
 
 @Component({
   selector: 'safe-users',
@@ -49,7 +49,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private downloadService: SafeDownloadService
   ) { }
 
   ngOnInit(): void {
@@ -204,5 +205,22 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  onExport(type: string): void {
+    // if we are in the Users page of an application
+    if (this.applicationService) {
+      this.applicationService.application.subscribe((value: Application) => {
+        const fileName = `users_${value.name}.${type}`;
+        const path = `download/application/${value.id}/users`;
+        const queryString = new URLSearchParams({ type }).toString();
+        this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+      });
+    } else {
+      const fileName = `users.${type}`;
+      const path = `download/users`;
+      const queryString = new URLSearchParams({ type }).toString();
+      this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+    }
   }
 }
