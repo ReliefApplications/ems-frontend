@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.5](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.4...v0.1.14-alpha.5) (2021-10-25)
+
+
+### Features
+
+* add list of properties that can be edited in children forms without impacting core form [#11116](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11116) ([99a6876](https://github.com/ReliefApplications/emrs-safe-frontend/commits/99a68769b9573432f245adbe9219a8abd6f2a211))
+* navigation buttons of forms at the bottom of modals [#11515](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11515) ([1f0550d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/1f0550dd0afecbe5ac3e08aea465e678d9319c25))
+* pull job at the main backoffice level [#10628](https://github.com/ReliefApplications/emrs-safe-frontend/issues/10628) ([c985b2f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/c985b2f0323afe3bdc45aa384acf060b6b09e61c))
+* users export [#11391](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11391) ([10e23f4](https://github.com/ReliefApplications/emrs-safe-frontend/commits/10e23f496ba68cbccb9d773f3e90a9b08c4b685a))
+
+
+### Bug Fixes
+
+* add can update and can delete rules to linked records in grid [#11039](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11039) ([28e474c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/28e474cc8822fae5ea3691e8ddbec7e60e7529b3))
+* husky prepare commit msg hook ([9eced25](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9eced2583ae28881ba26a9ea5618a4c3192f3f98))
+
 ### [0.1.14-alpha.4](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.3...v0.1.14-alpha.4) (2021-10-19)
 
 
