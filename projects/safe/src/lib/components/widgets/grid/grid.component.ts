@@ -1273,7 +1273,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Reset the currently cached layout to the default one
    */
   resetDefaultLayout(): void {
-    this.defaultLayoutReset.emit(this.layout);
+    this.defaultLayoutReset.emit();
   }
 
   /**

@@ -47,10 +47,10 @@ export class SafeDashboardService {
     }
   }
 
-  resetDefaultWidgetLayout(widgetId: number): any {
+  resetDefaultWidgetLayout(id: number): void {
     try {
       const dashboardId = this.dashboard.getValue()?.id;
-      localStorage.removeItem(`widget:${dashboardId}:${widgetId}`);
+      localStorage.removeItem(`widget:${dashboardId}:${id}`);
     } catch (err) {
       console.log(err);
     }
