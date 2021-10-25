@@ -44,7 +44,7 @@ export class SafeFormModalComponent implements OnInit {
 
   private isMultiEdition = false;
 
-  private survey?: Survey.Model;
+  public survey?: Survey.Model;
   private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
@@ -118,6 +118,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }
+    this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
     this.survey.onComplete.add(this.completeMySurvey);
   }
