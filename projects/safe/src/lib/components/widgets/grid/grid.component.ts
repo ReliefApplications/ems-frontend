@@ -208,9 +208,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /*  Detect changes of the settings to (re)load the data.
   */
-  ngOnChanges(changes: any): void {
+  ngOnChanges(): void {
     if (this.layout?.filter) {
-      // const filter = this.lintFilter(this.layout.filter);
       this.filter = this.layout.filter;
     }
     if (this.layout?.sort) {
@@ -224,22 +223,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds custom query.
     if (!this.parent) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      const filters = [this.filter];
-      if (this.settings.query.filter) {
-        filters.push(this.settings.query.filter);
-      }
-      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-      this.dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: { logic: 'and', filters },
-          sortField,
-          sortOrder
+      if (builtQuery) {
+        const filters = [this.filter];
+        if (this.settings.query.filter) {
+          filters.push(this.settings.query.filter);
         }
-      });
+        const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+        this.dataQuery = this.apollo.watchQuery<any>({
+          query: builtQuery,
+          variables: {
+            first: this.pageSize,
+            filter: { logic: 'and', filters },
+            sortField,
+            sortOrder
+          }
+        });
+      }
     }
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {

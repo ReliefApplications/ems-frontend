@@ -219,26 +219,27 @@ export class QueryBuilderService {
   }
 
   public createFilterGroup(filter: any, fields: any): FormGroup {
-    if (filter.filters) {
-      const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
-      return this.formBuilder.group({
-        logic: filter.logic || 'and',
-        filters: this.formBuilder.array(filters)
-      });
-    } else {
-      if (filter.field) {
+    if (filter) {
+      if (filter.filters) {
+        const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
         return this.formBuilder.group({
-          field: filter.field,
-          operator: filter.operator || 'eq',
-          value: filter.value
+          logic: filter.logic || 'and',
+          filters: this.formBuilder.array(filters)
         });
       } else {
-        return this.formBuilder.group({
-          logic: 'and',
-          filters: this.formBuilder.array([])
-        });
+        if (filter.field) {
+          return this.formBuilder.group({
+            field: filter.field,
+            operator: filter.operator || 'eq',
+            value: filter.value
+          });
+        }
       }
     }
+    return this.formBuilder.group({
+      logic: 'and',
+      filters: this.formBuilder.array([])
+    });
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {
