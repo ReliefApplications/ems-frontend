@@ -118,7 +118,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }
-    this.survey.showNavigationButtons = false
+    this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
     this.survey.onComplete.add(this.completeMySurvey);
   }
