@@ -268,7 +268,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const fieldName of  Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
+        const url: string = meta.choicesByUrl.url.replace('{SAFE_API}', this.apiUrl);
         const localRes = localStorage.getItem(url);
         if (localRes) {
           this.metaFields[fieldName] = {

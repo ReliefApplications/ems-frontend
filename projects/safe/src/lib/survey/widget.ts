@@ -57,7 +57,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       });
       // Pass token before the request to fetch choices by URL if it's targeting SAFE API
       Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
-        if (sender.url.includes(environment.API_URL)) {
+        if (sender.url.includes('{SAFE_API}')) {
+          sender.url = sender.url.replace('{SAFE_API}', environment.API_URL);
           const token = localStorage.getItem('msal.idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
