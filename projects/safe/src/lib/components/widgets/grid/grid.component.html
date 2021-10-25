@@ -29,8 +29,12 @@
                 [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <span kendotooltip *ngIf="!parent && isAdmin">
-                <button title="Saving will store the current grid layout as default layout for other users"
+                <button title="This will save this layout as the default one for all users"
                     class='k-button' (click)="saveDefaultLayout()">Save Layout as default</button>
+            </span>
+            <span kendotooltip *ngIf="!parent">
+                <button title="This will erase current layout with default layout"
+                    class='k-button' (click)="resetDefaultLayout()">Reset default Layout</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'

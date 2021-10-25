@@ -158,6 +158,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -1265,6 +1267,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   saveDefaultLayout(): void {
     this.defaultLayoutChanged.emit(this.layout);
+  }
+
+  /**
+   * Reset the currently cached layout to the default one
+   */
+  resetDefaultLayout(): void {
+    this.defaultLayoutReset.emit();
   }
 
   /**
