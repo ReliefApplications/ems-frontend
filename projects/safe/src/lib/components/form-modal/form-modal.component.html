@@ -1,9 +1,9 @@
 <safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
 <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
-<div mat-dialog-actions align="end">
+<div mat-dialog-actions align="end" *ngIf="survey">
     <button mat-button color="warn" (click)="onClose()">Cancel</button>
-    <button *ngIf="!survey?.isFirstPage" mat-button color="primary" (click)="survey?.prevPage()">Previous</button>
-    <button *ngIf="!survey?.isLastPage" mat-button color="primary" (click)="survey?.nextPage()">Next</button>
-    <button mat-flat-button color="primary" (click)="completeMySurvey(survey);">Complete</button>
+    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
+    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
+    <button mat-flat-button color="primary" (click)="survey.completeLastPage()">Complete</button>
 </div>

@@ -29,8 +29,12 @@
                 [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <span kendotooltip *ngIf="!parent && isAdmin">
-                <button title="Saving will store the current grid layout as default layout for other users"
+                <button title="This will save this layout as the default one for all users"
                     class='k-button' (click)="saveDefaultLayout()">Save Layout as default</button>
+            </span>
+            <span kendotooltip *ngIf="!parent">
+                <button title="This will erase current layout with default layout"
+                    class='k-button' (click)="resetDefaultLayout()">Reset default Layout</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
@@ -87,7 +91,7 @@
                             *ngIf="field.meta.type === 'text'">
                             <div translate="yes" class="textbox-container">
                                 <div #refSpan class="textbox">
-                                    {{dataItem[field.name]}}
+                                    {{getPropertyValue(dataItem, field.name)}}
                                 </div>
                                 <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
                                     <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
@@ -102,10 +106,10 @@
                         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'url'">
                             <div class="textbox-container">
-                                <a class="url-container textbox" href="{{dataItem[field.name]}}" target="_blank"
+                                <a class="url-container textbox" href="{{getPropertyValue(dataItem, field.name)}}" target="_blank"
                                     rel="noopener noreferrer">
                                     <div #refSpan>
-                                        {{dataItem[field.name]}}
+                                        {{getPropertyValue(dataItem, field.name)}}
                                     </div>
                                 </a>
                                 <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
@@ -139,7 +143,7 @@
                         <!-- DISPLAY ( dropdown / radiogroup ) -->
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-                            {{ getDisplayText(dataItem[field.name], field.meta) }}
+                            {{ getPropertyValue(dataItem, field.name) }}
                         </ng-template>
                     </ng-container>
                     <!-- EDITION ( text / color / comment - resource - dropdown ) -->
@@ -197,7 +201,7 @@
                         </safe-array-filter>
                     </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                        {{ getDisplayText(dataItem[field.name], field.meta) }}
+                        {{ getPropertyValue(dataItem, field.name) }}
                     </ng-template>
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                         <kendo-multiselect [data]="field.meta.choices" textField="text" valueField="value"
