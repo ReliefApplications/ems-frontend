@@ -51,10 +51,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   //   filters: { field: string, operator: string, value: string }[]
   // } = {logic: 'or', filters: []};
 
+  // public filters: {
+  //   logic: 'or' | 'and',
+  //   filters: { field: string, operator: string, value: string }[]
+  // };
   public filters: {
-    logic: 'or' | 'and',
-    filters: { field: string, operator: string, value: string }[]
-  };
+    field: string,
+    operator: string,
+    value: string
+  }[];
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
@@ -77,21 +82,19 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: SafeAuthService,
     private previewService: PreviewService
   ) {
-    this.filters = {
-      logic: 'or',
-      filters: [
-        {field: 'Name', operator: 'contains', value: this.searchText},
-        {field: 'CreatedOn', operator: 'is', value: ''},
-        {field: 'Status', operator: 'is', value: ''}
-      ]
-    };
+    this.filters = [
+        {field: 'name', operator: 'contains', value: this.searchText},
+        {field: 'CreatedAt', operator: 'is', value: ''},
+        {field: 'status', operator: 'is', value: ''}
+      ];
   }
 
   ngOnInit(): void {
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: ITEMS_PER_PAGE,
+        filters: { logic: 'and', filters: this.filters }
       }
     });
 
@@ -267,23 +270,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('applyFilter');
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+      const statusIndex = this.filters.findIndex((f) => f.field === 'status');
+      this.filters[statusIndex].value = this.statusFilter;
     } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-      const textIndex = this.filters.filters.findIndex(f => f.field === 'Name');
-      this.filters.filters[textIndex].value = this.searchText;
-      console.log('this.filters');
-      console.log(this.filters);
-      // this.filters.filters.includes({field: 'Name', operator: 'contains', value: })
-      // if (this.filters.filters.some(f => f.operator !== 'contains')) {
-      //   this.filters.filters.push({field: 'Name', operator: 'contains', value: this.searchText});
-      // }
-      // else {
-      //   // let a = this.filters.filters.find(f => f.operator !== 'contains')?.value;
-      //   // a = this.searchText;
-      // }
-      // if (this.filters.filters === null) {
-      //   this.filters.filters.find(f => f.operator === 'contains')?.value = this.searchText;
-      // }
+      const nameIndex = this.filters.findIndex((f) => f.field === 'name');
+      this.filters[nameIndex].value = this.searchText;
     }
     console.log('this.filters');
     console.log(this.filters);
@@ -291,14 +283,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.statusFilter);
     console.log('this.searchText');
     console.log(this.searchText);
-    console.log('column');
-    console.log(column);
-    console.log('event');
-    console.log(event);
-    const filters = [this.filters];
+    // const filters = [this.filters];
+    console.log('this.filters');
+    console.log(this.filters);
+    const f = [this.filters];
     this.applicationsQuery.fetchMore({
       variables: {
-        filter: { logic: 'and', filters },
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
+        // filter: f,
+        filters: { logic: 'and', filters: this.filters },
       },
     });
     this.applications.filter = '##';

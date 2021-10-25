@@ -411,8 +411,8 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID) {
-  applications(first: $first, afterCursor: $afterCursor) {
+query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
     edges {
       node {
         id
