@@ -39,7 +39,22 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public searchText = '';
   public statusFilter = '';
   public showFilters = false;
+  // public filters: {
+  //   logic: 'or' | 'and',
+  //   filters: [
+  //     { field: string, operator: string, value: string }
+  //   ]
+  // } = [{logic: 'or', filters: null}];
 
+  // public filters: {
+  //   logic: 'or' | 'and',
+  //   filters: { field: string, operator: string, value: string }[]
+  // } = {logic: 'or', filters: []};
+
+  public filters: {
+    logic: 'or' | 'and',
+    filters: { field: string, operator: string, value: string }[]
+  };
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
@@ -61,7 +76,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private previewService: PreviewService
-  ) { }
+  ) {
+    this.filters = {
+      logic: 'or',
+      filters: [
+        {field: 'Name', operator: 'contains', value: this.searchText},
+        {field: 'CreatedOn', operator: 'is', value: ''},
+        {field: 'Status', operator: 'is', value: ''}
+      ]
+    };
+  }
 
   ngOnInit(): void {
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
@@ -116,6 +140,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private filterPredicate(): void {
+    console.log('filteerPredicate');
     this.applications.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
@@ -239,11 +264,43 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyFilter(column: string, event: any): void {
+    console.log('applyFilter');
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
     } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
+      const textIndex = this.filters.filters.findIndex(f => f.field === 'Name');
+      this.filters.filters[textIndex].value = this.searchText;
+      console.log('this.filters');
+      console.log(this.filters);
+      // this.filters.filters.includes({field: 'Name', operator: 'contains', value: })
+      // if (this.filters.filters.some(f => f.operator !== 'contains')) {
+      //   this.filters.filters.push({field: 'Name', operator: 'contains', value: this.searchText});
+      // }
+      // else {
+      //   // let a = this.filters.filters.find(f => f.operator !== 'contains')?.value;
+      //   // a = this.searchText;
+      // }
+      // if (this.filters.filters === null) {
+      //   this.filters.filters.find(f => f.operator === 'contains')?.value = this.searchText;
+      // }
     }
+    console.log('this.filters');
+    console.log(this.filters);
+    console.log('this.statusFilter');
+    console.log(this.statusFilter);
+    console.log('this.searchText');
+    console.log(this.searchText);
+    console.log('column');
+    console.log(column);
+    console.log('event');
+    console.log(event);
+    const filters = [this.filters];
+    this.applicationsQuery.fetchMore({
+      variables: {
+        filter: { logic: 'and', filters },
+      },
+    });
     this.applications.filter = '##';
   }
 

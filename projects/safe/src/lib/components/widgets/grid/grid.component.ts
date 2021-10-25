@@ -229,6 +229,20 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
       const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      console.log('this.settings');
+      console.log(this.settings);
+      console.log('builtQuery');
+      console.log(builtQuery);
+      console.log('this.pageSize');
+      console.log(this.pageSize);
+      console.log('1');
+      console.log({ logic: 'and', filters });
+      console.log('2');
+      console.log({logic: 'and', filters });
+      console.log('sortField');
+      console.log(sortField);
+      console.log('sortOrder');
+      console.log(sortOrder);
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
@@ -259,6 +273,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.queryError = true;
     }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    console.log('GRID');
   }
 
   /**
@@ -699,6 +714,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   * @param event Page change event.
   */
   public pageChange(event: PageChangeEvent): void {
+    // console.log('event');
+    // console.log(event);
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
@@ -716,6 +733,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
       const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      console.log('filters:');
+      console.log(filters);
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
@@ -748,12 +767,15 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   * @param filter composite filter created by Kendo.
   */
   public filterChange(filter: CompositeFilterDescriptor): void {
+    console.log('FILTER CHANGE');
     this.filter = filter;
     this.layout.filter = this.filter;
     this.layoutChanged.emit(this.layout);
     if (!!this.parent) {
+      console.log('!!parent');
       this.loadItems();
     } else {
+      console.log('!parent');
       this.pageChange({skip: 0, take: this.pageSize});
     }
   }

@@ -75,9 +75,11 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
     this.form.valueChanges.subscribe(value => {
       this.filterService?.filter(value);
     });
+    console.log('init meenu filter');
   }
 
   public handleFilter(value: string, index: number): void {
+    console.log('filteer 1');
     if (index === 1) {
       this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
     } else {
