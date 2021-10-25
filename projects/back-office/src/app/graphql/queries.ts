@@ -184,6 +184,18 @@ query GetShortFormById($id: ID!) {
   }
 }`;
 
+export const GET_FORM_RECORDS = gql`
+  fragment FormRecords on Record (filters: $filters, archived: $showDeletedRecords) {
+    id
+    data(display: $display)
+    versions {
+      id
+      createdAt
+      data
+    }
+  }
+`;
+
 export const GET_FORM_BY_ID = gql`
 query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
   form(id: $id) {

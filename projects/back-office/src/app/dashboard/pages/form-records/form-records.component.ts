@@ -3,7 +3,7 @@ import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse, GetRecordsQueryResponse, GET_FORM_BY_ID, GET_RECORDS, GET_RECORD_DETAILS
+  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS
 } from '../../../graphql/queries';
 import {
   EditRecordMutationResponse,
