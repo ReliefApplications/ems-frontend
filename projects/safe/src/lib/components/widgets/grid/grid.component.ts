@@ -663,17 +663,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Displays text instead of values for questions with select.
-   * @param meta meta data of the question.
-   * @param value question value.
-   * @returns text value of the question.
+   * Returns property value in object from path.
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @returns Value of the property.
    */
-  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+  public getPropertyValue(item: any, path: string): any {
+    const meta = get(this.metaFields, path);
+    const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+        return meta.choices.reduce((acc: string[], x: any) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
       } else {
-        return meta.choices.find(x => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
     } else {
       return value;
