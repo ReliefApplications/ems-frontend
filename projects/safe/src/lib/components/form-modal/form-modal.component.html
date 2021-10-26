@@ -5,5 +5,5 @@
     <button mat-button color="warn" (click)="onClose()">Cancel</button>
     <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
     <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
-    <button mat-flat-button color="primary" (click)="survey.completeLastPage()">Complete</button>
+    <button *ngIf="!survey.hasErrors()" mat-flat-button color="primary" (click)="survey.completeLastPage()">Save and close</button>
 </div>
