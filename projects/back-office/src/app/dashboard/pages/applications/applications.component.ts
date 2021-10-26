@@ -274,10 +274,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(event);
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-      const statusIndex = this.filters.findIndex((f) => f.field === 'status');
+      const statusIndex = this.filters.findIndex((filter) => filter.field === 'status');
       this.filters[statusIndex].value = this.statusFilter;
     } else if (column === 'createdAt'){
-      const nameIndex = this.filters.findIndex((f) => f.field === 'createdAt');
+      const nameIndex = this.filters.findIndex((filter) => filter.field === 'createdAt');
       let sd;
       let ed;
       if (this.startDate.value && this.endDate.value) {
@@ -292,7 +292,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       console.log('text');
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-      const nameIndex = this.filters.findIndex((f) => f.field === 'name');
+      const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
       this.filters[nameIndex].value = this.searchText;
     }
     console.log('this.filters');
