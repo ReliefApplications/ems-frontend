@@ -30,6 +30,7 @@ export class SafeRecordModalComponent implements OnInit {
   public form?: Form;
   public record: Record = {};
   public modifiedAt: Date | null = null;
+  public selectedTabIndex = 0;
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
   public formPages: any[] = [];
@@ -101,6 +102,9 @@ export class SafeRecordModalComponent implements OnInit {
       }
     }
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+      this.selectedTabIndex = surveyModel.currentPageNo;
+    });
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
@@ -146,6 +150,7 @@ export class SafeRecordModalComponent implements OnInit {
 
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
+    this.selectedTabIndex = i;
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }

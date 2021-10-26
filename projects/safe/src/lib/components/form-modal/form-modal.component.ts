@@ -45,6 +45,7 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
 
   public survey?: Survey.Model;
+  public selectedTabIndex = 0;
   public formPages: any[] = [];
   private temporaryFilesStorage: any = {};
 
@@ -113,6 +114,9 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
     this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
+    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+      this.selectedTabIndex = surveyModel.currentPageNo;
+    });
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     for (const page of this.survey.pages) {
       if (page.isVisible) {
@@ -285,9 +289,10 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   public onShowPage(i: number): void {
-    if (this.survey) this.survey.currentPageNo = i;
+    if (this.survey) { this.survey.currentPageNo = i; }
+    this.selectedTabIndex = i;
   }
-  
+
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
       options.callback('success', options.content);
