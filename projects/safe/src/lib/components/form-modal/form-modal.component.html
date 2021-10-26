@@ -1,4 +1,7 @@
 <safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
+<mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="formPages.length > 1">
+    <mat-tab *ngFor="let page of formPages" [label]="page.title ? page.title : page.name"></mat-tab>
+</mat-tab-group>
 <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
 <div mat-dialog-actions align="end" *ngIf="survey">

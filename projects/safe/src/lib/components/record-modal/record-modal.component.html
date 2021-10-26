@@ -36,5 +36,7 @@
 </mat-dialog-actions>
 <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo && canEdit">
     <button mat-button color="warn" (click)="onClose()">Close</button>
+    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
+    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
     <button mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
 </mat-dialog-actions>

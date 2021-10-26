@@ -45,6 +45,7 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
 
   public survey?: Survey.Model;
+  public formPages: any[] = [];
   private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
@@ -113,6 +114,11 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
     this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
+    for (const page of this.survey.pages) {
+      if (page.isVisible) {
+        this.formPages.push(page);
+      }
+    }
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -278,6 +284,10 @@ export class SafeFormModalComponent implements OnInit {
       });
   }
 
+  public onShowPage(i: number): void {
+    if (this.survey) this.survey.currentPageNo = i;
+  }
+  
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
       options.callback('success', options.content);

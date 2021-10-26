@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [SafeFormModalComponent],
@@ -13,6 +14,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
+    MatTabsModule,
     SafeButtonModule
   ],
   exports: [SafeFormModalComponent]
