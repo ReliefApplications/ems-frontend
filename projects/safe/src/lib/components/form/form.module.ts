@@ -6,6 +6,7 @@ import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [SafeFormComponent],
@@ -15,7 +16,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatDialogModule,
     DropDownListModule,
     MatTabsModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatButtonModule
   ],
   exports: [SafeFormComponent]
 })

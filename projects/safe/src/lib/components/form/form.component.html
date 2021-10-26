@@ -22,3 +22,8 @@
   </kendo-dropdownlist>
 </div>
 <div [id]="containerId"></div>
+<div mat-dialog-actions align="end">
+    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
+    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
+    <button *ngIf="survey.isLastPage" mat-flat-button color="primary" (click)="survey.completeLastPage()">Save</button>
+</div>
