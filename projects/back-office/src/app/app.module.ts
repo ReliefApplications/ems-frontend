@@ -19,14 +19,14 @@ import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import { MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService,
+  MsalInterceptorConfiguration, MSAL_INTERCEPTOR_CONFIG, MSAL_INSTANCE, MsalGuardConfiguration, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-
-
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 localStorage.setItem('loaded', 'false');
 
@@ -45,6 +45,7 @@ export function provideApollo(httpLink: HttpLink): any {
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
     const token = localStorage.getItem('msal.idtoken');
+    console.log(token);
     return {
       headers: {
         Authorization: `Bearer ${token}`
@@ -110,6 +111,64 @@ export function provideApollo(httpLink: HttpLink): any {
   };
 }
 
+const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+export function loggerCallback(logLevel: LogLevel, message: string): void {
+  console.log(message);
+}
+
+export function MSALInstanceFactory(): IPublicClientApplication {
+  return new PublicClientApplication({
+    auth: {
+      clientId: environment.clientId,
+      authority: environment.authority,
+      redirectUri: environment.redirectUrl,
+      postLogoutRedirectUri: environment.postLogoutRedirectUri
+    },
+    cache: {
+      cacheLocation: 'localStorage',
+      storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback,
+        logLevel: LogLevel.Info,
+        piiLoggingEnabled: false
+      }
+    }
+  });
+}
+
+// consentScopes: [
+//   'user.read',
+//   'openid',
+//   'profile',
+// ],
+// protectedResourceMap: [
+//   ['https://graph.microsoft.com/v1.0/me', ['user.read']]
+// ],
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
+  protectedResourceMap.set('https://graph.microsoft-ppe.com/v1.0/me', ['user.read', 'openid', 'profile']);
+
+  return {
+    interactionType: InteractionType.Redirect,
+    protectedResourceMap
+  };
+}
+
+export function MSALGuardConfigFactory(): MsalGuardConfiguration {
+  return {
+    interactionType: InteractionType.Redirect,
+    authRequest: {
+      scopes: ['user.read', 'openid', 'profile']
+    },
+    loginFailedRoute: '/auth'
+  };
+}
+
 @NgModule({
   declarations: [
     AppComponent
@@ -122,36 +181,9 @@ export function provideApollo(httpLink: HttpLink): any {
     ReactiveFormsModule,
     MatSnackBarModule,
     BrowserAnimationsModule,
-    // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-      {
-        popUp: false,
-        consentScopes: [
-          'user.read',
-          'openid',
-          'profile',
-        ],
-        protectedResourceMap: [
-          ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-        ],
-        extraQueryParameters: {}
-      }),
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatDialogModule
   ],
   providers: [
     {
@@ -168,7 +200,22 @@ export function provideApollo(httpLink: HttpLink): any {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true
-    }
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MSALGuardConfigFactory
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService
   ],
   bootstrap: [AppComponent]
 })

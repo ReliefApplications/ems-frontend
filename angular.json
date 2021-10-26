@@ -18,10 +18,9 @@
           "configurations": {
             "production": {
               "tsConfig": "projects/safe/tsconfig.lib.prod.json"
-            },
-            "development": {}
+            }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": ""
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -234,23 +233,28 @@
                 }
               ]
             },
-            "development": {}
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "browserTarget": "back-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "back-office:build:production"
-            },
-            "development": {
-              "browserTarget": "back-office:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -501,23 +505,28 @@
                 }
               ]
             },
-            "development": {}
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "browserTarget": "front-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "front-office:build:production"
-            },
-            "development": {
-              "browserTarget": "front-office:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -654,23 +663,28 @@
                 }
               ]
             },
-            "development": {}
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "browserTarget": "web-element:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "web-element:build:production"
-            },
-            "development": {
-              "browserTarget": "web-element:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

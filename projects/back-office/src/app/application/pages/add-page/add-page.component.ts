@@ -80,7 +80,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
       }
       this.onNext();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
     });
   }
