@@ -19,7 +19,6 @@ export class AccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.authService.getProfile().pipe(
       map((res) => {
-        // return true;
         if (res.data.me) {
           if (res.data.me.isAdmin) {
             this.authService.user.next(res.data.me);
@@ -27,6 +26,7 @@ export class AccessGuard implements CanActivate {
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
             this.authService.logout();
+            console.log('there 0');
             this.router.navigate(['/auth']);
             return false;
           }
@@ -34,6 +34,7 @@ export class AccessGuard implements CanActivate {
           if (this.authService.account) {
             this.authService.logout();
           } else {
+            console.log('there');
             this.router.navigate(['/auth']);
           }
           return false;

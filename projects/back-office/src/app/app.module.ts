@@ -20,12 +20,13 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService,
-  MsalInterceptorConfiguration, MSAL_INTERCEPTOR_CONFIG, MSAL_INSTANCE, MsalGuardConfiguration, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
+  MsalInterceptorConfiguration, MSAL_INTERCEPTOR_CONFIG, MSAL_INSTANCE, MsalGuardConfiguration,
+  MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 localStorage.setItem('loaded', 'false');
@@ -130,7 +131,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     },
     system: {
       loggerOptions: {
-        // loggerCallback,
+        loggerCallback,
         logLevel: LogLevel.Info,
         piiLoggingEnabled: false
       }
@@ -138,18 +139,10 @@ export function MSALInstanceFactory(): IPublicClientApplication {
   });
 }
 
-// consentScopes: [
-//   'user.read',
-//   'openid',
-//   'profile',
-// ],
-// protectedResourceMap: [
-//   ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-// ],
-
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set('/', [`${environment.clientId}/openid`]);
+  protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);
 
   return {
     interactionType: InteractionType.Redirect,
@@ -161,7 +154,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['user.read']
+      scopes: ['user.read', 'openid', 'profile']
     },
     loginFailedRoute: '/auth'
   };
@@ -215,7 +208,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalGuard,
     MsalBroadcastService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {
   constructor(

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AccountInfo } from '@azure/msal-common';
 import { ApolloQueryResult } from '@apollo/client';
 
@@ -65,7 +65,7 @@ export class SafeAuthService {
   /*  Clean user profile, and logout.
   */
   logout(): void {
-    this.msalService.logout();
+    this.msalService.logoutRedirect();
     this.account = null;
     this.user.next(null);
   }
