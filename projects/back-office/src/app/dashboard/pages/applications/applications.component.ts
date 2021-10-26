@@ -306,7 +306,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         filters: { logic: 'and', filters: this.filters },
       },
     });
-    this.applications.filter = '##';
+    // this.applications.filter = '##';
   }
 
   clearDateFilter(): void {
