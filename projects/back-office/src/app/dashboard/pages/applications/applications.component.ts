@@ -107,8 +107,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(this.cachedApplications);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-      console.log('this.applications.data');
-      console.log(this.applications.data);
       console.log('res.data.applications');
       console.log(res.data.applications);
       this.pageInfo.length = res.data.applications.totalCount;
@@ -168,10 +166,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.applications.sort = this.sort || null;
-    console.log('this.startDate.value');
-    console.log(this.startDate.value);
-    console.log('this.endDate.value');
-    console.log(this.endDate.value);
   }
 
   ngOnDestroy(): void {
@@ -282,11 +276,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyFilter(column: string, event: any): void {
-    console.log('column');
-    console.log(column);
-    console.log('event');
-    console.log(event);
-    console.log('applyFilter');
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
       const statusIndex = this.filters.findIndex((filter) => filter.field === 'status');
@@ -306,18 +295,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
       this.filters[nameIndex].value = this.searchText;
     }
-    console.log('this.filters');
-    console.log(this.filters);
-    const f = [this.filters];
     this.applicationsQuery.fetchMore({
       variables: {
         first: ITEMS_PER_PAGE,
         afterCursor: this.pageInfo.endCursor,
-        // filter: f,
         filters: { logic: 'and', filters: this.filters },
       },
     });
-    // this.applications.filter = '##';
   }
 
   clearDateFilter(): void {
