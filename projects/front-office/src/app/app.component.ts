@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { SafeAuthService, SafeFormService } from '@safe/builder';
-import { Subscription } from 'rxjs';
-import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+import { SafeFormService } from '@safe/builder';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -13,38 +15,64 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'front-office';
 
   // === MSAL ERROR HANDLING ===
-  private subscription?: Subscription;
   private timeout?: NodeJS.Timeout;
 
+  private readonly destroying$ = new Subject<void>();
+
   constructor(
-    private broadcastService: BroadcastService,
-    private authService: SafeAuthService,
+    private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
-    private formService: SafeFormService
+    private formService: SafeFormService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.subscription = this.broadcastService.subscribe('msal:acquireTokenSuccess', () => {
-      this.authService.getProfileIfNull();
-      this.authService.getAccountIfNull();
-      if (this.authService.account) {
-        const idToken = this.authService.account.idToken;
-        const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
-        if (idToken && timeout > 0) {
-          this.timeout = setTimeout(() => {
-            this.msalService.acquireTokenSilent({
-              scopes: [environment.clientId]
-            });
-          }, timeout);
+    this.msalService.instance.enableAccountStorageEvents();
+    this.broadcastService.msalSubject$
+      .pipe(
+        filter((msg: EventMessage) => msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED),
+      )
+      .subscribe((result: EventMessage) => {
+        if (this.msalService.instance.getAllAccounts().length === 0) {
+          window.location.pathname = '/';
         }
+      });
+
+    this.broadcastService.inProgress$
+      .pipe(
+        filter((status: InteractionStatus) => status === InteractionStatus.None),
+        takeUntil(this.destroying$)
+      )
+      .subscribe(() => {
+        this.checkAndSetActiveAccount();
+      });
+    this.broadcastService.msalSubject$
+      .pipe(
+        filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS),
+        takeUntil(this.destroying$)
+      ).subscribe((result: any) => {
+        if (result.payload) {
+          localStorage.setItem('msal.idtoken', result.payload.accessToken);
+        }
+      });
+    this.msalService.handleRedirectObservable().subscribe({
+      next: (result: AuthenticationResult) => {
+        this.checkAndSetActiveAccount();
+        this.router.navigate(['/']);
       }
     });
   }
 
-  ngOnDestroy(): void {
-    this.broadcastService.getMSALSubject().next(1);
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  private checkAndSetActiveAccount(): void {
+    const activeAccount = this.msalService.instance.getActiveAccount();
+    if (!activeAccount && this.msalService.instance.getAllAccounts().length > 0) {
+      const accounts = this.msalService.instance.getAllAccounts();
+      this.msalService.instance.setActiveAccount(accounts[0]);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroying$.next(undefined);
+    this.destroying$.complete();
   }
 }
