@@ -427,9 +427,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     Create a record if result not empty.
   */
   public onAdd(): void {
+    // send form ID to get the structure to add it
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
-        template: this.settings.addTemplate,
+        template: this.settings.query.template || null,
         locale: 'en'
       },
       autoFocus: false

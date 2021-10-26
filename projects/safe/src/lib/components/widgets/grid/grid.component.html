@@ -36,6 +36,10 @@
                 <button title="This will erase current layout with default layout"
                     class='k-button' (click)="resetDefaultLayout()">Reset default Layout</button>
             </span>
+            <span kendotooltip *ngIf="!parent && settings.actions && settings.actions.addRecord
+            && settings.query && settings.query.template">
+                <button class='k-button' (click)="onAdd()">Add new record</button>
+            </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
                     (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
