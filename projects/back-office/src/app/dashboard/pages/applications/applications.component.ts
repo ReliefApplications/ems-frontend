@@ -86,7 +86,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         {field: 'name', operator: 'contains', value: ''},
         {field: 'createdAt', operator: 'between', value: null},
         {field: 'status', operator: 'is', value: ''}
-      ];
+    ];
   }
 
   ngOnInit(): void {
@@ -99,20 +99,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.applicationsQuery.valueChanges.subscribe(res => {
-      console.log('UPDATE TAB');
-      console.log('this.filters');
-      console.log(this.filters);
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
-      console.log('this.cachedApplications');
-      console.log(this.cachedApplications);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-      console.log('res.data.applications');
-      console.log(res.data.applications);
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
-      console.log('this.pageInfo');
-      console.log(this.pageInfo);
       this.loading = res.loading;
       this.filterPredicate();
     });
@@ -152,7 +143,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private filterPredicate(): void {
-    console.log('filterPredicate');
     this.applications.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
@@ -283,8 +273,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (column === 'createdAt'){
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'createdAt');
       if (this.startDate.value && this.endDate.value) {
+        // need to shift date by 1 day (because for ex if we choose: 20/09 => we will have 20/09-00:00 but we want 20/09-11:59
+        // so we add 1 to the date (so 21/09), and in the backend we make a < against a <=
         const sd = new Date(Date.parse(this.startDate.value));
         const ed = new Date(Date.parse(this.endDate.value));
+        // sd.setDate(sd.getDate() + 1);
+        ed.setDate(ed.getDate() + 1);
+        console.log(sd);
+        console.log(ed);
         this.filters[nameIndex].value = {startDate: sd, endDate: ed};
       }
       else {
@@ -314,7 +310,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   clearAllFilters(): void {
-    console.log('----------------------X clear');
     this.searchText = '';
     this.statusFilter = '';
     this.clearDateFilter();
