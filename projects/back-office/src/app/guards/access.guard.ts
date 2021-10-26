@@ -19,25 +19,25 @@ export class AccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.authService.getProfile().pipe(
       map((res) => {
-        return true;
-        // if (res.data.me) {
-        //   if (res.data.me.isAdmin) {
-        //     this.authService.user.next(res.data.me);
-        //     return true;
-        //   } else {
-        //     this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
-        //     this.authService.logout();
-        //     this.router.navigate(['/auth']);
-        //     return false;
-        //   }
-        // } else {
-        //   if (this.authService.account) {
-        //     this.authService.logout();
-        //   } else {
-        //     this.router.navigate(['/auth']);
-        //   }
-        //   return false;
-        // }
+        // return true;
+        if (res.data.me) {
+          if (res.data.me.isAdmin) {
+            this.authService.user.next(res.data.me);
+            return true;
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
+            this.authService.logout();
+            this.router.navigate(['/auth']);
+            return false;
+          }
+        } else {
+          if (this.authService.account) {
+            this.authService.logout();
+          } else {
+            this.router.navigate(['/auth']);
+          }
+          return false;
+        }
       })
     );
   }

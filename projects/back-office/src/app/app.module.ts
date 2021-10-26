@@ -45,7 +45,6 @@ export function provideApollo(httpLink: HttpLink): any {
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
     const token = localStorage.getItem('msal.idtoken');
-    console.log(token);
     return {
       headers: {
         Authorization: `Bearer ${token}`
@@ -131,7 +130,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     },
     system: {
       loggerOptions: {
-        loggerCallback,
+        // loggerCallback,
         logLevel: LogLevel.Info,
         piiLoggingEnabled: false
       }
@@ -150,8 +149,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
-  protectedResourceMap.set('https://graph.microsoft-ppe.com/v1.0/me', ['user.read', 'openid', 'profile']);
+  protectedResourceMap.set('/', [`${environment.clientId}/openid`]);
 
   return {
     interactionType: InteractionType.Redirect,
@@ -163,7 +161,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['user.read', 'openid', 'profile']
+      scopes: ['user.read']
     },
     loginFailedRoute: '/auth'
   };
@@ -225,11 +223,6 @@ export class AppModule {
   ) {
     REFRESH.asObservable().subscribe((res) => {
       console.log('Schema generated without cache reloading.');
-      // if (res) {
-      //   this.apollo.client.cache.reset().then(() => {
-      //     console.log('Schema generated.');
-      //   });
-      // }
     });
   }
 }

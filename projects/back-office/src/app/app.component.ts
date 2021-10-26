@@ -1,10 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MsalBroadcastService, MsalGuardConfiguration, MsalService, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus, PopupRequest, RedirectRequest } from '@azure/msal-browser';
-import { SafeAuthService, SafeFormService } from '@safe/builder';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -14,57 +12,27 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit, OnDestroy {
 
   title = 'back-office';
-  isIframe = false;
-  loginDisplay = false;
 
   // === MSAL ERROR HANDLING ===
-  private subscription?: Subscription;
   private timeout?: NodeJS.Timeout;
 
-  private readonly _destroying$ = new Subject<void>();
+  private readonly destroying$ = new Subject<void>();
 
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private broadcastService: MsalBroadcastService,
-    private authService: SafeAuthService,
-    private msalService: MsalService,
-    private formService: SafeFormService
+    private msalService: MsalService
   ) { }
 
-  // ngOnInit(): void {
-  //   this.subscription = this.broadcastService.msalSubject$.pipe(
-  //     filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS),
-  //   ).subscribe((result: EventMessage) => {
-  //     console.log(result);
-  //     this.authService.getProfileIfNull();
-  //     this.authService.getAccountIfNull();
-  //     if (this.authService.account) {
-  //       const idToken = this.authService.account.id;
-  //       const timeout = Number(idToken.exp) * 1000 - Date.now() - 1000;
-  //       if (idToken && timeout > 0) {
-  //         this.timeout = setTimeout(() => {
-  //           this.msalService.acquireTokenSilent({
-  //             scopes: [environment.clientId]
-  //           });
-  //         }, timeout);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // ngOnDestroy(): void {
-  //   console.log('on destroy');
-  //   // this.broadcastService.getmsalSubject.next(1);
-  //   if (this.subscription) {
-  //     this.subscription.unsubscribe();
-  //   }
-  // }
-
   ngOnInit(): void {
-    this.isIframe = window !== window.parent && !window.opener; // Remove this line to use Angular Universal
-    this.setLoginDisplay();
-
     this.msalService.instance.enableAccountStorageEvents();
+    this.broadcastService.msalSubject$
+      .pipe(
+        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+      )
+      .subscribe((result: EventMessage) => {
+        console.log('===LOGIN===');
+      });
     this.broadcastService.msalSubject$
       .pipe(
         filter((msg: EventMessage) => msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED),
@@ -72,40 +40,31 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((result: EventMessage) => {
         if (this.msalService.instance.getAllAccounts().length === 0) {
           window.location.pathname = '/';
-        } else {
-          this.setLoginDisplay();
         }
       });
 
     this.broadcastService.inProgress$
       .pipe(
         filter((status: InteractionStatus) => status === InteractionStatus.None),
-        takeUntil(this._destroying$)
+        takeUntil(this.destroying$)
       )
       .subscribe(() => {
-        this.setLoginDisplay();
         this.checkAndSetActiveAccount();
       });
     this.broadcastService.msalSubject$
       .pipe(
         filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS),
-        takeUntil(this._destroying$)
-      ).subscribe((result: EventMessage) => console.log(result));
-    this.msalService.instance.acquireTokenSilent({
-      scopes: [environment.clientId]
-    }).then((res) => console.log(res));
-  }
+        takeUntil(this.destroying$)
+      ).subscribe((result: EventMessage) => console.log('===TOKEN==='));
 
-  private setLoginDisplay(): void {
-    this.loginDisplay = this.msalService.instance.getAllAccounts().length > 0;
+    if (this.msalService.instance.getActiveAccount()) {
+      this.msalService.instance.acquireTokenSilent({ scopes: ['user.read'] }).then((accessTokenResponse: any) => {
+        localStorage.setItem('msal.idtoken', accessTokenResponse.accessToken);
+      });
+    }
   }
 
   private checkAndSetActiveAccount(): void {
-    /**
-     * If no active account set but there are accounts signed in, sets first account to active account
-     * To use active account set here, subscribe to inProgress$ first in your component
-     * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
-     */
     const activeAccount = this.msalService.instance.getActiveAccount();
     if (!activeAccount && this.msalService.instance.getAllAccounts().length > 0) {
       const accounts = this.msalService.instance.getAllAccounts();
@@ -146,7 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
+    this.destroying$.next(undefined);
+    this.destroying$.complete();
   }
 }
