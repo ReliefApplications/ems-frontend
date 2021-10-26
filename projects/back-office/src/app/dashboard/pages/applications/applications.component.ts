@@ -58,7 +58,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public filters: {
     field: string,
     operator: string,
-    value: string
+    value: any
   }[];
   public pageInfo = {
     pageIndex: 0,
@@ -83,8 +83,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private previewService: PreviewService
   ) {
     this.filters = [
-        {field: 'name', operator: 'contains', value: this.searchText},
-        {field: 'CreatedAt', operator: 'is', value: ''},
+        {field: 'name', operator: 'contains', value: ''},
+        {field: 'createdAt', operator: 'between', value: null},
         {field: 'status', operator: 'is', value: ''}
       ];
   }
@@ -268,11 +268,29 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFilter(column: string, event: any): void {
     console.log('applyFilter');
+    console.log('column');
+    console.log(column);
+    console.log('event');
+    console.log(event);
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
       const statusIndex = this.filters.findIndex((f) => f.field === 'status');
       this.filters[statusIndex].value = this.statusFilter;
+    } else if (column === 'createdAt'){
+      const nameIndex = this.filters.findIndex((f) => f.field === 'createdAt');
+      let sd;
+      let ed;
+      if (this.startDate.value && this.endDate.value) {
+        sd = new Date(Date.parse(this.startDate.value));
+        ed = new Date(Date.parse(this.endDate.value));
+        console.log('sd');
+        console.log(sd);
+        console.log('ed');
+        console.log(ed);
+      }
+      this.filters[nameIndex].value = {startDate: sd, endDate: ed};
     } else {
+      console.log('text');
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
       const nameIndex = this.filters.findIndex((f) => f.field === 'name');
       this.filters[nameIndex].value = this.searchText;
