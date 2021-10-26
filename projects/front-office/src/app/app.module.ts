@@ -124,7 +124,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('/', [`${environment.clientId}/openid`]);
+  protectedResourceMap.set(environment.API_URL, [`${environment.clientId}/openid`]);
   protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);
 
   return {
