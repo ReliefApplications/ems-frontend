@@ -166,6 +166,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.applications.sort = this.sort || null;
+    console.log('this.startDate.value');
+    console.log(this.startDate.value);
+    console.log('this.endDate.value');
+    console.log(this.endDate.value);
   }
 
   ngOnDestroy(): void {
@@ -276,6 +280,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyFilter(column: string, event: any): void {
+    console.log('column');
+    console.log(column);
+    console.log('event');
+    console.log(event);
     console.log('applyFilter');
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
@@ -283,13 +291,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.filters[statusIndex].value = this.statusFilter;
     } else if (column === 'createdAt'){
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'createdAt');
-      let sd;
-      let ed;
       if (this.startDate.value && this.endDate.value) {
-        sd = new Date(Date.parse(this.startDate.value));
-        ed = new Date(Date.parse(this.endDate.value));
+        const sd = new Date(Date.parse(this.startDate.value));
+        const ed = new Date(Date.parse(this.endDate.value));
+        this.filters[nameIndex].value = {startDate: sd, endDate: ed};
       }
-      this.filters[nameIndex].value = {startDate: sd, endDate: ed};
+      else {
+        this.filters[nameIndex].value = null;
+      }
     } else {
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
@@ -319,6 +328,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   clearAllFilters(): void {
+    console.log('----------------------X clear');
     this.searchText = '';
     this.statusFilter = '';
     this.clearDateFilter();
