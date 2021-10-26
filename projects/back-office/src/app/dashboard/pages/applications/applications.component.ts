@@ -99,11 +99,20 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.applicationsQuery.valueChanges.subscribe(res => {
+      console.log('UPDATE TAB');
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      console.log('this.cachedApplications');
+      console.log(this.cachedApplications);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      console.log('this.applications.data');
+      console.log(this.applications.data);
+      console.log('res.data.applications');
+      console.log(res.data.applications);
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
+      console.log('this.pageInfo');
+      console.log(this.pageInfo);
       this.loading = res.loading;
       this.filterPredicate();
     });
@@ -143,7 +152,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private filterPredicate(): void {
-    console.log('filteerPredicate');
+    console.log('filterPredicate');
     this.applications.filterPredicate = (data: any) => {
       const endDate = new Date(this.filtersDate.endDate).getTime();
       const startDate = new Date(this.filtersDate.startDate).getTime();
@@ -268,10 +277,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFilter(column: string, event: any): void {
     console.log('applyFilter');
-    console.log('column');
-    console.log(column);
-    console.log('event');
-    console.log(event);
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
       const statusIndex = this.filters.findIndex((filter) => filter.field === 'status');
@@ -283,25 +288,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.startDate.value && this.endDate.value) {
         sd = new Date(Date.parse(this.startDate.value));
         ed = new Date(Date.parse(this.endDate.value));
-        console.log('sd');
-        console.log(sd);
-        console.log('ed');
-        console.log(ed);
       }
       this.filters[nameIndex].value = {startDate: sd, endDate: ed};
     } else {
-      console.log('text');
       this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
       this.filters[nameIndex].value = this.searchText;
     }
-    console.log('this.filters');
-    console.log(this.filters);
-    console.log('this.statusFilter');
-    console.log(this.statusFilter);
-    console.log('this.searchText');
-    console.log(this.searchText);
-    // const filters = [this.filters];
     console.log('this.filters');
     console.log(this.filters);
     const f = [this.filters];
