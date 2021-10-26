@@ -100,6 +100,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       console.log('UPDATE TAB');
+      console.log('this.filters');
+      console.log(this.filters);
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
       console.log('this.cachedApplications');
       console.log(this.cachedApplications);
