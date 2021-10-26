@@ -29,27 +29,25 @@
                 [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
             <span kendotooltip *ngIf="!parent && isAdmin">
-                <button title="This will save this layout as the default one for all users"
-                    class='k-button' (click)="saveDefaultLayout()">Save Layout as default</button>
+                <button title="This will save this layout as the default one for all users" class='k-button'
+                    (click)="saveDefaultLayout()">Save Layout as default</button>
             </span>
             <span kendotooltip *ngIf="!parent">
-                <button title="This will erase current layout with default layout"
-                    class='k-button' (click)="resetDefaultLayout()">Reset default Layout</button>
+                <button title="This will erase current layout with default layout" class='k-button'
+                    (click)="resetDefaultLayout()">Reset default Layout</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
+                <span style="margin-left: auto;"></span>
                 <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
-                    (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
-                    [disabled]="!canDeleteSelectedRows">Delete
+                    (click)="onDeleteRow(selectedRowsIndex)" [disabled]="!canDeleteSelectedRows">Delete
                 </button>
                 <button *ngIf="(!settings.actions || settings.actions.update)" class='k-button'
-                    (click)="onUpdateRow(selectedRowsIndex)" style="float: right"
-                    [disabled]="!canUpdateSelectedRows">Update
+                    (click)="onUpdateRow(selectedRowsIndex)" [disabled]="!canUpdateSelectedRows">Update
                 </button>
                 <button *ngIf="(!settings.actions || settings.actions.convert)" class='k-button'
-                    (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
-                    [disabled]="!canUpdateSelectedRows">Convert
+                    (click)="onConvertRecord(selectedRowsIndex)" [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <kendo-dropdownbutton [data]="exportData" style="float: right">
+                <kendo-dropdownbutton [data]="exportData">
                     Export selected
                 </kendo-dropdownbutton>
             </ng-container>
@@ -106,8 +104,8 @@
                         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                             *ngIf="field.meta.type === 'url'">
                             <div class="textbox-container">
-                                <a class="url-container textbox" href="{{getPropertyValue(dataItem, field.name)}}" target="_blank"
-                                    rel="noopener noreferrer">
+                                <a class="url-container textbox" href="{{getPropertyValue(dataItem, field.name)}}"
+                                    target="_blank" rel="noopener noreferrer">
                                     <div #refSpan>
                                         {{getPropertyValue(dataItem, field.name)}}
                                     </div>
