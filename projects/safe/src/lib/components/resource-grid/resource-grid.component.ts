@@ -379,7 +379,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canUpdate;
       delete auxData.__typename;
       if (Object.keys(auxData).some((key: string, index) => {
-        console.log(this.fields);
         const meta = this.metaFields[key];
         if (meta && meta.choices) {
           return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);

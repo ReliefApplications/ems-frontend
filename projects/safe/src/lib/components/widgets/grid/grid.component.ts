@@ -209,12 +209,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /*  Detect changes of the settings to (re)load the data.
   */
   ngOnChanges(): void {
-    if (this.layout?.filter) {
-      this.filter = this.layout.filter;
-    }
-    if (this.layout?.sort) {
-      this.sort = this.layout.sort;
-    }
+    this.filter = this.layout?.filter || { logic: 'and', filters: [] };
+    this.sort = this.layout?.sort || [];
     this.showFilter = !!this.layout?.showFilter;
     this.loadItems();
     this.hasEnabledActions = !this.settings.actions ||
@@ -423,17 +419,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Display an embedded form in a modal to add new record.
-    Create a record if result not empty.
+ /**
+  * Displays an embedded form in a modal to add new record.
   */
   public onAdd(): void {
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
-      data: {
-        template: this.settings.addTemplate,
-        locale: 'en'
-      },
-      autoFocus: false
-    });
+    if (this.settings.query.template) {
+      this.dialog.open(SafeFormModalComponent, {
+        data: {
+          template: this.settings.query.template,
+          locale: 'en'
+        },
+        autoFocus: false
+      });
+    }
   }
 
   /*  Inline edition of the data.
