@@ -540,6 +540,22 @@ export interface GetRolesFromApplicationsQueryResponse {
   rolesFromApplications: Role[];
 }
 
+// === GET USERS FROM APPLICATION ===
+export const GET_USERS_FROM_APPLICATIONS = gql`
+query GetUsersFromApplications($applications: [ID]!) {
+  usersFromApplications(applications: $applications) {
+    users {
+      id
+      username
+    }
+  }
+}`;
+
+export interface GetUsersFromApplicationsQueryResponse {
+  loading: boolean;
+  usersFromApplications: Application[];
+}
+
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
 query GetPermissions($application: Boolean) {
