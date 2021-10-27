@@ -33,7 +33,6 @@ export class SafeDropdownFilterComponent extends BaseFilterCellComponent impleme
 
   ngOnInit(): void {
     this.choices = this.data.slice();
-    console.log('dropdown filer');
   }
 
   public onChange(value: any): void {
@@ -49,7 +48,6 @@ export class SafeDropdownFilterComponent extends BaseFilterCellComponent impleme
   }
 
   public handleFilter(value: string): void {
-    console.log('filter 2');
     this.choices = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 }

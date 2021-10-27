@@ -67,17 +67,16 @@
                         <!-- FILTER ( dropdown / radiogroup ) -->
                         <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                             <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
-                                let-filterService="filterService">
-                              <h1>2 FIIIIILLLLTEEEERRRR 2 </h1>
+                                         let-filterService="filterService">
                                 <safe-dropdown-filter-menu [filter]="filter" [filterService]="filterService"
-                                    [data]="field.meta.choices" [field]="field.name" textField="text"
-                                    valueField="value">
-                                </safe-dropdown-filter-menu>
+                                                           [data]="field.meta.choices" [field]="field.name" textField="text"
+                                                           valueField="value">
+
+                              </safe-dropdown-filter-menu>
                             </ng-template>
                             <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                              <h1>4 FIIIIILLLLTEEEERRRR 4 </h1>
                                 <safe-dropdown-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
-                                    textField="text" valueField="value">
+                                                      textField="text" valueField="value">
                                 </safe-dropdown-filter>
                             </ng-template>
                         </ng-container>
@@ -189,13 +188,11 @@
                     [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50">
                     <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                         let-filterService="filterService">
-                      <h1> A FIILTER </h1>
                         <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
                             [data]="field.meta.choices || []" [field]="field.name" textField="text" valueField="value">
                         </safe-array-filter-menu>
                     </ng-template>
                     <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                      <h1> B FIILTER </h1>
                         <safe-array-filter [filter]="filter" [data]="field.meta.choices || []" [field]="field.name"
                             textField="text" valueField="value">
                         </safe-array-filter>
