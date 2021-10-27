@@ -291,6 +291,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
       this.filters[nameIndex].value = this.searchText;
     }
+    console.log('===> this.filters');
+    console.log(this.filters);
     this.applicationsQuery.fetchMore({
       variables: {
         first: ITEMS_PER_PAGE,
@@ -311,7 +313,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clearAllFilters(): void {
     this.searchText = '';
+    // update the filter
+    let statusIndex = this.filters.findIndex((filter) => filter.field === 'name');
+    this.filters[statusIndex].value = this.searchText;
     this.statusFilter = '';
+    // update the filter
+    statusIndex = this.filters.findIndex((filter) => filter.field === 'status');
+    this.filters[statusIndex].value = this.statusFilter;
     this.clearDateFilter();
   }
 }
