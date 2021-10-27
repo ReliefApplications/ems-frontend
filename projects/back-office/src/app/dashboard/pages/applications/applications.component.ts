@@ -39,22 +39,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public searchText = '';
   public statusFilter = '';
   public showFilters = false;
-  // public filters: {
-  //   logic: 'or' | 'and',
-  //   filters: [
-  //     { field: string, operator: string, value: string }
-  //   ]
-  // } = [{logic: 'or', filters: null}];
-
-  // public filters: {
-  //   logic: 'or' | 'and',
-  //   filters: { field: string, operator: string, value: string }[]
-  // } = {logic: 'or', filters: []};
-
-  // public filters: {
-  //   logic: 'or' | 'and',
-  //   filters: { field: string, operator: string, value: string }[]
-  // };
   public filters: {
     field: string,
     operator: string,
@@ -273,14 +257,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (column === 'createdAt'){
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'createdAt');
       if (this.startDate.value && this.endDate.value) {
-        // need to shift date by 1 day (because for ex if we choose: 20/09 => we will have 20/09-00:00 but we want 20/09-11:59
+        // need to shift date by 1 day
+        // because for ex if we choose for the las day: 20/09 => we will have 20/09-00:00 but we want 20/09-11:59
         // so we add 1 to the date (so 21/09), and in the backend we make a < against a <=
         const sd = new Date(Date.parse(this.startDate.value));
         const ed = new Date(Date.parse(this.endDate.value));
-        // sd.setDate(sd.getDate() + 1);
         ed.setDate(ed.getDate() + 1);
-        console.log(sd);
-        console.log(ed);
         this.filters[nameIndex].value = {startDate: sd, endDate: ed};
       }
       else {
@@ -291,8 +273,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       const nameIndex = this.filters.findIndex((filter) => filter.field === 'name');
       this.filters[nameIndex].value = this.searchText;
     }
-    console.log('===> this.filters');
-    console.log(this.filters);
     this.applicationsQuery.fetchMore({
       variables: {
         first: ITEMS_PER_PAGE,
