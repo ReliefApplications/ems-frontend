@@ -20,6 +20,7 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface DialogData {
   template?: string;
@@ -46,11 +47,15 @@ export class SafeFormModalComponent implements OnInit {
 
   public survey?: Survey.Model;
   public selectedTabIndex = 0;
-  public formPages: any[] = [];
+  private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
+
+  public get pages$(): Observable<any[]> {
+    return this.pages.asObservable();
+  }
 
   constructor(
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
@@ -114,15 +119,17 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
     this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
-      this.selectedTabIndex = surveyModel.currentPageNo;
+    this.survey.onCurrentPageChanged.add((survey, _) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
+    this.survey.onPageVisibleChanged.add(() => {
+      this.setPages();
+    });
+    this.survey.onSettingQuestionErrors.add((survey, options) => {
+      this.setPages();
     });
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
-    for (const page of this.survey.pages) {
-      if (page.isVisible) {
-        this.formPages.push(page);
-      }
-    }
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -130,10 +137,24 @@ export class SafeFormModalComponent implements OnInit {
     }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
+    this.setPages();
     this.survey.onComplete.add(this.completeMySurvey);
   }
 
-  /*  Create the record, or update it if provided.
+  /**
+   * Calls the complete method of the survey if no error.
+   */
+  public submit(): void {
+    if (!this.survey?.hasErrors()) {
+      this.survey?.completeLastPage();
+    } else {
+      this.snackBar.openSnackBar('Saving failed, some fields require your attention.', { error: true });
+    }
+  }
+
+ /**
+  * Creates the record, or update it if provided.
+  * @param survey Survey instance.
   */
   public completeMySurvey = (survey: any) => {
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
@@ -286,6 +307,18 @@ export class SafeFormModalComponent implements OnInit {
         };
         fileReader.readAsDataURL(file);
       });
+  }
+
+  private setPages(): void {
+    const pages = [];
+    if (this.survey) {
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          pages.push(page);
+        }
+      }
+    }
+    this.pages.next(pages);
   }
 
   public onShowPage(i: number): void {
