@@ -25,14 +25,6 @@
 //   background: rgb(150, 145, 145) !important;
 // }
 
-.record-date {
-  color: #9e9e9e;
-  font-size: 12px;
-  line-height: 12px;
-  text-align: right;
-  margin-bottom: 8px;
-}
-
 mat-tab-group {
   margin-bottom: 1rem;
 }
@@ -44,3 +36,27 @@ mat-tab-group {
   text-align: end;
   margin-left: auto;
 }
+
+.history-cache-cont {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.history-cache-cont span {
+  font-size: 12px;
+}
+
+.history {
+  display: flex;
+  flex-direction: row;
+  float: right;
+  margin-bottom: 10px;
+}
+
+ .history div {
+   display: flex;
+   flex-direction: column;
+ }

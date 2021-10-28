@@ -11,14 +11,17 @@
   </mat-tab-group>
 </div>
 
-<div>
-  <safe-button [isIcon]="true" icon="history">
-  </safe-button>
-  <span class="record-date">Created by: {{record?.createdBy?.name}} at : {{record?.createdAt | date:'dd/MM/yy, h:mm a'}}</span>
-  <span class="record-date">Last modified by: {{record?.modifiedBy?.name}} on : {{record?.modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+<div class="history-cache-cont">
+  <span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
+  <div class="history">
+    <safe-button [isIcon]="true" icon="history">
+    </safe-button>
+    <div>
+      <span>Created by: {{record?.createdBy?.name}} at : {{record?.createdAt | date:'dd/MM/yy, h:mm a'}}</span>
+      <span>Last modified by: {{record?.modifiedBy?.name}} on : {{record?.modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+    </div>
+  </div>
 </div>
-<span *ngIf="modifiedAt && !isFromCacheData" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
-<span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
 <div class="survey-float" *ngIf="surveyActive">
   <kendo-dropdownlist *ngIf="!!survey && survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
     [value]="surveyLanguage.nativeName.split(',')[0]" (selectionChange)="setLanguage($event)">
