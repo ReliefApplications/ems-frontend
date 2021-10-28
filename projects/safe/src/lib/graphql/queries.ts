@@ -235,6 +235,9 @@ query GetRecordById($id: ID!) {
     createdBy {
       name
     }
+    modifiedBy {
+      name
+    }
     form {
       id
       structure

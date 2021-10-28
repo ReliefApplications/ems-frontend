@@ -70,6 +70,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public isFromCacheData = false;
 
   private historyId: string | undefined = '';
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -82,7 +83,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
-    private resolver: ComponentFactoryResolver,
+    private resolver: ComponentFactoryResolver
   ) {
     this.containerId = uuidv4();
   }

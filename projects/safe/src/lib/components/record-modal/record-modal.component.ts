@@ -1,14 +1,27 @@
 import {Apollo} from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {Component, ComponentFactory, ComponentFactoryResolver, Inject, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
-import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID, GetFormByIdQueryResponse, GET_FORM_STRUCTURE } from '../../graphql/queries';
+import {
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+  GetFormByIdQueryResponse,
+  GET_FORM_STRUCTURE,
+  GetRecordDetailsQueryResponse,
+  GET_RECORD_DETAILS
+} from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
+import {SafeConfirmModalComponent} from '../confirm-modal/confirm-modal.component';
+import {EDIT_RECORD, EditRecordMutationResponse} from '../../graphql/mutations';
+import {NOTIFICATIONS} from '../../const/notifications';
+import {SafeLayoutService} from '../../services/layout.service';
+import {SafeRecordHistoryComponent} from '../record-history/record-history.component';
+import {SafeSnackBarService} from '../../services/snackbar.service';
 
 interface DialogData {
   recordId: string;
@@ -41,13 +54,21 @@ export class SafeRecordModalComponent implements OnInit {
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
+  private historyId: string | undefined = '';
+
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory?: ComponentFactory<any>;
+
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private layoutService: SafeLayoutService,
+    private resolver: ComponentFactoryResolver,
+    private snackBar: SafeSnackBarService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -56,6 +77,7 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey
       .StylesManager
@@ -180,5 +202,54 @@ export class SafeRecordModalComponent implements OnInit {
   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+        });
+
+      }
+    });
+  }
+
+  /* Opens the history of the record on the right side of the screen.*/
+  public onViewHistory(id: string | undefined): void {
+    this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      this.historyId = id;
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
+          record: res.data.record,
+          revert: (item: any, dialog: any) => {
+            this.confirmRevertDialog(res.data.record, item);
+          }
+        },
+      });
+    });
   }
 }
