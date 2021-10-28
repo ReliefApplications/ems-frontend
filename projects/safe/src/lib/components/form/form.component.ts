@@ -162,9 +162,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedTabIndex = surveyModel.currentPageNo;
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
-
-    console.log('this.record');
-    console.log(this.record);
   }
 
   ngAfterViewInit(): void {
