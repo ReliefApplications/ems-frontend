@@ -14,7 +14,7 @@
 <div class="history-cache-cont">
   <span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
   <div class="history">
-    <safe-button [isIcon]="true" icon="history">
+    <safe-button [isIcon]="true" icon="history" (click)="onViewHistory(record?.id)">
     </safe-button>
     <div>
       <span>Created by: {{record?.createdBy?.name}} at : {{record?.createdAt | date:'dd/MM/yy, h:mm a'}}</span>

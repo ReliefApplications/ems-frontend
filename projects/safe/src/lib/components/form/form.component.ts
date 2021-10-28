@@ -1,5 +1,15 @@
 import { Apollo } from 'apollo-angular';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,6 +25,10 @@ import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
+import {GET_RECORD_DETAILS, GetRecordDetailsQueryResponse} from '../../graphql/queries';
+import {SafeLayoutService} from '../../services/layout.service';
+import {SafeConfirmModalComponent} from '../confirm-modal/confirm-modal.component';
+import {SafeRecordHistoryComponent} from '../record-history/record-history.component';
 
 @Component({
   selector: 'safe-form',
@@ -55,6 +69,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public storageDate: Date = new Date();
   public isFromCacheData = false;
 
+  private historyId: string | undefined = '';
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory?: ComponentFactory<any>;
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -62,12 +80,15 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private layoutService: SafeLayoutService,
+    private resolver: ComponentFactoryResolver,
   ) {
     this.containerId = uuidv4();
   }
 
   ngOnInit(): void {
+    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -411,5 +432,54 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.workflowService.storeRecords([]);
     }
     localStorage.removeItem(this.storageId);
+  }
+
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+        });
+
+      }
+    });
+  }
+
+  /* Opens the history of the record on the right side of the screen.*/
+  public onViewHistory(id: string | undefined): void {
+    this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id
+      }
+    }).subscribe(res => {
+      this.historyId = id;
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
+          record: res.data.record,
+          revert: (item: any, dialog: any) => {
+            this.confirmRevertDialog(res.data.record, item);
+          }
+        },
+      });
+    });
   }
 }
