@@ -69,8 +69,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public storageDate: Date = new Date();
   public isFromCacheData = false;
 
-  private historyId: string | undefined = '';
-
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -471,7 +469,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         id
       }
     }).subscribe(res => {
-      this.historyId = id;
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {

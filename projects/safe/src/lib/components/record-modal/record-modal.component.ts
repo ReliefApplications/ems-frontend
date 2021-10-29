@@ -1,5 +1,5 @@
 import {Apollo} from 'apollo-angular';
-import {Component, ComponentFactory, ComponentFactoryResolver, Inject, OnInit} from '@angular/core';
+import {Component, ComponentFactoryResolver, Inject, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -54,9 +54,6 @@ export class SafeRecordModalComponent implements OnInit {
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -75,7 +72,6 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey
       .StylesManager

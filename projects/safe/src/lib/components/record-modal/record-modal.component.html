@@ -18,7 +18,6 @@
 </ng-container>
 <mat-dialog-content>
     <ng-container *ngIf="!data.compareTo">
-<!--        <span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>-->
         <div mat-dialog-title  *ngIf="modifiedAt" class="history">
           <safe-button [isIcon]="true" icon="history" (click)="onViewHistory(record?.id)">
           </safe-button>

@@ -66,21 +66,14 @@ mat-grid-tile:nth-child(2n) {
 .history {
   display: flex;
   flex-direction: row;
-  //margin-bottom: 10px;
-
   color: #9e9e9e;
   font-size: 12px;
   line-height: 12px;
-  //text-align: right;
   margin-bottom: 8px;
-
   align-items: center;
 }
 
 .history div {
   display: flex;
   flex-direction: column;
-}
-
-.history span {
 }
