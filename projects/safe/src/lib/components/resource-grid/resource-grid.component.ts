@@ -16,7 +16,7 @@ import get from 'lodash/get';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 

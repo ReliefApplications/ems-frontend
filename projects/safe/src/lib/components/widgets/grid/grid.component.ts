@@ -72,7 +72,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
 @Component({
   selector: 'safe-grid',

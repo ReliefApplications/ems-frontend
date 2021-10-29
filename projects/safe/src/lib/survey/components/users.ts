@@ -4,10 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetUsersQueryResponse, GET_USERS } from '../../graphql/queries';
+import { GetUsersFromApplicationsQueryResponse, GET_USERS_FROM_APPLICATIONS } from '../../graphql/queries';
 
 /**
- * Inits the users component.
+ * Inits the owner component.
  * @param Survey Survey class.
  * @param domService Dom service.
  * @param apollo Apollo client.
@@ -54,22 +54,28 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 .registerCustomEditor('applicationsDropdown', applicationEditor);
         },
         onLoaded(question: any): void {
-            apollo.query<GetUsersQueryResponse>({
-                query: GET_USERS,
+            apollo.query<GetUsersFromApplicationsQueryResponse>({
+                query: GET_USERS_FROM_APPLICATIONS,
                 variables: {
                     applications:  question.applications
                 }
-            }).subscribe((res) => {
-                if (res.data.users) {
-                    const users: any = [];
-                    for (const user of res.data.users) {
-                        if (!users.some((el: any) => el.value === user.id)) {
-                            users.push({ value: user.id, text: user.username });
+            }).subscribe(
+                (res) => {
+                    if (res.data.usersFromApplications) {
+                        const users: any = [];
+                        for (const app of res.data.usersFromApplications) {
+                            if (app.users) {
+                                for (const user of app.users) {
+                                    if (!users.some((el: any) => el.value === user.id)) {
+                                        users.push({ value: user.id, text: user.username });
+                                    }
+                                }
+                            }
                         }
+                        question.contentQuestion.choices = users;
                     }
-                    question.contentQuestion.choices = users;
                 }
-            });
+            );
         },
         onAfterRender(question: any, el: any): void {}
     };
