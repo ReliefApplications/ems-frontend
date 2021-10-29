@@ -19,7 +19,6 @@ import {SafeConfirmModalComponent} from '../confirm-modal/confirm-modal.componen
 import {EDIT_RECORD, EditRecordMutationResponse} from '../../graphql/mutations';
 import {NOTIFICATIONS} from '../../const/notifications';
 import {SafeLayoutService} from '../../services/layout.service';
-import {SafeRecordHistoryComponent} from '../record-history/record-history.component';
 import {SafeSnackBarService} from '../../services/snackbar.service';
 import {RecordHistoryModalComponent} from '../record-history-modal/record-history-modal.component';
 

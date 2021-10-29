@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HistoryModalComponent } from './record-history-modal.component';
+import { RecordHistoryModalComponent } from './record-history-modal.component';
 
 describe('HistoryModalComponent', () => {
-  let component: HistoryModalComponent;
-  let fixture: ComponentFixture<HistoryModalComponent>;
+  let component: RecordHistoryModalComponent;
+  let fixture: ComponentFixture<RecordHistoryModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistoryModalComponent ]
+      declarations: [ RecordHistoryModalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HistoryModalComponent);
+    fixture = TestBed.createComponent(RecordHistoryModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
