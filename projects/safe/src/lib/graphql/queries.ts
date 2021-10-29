@@ -325,8 +325,8 @@ export interface GetRolesQueryResponse {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
+query GetUsers($applications: [ID]) {
+  users(applications: $applications) {
     id
     username
     name
@@ -538,22 +538,6 @@ query GetRolesFromApplications($applications: [ID]!) {
 export interface GetRolesFromApplicationsQueryResponse {
   loading: boolean;
   rolesFromApplications: Role[];
-}
-
-// === GET USERS FROM APPLICATION ===
-export const GET_USERS_FROM_APPLICATIONS = gql`
-query GetUsersFromApplications($applications: [ID]!) {
-  usersFromApplications(applications: $applications) {
-    users {
-      id
-      username
-    }
-  }
-}`;
-
-export interface GetUsersFromApplicationsQueryResponse {
-  loading: boolean;
-  usersFromApplications: Application[];
 }
 
 // === GET PERMISSIONS ===
