@@ -10,8 +10,7 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_STRUCTURE,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS
+  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS
 } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
@@ -22,6 +21,7 @@ import {NOTIFICATIONS} from '../../const/notifications';
 import {SafeLayoutService} from '../../services/layout.service';
 import {SafeRecordHistoryComponent} from '../record-history/record-history.component';
 import {SafeSnackBarService} from '../../services/snackbar.service';
+import {RecordHistoryModalComponent} from '../record-history-modal/record-history-modal.component';
 
 interface DialogData {
   recordId: string;
@@ -53,8 +53,6 @@ export class SafeRecordModalComponent implements OnInit {
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
-
-  private historyId: string | undefined = '';
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -227,7 +225,6 @@ export class SafeRecordModalComponent implements OnInit {
           this.layoutService.setRightSidenav(null);
           this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
         });
-
       }
     });
   }
@@ -240,15 +237,13 @@ export class SafeRecordModalComponent implements OnInit {
         id
       }
     }).subscribe(res => {
-      this.historyId = id;
-      this.layoutService.setRightSidenav({
-        factory: this.factory,
-        inputs: {
+      this.dialog.open(RecordHistoryModalComponent, {
+        data: {
           record: res.data.record,
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
           }
-        },
+        }
       });
     });
   }
