@@ -13,4 +13,4 @@ import { SafeRecordHistoryModule } from '../record-history/record-history.module
   ],
   exports: [RecordHistoryModalComponent]
 })
-export class SafeHistoryModalModule { }
+export class SafeRecordHistoryModalModule { }

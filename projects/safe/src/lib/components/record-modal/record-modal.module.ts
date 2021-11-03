@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 
 @NgModule({
   declarations: [SafeRecordModalComponent],
@@ -17,7 +18,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
-    SafeButtonModule
+    SafeButtonModule,
+    SafeRecordHistoryModalModule
   ],
   exports: [SafeRecordModalComponent]
 })

@@ -66,8 +66,6 @@ export class SafeRecordModalComponent implements OnInit {
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
-    private layoutService: SafeLayoutService,
-    private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService
   ) {
     this.containerId = uuidv4();
@@ -235,14 +233,17 @@ export class SafeRecordModalComponent implements OnInit {
             version: version.id
           }
         }).subscribe((res) => {
-          this.layoutService.setRightSidenav(null);
           this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          this.dialogRef.close();
         });
       }
     });
   }
 
-  /* Opens the history of the record on the right side of the screen.*/
+  /**
+   * Opens the history of the record in a modal.
+   * @param id record id.
+   */
   public onViewHistory(id: string | undefined): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,

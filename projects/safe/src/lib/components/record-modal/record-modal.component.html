@@ -22,8 +22,8 @@
           <safe-button [isIcon]="true" icon="history" (click)="onViewHistory(record?.id)">
           </safe-button>
           <div>
-            <span>Created by: {{record?.createdBy?.name}} at : {{record?.createdAt | date:'dd/MM/yy, h:mm a'}}</span>
-            <span>Last modified by: {{record?.modifiedBy?.name}} on : {{record?.modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+            <span>Created by {{record?.createdBy?.name || 'unknown'}} at {{record?.createdAt | date:'dd/MM/yy, h:mm a'}}</span>
+            <span>Last modified by {{record?.modifiedBy?.name || 'unknown'}} on {{record?.modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
           </div>
         </div>
         <div [id]="containerId"></div>

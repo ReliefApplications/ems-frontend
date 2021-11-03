@@ -4,10 +4,9 @@
   </safe-button>
 </div>
 
-
-<div class="history-cache-cont">
+<div class="form-summary">
   <span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
-  <div class="history">
+  <div class="history" *ngIf="record">
     <safe-button [isIcon]="true" icon="history" (click)="onViewHistory(record?.id)">
     </safe-button>
     <div>
