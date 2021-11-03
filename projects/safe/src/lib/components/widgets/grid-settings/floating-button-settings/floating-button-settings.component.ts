@@ -141,13 +141,28 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       if (value) {
         this.buttonForm?.get('distributionList')?.setValidators(Validators.required);
         this.buttonForm?.get('subject')?.setValidators(Validators.required);
+        this.buttonForm?.get('bodyFields')?.setValidators([Validators.required]);
       } else {
         this.buttonForm?.get('distributionList')?.clearValidators();
         this.buttonForm?.get('subject')?.clearValidators();
+        this.buttonForm?.get('bodyFields')?.clearValidators();
       }
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
       this.buttonForm?.get('subject')?.updateValueAndValidity();
+      this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
     });
+
+    // allow form to be sent without choosing bodyFields
+    this.buttonForm?.get('sendMailWithCurrentDataset')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm?.get('bodyFields')?.clearValidators();
+        this.buttonForm?.get('bodyFields')?.setValidators(null);
+      } else {
+        this.buttonForm?.get('bodyFields')?.setValidators([Validators.required]);
+      }
+      this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
+    });
+
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
 
     this.buttonForm?.get('targetForm')?.valueChanges.subscribe(target => {
@@ -159,15 +174,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm?.get('targetFormQuery')?.clearValidators();
       }
       this.buttonForm?.get('targetFormQuery')?.updateValueAndValidity();
-    });
-
-    this.buttonForm?.get('sendMail')?.valueChanges.subscribe((sendEmail: boolean) => {
-      if (sendEmail) {
-        this.buttonForm?.get('bodyFields')?.setValidators([Validators.required]);
-      } else {
-        this.buttonForm?.get('bodyFields')?.clearValidators();
-      }
-      this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
     });
 
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
