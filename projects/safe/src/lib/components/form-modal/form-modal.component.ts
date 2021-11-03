@@ -368,7 +368,6 @@ export class SafeFormModalComponent implements OnInit {
 
   private mergedData(records: Record[]): any {
     const data: any = {};
-    console.log("merging form", this.form)
     // Loop on source fields
     for (const inputField of records[0].form?.fields || []) {
       // If source field match with target field

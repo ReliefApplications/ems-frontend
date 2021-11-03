@@ -425,7 +425,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Displays an embedded form in a modal to add new record.
    */
   public onAdd(): void {
-    console.log("TEST");
 
     if (this.settings.query.template) {
       this.dialog.open(SafeFormModalComponent, {
@@ -987,7 +986,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       await Promise.all(this.promisedRowsModifications(options.modifications, rowsIndexToModify));
     }
 
-    console.log("this.selectedRowsIndex.length", this.selectedRowsIndex.length)
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
       if (options.attachToRecord) {

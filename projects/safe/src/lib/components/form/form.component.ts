@@ -99,14 +99,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
-    let cachedData = storedData ? JSON.parse(storedData).data : null;
+    const cachedData = storedData ? JSON.parse(storedData).data : null;
     this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
     this.isFromCacheData = !(!cachedData);
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
     }
 
-    
+
 
 
     if (this.survey.getUsedLocales().length > 1) {
@@ -366,7 +366,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.render();
   }
 
-  
+
 
   ngOnDestroy(): void {
     localStorage.removeItem(this.storageId);
