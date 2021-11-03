@@ -9,6 +9,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    environment: OORT_PROD
     strategy:
       matrix:
         node-version: [15.x]
@@ -56,11 +57,13 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-back-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
 
   deploy_prod_front_office:
     name: Deploy PROD Front-office 🚀
@@ -77,8 +80,10 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-front-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}
