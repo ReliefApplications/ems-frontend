@@ -45,6 +45,7 @@ jobs:
   deploy_stage_back_office:
     name: Deploy STAGE Back-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_DEV
     needs: build
     steps:
     - name: Checkout
@@ -68,6 +69,7 @@ jobs:
   deploy_stage_front_office:
     name: Deploy STAGE Front-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_DEV
     needs: build
     steps:
     - name: Checkout

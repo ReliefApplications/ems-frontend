@@ -45,6 +45,7 @@ jobs:
   deploy_prod_back_office:
     name: Deploy PROD Back-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_PROD
     needs: build
     steps:
     - name: Checkout
@@ -68,6 +69,7 @@ jobs:
   deploy_prod_front_office:
     name: Deploy PROD Front-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_PROD
     needs: build
     steps:
     - name: Checkout
