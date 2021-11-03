@@ -1,15 +1,15 @@
-name: Front-end STAGE CD
+name: Front-end PROD CD
 
 on:
   push:
     branches:
-      - 'stage'
+      - 'main'
 
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    environment: OORT_DEV
+    environment: OORT_PROD
     strategy:
       matrix:
         node-version: [15.x]
@@ -26,9 +26,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build RA Back-office
-      run: npm run build -- --configuration=oort-dev --project=back-office
+      run: npm run build -- --configuration=oort-prod --project=back-office
     - name: Build RA Front-office
-      run: npm run build -- --configuration=oort-dev --project=front-office
+      run: npm run build -- --configuration=oort-prod --project=front-office
     - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
@@ -42,8 +42,8 @@ jobs:
         name: deploy_dist_front_office
         path: dist/front-office
 
-  deploy_stage_back_office:
-    name: Deploy STAGE Back-office 🚀
+  deploy_prod_back_office:
+    name: Deploy PROD Back-office 🚀
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -65,8 +65,8 @@ jobs:
         CONNECTION: ${{ secrets.CONNECTION }}
         REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
 
-  deploy_stage_front_office:
-    name: Deploy STAGE Front-office 🚀
+  deploy_prod_front_office:
+    name: Deploy PROD Front-office 🚀
     runs-on: ubuntu-latest
     needs: build
     steps:
