@@ -39,6 +39,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === FLOATING BUTTON ===
   public fields: any[] = [];
   public queryName = '';
+  public allForms: Form[] = [];
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
@@ -159,7 +160,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-      passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      prefillForm: [value && value.prefillForm ? value.prefillForm : false],
+      prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,
+        value && value.prefillForm ? Validators.required : null],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length

@@ -10,6 +10,8 @@ import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
+import { SafeFormModalComponent } from '../../../form-modal/form-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -34,7 +36,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() buttonForm?: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
-  @Input() forms: Form[] = [];
+  @Input() allForms: Form[] = [];
   @Input() relatedForms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
@@ -61,6 +63,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     private componentFactoryResolver: ComponentFactoryResolver,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +85,16 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         }
       });
     }
+    
+    this.buttonForm?.get('prefillForm')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm?.get('prefillTargetForm')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm?.get('publicationChannel')?.clearValidators();
+      }
+      this.buttonForm?.get('publicationChannel')?.updateValueAndValidity();
+    });
+
     this.buttonForm?.get('notify')?.valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm?.get('notificationChannel')?.setValidators(Validators.required);

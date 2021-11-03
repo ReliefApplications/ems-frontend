@@ -47,7 +47,7 @@
               {{ floatingButton.value.name }}
             </ng-template>
             <ng-template matTabContent>
-              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels"
+              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels" [allForms]="templates"
                 [relatedForms]="relatedForms" (deleteButton)="deleteFloatingButton()"></safe-floating-button-settings>
             </ng-template>
           </mat-tab>

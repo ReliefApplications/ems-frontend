@@ -25,12 +25,6 @@ export class SafeWorkflowService {
     return this.workflow.asObservable();
   }
 
-  /*  Return records as an Observable.
-  */
-  get records$(): Observable<Record[]> {
-    return this.records.asObservable();
-  }
-
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -95,11 +89,5 @@ export class SafeWorkflowService {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name));
       this.workflow.next(newWorkflow);
     }
-  }
-
-  /*  Store records used to prefill next step form
-  */
-  storeRecords(records: Record[]): void {
-    this.records.next(records);
   }
 }
