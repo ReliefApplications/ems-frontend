@@ -1,5 +1,5 @@
-import {Apollo} from 'apollo-angular';
-import {Component, ComponentFactoryResolver, Inject, OnInit} from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, ComponentFactoryResolver, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -15,12 +15,13 @@ import {
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
-import {SafeConfirmModalComponent} from '../confirm-modal/confirm-modal.component';
-import {EDIT_RECORD, EditRecordMutationResponse} from '../../graphql/mutations';
-import {NOTIFICATIONS} from '../../const/notifications';
-import {SafeLayoutService} from '../../services/layout.service';
-import {SafeSnackBarService} from '../../services/snackbar.service';
-import {RecordHistoryModalComponent} from '../record-history-modal/record-history-modal.component';
+import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
+import { NOTIFICATIONS } from '../../const/notifications';
+import { SafeLayoutService } from '../../services/layout.service';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface DialogData {
   recordId: string;
@@ -42,9 +43,10 @@ export class SafeRecordModalComponent implements OnInit {
   public form?: Form;
   public record: Record = {};
   public modifiedAt: Date | null = null;
+  public selectedTabIndex = 0;
   public survey!: Survey.Model;
   public surveyNext: Survey.Model | null = null;
-  public formPages: any[] = [];
+  private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
   public containerId: string;
@@ -52,6 +54,10 @@ export class SafeRecordModalComponent implements OnInit {
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
+
+  public get pages$(): Observable<any[]> {
+    return this.pages.asObservable();
+  }
 
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
@@ -110,18 +116,17 @@ export class SafeRecordModalComponent implements OnInit {
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.record);
     this.survey = new Survey.Model(this.form?.structure);
-    for (const page of this.survey.pages) {
-      if (page.isVisible) {
-        this.formPages.push(page);
-      }
-    }
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+      this.selectedTabIndex = surveyModel.currentPageNo;
+    });
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
     this.survey.showProgressBar = 'off';
     this.survey.render(this.containerId);
+    this.setPages();
     if (this.data.compareTo) {
       this.surveyNext = new Survey.Model(this.form?.structure);
       this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
@@ -161,6 +166,7 @@ export class SafeRecordModalComponent implements OnInit {
 
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
+    this.selectedTabIndex = i;
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }
@@ -190,9 +196,21 @@ export class SafeRecordModalComponent implements OnInit {
     this.dialogRef.close(true);
   }
 
- /**
-  * Closes the modal without sending any data.
-  */
+  private setPages(): void {
+    const pages = [];
+    if (this.survey) {
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          pages.push(page);
+        }
+      }
+    }
+    this.pages.next(pages);
+  }
+
+  /**
+   * Closes the modal without sending any data.
+   */
   onClose(): void {
     this.dialogRef.close();
   }

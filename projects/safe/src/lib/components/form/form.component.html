@@ -4,12 +4,6 @@
   </safe-button>
 </div>
 
-<div *ngIf="form.uniqueRecord || record">
-  <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)"
-    *ngIf="survey.pages.length > 1">
-    <mat-tab *ngFor="let page of survey.pages" [label]="page.title"></mat-tab>
-  </mat-tab-group>
-</div>
 
 <div class="history-cache-cont">
   <span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
@@ -22,6 +16,8 @@
     </div>
   </div>
 </div>
+<!-- <span *ngIf="modifiedAt && !isFromCacheData" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+<span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span> -->
 <div class="survey-float" *ngIf="surveyActive">
   <kendo-dropdownlist *ngIf="!!survey && survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
     [value]="surveyLanguage.nativeName.split(',')[0]" (selectionChange)="setLanguage($event)">
@@ -30,4 +26,17 @@
     </ng-template>
   </kendo-dropdownlist>
 </div>
+<mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
+  <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name">
+      <ng-template mat-tab-label>
+          {{ page.title ? page.title : page.name }}
+          <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
+      </ng-template>
+  </mat-tab>
+</mat-tab-group>
 <div [id]="containerId"></div>
+<div *ngIf="surveyActive" class="survey-navigation">
+  <safe-button [disabled]="survey.isFirstPage" variant="primary" (click)="survey.prevPage()">Previous</safe-button>
+  <safe-button [disabled]="survey.isLastPage" variant="primary" (click)="survey.nextPage()">Next</safe-button>
+  <safe-button variant="primary" category="secondary" (click)="submit()">Save</safe-button>
+</div>

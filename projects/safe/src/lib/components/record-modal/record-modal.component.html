@@ -1,8 +1,8 @@
 <safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
 <ng-container *ngIf="!loading">
     <div mat-dialog-title>
-        <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onShowPage($event)" *ngIf="formPages.length > 1">
-            <mat-tab *ngFor="let page of formPages" [label]="page.title ? page.title : page.name"></mat-tab>
+        <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
+            <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name"></mat-tab>
         </mat-tab-group>
         <div class="versions-info" *ngIf="data.compareTo">
             <div class="version-info">
@@ -43,5 +43,7 @@
 </mat-dialog-actions>
 <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo && canEdit">
     <button mat-button color="warn" (click)="onClose()">Close</button>
+    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
+    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
     <button mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
 </mat-dialog-actions>

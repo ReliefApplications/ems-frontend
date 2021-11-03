@@ -60,3 +60,11 @@ mat-tab-group {
   display: flex;
   flex-direction: column;
 }
+
+.survey-navigation {
+  display: flex;
+  justify-content: flex-end;
+  safe-button {
+    margin-left: 8px
+  }
+}

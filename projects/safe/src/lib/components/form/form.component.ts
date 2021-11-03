@@ -19,16 +19,16 @@ import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SafeWorkflowService } from '../../services/workflow.service';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
-import {GET_RECORD_DETAILS, GetRecordDetailsQueryResponse} from '../../graphql/queries';
-import {SafeLayoutService} from '../../services/layout.service';
-import {SafeConfirmModalComponent} from '../confirm-modal/confirm-modal.component';
-import {SafeRecordHistoryComponent} from '../record-history/record-history.component';
+import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../graphql/queries';
+import { SafeLayoutService } from '../../services/layout.service';
+import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 
 @Component({
   selector: 'safe-form',
@@ -39,7 +39,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
+  @Output() save: EventEmitter<{ completed: boolean, hideNewRecord?: boolean }> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
@@ -51,6 +51,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public dropdownLocales: any[] = [];
   public surveyActive = true;
   public selectedTabIndex = 0;
+  private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
   public containerId: string;
 
@@ -71,6 +72,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
+
+  public get pages$(): Observable<any[]> {
+    return this.pages.asObservable();
+  }
 
   constructor(
     private apollo: Apollo,
@@ -158,7 +163,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
         const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-        this.usedLocales.push({value: lang, text: nativeName});
+        this.usedLocales.push({ value: lang, text: nativeName });
         this.dropdownLocales.push(nativeName);
       });
     }
@@ -173,13 +178,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey.locale = 'en';
     }
 
+    this.survey.showNavigationButtons = false;
+    this.setPages();
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
-      this.selectedTabIndex = surveyModel.currentPageNo;
+    this.survey.onCurrentPageChanged.add((survey, options) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
+    this.survey.onPageVisibleChanged.add(() => {
+      this.setPages();
+    });
+    this.survey.onSettingQuestionErrors.add((survey, options) => {
+      this.setPages();
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
@@ -201,8 +215,21 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     localStorage.setItem(this.storageId, JSON.stringify({ data: this.survey.data, date: new Date() }));
   }
 
-  /*  Custom SurveyJS method, save a new record or edit existing one.
-  */
+  /**
+   * Calls the complete method of the survey if no error.
+   */
+  public submit(): void {
+    if (!this.survey?.hasErrors()) {
+      this.survey?.completeLastPage();
+    } else {
+      this.snackBar.openSnackBar('Saving failed, some fields require your attention.', { error: true });
+    }
+  }
+
+  /**
+   * Creates the record, or update it if provided.
+   * @param survey Survey instance.
+   */
   public complete = async () => {
     let mutation: any;
     this.surveyActive = false;
@@ -364,12 +391,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     classes.content += 'safe-qst-content';
   }
 
-  public onShowPage(i: number): void {
-    this.survey.currentPageNo = i;
-    this.selectedTabIndex = i;
-    if (this.survey.compareTo) {
-      this.survey.currentPageNo = i;
+  private setPages(): void {
+    const pages = [];
+    if (this.survey) {
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          pages.push(page);
+        }
+      }
     }
+    this.pages.next(pages);
+  }
+
+  public onShowPage(i: number): void {
+    if (this.survey) { this.survey.currentPageNo = i; }
+    if (this.survey.compareTo) { this.survey.currentPageNo = i; }
+    this.selectedTabIndex = i;
   }
 
   public onClear(): void {
