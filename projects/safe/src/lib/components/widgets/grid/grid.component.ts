@@ -72,7 +72,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 @Component({
   selector: 'safe-grid',
@@ -1010,16 +1010,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (options.sendMail && selectedRecords.length > 0) {
         const emailSettings = { query: {
           name: this.settings.query.name,
-          fields: options.sendMailWithCurrentDataset ? this.settings.query.fields : options.bodyFields,
-          filter: {
-            ids: selectedRecords.map(x => x.id),
-          }
+          fields: options.sendMailWithCurrentDataset ? this.settings.query.fields : options.bodyFields
         }};
         const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
         (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
         const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
         this.emailService.sendMail(options.distributionList, options.subject, emailSettings,
-           selectedRecords.map(x => x.id).length, this.filter, sortOrder, sortField);
+           selectedRecords.map(x => x.id), sortOrder, sortField);
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {
