@@ -1,9 +1,9 @@
-name: Front-end STAGE CD
+name: Front-end PROD CD
 
 on:
   push:
     branches:
-      - 'stage'
+      - 'main'
 
 jobs:
   build:
@@ -41,8 +41,8 @@ jobs:
         name: deploy_dist_front_office
         path: dist/front-office
 
-  deploy_stage_back_office:
-    name: Deploy STAGE Back-office 🚀
+  deploy_prod_back_office:
+    name: Deploy PROD Back-office 🚀
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -62,8 +62,8 @@ jobs:
       env:
         SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
 
-  deploy_stage_front_office:
-    name: Deploy STAGE Front-office 🚀
+  deploy_prod_front_office:
+    name: Deploy PROD Front-office 🚀
     runs-on: ubuntu-latest
     needs: build
     steps:
