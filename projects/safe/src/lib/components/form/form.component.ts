@@ -8,9 +8,7 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { SafeWorkflowService } from '../../services/workflow.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
@@ -57,11 +55,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   constructor(
-    private apollo: Apollo,
     public dialog: MatDialog,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router,
-    private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService
   ) {
@@ -105,9 +101,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
     }
-
-
-
 
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
@@ -365,8 +358,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.survey.render();
   }
-
-
 
   ngOnDestroy(): void {
     localStorage.removeItem(this.storageId);

@@ -61,10 +61,10 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo,
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService

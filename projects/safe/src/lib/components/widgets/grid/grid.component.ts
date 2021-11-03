@@ -1027,8 +1027,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (promises.length > 0) {
         await Promise.all(promises);
       }
+
       if (options.prefillForm) {
         const promisedRecords: Promise<any>[] = [];
+        // Fetch the record object for each selected record
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
             query: GET_RECORD_DETAILS,
@@ -1039,11 +1041,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
         const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
 
-
         // Open a modal containing the prefilled form
         this.dialog.open(SafeFormModalComponent, {
           data: {
-            recordId: selectedRecords.map(x => x.id),
             template: options.prefillTargetForm,
             locale: 'en',
             prefillRecords: records,
@@ -1052,6 +1052,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     }
+
     if (options.goToNextStep) {
       this.goToNextStep.emit(true);
     } else {
