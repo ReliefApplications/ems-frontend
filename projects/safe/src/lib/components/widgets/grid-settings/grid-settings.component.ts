@@ -185,11 +185,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
         value && value.sendMail ? Validators.required : null],
-      sendMailWithCurrentDataset: [value && value.sendMailWithCurrentDataset ? value.sendMailWithCurrentDataset : false],
+      export: [value && value.export ? value.export : false],
       bodyFields: this.formBuilder.array((value && value.bodyFields) ?
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
-        value && value.sendMail && !value.sendMailWithCurrentDataset ? Validators.required : null)
-      // attachment: [value && value.attachment ? value.attachment : false]
+        value && value.sendMail ? Validators.required : null)
     });
     return buttonForm;
   }

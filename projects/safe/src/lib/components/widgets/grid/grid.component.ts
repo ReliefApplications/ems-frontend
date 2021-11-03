@@ -1010,7 +1010,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       if (options.sendMail && selectedRecords.length > 0) {
         const emailSettings = { query: {
           name: this.settings.query.name,
-          fields: options.sendMailWithCurrentDataset ? this.settings.query.fields : options.bodyFields
+          fields: options.bodyFields
         }};
         const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
         (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);

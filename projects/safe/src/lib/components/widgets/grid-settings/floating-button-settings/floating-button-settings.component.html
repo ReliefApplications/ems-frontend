@@ -158,12 +158,10 @@
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
-          <mat-checkbox formControlName="sendMailWithCurrentDataset">Export selected dataset</mat-checkbox>
-          <div *ngIf="!buttonForm.value.sendMailWithCurrentDataset" class="sub-parameters">
-            <h2>Select fields to write in body</h2>
+          <mat-checkbox formControlName="export">Export selected dataset</mat-checkbox>
+          <h2>Select fields to write in body</h2>
             <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
               [factory]="factory"></safe-tab-fields>
-          </div>
         </div>
       </ng-container>
     </div>
