@@ -25,7 +25,7 @@
       <!-- DISPLAY -->
       <ng-container *ngIf="field.meta">
         <!-- DISPLAY ( text / comment ) -->
-        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text'">
+        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text' || field.meta.type === 'comment'">
           <div translate="yes" class="textbox-container">
             <div #refSpan class="textbox">
               {{getPropertyValue(dataItem, field.name)}}
@@ -53,7 +53,7 @@
       <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
         *ngIf="field.editor === 'text'">
         <!-- EDITION ( text / comment ) -->
-        <ng-container *ngIf="field.meta.type === 'text'">
+        <ng-container *ngIf="field.meta.type === 'text' || field.meta.type === 'comment'">
           <textarea rows="2" [formControl]="formGroup.get(field.name)" kendoGridFocusable [name]="field.name"
             class="k-textbox"></textarea>
         </ng-container>

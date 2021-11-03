@@ -13,13 +13,12 @@ import {
   RestoreRecordMutationResponse,
   RESTORE_RECORD
 } from '../../../graphql/mutations';
-import { extractColumns } from '../../../utils/extractColumns';
 import {
   SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeDownloadService } from '@safe/builder';
+import { SafeDownloadService, Form } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -32,7 +31,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public id = '';
-  public form: any;
+  public form: Form = {};
   displayedColumns: string[] = [];
   dataSource: any[] = [];
   public showSidenav = true;
@@ -78,12 +77,13 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       variables: {
         id: this.id,
         display: false,
-        showDeletedRecords: this.showDeletedRecords
+        showDeletedRecords: this.showDeletedRecords,
+        disableCommentFormatting: true
       }
     }).valueChanges.subscribe(res => {
       if (res.data.form) {
         this.form = res.data.form;
-        this.dataSource = this.form.records;
+        this.dataSource = this.form.records || [];
         this.setDisplayedColumns();
         this.loading = res.loading;
       }
@@ -98,11 +98,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     */
   private setDisplayedColumns(): void {
     const columns: any[] = [];
-    const structure = JSON.parse(this.form.structure);
-    if (structure && structure.pages) {
-      for (const page of JSON.parse(this.form.structure).pages) {
-        extractColumns(page, columns);
-      }
+    for (const field of this.form.fields || []) {
+      columns.push(field.name);
     }
     columns.push('_actions');
     this.displayedColumns = columns;

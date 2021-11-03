@@ -185,7 +185,7 @@ query GetShortFormById($id: ID!) {
 }`;
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $disableCommentFormatting: Boolean, $showDeletedRecords: Boolean) {
   form(id: $id) {
     id
     name
@@ -200,7 +200,7 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
     }
     records(filters: $filters, archived: $showDeletedRecords) {
       id
-      data(display: $display)
+      data(display: $display, disableCommentFormatting: $disableCommentFormatting)
       versions {
         id
         createdAt
