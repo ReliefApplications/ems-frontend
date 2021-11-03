@@ -26,9 +26,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build RA Back-office
-      run: npm run build:ci:ra
+      run: npm run build -- --configuration=oort-dev --project=back-office
     - name: Build RA Front-office
-      run: npm run build:ci:ra -- --project=front-office
+      run: npm run build -- --configuration=oort-dev --project=front-office
     - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
@@ -57,13 +57,13 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.OORT_DEV_SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-back-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_OORT_DEV_PASS }}
-        CONNECTION: ${{ secrets.OORT_DEV_CONNECTION }}
-        REMOTE_PATH: ${{ secrets.OORT_DEV_BO_REMOTE_PATH }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
 
   deploy_stage_front_office:
     name: Deploy STAGE Front-office 🚀
@@ -80,10 +80,10 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.OORT_DEV_SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-front-office.sh
       env:
-        SSH_PASS: ${{ secrets.OORT_DEV_SSH_PASS }}
-        CONNECTION: ${{ secrets.OORT_DEV_CONNECTION }}
-        REMOTE_PATH: ${{ secrets.OORT_DEV_FO_REMOTE_PATH }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}

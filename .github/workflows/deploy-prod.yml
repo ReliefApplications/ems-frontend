@@ -26,9 +26,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build RA Back-office
-      run: npm run build:ci:ra
+      run: npm run build -- --configuration=oort-prod --project=back-office
     - name: Build RA Front-office
-      run: npm run build:ci:ra -- --project=front-office
+      run: npm run build -- --configuration=oort-prod --project=front-office
     - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
