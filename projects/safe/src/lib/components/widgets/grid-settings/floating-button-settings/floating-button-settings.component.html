@@ -51,7 +51,8 @@
                   <input matInput formControlName="value" type="string" />
                 </ng-container>
               </mat-form-field>
-              <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteModification(i)">
+              <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger"
+                (click)="onDeleteModification(i)">
               </safe-button>
             </form>
             <safe-button [isIcon]="true" icon="add_circle_outline" variant="primary" (click)="onAddModification()">
@@ -88,7 +89,8 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngIf="buttonForm.value.targetForm">
-            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false"></safe-query-builder>
+            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false">
+            </safe-query-builder>
           </ng-container>
         </div>
         <span class="info-row">
@@ -138,26 +140,19 @@
           <mat-form-field class="chip-list" appearance="outline">
             <mat-label>Distribution list</mat-label>
             <mat-chip-list #chipList aria-label="Emails chip list">
-              <mat-chip
-                *ngFor="let email of emails"
-                [selectable]="true"
-                [removable]="true"
-                (removed)="remove(email)">
+              <mat-chip *ngFor="let email of emails" [selectable]="true" [removable]="true" (removed)="remove(email)">
                 {{email}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input
-                #emailInput
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (focusout)="add($event)"
-                (matChipInputTokenEnd)="add($event)">
+              <input #emailInput [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (focusout)="add($event)" (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
+          <mat-checkbox formControlName="export">Export selected dataset</mat-checkbox>
           <h2>Select fields to write in body</h2>
           <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
             [factory]="factory"></safe-tab-fields>
