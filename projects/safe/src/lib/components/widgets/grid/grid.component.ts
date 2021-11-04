@@ -1038,8 +1038,27 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.workflowService.storeRecords(records);
       }
     }
+
+    /* Next Step button, open a confirm modal if required
+    */
     if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+      if (options.closeWorkflow) {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirmation: boolean) => {
+          if (confirmation) {
+            this.goToNextStep.emit(true);
+          }
+        });
+      } else {
+        this.goToNextStep.emit(true);
+      }
     } else {
       this.reloadData();
     }

@@ -21,6 +21,13 @@
             info
           </mat-icon>
         </span>
+        <span class="sub-parameters" *ngIf="!isDashboard && buttonForm.value.goToNextStep">
+          <mat-checkbox formControlName="closeWorkflow">Close workflow</mat-checkbox>
+          <mat-form-field appearance="outline" class="sub-parameters" *ngIf="!isDashboard && buttonForm.value.closeWorkflow">
+            <mat-label>Confirmation message</mat-label>
+            <input matInput formControlName="confirmationText" type="string">
+          </mat-form-field>
+        </span>
         <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>
