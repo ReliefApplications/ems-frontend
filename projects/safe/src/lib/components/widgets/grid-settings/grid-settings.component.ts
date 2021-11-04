@@ -160,6 +160,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      closeWorkflow: [value && value.closeWorkflow ? value.closeWorkflow : false],
+      confirmationText: [value && value.confirmationText ? value.confirmationText : '',
+        value && value.closeWorkflow ? Validators.required : null],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length

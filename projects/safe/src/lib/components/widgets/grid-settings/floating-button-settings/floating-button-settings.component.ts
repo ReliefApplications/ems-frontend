@@ -148,7 +148,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
       this.buttonForm?.get('subject')?.updateValueAndValidity();
     });
-
+    
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
 
     this.buttonForm?.get('targetForm')?.valueChanges.subscribe(target => {
@@ -169,6 +169,15 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm?.get('bodyFields')?.clearValidators();
       }
       this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
+    });
+
+    this.buttonForm?.get('closeWorkflow')?.valueChanges.subscribe((closeWorkflow: boolean) => {
+      if (closeWorkflow) {
+        this.buttonForm?.get('confirmationText')?.setValidators([Validators.required]);
+      } else {
+        this.buttonForm?.get('confirmationText')?.clearValidators();
+      }
+      this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
     });
 
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);

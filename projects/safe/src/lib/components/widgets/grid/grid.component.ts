@@ -45,6 +45,7 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
+import { ActivatedRoute } from '@angular/router';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -196,7 +197,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private apiProxyService: SafeApiProxyService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private route: ActivatedRoute
   ) {
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -1038,8 +1040,27 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.workflowService.storeRecords(records);
       }
     }
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+
+    /* Next Step button, open a confirm modal if required
+    */
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
+          }
+        });
+      }
     } else {
       this.reloadData();
     }
