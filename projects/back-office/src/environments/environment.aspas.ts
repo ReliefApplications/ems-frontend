@@ -8,5 +8,5 @@ export const environment = {
   postLogoutRedirectUri: 'https://aspas.oortcloud.tech/admin/auth',
   frontOfficeUri: 'https://aspas.oortcloud.tech/',
   backOfficeUri: 'https://aspas.oortcloud.tech/admin/',
-  module: 'frontoffice'
+  module: 'backoffice'
 };
