@@ -234,11 +234,11 @@
                 }
               ]
             },
-            "wv": {
+            "aspas": {
               "fileReplacements": [
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.wv.ts"
+                  "with": "projects/back-office/src/environments/environment.aspas.ts"
                 }
               ],
               "optimization": true,
@@ -520,11 +520,11 @@
                 }
               ]
             },
-            "wv": {
+            "aspas": {
               "fileReplacements": [
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.wv.ts"
+                  "with": "projects/front-office/src/environments/environment.aspas.ts"
                 }
               ],
               "optimization": true,
