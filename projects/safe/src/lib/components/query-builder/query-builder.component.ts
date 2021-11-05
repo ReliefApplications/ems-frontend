@@ -44,7 +44,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() form?: FormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
-  @Input() settings: any;
   @Input() templates: Form[] = [];
 
   // === FIELD EDITION ===

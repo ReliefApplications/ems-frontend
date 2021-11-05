@@ -42,7 +42,7 @@
       </mat-tab>
       <mat-tab label="Filter" *ngIf="form.get('filter')">
         <ng-template matTabContent>
-          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [settings]="settings"></safe-tab-filter>
+          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields"></safe-tab-filter>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
