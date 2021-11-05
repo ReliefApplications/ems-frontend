@@ -27,7 +27,12 @@ export class SafePreprocessorService {
    * @param dataset optional dataset settings.
    * @returns preprocessed string.
    */
-  public async preprocess(text: string, dataset: { settings: any, ids: string[] } | null = null): Promise<string> {
+  public async preprocess(text: string, dataset: {
+    settings: any,
+    ids: string[],
+    sortField?: string,
+    sortOrder?: string
+  } | null = null): Promise<string> {
     const promises: Promise<any>[] = [];
 
     // === DATASET ===
@@ -38,6 +43,8 @@ export class SafePreprocessorService {
           query: builtQuery,
           variables: {
             first: dataset.ids.length,
+            sortField: dataset.sortField ?? null,
+            sortOrder: dataset.sortOrder || '',
             filter: {
               logic: 'and',
               filters: [
@@ -74,7 +81,8 @@ export class SafePreprocessorService {
                   this.convertDateFields(fields, items);
                 }
               }
-              text = text.replace('{dataset}', this.buildBody(items, fields));
+              const datasetToString = this.datasetToString(items, fields);
+              text = text.split('{dataset}').join(datasetToString);
               return;
             }),
             take(1)
@@ -85,7 +93,8 @@ export class SafePreprocessorService {
 
     // === TODAY ===
     if (text.includes('{today}')) {
-      text = text.replace('{today}', (new Date()).toDateString());
+      const todayToString = (new Date()).toDateString();
+      text = text.split('{today}').join(todayToString);
     }
 
     await Promise.all(promises);
@@ -98,11 +107,11 @@ export class SafePreprocessorService {
    * @param fields fields to use for query.
    * @returns body of the email.
    */
-   private buildBody(items: any[], fields: any): string {
+   private datasetToString(items: any[], fields: any): string {
     let body = '';
     body += `--------------------------------------------------------------------------------------------------------------------------------\n`;
     for (const item of items) {
-      body += this.buildBodyRow(item, fields);
+      body += this.datasetRowToString(item, fields);
       body += '--------------------------------------------------------------------------------------------------------------------------------\n';
     }
     return body;
@@ -115,7 +124,7 @@ export class SafePreprocessorService {
    * @param tabs string indentation.
    * @returns body of the email.
    */
-  private buildBodyRow(item: any, fields: any, tabs = ''): string {
+  private datasetRowToString(item: any, fields: any, tabs = ''): string {
     let body = '';
     for (const field of fields) {
       switch (field.kind) {
@@ -123,7 +132,7 @@ export class SafePreprocessorService {
           body += `${tabs}${field.label ? field.label : field.name}:\n`;
           const list = item ? item[field.name] || [] : [];
           list.forEach((element: any, index: number) => {
-            body += this.buildBodyRow(element, field.fields, tabs + '\t');
+            body += this.datasetRowToString(element, field.fields, tabs + '\t');
             if (index < (list.length - 1)) {
               body += `${tabs + '\t'}-----------------------\n`;
             }
@@ -131,7 +140,7 @@ export class SafePreprocessorService {
           break;
         case 'OBJECT':
           body += `${tabs}${field.label ? field.label : field.name}:\n`;
-          body += this.buildBodyRow(item ? item[field.name] : null, field.fields, tabs + '\t');
+          body += this.datasetRowToString(item ? item[field.name] : null, field.fields, tabs + '\t');
           break;
         default:
           const rawValue = item ? item[field.name] : '';
