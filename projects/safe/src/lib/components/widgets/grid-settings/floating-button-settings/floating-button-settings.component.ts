@@ -10,7 +10,6 @@ import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
-import { SafeFormModalComponent } from '../../../form-modal/form-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -36,7 +35,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() buttonForm?: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
-  @Input() allForms: Form[] = [];
   @Input() relatedForms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
@@ -161,7 +159,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
       this.buttonForm?.get('subject')?.updateValueAndValidity();
     });
-    
+
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
 
     this.buttonForm?.get('targetForm')?.valueChanges.subscribe(target => {

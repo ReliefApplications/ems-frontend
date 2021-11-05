@@ -10,6 +10,9 @@ import { ContentType } from '../models/page.model';
 import { Step } from '../models/step.model';
 import { NOTIFICATIONS } from '../const/notifications';
 
+/**
+ * SAFE workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
+ */
 @Injectable({
   providedIn: 'root'
 })

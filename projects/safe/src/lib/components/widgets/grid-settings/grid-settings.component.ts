@@ -39,7 +39,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === FLOATING BUTTON ===
   public fields: any[] = [];
   public queryName = '';
-  public allForms: Form[] = [];
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 

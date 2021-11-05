@@ -13,17 +13,20 @@
           <input matInput formControlName="name" type="string">
         </mat-form-field>
 
-        <div *ngIf="!isDashboard && buttonForm.value.prefillForm" class="sub-parameters">
-          <mat-form-field appearance="outline">
-            <mat-label>Form to pre-fill</mat-label>
-            <mat-select formControlName="prefillTargetForm">
-              <mat-option>-- None --</mat-option>
-              <mat-option *ngFor="let form of allForms" [value]="form.id">
-                {{form.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+        <ng-container *ngIf="relatedForms.length > 0">
+          <mat-checkbox formControlName="prefillForm">Pre-fill form with selected data</mat-checkbox>
+          <div *ngIf="buttonForm.value.prefillForm" class="sub-parameters">
+            <mat-form-field appearance="outline">
+              <mat-label>Template</mat-label>
+              <mat-select formControlName="prefillTargetForm">
+                <mat-option>-- None --</mat-option>
+                <mat-option *ngFor="let form of relatedForms" [value]="form.id">
+                  {{form.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
 
         <ng-container *ngIf="!isDashboard">
           <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
