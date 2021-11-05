@@ -3,27 +3,9 @@
     flex-direction: row;
     justify-content: center;
     margin-top: 64px;
-    
+
     button {
         margin: 0 4px;
-    }
-}
-
-.content-choice {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    margin-top: 32px;
-
-    .content-type {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        img {
-            height: 196px;
-            width: 196px;
-            cursor: pointer;
-        }
     }
 }
 
@@ -33,9 +15,6 @@
     }
 }
 
-.radio-hidden {
-    position:absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+safe-content-choice {
+    margin-top: 32px;
 }

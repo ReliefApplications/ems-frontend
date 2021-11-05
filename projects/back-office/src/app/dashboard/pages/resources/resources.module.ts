@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { SafeButtonModule } from '@safe/builder';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [ResourcesComponent],
@@ -31,7 +32,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatNativeDateModule,
     MatFormFieldModule,
     FormsModule,
-    SafeButtonModule
+    SafeButtonModule,
+    MatPaginatorModule
   ],
   exports: [ResourcesComponent]
 })

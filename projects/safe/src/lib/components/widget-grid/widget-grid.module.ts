@@ -17,15 +17,14 @@ import { SafeFloatingOptionsComponent } from './floating-options/floating-option
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeTileDisplayComponent } from './floating-options/menu/tile-display/tile-display.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { SafeDashboardMenuComponent } from './dashboard-menu/dashboard-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 
 @NgModule({
   declarations: [
     SafeWidgetGridComponent,
     SafeFloatingOptionsComponent,
-    SafeDashboardMenuComponent,
     SafeTileDataComponent,
     SafeTileDisplayComponent,
     SafeExpandedWidgetComponent
@@ -47,7 +46,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatMenuModule,
     DragDropModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    SafeWidgetChoiceModule
   ],
   exports: [SafeWidgetGridComponent]
 })

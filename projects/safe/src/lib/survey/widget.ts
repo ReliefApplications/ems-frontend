@@ -5,6 +5,11 @@ import { SafeResourceGridModalComponent } from '../components/search-resource-gr
 import { FormGroup } from '@angular/forms';
 import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
 import { ChoicesRestful } from 'survey-angular';
+import { SafeButtonComponent } from '../components/ui/button/button.component';
+import { ButtonSize } from '../components/ui/button/button-size.enum';
+import { ButtonCategory } from '../components/ui/button/button-category.enum';
+import { SafeButtonModule } from '../components/ui/button/button.module';
+import { EmbeddedViewRef } from '@angular/core';
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -51,7 +56,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         required: true,
       });
       // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: {request: XMLHttpRequest}) => {
+      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
         if (sender.url.includes(environment.API_URL)) {
           const token = localStorage.getItem('msal.idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -111,169 +116,151 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of tooltip
       if (question.tooltip) {
-        const header = el.parentElement.parentElement.querySelector('h5');
+        const header = el.parentElement.parentElement.querySelector('.sv-title-actions__title');
         if (header) {
           header.title = question.tooltip;
           const span = document.createElement('span');
-          span.innerText = 'info';
+          span.innerText = 'help';
           span.className = 'material-icons';
           span.style.fontSize = '1em';
           span.style.cursor = 'pointer';
+          span.style.color = '#008DC9';
           header.appendChild(span);
           span.style.display = !question.tooltip ? 'none' : '';
           question.registerFunctionOnPropertyValueChanged('tooltip',
-          () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
+            () => {
+              span.style.display = !question.tooltip ? 'none' : '';
+            });
         }
       }
-      if (question.getType() === 'resource') {
-        // come from 'add new record' button from resources question
-        const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
-        const mainDiv = document.createElement('div');
-        mainDiv.id = 'addRecordDiv';
-        const btnEl = document.createElement('button');
-        btnEl.innerText = 'Add new record';
-        btnEl.style.float = 'left';
-        btnEl.style.width = '150px';
-        if (question.canAddNew && question.addTemplate) {
-          btnEl.onclick = () => {
-            const dialogRef = dialog.open(SafeFormModalComponent, {
-              data: {
-                template: question.addTemplate,
-                locale: question.resource.value,
-                from: 'wid-anr-resource'
-              }
-            });
-            dialogRef.afterClosed().subscribe(res => {
-              if (res) {
-                const e = new CustomEvent('saveResourceFromEmbed',
-                  { detail: { resource: res.data, template: res.template } });
-                document.dispatchEvent(e);
-                question.value = res.data.id;
-              }
-            });
-          };
-        }
-        mainDiv.appendChild(btnEl);
-        el.parentElement.insertBefore(searchBtn, el);
-        el.parentElement.insertBefore(mainDiv, el);
-        mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
+      // Display of add button for resource question
+      if (question.getType() === 'resource' && question.resource) {
 
-        question.registerFunctionOnPropertyValueChanged('addTemplate',
-          () => {
-            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-          });
-        question.registerFunctionOnPropertyValueChanged('canAddNew',
-          () => {
-            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-          });
+        if (question.survey.mode !== 'display') {
+          const actionsButtons = document.createElement('div');
+          actionsButtons.id = 'actionsButtons';
+          actionsButtons.style.display = 'flex';
+          actionsButtons.style.marginBottom = '0.5em';
+
+          const searchBtn = buildSearchButton(question, question.gridFieldsSettings, false);
+          actionsButtons.appendChild(searchBtn);
+
+          const addBtn = buildAddButton(question, false);
+          actionsButtons.appendChild(addBtn);
+
+          el.parentElement.insertBefore(actionsButtons, el);
+
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+          question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
+            () => {
+              searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('canSearch',
+            () => {
+              searchBtn.style.display = question.canSearch ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('addTemplate',
+            () => {
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('canAddNew',
+            () => {
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+            });
+        }
       }
       // Display of add button | grid for resources question
-      if (question.getType() === 'resources') {
-        if (question.resource) {
+      if (question.getType() === 'resources' && question.resource) {
+
+        const gridComponent = buildRecordsGrid(question, el);
+
+        if (question.survey.mode !== 'display') {
+          const actionsButtons = document.createElement('div');
+          actionsButtons.id = 'actionsButtons';
+          actionsButtons.style.display = 'flex';
+          actionsButtons.style.marginBottom = '0.5em';
+
           const searchBtn = buildSearchButton(question, question.gridFieldsSettings, true);
-          el.parentElement.insertBefore(searchBtn, el);
+          actionsButtons.appendChild(searchBtn);
 
-          let instance: SafeResourceGridComponent;
-          if (question.displayAsGrid) {
-            const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
-            instance = grid.instance;
-            instance.multiSelect = true;
-            // instance.selectedRows = question.value || [];
-            instance.readOnly = true;
-            const questionQuery = question.gridFieldsSettings || {};
-            const questionFilter = questionQuery.filter || {};
-            instance.settings = {
-              query: {
-                ...questionQuery, filter: {
-                  ...questionFilter,
-                  ids: question.value || []
-                }
-              }
-            };
-            question.survey.onValueChanged.add((survey: any, options: any) => {
-              if (options.name === question.name) {
-                instance.settings = {
-                  query: {
-                    ...questionQuery, filter: {
-                      ...questionFilter,
-                      ids: options.value || []
-                    }
-                  }
-                };
-                instance.init();
-              }
+          const addBtn = buildAddButton(question, true, gridComponent);
+          actionsButtons.appendChild(addBtn);
+
+          el.parentElement.insertBefore(actionsButtons, el);
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+          question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
+            () => {
+              searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
             });
-          }
-          if (question.survey.mode !== 'display') {
-            // come from 'add new record' button from resources question
-            const mainDiv = document.createElement('div');
-            mainDiv.id = 'addRecordDiv';
-            const btnEl = document.createElement('button');
-            btnEl.innerText = 'Add new record';
-            btnEl.style.width = '150px';
-            if (question.canAddNew && question.addTemplate) {
-              btnEl.onclick = () => {
-                const dialogRef = dialog.open(SafeFormModalComponent, {
-                  data: {
-                    template: question.addTemplate,
-                    locale: question.resource,
-                    from: 'wid-anr-resources'
-                  }
-                });
-                dialogRef.afterClosed().subscribe(res => {
-                  if (res) {
-                    if (question.displayAsGrid) {
-                      instance.availableRecords.push({
-                        value: res.data.id,
-                        text: res.data.data[question.displayField]
-                      });
-                    } else {
-                      const e = new CustomEvent('saveResourceFromEmbed', {
-                        detail: {
-                          resource: res.data,
-                          template: res.template
-                        }
-                      });
-                      document.dispatchEvent(e);
-                    }
-                    // there we really change the value and so trigger the method
-                    question.value = question.value.concat(res.data.id);
-                  }
-                });
-              };
-            }
-            mainDiv.appendChild(btnEl);
-            el.parentElement.insertBefore(mainDiv, el);
-            mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-
-            question.registerFunctionOnPropertyValueChanged('addTemplate',
-              () => {
-                mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-              });
-            question.registerFunctionOnPropertyValueChanged('canAddNew',
-              () => {
-                mainDiv.style.display = !question.canAddNew || !question.addTemplate ? 'none' : '';
-              });
-          }
+          question.registerFunctionOnPropertyValueChanged('canSearch',
+            () => {
+              searchBtn.style.display = question.canSearch ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('addTemplate',
+            () => {
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+            });
+          question.registerFunctionOnPropertyValueChanged('canAddNew',
+            () => {
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+            });
         }
+      }
+      // Adding an open url icon for urls inputs
+      if (question.inputType === 'url') {
+
+        // Generate the dynamic component with its parameters
+        let instance: SafeButtonComponent;
+        const button = domService.appendComponentToBody(SafeButtonComponent, el.parentElement);
+        instance = button.instance;
+        instance.isIcon = true;
+        instance.icon = 'open_in_new';
+        instance.size = ButtonSize.SMALL;
+        instance.category = ButtonCategory.TERTIARY;
+        instance.variant = 'default';
+        // we override the css of the component
+        const domElem = (button.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+        (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
+        (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
+        (domElem.firstChild as HTMLElement).style.color = 'black';
+
+        // Set the default styling of the parent
+        el.parentElement.style.display = 'flex';
+        el.parentElement.style.alignItems = 'center';
+        el.parentElement.style.flexDirection = 'row';
+        el.parentElement.style.pointerEvents = 'auto';
+        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.title = 'The URL should start with "http://" or "https://"';
+
+        // Create an <a> HTMLElement only used to verify the validity of the URL
+        const URLtester = document.createElement('a');
+        URLtester.href = el.value;
+        (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+
+        question.survey.onValueChanged.add((survey: any, options: any) => {
+          if (options.question.name === question.name) {
+            URLtester.href = el.value;
+            (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+          }
+        });
+
+        button.instance.emittedEventSubject.subscribe((eventType: string) => {
+          if (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) {
+            window.open(URLtester.href, '_blank', 'noopener,noreferrer');
+          }
+        });
       }
     }
   };
 
-  function buildSearchButton(question: any, fieldsSettingsForm: FormGroup, multiselect: boolean): any {
-    const mainDiv = document.createElement('div');
-    mainDiv.id = 'searchDiv';
-    mainDiv.style.height = '23px';
-    mainDiv.style.marginBottom = '0.5em';
+  const buildSearchButton = (question: any, fieldsSettingsForm: FormGroup, multiselect: boolean): any => {
+    const searchButton = document.createElement('button');
+    searchButton.innerText = 'Search';
+    searchButton.style.marginRight = '8px';
     if (fieldsSettingsForm) {
-      const btnEl = document.createElement('button');
-      btnEl.innerText = 'Search';
-      btnEl.style.width = '100px';
-      btnEl.style.float = 'left';
-      btnEl.style.marginRight = '5px';
-      btnEl.onclick = () => {
+      searchButton.onclick = () => {
         const dialogRef = dialog.open(SafeResourceGridModalComponent, {
           data: {
             multiselect,
@@ -292,10 +279,99 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       };
-      mainDiv.appendChild(btnEl);
     }
-    return mainDiv;
-  }
+    searchButton.style.display = (!question.isReadOnly && question.canSearch) ? '' : 'none';
+    return searchButton;
+  };
+
+  const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeResourceGridComponent): any => {
+    const addButton = document.createElement('button');
+    addButton.innerText = 'Add new record';
+    if (question.canAddNew && question.addTemplate) {
+      addButton.onclick = () => {
+        const dialogRef = dialog.open(SafeFormModalComponent, {
+          data: {
+            template: question.addTemplate,
+            locale: question.resource.value
+          },
+          autoFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            if (question.displayAsGrid && gridComponent) {
+              gridComponent.availableRecords.push({
+                value: res.data.id,
+                text: res.data.data[question.displayField]
+              });
+            }
+            if (multiselect) {
+              const newItem = {
+                value: res.data.id,
+                text: res.data.data[question.displayField]
+              };
+              question.contentQuestion.choices = [newItem, ...question.contentQuestion.choices];
+              question.value = question.value.concat(res.data.id);
+            } else {
+              const newItem = {
+                value: res.data.id,
+                text: res.data.data[question.displayField]
+              };
+              question.contentQuestion.choices = [newItem, ...question.contentQuestion.choices];
+              question.value = res.data.id;
+            }
+          }
+        });
+      };
+    }
+    addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+    return addButton;
+  };
+
+  const buildRecordsGrid = (question: any, el: any): any => {
+    let instance: SafeResourceGridComponent;
+    if (question.displayAsGrid) {
+      const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
+      instance = grid.instance;
+      instance.multiSelect = true;
+      // instance.selectedRows = question.value || [];
+      instance.readOnly = true;
+      const questionQuery = question.gridFieldsSettings || {};
+      // const questionFilter = questionQuery.filter || {};
+      instance.settings = {
+        query: {
+          ...questionQuery, filter: {
+            logic: 'and',
+            filters: [{
+              field: 'ids',
+              operator: 'eq',
+              value: question.value || []
+            }]
+            // ...questionFilter
+          }
+        }
+      };
+      question.survey.onValueChanged.add((survey: any, options: any) => {
+        if (options.name === question.name) {
+          instance.settings = {
+            query: {
+              ...questionQuery, filter: {
+                logic: 'and',
+                filters: [{
+                  field: 'ids',
+                  operator: 'eq',
+                  value: question.value || []
+                }]
+                // ...questionFilter
+              }
+            }
+          };
+          instance.init();
+        }
+      });
+      return instance;
+    }
+    return null;
+  };
 
   Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
 }

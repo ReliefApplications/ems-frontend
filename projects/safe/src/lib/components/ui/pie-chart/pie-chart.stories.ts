@@ -16,11 +16,21 @@ export default {
         }),
         withKnobs
     ],
-    title: 'UI/Pie Chart',
+    title: 'UI/Charts/Pie Chart',
+    argTypes: {
+        series: {
+            control: { type: 'object' }
+        },
+        legend: {
+            control: { type: 'object' }
+        },
+        title: {
+            control: { type: 'object' }
+        }
+    }
 } as Meta;
 
 const Template: Story<SafePieChartComponent> = args => ({
-    template: '<safe-pie-chart></safe-pie-chart>',
     props: {
         ...args
     }

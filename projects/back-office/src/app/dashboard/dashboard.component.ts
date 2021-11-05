@@ -60,6 +60,11 @@ export class DashboardComponent implements OnInit {
           name: 'API Configurations',
           path: '/settings/apiconfigurations',
           icon: 'settings_input_composite'
+        },
+        {
+          name: 'Pull jobs',
+          path: '/settings/pulljobs',
+          icon: 'cloud_download'
         }
       ]
     }

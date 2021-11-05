@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { SafeDashboardService } from '../../services/dashboard.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { SafeDashboardService } from '../../services/dashboard.service';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
 })
-export class SafeWidgetComponent implements OnInit {
+export class SafeWidgetComponent implements OnInit, OnChanges {
 
   @Input() widget: any;
   @Input() header = true;
@@ -20,10 +20,23 @@ export class SafeWidgetComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.layout = this.dashboardService.getWidgetLayout(this.widget.id);
+    this.layout = this.dashboardService.getWidgetLayout(this.widget);
+  }
+
+  ngOnChanges(): void {
+    this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 
   public onLayoutChanged(e: any): void {
     this.dashboardService.saveWidgetLayout(this.widget.id, e);
+  }
+
+  public onDefaultLayoutChanged(e: any): void {
+    this.dashboardService.saveWidgetDefaultLayout(this.widget.id, e);
+  }
+
+  public onDefaultLayoutReset(e: any): void {
+    this.dashboardService.resetDefaultWidgetLayout(this.widget.id);
+    this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 }

@@ -6,7 +6,6 @@ import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
-import { PullJob } from '../models/pullJob.model';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse,
@@ -125,7 +124,7 @@ export class SafeApplicationService {
     }).subscribe(() => {
       const snackBar = this.snackBar.openSnackBar(NOTIFICATIONS.appEdited, {
         action: 'Reload',
-        expires: false
+        duration: 0
       });
       snackBar.onAction().subscribe(() => window.location.reload());
     });
@@ -177,11 +176,13 @@ export class SafeApplicationService {
       }
     }).subscribe((res) => {
       if (res.data?.toggleApplicationLock) {
-        const newApplication = { ...application,
-          locked: res.data?.toggleApplicationLock.locked,
-          lockedByUser: res.data?.toggleApplicationLock.lockedByUser
-        };
-        this._application.next(newApplication);
+        if (!res.data.toggleApplicationLock.lockedByUser) {
+          const newApplication = { ...application,
+            locked: res.data?.toggleApplicationLock.locked,
+            lockedByUser: res.data?.toggleApplicationLock.lockedByUser
+          };
+          this._application.next(newApplication);
+        }
       }
     });
   }
@@ -257,6 +258,8 @@ export class SafeApplicationService {
             this._application.next(newApplication);
             this.router.navigate([`./applications/${app.id}`]);
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
@@ -275,6 +278,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+        this._application.next({ ...application, ...{ pages: res.data?.editApplication.pages }});
       });
     }
   }
@@ -304,20 +308,21 @@ export class SafeApplicationService {
       this.apollo.mutate<AddPageMutationResponse>({
         mutation: ADD_PAGE,
         variables: {
-          name: value.name,
           type: value.type,
           content: value.content,
           application: application.id
         }
       }).subscribe(res => {
-        if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.name, 'page'));
+        if (res.data?.addPage) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', res.data.addPage.name));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this._application.next(newApplication);
           this.router.navigate([(value.type === ContentType.form) ?
             `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
             `/applications/${application.id}/${value.type}/${content}`]);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
@@ -419,7 +424,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
-          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length), { duration: 3000 });
+          this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
           this._application.next(newApplication);
         } else {
@@ -712,16 +717,4 @@ export class SafeApplicationService {
       });
     }
   }
-
-  /* Update application with latest pullJobs
-  */
-  updatePullJobs(pullJobs: PullJob[]): void {
-    const application = this._application.getValue();
-    if (application) {
-      const newApplication = {...application, pullJobs};
-      this._application.next(newApplication);
-    }
-  }
-
-
 }

@@ -14,6 +14,7 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   @Input() record: Record = {};
   @Input() revert: any;
+  @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
   public history: any[] = [];
@@ -217,11 +218,13 @@ export class SafeRecordHistoryComponent implements OnInit {
       data: {
         recordId: this.record.id,
         locale: 'en',
-        compareTo: this.record.versions?.find(x => x.id === item.id)
+        compareTo: this.record.versions?.find(x => x.id === item.id),
+        template: this.template
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) { this.revert(item); }

@@ -41,10 +41,14 @@ export enum Permissions {
     canSeeForms = 'can_see_forms',
     canSeeUsers = 'can_see_users',
     canSeeRoles = 'can_see_roles',
+    canSeeApplications = 'can_see_applications',
     canManageForms = 'can_manage_forms',
+    canCreateForms = 'can_create_forms',
+    canCreateResources = 'can_create_resources',
     canManageResources = 'can_manage_resources',
     canManageApplications = 'can_manage_applications',
-    canManageApiConfigurations = 'can_manage_api_configurations'
+    canManageApiConfigurations = 'can_manage_api_configurations',
+    canCreateApplications = 'can_create_applications'
 }
 
 /*  Enum of permissions types.
@@ -53,7 +57,8 @@ export enum PermissionType {
     access = 'access',
     create = 'create',
     update = 'update',
-    delete = 'delete'
+    delete = 'delete',
+    manage = 'manage'
 }
 
 /*  Class to check for routes and methods what is the needed admin permission.
@@ -62,11 +67,11 @@ export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
             access: Permissions.canSeeResources,
-            create: Permissions.canManageResources
+            create: [Permissions.canCreateResources, Permissions.canManageResources]
         },
         forms: {
             access: Permissions.canSeeForms,
-            create: Permissions.canManageForms
+            create: [Permissions.canCreateForms, Permissions.canManageForms]
         },
         settings: {
             users: {
@@ -76,12 +81,19 @@ export class PermissionsManagement {
                 access: Permissions.canSeeRoles
             },
             apiconfigurations: {
-                create: Permissions.canManageApiConfigurations
+                create: Permissions.canManageApiConfigurations,
+                access: Permissions.canManageApiConfigurations
+            },
+            pulljobs: {
+                create: Permissions.canManageApiConfigurations,
+                access: Permissions.canManageApiConfigurations
             }
         },
         applications: {
-            create: Permissions.canManageApplications
-        }
+            create: Permissions.canCreateApplications,
+            manage: Permissions.canManageApplications,
+            access: Permissions.canSeeApplications
+        },
     };
 
     public static getRightFromPath(path: string, type: PermissionType): string {

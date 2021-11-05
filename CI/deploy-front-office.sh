@@ -1,9 +1,7 @@
 #!/bin/bash
 
 # Remove files
-REMOTE_PATH=/var/www/html/safe-app
 OUT=dist/front-office
-CONNECTION=bob@92.243.24.59
 
 set -e
 

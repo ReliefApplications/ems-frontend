@@ -9,14 +9,14 @@ import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
 
 @NgModule({
   declarations: [SafeChartComponent],
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    SafeButtonModule,
-    SafeDonutChartModule,
-    SafePieChartModule,
-    SafeLineChartModule
-  ],
+    imports: [
+        CommonModule,
+        MatProgressSpinnerModule,
+        SafeButtonModule,
+        SafeDonutChartModule,
+        SafePieChartModule,
+        SafeLineChartModule
+    ],
   exports: [SafeChartComponent]
 })
 export class SafeChartModule { }

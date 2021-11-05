@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -64,7 +64,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
-    this.workflowSubscription = this.workflowService.workflow.subscribe((workflow: Workflow | null) => {
+
+    this.workflowSubscription = this.workflowService.workflow$.subscribe((workflow: Workflow | null) => {
       if (workflow) {
         this.steps = workflow.steps || [];
         this.workflowNameForm = new FormGroup({
@@ -73,18 +74,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (!this.workflow || workflow.id !== this.workflow.id) {
           const [firstStep, ..._] = workflow.steps || [];
-          if (this.router.url.endsWith(this.id) || !firstStep) {
-            if (firstStep) {
-              if (firstStep.type === ContentType.form) {
-                this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
-              } else {
-                this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
-              }
-              this.selectedStep = firstStep;
-              this.selectedStepIndex = 0;
+          if (firstStep) {
+            if (firstStep.type === ContentType.form) {
+              this.router.navigate(['./' + firstStep.type + '/' + firstStep.id], { relativeTo: this.route });
             } else {
-              this.router.navigate([`./`], { relativeTo: this.route });
+              this.router.navigate(['./' + firstStep.type + '/' + firstStep.content], { relativeTo: this.route });
             }
+            this.selectedStep = firstStep;
+            this.selectedStepIndex = 0;
+          }
+          if (!firstStep) {
+            this.router.navigate([`./`], { relativeTo: this.route });
           }
         }
         this.workflow = workflow;
@@ -152,7 +152,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }).subscribe(res => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'), { duration: 1000 });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'));
             this.steps = this.steps.filter(x => {
               return x.id !== res.data?.deleteStep.id;
             });
@@ -186,8 +186,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           id: this.id,
           steps: this.steps.map(step => step.id)
         }
-      }).subscribe(() => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+      }).subscribe(res => {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotEdited('Workflow', res.errors ? res.errors[0].message : ''));
+        }
       });
     }
   }

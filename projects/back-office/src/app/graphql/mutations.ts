@@ -152,16 +152,11 @@ mutation editResource($id: ID!, $permissions: JSON) {
       createdAt
       recordsCount
       core
-      canCreate
       canUpdate
       canDelete
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -245,10 +240,6 @@ mutation editForm($id: ID!, $structure: JSON!) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -286,10 +277,6 @@ mutation editForm($id: ID!, $name: String!){
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -317,10 +304,6 @@ mutation editForm($id: ID!, $permissions: JSON!){
     }
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -353,10 +336,6 @@ mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
     modifiedAt
     permissions {
       canSee {
-        id
-        title
-      }
-      canCreate {
         id
         title
       }
@@ -402,8 +381,8 @@ export interface DeleteApplicationMutationResponse {
 
 // === ADD APPLICATION ===
 export const ADD_APPLICATION = gql`
-mutation addApplication($name: String!) {
-  addApplication(name: $name){
+mutation addApplication {
+  addApplication {
     id
     name
     pages {
@@ -546,10 +525,6 @@ mutation editPage($id: ID!, $name: String, $permissions: JSON) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -609,10 +584,6 @@ mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permiss
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -665,10 +636,6 @@ mutation addApiConfiguration($name: String!) {
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -718,10 +685,6 @@ mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authTyp
         id
         title
       }
-      canCreate {
-        id
-        title
-      }
       canUpdate {
         id
         title
@@ -744,8 +707,8 @@ export interface EditApiConfigurationMutationResponse {
 
 // === ADD PULL JOB ===
 export const ADD_PULL_JOB = gql`
-mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+mutation addPullJob($name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  addPullJob(name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status
@@ -774,8 +737,8 @@ export interface AddPullJobMutationResponse {
 
 // === DELETE PULL JOB ===
 export const DELETE_PULL_JOB = gql`
-mutation deletePullJob($application: ID!, $id: ID!) {
-  deletePullJob(application: $application, id: $id) {
+mutation deletePullJob($id: ID!) {
+  deletePullJob(id: $id) {
     id
   }
 }`;
@@ -787,8 +750,8 @@ export interface DeletePullJobMutationResponse {
 
 // === EDIT PULL JOB ===
 export const EDIT_PULL_JOB = gql`
-mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+mutation editPullJob($id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  editPullJob(id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status

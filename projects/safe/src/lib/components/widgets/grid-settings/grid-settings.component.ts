@@ -42,6 +42,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
+  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  public templates: Form[] = [];
+
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
@@ -59,7 +62,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
-    console.log(tileSettings.actions);
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : '', Validators.required],
@@ -71,15 +73,18 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update : true],
         inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
+        addRecord: [hasActions ? tileSettings.actions.addRecord : false],
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
+    this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
       if (res.name) {
-        // Check if the query changed to clean modifications and fields for email in floating button if any
-        if (this.fields && (res.name !== this.queryName)) {
+        // Check if the query changed to clean modifications and fields for email in floating button
+        if (res.name !== this.queryName) {
+          this.queryName = res.name;
           const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get('modifications') as FormArray;
@@ -90,7 +95,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           }
         }
         this.fields = this.queryBuilder.getFields(res.name);
-        this.queryName = res.name;
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
           query.subscribe((res1: { data: any }) => {
@@ -105,14 +109,17 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               }).subscribe(res2 => {
                 if (res2.errors) {
                   this.relatedForms = [];
+                  this.templates = [];
                 } else {
                   this.relatedForms = res2.data.resource.relatedForms || [];
+                  this.templates = res2.data.resource.forms || [];
                 }
               });
             }
           });
         } else {
           this.relatedForms = [];
+          this.templates = [];
         }
       } else {
         this.fields = [];
@@ -144,8 +151,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           });
         }
       });
-
-      this.queryName = this.tileForm.get('query')?.value.name;
     }
   }
 
@@ -154,7 +159,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-      passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      prefillForm: [value && value.prefillForm ? value.prefillForm : false],
+      prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,
+        value && value.prefillForm ? Validators.required : null],
+      closeWorkflow: [value && value.closeWorkflow ? value.closeWorkflow : false],
+      confirmationText: [value && value.confirmationText ? value.confirmationText : '',
+        value && value.closeWorkflow ? Validators.required : null],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length
@@ -180,9 +190,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
         value && value.sendMail ? Validators.required : null],
-      bodyFields: this.formBuilder.array(value && value.bodyFields ? value.bodyFields : [],
-        value && value.sendMail ? Validators.required : null),
-      // attachment: [value && value.attachment ? value.attachment : false]
+      export: [value && value.export ? value.export : false],
+      bodyFields: this.formBuilder.array((value && value.bodyFields) ?
+        value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
+        value && value.sendMail ? Validators.required : null)
     });
     return buttonForm;
   }

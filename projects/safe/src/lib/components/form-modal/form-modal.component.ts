@@ -5,24 +5,30 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GET_FORM_STRUCTURE
+  GET_FORM_BY_ID
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
+import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
-import { EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
-   UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse } from '../../graphql/mutations';
+import {
+  EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
+  UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse,
+} from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { NOTIFICATIONS } from '../../const/notifications';
 
 interface DialogData {
   template?: string;
   recordId?: string | [];
   locale?: string;
-  from?: string;
+  prefillRecords?: Record[];
+  askForConfirm?: boolean;
 }
 
 @Component({
@@ -35,23 +41,31 @@ export class SafeFormModalComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public form?: Form;
+  private record?: Record;
 
   public containerId: string;
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
+  private storedMergedData: any;
 
-  private survey?: Survey.Model;
+  public survey?: Survey.Model;
+  public selectedTabIndex = 0;
+  private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
   primaryColor = '#008DC9';
 
+  public get pages$(): Observable<any[]> {
+    return this.pages.asObservable();
+  }
+
   constructor(
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData = { askForConfirm: true },
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService
@@ -59,7 +73,7 @@ export class SafeFormModalComponent implements OnInit {
     this.containerId = uuidv4();
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -71,51 +85,95 @@ export class SafeFormModalComponent implements OnInit {
       .applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
+    const promises: Promise<GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void>[] = [];
     if (this.data.recordId) {
       const id = this.isMultiEdition ? this.data.recordId[0] : this.data.recordId;
-      this.apollo.watchQuery<GetRecordByIdQueryResponse>({
+      promises.push(this.apollo.query<GetRecordByIdQueryResponse>({
         query: GET_RECORD_BY_ID,
         variables: {
           id
         }
-      }).valueChanges.subscribe(res => {
-        const record = res.data.record;
-        this.form = record.form;
-        this.modifiedAt = this.isMultiEdition ? null : record.modifiedAt || null;
-        this.loading = false;
-        addCustomFunctions(Survey, this.authService, record);
-        this.survey = new Survey.Model(this.form?.structure);
-        this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
-        this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
-        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-        this.survey.data = this.isMultiEdition ? null : record.data;
-        this.survey.locale = this.data.locale ? this.data.locale : 'en';
-        this.survey.showCompletedPage = false;
-        this.survey.render(this.containerId);
-        this.survey.onComplete.add(this.completeMySurvey);
-      });
-    } else {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_STRUCTURE,
+      }).toPromise().then(res => {
+        this.record = res.data.record;
+        this.modifiedAt = this.isMultiEdition ? null : this.record.modifiedAt || null;
+        if (!this.data.template) {
+          this.form = this.record.form;
+        }
+      }));
+    }
+
+    if (!this.data.recordId || this.data.template) {
+      promises.push(this.apollo.query<GetFormByIdQueryResponse>({
+        query: GET_FORM_BY_ID,
         variables: {
           id: this.data.template
         }
-      }).valueChanges.subscribe(res => {
-        this.loading = res.loading;
+      }).toPromise().then(res => {
         this.form = res.data.form;
-        this.survey = new Survey.Model(this.form.structure);
-        this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
-        this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
-        this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-        this.survey.locale = this.data.locale ? this.data.locale : 'en';
-        this.survey.render(this.containerId);
-        this.survey.onComplete.add(this.completeMySurvey);
-      });
+
+        if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
+          this.storedMergedData = this.mergedData(this.data.prefillRecords);
+          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === this.data.prefillRecords[0].form?.resource?.id) {
+            this.storedMergedData[resourcesField.name] = this.data.prefillRecords.map(x => x.id);
+          }
+          else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
+          }
+        }
+      }));
+    }
+    await Promise.all(promises);
+    this.initSurvey();
+    this.loading = false;
+  }
+
+  private initSurvey(): void {
+    this.survey = new Survey.Model(this.form?.structure);
+    this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
+    this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
+    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
+    this.survey.onCurrentPageChanged.add((survey, _) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
+    this.survey.onPageVisibleChanged.add(() => {
+      this.setPages();
+    });
+    this.survey.onSettingQuestionErrors.add((survey, options) => {
+      this.setPages();
+    });
+    this.survey.locale = this.data.locale ? this.data.locale : 'en';
+    if (this.data.recordId && this.record) {
+      addCustomFunctions(Survey, this.authService, this.record);
+      this.survey.data = this.isMultiEdition ? null : this.record.data;
+      this.survey.showCompletedPage = false;
+    }
+    if (this.storedMergedData) {
+      this.survey.data = this.storedMergedData;
+    }
+    this.survey.showNavigationButtons = false;
+    this.survey.render(this.containerId);
+    this.setPages();
+    this.survey.onComplete.add(this.completeMySurvey);
+  }
+
+  /**
+   * Calls the complete method of the survey if no error.
+   */
+  public submit(): void {
+    if (!this.survey?.hasErrors()) {
+      this.survey?.completeLastPage();
+    } else {
+      this.snackBar.openSnackBar('Saving failed, some fields require your attention.', { error: true });
     }
   }
 
-  /*  Create the record, or update it if provided.
-  */
+  /**
+   * Creates the record, or update it if provided.
+   * @param survey Survey instance.
+   */
   public completeMySurvey = (survey: any) => {
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
@@ -126,14 +184,19 @@ export class SafeFormModalComponent implements OnInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+        if (!data[key]) {
+          if (questions[field].getType() !== 'boolean') {
+            data[key] = null;
+          }
+          if (questions[field].readOnly || !questions[field].visible) {
+            delete data[key];
+          }
+        }
       }
     }
     survey.data = data;
-    if ((this.data.from === 'wid-anr-resource') || (this.data.from === 'wid-anr-resources') || (this.data.from === 'grid-atr')) {
-      this.updateDataGlobal(survey);
-    }
-    else {
+    // Displays confirmation modal.
+    if (this.data.askForConfirm) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: `Update row${rowsSelected > 1 ? 's' : ''}`,
@@ -144,15 +207,22 @@ export class SafeFormModalComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(async value => {
         if (value) {
-          await this.updateDataGlobal(survey);
+          await this.onUpdate(survey);
         } else {
           this.dialogRef.close();
         }
       });
+    // Updates the data directly.
+    } else {
+      this.onUpdate(survey);
     }
   }
 
-  public async updateDataGlobal(survey: any): Promise<void> {
+  /**
+   * Handles update data event.
+   * @param survey current survey
+   */
+  public async onUpdate(survey: any): Promise<void> {
     if (this.data.recordId) {
       await this.uploadFiles(survey);
       if (this.isMultiEdition) {
@@ -181,12 +251,18 @@ export class SafeFormModalComponent implements OnInit {
     survey.showCompletedPage = true;
   }
 
+  /**
+   * Updates a specific record.
+   * @param id record id.
+   * @param survey current survey.
+   */
   public updateData(id: any, survey: any): void {
     this.apollo.mutate<EditRecordMutationResponse>({
       mutation: EDIT_RECORD,
       variables: {
         id,
-        data: survey.data
+        data: survey.data,
+        template: this.data.template
       }
     }).subscribe(res => {
       if (res.data) {
@@ -195,12 +271,18 @@ export class SafeFormModalComponent implements OnInit {
     });
   }
 
+  /**
+   * Updates multiple records.
+   * @param ids list of record ids.
+   * @param survey current survey.
+   */
   public updateMultipleData(ids: any, survey: any): void {
     this.apollo.mutate<EditRecordsMutationResponse>({
       mutation: EDIT_RECORDS,
       variables: {
         ids,
-        data: survey.data
+        data: survey.data,
+        template: this.data.template
       }
     }).subscribe(res => {
       if (res.data) {
@@ -269,6 +351,23 @@ export class SafeFormModalComponent implements OnInit {
       });
   }
 
+  private setPages(): void {
+    const pages = [];
+    if (this.survey) {
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          pages.push(page);
+        }
+      }
+    }
+    this.pages.next(pages);
+  }
+
+  public onShowPage(i: number): void {
+    if (this.survey) { this.survey.currentPageNo = i; }
+    this.selectedTabIndex = i;
+  }
+
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
       options.callback('success', options.content);
@@ -290,5 +389,67 @@ export class SafeFormModalComponent implements OnInit {
       };
       xhr.send();
     }
+  }
+
+  private mergedData(records: Record[]): any {
+    const data: any = {};
+    // Loop on source fields
+    for (const inputField of records[0].form?.fields || []) {
+      // If source field match with target field
+      if (this.form?.fields?.some(x => x.name === inputField.name)) {
+        const targetField = this.form?.fields?.find(x => x.name === inputField.name);
+        // If source field got choices
+        if (inputField.choices || inputField.choicesByUrl) {
+          // If the target has multiple choices we concatenate all the source values
+          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
+            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
+              data[inputField.name] = records.reduce((o: string[], record: Record) => {
+                o = o.concat(record.data[inputField.name]);
+                return o;
+              }, []);
+            } else {
+              data[inputField.name] = records.map(x => x.data[inputField.name]);
+            }
+          }
+          // If the target has single choice we we put the common choice if any or leave it empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+        // If source field is a free input and types are matching between source and target field
+        else if (inputField.type === targetField.type) {
+          // If type is text just put the text of the first record
+          if (inputField.type === 'text') {
+            data[inputField.name] = records[0].data[inputField.name];
+          }
+          // If type is different from text and there is a common value, put it. Otherwise leave empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+      }
+    }
+    return data;
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
+  }
+
+  /**
+   * Closes the modal without sending any data.
+   */
+  onClose(): void {
+    this.dialogRef.close();
   }
 }

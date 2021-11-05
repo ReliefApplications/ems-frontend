@@ -21,11 +21,12 @@ import { SafeRolesModule } from './components/roles/roles.module';
 import { SafePreviousButtonModule } from './components/previous-button/previous-button.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
-import { SafeRecordModalModule } from './components/record-modal/public-api';
+import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
 import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
+import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 
 @NgModule({
   exports: [
@@ -55,6 +56,8 @@ import { SafeButtonModule } from './components/ui/button/button.module';
     SafeRecordModalModule,
     SafeProfileModule,
     SafeSearchResourceGridModalModule,
-    SafeButtonModule
-  ]})
+    SafeButtonModule,
+    SafeContentChoiceModule
+  ],
+  declarations: []})
 export class SafeModule { }

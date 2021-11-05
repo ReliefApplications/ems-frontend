@@ -1,14 +1,15 @@
-import {Apollo} from 'apollo-angular';
+import {Apollo, QueryRef} from 'apollo-angular';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
-import { Resource, SafeConfirmModalComponent } from '@safe/builder';
+import { Resource, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-resources',
@@ -19,8 +20,10 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
   // === DATA ===
   public loading = true;
+  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resources: any;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
+  public cachedResources: Resource[] = [];
   dataSource =  new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
@@ -32,13 +35,20 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   public searchText = '';
   public recordsFilter = '';
 
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
   constructor(
     private dialog: MatDialog,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService,
   ) { }
 
   /*  Load the resources.
@@ -46,12 +56,51 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.filterPredicate();
 
-    this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES_EXTENDED
-    }).valueChanges.subscribe(res => {
-      this.dataSource.data = res.data.resources;
-      this.loading = res.loading;
+    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+      query: GET_RESOURCES_EXTENDED,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
     });
+
+    this.resourcesQuery.valueChanges.subscribe(res => {
+      this.cachedResources = res.data.resources.edges.map(x => x.node);
+      this.dataSource.data = this.cachedResources.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.resources.totalCount;
+      this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
+      this.loading = res.loading;
+      this.filterPredicate();
+    });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedResources.length) {
+      this.resourcesQuery.fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            resources: {
+              edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],
+              pageInfo: fetchMoreResult.resources.pageInfo,
+              totalCount: fetchMoreResult.resources.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource.data = this.cachedResources.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   private filterPredicate(): void {
@@ -88,7 +137,12 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             id: resource.id
           }
         }).subscribe(res => {
-          this.dataSource.data = this.dataSource.data.filter(x => x.id !== resource.id);
+          if (!res.errors) {
+            this.dataSource.data = this.dataSource.data.filter(x => x.id !== resource.id);
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('ressource'));
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('ressource', res.errors[0].message), { error: true });
+          }
         });
       }
     });
@@ -115,5 +169,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.searchText = '';
     this.recordsFilter = '';
     this.clearDateFilter();
+    this.applyFilter('', null);
   }
 }

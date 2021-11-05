@@ -15,29 +15,33 @@ import { AddApiConfigurationComponent } from './components/add-api-configuration
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeButtonModule } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
     ApiConfigurationsComponent,
     AddApiConfigurationComponent,
   ],
-  imports: [
-    CommonModule,
-    ApiConfigurationsRoutingModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatChipsModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    AngularFormsModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    SafeButtonModule,
-    MatIconModule
-  ],
+    imports: [
+        CommonModule,
+        ApiConfigurationsRoutingModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatChipsModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        AngularFormsModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        SafeButtonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatPaginatorModule
+    ],
   exports: [ApiConfigurationsComponent]
 })
 export class ApiConfigurationsModule { }

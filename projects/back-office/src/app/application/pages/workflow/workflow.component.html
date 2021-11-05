@@ -22,14 +22,14 @@
         <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
             <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" (click)="onStepClick(step)"
                 (cdkDragStarted)="onDragStart()" [class.selected]="step === selectedStep" cdkDrag>
-                <safe-button [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
+                <safe-button *ngIf="workflow.canUpdate" [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
                 </safe-button>
                 <div class="step-placeholder" *cdkDragPlaceholder></div>
                 {{step.name}}
-                <safe-button [isIcon]="true" icon="delete" class="delete-button" (click)="deleteStep(step, $event)">
+                <safe-button *ngIf="step.canDelete" [isIcon]="true" icon="delete" class="delete-button" (click)="deleteStep(step, $event)">
                 </safe-button>
             </div>
-            <div class="step-box">
+            <div class="step-box" *ngIf="workflow.canUpdate">
                 <safe-button icon="add" variant="primary" class="add-step-button" (click)="addStep()">
                     Add a step
                 </safe-button>

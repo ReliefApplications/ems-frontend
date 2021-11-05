@@ -42,7 +42,18 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'page',
   'titleLocation',
   'descriptionLocation',
-  'state'
+  'state',
+  'defaultValue',
+  'defaultValueExpression',
+  'relatedName',
+  'Search resource table',
+  'visible',
+  'readOnly',
+  'isRequired',
+  'placeHolder',
+  'enableIf',
+  'visibleIf',
+  'tooltip'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
@@ -108,6 +119,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
+    });
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add((_, opt) => this.onSetCustomCss(opt));
+    this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
+      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) => this.onSetCustomCss(opt2));
     });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
@@ -199,7 +214,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.save.emit(this.surveyCreator.text);
     })
       .catch((error) => {
-        this.snackBar.openSnackBar(error.message, {error: true});
+        this.snackBar.openSnackBar(error.message, { error: true });
       });
   }
 
@@ -280,8 +295,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           return {
             name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
             title: x.title ? x.title : (x.name ? x.name : x),
-            ...x.cellType && {cellType: x.cellType},
-            ...x.isRequired && {isRequired: true}
+            ...x.cellType && { cellType: x.cellType },
+            ...x.isRequired && { isRequired: true }
           };
         });
         element.rows = element.rows.map((x: any) => {
@@ -291,6 +306,28 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           };
         });
       }
+      if (['resource', 'resources'].includes(element.type)) {
+        if (element.relatedName) {
+          element.relatedName = this.toSnakeCase(element.relatedName);
+          if (!this.isSnakeCase(element.relatedName)) {
+            throw new Error('The related name ' + element.relatedName + ' on page '
+              + page.name + ' is invalid. Please conform to snake_case.');
+          }
+        } else {
+          throw new Error('Missing related name for question ' + element.title + ' on page '
+            + page.name + '. Please provide a valid data value name (snake_case) to save the form.');
+        }
+      }
     }
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 }
