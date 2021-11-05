@@ -5,14 +5,14 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GET_FORM_STRUCTURE
+  GET_FORM_BY_ID
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
 import {
   EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
-  UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse
+  UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse,
 } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
@@ -21,12 +21,20 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { NOTIFICATIONS } from '../../const/notifications';
 
+/**
+ * Interface of Dialog data.
+ */
 interface DialogData {
   template?: string;
   recordId?: string | [];
   locale?: string;
+  prefillRecords?: Record[];
+  askForConfirm?: boolean;
 }
+
+const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 @Component({
   selector: 'safe-form-modal',
@@ -44,6 +52,7 @@ export class SafeFormModalComponent implements OnInit {
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
+  private storedMergedData: any;
 
   public survey?: Survey.Model;
   public selectedTabIndex = 0;
@@ -58,10 +67,10 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo,
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService
@@ -70,6 +79,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.data = {  ...DEFAULT_DIALOG_DATA, ...this.data };
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -95,17 +105,28 @@ export class SafeFormModalComponent implements OnInit {
         if (!this.data.template) {
           this.form = this.record.form;
         }
-
       }));
     }
+
     if (!this.data.recordId || this.data.template) {
       promises.push(this.apollo.query<GetFormByIdQueryResponse>({
-        query: GET_FORM_STRUCTURE,
+        query: GET_FORM_BY_ID,
         variables: {
           id: this.data.template
         }
       }).toPromise().then(res => {
         this.form = res.data.form;
+
+        if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
+          this.storedMergedData = this.mergedData(this.data.prefillRecords);
+          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === this.data.prefillRecords[0].form?.resource?.id) {
+            this.storedMergedData[resourcesField.name] = this.data.prefillRecords.map(x => x.id);
+          }
+          else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
+          }
+        }
       }));
     }
     await Promise.all(promises);
@@ -135,6 +156,9 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }
+    if (this.storedMergedData) {
+      this.survey.data = this.storedMergedData;
+    }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
     this.setPages();
@@ -152,10 +176,10 @@ export class SafeFormModalComponent implements OnInit {
     }
   }
 
- /**
-  * Creates the record, or update it if provided.
-  * @param survey Survey instance.
-  */
+  /**
+   * Creates the record, or update it if provided.
+   * @param survey Survey instance.
+   */
   public completeMySurvey = (survey: any) => {
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
@@ -177,48 +201,68 @@ export class SafeFormModalComponent implements OnInit {
       }
     }
     survey.data = data;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
-    });
-    dialogRef.afterClosed().subscribe(async value => {
-      if (value) {
-        if (this.data.recordId) {
-          await this.uploadFiles(survey);
-          if (this.isMultiEdition) {
-            this.updateMultipleData(this.data.recordId, survey);
-          } else {
-            this.updateData(this.data.recordId, survey);
-          }
-        } else {
-          await this.uploadFiles(survey);
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.data.template,
-              data: survey.data,
-              display: true
-            }
-          }).subscribe(res => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
-              this.dialogRef.close();
-            } else {
-              this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
-            }
-          });
+    // Displays confirmation modal.
+    console.log(this.data.askForConfirm);
+    if (this.data.askForConfirm) {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
+          content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
         }
-        survey.showCompletedPage = true;
-      } else {
-        this.dialogRef.close();
-      }
-    });
+      });
+      dialogRef.afterClosed().subscribe(async value => {
+        if (value) {
+          await this.onUpdate(survey);
+        } else {
+          this.dialogRef.close();
+        }
+      });
+    // Updates the data directly.
+    } else {
+      this.onUpdate(survey);
+    }
   }
 
+  /**
+   * Handles update data event.
+   * @param survey current survey
+   */
+  public async onUpdate(survey: any): Promise<void> {
+    if (this.data.recordId) {
+      await this.uploadFiles(survey);
+      if (this.isMultiEdition) {
+        this.updateMultipleData(this.data.recordId, survey);
+      } else {
+        this.updateData(this.data.recordId, survey);
+      }
+    } else {
+      await this.uploadFiles(survey);
+      this.apollo.mutate<AddRecordMutationResponse>({
+        mutation: ADD_RECORD,
+        variables: {
+          form: this.data.template,
+          data: survey.data,
+          display: true
+        }
+      }).subscribe(res => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {error: true});
+          this.dialogRef.close();
+        } else {
+          this.dialogRef.close({template: this.data.template, data: res.data?.addRecord});
+        }
+      });
+    }
+    survey.showCompletedPage = true;
+  }
+
+  /**
+   * Updates a specific record.
+   * @param id record id.
+   * @param survey current survey.
+   */
   public updateData(id: any, survey: any): void {
     this.apollo.mutate<EditRecordMutationResponse>({
       mutation: EDIT_RECORD,
@@ -234,6 +278,11 @@ export class SafeFormModalComponent implements OnInit {
     });
   }
 
+  /**
+   * Updates multiple records.
+   * @param ids list of record ids.
+   * @param survey current survey.
+   */
   public updateMultipleData(ids: any, survey: any): void {
     this.apollo.mutate<EditRecordsMutationResponse>({
       mutation: EDIT_RECORDS,
@@ -347,6 +396,51 @@ export class SafeFormModalComponent implements OnInit {
       };
       xhr.send();
     }
+  }
+
+  private mergedData(records: Record[]): any {
+    const data: any = {};
+    // Loop on source fields
+    for (const inputField of records[0].form?.fields || []) {
+      // If source field match with target field
+      if (this.form?.fields?.some(x => x.name === inputField.name)) {
+        const targetField = this.form?.fields?.find(x => x.name === inputField.name);
+        // If source field got choices
+        if (inputField.choices || inputField.choicesByUrl) {
+          // If the target has multiple choices we concatenate all the source values
+          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
+            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
+              data[inputField.name] = records.reduce((o: string[], record: Record) => {
+                o = o.concat(record.data[inputField.name]);
+                return o;
+              }, []);
+            } else {
+              data[inputField.name] = records.map(x => x.data[inputField.name]);
+            }
+          }
+          // If the target has single choice we we put the common choice if any or leave it empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+        // If source field is a free input and types are matching between source and target field
+        else if (inputField.type === targetField.type) {
+          // If type is text just put the text of the first record
+          if (inputField.type === 'text') {
+            data[inputField.name] = records[0].data[inputField.name];
+          }
+          // If type is different from text and there is a common value, put it. Otherwise leave empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+      }
+    }
+    return data;
   }
 
   /**
