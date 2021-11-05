@@ -292,7 +292,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
             template: question.addTemplate,
-            locale: question.resource.value
+            locale: question.resource.value,
+            askForConfirm: false
           },
           autoFocus: false
         });

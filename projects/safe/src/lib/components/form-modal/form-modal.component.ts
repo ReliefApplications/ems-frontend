@@ -62,7 +62,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData = { askForConfirm: true },
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
@@ -74,6 +74,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.data = {  ...{ askForConfirm: true }, ...this.data };
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -196,6 +197,7 @@ export class SafeFormModalComponent implements OnInit {
     }
     survey.data = data;
     // Displays confirmation modal.
+    console.log(this.data.askForConfirm);
     if (this.data.askForConfirm) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {

@@ -427,12 +427,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Displays an embedded form in a modal to add new record.
    */
   public onAdd(): void {
-
     if (this.settings.query.template) {
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: this.settings.query.template,
-          locale: 'en'
+          locale: 'en',
+          askForConfirm: false
         },
         autoFocus: false
       });
@@ -1050,6 +1050,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             template: options.prefillTargetForm,
             locale: 'en',
             prefillRecords: records,
+            askForConfirm: false
           },
           autoFocus: false
         });
