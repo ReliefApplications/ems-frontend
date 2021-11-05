@@ -105,6 +105,7 @@ export class SafeTabFilterComponent implements OnInit {
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
   @Input() settings: any;
+  @Input() metaFields: any = {};
   @Input() canDelete = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
 
@@ -112,7 +113,6 @@ export class SafeTabFilterComponent implements OnInit {
 
   public types: any = TYPES;
   private metaQuery: any;
-  public metaFields: any;
 
   public operators: any = OPERATORS;
 
@@ -128,17 +128,20 @@ export class SafeTabFilterComponent implements OnInit {
     private apiProxyService: SafeApiProxyService,
     ) { }
 
-  async ngOnInit(): Promise<void> {
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
-    if (this.metaQuery) {
-      await this.metaQuery.subscribe(async (res: any) => {
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            this.metaFields = Object.assign({}, res.data[field]);
-            await this.populateMetaFields();
+  ngOnInit(): void {
+    // TODO: move somewhere else
+    if (this.settings) {
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
+      if (this.metaQuery) {
+        this.metaQuery.subscribe((res: any) => {
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.metaFields = Object.assign({}, res.data[field]);
+              this.populateMetaFields();
+            }
           }
-        }
-      });
+        });
+      }
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
