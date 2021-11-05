@@ -1012,7 +1012,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           name: this.settings.query.name,
           fields: options.bodyFields
         }};
-        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id) );
+        this.emailService.sendMail(options.distributionList, options.subject, emailSettings,
+          selectedRecords.map(x => x.id), options.bodyText);
         this.onExportRecord(this.selectedRowsIndex, 'xlsx');
       }
       if (promises.length > 0) {

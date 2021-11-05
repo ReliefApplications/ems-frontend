@@ -158,6 +158,11 @@
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Body</mat-label>
+            <textarea matInput formControlName="bodyText" placeholder="Please enter a body template for the email"
+              [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
+          </mat-form-field>
           <h2>Select fields to write in body</h2>
           <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
             [factory]="factory"></safe-tab-fields>

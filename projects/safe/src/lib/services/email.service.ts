@@ -5,6 +5,8 @@ import { SafeSnackBarService } from './snackbar.service';
 import get from 'lodash/get';
 import { Apollo } from 'apollo-angular';
 import { NOTIFICATIONS } from '../const/notifications';
+import { mergeMap, map, take } from 'rxjs/operators';
+import { from } from 'rxjs';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -27,61 +29,81 @@ export class SafeEmailService {
    * @param recipient recipient of the email.
    * @param subject subject of the email.
    * @param settings query settings.
+   * @param ids list of records to include in the email.
+   * @param body body of the email, if not given we put the formatted records.
    */
-  public sendMail(recipient: string, subject: string, settings: any, ids: string[]): void {
-    const builtQuery = this.queryBuilder.buildQuery(settings);
-    if (builtQuery) {
-      const dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery,
-        variables: {
-          first: ids.length,
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: ids
-              }
-            ]
-          }
-        }
-      });
-      const metaQuery = this.queryBuilder.buildMetaQuery(settings, false);
-      let metaFields: any = [];
-      let fields: any = [];
-      let items: any = [];
-      if (metaQuery) {
-        metaQuery.subscribe(async (res: any) => {
-          for (const metaField in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, metaField)) {
-              metaFields = Object.assign({}, res.data[metaField]);
-              await this.populateMetaFields(metaFields);
-              dataQuery.valueChanges.subscribe((res2: any) => {
-                fields = settings.query.fields;
-                for (const field in res2.data) {
-                  if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
-                    fields = this.getFields(metaFields, fields);
-                    const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
-                    items = cloneData(nodes);
-                    this.convertDateFields(fields, items);
-                  }
+  public async sendMail(recipient: string, subject: string, settings: any, ids: string[], body: string = '{dataset}'): Promise<void> {
+
+    const promises: Promise<any>[] = [];
+
+    // === REPLACE KEYWORDS IN BODY ===
+    if (body.includes('{dataset}')) {
+      const builtQuery = this.queryBuilder.buildQuery(settings);
+      if (builtQuery) {
+        const dataQuery = this.apollo.watchQuery<any>({
+          query: builtQuery,
+          variables: {
+            first: ids.length,
+            filter: {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: ids
                 }
-                const body = this.buildBody(items, fields);
-                try {
-                window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
-              } catch (error) {
-                this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
-                try {
-                  window.location.href = `mailto:${recipient}?subject=${subject}`;
-                } catch (error) {
-                  this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
-                }
-              }
-              });
+              ]
             }
           }
         });
+        const metaQuery = this.queryBuilder.buildMetaQuery(settings, false);
+        let metaFields: any = [];
+        let fields: any = [];
+        let items: any = [];
+        if (metaQuery) {
+          promises.push(metaQuery.pipe(
+            mergeMap((res: any) => {
+              for (const metaField in res.data) {
+                if (Object.prototype.hasOwnProperty.call(res.data, metaField)) {
+                  metaFields = Object.assign({}, res.data[metaField]);
+                }
+              }
+              return from(this.populateMetaFields(metaFields));
+            }),
+            mergeMap(() => dataQuery.valueChanges),
+            map((res2: any) => {
+              fields = settings.query.fields;
+              for (const field in res2.data) {
+                if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
+                  fields = this.getFields(metaFields, fields);
+                  const nodes = res2.data[field].edges.map((x: any) => x.node) || [];
+                  items = cloneData(nodes);
+                  this.convertDateFields(fields, items);
+                }
+              }
+              body = body.replace('{dataset}', this.buildBody(items, fields));
+              return;
+            }),
+            take(1)
+          ).toPromise());
+        }
+      }
+    }
+    if (body.includes('{today}')) {
+      body = body.replace('{today}', (new Date()).toDateString());
+    }
+
+    await Promise.all(promises);
+
+    // === SEND THE EMAIL ===
+    try {
+      window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
+    } catch (error) {
+      this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
+      try {
+        window.location.href = `mailto:${recipient}?subject=${subject}`;
+      } catch (error) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
       }
     }
   }
@@ -94,12 +116,10 @@ export class SafeEmailService {
    */
   private buildBody(items: any[], fields: any): string {
     let body = '';
-    let i = 1;
+    body += `--------------------------------------------------------------------------------------------------------------------------------\n`;
     for (const item of items) {
-      body += `######   ${i}   ######\n`;
       body += this.buildBodyRow(item, fields);
-      body += '______________________\n';
-      i++;
+      body += '--------------------------------------------------------------------------------------------------------------------------------\n';
     }
     return body;
   }
@@ -121,7 +141,7 @@ export class SafeEmailService {
           list.forEach((element: any, index: number) => {
             body += this.buildBodyRow(element, field.fields, tabs + '\t');
             if (index < (list.length - 1)) {
-              body += `${tabs + '\t'}______________________\n`;
+              body += `${tabs + '\t'}-----------------------\n`;
             }
           });
           break;
@@ -132,7 +152,7 @@ export class SafeEmailService {
         default:
           const rawValue = item ? item[field.name] : '';
           const value = rawValue && OPTION_QUESTIONS.includes(field.meta.type) ? this.getDisplayText(rawValue, field.meta) : rawValue;
-          body += `${tabs}${field.label ? field.label : field.name}:   ${value}\n`;
+          body += `${tabs}${field.label ? field.label : field.name}:\t${value}\n`;
       }
     }
     return body;
