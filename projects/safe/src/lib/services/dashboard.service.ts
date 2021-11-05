@@ -61,7 +61,7 @@ export class SafeDashboardService {
     return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
   }
 
-  saveWidgetDefaultLayout(id: number, layout: any, event: any): void {
+  saveWidgetDefaultLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const defaultLayout = { ...layout, timestamp: + new Date() };
@@ -87,10 +87,10 @@ export class SafeDashboardService {
       console.log(dashboardId);
       console.log('updatedDashboardStructure');
       console.log(updatedDashboardStructure);
-      event.emit({
-        id: dashboardId,
-        layout: JSON.stringify(defaultLayout)
-      });
+      // event.emit({
+      //   id: dashboardId,
+      //   layout: JSON.stringify(defaultLayout)
+      // });
     }, error => console.log(error));
   }
 }
