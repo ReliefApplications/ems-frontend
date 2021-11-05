@@ -27,10 +27,10 @@ export class SafePreprocessorService {
    * @param dataset optional dataset settings.
    * @returns preprocessed string.
    */
-  public async preprocess(text: string, dataset: { settings: any, ids: string[] } | null = null) {
+  public async preprocess(text: string, dataset: { settings: any, ids: string[] } | null = null): Promise<string> {
     const promises: Promise<any>[] = [];
 
-    // === REPLACE KEYWORDS IN BODY ===
+    // === DATASET ===
     if (text.includes('{dataset}') && dataset) {
       const builtQuery = this.queryBuilder.buildQuery(dataset.settings);
       if (builtQuery) {
@@ -52,8 +52,6 @@ export class SafePreprocessorService {
         });
         const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings, false);
         let metaFields: any = [];
-        let fields: any = [];
-        let items: any = [];
         if (metaQuery) {
           promises.push(metaQuery.pipe(
             mergeMap((res: any) => {
@@ -66,7 +64,8 @@ export class SafePreprocessorService {
             }),
             mergeMap(() => dataQuery.valueChanges),
             map((res2: any) => {
-              fields = dataset.settings.query.fields;
+              let fields = dataset.settings.query.fields;
+              let items: any = [];
               for (const field in res2.data) {
                 if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
                   fields = this.getFields(metaFields, fields);
@@ -83,6 +82,8 @@ export class SafePreprocessorService {
         }
       }
     }
+
+    // === TODAY ===
     if (text.includes('{today}')) {
       text = text.replace('{today}', (new Date()).toDateString());
     }
