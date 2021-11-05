@@ -23,12 +23,18 @@ import { SafeAuthService } from '../../services/auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
 
+/**
+ * Interface of Dialog data.
+ */
 interface DialogData {
   template?: string;
   recordId?: string | [];
   locale?: string;
   prefillRecords?: Record[];
+  askForConfirm?: boolean;
 }
+
+const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 @Component({
   selector: 'safe-form-modal',
@@ -73,6 +79,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.data = {  ...DEFAULT_DIALOG_DATA, ...this.data };
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -194,48 +201,68 @@ export class SafeFormModalComponent implements OnInit {
       }
     }
     survey.data = data;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
-    });
-    dialogRef.afterClosed().subscribe(async value => {
-      if (value) {
-        if (this.data.recordId) {
-          await this.uploadFiles(survey);
-          if (this.isMultiEdition) {
-            this.updateMultipleData(this.data.recordId, survey);
-          } else {
-            this.updateData(this.data.recordId, survey);
-          }
-        } else {
-          await this.uploadFiles(survey);
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.data.template,
-              data: survey.data,
-              display: true
-            }
-          }).subscribe(res => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, { error: true });
-              this.dialogRef.close();
-            } else {
-              this.dialogRef.close({ template: this.data.template, data: res.data?.addRecord });
-            }
-          });
+    // Displays confirmation modal.
+    console.log(this.data.askForConfirm);
+    if (this.data.askForConfirm) {
+      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+        data: {
+          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
+          content: `Do you confirm the update of ${rowsSelected} row${rowsSelected > 1 ? 's' : ''} ?`,
+          confirmText: 'Confirm',
+          confirmColor: 'primary'
         }
-        survey.showCompletedPage = true;
-      } else {
-        this.dialogRef.close();
-      }
-    });
+      });
+      dialogRef.afterClosed().subscribe(async value => {
+        if (value) {
+          await this.onUpdate(survey);
+        } else {
+          this.dialogRef.close();
+        }
+      });
+    // Updates the data directly.
+    } else {
+      this.onUpdate(survey);
+    }
   }
 
+  /**
+   * Handles update data event.
+   * @param survey current survey
+   */
+  public async onUpdate(survey: any): Promise<void> {
+    if (this.data.recordId) {
+      await this.uploadFiles(survey);
+      if (this.isMultiEdition) {
+        this.updateMultipleData(this.data.recordId, survey);
+      } else {
+        this.updateData(this.data.recordId, survey);
+      }
+    } else {
+      await this.uploadFiles(survey);
+      this.apollo.mutate<AddRecordMutationResponse>({
+        mutation: ADD_RECORD,
+        variables: {
+          form: this.data.template,
+          data: survey.data,
+          display: true
+        }
+      }).subscribe(res => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {error: true});
+          this.dialogRef.close();
+        } else {
+          this.dialogRef.close({template: this.data.template, data: res.data?.addRecord});
+        }
+      });
+    }
+    survey.showCompletedPage = true;
+  }
+
+  /**
+   * Updates a specific record.
+   * @param id record id.
+   * @param survey current survey.
+   */
   public updateData(id: any, survey: any): void {
     this.apollo.mutate<EditRecordMutationResponse>({
       mutation: EDIT_RECORD,
@@ -251,6 +278,11 @@ export class SafeFormModalComponent implements OnInit {
     });
   }
 
+  /**
+   * Updates multiple records.
+   * @param ids list of record ids.
+   * @param survey current survey.
+   */
   public updateMultipleData(ids: any, survey: any): void {
     this.apollo.mutate<EditRecordsMutationResponse>({
       mutation: EDIT_RECORDS,

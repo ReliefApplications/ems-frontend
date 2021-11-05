@@ -427,12 +427,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Displays an embedded form in a modal to add new record.
    */
   public onAdd(): void {
-
     if (this.settings.query.template) {
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: this.settings.query.template,
-          locale: 'en'
+          locale: 'en',
+          askForConfirm: false
         },
         autoFocus: false
       });
@@ -1050,6 +1050,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             template: options.prefillTargetForm,
             locale: 'en',
             prefillRecords: records,
+            askForConfirm: false
           },
           autoFocus: false
         });
@@ -1120,6 +1121,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(
+    // come from 'attach to record' button from grid component
     selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
