@@ -428,13 +428,18 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onAdd(): void {
     if (this.settings.query.template) {
-      this.dialog.open(SafeFormModalComponent, {
+      const dialogRef = this.dialog.open(SafeFormModalComponent, {
         data: {
           template: this.settings.query.template,
           locale: 'en',
           askForConfirm: false
         },
         autoFocus: false
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.reloadData();
+        }
       });
     }
   }
