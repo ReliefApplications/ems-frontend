@@ -27,9 +27,16 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() add: EventEmitter<any> = new EventEmitter();
+  @Output() defaultLayoutChange: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  onDefaultLayoutChange(defaultLayout: any): void {
+    console.log('GAAANG: e');
+    console.log(defaultLayout);
+    this.defaultLayoutChange.emit(defaultLayout);
+  }
 
   get dashboardMenuRowSpan(): number {
     if (this.widgets && this.widgets.length > 0) {
@@ -97,6 +104,8 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   onEditWidget(e: any): void {
+    console.log('TESTTTTT: e');
+    console.log(e);
     this.edit.emit(e);
   }
 

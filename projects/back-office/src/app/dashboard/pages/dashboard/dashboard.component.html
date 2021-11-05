@@ -20,5 +20,5 @@
         </form>
     </ng-container>
     <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" (move)="onMove()" (edit)="onEditTile($event)"
-                      (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (add)="onAdd($event)"></safe-widget-grid>
+                      (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (add)="onAdd($event)" (defaultLayoutChange)="onDefaultLayoutChanged($event)"></safe-widget-grid>
 </ng-container>

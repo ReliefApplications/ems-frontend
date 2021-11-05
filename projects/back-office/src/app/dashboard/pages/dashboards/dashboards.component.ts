@@ -40,6 +40,8 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       query: GET_DASHBOARDS
     }).valueChanges.subscribe(res => {
       this.dashboards = res.data.dashboards;
+      console.log('this.dashboards');
+      console.log(this.dashboards);
       this.loading = res.loading;
     });
     this.authSubscription = this.authService.user.subscribe(() => {
