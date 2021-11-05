@@ -23,6 +23,9 @@ import { SafeAuthService } from '../../services/auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
 
+/**
+ * Interface of Dialog data.
+ */
 interface DialogData {
   template?: string;
   recordId?: string | [];
@@ -30,6 +33,8 @@ interface DialogData {
   prefillRecords?: Record[];
   askForConfirm?: boolean;
 }
+
+const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 @Component({
   selector: 'safe-form-modal',
@@ -74,7 +79,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.data = {  ...{ askForConfirm: true }, ...this.data };
+    this.data = {  ...DEFAULT_DIALOG_DATA, ...this.data };
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
