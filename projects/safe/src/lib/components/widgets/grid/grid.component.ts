@@ -926,7 +926,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const url = `${this.apiUrl}/download/records`;
     const fileName = `${this.settings.title}.${type}`;
     const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, { params: { ids: ids.join(',') } });
+    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, { params: {
+      // ids: ids.join(',')
+      filter: this.filter
+    } });
   }
 
   /* Open a dialog component which provide tools to convert the selected record
