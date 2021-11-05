@@ -47,6 +47,7 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
+import { ActivatedRoute } from '@angular/router';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -74,7 +75,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 @Component({
   selector: 'safe-grid',
@@ -198,7 +199,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private apiProxyService: SafeApiProxyService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private route: ActivatedRoute
   ) {
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -1016,8 +1018,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           name: this.settings.query.name,
           fields: options.bodyFields
         }};
-        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id) );
-        this.onExportRecord(this.selectedRowsIndex, 'xlsx');
+        const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+        this.emailService.sendMail(options.distributionList, options.subject, emailSettings,
+           selectedRecords.map(x => x.id), sortField, sortOrder);
+        if (options.export) {
+          this.onExportRecord(this.selectedRowsIndex, 'xlsx');
+        }
       }
       if (promises.length > 0) {
         await Promise.all(promises);
@@ -1048,8 +1056,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+    /* Next Step button, open a confirm modal if required
+    */
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
+          }
+        });
+      }
     } else {
       this.reloadData();
     }

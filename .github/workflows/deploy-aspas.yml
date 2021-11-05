@@ -1,4 +1,4 @@
-name: Front-end PROD CD
+name: Front-end ASPAS CD
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    environment: OORT_PROD
+    environment: ASPAS
     strategy:
       matrix:
         node-version: [15.x]
@@ -27,9 +27,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build RA Back-office
-      run: npm run build -- --configuration=oort-prod --project=back-office
+      run: npm run build -- --configuration=aspas --project=back-office
     - name: Build RA Front-office
-      run: npm run build -- --configuration=oort-prod --project=front-office
+      run: npm run build -- --configuration=aspas --project=front-office
     - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
@@ -46,7 +46,7 @@ jobs:
   deploy_prod_back_office:
     name: Deploy PROD Back-office 🚀
     runs-on: ubuntu-latest
-    environment: OORT_PROD
+    environment: ASPAS
     needs: build
     steps:
     - name: Checkout
@@ -70,7 +70,7 @@ jobs:
   deploy_prod_front_office:
     name: Deploy PROD Front-office 🚀
     runs-on: ubuntu-latest
-    environment: OORT_PROD
+    environment: ASPAS
     needs: build
     steps:
     - name: Checkout

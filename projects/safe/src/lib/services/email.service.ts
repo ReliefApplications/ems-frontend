@@ -28,13 +28,15 @@ export class SafeEmailService {
    * @param subject subject of the email.
    * @param settings query settings.
    */
-  public sendMail(recipient: string, subject: string, settings: any, ids: string[]): void {
+  public sendMail(recipient: string, subject: string, settings: any, ids: string[], sortField?: string, sortOrder?: string): void {
     const builtQuery = this.queryBuilder.buildQuery(settings);
     if (builtQuery) {
       const dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
           first: ids.length,
+          sortField: sortField ?? null,
+          sortOrder: sortOrder || '',
           filter: {
             logic: 'and',
             filters: [
