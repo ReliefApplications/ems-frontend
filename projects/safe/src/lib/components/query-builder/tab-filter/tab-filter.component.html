@@ -14,7 +14,7 @@
         <div *ngFor="let filter of filters.controls; let i = index;">
             <ng-container *ngIf="filters.at(i).value.logic">
                 <safe-tab-filter [form]="$any(filters.at(i))" [fields]="fields" (delete)="onDeleteFilterGroup(i)"
-                    [canDelete]="true"></safe-tab-filter>
+                    [canDelete]="true" [metaFields]="metaFields"></safe-tab-filter>
             </ng-container>
             <ng-container *ngIf="!filters.at(i).value.logic">
                 <div [formGroup]="$any(filters.at(i))" class="filter-row">
@@ -43,13 +43,21 @@
                                     <mat-option [value]="false">False</mat-option>
                                 </mat-select>
                             </ng-container>
-                            <ng-container
-                                *ngIf="!['DateTime', 'Date', 'Int', 'Boolean'].includes(selectedFields[i].type)">
+                            <ng-container *ngIf="['String', 'Time'].includes(selectedFields[i].type)">
                                 <input matInput formControlName="value" type="string" />
                             </ng-container>
                             <ng-container *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)">
                                 <input matInput matTooltip="YYYY/MM/DD" [matTooltipPosition]="'above'"
-                                    formControlName="value" type="text" placeholder="YYYY/MM/DD"/>
+                                    formControlName="value" type="text" placeholder="YYYY/MM/DD" />
+                            </ng-container>
+                            <ng-container *ngIf="selectedFields[i].type === 'JSON'">
+                                <mat-select formControlName="value" *ngIf="!metaFields[selectedFields[i].name]">
+                                    <mat-option>None</mat-option>
+                                </mat-select>
+                                <mat-select formControlName="value" multiple *ngIf="metaFields[selectedFields[i].name]">
+                                    <mat-option *ngFor="let choice of metaFields[selectedFields[i].name].choices"
+                                        [value]="choice.value">{{ choice.text }}</mat-option>
+                                </mat-select>
                             </ng-container>
                         </mat-form-field>
                     </ng-container>
