@@ -8,17 +8,17 @@ import { Workflow } from '../models/workflow.model';
 import { SafeSnackBarService } from './snackbar.service';
 import { ContentType } from '../models/page.model';
 import { Step } from '../models/step.model';
-import { Record } from '../models/record.model';
 import { NOTIFICATIONS } from '../const/notifications';
-import { SafeApplicationService } from './application.service';
 
+/**
+ * SAFE workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeWorkflowService {
 
   private workflow = new BehaviorSubject<Workflow | null>(null);
-  private records = new BehaviorSubject<Record[]>([]);
 
   /**
    * Return the workflow as an Observable.
@@ -27,18 +27,10 @@ export class SafeWorkflowService {
     return this.workflow.asObservable();
   }
 
-  /**
-   * Returns records as an Observable.
-   */
-  get records$(): Observable<Record[]> {
-    return this.records.asObservable();
-  }
-
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router,
-    private applicationService: SafeApplicationService
+    private router: Router
   ) { }
 
   /**
@@ -118,13 +110,5 @@ export class SafeWorkflowService {
     fragments.splice(0, 4);
     const url = fragments.reverse().join('/');
     this.router.navigateByUrl(url);
-  }
-
-  /**
-   * Stores records used to prefill next step form
-   * @param records records to pass.
-   */
-  storeRecords(records: Record[]): void {
-    this.records.next(records);
   }
 }

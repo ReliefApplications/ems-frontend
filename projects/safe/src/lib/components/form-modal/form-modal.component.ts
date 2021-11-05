@@ -5,14 +5,14 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GET_FORM_STRUCTURE
+  GET_FORM_BY_ID
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
 import {
   EditRecordMutationResponse, EDIT_RECORD, AddRecordMutationResponse, ADD_RECORD, UploadFileMutationResponse,
-  UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse
+  UPLOAD_FILE, EDIT_RECORDS, EditRecordsMutationResponse,
 } from '../../graphql/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
@@ -21,11 +21,13 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { NOTIFICATIONS } from '../../const/notifications';
 
 interface DialogData {
   template?: string;
   recordId?: string | [];
   locale?: string;
+  prefillRecords?: Record[];
 }
 
 @Component({
@@ -44,6 +46,7 @@ export class SafeFormModalComponent implements OnInit {
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
+  private storedMergedData: any;
 
   public survey?: Survey.Model;
   public selectedTabIndex = 0;
@@ -58,10 +61,10 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo,
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService
@@ -95,17 +98,28 @@ export class SafeFormModalComponent implements OnInit {
         if (!this.data.template) {
           this.form = this.record.form;
         }
-
       }));
     }
+
     if (!this.data.recordId || this.data.template) {
       promises.push(this.apollo.query<GetFormByIdQueryResponse>({
-        query: GET_FORM_STRUCTURE,
+        query: GET_FORM_BY_ID,
         variables: {
           id: this.data.template
         }
       }).toPromise().then(res => {
         this.form = res.data.form;
+
+        if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
+          this.storedMergedData = this.mergedData(this.data.prefillRecords);
+          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
+          if (resourcesField && resourcesField.resource === this.data.prefillRecords[0].form?.resource?.id) {
+            this.storedMergedData[resourcesField.name] = this.data.prefillRecords.map(x => x.id);
+          }
+          else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
+          }
+        }
       }));
     }
     await Promise.all(promises);
@@ -135,6 +149,9 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }
+    if (this.storedMergedData) {
+      this.survey.data = this.storedMergedData;
+    }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
     this.setPages();
@@ -152,10 +169,10 @@ export class SafeFormModalComponent implements OnInit {
     }
   }
 
- /**
-  * Creates the record, or update it if provided.
-  * @param survey Survey instance.
-  */
+  /**
+   * Creates the record, or update it if provided.
+   * @param survey Survey instance.
+   */
   public completeMySurvey = (survey: any) => {
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
@@ -347,6 +364,51 @@ export class SafeFormModalComponent implements OnInit {
       };
       xhr.send();
     }
+  }
+
+  private mergedData(records: Record[]): any {
+    const data: any = {};
+    // Loop on source fields
+    for (const inputField of records[0].form?.fields || []) {
+      // If source field match with target field
+      if (this.form?.fields?.some(x => x.name === inputField.name)) {
+        const targetField = this.form?.fields?.find(x => x.name === inputField.name);
+        // If source field got choices
+        if (inputField.choices || inputField.choicesByUrl) {
+          // If the target has multiple choices we concatenate all the source values
+          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
+            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
+              data[inputField.name] = records.reduce((o: string[], record: Record) => {
+                o = o.concat(record.data[inputField.name]);
+                return o;
+              }, []);
+            } else {
+              data[inputField.name] = records.map(x => x.data[inputField.name]);
+            }
+          }
+          // If the target has single choice we we put the common choice if any or leave it empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+        // If source field is a free input and types are matching between source and target field
+        else if (inputField.type === targetField.type) {
+          // If type is text just put the text of the first record
+          if (inputField.type === 'text') {
+            data[inputField.name] = records[0].data[inputField.name];
+          }
+          // If type is different from text and there is a common value, put it. Otherwise leave empty
+          else {
+            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
+              data[inputField.name] = records[0].data[inputField.name];
+            }
+          }
+        }
+      }
+    }
+    return data;
   }
 
   /**
