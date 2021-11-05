@@ -159,7 +159,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-      passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      prefillForm: [value && value.prefillForm ? value.prefillForm : false],
+      prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,
+        value && value.prefillForm ? Validators.required : null],
+      closeWorkflow: [value && value.closeWorkflow ? value.closeWorkflow : false],
+      confirmationText: [value && value.confirmationText ? value.confirmationText : '',
+        value && value.closeWorkflow ? Validators.required : null],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length
@@ -185,11 +190,11 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
         value && value.sendMail ? Validators.required : null],
+      export: [value && value.export ? value.export : false],
       bodyFields: this.formBuilder.array((value && value.bodyFields) ?
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
         value && value.sendMail ? Validators.required : null),
       bodyText: [value && value.bodyText ? value.bodyText : '']
-      // attachment: [value && value.attachment ? value.attachment : false]
     });
     return buttonForm;
   }

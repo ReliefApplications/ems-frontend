@@ -232,7 +232,7 @@ export class QueryBuilderService {
           return this.formBuilder.group({
             field: filter.field,
             operator: filter.operator || 'eq',
-            value: filter.value
+            value: Array.isArray(filter.value) ? [filter.value] : filter.value
           });
         }
       }

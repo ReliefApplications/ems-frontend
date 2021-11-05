@@ -1,8 +1,6 @@
 #!/bin/bash
 
-REMOTE_PATH=/var/www/html/safe-backoffice
 OUT=dist/back-office
-CONNECTION=bob@92.243.24.59
 
 set -e
 

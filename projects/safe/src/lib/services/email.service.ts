@@ -17,13 +17,17 @@ export class SafeEmailService {
    * Opens a mail client with items in the body.
    * @param recipient recipient of the email.
    * @param subject subject of the email.
+   * @param body body of the email, if not given we put the formatted records.
    * @param settings query settings.
    * @param ids list of records to include in the email.
-   * @param body body of the email, if not given we put the formatted records.
+   * @param sortField sort field
+   * @param sortOrder sort order
    */
-  public async sendMail(recipient: string, subject: string, settings: any, ids: string[], body: string = '{dataset}'): Promise<void> {
+  public async sendMail(
+    recipient: string, subject: string, body: string = '{dataset}', settings: any, ids: string[],
+    sortField?: string, sortOrder?: string): Promise<void> {
 
-    body = await this.preprocessor.preprocess(body, {settings, ids});
+    body = await this.preprocessor.preprocess(body, {settings, ids, sortField, sortOrder });
     subject = await this.preprocessor.preprocess(subject);
 
     // === SEND THE EMAIL ===

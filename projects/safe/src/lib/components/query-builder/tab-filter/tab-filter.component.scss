@@ -5,9 +5,8 @@
 
 .filter-row {
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
-    max-width: 800px;
+    gap: 8px;
 }
 
 .filter-list {
