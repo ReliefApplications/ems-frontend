@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
+import { ApolloQueryResult } from '@apollo/client';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
@@ -157,7 +158,7 @@ export class QueryBuilderService {
     }
   }
 
-  public buildMetaQuery(settings: any, subQuery = false): any {
+  public buildMetaQuery(settings: any, subQuery = false): Observable<ApolloQueryResult<any>> | null {
     const builtQuery = subQuery ? settings : settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);

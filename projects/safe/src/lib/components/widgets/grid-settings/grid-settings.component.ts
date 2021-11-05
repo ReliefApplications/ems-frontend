@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -193,7 +192,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       export: [value && value.export ? value.export : false],
       bodyFields: this.formBuilder.array((value && value.bodyFields) ?
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
-        value && value.sendMail ? Validators.required : null)
+        value && value.sendMail ? Validators.required : null),
+      bodyText: [value && value.bodyText ? value.bodyText : '']
     });
     return buttonForm;
   }
