@@ -86,7 +86,7 @@ export class SafeEmailService {
         });
       }
     } else {
-      console.log('heu')
+      console.log('heu');
     }
   }
 

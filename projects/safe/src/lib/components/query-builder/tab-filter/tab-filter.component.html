@@ -32,7 +32,17 @@
                                     [value]="operators[operator].value">{{ operators[operator].label }}</mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field appearance="outline">
+                        <mat-form-field appearance="outline" *ngIf="['JSON'].includes(selectedFields[i].type)">
+                            <mat-label>Value</mat-label>
+                            <mat-select formControlName="value" *ngIf="!metaFields[selectedFields[i].name]">
+                                <mat-option>None</mat-option>
+                            </mat-select>
+                            <mat-select formControlName="value" multiple *ngIf="metaFields[selectedFields[i].name]">
+                                <mat-option *ngFor="let choice of metaFields[selectedFields[i].name].choices"
+                                    [value]="choice.value">{{ choice.text }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" *ngIf="!['JSON'].includes(selectedFields[i].type)">
                             <mat-label>Value</mat-label>
                             <ng-container *ngIf="selectedFields[i].type === 'Int'">
                                 <input matInput formControlName="value" type="number" />

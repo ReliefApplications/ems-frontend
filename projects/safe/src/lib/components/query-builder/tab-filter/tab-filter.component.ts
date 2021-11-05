@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { SafeApiProxyService } from '../../../services/api-proxy.service';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const OPERATORS: any = {
   eq: {
@@ -84,10 +86,14 @@ const TYPES: any = {
   Time: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
+  },
+  JSON: {
+    defaultOperator: 'contains',
+    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'isempty', 'isnotempty']
   }
 };
 
-const AVAILABLE_TYPES = ['Int', 'String', 'Boolean', 'Date', 'DateTime', 'Time'];
+const AVAILABLE_TYPES = ['Int', 'String', 'Boolean', 'Date', 'DateTime', 'Time', 'JSON'];
 
 @Component({
   selector: 'safe-tab-filter',
@@ -98,12 +104,15 @@ export class SafeTabFilterComponent implements OnInit {
 
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
+  @Input() settings: any;
   @Input() canDelete = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
 
   public types: any = TYPES;
+  private metaQuery: any;
+  public metaFields: any;
 
   public operators: any = OPERATORS;
 
@@ -113,9 +122,24 @@ export class SafeTabFilterComponent implements OnInit {
 
   private inputs = '';
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private queryBuilder: QueryBuilderService,
+    private apiProxyService: SafeApiProxyService,
+    ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
+    if (this.metaQuery) {
+      await this.metaQuery.subscribe(async (res: any) => {
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.metaFields = Object.assign({}, res.data[field]);
+            await this.populateMetaFields();
+          }
+        }
+      });
+    }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
         const field = this.fields.find(y => y.name === x.field);
@@ -132,6 +156,46 @@ export class SafeTabFilterComponent implements OnInit {
         this.selectedFields.splice(index, 1, {});
       }
     });
+  }
+
+  /**
+   * Fetch choices from URL if needed
+   */
+   private async populateMetaFields(): Promise<void> {
+    for (const fieldName of  Object.keys(this.metaFields)) {
+      const meta = this.metaFields[fieldName];
+      if (meta.choicesByUrl) {
+        const url: string = meta.choicesByUrl.url;
+        const localRes = localStorage.getItem(url);
+        if (localRes) {
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
+          };
+        } else {
+          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
+          localStorage.setItem(url, JSON.stringify(res));
+          this.metaFields[fieldName] = {
+            ...meta,
+            choices: this.extractChoices(res, meta.choicesByUrl)
+          };
+        }
+      }
+    }
+  }
+
+  /**
+   * Extracts choices using choicesByUrl properties
+   * @param res Result of http request.
+   * @param choicesByUrl Choices By Url property.
+   * @returns list of choices.
+   */
+   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    return choices ? choices.map((x: any) => ({
+      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
+      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+    })) : [];
   }
 
   setCurrentDate(filterName: string): void {
