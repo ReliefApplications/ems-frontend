@@ -63,8 +63,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           id: this.id
         }
       }).subscribe((res) => {
-        console.log('FFF: res');
-        console.log(res);
         if (res.data.dashboard) {
           this.dashboard = res.data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
@@ -80,8 +78,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
           this.router.navigate(['/applications']);
         }
-        console.log('===> this.tiles');
-        console.log(this.tiles);
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -111,28 +107,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Edit the settings or display of a widget.
   */
   onEditTile(e: any): void {
-    console.log('e');
-    console.log(e);
-    // je pense que je devrait changer tiles ici
-    console.log('this.tiles');
-    console.log(this.tiles);
-    // const options = e.options;
-    console.log('this.tiles[e.id].settings.layout');
-    console.log(e.id);
     const oId = this.tiles.findIndex((v: any) => v.id === e.id);
-    console.log(this.tiles[oId]?.settings?.defaultLayout);
     const options = this.tiles[oId]?.settings?.defaultLayout ?
       {...e.options, defaultLayout: this.tiles[oId].settings.defaultLayout} : e.options;
-    // const options = e.options;
-    console.log('options');
-    console.log(options);
-    console.log('e.options');
-    console.log(e.options);
-    // const options = {...e.options, defaultLayout: this.tiles[e.id].settings.defaultLayout};
     if (options) {
       switch (e.type) {
         case 'display': {
-          console.log('display');
           this.tiles = this.tiles.map(x => {
             if (x.id === e.id) {
               x = { ...x, defaultCols: options.cols, defaultRows: options.rows };
@@ -143,8 +123,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           break;
         }
         case 'data': {
-          console.log('data');
-          console.log(options);
           this.tiles = this.tiles.map(x => {
             if (x.id === e.id) {
               x = { ...x, settings: options };
@@ -159,8 +137,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('MODIFIED: this.tiles');
-    console.log(this.tiles);
   }
 
   /*  Remove a widget from the dashboard.
@@ -187,10 +163,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         structure: this.tiles
       }
     }).subscribe(res => {
-      console.log('autoSaveChanges');
       this.tiles = res.data?.editDashboard.structure;
-      console.log('this.tiles');
-      console.log(this.tiles);
       this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
       this.loading = false;
     }, error => this.loading = false);
@@ -272,36 +245,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe();
   }
-
-  // onDefaultLayoutChanged(defaultLayout: any): void {
-  //   this.apollo.query<GetDashboardByIdQueryResponse>({
-  //     query: GET_DASHBOARD_BY_ID,
-  //     variables: {
-  //       id: this.id
-  //     }
-  //   }).subscribe((res) => {
-  //     console.log('$$$ res');
-  //     console.log(res);
-  //   });
-  //   // console.log('111: this.tiles');
-  //   // console.log(this.tiles);
-  //   // console.log('X: defaultLayout');
-  //   // console.log(defaultLayout);
-  //   this.defaultLayout = defaultLayout.defaultLayout;
-  //   const i = this.tiles.findIndex(v => v.id === defaultLayout.id);
-  //   // console.log('this.tiles[i]');
-  //   // console.log(this.tiles[i]);
-  //   const newTileSettings = {defaultLayout: defaultLayout.layout, ...this.tiles[i].settings };
-  //   const newTile = { ...this.tiles[i], settings: newTileSettings };
-  //   // console.log('newTile');
-  //   // console.log(newTile);
-  //   const newTiles = [...this.tiles];
-  //   newTiles[i] = newTile;
-  //   // this.tiles[i].settings.defaultLayout = defaultLayout.defaultLayout;
-  //   // this.tiles[i].settings = newTileSettings;
-  //   // this.tiles[i] = newTile;
-  //   this.tiles = newTiles;
-  //   // console.log('222: this.tiles');
-  //   // console.log(this.tiles);
-  // }
 }

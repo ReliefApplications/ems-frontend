@@ -82,24 +82,6 @@ export interface GetDashboardsQueryResponse {
   dashboards: Dashboard[];
 }
 
-// // === GET DASHBOARD DEFAULT LAYOUT ===
-// export const GET_DASHBOARD_DEFAULT_LAYOUT = gql`
-// {
-// query GetDashboardsLayout($idDashboard: ID) {
-//   dashboard(id: $idDashboard: ID) {
-//     id
-//     name
-//     structure {
-//
-//     }
-//   }
-// }`;
-
-// export interface GetDashboardsQueryResponse {
-//   loading: boolean;
-//   dashboards: Dashboard[];
-// }
-
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
 query GetFormNames($first: Int, $afterCursor: ID) {
@@ -426,24 +408,6 @@ export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;
 }
-
-// // === GET DASHBOARD BY ID ===
-// export const GET_DASHBOARD_BY_ID = gql`
-//   query GetDashboardById($id: ID!){
-//     dashboard(id: $id){
-//       id
-//       name
-//       createdAt
-//       structure {
-//
-//     }
-//   }
-// `;
-//
-// export interface GetDashboardByIdQueryResponse {
-//   loading: boolean;
-//   dashboard: Dashboard;
-// }
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`

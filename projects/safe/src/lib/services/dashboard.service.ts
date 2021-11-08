@@ -65,11 +65,7 @@ export class SafeDashboardService {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const defaultLayout = { ...layout, timestamp: + new Date() };
-    console.log('dashboardStructure');
-    console.log(dashboardStructure);
-    console.log(id);
     const oId = dashboardStructure.findIndex((v: any) => v.id === id);
-    console.log(oId);
     const widgetTemp = {
       ...dashboardStructure[oId],
       settings: {
@@ -86,16 +82,6 @@ export class SafeDashboardService {
         structure: updatedDashboardStructure,
       }
     }).subscribe(res => {
-      console.log('--- res');
-      console.log(res);
-      console.log('dashboardId');
-      console.log(dashboardId);
-      console.log('updatedDashboardStructure');
-      console.log(updatedDashboardStructure);
-      // event.emit({
-      //   id: dashboardId,
-      //   layout: JSON.stringify(defaultLayout)
-      // });
     }, error => console.log(error));
   }
 }
