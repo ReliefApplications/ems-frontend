@@ -235,6 +235,9 @@ query GetRecordById($id: ID!) {
     createdBy {
       name
     }
+    modifiedBy {
+      name
+    }
     form {
       id
       structure
@@ -325,8 +328,8 @@ export interface GetRolesQueryResponse {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
+query GetUsers($applications: [ID]) {
+  users(applications: $applications) {
     id
     username
     name

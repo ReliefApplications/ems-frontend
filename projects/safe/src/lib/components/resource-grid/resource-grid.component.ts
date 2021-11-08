@@ -16,7 +16,7 @@ import get from 'lodash/get';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -379,11 +379,13 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canUpdate;
       delete auxData.__typename;
       if (Object.keys(auxData).some((key: string, index) => {
-        const meta = this.metaFields[key];
-        if (meta && meta.choices) {
-          return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
-        } else {
-          return auxData[key].toString().toLowerCase().includes(searchText);
+        if (auxData[key]) {
+          const meta = this.metaFields[key];
+          if (meta && meta.choices) {
+            return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
+          } else {
+            return auxData[key].toString().toLowerCase().includes(searchText);
+          }
         }
       })) {
         filteredData.push(data);
