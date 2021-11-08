@@ -32,7 +32,6 @@ import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
@@ -47,7 +46,7 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
-import { ActivatedRoute } from '@angular/router';
+import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -187,7 +186,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private http: HttpClient,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
@@ -199,9 +197,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private apiProxyService: SafeApiProxyService,
-    private emailService: SafeEmailService,
-    private route: ActivatedRoute
+    private emailService: SafeEmailService
   ) {
+    this.fetchExportData = this.fetchExportData.bind(this);
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -1315,33 +1313,54 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Exports data event for export.
+   * @returns Excel Export data.
+   */
+  async fetchExportData(): Promise<ExcelExportData> {
+    const items: any = await this.fetchAllRecords();
+    const result: ExcelExportData = {
+      data: items
+    };
+    return result;
+  }
+
+  /**
+   * Gets all records from grid parameters.
+   * @returns List of all records.
+   */
+  private async fetchAllRecords(): Promise<void> {
+    let items: any = [];
+    const filters = [this.filter];
+    const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    const dataQuery = this.apollo.query<any>({
+      query: builtQuery,
+      variables: {
+        first: this.gridData.total,
+        filter: { logic: 'and', filters },
+        sortField,
+        sortOrder
+      }
+    }).toPromise();
+
+    return dataQuery.then((res: any) => {
+      for (const field in res.data) {
+        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+          items = cloneData(nodes);
+          this.convertDateFields(items);
+        }
+      }
+      return items;
+    });
+  }
+
+  /**
    * Reset the currently cached layout to the default one
    */
   resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
-
-  /**
-   * Removes operator set with a method, that cannot be cached.
-   * @param filter filter to clean.
-   * @returns cleaned filter.
-   */
-  // private lintFilter(filter: any): any {
-  //   if (filter.filters) {
-  //     const filters = filter.filters.map((x: any) => this.lintFilter(x)).filter((x: any) => x);
-  //     if (filters.length > 0) {
-  //       return { ...filter, filters };
-  //     } else {
-  //       return;
-  //     }
-  //   } else {
-  //     if (filter.field) {
-  //       if (filter.operator) {
-  //         return filter;
-  //       } else {
-  //         return;
-  //       }
-  //     }
-  //   }
-  // }
 }
