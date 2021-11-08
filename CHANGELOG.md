@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.6](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.5...v0.1.14-alpha.6) (2021-11-08)
+
+
+### Features
+
+* Add choice to map createdBy in pullJobs [#11063](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11063) ([09f0631](https://github.com/ReliefApplications/emrs-safe-frontend/commits/09f0631960cf30a46707293dbf44523fc698983b))
+* add new records from grid [#11610](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11610) ([166bf80](https://github.com/ReliefApplications/emrs-safe-frontend/commits/166bf8071bba4437a1c94a289f17bd845966b332))
+* Add possibility to define body text for mail [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([cecf3eb](https://github.com/ReliefApplications/emrs-safe-frontend/commits/cecf3eb3b61236bd80350c854019797ef329c1a8))
+* refactor preprocessing into a new service [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([a547869](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a547869d9b12dc894445b60f723df9c89997d6fb))
+* working comment for some questions [#11322](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11322) ([d0e256c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/d0e256c61de81cfbbb0d70f5a832a618b0f163eb))
+
+
+### Bug Fixes
+
+* filter / sort not reset to default after edition [#11460](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11460) ([3d11da2](https://github.com/ReliefApplications/emrs-safe-frontend/commits/3d11da2f629d5a83a32f0e0207ed19318470e2f9))
+* issue where email service was not updated after changes made on custom queries filter [#11726](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11726) ([9580b09](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9580b098ae5cc53fc8ee7f0cc59ed6993102d106))
+* issue where some items could not be searched on [#11820](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11820) ([8e62703](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8e62703ab5dad32325de01f7e320632a76b2c39a))
+* linting [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([e546eef](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e546eefb538b487eb2c64a5d9ecfe34e9ed409c4))
+
 ### [0.1.14-alpha.5](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.4...v0.1.14-alpha.5) (2021-10-25)
 
 
