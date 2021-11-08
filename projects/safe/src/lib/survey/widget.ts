@@ -251,10 +251,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       }
-      if (question.hasComment) {
-        console.log(question);
-        console.log(el);
-      }
     }
   };
 
