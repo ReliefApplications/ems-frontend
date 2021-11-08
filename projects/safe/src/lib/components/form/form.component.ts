@@ -61,7 +61,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === LOCALE STORAGE ===
   private storageId = '';
-  public storageDate: Date = new Date();
+  public storageDate?: Date;
   public isFromCacheData = false;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
@@ -116,7 +116,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
     const cachedData = storedData ? JSON.parse(storedData).data : null;
-    this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
+    this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : undefined;
     this.isFromCacheData = !(!cachedData);
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
@@ -390,6 +390,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
+    this.storageDate = undefined;
     this.survey.render();
   }
 
@@ -425,23 +426,27 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /* Opens the history of the record on the right side of the screen.*/
-  public onViewHistory(id: string | undefined): void {
-    this.apollo.query<GetRecordDetailsQueryResponse>({
-      query: GET_RECORD_DETAILS,
-      variables: {
-        id
-      }
-    }).subscribe(res => {
-      this.layoutService.setRightSidenav({
-        factory: this.factory,
-        inputs: {
-          record: res.data.record,
-          revert: (item: any, dialog: any) => {
-            this.confirmRevertDialog(res.data.record, item);
-          }
-        },
+  /**
+   * Opens the history of the record on the right side of the screen.
+   */
+  public onShowHistory(): void {
+    if (this.record) {
+      this.apollo.query<GetRecordDetailsQueryResponse>({
+        query: GET_RECORD_DETAILS,
+        variables: {
+          id: this.record.id
+        }
+      }).subscribe(res => {
+        this.layoutService.setRightSidenav({
+          factory: this.factory,
+          inputs: {
+            record: res.data.record,
+            revert: (item: any, dialog: any) => {
+              this.confirmRevertDialog(res.data.record, item);
+            }
+          },
+        });
       });
-    });
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, ComponentFactoryResolver, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -18,7 +18,6 @@ import { SafeAuthService } from '../../services/auth.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
 import { NOTIFICATIONS } from '../../const/notifications';
-import { SafeLayoutService } from '../../services/layout.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -242,13 +241,12 @@ export class SafeRecordModalComponent implements OnInit {
 
   /**
    * Opens the history of the record in a modal.
-   * @param id record id.
    */
-  public onViewHistory(id: string | undefined): void {
+  public onShowHistory(): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
-        id
+        id: this.record.id
       }
     }).subscribe(res => {
       this.dialog.open(RecordHistoryModalComponent, {
@@ -257,7 +255,9 @@ export class SafeRecordModalComponent implements OnInit {
           revert: (item: any, dialog: any) => {
             this.confirmRevertDialog(res.data.record, item);
           }
-        }
+        },
+        panelClass: 'no-padding-dialog',
+        autoFocus: false
       });
     });
   }
