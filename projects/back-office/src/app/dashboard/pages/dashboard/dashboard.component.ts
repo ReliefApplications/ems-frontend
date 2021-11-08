@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
           this.router.navigate(['/applications']);
         }
-        },
+      },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.router.navigate(['/applications']);
