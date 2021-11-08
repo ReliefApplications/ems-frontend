@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
+import { ApolloQueryResult } from '@apollo/client';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
@@ -76,7 +77,7 @@ export class QueryBuilderService {
             sortOrder: "${x.sort.order}",
             filter: ${this.filterToString(x.filter)}
           ) {
-            ${this.buildFields(x.fields)}
+            ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}
           }` + '\n';
         }
         case 'OBJECT': {
@@ -144,6 +145,10 @@ export class QueryBuilderService {
               }
             }
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
         }
         }
       `;
@@ -153,7 +158,7 @@ export class QueryBuilderService {
     }
   }
 
-  public buildMetaQuery(settings: any, subQuery = false): any {
+  public buildMetaQuery(settings: any, subQuery = false): Observable<ApolloQueryResult<any>> | null {
     const builtQuery = subQuery ? settings : settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
@@ -215,26 +220,27 @@ export class QueryBuilderService {
   }
 
   public createFilterGroup(filter: any, fields: any): FormGroup {
-    if (filter.filters) {
-      const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
-      return this.formBuilder.group({
-        logic: filter.logic || 'and',
-        filters: this.formBuilder.array(filters)
-      });
-    } else {
-      if (filter.field) {
+    if (filter) {
+      if (filter.filters) {
+        const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
         return this.formBuilder.group({
-          field: filter.field,
-          operator: filter.operator || 'eq',
-          value: filter.value
+          logic: filter.logic || 'and',
+          filters: this.formBuilder.array(filters)
         });
       } else {
-        return this.formBuilder.group({
-          logic: 'and',
-          filters: this.formBuilder.array([])
-        });
+        if (filter.field) {
+          return this.formBuilder.group({
+            field: filter.field,
+            operator: filter.operator || 'eq',
+            value: Array.isArray(filter.value) ? [filter.value] : filter.value
+          });
+        }
       }
     }
+    return this.formBuilder.group({
+      logic: 'and',
+      filters: this.formBuilder.array([])
+    });
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {

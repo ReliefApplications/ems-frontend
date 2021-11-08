@@ -1,7 +1,7 @@
 <kendo-grid [loading]="loading" [data]="gridData" [autoSize]="false" [pageable]="pagerSettings" [height]="410"
   [selectable]="!readOnly && selectableSettings" (pageChange)="pageChange($event)" kendoGridSelectBy
   [selectedKeys]="selectedRowsIndex" (selectionChange)="selectionChange($event)" [pageSize]="pageSize" [skip]="skip"
-  [resizable]="true" translate="no">
+  [resizable]="true">
   <ng-template kendoGridToolbarTemplate>
     <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target)" />
   </ng-template>
@@ -28,7 +28,7 @@
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'text'">
           <div translate="yes" class="textbox-container">
             <div #refSpan class="textbox">
-              {{dataItem[field.name]}}
+              {{getPropertyValue(dataItem, field.name)}}
             </div>
             <!-- <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
               <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)" mat-icon-button>
@@ -46,7 +46,7 @@
         <!-- DISPLAY ( dropdown / radiogroup ) -->
         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
           *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-          {{ getDisplayText(dataItem[field.name], field.meta) }}
+          {{ getPropertyValue(dataItem, field.name) }}
         </ng-template>
       </ng-container>
       <!-- EDITION ( text / color / comment - resource - dropdown ) -->
@@ -95,7 +95,7 @@
       [columnMenu]="false" [editor]="field.editor" [editable]="!field.disabled" [width]="field.title.length * 7 + 50"
       [minResizableWidth]="50">
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-        {{ getDisplayText(dataItem[field.name], field.meta) }}
+        {{ getPropertyValue(dataItem, field.name) }}
       </ng-template>
       <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
         <kendo-multiselect [data]="field.meta.choices"

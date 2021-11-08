@@ -12,10 +12,11 @@ import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
 import { Apollo } from 'apollo-angular';
+import get from 'lodash/get';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -28,7 +29,7 @@ const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
   info: true,
-  pageSizes: true,
+  pageSizes: [10, 25, 50, 100],
   previousNext: true
 };
 
@@ -135,12 +136,14 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
-      variables: { ...builtQuery.variables, ...{
-        first: this.pageSize,
-        filter: this.filter,
-        sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-        sortOrder: this.settings.query.sort?.order || ''
-      }}
+      variables: {
+        ...builtQuery.variables, ...{
+          first: this.pageSize,
+          filter: this.filter,
+          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+          sortOrder: this.settings.query.sort?.order || ''
+        }
+      }
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
     if (this.metaQuery) {
@@ -201,8 +204,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           }
-        },
-          () => this.loading = false);
+        }, () => this.loading = false);
       } else {
         this.loading = false;
       }
@@ -364,17 +366,28 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
+      autoFocus: false
     });
   }
 
-  onFilter(value: any): void {
+  onFilter(filter: any): void {
     const filteredData: any[] = [];
+    const searchText = filter.value.toLowerCase();
     this.items.forEach((data: any) => {
       const auxData = data;
       delete auxData.canDelete;
       delete auxData.canUpdate;
       delete auxData.__typename;
-      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
+      if (Object.keys(auxData).some((key: string, index) => {
+        if (auxData[key]) {
+          const meta = this.metaFields[key];
+          if (meta && meta.choices) {
+            return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
+          } else {
+            return auxData[key].toString().toLowerCase().includes(searchText);
+          }
+        }
+      })) {
         filteredData.push(data);
       }
     });
@@ -386,17 +399,19 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Displays text instead of values for questions with select.
-   * @param meta meta data of the question.
-   * @param value question value.
-   * @returns text value of the question.
+   * Returns property value in object from path.
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @returns Value of the property.
    */
-  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+   public getPropertyValue(item: any, path: string): any {
+    const meta = get(this.metaFields, path);
+    const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+        return meta.choices.reduce((acc: string[], x: any) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
       } else {
-        return meta.choices.find(x => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
     } else {
       return value;
@@ -488,7 +503,8 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
             return Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount
+                totalCount: fetchMoreResult[field].totalCount,
+                pageInfo: fetchMoreResult[field].pageInfo
               }
             });
           } else {

@@ -17,6 +17,7 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeEmailService } from '../../../services/email.service';
 import { GridLayout } from '../../ui/grid-core/models/grid-layout.model';
 import { SafeGridCoreComponent } from '../../ui/grid-core/grid-core.component';
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -123,10 +124,7 @@ export class SafeGridComponent implements OnChanges {
       if (options.sendMail && selectedRecords.length > 0) {
         const emailSettings = { query: {
           name: this.settings.query.name,
-          fields: options.bodyFields,
-          filter: {
-            ids: selectedRecords.map(x => x.id)
-          }
+          fields: options.bodyFields
         }};
         this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id).length );
         this.grid?.onExportRecord(this.grid?.selectedRowsIndex, 'xlsx');
@@ -134,8 +132,10 @@ export class SafeGridComponent implements OnChanges {
       if (promises.length > 0) {
         await Promise.all(promises);
       }
-      if (options.passDataToNextStep) {
+
+      if (options.prefillForm) {
         const promisedRecords: Promise<any>[] = [];
+        // Fetch the record object for each selected record
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
             query: GET_RECORD_DETAILS,
@@ -145,11 +145,40 @@ export class SafeGridComponent implements OnChanges {
           }).toPromise());
         }
         const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
-        this.workflowService.storeRecords(records);
+
+        // Open a modal containing the prefilled form
+        this.dialog.open(SafeFormModalComponent, {
+          data: {
+            template: options.prefillTargetForm,
+            locale: 'en',
+            prefillRecords: records,
+            askForConfirm: false
+          },
+          autoFocus: false
+        });
       }
     }
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+
+    /* Next Step button, open a confirm modal if required
+    */
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
+          }
+        });
+      }
     } else {
       this.grid?.ngOnChanges();
     }
@@ -194,6 +223,7 @@ export class SafeGridComponent implements OnChanges {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(
+    // come from 'attach to record' button from grid component
     selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
@@ -238,7 +268,8 @@ export class SafeGridComponent implements OnChanges {
                 data: {
                   recordId: record.id,
                   locale: 'en'
-                }
+                },
+                autoFocus: false
               });
             }
           }

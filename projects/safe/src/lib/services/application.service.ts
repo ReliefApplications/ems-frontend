@@ -6,7 +6,6 @@ import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
-import { PullJob } from '../models/pullJob.model';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse,
@@ -53,6 +52,7 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 import { NOTIFICATIONS } from '../const/notifications';
 import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { SafeAuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +96,7 @@ export class SafeApplicationService {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private router: Router
   ) { }
 
@@ -484,6 +485,7 @@ export class SafeApplicationService {
             };
             this._application.next(newApplication);
           }
+          this.authService.getProfile();
         }
       });
     }
@@ -718,16 +720,4 @@ export class SafeApplicationService {
       });
     }
   }
-
-  /* Update application with latest pullJobs
-  */
-  updatePullJobs(pullJobs: PullJob[]): void {
-    const application = this._application.getValue();
-    if (application) {
-      const newApplication = {...application, pullJobs};
-      this._application.next(newApplication);
-    }
-  }
-
-
 }

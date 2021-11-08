@@ -19,6 +19,7 @@ export interface Record {
     form?: Form;
     versions?: Version[];
     createdBy?: User;
+    modifiedBy?: User;
     canUpdate?: boolean;
     canDelete?: boolean;
 }

@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 mat-dialog-content {
@@ -47,10 +48,9 @@ mat-grid-tile:nth-child(2n) {
     padding: 0;
 }
 
-.record-date {
-    color: #9e9e9e;
-    font-size: 12px;
-    line-height: 12px;
-    text-align: right;
-    margin-bottom: 8px;
+.modal-close {
+    position: absolute;
+    top: -24px;
+    right: -24px;
+    z-index: 1002;
 }

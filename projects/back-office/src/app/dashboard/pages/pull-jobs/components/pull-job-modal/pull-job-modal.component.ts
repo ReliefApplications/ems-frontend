@@ -2,17 +2,19 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
-import { ApiConfiguration, Channel, Form, PullJob, status } from '@safe/builder';
+import { ApiConfiguration, Application, Channel, Form, PullJob, status } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS,
-  GetFormByIdQueryResponse, GET_FORM_BY_ID,
-  GetFormsQueryResponse, GET_FORM_NAMES
+  GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID,
+  GetFormsQueryResponse, GET_FORM_NAMES, GetRoutingKeysQueryResponse, GET_ROUTING_KEYS
 } from 'projects/back-office/src/app/graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { SubscriptionModalComponent } from '../../../subscriptions/components/subscription-modal/subscription-modal.component';
+import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
 const ITEMS_PER_PAGE = 10;
+
+const DEFAULT_FIELDS = ['createdBy'];
 
 @Component({
   selector: 'app-pull-job-modal',
@@ -35,6 +37,17 @@ export class PullJobModalComponent implements OnInit {
     hasNextPage: true
   };
 
+  // === CHANNELS ===
+  @ViewChild('channelSelect') channelSelect?: MatSelect;
+  private applicationsLoading = true;
+  public applications = new BehaviorSubject<Application[]>([]);
+  public applications$!: Observable<Application[]>;
+  private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private applicationsPageInfo = {
+    endCursor: '',
+    hasNextPage: true
+  };
+
   // === API ===
   @ViewChild('apiSelect') apiSelect?: MatSelect;
   private apiConfigurationsLoading = true;
@@ -46,6 +59,7 @@ export class PullJobModalComponent implements OnInit {
     hasNextPage: true
   };
 
+  // === DATA ===
   public loading = true;
   public statusChoices = Object.values(status);
   public fields: any[] = [];
@@ -64,6 +78,10 @@ export class PullJobModalComponent implements OnInit {
 
   get defaultForm(): Form | null {
     return this.data.pullJob?.convertTo || null;
+  }
+
+  get defaultChannel(): Channel | null {
+    return this.data.pullJob?.channel || null;
   }
 
   constructor(
@@ -106,6 +124,8 @@ export class PullJobModalComponent implements OnInit {
       const nodes = res.data.forms.edges.map(x => x.node);
       if (this.defaultForm) {
         this.forms.next([this.defaultForm, ...nodes.filter(x => x.id !== this.defaultForm?.id)]);
+      } else {
+        this.forms.next(nodes);
       }
       this.formsPageInfo = res.data.forms.pageInfo;
       this.formsLoading = res.loading;
@@ -124,6 +144,8 @@ export class PullJobModalComponent implements OnInit {
       const nodes = res.data.apiConfigurations.edges.map(x => x.node);
       if (this.defaultApiConfiguration) {
         this.apiConfigurations.next([this.defaultApiConfiguration, ...nodes.filter(x => x.id !== this.defaultApiConfiguration?.id)]);
+      } else {
+        this.apiConfigurations.next(nodes);
       }
       this.apiPageInfo = res.data.apiConfigurations.pageInfo;
       this.apiConfigurationsLoading = res.loading;
@@ -139,6 +161,26 @@ export class PullJobModalComponent implements OnInit {
         this.getFields(res);
       }
     });
+
+    // Fetch the applications to get the channels
+    this.applicationsQuery = this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      query: GET_ROUTING_KEYS,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    // this.applications$ = this.applications.asObservable();
+    this.applicationsQuery.valueChanges.subscribe(res => {
+      const nodes = res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false);
+      if (this.defaultChannel) {
+        this.applications.next(nodes);
+      } else {
+        this.applications.next(nodes);
+      }
+      this.applicationsPageInfo = res.data.applications.pageInfo;
+      this.applicationsLoading = res.loading;
+    });
   }
 
   /**
@@ -150,13 +192,14 @@ export class PullJobModalComponent implements OnInit {
       this.fieldsSubscription.unsubscribe();
     }
     this.fieldsSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }
     }).valueChanges.subscribe(resForm => {
       if (resForm.data.form) {
         this.fields = resForm.data.form.fields || [];
+        this.fields = this.fields.concat(DEFAULT_FIELDS.map(x => ({ name: x })));
       }
     });
   }
@@ -298,6 +341,47 @@ export class PullJobModalComponent implements OnInit {
                 edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
                 pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
                 totalCount: fetchMoreResult.apiConfigurations.totalCount
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+
+  /**
+   * Adds scroll listener to channels select.
+   */
+   onOpenApplicationSelect(): void {
+    if (this.channelSelect) {
+      const panel = this.channelSelect.panel.nativeElement;
+      if (panel) {
+        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
+      }
+    }
+  }
+
+  /**
+   * Fetches more channels on scroll.
+   * @param e scroll event.
+   */
+  private loadOnScrollApplication(e: any): void {
+    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+      if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
+        this.applicationsLoading = true;
+        this.applicationsQuery.fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.applicationsPageInfo.endCursor
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return prev; }
+            return Object.assign({}, prev, {
+              applications: {
+                edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
+                pageInfo: fetchMoreResult.applications.pageInfo,
+                totalCount: fetchMoreResult.applications.totalCount
               }
             });
           }
