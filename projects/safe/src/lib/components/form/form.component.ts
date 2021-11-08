@@ -18,9 +18,7 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { SafeWorkflowService } from '../../services/workflow.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
@@ -61,10 +59,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   // === MODIFIED AT ===
   public modifiedAt: Date | null = null;
 
-  // === PASS RECORDS FROM WORKFLOW ===
-  private isStep = false;
-  private recordsSubscription?: Subscription;
-
   // === LOCALE STORAGE ===
   private storageId = '';
   public storageDate: Date = new Date();
@@ -78,11 +72,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   constructor(
-    private apollo: Apollo,
     public dialog: MatDialog,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router,
-    private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
@@ -123,27 +115,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
-    let cachedData = storedData ? JSON.parse(storedData).data : null;
+    const cachedData = storedData ? JSON.parse(storedData).data : null;
     this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
     this.isFromCacheData = !(!cachedData);
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
-    }
-
-    this.isStep = this.router.url.includes('/workflow/');
-    if (this.isStep) {
-      this.recordsSubscription = this.workflowService.records$.subscribe(records => {
-        if (records.length > 0) {
-          const mergedData = this.mergedData(records);
-          cachedData = Object.assign({}, mergedData);
-          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === records[0].form?.resource?.id) {
-            cachedData[resourcesField.name] = records.map(x => x.id);
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
-          }
-        }
-      });
     }
 
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
@@ -417,56 +393,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.render();
   }
 
-  private mergedData(records: Record[]): any {
-    const data: any = {};
-    // Loop on source fields
-    for (const inputField of records[0].form?.fields || []) {
-      // If source field match with target field
-      if (this.form.fields?.some(x => x.name === inputField.name)) {
-        const targetField = this.form.fields?.find(x => x.name === inputField.name);
-        // If source field got choices
-        if (inputField.choices || inputField.choicesByUrl) {
-          // If the target has multiple choices we concatenate all the source values
-          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
-            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
-              data[inputField.name] = records.reduce((o: string[], record: Record) => {
-                o = o.concat(record.data[inputField.name]);
-                return o;
-              }, []);
-            } else {
-              data[inputField.name] = records.map(x => x.data[inputField.name]);
-            }
-          }
-          // If the target has single choice we we put the common choice if any or leave it empty
-          else {
-            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
-              data[inputField.name] = records[0].data[inputField.name];
-            }
-          }
-        }
-        // If source field is a free input and types are matching between source and target field
-        else if (inputField.type === targetField.type) {
-          // If type is text just put the text of the first record
-          if (inputField.type === 'text') {
-            data[inputField.name] = records[0].data[inputField.name];
-          }
-          // If type is different from text and there is a common value, put it. Otherwise leave empty
-          else {
-            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
-              data[inputField.name] = records[0].data[inputField.name];
-            }
-          }
-        }
-      }
-    }
-    return data;
-  }
-
   ngOnDestroy(): void {
-    if (this.recordsSubscription) {
-      this.recordsSubscription.unsubscribe();
-      this.workflowService.storeRecords([]);
-    }
     localStorage.removeItem(this.storageId);
   }
 

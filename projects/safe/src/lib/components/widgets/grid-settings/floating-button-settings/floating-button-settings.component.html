@@ -12,15 +12,38 @@
           <mat-label>Button name</mat-label>
           <input matInput formControlName="name" type="string">
         </mat-form-field>
-        <mat-checkbox *ngIf="!isDashboard" formControlName="goToNextStep">Go to next step</mat-checkbox>
-        <span class="info-row" *ngIf="!isDashboard && buttonForm.value.goToNextStep && canPassData">
-          <mat-checkbox formControlName="passDataToNextStep">Prefill next step form with selected data</mat-checkbox>
-          <mat-icon class="info-icon"
-            matTooltip="When enabled, the next step should be a form containing some matching fields with this grid's records AND a 'Resources' question referring to this grid's records. The next step form will then be prefilled with values from selected records and the 'Resources' question will also be prefilled with selected records."
-            matTooltipPosition="right">
-            info
-          </mat-icon>
-        </span>
+
+        <ng-container *ngIf="relatedForms.length > 0">
+          <mat-checkbox formControlName="prefillForm">Pre-fill form with selected data</mat-checkbox>
+          <div *ngIf="buttonForm.value.prefillForm" class="sub-parameters">
+            <mat-form-field appearance="outline">
+              <mat-label>Template</mat-label>
+              <mat-select formControlName="prefillTargetForm">
+                <mat-option>-- None --</mat-option>
+                <mat-option *ngFor="let form of relatedForms" [value]="form.id">
+                  {{form.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isDashboard">
+          <mat-checkbox formControlName="goToNextStep">Go to next step</mat-checkbox>
+          <span class="info-row" *ngIf="buttonForm.value.goToNextStep && canPassData">
+            <mat-checkbox formControlName="passDataToNextStep">Prefill next step form with selected data</mat-checkbox>
+            <mat-icon class="info-icon"
+              matTooltip="When enabled, the next step should be a form containing some matching fields with this grid's records AND a 'Resources' question referring to this grid's records. The next step form will then be prefilled with values from selected records and the 'Resources' question will also be prefilled with selected records."
+              matTooltipPosition="right">
+              info
+            </mat-icon>
+          </span>
+          <mat-checkbox formControlName="closeWorkflow">Close workflow</mat-checkbox>
+          <mat-form-field appearance="outline" class="sub-parameters" *ngIf="buttonForm.value.closeWorkflow">
+            <mat-label>Confirmation message</mat-label>
+            <input matInput formControlName="confirmationText" type="string">
+          </mat-form-field>
+        </ng-container>
         <mat-checkbox formControlName="autoSave">Auto-save</mat-checkbox>
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">Auto-modify selected rows</mat-checkbox>
@@ -51,7 +74,8 @@
                   <input matInput formControlName="value" type="string" />
                 </ng-container>
               </mat-form-field>
-              <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteModification(i)">
+              <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger"
+                (click)="onDeleteModification(i)">
               </safe-button>
             </form>
             <safe-button [isIcon]="true" icon="add_circle_outline" variant="primary" (click)="onAddModification()">
@@ -88,7 +112,8 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngIf="buttonForm.value.targetForm">
-            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false"></safe-query-builder>
+            <safe-query-builder [form]="$any(buttonForm.controls.targetFormQuery)" [canSelectDataSet]="false">
+            </safe-query-builder>
           </ng-container>
         </div>
         <span class="info-row">
@@ -138,26 +163,24 @@
           <mat-form-field class="chip-list" appearance="outline">
             <mat-label>Distribution list</mat-label>
             <mat-chip-list #chipList aria-label="Emails chip list">
-              <mat-chip
-                *ngFor="let email of emails"
-                [selectable]="true"
-                [removable]="true"
-                (removed)="remove(email)">
+              <mat-chip *ngFor="let email of emails" [selectable]="true" [removable]="true" (removed)="remove(email)">
                 {{email}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input
-                #emailInput
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (focusout)="add($event)"
-                (matChipInputTokenEnd)="add($event)">
+              <input #emailInput [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (focusout)="add($event)" (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Subject</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Body</mat-label>
+            <textarea matInput formControlName="bodyText" placeholder="Please enter a body template for the email"
+              [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
+          </mat-form-field>
+          <mat-checkbox formControlName="export">Export selected dataset</mat-checkbox>
           <h2>Select fields to write in body</h2>
           <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
             [factory]="factory"></safe-tab-fields>

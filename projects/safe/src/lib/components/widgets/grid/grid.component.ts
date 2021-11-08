@@ -22,8 +22,10 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
-  GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import {
+  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse, GET_RECORD_BY_ID
+} from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
@@ -45,6 +47,7 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
+import { ActivatedRoute } from '@angular/router';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -72,7 +75,7 @@ const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 @Component({
   selector: 'safe-grid',
@@ -196,7 +199,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private apiProxyService: SafeApiProxyService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private route: ActivatedRoute
   ) {
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -225,13 +229,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           filters.push(this.settings.query.filter);
         }
         const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+          (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
         const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
         this.dataQuery = this.apollo.watchQuery<any>({
           query: builtQuery,
           variables: {
             first: this.pageSize,
-            filter: { logic: 'and', filters },
+            filter: { logic: 'and', filters },
             sortField,
             sortOrder
           }
@@ -264,7 +268,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * Fetch choices from URL if needed
    */
   private async populateMetaFields(): Promise<void> {
-    for (const fieldName of  Object.keys(this.metaFields)) {
+    for (const fieldName of Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
@@ -292,7 +296,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
@@ -419,17 +423,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
- /**
-  * Displays an embedded form in a modal to add new record.
-  */
+  /**
+   * Displays an embedded form in a modal to add new record.
+   */
   public onAdd(): void {
     if (this.settings.query.template) {
-      this.dialog.open(SafeFormModalComponent, {
+      const dialogRef = this.dialog.open(SafeFormModalComponent, {
         data: {
           template: this.settings.query.template,
-          locale: 'en'
+          locale: 'en',
+          askForConfirm: false
         },
         autoFocus: false
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.reloadData();
+        }
       });
     }
   }
@@ -693,14 +703,14 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     }
   }
 
- /**
-  * Detects pagination events and update the items loaded.
-  * @param event Page change event.
-  */
+  /**
+   * Detects pagination events and update the items loaded.
+   * @param event Page change event.
+   */
   public pageChange(event: PageChangeEvent): void {
     this.loading = true;
     this.skip = event.skip;
@@ -717,19 +727,19 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         filters.push(this.settings.query.filter);
       }
       const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
       const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
       this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
           skip: this.skip,
-          filter: { logic: 'and', filters },
+          filter: { logic: 'and', filters },
           sortField,
           sortOrder
         },
-        updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        updateQuery: (prev: any, { fetchMoreResult }: any) => {
           this.loading = false;
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) { return prev; }
           for (const field in fetchMoreResult) {
             if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
               return Object.assign({}, prev, {
@@ -747,10 +757,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
- /**
-  * Detects filtering events and update the items loaded.
-  * @param filter composite filter created by Kendo.
-  */
+  /**
+   * Detects filtering events and update the items loaded.
+   * @param filter composite filter created by Kendo.
+   */
   public filterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
@@ -758,7 +768,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     }
   }
 
@@ -955,7 +965,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public reloadData(): void {
     if (!this.parent) {
-      this.pageChange({skip: 0, take: this.pageSize});
+      this.pageChange({ skip: 0, take: this.pageSize });
     } else {
       this.childChanged.emit();
     }
@@ -966,7 +976,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
     let rowsIndexToModify = [...this.selectedRowsIndex];
-
+    this.loading = true;
     if (options.autoSave && options.modifySelectedRows) {
       const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
       if (unionRows.length > 0) {
@@ -982,6 +992,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     if (options.modifySelectedRows) {
       await Promise.all(this.promisedRowsModifications(options.modifications, rowsIndexToModify));
     }
+
     if (this.selectedRowsIndex.length > 0) {
       const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
       if (options.attachToRecord) {
@@ -1012,14 +1023,22 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           name: this.settings.query.name,
           fields: options.bodyFields
         }};
-        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id) );
-        this.onExportRecord(this.selectedRowsIndex, 'xlsx');
+        const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+           selectedRecords.map(x => x.id), sortField, sortOrder);
+        if (options.export) {
+          this.onExportRecord(this.selectedRowsIndex, 'xlsx');
+        }
       }
       if (promises.length > 0) {
         await Promise.all(promises);
       }
-      if (options.passDataToNextStep) {
+
+      if (options.prefillForm) {
         const promisedRecords: Promise<any>[] = [];
+        // Fetch the record object for each selected record
         for (const record of selectedRecords) {
           promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
             query: GET_RECORD_DETAILS,
@@ -1029,11 +1048,40 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           }).toPromise());
         }
         const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
-        this.workflowService.storeRecords(records);
+
+        // Open a modal containing the prefilled form
+        this.dialog.open(SafeFormModalComponent, {
+          data: {
+            template: options.prefillTargetForm,
+            locale: 'en',
+            prefillRecords: records,
+            askForConfirm: false
+          },
+          autoFocus: false
+        });
       }
     }
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
+
+    /* Next Step button, open a confirm modal if required
+    */
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
+          }
+        });
+      }
     } else {
       this.reloadData();
     }
@@ -1078,6 +1126,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
   */
   private async promisedAttachToRecord(
+    // come from 'attach to record' button from grid component
     selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
