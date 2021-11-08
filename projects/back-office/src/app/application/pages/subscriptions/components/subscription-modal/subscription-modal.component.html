@@ -10,8 +10,8 @@
                 <mat-label>Listen to</mat-label>
                 <input type="text" placeholder="Select a routing key" matInput formControlName="routingKey"
                     [matAutocomplete]="auto">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                    <mat-optgroup *ngFor="let application of filteredApplications | async" [label]="application.name || ''">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" #applicationSelect (opened)="onOpenApplicationSelect()">
+                    <mat-optgroup *ngFor="let application of applications$ | async" [label]="application.name || ''">
                         <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
                             {{channel.title}}
                         </mat-option>
@@ -24,8 +24,8 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Convert to</mat-label>
-                <mat-select formControlName="convertTo">
-                    <mat-option *ngFor="let form of forms" [value]="form.id">{{ form.name }}</mat-option>
+                <mat-select #formSelect  formControlName="convertTo" (openedChange)="onOpenFormSelect($event)">
+                    <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">

@@ -165,24 +165,6 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-@mixin img-choice($theme) {
-  $primary: map-get($theme, primary);
-
-  .img-choice {
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
-  }
-
-  .img-selected {
-    border-color: mat-color($primary);
-  }
-}
-
 // img-choice
 // img-selected
 
@@ -334,7 +316,6 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include angular-material-theme($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
-@include img-choice($safe-theme);
 @include custom-theme($safe-theme);
 
 html, body { height: 100%; }
@@ -347,7 +328,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex-direction: column;
 }
 
-.widget-header{
+.widget-header {
   height: 40px;
   position: relative;
   z-index: 1001;
@@ -355,10 +336,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: black;
   text-align: left;
   line-height: 40px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   padding: 0 40px;
   border-bottom: 1px solid #d8d8d8;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .widget-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
 }
 
 .widget-content{
@@ -370,6 +359,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .add-dialog {
   mat-dialog-container {
     width: 700px;
+  }
+}
+
+.no-padding-dialog {
+  mat-dialog-container {
+    padding: unset;
   }
 }
 

@@ -1,6 +1,6 @@
 <div class="toolbar">
     <div class="toolbar-buttons">
-        <safe-button *ngIf="locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
+        <safe-button *ngIf="application?.canUpdate && locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
         </safe-button>
         <safe-button variant="danger" (click)="onClose()">Close</safe-button>
         <safe-button category="secondary" variant="success" (click)="onPublish()" [disabled]="!canPublish">Publish</safe-button>

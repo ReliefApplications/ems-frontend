@@ -3,11 +3,12 @@
 export const NOTIFICATIONS = {
     appPublished(name: any): string { return `Application ${name} published.`; } ,
     userInvalidActions(action: any): string  { return `User could not be ${action}.`; } ,
-    accessNotProvided(type: any, error?: any): string  { return `No access provided to this ${type}. ${error}`; } ,
+    accessNotProvided(type: any, error?: any): string  { return `No access provided to this ${type}. ${error ? error : ''}`; } ,
     userRolesUpdated(username: any): string  { return `${username} roles updated.`; },
-    usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; }, //
+    usersActions(type: any, length: any): string  { return length > 1 ? `${length} users were ${type}.` : `user was ${type}.`; },
     objectNotUpdated(type: any, error: any): string  { return `${type} is locked for edition. ${error}`; },
-    objectEdited(type: any, name: any): string  { return `${name} ${type} edited.`; }, //
+    objectEdited(type: any, name: any): string  { return `${name} ${type} edited.`; },
+    objectNotEdited(type: any, error: any): string  { return `${type} not edited. ${error}`; },
     objectDuplicated(type: any, name: any): string  { return `The ${type} ${name} was successfully  duplicated.`; },
     objectNotDuplicated(type: any, error: any): string  { return `The ${type} was not duplicated. ${error}`; },
     objectAlreadyExists(type: any, value: any): string  { return `The ${type} ${value} already exists on this application.`; },
@@ -27,9 +28,11 @@ export const NOTIFICATIONS = {
     formatInvalid(format: string): string { return `Please upload a valid .${format} file.`; },
     cannotGoToNextStep: 'Cannot go to next step.',
     copied: 'Copied!',
-    recordDoesNotMatch: 'Selected records do not match with any fields from this form.',
+    recordDoesNotMatch: 'Selected record(s) do not match with some fields from this form.',
     recordUploadSuccess: 'Records upload successful.',
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
+    emailTooLong(error: any): string { return `Failed to open your email client with selected records in the body. Either your browser or your email client does not support such long mailto command. ${error}`; },
+    emailClientNotResponding(error: any): string { return `Failed to open your email client even without body. ${error}`; },
     dataRecovered: 'The data has been recovered',
     profileSaved: 'Preferences saved.',
     appEdited: 'This application has been updated by someone else.',

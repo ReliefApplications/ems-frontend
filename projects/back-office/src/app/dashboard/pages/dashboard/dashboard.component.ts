@@ -57,12 +57,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
+      this.apollo.query<GetDashboardByIdQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id
         }
-      }).valueChanges.subscribe((res) => {
+      }).subscribe((res) => {
         if (res.data.dashboard) {
           this.dashboard = res.data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
@@ -76,12 +76,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.loading = res.loading;
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
-          this.router.navigate(['/dashboards']);
+          this.router.navigate(['/applications']);
         }
       },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-          this.router.navigate(['/dashboards']);
+          this.router.navigate(['/applications']);
         }
       );
     });
@@ -104,10 +104,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.autoSaveChanges();
   }
 
-  /*  Edit the settings or display of a widget.
+ /**
+  * Edits the settings or display of a widget.
+  * @param e widget to save.
   */
   onEditTile(e: any): void {
-    const options = e.options;
+    // make sure that we save the default layout.
+    const index = this.tiles.findIndex((v: any) => v.id === e.id);
+    const options = this.tiles[index]?.settings?.defaultLayout ?
+      {
+        ...e.options,
+        defaultLayout: this.tiles[index].settings.defaultLayout
+      } : e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
@@ -162,6 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.tiles = res.data?.editDashboard.structure;
+      this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
       this.loading = false;
     }, error => this.loading = false);
   }
@@ -209,9 +218,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           name: dashboardName
         }
       }).subscribe(res => {
-        this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
         if (res.data?.editStep) {
+          this.dashboard = { ...this.dashboard, name: res.data?.editStep.name };
           this.workflowService.updateStepName(res.data.editStep);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors ? res.errors[0].message : ''));
         }
       });
     } else {

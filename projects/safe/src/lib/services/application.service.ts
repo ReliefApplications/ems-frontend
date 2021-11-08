@@ -6,7 +6,6 @@ import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
-import { PullJob } from '../models/pullJob.model';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse,
@@ -179,11 +178,13 @@ export class SafeApplicationService {
       }
     }).subscribe((res) => {
       if (res.data?.toggleApplicationLock) {
-        const newApplication = { ...application,
-          locked: res.data?.toggleApplicationLock.locked,
-          lockedByUser: res.data?.toggleApplicationLock.lockedByUser
-        };
-        this._application.next(newApplication);
+        if (!res.data.toggleApplicationLock.lockedByUser) {
+          const newApplication = { ...application,
+            locked: res.data?.toggleApplicationLock.locked,
+            lockedByUser: res.data?.toggleApplicationLock.lockedByUser
+          };
+          this._application.next(newApplication);
+        }
       }
     });
   }
@@ -259,6 +260,8 @@ export class SafeApplicationService {
             this._application.next(newApplication);
             this.router.navigate([`./applications/${app.id}`]);
           }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
       });
     }
@@ -277,6 +280,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+        this._application.next({ ...application, ...{ pages: res.data?.editApplication.pages }});
       });
     }
   }
@@ -716,16 +720,4 @@ export class SafeApplicationService {
       });
     }
   }
-
-  /* Update application with latest pullJobs
-  */
-  updatePullJobs(pullJobs: PullJob[]): void {
-    const application = this._application.getValue();
-    if (application) {
-      const newApplication = {...application, pullJobs};
-      this._application.next(newApplication);
-    }
-  }
-
-
 }

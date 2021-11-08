@@ -55,7 +55,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       width: 1200,
       height: 800
     }).then((dataURI: string) => {
-      saveAs(dataURI, this.settings.name ? `${this.settings.name}.png` : DEFAULT_FILE_NAME);
+      saveAs(dataURI, this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME);
     });
   }
 

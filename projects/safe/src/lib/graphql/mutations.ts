@@ -10,6 +10,7 @@ import { Channel } from '../models/channel.model';
 import { Subscription } from '../models/subscription.model';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import { Step } from '../models/step.model';
+import {Dashboard} from '../models/dashboard.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -366,6 +367,9 @@ mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID],
       createdAt
       type
       content
+      canDelete
+      canSee
+      canUpdate
     }
     settings
     permissions {
@@ -634,4 +638,43 @@ mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
 export interface ToggleApplicationLockMutationResponse {
   loading: boolean;
   toggleApplicationLock: Application;
+}
+
+// === EDIT DASHBOARD ===
+export const EDIT_DASHBOARD = gql`
+mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+  editDashboard(id: $id, structure: $structure, name: $name) {
+    id
+    name
+    structure
+    modifiedAt
+    permissions {
+      canSee {
+        id
+        title
+      }
+      canUpdate {
+        id
+        title
+      }
+      canDelete {
+        id
+        title
+      }
+    }
+    canSee
+    canUpdate
+    page {
+      id
+      name
+      application {
+        id
+      }
+    }
+  }
+}`;
+
+export interface EditDashboardMutationResponse {
+  loading: boolean;
+  editDashboard: Dashboard;
 }

@@ -4,6 +4,9 @@
         <mat-form-field>
             <mat-label>Name</mat-label>
             <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+            <mat-error *ngIf="name?.errors">
+              Only letters, hypens, or underscores are accepted
+            </mat-error>
         </mat-form-field>
     </form>
 </div>

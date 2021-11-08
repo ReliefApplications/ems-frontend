@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FilterService } from '@progress/kendo-angular-grid';
-import { contains, equals, notContains, notEquals } from '../../../../utils/array-filter';
 
 @Component({
   selector: 'safe-array-filter-menu',
@@ -13,6 +12,8 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices1: any[] = [];
+  public choices2: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
@@ -43,33 +44,35 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   public operators = [
     {
       text: 'Is equal to',
-      value: equals
+      value: 'eq'
     },
     {
       text: 'Is not equal to',
-      value: notEquals
+      value: 'neq'
     },
     {
       text: 'Contains',
-      value: contains
+      value: 'contains'
     },
     {
       text: 'Does not contain',
-      value: notContains
+      value: 'doesnotcontain'
     },
-    // {
-    //   text: 'Is empty',
-    //   value: empty
-    // },
-    // {
-    //   text: 'Is not empty',
-    //   value: notEmpty
-    // }
+    {
+      text: 'Is empty',
+      value: 'isempty'
+    },
+    {
+      text: 'Is not empty',
+      value: 'isnotempty'
+    }
   ];
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.choices1 = this.data.slice();
+    this.choices2 = this.data.slice();
     this.form = this.fb.group({
       logic: this.filter.logic,
       filters: this.fb.array([
@@ -88,5 +91,13 @@ export class SafeArrayFilterMenuComponent implements OnInit {
     this.form.valueChanges.subscribe(value => {
       this.filterService?.filter(value);
     });
+  }
+
+  public handleFilter(value: string, index: number): void {
+    if (index === 1) {
+      this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    } else {
+      this.choices2 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    }
   }
 }

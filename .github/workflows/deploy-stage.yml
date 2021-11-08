@@ -1,6 +1,7 @@
-name: Front-end CD
+name: Front-end STAGE CD
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'stage'
@@ -9,6 +10,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    environment: OORT_DEV
     strategy:
       matrix:
         node-version: [15.x]
@@ -25,9 +27,9 @@ jobs:
     - name: Build Shared Library
       run: npm run build -- --prod safe
     - name: Build RA Back-office
-      run: npm run build:ci:ra
+      run: npm run build -- --configuration=oort-dev --project=back-office
     - name: Build RA Front-office
-      run: npm run build:ci:ra -- --project=front-office
+      run: npm run build -- --configuration=oort-dev --project=front-office
     - name: Archive build RA Back-office
       if: success()
       uses: actions/upload-artifact@v2
@@ -44,6 +46,7 @@ jobs:
   deploy_stage_back_office:
     name: Deploy STAGE Back-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_DEV
     needs: build
     steps:
     - name: Checkout
@@ -56,15 +59,18 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-back-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
 
   deploy_stage_front_office:
     name: Deploy STAGE Front-office 🚀
     runs-on: ubuntu-latest
+    environment: OORT_DEV
     needs: build
     steps:
     - name: Checkout
@@ -77,8 +83,10 @@ jobs:
     - name: Setup SSH Keys and known_hosts
       uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_SAFE_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       run: ./CI/deploy-front-office.sh
       env:
-        SSH_PASS: ${{ secrets.SSH_SAFE_PASS }}
+        SSH_PASS: ${{ secrets.SSH_PASS }}
+        CONNECTION: ${{ secrets.CONNECTION }}
+        REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}

@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -73,6 +72,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         convert: [hasActions ? tileSettings.actions.convert : true],
         update: [hasActions ? tileSettings.actions.update : true],
         inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
+        addRecord: [hasActions ? tileSettings.actions.addRecord : false],
       }),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
@@ -158,7 +158,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-      passDataToNextStep: [value && value.passDataToNextStep ? value.passDataToNextStep : false],
+      prefillForm: [value && value.prefillForm ? value.prefillForm : false],
+      prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,
+        value && value.prefillForm ? Validators.required : null],
+      closeWorkflow: [value && value.closeWorkflow ? value.closeWorkflow : false],
+      confirmationText: [value && value.confirmationText ? value.confirmationText : '',
+        value && value.closeWorkflow ? Validators.required : null],
       autoSave: [value && value.autoSave ? value.autoSave : false],
       modifySelectedRows: [value ? value.modifySelectedRows : false],
       modifications: this.formBuilder.array(value && value.modifications && value.modifications.length
@@ -184,9 +189,11 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.sendMail ? Validators.required : null],
       subject: [value && value.subject ? value.subject : '',
         value && value.sendMail ? Validators.required : null],
-      bodyFields: this.formBuilder.array(value && value.bodyFields ? value.bodyFields : [],
+      export: [value && value.export ? value.export : false],
+      bodyFields: this.formBuilder.array((value && value.bodyFields) ?
+        value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
         value && value.sendMail ? Validators.required : null),
-      // attachment: [value && value.attachment ? value.attachment : false]
+      bodyText: [value && value.bodyText ? value.bodyText : '']
     });
     return buttonForm;
   }

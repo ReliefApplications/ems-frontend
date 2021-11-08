@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14-alpha.5](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.4...v0.1.14-alpha.5) (2021-10-25)
+
+
+### Features
+
+* add list of properties that can be edited in children forms without impacting core form [#11116](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11116) ([99a6876](https://github.com/ReliefApplications/emrs-safe-frontend/commits/99a68769b9573432f245adbe9219a8abd6f2a211))
+* navigation buttons of forms at the bottom of modals [#11515](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11515) ([1f0550d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/1f0550dd0afecbe5ac3e08aea465e678d9319c25))
+* pull job at the main backoffice level [#10628](https://github.com/ReliefApplications/emrs-safe-frontend/issues/10628) ([c985b2f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/c985b2f0323afe3bdc45aa384acf060b6b09e61c))
+* users export [#11391](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11391) ([10e23f4](https://github.com/ReliefApplications/emrs-safe-frontend/commits/10e23f496ba68cbccb9d773f3e90a9b08c4b685a))
+
+
+### Bug Fixes
+
+* add can update and can delete rules to linked records in grid [#11039](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11039) ([28e474c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/28e474cc8822fae5ea3691e8ddbec7e60e7529b3))
+* husky prepare commit msg hook ([9eced25](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9eced2583ae28881ba26a9ea5618a4c3192f3f98))
+
+### [0.1.14-alpha.4](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.3...v0.1.14-alpha.4) (2021-10-19)
+
+
+### Features
+
+* add an last try catch for maito ([cdeb38f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/cdeb38f6929b244ab19c51c819683e88693e43f4))
+* Add new permission canCreateApplications ([279433e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/279433e931792679a11d8c4c06416adc989318f1))
+* on mailto fail, do an other one without body ([bc4c916](https://github.com/ReliefApplications/emrs-safe-frontend/commits/bc4c916012c16b92885c94edfefbbd6784600899))
+* pagination for notifications ([a13296c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a13296cf27dc9590b479af28a36f99723604d91e))
+* Save status of showFilter button in layout ([e972bc1](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e972bc1bb13cf3dd5d595ed6bcddb21ea3c00010))
+
+
+### Bug Fixes
+
+* assets for content selection missing ([81175fe](https://github.com/ReliefApplications/emrs-safe-frontend/commits/81175fea0cd18b5ba9bee69a44fa9b92d896ee13))
+* canEdit Form page/step title with app rights ([130c837](https://github.com/ReliefApplications/emrs-safe-frontend/commits/130c8377840491ec7e160b5e4dbc9a3e2bd9025b))
+* default layout save would erase the selection of new settings for grid ([5005aaa](https://github.com/ReliefApplications/emrs-safe-frontend/commits/5005aaa0f14921c1829bcd8b38507dbe8a888a3d))
+* display and choices for selectable in grids ([2c0d58b](https://github.com/ReliefApplications/emrs-safe-frontend/commits/2c0d58bee0bba9e1b4f0212a2368be1ca539e2f6))
+* getDashboardById requests sent several times ([c7c5774](https://github.com/ReliefApplications/emrs-safe-frontend/commits/c7c57749410bc7651319a0adcd0ba2196b8d4b24))
+* Hide lock edition button if user has'nt rights ([e1b99d7](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e1b99d7dc90b386f3b6e7e3a6ea90687c5a5fa10))
+* Hide save layout button for non admin ([c33ed0e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/c33ed0edcf1ee27ab1f699ac29b5e9bee356dad4))
+* linting ([18bf4ef](https://github.com/ReliefApplications/emrs-safe-frontend/commits/18bf4ef5af1340de169f4103f07e179fbacf4c13))
+* prevent buttons display when permissions not granted ([b84f3d5](https://github.com/ReliefApplications/emrs-safe-frontend/commits/b84f3d52914136c3d46b8cd0d66a4292abf875d8))
+* Redirect to /applications instead of /dashboard ([e580940](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e5809409bbdc30e63030880d7dc95e4d837c02d1))
+* Reordering of pages ([bc17b6f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/bc17b6fbea350837be064057a268fd7627ce7191))
+* search div only appears if question is editable ([335114d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/335114db1667675006818f2ee948387161ac5cd0))
+* Use dedicated query for owner question ([5fe76e5](https://github.com/ReliefApplications/emrs-safe-frontend/commits/5fe76e5415850fa1978889118c82c531ad0674f3))
+
+### [0.1.14-alpha.3](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.2...v0.1.14-alpha.3) (2021-10-04)
+
+
+### Bug Fixes
+
+* permissions not working if two permissions can be linked to the same one ([9460e81](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9460e816ad2b72f7cabe114f0e3805da31177658))
+
 ### [0.1.14-alpha.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14...v0.1.14-alpha.2) (2021-09-29)
 
 ### [0.1.14-alpha.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.0...v0.1.14-alpha.1) (2021-09-22)
