@@ -123,10 +123,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
-                  // use a shallow copy to edit the read-only object
-                  let dataCopy = JSON.parse(JSON.stringify(x));
-                  dataCopy = res.data?.editUser?.roles?.filter(role => !role.application);
-                  x = dataCopy;
+                  x = { ...x, roles: res.data?.editUser?.roles?.filter(role => !role.application)};
                 }
                 return x;
               });
