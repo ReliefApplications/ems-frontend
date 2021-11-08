@@ -32,7 +32,7 @@ export default {
 
 const Template: Story<SafeDonutChartComponent> = args => ({
     props: {
-        ...args 
+        ...args
     }
 });
 
