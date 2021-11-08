@@ -18,14 +18,15 @@ import { SafeAuthService } from '../services/auth.service';
 /*  Execute all init methods of custom SurveyJS.
 */
 export function initCustomWidgets(
-    Survey: any,
-    domService: DomService,
-    dialog: MatDialog,
-    apollo: Apollo,
-    formBuilder: FormBuilder,
-    authService: SafeAuthService,
-    environment: any
-  ): void {
+  Survey: any,
+  domService: DomService,
+  dialog: MatDialog,
+  apollo: Apollo,
+  formBuilder: FormBuilder,
+  authService: SafeAuthService,
+  environment: any
+): void {
+  Survey.settings.commentPrefix = '_comment';
   widgets.select2tagbox(Survey);
   initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
