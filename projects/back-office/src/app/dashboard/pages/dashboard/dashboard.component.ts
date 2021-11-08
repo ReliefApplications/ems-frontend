@@ -104,12 +104,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.autoSaveChanges();
   }
 
-  /*  Edit the settings or display of a widget.
+ /**
+  * Edits the settings or display of a widget.
+  * @param e widget to save.
   */
   onEditTile(e: any): void {
-    const oId = this.tiles.findIndex((v: any) => v.id === e.id);
-    const options = this.tiles[oId]?.settings?.defaultLayout ?
-      {...e.options, defaultLayout: this.tiles[oId].settings.defaultLayout} : e.options;
+    // make sure that we save the default layout.
+    const index = this.tiles.findIndex((v: any) => v.id === e.id);
+    const options = this.tiles[index]?.settings?.defaultLayout ?
+      {
+        ...e.options,
+        defaultLayout: this.tiles[index].settings.defaultLayout
+      } : e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
