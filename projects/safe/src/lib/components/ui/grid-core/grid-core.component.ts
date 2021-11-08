@@ -1,5 +1,5 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
-  Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+  Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
