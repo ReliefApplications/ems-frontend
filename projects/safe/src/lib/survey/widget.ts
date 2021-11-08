@@ -8,7 +8,6 @@ import { ChoicesRestful } from 'survey-angular';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
-import { SafeButtonModule } from '../components/ui/button/button.module';
 import { EmbeddedViewRef } from '@angular/core';
 
 function addZero(i: any): string {
@@ -251,6 +250,10 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             window.open(URLtester.href, '_blank', 'noopener,noreferrer');
           }
         });
+      }
+      if (question.hasComment) {
+        console.log(question);
+        console.log(el);
       }
     }
   };
