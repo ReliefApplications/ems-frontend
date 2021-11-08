@@ -119,8 +119,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // const options = e.options;
     console.log('this.tiles[e.id].settings.layout');
     console.log(e.id);
-    console.log(this.tiles[e.id]?.settings?.defaultLayout);
-    const options = this.tiles[e.id]?.settings?.defaultLayout ? this.tiles[e.id]?.settings?.defaultLayout : e.options;
+    const oId = this.tiles.findIndex((v: any) => v.id === e.id);
+    console.log(this.tiles[oId]?.settings?.defaultLayout);
+    const options = this.tiles[oId]?.settings?.defaultLayout ?
+      {...e.options, defaultLayout: this.tiles[oId].settings.defaultLayout} : e.options;
+    // const options = e.options;
+    console.log('options');
+    console.log(options);
+    console.log('e.options');
+    console.log(e.options);
     // const options = {...e.options, defaultLayout: this.tiles[e.id].settings.defaultLayout};
     if (options) {
       switch (e.type) {

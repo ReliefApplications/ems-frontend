@@ -68,15 +68,17 @@ export class SafeDashboardService {
     console.log('dashboardStructure');
     console.log(dashboardStructure);
     console.log(id);
+    const oId = dashboardStructure.findIndex((v: any) => v.id === id);
+    console.log(oId);
     const widgetTemp = {
-      ...dashboardStructure[id],
+      ...dashboardStructure[oId],
       settings: {
-        ...dashboardStructure[id].settings,
+        ...dashboardStructure[oId].settings,
         defaultLayout: JSON.stringify(defaultLayout)
       }
     };
     const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
-    updatedDashboardStructure[id] = widgetTemp;
+    updatedDashboardStructure[oId] = widgetTemp;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
