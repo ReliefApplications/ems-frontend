@@ -6,13 +6,15 @@ import { ApiConfiguration, Application, Channel, Form, PullJob, status } from '@
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS,
-  GetFormByIdQueryResponse, GET_FORM_BY_ID,
+  GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID,
   GetFormsQueryResponse, GET_FORM_NAMES, GetRoutingKeysQueryResponse, GET_ROUTING_KEYS
 } from 'projects/back-office/src/app/graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
 const ITEMS_PER_PAGE = 10;
+
+const DEFAULT_FIELDS = ['createdBy'];
 
 @Component({
   selector: 'app-pull-job-modal',
@@ -190,13 +192,14 @@ export class PullJobModalComponent implements OnInit {
       this.fieldsSubscription.unsubscribe();
     }
     this.fieldsSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_FORM_BY_ID,
+      query: GET_SHORT_FORM_BY_ID,
       variables: {
         id
       }
     }).valueChanges.subscribe(resForm => {
       if (resForm.data.form) {
         this.fields = resForm.data.form.fields || [];
+        this.fields = this.fields.concat(DEFAULT_FIELDS.map(x => ({ name: x })));
       }
     });
   }
