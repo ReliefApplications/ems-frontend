@@ -65,6 +65,9 @@ export class SafeDashboardService {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const defaultLayout = { ...layout, timestamp: + new Date() };
+    console.log('dashboardStructure');
+    console.log(dashboardStructure);
+    console.log(id);
     const widgetTemp = {
       ...dashboardStructure[id],
       settings: {
