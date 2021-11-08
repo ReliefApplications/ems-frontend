@@ -1,14 +1,25 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
-import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID, GetFormByIdQueryResponse, GET_FORM_STRUCTURE } from '../../graphql/queries';
+import {
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+  GetFormByIdQueryResponse,
+  GET_FORM_STRUCTURE,
+  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS
+} from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
+import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
+import { NOTIFICATIONS } from '../../const/notifications';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 interface DialogData {
@@ -53,7 +64,8 @@ export class SafeRecordModalComponent implements OnInit {
     private apollo: Apollo,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private snackBar: SafeSnackBarService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -193,10 +205,60 @@ export class SafeRecordModalComponent implements OnInit {
     this.pages.next(pages);
   }
 
- /**
-  * Closes the modal without sending any data.
-  */
+  /**
+   * Closes the modal without sending any data.
+   */
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  private confirmRevertDialog(record: any, version: any): void {
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          this.dialogRef.close();
+        });
+      }
+    });
+  }
+
+  /**
+   * Opens the history of the record in a modal.
+   */
+  public onShowHistory(): void {
+    this.apollo.query<GetRecordDetailsQueryResponse>({
+      query: GET_RECORD_DETAILS,
+      variables: {
+        id: this.record.id
+      }
+    }).subscribe(res => {
+      this.dialog.open(RecordHistoryModalComponent, {
+        data: {
+          record: res.data.record,
+          revert: (item: any, dialog: any) => {
+            this.confirmRevertDialog(res.data.record, item);
+          }
+        },
+        panelClass: 'no-padding-dialog',
+        autoFocus: false
+      });
+    });
   }
 }

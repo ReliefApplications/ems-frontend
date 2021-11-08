@@ -1,11 +1,5 @@
-<div *ngIf="!record && isFromCacheData" class='clear-button'>
-  <safe-button icon="restart_alt" category="secondary" variant="primary" (click)="onClear()">
-    Clear cache
-  </safe-button>
-</div>
-
-<span *ngIf="modifiedAt && !isFromCacheData" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
-<span *ngIf="isFromCacheData" class="record-date">From cache: {{ storageDate | date:'dd/MM/yy, h:mm a'}}</span>
+<safe-record-summary [record]="record" [cacheDate]="storageDate" (clear)="onClear()"
+  (showHistory)="onShowHistory()"></safe-record-summary>
 <div class="survey-float" *ngIf="surveyActive">
   <kendo-dropdownlist *ngIf="!!survey && survey.getUsedLocales().length > 1" id="langSelect" [data]="dropdownLocales"
     [value]="surveyLanguage.nativeName.split(',')[0]" (selectionChange)="setLanguage($event)">
@@ -16,10 +10,10 @@
 </div>
 <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
   <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name">
-      <ng-template mat-tab-label>
-          {{ page.title ? page.title : page.name }}
-          <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
-      </ng-template>
+    <ng-template mat-tab-label>
+      {{ page.title ? page.title : page.name }}
+      <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
+    </ng-template>
   </mat-tab>
 </mat-tab-group>
 <div [id]="containerId"></div>
