@@ -32,7 +32,6 @@ import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
   ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
@@ -187,7 +186,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private http: HttpClient,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
@@ -201,7 +199,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     private apiProxyService: SafeApiProxyService,
     private emailService: SafeEmailService
   ) {
-    this.allData = this.allData.bind(this);
+    this.fetchExportData = this.fetchExportData.bind(this);
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -1314,15 +1312,23 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.defaultLayoutChanged.emit(this.layout);
   }
 
-  async allData(): Promise<ExcelExportData> {
-    const items: any = await this.getAllDataFromGrid();
+  /**
+   * Exports data event for export.
+   * @returns Excel Export data.
+   */
+  async fetchExportData(): Promise<ExcelExportData> {
+    const items: any = await this.fetchAllRecords();
     const result: ExcelExportData = {
       data: items
     };
     return result;
   }
 
-  async getAllDataFromGrid(): Promise<void> {
+  /**
+   * Gets all records from grid parameters.
+   * @returns List of all records.
+   */
+  private async fetchAllRecords(): Promise<void> {
     let items: any = [];
     const filters = [this.filter];
     const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
@@ -1357,28 +1363,4 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
-
-  /**
-   * Removes operator set with a method, that cannot be cached.
-   * @param filter filter to clean.
-   * @returns cleaned filter.
-   */
-  // private lintFilter(filter: any): any {
-  //   if (filter.filters) {
-  //     const filters = filter.filters.map((x: any) => this.lintFilter(x)).filter((x: any) => x);
-  //     if (filters.length > 0) {
-  //       return { ...filter, filters };
-  //     } else {
-  //       return;
-  //     }
-  //   } else {
-  //     if (filter.field) {
-  //       if (filter.operator) {
-  //         return filter;
-  //       } else {
-  //         return;
-  //       }
-  //     }
-  //   }
-  // }
 }
