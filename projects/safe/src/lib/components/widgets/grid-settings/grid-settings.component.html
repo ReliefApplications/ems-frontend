@@ -8,7 +8,7 @@
       </mat-form-field>
     </div>
     <div class="form-group">
-      <safe-query-builder [form]="$any(tileForm.controls.query)" [templates]="templates"></safe-query-builder>
+      <safe-query-builder [form]="$any(tileForm.controls.query)" [templates]="templates" [settings]="tile.settings"></safe-query-builder>
     </div>
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">Enabled actions</div>
@@ -25,7 +25,10 @@
         Update records
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="inlineEdition">
-        Allow inline edition
+        Inline edition
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="addRecord">
+        Add new records
       </mat-slide-toggle>
     </div>
     <div class="form-group">

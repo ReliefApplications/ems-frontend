@@ -362,6 +362,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.no-padding-dialog {
+  mat-dialog-container {
+    padding: unset;
+  }
+}
+
 .status-dialog {
   mat-dialog-container {
     box-shadow: none;

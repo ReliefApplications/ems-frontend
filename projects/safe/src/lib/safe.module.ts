@@ -27,45 +27,39 @@ import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
-import { SafeNewAppButtonModule } from './components/ui/new-app-button/safe-new-app-button.module';
-import {SafeRecentAppButtonModule} from './components/ui/recent-app-button/safe-recent-app-button.module';
-import { MatIconModule } from '@angular/material/icon';
+import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
 
 @NgModule({
-    exports: [
-        SafeLayoutModule,
-        SafeAccessModule,
-        SafeFormModule,
-        SafeFormBuilderModule,
-        SafeChartModule,
-        SafeChartSettingsModule,
-        SafeEditorModule,
-        SafeEditorSettingsModule,
-        SafeGridModule,
-        SafeGridSettingsModule,
-        SafeMapModule,
-        SafeMapSettingsModule,
-        SafeSchedulerModule,
-        SafeSchedulerSettingsModule,
-        SafeWidgetModule,
-        SafeWidgetGridModule,
-        SafeConfirmModalModule,
-        SafeStatusModalModule,
-        SafeUsersModule,
-        SafeRolesModule,
-        SafePreviousButtonModule,
-        SafeConvertModalModule,
-        SafeRecordHistoryModule,
-        SafeRecordModalModule,
-        SafeProfileModule,
-        SafeSearchResourceGridModalModule,
-        SafeButtonModule,
-        SafeContentChoiceModule,
-        SafeNewAppButtonModule,
-        SafeRecentAppButtonModule
-    ],
-    imports: [
-        MatIconModule
-    ],
-})
+  exports: [
+    SafeLayoutModule,
+    SafeAccessModule,
+    SafeFormModule,
+    SafeFormBuilderModule,
+    SafeChartModule,
+    SafeChartSettingsModule,
+    SafeEditorModule,
+    SafeEditorSettingsModule,
+    SafeGridModule,
+    SafeGridSettingsModule,
+    SafeMapModule,
+    SafeMapSettingsModule,
+    SafeSchedulerModule,
+    SafeSchedulerSettingsModule,
+    SafeWidgetModule,
+    SafeWidgetGridModule,
+    SafeConfirmModalModule,
+    SafeStatusModalModule,
+    SafeUsersModule,
+    SafeRolesModule,
+    SafePreviousButtonModule,
+    SafeConvertModalModule,
+    SafeRecordHistoryModule,
+    SafeRecordModalModule,
+    SafeProfileModule,
+    SafeSearchResourceGridModalModule,
+    SafeButtonModule,
+    SafeContentChoiceModule,
+    SafeWorkflowStepperModule
+  ],
+  declarations: []})
 export class SafeModule { }
