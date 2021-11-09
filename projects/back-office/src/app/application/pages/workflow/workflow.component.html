@@ -1,48 +1,28 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && workflow">
+    <!-- HEADER -->
     <div *ngIf="!formActive" class="workflow-name-container">
         <h1 class="workflow-name" (click)="toggleFormActive()">{{workflow.name}}</h1>
         <safe-access [access]="workflow.permissions" [application]="workflow.page?.application?.id"
-                     (save)="saveAccess($event)" *ngIf="workflow.page?.canUpdate || false"></safe-access>
+            (save)="saveAccess($event)" *ngIf="workflow.page?.canUpdate || false"></safe-access>
     </div>
+    <!-- NAME EDITION -->
     <ng-container *ngIf="formActive">
         <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()" class="workflow-name-container">
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="workflowName" type="string">
             </mat-form-field>
-            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!workflowNameForm.valid">
+            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary"
+                [disabled]="!workflowNameForm.valid">
             </safe-button>
             <safe-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
             </safe-button>
         </form>
     </ng-container>
-    <div class="step-list-container">
-        <mat-divider></mat-divider>
-        <div cdkDropList cdkDropListOrientation="horizontal" class="step-list" (cdkDropListDropped)="dropStep($event)">
-            <div class="step-box" *ngFor="let step of steps" cdkDragLockAxis="x" (click)="onStepClick(step)"
-                (cdkDragStarted)="onDragStart()" [style.background-color]="step === selectedStep ? step.type === 'form' ? '#EBF3F9' : '#F9EFE2' : ''"
-                [style.border-bottom]="step === selectedStep ? step.type === 'form' ? '4px solid #92ADFF' : '4px solid #F6C481' : ''"
-                [class.selected]="step === selectedStep" cdkDrag>
-                <safe-button *ngIf="workflow.canUpdate && step === selectedStep" [isIcon]="true" icon="delete_outline" class="delete-button" (click)="deleteStep(step, $event)">
-                </safe-button>
-                <safe-button *ngIf="workflow.canUpdate && step === selectedStep" [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
-                </safe-button>
-                <div class="step-img" matRipple>
-                    <img *ngIf="step === selectedStep" src="{{assetsPath}}/{{step.type}}-icon.svg">
-                    <img *ngIf="step != selectedStep" src="{{assetsPath}}/{{step.type}}-icon-grey.svg">
-                </div>
-                <div class="step-placeholder" *cdkDragPlaceholder></div>
-                <div class="step-name">{{step.name}}</div>
-            </div>
-            <div *ngIf="workflow.canUpdate" class="step-box" (click)="addStep()">
-                <div class="step-img" matRipple>
-                    <mat-icon>add</mat-icon>
-                </div>
-                <div class="step-name">New step</div>
-            </div>
-        </div>
-        <mat-divider></mat-divider>
-    </div>
+    <!-- STEPS -->
+    <safe-workflow-stepper [steps]="steps" [canUpdate]="canUpdate" (add)="onAddStep()" (openStep)="onOpenStep($event)"
+        (delete)="onDeleteStep($event)" (reorderSteps)="onReorderSteps($event)" [activeStep]="activeStep">
+    </safe-workflow-stepper>
 </ng-container>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

@@ -13,7 +13,8 @@ export class SafeWorkflowStepperComponent implements OnInit {
   @Input() steps: Step[] = [];
   @Input() canUpdate = false;
   @Output() add = new EventEmitter();
-  @Output() openStep = new EventEmitter<Step>();
+  @Output() delete = new EventEmitter<number>();
+  @Output() openStep = new EventEmitter<number>();
   @Output() reorderSteps = new EventEmitter<Step[]>();
   public dragging = false;
 
@@ -32,7 +33,7 @@ export class SafeWorkflowStepperComponent implements OnInit {
       return;
     }
     if (this.activeStep !== index) {
-      this.openStep.emit(this.steps[index]);
+      this.openStep.emit(index);
     }
   }
 

@@ -17,17 +17,9 @@
   }
 }
 
-.add-step-button {
-  align-self: center;
-}
-
-.step-list-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 4px;
-  border: 1px solid #E5E5E5;
-  border-width: 1px 0px;
+safe-workflow-stepper {
+  margin: 16px -24px;
+  display: block;
 }
 
 .step-list {
@@ -41,71 +33,6 @@
   margin: 10px 0px;
 }
 
-.step-box {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  background: #FFFFFF;
-  border: 1px solid rgba(47, 56, 62, 0.2);
-  box-sizing: border-box;
-  border-radius: 10px;
-  margin: 0px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  img {
-    height: 46px;
-    width: 46px;
-  }
-
-  .step-handle {
-    color: transparent;
-    cursor: move;
-    position: absolute;
-    right: 0;
-  }
-
-  .delete-button {
-    color: transparent;
-    position: absolute;
-    left: 0;
-  }
-
-  &:hover {
-    .step-handle {
-      color: #3B8CC4;
-      ::ng-deep button {
-        background: rgba(59, 140, 196, 0.2);
-      }
-    }
-    .delete-button {
-      color: #F14343;
-      ::ng-deep button {
-        background: rgba(241, 67, 67, 0.19);
-      }
-    }
-  }
-
-  .step-img {
-    max-height: 70%;
-  }
-
-  .step-name {
-    max-height: 30%;
-    text-align: center;
-  }
-}
-
-.step-placeholder {
-  min-width: 90px;
-  background:  rgba(0, 0, 0, 0.04);
-  border: dotted 3px #999;
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
 .cdk-drag-preview {
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.2);
@@ -113,16 +40,6 @@
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.step-box:last-child {
-  background:#EBF3F9;
-  border: none;
-  color: #3B8CC4;
-  font-weight: 500;
-  .mat-icon {
-    font-size: 24px;
-  }
 }
 
 .step-list.cdk-drop-list-dragging .step-box:not(.cdk-drag-placeholder) {
