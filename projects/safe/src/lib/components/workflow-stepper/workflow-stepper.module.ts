@@ -6,6 +6,8 @@ import { SafeStepComponent } from './components/step/step.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { SafeButtonModule } from '../ui/button/public-api';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     CommonModule,
     MatDividerModule,
     MatRippleModule,
-    SafeIconModule
+    MatTooltipModule,
+    SafeIconModule,
+    SafeButtonModule
   ],
   exports: [
     SafeWorkflowStepperComponent,

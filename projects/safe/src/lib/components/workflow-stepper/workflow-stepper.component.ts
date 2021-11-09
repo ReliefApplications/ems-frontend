@@ -8,6 +8,7 @@ import { Step } from '../../models/step.model';
 })
 export class SafeWorkflowStepperComponent implements OnInit {
 
+  @Input() activeStep = 0;
   @Input() steps: Step[] = [];
   @Input() canUpdate = false;
   @Output() add = new EventEmitter();
