@@ -9,5 +9,5 @@
     </div>
     <img [src]="type?.img">
     <span>{{ step.name | titlecase }}</span>
-    <div *ngIf="active" [style.background]="type.focusColor" class="safe-step-active"></div>
+    <div *ngIf="active" [style.background]="type?.focusColor" class="safe-step-active"></div>
 </div>
