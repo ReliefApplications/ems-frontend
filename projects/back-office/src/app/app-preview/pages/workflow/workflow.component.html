@@ -1,8 +1,7 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && workflow">
-    <mat-horizontal-stepper (selectionChange)="stepChange($event)" #stepper>
-        <mat-step *ngFor="let step of this.steps; let i = index" completed="false" label="{{step.name}}">
-            <router-outlet *ngIf="i === selectedIndex" (activate)="onActivate($event, stepper)"></router-outlet>
-        </mat-step>
-    </mat-horizontal-stepper>
+    <!-- STEPS -->
+    <safe-workflow-stepper [steps]="steps" (openStep)="onOpenStep($event)" [activeStep]="activeStep">
+    </safe-workflow-stepper>
 </ng-container>
+<router-outlet (activate)="onActivate($event)"></router-outlet>

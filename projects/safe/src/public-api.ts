@@ -66,6 +66,7 @@ export * from './lib/components/status-modal/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
 export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
+export * from './lib/components/workflow-stepper/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';
