@@ -5,7 +5,9 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GET_FORM_BY_ID
+  GET_FORM_BY_ID,
+  GetRecordDetailsQueryResponse,
+  GET_RECORD_DETAILS
 } from '../../graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -31,6 +33,7 @@ interface DialogData {
   recordId?: string | [];
   locale?: string;
   prefillRecords?: Record[];
+  recordToPrefill?: string;
   askForConfirm?: boolean;
 }
 
@@ -114,9 +117,20 @@ export class SafeFormModalComponent implements OnInit {
         variables: {
           id: this.data.template
         }
-      }).toPromise().then(res => {
+      }).toPromise().then(async res => {
         this.form = res.data.form;
+        if (this.data.recordToPrefill) {
+          const promisedRecords: Promise<any>[] = [];
+          promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
+            query: GET_RECORD_DETAILS,
+            variables: {
+              id: this.data.recordToPrefill
+            }
+          }).toPromise());
+          const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
 
+          this.data.prefillRecords = records;
+        }
         if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
           this.storedMergedData = this.mergedData(this.data.prefillRecords);
           const resourcesField = this.form.fields?.find(x => x.type === 'resources');
