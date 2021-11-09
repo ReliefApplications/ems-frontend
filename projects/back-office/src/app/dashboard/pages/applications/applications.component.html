@@ -48,7 +48,8 @@
   </div>
 
   <h2>Recent applications</h2>
-  <safe-applications-summary [canCreate]="canAdd" (add)="onAdd()" [applications]="newApplications"></safe-applications-summary>
+  <safe-applications-summary [canCreate]="canAdd" (add)="onAdd()" [applications]="newApplications"
+    (openApplication)="onOpenApplication($event)" (delete)="onDelete($event)" (preview)="onPreview($event)" (clone)="onClone($event)"></safe-applications-summary>
 
   <ng-container *ngIf="applications.data.length > 0">
     <h2>All applications</h2>
@@ -113,7 +114,7 @@
             </button>
             <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
               *ngIf="element.canUpdate"></safe-access>
-            <button mat-menu-item (click)="onDuplicate(element)" *ngIf="element.canDelete">
+            <button mat-menu-item (click)="onClone(element)" *ngIf="element.canDelete">
               <mat-icon>file_copy</mat-icon>
               Duplicate
             </button>

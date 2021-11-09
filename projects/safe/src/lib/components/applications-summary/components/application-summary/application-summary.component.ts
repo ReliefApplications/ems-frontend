@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Application } from '../../../../models/application.model';
 
 const STATUSES: IStatus[] = [
@@ -37,6 +37,10 @@ interface IStatus {
 export class SafeApplicationSummaryComponent implements OnInit {
 
   @Input() application!: Application;
+  @Output() preview = new EventEmitter();
+  @Output() delete = new EventEmitter();
+  @Output() clone = new EventEmitter();
+  @Output() editAccess = new EventEmitter();
 
   get status(): IStatus | undefined {
     return STATUSES.find(x => x.name === this.application.status);

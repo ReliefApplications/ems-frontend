@@ -141,8 +141,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e: any): void {
-    e.stopPropagation();
+  onDelete(element: any, e?: any): void {
+    if (e) {
+      e.stopPropagation();
+    }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
@@ -162,6 +164,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
           this.applications.data = this.applications.data.filter(x => {
+            return x.id !== res.data?.deleteApplication.id;
+          });
+          this.newApplications = this.newApplications.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
         });
@@ -225,7 +230,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Open a dialog to give a name for the duplicated application
   */
-  onDuplicate(application: Application): void {
+  onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {
         id: application.id,
@@ -262,5 +267,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchText = '';
     this.statusFilter = '';
     this.clearDateFilter();
+  }
+
+  /**
+   * Navigates to application.
+   * @param id application id.
+   */
+  onOpenApplication(id: string): void {
+    this.router.navigate(['/applications', id]);
   }
 }

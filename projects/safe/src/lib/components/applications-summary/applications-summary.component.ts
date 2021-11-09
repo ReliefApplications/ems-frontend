@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { Application } from '../../models/application.model';
 
 @Component({
@@ -11,7 +11,11 @@ export class SafeApplicationsSummaryComponent implements OnInit {
   @Input() canCreate = false;
   @Input() applications: Application[] = [];
   @Output() add = new EventEmitter();
-  @Output() openApplication = new EventEmitter<Application>();
+  @Output() openApplication = new EventEmitter<string>();
+  @Output() preview = new EventEmitter<Application>();
+  @Output() delete = new EventEmitter<Application>();
+  @Output() clone = new EventEmitter<Application>();
+  @Output() editAccess = new EventEmitter<Application>();
 
   constructor() { }
 

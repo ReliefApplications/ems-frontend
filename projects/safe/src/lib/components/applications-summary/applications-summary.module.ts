@@ -5,6 +5,10 @@ import { SafeAddApplicationComponent } from './components/add-application/add-ap
 import { SafeApplicationSummaryComponent } from './components/application-summary/application-summary.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +19,11 @@ import { SafeIconModule } from '../ui/icon/icon.module';
   imports: [
     CommonModule,
     MatRippleModule,
-    SafeIconModule
+    SafeIconModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDividerModule,
+    SafeButtonModule
   ],
   exports: [
     SafeApplicationsSummaryComponent,

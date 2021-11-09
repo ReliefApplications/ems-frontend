@@ -10,15 +10,24 @@
     border-radius: 8px;
     box-sizing: border-box;
     border: 1px solid #2F383E33;
-    padding: 12px;
 
     .header, .bottom {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         font-size: 14px;
         color: #2F383EB2;
         width: 100%;
+        box-sizing: border-box;
+    }
+
+    .header {
+        padding: 8px;
+    }
+
+    .bottom {
+        padding: 8px 0 8px 8px;
     }
 
     .users {
