@@ -1,1 +1,6 @@
-<p>workflow-stepper works!</p>
+<mat-divider></mat-divider>
+<div>
+    <safe-step *ngFor="let step of steps" (click)="openStep.emit(step)"></safe-step>
+    <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
+</div>
+<mat-divider></mat-divider>
