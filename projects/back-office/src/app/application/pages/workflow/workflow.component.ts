@@ -222,7 +222,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Navigate to the next step if possible and change selected step / index consequently
+ /**
+  * Navigates to the next step if possible and change selected step / index consequently
   */
   private goToNextStep(): void {
     if (this.activeStep + 1 < this.steps.length) {

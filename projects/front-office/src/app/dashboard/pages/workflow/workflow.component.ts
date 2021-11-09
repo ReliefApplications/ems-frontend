@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS, SafeWorkflowService } from '@safe/builder';
-import { environment } from 'projects/front-office/src/environments/environment';
+import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 
 @Component({
   selector: 'app-workflow',
@@ -12,108 +13,99 @@ import { Subscription } from 'rxjs';
 export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id = '';
   public loading = true;
-  public steps: Step[] = [];
-  public assetsPath = '';
 
+  // === WORKFLOW ===
+  public id = '';
   public workflow?: Workflow;
-  private workflowSubscription?: Subscription;
+  public steps: Step[] = [];
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
-  // === SELECTED STEP ===
-  public selectedStep?: Step;
-  public selectedStepIndex = 0;
+  // === ACTIVE STEP ===
+  public activeStep = 0;
 
   constructor(
-    private workflowService: SafeWorkflowService,
+    private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router
-  ) {
-    this.assetsPath = `${environment.frontOfficeUri}assets`;
-
-  }
+  ) { }
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
-      this.workflowService.loadWorkflow(this.id);
-    });
-
-    this.workflowSubscription = this.workflowService.workflow$.subscribe((workflow: Workflow | null) => {
-      if (workflow) {
-        const previousId = this.workflow?.id || '';
-        this.workflow = workflow;
-        this.steps = workflow.steps || [];
-        this.loading = false;
-        if (this.workflow.id !== previousId) {
-          if (this.steps.length > 0) {
-            this.stepChange(this.steps[0]);
-          } else {
-            this.steps = [];
-            this.router.navigate([`./`], { relativeTo: this.route });
-          }
+      this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
+        query: GET_WORKFLOW_BY_ID,
+        variables: {
+          id: this.id
         }
-      } else {
-        this.steps = [];
-      }
+      }).valueChanges.subscribe((res) => {
+        if (res.data.workflow) {
+          this.workflow = res.data.workflow;
+          this.steps = res.data.workflow.steps || [];
+          this.loading = res.loading;
+          if (this.steps.length > 0) {
+            this.onOpenStep(0);
+          }
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('workflow'), { error: true });
+        }
+      },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        }
+      );
     });
   }
 
-  /* Display selected step
-  */
-  stepChange(step: Step): void {
-    if (this.selectedStep !== step) {
-      this.selectedStep = step;
-      this.selectedStepIndex = this.steps.map(x => x.id).indexOf(this.selectedStep.id);
-      this.navigateToSelectedStep();
-    }
-  }
-
-  /* Trigger step changes from grid widgets
+  /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
-          if (this.selectedStepIndex + 1 < this.steps.length) {
-            this.selectedStepIndex += 1;
-            this.selectedStep = this.steps[this.selectedStepIndex];
-            this.navigateToSelectedStep();
-          } else if (this.selectedStepIndex + 1 === this.steps.length) {
-            this.selectedStepIndex = 0;
-            this.selectedStep = this.steps[this.selectedStepIndex];
-            this.navigateToSelectedStep();
-            this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
-          }
+          this.goToNextStep();
         }
       });
     }
   }
 
-  /* Navigate to selected step
-  */
-  private navigateToSelectedStep(): void {
-    if (this.selectedStep) {
-      if (this.selectedStep.type === ContentType.form) {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
+  /**
+   * Navigates to the next step if possible and change selected step / index consequently
+   */
+  private goToNextStep(): void {
+    if (this.activeStep + 1 < this.steps.length) {
+      this.onOpenStep(this.activeStep + 1);
+    } else if (this.activeStep + 1 === this.steps.length) {
+      this.onOpenStep(0);
+      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+    } else {
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+    }
+  }
+
+  /**
+   * On Open Step.
+   */
+  public onOpenStep(index: number): void {
+    if (index >= 0 && index < this.steps.length) {
+      const step = this.steps[index];
+      this.activeStep = index;
+      if (step.type === ContentType.form) {
+        this.router.navigate(['./' + step.type + '/' + step.id], { relativeTo: this.route });
       } else {
-        this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
+        this.router.navigate(['./' + step.type + '/' + step.content], { relativeTo: this.route });
       }
+    } else {
+      this.router.navigate(['./'], { relativeTo: this.route });
     }
   }
 
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
-    }
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
     }
   }
 }

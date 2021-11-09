@@ -22,17 +22,6 @@ safe-workflow-stepper {
   display: block;
 }
 
-.step-list {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-  margin: 10px 0px;
-}
-
 .cdk-drag-preview {
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.2);
