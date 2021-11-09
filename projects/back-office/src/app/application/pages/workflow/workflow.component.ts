@@ -57,6 +57,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
 
     this.workflowSubscription = this.workflowService.workflow$.subscribe((workflow: Workflow | null) => {
+      console.log(workflow);
       if (workflow) {
         this.steps = workflow.steps || [];
         this.workflowNameForm = new FormGroup({
@@ -75,6 +76,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
           if (!firstStep) {
             this.router.navigate([`./`], { relativeTo: this.route });
+          }
+        } else {
+          if (workflow.steps && (workflow.steps.length > (this.workflow.steps?.length || []))) {
+            this.activeStep = workflow.steps.length - 1;
           }
         }
         this.workflow = workflow;
