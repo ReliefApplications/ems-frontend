@@ -24,4 +24,12 @@ export class SafeStepComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Emits delete event.
+   * @param e click event.
+   */
+  public onDelete(e: any): void {
+    e.stopPropagation();
+    this.delete.emit();
+  }
 }

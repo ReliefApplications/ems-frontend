@@ -135,6 +135,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   onDeleteStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {
       const step = this.steps[index];
+      const currentStep = this.activeStep >= 0 ? this.steps[this.activeStep] : null;
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: 'Delete step',
@@ -157,9 +158,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               this.steps = this.steps.filter(x => {
                 return x.id !== res.data?.deleteStep.id;
               });
-              this.activeStep = 0;
-              this.router.navigate(['./'], { relativeTo: this.route });
-              this.workflowService.loadWorkflow(this.id);
+              if (index === this.activeStep) {
+                this.onOpenStep(-1);
+              } else {
+                if (currentStep) {
+                  this.activeStep = this.steps.findIndex(x => x.id === currentStep.id);
+                }
+              }
             }
           });
         }
@@ -237,6 +242,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         this.router.navigate(['./' + step.type + '/' + step.content], { relativeTo: this.route });
       }
+    } else {
+      this.router.navigate(['./'], { relativeTo: this.route });
     }
   }
 

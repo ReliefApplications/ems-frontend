@@ -1,7 +1,7 @@
 <div matRipple class="safe-step" [style.background-color]="active ? type?.color : ''" [ngClass]="{'active': active }">
     <div class="step-actions">
         <safe-button *ngIf="canUpdate" [isIcon]="true" icon="delete_outline" category="primary" variant="danger" matTooltip="Delete step"
-            (click)="delete.emit()">
+            (click)="onDelete($event)">
         </safe-button>
         <safe-button *ngIf="canUpdate" [isIcon]="true" icon="content_copy" category="primary" variant="primary"
             [disabled]="true">
