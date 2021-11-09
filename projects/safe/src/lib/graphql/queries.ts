@@ -7,6 +7,7 @@ import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
+import {Dashboard} from '../models/dashboard.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -234,6 +235,9 @@ query GetRecordById($id: ID!) {
     createdBy {
       name
     }
+    modifiedBy {
+      name
+    }
     form {
       id
       structure
@@ -324,8 +328,8 @@ export interface GetRolesQueryResponse {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
+query GetUsers($applications: [ID]) {
+  users(applications: $applications) {
     id
     username
     name
@@ -340,9 +344,11 @@ export interface GetUsersQueryResponse {
 
 // === GET NOTIFICATIONS ===
 export const GET_NOTIFICATIONS = gql`
-query GetNotifications {
-  notifications {
-    id
+query GetNotifications($first: Int, $afterCursor: ID) {
+  notifications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
     action
     content
     createdAt
@@ -357,12 +363,30 @@ query GetNotifications {
       id
       name
     }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetNotificationsQueryResponse {
   loading: boolean;
-  notifications: Notification[];
+  notifications: {
+    edges: {
+      node: Notification;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET APPLICATION BY ID ===
@@ -454,26 +478,6 @@ export const GET_APPLICATION_BY_ID = gql`
           name
         }
       }
-      pullJobs {
-        id
-        name
-        status
-        apiConfiguration {
-          id
-          name
-        }
-        schedule
-        convertTo {
-          id
-          name
-        }
-        mapping
-        uniqueIdentifiers
-        channel {
-          id
-          title
-        }
-      }
       canSee
       canUpdate
       canDelete
@@ -490,6 +494,53 @@ export const GET_APPLICATION_BY_ID = gql`
 export interface GetApplicationByIdQueryResponse {
   loading: boolean;
   application: Application;
+}
+
+// === GET APPLICATIONS ===
+export const GET_APPLICATIONS = gql`
+query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+    edges {
+      node {
+        id
+        name
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}`;
+export interface GetApplicationsQueryResponse {
+  loading: boolean;
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
+}
+
+// === GET ROLES FROM APPLICATION ===
+export const GET_ROLES_FROM_APPLICATIONS = gql`
+query GetRolesFromApplications($applications: [ID]!) {
+  rolesFromApplications(applications: $applications) {
+    id
+    title(appendApplicationName: true)
+  }
+}`;
+
+export interface GetRolesFromApplicationsQueryResponse {
+  loading: boolean;
+  rolesFromApplications: Role[];
 }
 
 // === GET PERMISSIONS ===
@@ -511,6 +562,44 @@ export interface GetPermissionsQueryResponse {
 export const GET_QUERY_TYPES = gql`
 query GetQueryTypes {
   __schema {
+    types {
+      name
+      kind
+      fields {
+        name
+        args {
+          name
+          type {
+            name
+            kind
+            inputFields {
+              name
+              type {
+                name
+                kind
+              }
+            }
+          }
+        }
+        type {
+          name
+          kind
+          ofType {
+            name
+            fields {
+              name
+              type {
+                name
+                kind
+                ofType {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     queryType {
       name
       kind
@@ -612,6 +701,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       name
       createdAt
       modifiedAt
+      canUpdate
       permissions {
         canSee {
           id
@@ -632,6 +722,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         type
         content
         createdAt
+        canDelete
       }
       page {
         id
@@ -662,4 +753,57 @@ export const GET_WORKFLOW_BY_ID = gql`
 export interface GetWorkflowByIdQueryResponse {
   loading: boolean;
   workflow: Workflow;
+}
+
+// === GET DASHBOARD BY ID ===
+export const GET_DASHBOARD_BY_ID = gql`
+  query GetDashboardById($id: ID!){
+    dashboard(id: $id){
+      id
+      name
+      createdAt
+      structure
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      page {
+        id
+        application {
+          id
+        }
+        canUpdate
+      }
+      step {
+        id
+        workflow {
+          id
+          page {
+            id
+            application {
+              id
+            }
+          }
+        }
+        canUpdate
+      }
+    }
+  }
+`;
+
+export interface GetDashboardByIdQueryResponse {
+  loading: boolean;
+  dashboard: Dashboard;
 }

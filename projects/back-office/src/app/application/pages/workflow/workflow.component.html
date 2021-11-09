@@ -24,9 +24,9 @@
                 (cdkDragStarted)="onDragStart()" [style.background-color]="step === selectedStep ? step.type === 'form' ? '#EBF3F9' : '#F9EFE2' : ''"
                 [style.border-bottom]="step === selectedStep ? step.type === 'form' ? '4px solid #92ADFF' : '4px solid #F6C481' : ''"
                 [class.selected]="step === selectedStep" cdkDrag>
-                <safe-button *ngIf="step === selectedStep" [isIcon]="true" icon="delete_outline" class="delete-button" (click)="deleteStep(step, $event)">
+                <safe-button *ngIf="workflow.canUpdate && step === selectedStep" [isIcon]="true" icon="delete_outline" class="delete-button" (click)="deleteStep(step, $event)">
                 </safe-button>
-                <safe-button *ngIf="step === selectedStep" [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
+                <safe-button *ngIf="workflow.canUpdate && step === selectedStep" [isIcon]="true" icon="drag_indicator" class="step-handle" cdkDragHandle>
                 </safe-button>
                 <div class="step-img" matRipple>
                     <img *ngIf="step === selectedStep" src="{{assetsPath}}/{{step.type}}-icon.svg">
@@ -35,7 +35,7 @@
                 <div class="step-placeholder" *cdkDragPlaceholder></div>
                 <div class="step-name">{{step.name}}</div>
             </div>
-            <div class="step-box" (click)="addStep()">
+            <div *ngIf="workflow.canUpdate" class="step-box" (click)="addStep()">
                 <div class="step-img" matRipple>
                     <mat-icon>add</mat-icon>
                 </div>

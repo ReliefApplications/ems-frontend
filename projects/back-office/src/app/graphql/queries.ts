@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import {
   Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration
+  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration, PullJob
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -343,6 +343,9 @@ query GetRecordById($id: ID!) {
     createdBy {
       name
     }
+    modifiedBy {
+      name
+    }
     data
     form {
       id
@@ -411,7 +414,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID){
+query GetApplications($first: Int, $afterCursor: ID) {
   applications(first: $first, afterCursor: $afterCursor) {
     edges {
       node {
@@ -451,7 +454,6 @@ query GetApplications($first: Int, $afterCursor: ID){
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
-  // applications: Application[];
   applications: {
     edges: {
       node: Application;
@@ -675,21 +677,41 @@ export interface GetStepByIdQueryResponse {
 
 // === GET ROUTING KEYS ===
 export const GET_ROUTING_KEYS = gql`
-query GetRoutingKeys {
-  applications {
-    id
-    name
-    channels {
-      id
-      title
-      routingKey
+query GetRoutingKeys($first: Int, $afterCursor: ID) {
+  applications(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        channels {
+          id
+          title
+          routingKey
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }`;
 
 export interface GetRoutingKeysQueryResponse {
   loading: boolean;
-  applications: Application[];
+  applications: {
+    edges: {
+      node: Application;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET POSITION ATTRIBUTES FORM CATEGORY ===
@@ -743,38 +765,58 @@ export interface GetRecordDetailsQueryResponse {
 
 // === GET API CONFIGURATIONS ===
 export const GET_API_CONFIGURATIONS = gql`
-query GetApiConfigurations {
-  apiConfigurations {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
+query GetApiConfigurations($first: Int, $afterCursor: ID) {
+  apiConfigurations(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
         id
-        title
+        name
+        status
+        authType
+        endpoint
+        pingUrl
+        settings
+        permissions {
+          canSee {
+            id
+            title
+          }
+          canUpdate {
+            id
+            title
+          }
+          canDelete {
+            id
+            title
+          }
+        }
+        canSee
+        canUpdate
+        canDelete
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      cursor
     }
-    canSee
-    canUpdate
-    canDelete
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }`;
 
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
-  apiConfigurations: ApiConfiguration[];
+  apiConfigurations: {
+    edges: {
+      node: ApiConfiguration;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }
 
 // === GET API CONFIGURATION ===
@@ -811,4 +853,55 @@ query GetApiConfiguration($id: ID!) {
 export interface GetApiConfigurationQueryResponse {
   loading: boolean;
   apiConfiguration: ApiConfiguration;
+}
+
+// === GET PULL JOBS ===
+export const GET_PULL_JOBS = gql`
+query GetPullJobs($first: Int, $afterCursor: ID) {
+  pullJobs(first: $first, afterCursor: $afterCursor) {
+    edges {
+      node {
+        id
+        name
+        status
+        apiConfiguration {
+          id
+          name
+        }
+        schedule
+        convertTo {
+          id
+          name
+        }
+        mapping
+        uniqueIdentifiers
+        channel {
+          id
+          title
+        }
+      }
+      cursor
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}`;
+
+
+export interface GetPullJobsQueryResponse {
+  loading: boolean;
+  pullJobs: {
+    edges: {
+      node: PullJob;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    },
+    totalCount: number;
+  };
 }

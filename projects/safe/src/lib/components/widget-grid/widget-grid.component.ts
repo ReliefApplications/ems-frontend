@@ -1,6 +1,8 @@
 import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
+import { SafeGridService } from '../../services/grid.service';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 @Component({
@@ -9,6 +11,8 @@ import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.c
   styleUrls: ['./widget-grid.component.scss']
 })
 export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
+
+  public widgetTypes: IWidgetType[] = WIDGET_TYPES as IWidgetType[];
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
@@ -22,7 +26,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  @Output() addNewWidget: EventEmitter<any> = new EventEmitter();
+  @Output() add: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -38,7 +42,10 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    private gridService: SafeGridService
+  ) { }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -114,5 +121,9 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
       this.goToNextStep.emit(event);
       dialogRef.close();
     });
+  }
+
+  onAdd(e: any): void {
+    this.add.emit(e);
   }
 }

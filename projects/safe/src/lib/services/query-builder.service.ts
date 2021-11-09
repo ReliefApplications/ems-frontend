@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
+import { ApolloQueryResult } from '@apollo/client';
 
 const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
@@ -14,12 +15,16 @@ const USER_FIELDS = ['id', 'name', 'username'];
 })
 export class QueryBuilderService {
 
-  // tslint:disable-next-line: variable-name
-  public __availableQueries = new BehaviorSubject<any[]>([]);
+  private availableQueries = new BehaviorSubject<any[]>([]);
+  private availableTypes = new BehaviorSubject<any[]>([]);
   private userFields = [];
 
-  get availableQueries(): Observable<any> {
-    return this.__availableQueries.asObservable();
+  get availableQueries$(): Observable<any> {
+    return this.availableQueries.asObservable();
+  }
+
+  get availableTypes$(): Observable<any> {
+    return this.availableTypes.asObservable();
   }
 
   constructor(
@@ -29,15 +34,17 @@ export class QueryBuilderService {
     this.apollo.watchQuery<GetQueryTypes>({
       query: GET_QUERY_TYPES,
     }).valueChanges.subscribe((res) => {
-      this.__availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
-      this.userFields = res.data.__schema.queryType.fields.find((x: any) => x.type.ofType ? x.type.ofType.name === 'User' : false)
-        .type.ofType.fields.filter((x: any) => USER_FIELDS.includes(x.name));
+      this.availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
+      this.availableTypes.next(res.data.__schema.types);
+      this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name));
     });
   }
 
   public getFields(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const query = this.availableQueries.getValue().find(x => x.name === queryName);
+    const typeName = query?.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
@@ -45,39 +52,17 @@ export class QueryBuilderService {
     if (typeName === 'User') {
       return this.userFields;
     }
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? query.type.ofType.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
   public getListFields(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? query.type.ofType.fields.filter((x: any) => x.type.kind === 'LIST')
+    const query = this.availableQueries.getValue().find(x => x.name === queryName);
+    const typeName = query?.type?.name.replace('Connection', '') || '';
+    const type = this.availableTypes.getValue().find(x => x.name === typeName);
+    return type ? type.fields.filter((x: any) => x.type.kind === 'LIST')
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
-  }
-
-  public getFilter(queryName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.name === queryName);
-    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
-      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
-  }
-
-  public getFilterFromType(typeName: string): any[] {
-    const query = this.__availableQueries.getValue().find(x => x.type.ofType.name === typeName);
-    return query ? [...query.args.find((x: any) => x.name === 'filter').type.inputFields]
-      .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
-  }
-
-  private buildFilter(filter: any): any {
-    return filter ? Object.keys(filter).reduce((o, key) => {
-      if (filter[key] || filter[key] === false) {
-        if (filter[key] === 'today()') {
-          return { ...o, [key]: new Date().toISOString().substring(0, 10) };
-        }
-        return { ...o, [key]: filter[key] };
-      }
-      return { ...o };
-    }, {}) : null;
   }
 
   private buildFields(fields: any[]): any {
@@ -87,12 +72,12 @@ export class QueryBuilderService {
           return x.name + '\n';
         }
         case 'LIST': {
-          return `${x.name}(
+          return `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
             sortOrder: "${x.sort.order}",
-            filter: ${this.objToString(this.buildFilter(x.filter))}
+            filter: ${this.filterToString(x.filter)}
           ) {
-            ${this.buildFields(x.fields)}
+            ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}
           }` + '\n';
         }
         case 'OBJECT': {
@@ -105,6 +90,14 @@ export class QueryBuilderService {
         }
       }
     }));
+  }
+
+  private filterToString(filter: any): string {
+    if (filter.filters) {
+      return `{ logic: "${filter.logic}", filters: [${filter.filters.map((x: any) => this.filterToString(x))}]}`;
+    } else {
+      return `{ field: "${filter.field}", operator: "${filter.operator}", value: "${filter.value}" }`;
+    }
   }
 
   private buildMetaFields(fields: any[]): any {
@@ -137,28 +130,35 @@ export class QueryBuilderService {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
-        query GetCustomQuery {
+        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
           ${builtQuery.name}(
-          sortField: ${builtQuery.sort && builtQuery.sort.field ? `"${builtQuery.sort.field}"` : null},
-          sortOrder: "${builtQuery.sort?.order || '' }",
-          filter: ${this.objToString(this.buildFilter(builtQuery.filter))}
+          first: $first,
+          skip: $skip,
+          sortField: $sortField,
+          sortOrder: $sortOrder,
+          filter: $filter
           ) {
-          ${fields}
+            edges {
+              node {
+                ${fields}
+              }
+            }
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
         }
         }
       `;
-      return this.apollo.watchQuery<any>({
-        query,
-        variables: {}
-      });
+      return query;
     } else {
       return null;
     }
   }
 
-  public buildMetaQuery(settings: any, subQuery = false): any {
+  public buildMetaQuery(settings: any, subQuery = false): Observable<ApolloQueryResult<any>> | null {
     const builtQuery = subQuery ? settings : settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
@@ -178,23 +178,23 @@ export class QueryBuilderService {
     }
   }
 
-  public getQueryNameFromResourceName(resourceName: string): any {
-    const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
-    return this.__availableQueries.getValue().find(x => x.type.ofType.name.toLowerCase() === nameTrimmed)?.name || '';
+  public getMetaFields(queryName: string, fields: any): any {
+    const metaFields = this.buildMetaFields(fields);
+    const query = gql`
+      query GetCustomMetaQuery {
+        _${queryName}Meta {
+          ${metaFields}
+        }
+      }
+    `;
+    this.apollo.query<any>({
+      query
+    });
   }
 
-  private objToString(obj: any): string {
-    let str = '{';
-    for (const p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        str += p + ': ' + (
-            typeof obj[p] === 'string' ? `"${obj[p]}"` :
-            Array.isArray(obj[p]) ? this.arrayToString(obj[p]) :
-            obj[p]
-          ) + ',\n';
-      }
-    }
-    return str + '}';
+  public getQueryNameFromResourceName(resourceName: string): any {
+    const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
+    return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
   }
 
   private arrayToString(array: any): string {
@@ -219,21 +219,28 @@ export class QueryBuilderService {
     });
   }
 
-  public createFilterGroup(filter: any, availableFilter: any): FormGroup {
-    if (availableFilter) {
-      const group = availableFilter.reduce((o: any, key: any) => {
-        return ({
-          ...o,
-          [key.name]: [(filter && (filter[key.name] || filter[key.name] === false) ? filter[key.name] : null)]
+  public createFilterGroup(filter: any, fields: any): FormGroup {
+    if (filter) {
+      if (filter.filters) {
+        const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
+        return this.formBuilder.group({
+          logic: filter.logic || 'and',
+          filters: this.formBuilder.array(filters)
         });
-      }, {});
-      return this.formBuilder.group(group);
-    } else {
-      const group = Object.keys(filter).reduce((o, key) => {
-        return ({ ...o, [key]: [(filter && (filter[key] || filter[key] === false) ? filter[key] : null)] });
-      }, {});
-      return this.formBuilder.group(group);
+      } else {
+        if (filter.field) {
+          return this.formBuilder.group({
+            field: filter.field,
+            operator: filter.operator || 'eq',
+            value: Array.isArray(filter.value) ? [filter.value] : filter.value
+          });
+        }
+      }
     }
+    return this.formBuilder.group({
+      logic: 'and',
+      filters: this.formBuilder.array([])
+    });
   }
 
   public addNewField(field: any, newField?: boolean): FormGroup {
@@ -273,7 +280,7 @@ export class QueryBuilderService {
   }
 
   public sourceQuery(queryName: string): any {
-    const queries = this.__availableQueries.getValue().map(x => x.name);
+    const queries = this.availableQueries.getValue().map(x => x.name);
     if (queries.includes(queryName)) {
       const query = gql`
         query GetCustomSourceQuery {

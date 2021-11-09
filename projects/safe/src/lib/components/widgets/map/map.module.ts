@@ -4,9 +4,9 @@ import { SafeMapComponent } from './map.component';
 
 @NgModule({
   declarations: [SafeMapComponent],
-  imports: [
-    CommonModule
-  ],
+    imports: [
+      CommonModule
+    ],
   exports: [SafeMapComponent]
 })
 export class SafeMapModule { }

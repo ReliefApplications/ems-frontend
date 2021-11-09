@@ -16,11 +16,21 @@ export default {
         }),
         withKnobs
     ],
-    title: 'UI/Donut Chart',
+    title: 'UI/Charts/Donut Chart',
+    argTypes: {
+        series: {
+            control: { type: 'object' }
+        },
+        legend: {
+            control: { type: 'object' }
+        },
+        title: {
+            control: { type: 'object' }
+        }
+    }
 } as Meta;
 
 const Template: Story<SafeDonutChartComponent> = args => ({
-    template: '<safe-donut-chart></safe-donut-chart>',
     props: {
         ...args
     }

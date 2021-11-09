@@ -2,12 +2,11 @@ import {Apollo, QueryRef} from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { ContentType, CONTENT_TYPES, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
-import { environment } from '../../../../environments/environment';
 import { MatSelect } from '@angular/material/select';
 
 const ITEMS_PER_PAGE = 10;
@@ -20,7 +19,7 @@ const ITEMS_PER_PAGE = 10;
 export class AddPageComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public contentTypes = Object.keys(ContentType);
+  public contentTypes = CONTENT_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -41,9 +40,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
-  // === ASSETS ===
-  public assetsPath = '';
-
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -51,9 +47,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService
-  ) {
-    this.assetsPath = `${environment.backOfficeUri}assets`;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({
@@ -84,6 +78,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
         contentControl.setValue(null);
         contentControl.updateValueAndValidity();
       }
+      this.onNext();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);

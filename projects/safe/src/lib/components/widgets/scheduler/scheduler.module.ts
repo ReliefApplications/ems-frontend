@@ -5,10 +5,10 @@ import { SchedulerModule } from '@progress/kendo-angular-scheduler';
 
 @NgModule({
   declarations: [SafeSchedulerComponent],
-  imports: [
-    CommonModule,
-    SchedulerModule
-  ],
+    imports: [
+      CommonModule,
+      SchedulerModule
+    ],
   exports: [SafeSchedulerComponent]
 })
 export class SafeSchedulerModule { }

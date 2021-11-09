@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
-import { contains } from '../../../../utils/array-filter';
 
 @Component({
   selector: 'safe-array-filter',
@@ -17,6 +16,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
+  public choices: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
 
@@ -32,6 +32,7 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
   }
 
   ngOnInit(): void {
+    this.choices = this.data.slice();
   }
 
   public onChange(value: any): void {
@@ -40,9 +41,13 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
         ? this.removeFilter(this.valueField)
         : this.updateFilter({
           field: this.field,
-          operator: contains,
+          operator: 'contains',
           value,
         })
     );
+  }
+
+  public handleFilter(value: string): void {
+    this.choices = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 }

@@ -34,7 +34,6 @@ export default {
 } as Meta;
 
 const Template: Story<SafeSpinnerComponent> = args => ({
-    template: '<safe-spinner></safe-spinner>',
     props: {
         ...args
     }

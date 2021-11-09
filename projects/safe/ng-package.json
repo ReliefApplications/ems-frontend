@@ -23,7 +23,9 @@
       "@progress/kendo-angular-dateinputs": "@progress/kendo-angular-dateinputs",
       "leaflet": "leaflet",
       "@progress/kendo-angular-scheduler": "@progress/kendo-angular-scheduler",
-      "@progress/kendo-angular-popup": "@progress/kendo-angular-popup"
+      "@progress/kendo-angular-popup": "@progress/kendo-angular-popup",
+      "@progress/kendo-angular-indicators": "@progress/kendo-angular-indicators",
+      "lodash/get": "lodash/get"
     }
   }
 }

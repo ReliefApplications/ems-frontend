@@ -23,3 +23,13 @@
     margin: 8px 0 !important;
   }
 }
+
+::ng-deep .sv_row {
+  div {
+    min-width: 0px !important;
+  }
+}
+
+::ng-deep .sv_main .sv-title-actions {
+  display: block !important;
+}

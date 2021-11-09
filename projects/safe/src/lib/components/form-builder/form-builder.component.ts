@@ -44,7 +44,16 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'descriptionLocation',
   'state',
   'defaultValue',
-  'defaultValueExpression'
+  'defaultValueExpression',
+  'relatedName',
+  'Search resource table',
+  'visible',
+  'readOnly',
+  'isRequired',
+  'placeHolder',
+  'enableIf',
+  'visibleIf',
+  'tooltip'
 ];
 
 const CORE_FIELD_CLASS = 'core-question';
@@ -296,6 +305,18 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
             text: x.text ? x.text : x
           };
         });
+      }
+      if (['resource', 'resources'].includes(element.type)) {
+        if (element.relatedName) {
+          element.relatedName = this.toSnakeCase(element.relatedName);
+          if (!this.isSnakeCase(element.relatedName)) {
+            throw new Error('The related name ' + element.relatedName + ' on page '
+              + page.name + ' is invalid. Please conform to snake_case.');
+          }
+        } else {
+          throw new Error('Missing related name for question ' + element.title + ' on page '
+            + page.name + '. Please provide a valid data value name (snake_case) to save the form.');
+        }
       }
     }
   }

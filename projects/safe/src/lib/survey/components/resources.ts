@@ -116,6 +116,22 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
       });
 
+      Survey.Serializer.addProperty('resources', {
+        name: 'relatedName',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        required: true,
+        description: 'unique name for this resource question',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 4
+      });
+
       // Build set available grid fields button
       Survey
         .JsonObject
@@ -127,7 +143,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           category: 'Custom Questions',
           dependsOn: 'resource',
           visibleIf: (obj: any) => !!obj && !!obj.resource,
-          visibleIndex: 4
+          visibleIndex: 5
         });
 
       const availableFieldsEditor = {
@@ -220,6 +236,21 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         name: 'canAddNew:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+            // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'canSearch:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        default: true,
         visibleIf: (obj: any) => {
           if (!obj || !obj.resource) {
             return false;
@@ -334,8 +365,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             obj.survey.getQuestionByName(obj.selectQuestion) : obj.customQuestion;
           if (questionByName && questionByName.inputType === 'date') {
             choicesCallback(resourceConditions.filter(r => r.value !== 'contains'));
-          } else if (!!questionByName.customQuestion && questionByName.customQuestion.name === 'countries') {
-            choicesCallback(resourceConditions.filter(r => r.value === 'contains'));
           } else {
             choicesCallback(resourceConditions);
           }
@@ -438,10 +467,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             question.survey.onValueChanged.add((survey: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (!!options.value || options.question.customQuestion) {
-                  const valueType = options.question.customQuestion ? options.question.customQuestion.name :
-                    question.survey.getQuestionByName(question.selectQuestion).inputType;
-                  const value = valueType === 'countries' && options.value.length === 0 ? '' : options.value;
-                  setAdvanceFilter(value, question);
+                  setAdvanceFilter(options.value, question);
                   if (question.displayAsGrid) {
                     resourcesFilterValues.next(filters);
                   } else {
@@ -515,26 +541,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         // hide tagbox if grid view is enable
         const element = el.getElementsByClassName('select2 select2-container')[0].parentElement;
         element.style.display = 'none';
-      }
-
-      if (question.canAddNew && question.addTemplate) {
-        document.addEventListener('saveResourceFromEmbed', (e: any) => {
-          const detail = e.detail;
-          if (detail.template === question.addTemplate && question.resource) {
-            getResourceById({id: question.resource}).subscribe((response) => {
-              const serverRes = response.data.resource.records || [];
-              const res = [];
-              for (const item of serverRes) {
-                res.push({
-                  value: item.id,
-                  text: item.data[question.displayField],
-                });
-              }
-              question.contentQuestion.choices = res;
-              question.survey.render();
-            });
-          }
-        });
       }
     }
   };

@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatRippleModule } from '@angular/material/core';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
 
 @NgModule({
   declarations: [AddStepComponent],
@@ -22,7 +22,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatRadioModule,
     AddStepRoutingModule,
     MatRippleModule,
-    SafeButtonModule
+    SafeButtonModule,
+    SafeContentChoiceModule
   ]
 })
 export class AddStepModule { }
