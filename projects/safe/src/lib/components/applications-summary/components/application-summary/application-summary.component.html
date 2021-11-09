@@ -1,0 +1,13 @@
+<div matRipple class="safe-application">
+    <div class="header">
+        <div class="users">
+            <safe-icon icon="person"></safe-icon>
+            <span>{{ application.usersCount }}</span>
+        </div>
+        <div class="status" *ngIf="status" [style.color]="status.focusColor" [style.background]="status.color">{{ status.short }}</div>
+    </div>
+    <div class="title">{{ application.name }}</div>
+    <div class="bottom">
+        <span>Created: {{ application.createdAt | date: 'mediumDate' }}</span>
+    </div>
+</div>

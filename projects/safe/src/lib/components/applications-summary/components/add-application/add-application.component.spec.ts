@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecentAppButtonComponent } from './recent-app-button.component';
+import { SafeAddApplicationComponent } from './add-application.component';
 
-describe('RecentAppButtonComponent', () => {
-  let component: RecentAppButtonComponent;
-  let fixture: ComponentFixture<RecentAppButtonComponent>;
+describe('SafeAddApplicationComponent', () => {
+  let component: SafeAddApplicationComponent;
+  let fixture: ComponentFixture<SafeAddApplicationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecentAppButtonComponent ]
+      declarations: [ SafeAddApplicationComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RecentAppButtonComponent);
+    fixture = TestBed.createComponent(SafeAddApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
