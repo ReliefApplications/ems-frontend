@@ -28,6 +28,7 @@ import { SafeSearchResourceGridModalModule } from './components/search-resource-
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
+import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
 
 @NgModule({
   exports: [
@@ -59,7 +60,8 @@ import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflo
     SafeSearchResourceGridModalModule,
     SafeButtonModule,
     SafeContentChoiceModule,
-    SafeWorkflowStepperModule
+    SafeWorkflowStepperModule,
+    SafeApplicationsSummaryModule
   ],
   declarations: []})
 export class SafeModule { }

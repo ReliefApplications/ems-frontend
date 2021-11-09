@@ -48,15 +48,7 @@
   </div>
 
   <h2>Recent applications</h2>
-  <div class="new-applications-list">
-    <safe-new-app-button *ngIf="canAdd" (click)="onAdd()"></safe-new-app-button>
-    <ng-container *ngFor="let application of newApplications">
-      <safe-recent-app-button [app]="application" (appClickEvent)="launchApp($event)" (previewEvent)="onPreview($event)"
-        (saveAccessEvent)="saveAccess($event.event, $event.app)" (duplicateEvent)="onDuplicate($event)"
-        (deleteEvent)="onDelete($event.app, $event.event)">
-      </safe-recent-app-button>
-    </ng-container>
-  </div>
+  <safe-applications-summary [canCreate]="canAdd" (add)="onAdd()" [applications]="newApplications"></safe-applications-summary>
 
   <ng-container *ngIf="applications.data.length > 0">
     <h2>All applications</h2>

@@ -3,16 +3,6 @@
   text-align: right;
 }
 
-.create-app {
-  border-radius: 10px;
-}
-
-.buttons-app {
-  width: 150px;
-  height: 150px;
-  border-radius: 10px;
-}
-
 .searchbar {
   .filters-toggle {
     margin-left: 12px;
@@ -32,9 +22,7 @@
   }
 }
 
-.new-applications-list {
-  display: flex;
-  flex-direction: row;
+safe-applications-summary {
+  display: block;
   margin-bottom: 56px;
-  overflow-x: auto;
 }
