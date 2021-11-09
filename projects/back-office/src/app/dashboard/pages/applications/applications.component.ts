@@ -30,6 +30,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+  public newApplications: Application[] = [];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -73,6 +74,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
@@ -139,8 +141,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e: any): void {
-    e.stopPropagation();
+  onDelete(element: any, e?: any): void {
+    if (e) {
+      e.stopPropagation();
+    }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
@@ -160,6 +164,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
           this.applications.data = this.applications.data.filter(x => {
+            return x.id !== res.data?.deleteApplication.id;
+          });
+          this.newApplications = this.newApplications.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
         });
@@ -223,7 +230,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Open a dialog to give a name for the duplicated application
   */
-  onDuplicate(application: Application): void {
+  onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {
         id: application.id,
@@ -260,5 +267,13 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchText = '';
     this.statusFilter = '';
     this.clearDateFilter();
+  }
+
+  /**
+   * Navigates to application.
+   * @param id application id.
+   */
+  onOpenApplication(id: string): void {
+    this.router.navigate(['/applications', id]);
   }
 }
