@@ -8,6 +8,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeButtonModule } from '../ui/button/public-api';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
     MatRippleModule,
     MatTooltipModule,
+    DragDropModule,
     SafeIconModule,
     SafeButtonModule
   ],
