@@ -295,10 +295,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @returns list of choices.
    */
   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    const choices = choicesByUrl.path ? [...get(res, choicesByUrl.path)] : [...res];
     return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+      value: (choicesByUrl.value ? get(x, choicesByUrl.value) : x).toString(),
+      text: choicesByUrl.text ? get(x, choicesByUrl.text) : choicesByUrl.value ? get(x, choicesByUrl.value) : x
     })) : [];
   }
 
