@@ -9,8 +9,6 @@ import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
-import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../graphql/queries';
-import { Apollo } from 'apollo-angular';
 
 
 function addZero(i: any): string {
@@ -290,13 +288,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new record';
     if (question.canAddNew && question.addTemplate) {
-      addButton.onclick = async () => {
+      addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
             template: question.addTemplate,
             locale: question.resource.value,
             askForConfirm: false,
-            recordToPrefill: question.value ?? null
+            prefillData: question.survey.data
           },
           autoFocus: false
         });
