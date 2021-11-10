@@ -303,7 +303,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             return true;
           }
         },
-        visibleIndex: 3
+        visibleIndex: 8
       });
       Survey.Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',

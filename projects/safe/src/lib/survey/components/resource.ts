@@ -254,7 +254,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         name: 'placeholder',
         category: 'Custom Questions'
       });
-      Survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resource', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['canAddNew', 'resource'],
@@ -265,7 +265,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             return true;
           }
         },
-        visibleIndex: 3
+        visibleIndex: 8
       });
       Survey.Serializer.addProperty('resource', {
         name: 'selectQuestion:dropdown',
