@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-filter',
@@ -9,6 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class FilterComponent implements OnInit {
 
   public form!: FormGroup;
+  public search = new FormControl('');
   public show = false;
   @Output() filter = new EventEmitter<any>();
 
@@ -16,31 +18,45 @@ export class FilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      search: [''],
+      name: [''],
       startDate: [null],
       endDate: [null],
       status: ['']
     });
-    this.form.valueChanges.subscribe((res) => {
-      const filters: any[] = [];
-      if (res.search) {
-        filters.push({ field: 'name', operator: 'contains', value: res.search });
-      }
-      if (res.status) {
-        filters.push({ field: 'status', operator: 'eq', value: res.status });
-      }
-      if (res.startDate) {
-        filters.push({ field: 'createdAt', operator: 'gte', value: res.startDate });
-      }
-      if (res.endDate) {
-        filters.push({ field: 'createdAt', operator: 'lte', value: res.startDate });
-      }
-      const filter = {
-        logic: 'and',
-        filters
-      };
-      this.filter.emit(filter);
+    this.form.valueChanges.subscribe((value) => {
+      this.emitFilter(value);
     });
+    // this way we can wait for 2s before sending an update
+    this.search.valueChanges.pipe(
+      debounceTime(2000),
+      distinctUntilChanged()
+    ).subscribe((value) => {
+      this.form.controls.name.setValue(value);
+    });
+  }
+
+  /**
+   * Emits the filter value, so the main component can get it.
+   */
+  private emitFilter(value: any): void {
+    const filters: any[] = [];
+    if (value.name) {
+      filters.push({ field: 'name', operator: 'contains', value: value.name });
+    }
+    if (value.status) {
+      filters.push({ field: 'status', operator: 'eq', value: value.status });
+    }
+    if (value.startDate) {
+      filters.push({ field: 'createdAt', operator: 'gte', value: value.startDate });
+    }
+    if (value.endDate) {
+      filters.push({ field: 'createdAt', operator: 'lte', value: value.endDate });
+    }
+    const filter = {
+      logic: 'and',
+      filters
+    };
+    this.filter.emit(filter);
   }
 
   /**
@@ -48,6 +64,7 @@ export class FilterComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
+    this.search.reset();
   }
 
   /**

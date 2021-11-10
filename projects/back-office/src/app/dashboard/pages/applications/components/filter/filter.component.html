@@ -2,7 +2,7 @@
     <div class="top">
         <mat-form-field appearance="outline">
             <mat-icon matPrefix>search</mat-icon>
-            <input id="custom-search" matInput formControlName="search" type="search" placeholder="Search...">
+            <input id="custom-search" matInput [formControl]="search" type="search" placeholder="Search...">
         </mat-form-field>
         <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">{{ show ? 'Hide Filter' : 'Show Filter' }}
         </safe-button>
