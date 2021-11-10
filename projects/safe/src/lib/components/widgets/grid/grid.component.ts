@@ -1101,11 +1101,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       for (const modification of modifications) {
         dateForFilter = this.getDateForFilter(modification.value);
         data[modification.field.name] = dateForFilter;
-        // if (modification.value === 'today()' && modification.field.type.name === 'Date') {
-        //   data[modification.field.name] = new Date();
-        // } else {
-        //   data[modification.field.name] = modification.value;
-        // }
       }
       delete data.id;
       delete data.__typename;
@@ -1131,8 +1126,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     let date: Date;
     if (value === 'today()') {
       date = new Date();
-      // startDate = new Date(date);
-      // endDate = new Date(date);
       // today + number of days
     } else if (REGEX_PLUS.test(value)) {
       const difference = parseInt(value.split('+')[1]);
@@ -1148,7 +1141,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       date = new Date(value);
     }
     return date;
-  };
+  }
 
   /* Download the file.
   */
