@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatStepperModule } from '@angular/material/stepper';
+import { SafeWorkflowStepperModule } from '@safe/builder';
 
 @NgModule({
   declarations: [WorkflowComponent],
@@ -11,7 +11,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     CommonModule,
     WorkflowRoutingModule,
     MatProgressSpinnerModule,
-    MatStepperModule
+    SafeWorkflowStepperModule
   ],
   exports: [WorkflowComponent]
 })
