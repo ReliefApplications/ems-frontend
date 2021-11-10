@@ -1089,8 +1089,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Return a list of promises containing all the mutations in order to modify selected records accordingly to settings.
-      Apply inline edition before applying modifications.
+ /**
+  * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+  * Applies inline edition before applying modifications.
+  * @param modifications list of modifications to apply.
+  * @param rows rows to edit.
+  * @returns Array of Promises to execute.
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
@@ -1098,7 +1102,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        data[modification.field.name] = this.getDateForFilter(modification.value);
+        if (modification.field.type.name === 'Date') {
+          data[modification.field.name] = this.getDateForFilter(modification.value);
+        } else {
+          data[modification.field.name] = modification.value;
+        }
       }
       delete data.id;
       delete data.__typename;
