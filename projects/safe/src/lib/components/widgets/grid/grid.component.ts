@@ -1094,13 +1094,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
-    let dateForFilter: any;
     for (const index of rows) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        dateForFilter = this.getDateForFilter(modification.value);
-        data[modification.field.name] = dateForFilter;
+        data[modification.field.name] = this.getDateForFilter(modification.value);
       }
       delete data.id;
       delete data.__typename;
