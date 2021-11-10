@@ -76,6 +76,10 @@ const GRADIENT_SETTINGS: GradientSettings = {
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
+const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
+
+const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -1090,15 +1094,18 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
+    let dateForFilter: any;
     for (const index of rows) {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
-          data[modification.field.name] = new Date();
-        } else {
-          data[modification.field.name] = modification.value;
-        }
+        dateForFilter = this.getDateForFilter(modification.value);
+        data[modification.field.name] = dateForFilter;
+        // if (modification.value === 'today()' && modification.field.type.name === 'Date') {
+        //   data[modification.field.name] = new Date();
+        // } else {
+        //   data[modification.field.name] = modification.value;
+        // }
       }
       delete data.id;
       delete data.__typename;
@@ -1113,6 +1120,35 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     return promises;
   }
+
+  /**
+   * Gets from input date value the three dates used for filtering.
+   * @param value input date value
+   * @returns calculated day, beginning of day, and ending of day
+   */
+  private getDateForFilter(value: any): Date {
+    // today's date
+    let date: Date;
+    if (value === 'today()') {
+      date = new Date();
+      // startDate = new Date(date);
+      // endDate = new Date(date);
+      // today + number of days
+    } else if (REGEX_PLUS.test(value)) {
+      const difference = parseInt(value.split('+')[1]);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // today - number of days
+    } else if (REGEX_MINUS.test(value)) {
+      const difference = - parseInt(value.split('-')[1]);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // classic date
+    } else {
+      date = new Date(value);
+    }
+    return date;
+  };
 
   /* Download the file.
   */
