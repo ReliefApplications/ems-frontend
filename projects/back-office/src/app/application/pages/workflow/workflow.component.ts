@@ -57,7 +57,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
 
     this.workflowSubscription = this.workflowService.workflow$.subscribe((workflow: Workflow | null) => {
-      console.log(workflow);
       if (workflow) {
         this.steps = workflow.steps || [];
         this.workflowNameForm = new FormGroup({

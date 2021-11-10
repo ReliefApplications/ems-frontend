@@ -21,9 +21,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FilterComponent } from './components/filter/filter.component';
 
 @NgModule({
-  declarations: [ApplicationsComponent, ChoseRoleComponent],
+  declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
     imports: [
       CommonModule,
       ApplicationsRoutingModule,

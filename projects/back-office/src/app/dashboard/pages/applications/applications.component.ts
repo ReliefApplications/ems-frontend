@@ -31,15 +31,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
   public newApplications: Application[] = [];
+  public filter: any;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
-
-  // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
-  public searchText = '';
-  public statusFilter = '';
-  public showFilters = false;
 
   public pageInfo = {
     pageIndex: 0,
@@ -80,7 +75,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create))
@@ -98,7 +92,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applicationsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -117,16 +112,30 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private filterPredicate(): void {
-    this.applications.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
-    };
+  /**
+   * Filters applications and updates table.
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.cachedApplications = [];
+    this.pageInfo.pageIndex = 0;
+    this.applicationsQuery.fetchMore({
+      variables: {
+        first: ITEMS_PER_PAGE,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        return Object.assign({}, prev, {
+          applications: {
+            edges: fetchMoreResult.applications.edges,
+            pageInfo: fetchMoreResult.applications.pageInfo,
+            totalCount: fetchMoreResult.applications.totalCount
+          }
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -243,30 +252,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.applications.data = this.applications.data;
       }
     });
-  }
-
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.applications.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    // ignore that error
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.clearDateFilter();
   }
 
   /**
