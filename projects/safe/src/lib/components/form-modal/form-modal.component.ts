@@ -31,6 +31,7 @@ interface DialogData {
   recordId?: string | [];
   locale?: string;
   prefillRecords?: Record[];
+  prefillData?: any;
   askForConfirm?: boolean;
 }
 
@@ -116,7 +117,9 @@ export class SafeFormModalComponent implements OnInit {
         }
       }).toPromise().then(res => {
         this.form = res.data.form;
-
+        if (this.data.prefillData) {
+          this.storedMergedData = this.data.prefillData;
+        }
         if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
           this.storedMergedData = this.mergedData(this.data.prefillRecords);
           const resourcesField = this.form.fields?.find(x => x.type === 'resources');

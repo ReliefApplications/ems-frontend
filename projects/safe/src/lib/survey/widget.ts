@@ -10,6 +10,7 @@ import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
 
+
 function addZero(i: any): string {
   if (i < 10) {
     i = '0' + i;
@@ -292,7 +293,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           data: {
             template: question.addTemplate,
             locale: question.resource.value,
-            askForConfirm: false
+            askForConfirm: false,
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
           autoFocus: false
         });

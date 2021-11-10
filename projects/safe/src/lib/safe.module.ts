@@ -27,6 +27,8 @@ import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
+import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
+import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
 
 @NgModule({
   exports: [
@@ -57,7 +59,9 @@ import { SafeContentChoiceModule } from './components/content-choice/content-cho
     SafeProfileModule,
     SafeSearchResourceGridModalModule,
     SafeButtonModule,
-    SafeContentChoiceModule
+    SafeContentChoiceModule,
+    SafeWorkflowStepperModule,
+    SafeApplicationsSummaryModule
   ],
   declarations: []})
 export class SafeModule { }
