@@ -14,7 +14,7 @@ export class SafeIconComponent implements OnInit {
 
   @Input() variant: IconVariant | string = IconVariant.DEFAULT;
 
-  @Input() size = 24;
+  @Input() size = "24";
 
   get fontSize(): string {
     return this.size + 'px';
