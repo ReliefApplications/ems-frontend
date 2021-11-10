@@ -252,6 +252,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       }
+      if (question.getType() === 'file') {
+        question.maxSize = 7340032;
+      }
     }
   };
 
