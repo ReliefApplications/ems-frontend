@@ -1128,12 +1128,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       date = new Date();
       // today + number of days
     } else if (REGEX_PLUS.test(value)) {
-      const difference = parseInt(value.split('+')[1]);
+      const difference = parseInt(value.split('+')[1], 10);
       date = new Date();
       date.setDate(date.getDate() + difference);
       // today - number of days
     } else if (REGEX_MINUS.test(value)) {
-      const difference = - parseInt(value.split('-')[1]);
+      const difference = - parseInt(value.split('-')[1], 10);
       date = new Date();
       date.setDate(date.getDate() + difference);
       // classic date
