@@ -28,7 +28,6 @@ export function codesFactory(): () => any {
     { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory}
   ]
 })
-
 export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
