@@ -1102,7 +1102,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        if (modification.field.type.name === 'Date') {
+        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
           data[modification.field.name] = this.getDateForFilter(modification.value);
         } else {
           data[modification.field.name] = modification.value;
