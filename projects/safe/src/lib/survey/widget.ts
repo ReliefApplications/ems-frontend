@@ -294,7 +294,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             template: question.addTemplate,
             locale: question.resource.value,
             askForConfirm: false,
-            prefillData: question.survey.data
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
           autoFocus: false
         });

@@ -115,7 +115,7 @@ export class SafeFormModalComponent implements OnInit {
         variables: {
           id: this.data.template
         }
-      }).toPromise().then(async res => {
+      }).toPromise().then(res => {
         this.form = res.data.form;
         if (this.data.prefillData) {
           this.storedMergedData = this.data.prefillData;

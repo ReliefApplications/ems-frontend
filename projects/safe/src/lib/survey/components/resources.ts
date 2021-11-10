@@ -293,6 +293,19 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'prefillWithCurrentRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['canAddNew', 'resource'],
+        visibleIf: (obj: any) => {
+          if (!obj.resource || !obj.canAddNew) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
@@ -534,6 +547,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         this.resourceFieldsName = [];
         question.canAddNew = false;
         question.addTemplate = null;
+        question.prefillWithCurrentRecord = false;
       }
     },
     onAfterRender(question: any, el: any): void {
