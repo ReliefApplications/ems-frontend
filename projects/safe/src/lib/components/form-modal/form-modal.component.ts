@@ -245,8 +245,7 @@ export class SafeFormModalComponent implements OnInit {
         mutation: ADD_RECORD,
         variables: {
           form: this.data.template,
-          data: survey.data,
-          display: true
+          data: survey.data
         }
       }).subscribe(res => {
         if (res.errors) {
