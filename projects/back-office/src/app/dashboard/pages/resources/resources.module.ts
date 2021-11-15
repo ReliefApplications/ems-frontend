@@ -12,29 +12,31 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { SafeButtonModule } from '@safe/builder';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
-  declarations: [ResourcesComponent],
-  imports: [
-    CommonModule,
-    ResourcesRoutingModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatIconModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatSortModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    FormsModule,
-    SafeButtonModule,
-    MatPaginatorModule
-  ],
+  declarations: [ResourcesComponent, FilterComponent],
+    imports: [
+        CommonModule,
+        ResourcesRoutingModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatIconModule,
+        MatDialogModule,
+        MatMenuModule,
+        MatSortModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        FormsModule,
+        SafeButtonModule,
+        MatPaginatorModule,
+        ReactiveFormsModule
+    ],
   exports: [ResourcesComponent]
 })
 export class ResourcesModule { }
