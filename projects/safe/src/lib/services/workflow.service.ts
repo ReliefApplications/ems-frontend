@@ -9,6 +9,7 @@ import { SafeSnackBarService } from './snackbar.service';
 import { ContentType } from '../models/page.model';
 import { Step } from '../models/step.model';
 import { NOTIFICATIONS } from '../const/notifications';
+import { SafeApplicationService } from './application.service';
 
 /**
  * SAFE workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -30,7 +31,8 @@ export class SafeWorkflowService {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router
+    private router: Router,
+    private applicationService: SafeApplicationService
   ) { }
 
   /**
@@ -106,9 +108,6 @@ export class SafeWorkflowService {
    * Goes to first page of application.
    */
   closeWorkflow(): void {
-    const fragments = this.router.url.split('/').reverse();
-    fragments.splice(0, 4);
-    const url = fragments.reverse().join('/');
-    this.router.navigateByUrl(url);
+    this.applicationService.goToFirstPage();
   }
 }

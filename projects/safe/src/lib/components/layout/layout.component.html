@@ -57,7 +57,7 @@
 </ng-container>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #nav [mode]="largeDevice ? 'side' : 'over'" [opened]="largeDevice">
+  <mat-sidenav #nav [mode]="largeDevice ? 'side' : 'over'" [opened]="largeDevice" class="sidenav">
     <mat-nav-list>
       <ng-container *ngFor="let group of filteredNavGroups; let i = index">
         <div mat-subheader>{{ group.name }}</div>

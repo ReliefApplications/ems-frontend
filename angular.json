@@ -221,6 +221,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
               "budgets": [
                 {
                   "type": "initial",
