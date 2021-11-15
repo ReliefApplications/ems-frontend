@@ -78,8 +78,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       variables: {
         first: ITEMS_PER_PAGE,
         id: this.id,
-        display: false,
-        isForm: false,
+        display: false
       }
     });
     this.recordsQuery.valueChanges.subscribe(res => {
@@ -88,7 +87,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.resource.records.totalCount;
       this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
-      this.loading = res.loading;
     });
 
     // get the resource and the form linked
@@ -129,10 +127,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            records: {
-              edges: [...prev.resource.records.edges, ...fetchMoreResult.resource.records.edges],
-              pageInfo: fetchMoreResult.resource.records.pageInfo,
-              totalCount: fetchMoreResult.resource.records.totalCount
+            resource: {
+              records: {
+                edges: [...prev.resource.records.edges, ...fetchMoreResult.resource.records.edges],
+                pageInfo: fetchMoreResult.resource.records.pageInfo,
+                totalCount: fetchMoreResult.resource.records.totalCount
+              }
             }
           });
         }

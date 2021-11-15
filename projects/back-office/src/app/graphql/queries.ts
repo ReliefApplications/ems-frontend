@@ -223,8 +223,6 @@ query GetFormRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $di
         node {
           id
           data(display: $display)
-          canUpdate
-          canDelete
           versions {
             id
             createdAt
@@ -309,12 +307,14 @@ query GetResourceRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON,
         node {
           id
           data(display: $display)
-          canUpdate
-          canDelete
           versions {
             id
             createdAt
             data
+          }
+          form {
+            id
+            name
           }
         }
         cursor

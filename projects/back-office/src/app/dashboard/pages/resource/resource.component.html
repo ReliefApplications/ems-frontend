@@ -5,31 +5,35 @@
         <h1 class="page-title">
             {{resource.name}}
         </h1>
-        <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate"></safe-access>
+        <safe-access [access]="resource.permissions" (save)="saveAccess($event)" *ngIf="resource.canUpdate">
+        </safe-access>
         <div class="actions">
-            <safe-button *ngIf="resource.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger" (click)="onSwitchView($event)">
+            <safe-button *ngIf="resource.canUpdate && !showDeletedRecords" icon="search_off" category="primary"
+                variant="danger" (click)="onSwitchView($event)">
                 Show archived records
             </safe-button>
-            <safe-button *ngIf="resource.canUpdate && showDeletedRecords" icon="restore_page" category="primary" variant="success" (click)="onSwitchView($event)">
+            <safe-button *ngIf="resource.canUpdate && showDeletedRecords" icon="restore_page" category="primary"
+                variant="success" (click)="onSwitchView($event)">
                 Show active records
             </safe-button>
-            <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu" >
-              Download records
+            <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
+                Download records
             </safe-button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-              <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+                <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+                <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
             </mat-menu>
         </div>
     </div>
     <mat-tab-group dynamicHeight>
         <mat-tab>
             <ng-template mat-tab-label>
-                Records ( {{dataSourceRecords.length}} )
+                Records ( {{pageInfo.length}} )
             </ng-template>
             <div class="table-container">
                 <table mat-table [dataSource]="dataSourceRecords">
-                    <ng-container *ngFor="let column of displayedColumnsRecords" [matColumnDef]="column"  [stickyEnd]="column === '_actions'">
+                    <ng-container *ngFor="let column of displayedColumnsRecords" [matColumnDef]="column"
+                        [stickyEnd]="column === '_actions'">
                         <ng-container *ngIf="column !== '_actions'">
                             <th mat-header-cell *matHeaderCellDef>{{column}}</th>
                             <td mat-cell *matCellDef="let element" class="table-column">
@@ -39,34 +43,41 @@
                         <ng-container *ngIf="column === '_actions'">
                             <th mat-header-cell *matHeaderCellDef></th>
                             <td mat-cell *matCellDef="let element">
-                                <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="recMenu" (click)="$event.stopPropagation()">
+                                <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="recMenu"
+                                    (click)="$event.stopPropagation()">
                                 </safe-button>
                                 <mat-menu #recMenu="matMenu">
-                                    <button mat-menu-item [routerLink]="['./update', element.id]" [matTooltip]="'Edit as ' + element.form.name"
-                                    matTooltipPosition="above" [matTooltipDisabled]="resource.forms.length <= 1">
+                                    <button mat-menu-item [routerLink]="['./update', element.id]"
+                                        [matTooltip]="'Edit as ' + element.form.name" matTooltipPosition="above"
+                                        [matTooltipDisabled]="resource.forms.length <= 1">
                                         <mat-icon>edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button *ngIf="resource.forms.length > 1" mat-menu-item [matMenuTriggerFor]="templates">
+                                    <button *ngIf="resource.forms.length > 1" mat-menu-item
+                                        [matMenuTriggerFor]="templates">
                                         <mat-icon>edit_note</mat-icon>
                                         Edit as
                                     </button>
-                                    <button *ngIf="!showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
+                                    <button *ngIf="!showDeletedRecords" mat-menu-item
+                                        (click)="onDeleteRecord(element.id, $event)">
                                         <mat-icon>delete</mat-icon>
                                         Delete
                                     </button>
-                                    <button *ngIf="showDeletedRecords" mat-menu-item (click)="onDeleteRecord(element.id, $event)">
+                                    <button *ngIf="showDeletedRecords" mat-menu-item
+                                        (click)="onDeleteRecord(element.id, $event)">
                                         <mat-icon>delete_forever</mat-icon>
                                         Delete permanently
                                     </button>
-                                    <button *ngIf="showDeletedRecords" mat-menu-item (click)="onRestoreRecord(element.id, $event)">
+                                    <button *ngIf="showDeletedRecords" mat-menu-item
+                                        (click)="onRestoreRecord(element.id, $event)">
                                         <mat-icon>unarchive</mat-icon>
                                         Restore
                                     </button>
                                 </mat-menu>
                                 <mat-menu #templates="matMenu">
                                     <ng-container *ngFor="let form of filterTemplates(element)">
-                                        <button mat-menu-item [routerLink]="['./update', element.id]" [state]="{ template: form.id }">{{form.name}}</button>
+                                        <button mat-menu-item [routerLink]="['./update', element.id]"
+                                            [state]="{ template: form.id }">{{form.name}}</button>
                                     </ng-container>
                                 </mat-menu>
                             </td>
@@ -75,9 +86,9 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords;"></tr>
                 </table>
-                <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of records"
-                    (page)="onPage($event)"></mat-paginator>
             </div>
+            <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of records"
+                (page)="onPage($event)"></mat-paginator>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
@@ -99,8 +110,7 @@
                         <th mat-header-cell *matHeaderCellDef> Status </th>
                         <td mat-cell *matCellDef="let element">
                             <mat-chip-list>
-                                <mat-chip class="success-chip" disabled
-                                    *ngIf="element.status === 'active'">
+                                <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
                                     {{ element.status | titlecase }}
                                 </mat-chip>
                                 <mat-chip class="accent-chip" disabled color="accent"
@@ -131,14 +141,18 @@
                     <ng-container matColumnDef="_actions">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
-                            <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="resMenu" (click)="$event.stopPropagation()" [disabled]="!(element.canUpdate || element.canDelete )">
+                            <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="resMenu"
+                                (click)="$event.stopPropagation()"
+                                [disabled]="!(element.canUpdate || element.canDelete )">
                             </safe-button>
                             <mat-menu #resMenu="matMenu">
-                                <button mat-menu-item [routerLink]="['/forms/builder', element.id]" *ngIf="element.canUpdate">
+                                <button mat-menu-item [routerLink]="['/forms/builder', element.id]"
+                                    *ngIf="element.canUpdate">
                                     <mat-icon>edit</mat-icon>
                                     Edit
                                 </button>
-                                <button mat-menu-item (click)="deleteForm(element.id, $event)" *ngIf="element.canDelete">
+                                <button mat-menu-item (click)="deleteForm(element.id, $event)"
+                                    *ngIf="element.canDelete">
                                     <mat-icon>delete</mat-icon>
                                     Delete
                                 </button>
@@ -147,8 +161,10 @@
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsForms"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsForms;" [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
-                        [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsForms;"
+                        [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
+                        [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []">
+                    </tr>
                 </table>
             </ng-container>
         </mat-tab>

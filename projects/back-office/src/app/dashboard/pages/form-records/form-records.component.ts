@@ -93,8 +93,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       variables: {
         id: this.id,
         first: ITEMS_PER_PAGE,
-        display: false,
-        isForm: true,
+        display: false
       }
     });
 
@@ -104,7 +103,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.form.records.totalCount;
       this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
-      this.loading = res.loading;
     });
 
     // get the form detail
@@ -144,10 +142,12 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            records: {
-              edges: [...prev.form.records.edges, ...fetchMoreResult.form.records.edges],
-              pageInfo: fetchMoreResult.form.records.pageInfo,
-              totalCount: fetchMoreResult.form.records.totalCount
+            form: {
+              records: {
+                edges: [...prev.form.records.edges, ...fetchMoreResult.form.records.edges],
+                pageInfo: fetchMoreResult.form.records.pageInfo,
+                totalCount: fetchMoreResult.form.records.totalCount
+              }
             }
           });
         }
