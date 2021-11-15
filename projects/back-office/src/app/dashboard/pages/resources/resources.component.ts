@@ -119,7 +119,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) { return prev; }
         return Object.assign({}, prev, {
-          applications: {
+          resources: {
             edges: fetchMoreResult.resources.edges,
             pageInfo: fetchMoreResult.resources.pageInfo,
             totalCount: fetchMoreResult.resources.totalCount
