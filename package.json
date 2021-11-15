@@ -1,12 +1,10 @@
 {
   "name": "safe-front",
-  "version": "0.1.14-alpha.4",
+  "version": "0.1.14-alpha.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:ci": "ng build --prod --sourceMap=false",
-    "build:ci:ra": "ng build --prod --sourceMap=false --configuration=ra",
     "build:az:uat:front": "ng build --configuration=azure-uat --sourceMap=false --project=front-office",
     "build:az:uat:back": "ng build --configuration=azure-uat --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:az:prod:front": "ng build --configuration=azure-prod --sourceMap=false --project=front-office",

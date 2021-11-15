@@ -30,15 +30,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+  public newApplications: Application[] = [];
+  public filter: any;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
-
-  // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
-  public searchText = '';
-  public statusFilter = '';
-  public showFilters = false;
 
   public pageInfo = {
     pageIndex: 0,
@@ -73,12 +69,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
     this.authSubscription = this.authService.user.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create))
@@ -96,7 +92,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applicationsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -115,16 +112,30 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private filterPredicate(): void {
-    this.applications.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
-    };
+  /**
+   * Filters applications and updates table.
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.cachedApplications = [];
+    this.pageInfo.pageIndex = 0;
+    this.applicationsQuery.fetchMore({
+      variables: {
+        first: ITEMS_PER_PAGE,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        return Object.assign({}, prev, {
+          applications: {
+            edges: fetchMoreResult.applications.edges,
+            pageInfo: fetchMoreResult.applications.pageInfo,
+            totalCount: fetchMoreResult.applications.totalCount
+          }
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -139,8 +150,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Delete an application if authorized.
   */
-  onDelete(element: any, e: any): void {
-    e.stopPropagation();
+  onDelete(element: any, e?: any): void {
+    if (e) {
+      e.stopPropagation();
+    }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
@@ -160,6 +173,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe(res => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
           this.applications.data = this.applications.data.filter(x => {
+            return x.id !== res.data?.deleteApplication.id;
+          });
+          this.newApplications = this.newApplications.filter(x => {
             return x.id !== res.data?.deleteApplication.id;
           });
         });
@@ -223,7 +239,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*  Open a dialog to give a name for the duplicated application
   */
-  onDuplicate(application: Application): void {
+  onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {
         id: application.id,
@@ -238,27 +254,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.applications.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    // ignore that error
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.clearDateFilter();
+  /**
+   * Navigates to application.
+   * @param id application id.
+   */
+  onOpenApplication(id: string): void {
+    this.router.navigate(['/applications', id]);
   }
 }

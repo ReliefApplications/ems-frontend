@@ -1,13 +1,17 @@
 import { Application } from './application.model';
 
-/*  Enum of content types.
-*/
+/**
+ * Enum of content types.
+ */
 export enum ContentType {
     workflow = 'workflow',
     dashboard = 'dashboard',
     form = 'form'
 }
 
+/**
+ * Content type interface.
+ */
 export interface IContentType {
     value: string;
     name: string;
@@ -16,6 +20,9 @@ export interface IContentType {
     focusColor: string;
 }
 
+/**
+ * Available content types.
+ */
 export const CONTENT_TYPES: IContentType[] = [
     {
         value: 'workflow',

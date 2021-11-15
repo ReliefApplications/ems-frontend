@@ -12,4 +12,7 @@ export function initCreatorSettings(survey: any): void {
     };
     survey.Serializer.findProperty('file', 'storeDataAsText').readOnly = true;
     survey.Serializer.findProperty('file', 'storeDataAsText').visible = false;
+    survey.Serializer.findProperty('file', 'maxSize').onGetValue = (obj: any) => {
+        return 7340032;
+    };
 }

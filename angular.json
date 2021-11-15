@@ -178,11 +178,11 @@
                 }
               ]
             },
-            "ra": {
+            "oort-dev": {
               "fileReplacements": [
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.ra.ts"
+                  "with": "projects/back-office/src/environments/environment.oort.dev.ts"
                 }
               ],
               "optimization": true,
@@ -192,6 +192,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
               "budgets": [
                 {
                   "type": "initial",
@@ -205,11 +207,11 @@
                 }
               ]
             },
-            "wv": {
+            "oort-prod": {
               "fileReplacements": [
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.wv.ts"
+                  "with": "projects/back-office/src/environments/environment.oort.prod.ts"
                 }
               ],
               "optimization": true,
@@ -219,6 +221,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
               "budgets": [
                 {
                   "type": "initial",
@@ -437,11 +441,11 @@
                 }
               ]
             },
-            "ra": {
+            "oort-dev": {
               "fileReplacements": [
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.ra.ts"
+                  "with": "projects/front-office/src/environments/environment.oort.dev.ts"
                 }
               ],
               "optimization": true,
@@ -464,11 +468,11 @@
                 }
               ]
             },
-            "wv": {
+            "oort-prod": {
               "fileReplacements": [
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.wv.ts"
+                  "with": "projects/front-office/src/environments/environment.oort.prod.ts"
                 }
               ],
               "optimization": true,

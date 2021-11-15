@@ -8,8 +8,8 @@ import { ChoicesRestful } from 'survey-angular';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
-import { SafeButtonModule } from '../components/ui/button/button.module';
 import { EmbeddedViewRef } from '@angular/core';
+
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -252,6 +252,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       }
+      if (question.getType() === 'file') {
+        question.maxSize = 7340032;
+      }
     }
   };
 
@@ -292,7 +295,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
             template: question.addTemplate,
-            locale: question.resource.value
+            locale: question.resource.value,
+            askForConfirm: false,
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
           autoFocus: false
         });

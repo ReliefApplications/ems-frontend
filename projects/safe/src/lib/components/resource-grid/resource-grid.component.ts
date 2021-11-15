@@ -12,10 +12,11 @@ import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
 import { Apollo } from 'apollo-angular';
+import get from 'lodash/get';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -378,12 +379,13 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
       delete auxData.canUpdate;
       delete auxData.__typename;
       if (Object.keys(auxData).some((key: string, index) => {
-        console.log(this.fields);
-        const meta = this.metaFields[key];
-        if (meta && meta.choices) {
-          return this.getDisplayText(auxData[key], meta).toString().toLowerCase().includes(searchText);
-        } else {
-          return auxData[key].toString().toLowerCase().includes(searchText);
+        if (auxData[key]) {
+          const meta = this.metaFields[key];
+          if (meta && meta.choices) {
+            return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
+          } else {
+            return auxData[key].toString().toLowerCase().includes(searchText);
+          }
         }
       })) {
         filteredData.push(data);
@@ -397,17 +399,19 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Displays text instead of values for questions with select.
-   * @param meta meta data of the question.
-   * @param value question value.
-   * @returns text value of the question.
+   * Returns property value in object from path.
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @returns Value of the property.
    */
-  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+   public getPropertyValue(item: any, path: string): any {
+    const meta = get(this.metaFields, path);
+    const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+        return meta.choices.reduce((acc: string[], x: any) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
       } else {
-        return meta.choices.find(x => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
     } else {
       return value;
@@ -468,10 +472,10 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
    * @returns list of choices.
    */
   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    const choices = choicesByUrl.path ? [...get(res, choicesByUrl.path)] : [...res];
     return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+      value: (choicesByUrl.value ? get(x, choicesByUrl.value) : x).toString(),
+      text: choicesByUrl.text ? get(x, choicesByUrl.text) : choicesByUrl.value ? get(x, choicesByUrl.value) : x
     })) : [];
   }
 
