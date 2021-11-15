@@ -145,7 +145,7 @@ export class SafePreprocessorService {
         default:
           const rawValue = item ? item[field.name] : '';
           const value = rawValue && OPTION_QUESTIONS.includes(field.meta.type) ? this.getDisplayText(rawValue, field.meta) : rawValue;
-          body += `${tabs}${field.label ? field.label : field.name}:\t${value}\n`;
+          body += `${tabs}${field.label ? field.label : field.title ? field.title : field.name}:\t${value}\n`;
       }
     }
     return body;
