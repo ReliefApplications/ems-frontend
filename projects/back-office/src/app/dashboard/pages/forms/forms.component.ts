@@ -123,8 +123,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   onFilter(filter: any): void {
     this.filter = filter;
-    console.log("FILTERRRRRRRR")
-    console.log(filter)
     this.cachedForms = [];
     this.pageInfo.pageIndex = 0;
     this.formsQuery.fetchMore({
@@ -134,7 +132,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) { return prev; }
-        console.log("FETCHEDDDDD")
         return Object.assign({}, prev, {
           forms: {
             edges: fetchMoreResult.forms.edges,
@@ -145,7 +142,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
-  
+
   ngAfterViewInit(): void {
     this.forms.sort = this.sort || null;
   }
