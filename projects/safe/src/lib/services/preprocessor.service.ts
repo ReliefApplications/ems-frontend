@@ -145,7 +145,7 @@ export class SafePreprocessorService {
         default:
           const rawValue = item ? item[field.name] : '';
           const value = rawValue && OPTION_QUESTIONS.includes(field.meta.type) ? this.getDisplayText(rawValue, field.meta) : rawValue;
-          body += `${tabs}${field.label ? field.label : field.name}:\t${value}\n`;
+          body += `${tabs}${field.label ? field.label : field.title ? field.title : field.name}:\t${value}\n`;
       }
     }
     return body;
@@ -185,10 +185,10 @@ export class SafePreprocessorService {
    * @returns list of choices.
    */
   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    const choices = choicesByUrl.path ? [...get(res, choicesByUrl.path)] : [...res];
     return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+      value: (choicesByUrl.value ? get(x, choicesByUrl.value) : x).toString(),
+      text: choicesByUrl.text ? get(x, choicesByUrl.text) : choicesByUrl.value ? get(x, choicesByUrl.value) : x
     })) : [];
   }
 
