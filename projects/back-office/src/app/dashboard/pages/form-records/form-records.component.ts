@@ -3,7 +3,8 @@ import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS
+  GetFormRecordsQueryResponse,
+  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_FORM_RECORDS, GET_RECORD_DETAILS
 } from '../../../graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -33,7 +34,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
-  private recordsQuery!: QueryRef<GetRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -85,23 +86,24 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
     }
+
     // get the records linked to the form
-    this.recordsQuery = this.apollo.watchQuery<GetRecordsQueryResponse>({
-      query: GET_RECORDS,
+    this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
+      query: GET_FORM_RECORDS,
       variables: {
-        first: ITEMS_PER_PAGE,
         id: this.id,
+        first: ITEMS_PER_PAGE,
         display: false,
         isForm: true,
       }
     });
 
     this.recordsQuery.valueChanges.subscribe(res => {
-      this.cachedRecords = res.data.records.edges.map(x => x.node);
+      this.cachedRecords = res.data.form.records.edges.map((x: any) => x.node);
       this.dataSource = this.cachedRecords.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-      this.pageInfo.length = res.data.records.totalCount;
-      this.pageInfo.endCursor = res.data.records.pageInfo.endCursor;
+      this.pageInfo.length = res.data.form.records.totalCount;
+      this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
       this.loading = res.loading;
     });
 
@@ -130,21 +132,22 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * Handles page event.
    * @param e page event.
    */
-   onPage(e: any): void {
+  onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (e.pageIndex > e.previousPageIndex && e.length > this.cachedRecords.length) {
       this.recordsQuery.fetchMore({
         variables: {
+          id: this.id,
           first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
             records: {
-              edges: [...prev.records.edges, ...fetchMoreResult.records.edges],
-              pageInfo: fetchMoreResult.records.pageInfo,
-              totalCount: fetchMoreResult.records.totalCount
+              edges: [...prev.form.records.edges, ...fetchMoreResult.form.records.edges],
+              pageInfo: fetchMoreResult.form.records.pageInfo,
+              totalCount: fetchMoreResult.form.records.totalCount
             }
           });
         }
@@ -155,8 +158,10 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Modify the list of columns.
-    */
+
+  /**
+   * Modifies the list of columns.
+   */
   private setDisplayedColumns(): void {
     const columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
@@ -269,7 +274,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;
-    const queryString = new URLSearchParams({type}).toString();
+    const queryString = new URLSearchParams({ type }).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 
@@ -278,7 +283,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   onDownloadTemplate(): void {
     const path = `download/form/records/${this.id}`;
-    const queryString = new URLSearchParams({type: 'xlsx', template: 'true'}).toString();
+    const queryString = new URLSearchParams({ type: 'xlsx', template: 'true' }).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, `${this.form.name}_template.xlsx`);
   }
 
@@ -296,7 +301,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         this.getFormData();
       }
     }, (error: any) => {
-      this.snackBar.openSnackBar(error.error, {error: true});
+      this.snackBar.openSnackBar(error.error, { error: true });
       this.xlsxFile.nativeElement.value = '';
     });
   }

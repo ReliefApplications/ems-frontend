@@ -72,7 +72,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.loading = res.loading;
       this.filterPredicate();
     });
-    console.log('this datasource = ', this.dataSource);
   }
 
   /**
