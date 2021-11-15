@@ -32,10 +32,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
-  dataSource = new MatTableDataSource<Form>([]);
+  public displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
+  public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
-
+  public filter: any;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -43,13 +43,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
-
-  // === FILTERS ===
-  public filtersDate = { startDate: '', endDate: '' };
-  public showFilters = false;
-  public searchText = '';
-  public statusFilter = '';
-  public coreFilter = '';
 
   public pageInfo = {
     pageIndex: 0,
@@ -60,7 +53,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
 
   constructor(
     private apollo: Apollo,
@@ -83,12 +75,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.formsQuery.valueChanges.subscribe(res => {
       this.cachedForms = res.data.forms.edges.map(x => x.node);
-      this.dataSource.data = this.cachedForms.slice(
+      this.forms.data = this.cachedForms.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
 
     this.authSubscription = this.authService.user.subscribe(() => {
@@ -106,7 +97,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.formsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -120,27 +112,42 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     } else {
-      this.dataSource.data = this.cachedForms.slice(
+      this.forms.data = this.cachedForms.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
   }
 
-  private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.coreFilter.trim().length === 0 ||
-          (this.coreFilter.trim().length > 0 && data.core.toString().toLowerCase().includes(this.coreFilter.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
-    };
+  /**
+   * Filters forms and updates table.
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    console.log("FILTERRRRRRRR")
+    console.log(filter)
+    this.cachedForms = [];
+    this.pageInfo.pageIndex = 0;
+    this.formsQuery.fetchMore({
+      variables: {
+        first: ITEMS_PER_PAGE,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        console.log("FETCHEDDDDD")
+        return Object.assign({}, prev, {
+          forms: {
+            edges: fetchMoreResult.forms.edges,
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount
+          }
+        });
+      }
+    });
   }
-
+  
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+    this.forms.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -172,7 +179,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }).subscribe((res: any) => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
-          this.dataSource.data = this.dataSource.data.filter(x => {
+          this.forms.data = this.forms.data.filter(x => {
             return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
           });
         });
@@ -212,32 +219,5 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       }
     });
-  }
-
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else if (column === 'core') {
-      this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.dataSource.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    // ignore that error
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.coreFilter = '';
-    this.clearDateFilter();
   }
 }
