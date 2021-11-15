@@ -30,10 +30,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
-  public showFilters = false;
-  public filtersDate = {startDate: '', endDate: ''};
-  public searchText = '';
-  public recordsFilter = '';
+  public filter: any;
 
   public pageInfo = {
     pageIndex: 0,
@@ -54,8 +51,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   /*  Load the resources.
   */
   ngOnInit(): void {
-    this.filterPredicate();
-
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
       variables: {
@@ -70,7 +65,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
   }
 
@@ -84,7 +78,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.resourcesQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -103,16 +98,30 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.recordsFilter.trim().length === 0 ||
-          this.recordsFilter.trim().length > 0 && data.recordsCount.toString().includes(this.recordsFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
-    };
+  /**
+   * Filters applications and updates table.
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.cachedResources = [];
+    this.pageInfo.pageIndex = 0;
+    this.resourcesQuery.fetchMore({
+      variables: {
+        first: ITEMS_PER_PAGE,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        return Object.assign({}, prev, {
+          applications: {
+            edges: fetchMoreResult.resources.edges,
+            pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount
+          }
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -146,29 +155,5 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         });
       }
     });
-  }
-
-  applyFilter(column: string, event: any): void {
-    if (column === 'recordsCount') {
-      this.recordsFilter = !!event.target ? event.target.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.dataSource.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.recordsFilter = '';
-    this.clearDateFilter();
-    this.applyFilter('', null);
   }
 }
