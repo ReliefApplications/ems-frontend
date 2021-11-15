@@ -77,7 +77,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       query: GET_FORM_BY_ID,
       variables: {
         id: this.id,
-        display: false,
+        display: true,
         showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
