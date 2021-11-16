@@ -22,7 +22,10 @@ export class FilterComponent implements OnInit {
       startDate: [null],
       endDate: [null],
     });
-    this.form.valueChanges.subscribe((value) => {
+    this.form.valueChanges.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe((value) => {
       this.emitFilter(value);
     });
     // this way we can wait for 2s before sending an update
