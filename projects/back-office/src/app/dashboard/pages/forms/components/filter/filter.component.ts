@@ -21,7 +21,8 @@ export class FilterComponent implements OnInit {
       name: [''],
       startDate: [null],
       endDate: [null],
-      status: ['']
+      status: [''],
+      core: [null]
     });
     this.form.valueChanges.pipe(
       debounceTime(1000),
@@ -54,6 +55,13 @@ export class FilterComponent implements OnInit {
     }
     if (value.endDate) {
       filters.push({ field: 'createdAt', operator: 'lte', value: value.endDate });
+    }
+    if (value.core != null) {
+      if (value.core) {
+        filters.push({ field: 'core', operator: 'eq', value: true });
+      } else {
+        filters.push({ field: 'core', operator: 'neq', value: true });
+      }
     }
     const filter = {
       logic: 'and',

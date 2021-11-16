@@ -102,8 +102,8 @@ query GetFormNames($first: Int, $afterCursor: ID) {
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms($first: Int, $afterCursor: ID) {
-  forms(first: $first, afterCursor: $afterCursor) {
+query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
+  forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
@@ -369,8 +369,8 @@ query GetResources($first: Int, $afterCursor: ID){
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-query GetResourcesExtended($first: Int, $afterCursor: ID){
-  resources(first: $first, afterCursor: $afterCursor) {
+query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON){
+  resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id

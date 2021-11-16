@@ -16,15 +16,18 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule as AngularFormsModule } from '@angular/forms';
+import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FilterComponent } from './components/filter/filter.component';
 
 @NgModule({
-  declarations: [FormsComponent],
+  declarations: [FormsComponent, FilterComponent],
   imports: [
     CommonModule,
     FormsRoutingModule,
+    AngularFormsModule,
+    ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatTableModule,
     MatSortModule,
@@ -39,7 +42,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatNativeDateModule,
     MatInputModule,
     MatSelectModule,
-    AngularFormsModule,
     MatDividerModule,
     SafeButtonModule,
     MatPaginatorModule
