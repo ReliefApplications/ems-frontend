@@ -1,7 +1,7 @@
 import { ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeFormModule, SafeFormService, SafeWidgetGridModule } from '@safe/builder';
+import { SafeButtonModule, SafeFormModule, SafeFormService, SafeWidgetGridModule, SafeWorkflowStepperModule } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,14 +31,12 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormComponent } from './components/form/form.component';
 import { WorkflowComponent } from './components/workflow/workflow.component';
-import { MatStepperModule } from '@angular/material/stepper';
 import { ApplicationComponent } from './components/application/application.component';
 import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.component';
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
-
-localStorage.setItem('loaded', 'false');
+import { MsalModule } from '@azure/msal-angular';
 
 /*  Configuration of the Apollo client.
 */
@@ -68,12 +66,6 @@ export function provideApollo(httpLink: HttpLink): any {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
-      },
-      connectionCallback: (error) => {
-        if (localStorage.getItem('loaded') === 'true') {
-          localStorage.setItem('loaded', 'false');
-        }
-        localStorage.setItem('loaded', 'true');
       }
     }
   });
@@ -141,9 +133,37 @@ export function provideApollo(httpLink: HttpLink): any {
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatStepperModule,
     SafeWidgetGridModule,
-    SafeFormModule
+    SafeFormModule,
+    SafeButtonModule,
+    SafeWorkflowStepperModule,
+    MsalModule.forRoot({
+      auth: {
+        clientId: environment.clientId,
+        authority: environment.authority,
+        redirectUri: environment.redirectUrl,
+        postLogoutRedirectUri: environment.postLogoutRedirectUri
+      },
+      cache: {
+        cacheLocation: 'localStorage',
+        storeAuthStateInCookie: false, // Set to true for Internet Explorer 11
+      },
+      framework: {
+        isAngular: true
+      }
+    },
+    {
+      popUp: false,
+      consentScopes: [
+        'user.read',
+        'openid',
+        'profile',
+      ],
+      protectedResourceMap: [
+        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
+      ],
+      extraQueryParameters: {}
+    }),
   ],
   providers: [
     {
