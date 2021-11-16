@@ -2,7 +2,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import { GET_SHORT_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
@@ -18,7 +17,6 @@ import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_F
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -35,7 +33,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   public displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
   public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
-  public filter: any;
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -44,15 +41,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
+  // === FILTERING ===
+  public filter: any;
+
+  // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: ''
   };
-
-  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
   constructor(
     private apollo: Apollo,
@@ -153,39 +151,47 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  /*  Remove a form if authorized.
+ /**
+  * Removes a form.
+  * @param form Form to delete.
+  * @param e click event.
   */
-  onDelete(element: any, e: any): void {
+  onDelete(form: Form, e: any): void {
     const warning = 'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : ''}`,
+        content: `Do you confirm the deletion of the form ${form.name} ? ${form.core ? warning : ''}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = element.id;
+        const id = form.id;
         this.apollo.mutate<DeleteFormMutationResponse>({
           mutation: DELETE_FORM,
           variables: {
             id
           }
         }).subscribe((res: any) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
-          this.forms.data = this.forms.data.filter(x => {
-            return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
-          });
+          if (!res.errors) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
+            this.forms.data = this.forms.data.filter(x => {
+              return x.id !== form.id && form.id !== x.resource?.coreForm?.id;
+            });
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message), { error: true });
+          }
         });
       }
     });
   }
 
-  /*  Display the AddForm modal.
-    Create a new form on closed if result.
+ /**
+  * Displays the AddForm modal.
+  * Creates a new form on closed if result.
   */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddFormComponent, {

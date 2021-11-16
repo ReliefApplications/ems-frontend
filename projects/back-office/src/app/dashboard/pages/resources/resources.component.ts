@@ -1,13 +1,11 @@
 import {Apollo, QueryRef} from 'apollo-angular';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-
 import { DeleteResourceMutationResponse, DELETE_RESOURCE } from '../../../graphql/mutations';
 import { GetResourcesQueryResponse, GET_RESOURCES_EXTENDED } from '../../../graphql/queries';
 import { Resource, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -21,26 +19,23 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   // === DATA ===
   public loading = true;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-  public resources: any;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
-  dataSource =  new MatTableDataSource<Resource>([]);
+  public resources =  new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
-  // === FILTERS ===
+  // === FILTERING ===
   public filter: any;
 
+  // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: ''
   };
-
-  @ViewChild('startDate', { read: MatStartDate}) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate}) endDate!: MatEndDate<string>;
 
   constructor(
     private dialog: MatDialog,
@@ -60,7 +55,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
     this.resourcesQuery.valueChanges.subscribe(res => {
       this.cachedResources = res.data.resources.edges.map(x => x.node);
-      this.dataSource.data = this.cachedResources.slice(
+      this.resources.data = this.cachedResources.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
@@ -93,7 +88,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      this.dataSource.data = this.cachedResources.slice(
+      this.resources.data = this.cachedResources.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
   }
@@ -125,9 +120,13 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+    this.resources.sort = this.sort || null;
   }
 
+  /**
+   * Removes a resource.
+   * @param resource Resource to delete.
+   */
   onDelete(resource: Resource): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -147,10 +146,10 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
           }
         }).subscribe(res => {
           if (!res.errors) {
-            this.dataSource.data = this.dataSource.data.filter(x => x.id !== resource.id);
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('ressource'));
+            this.resources.data = this.resources.data.filter(x => x.id !== resource.id);
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('resource'));
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('ressource', res.errors[0].message), { error: true });
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('resource', res.errors[0].message), { error: true });
           }
         });
       }
