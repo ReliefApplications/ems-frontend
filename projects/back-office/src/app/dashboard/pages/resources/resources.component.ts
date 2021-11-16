@@ -58,7 +58,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       }
     });
 
-    console.log('launch : 0');
     this.resourcesQuery.valueChanges.subscribe(res => {
       this.cachedResources = res.data.resources.edges.map(x => x.node);
       this.dataSource.data = this.cachedResources.slice(
@@ -76,7 +75,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (e.pageIndex > e.previousPageIndex && e.length > this.cachedResources.length) {
-      console.log('launch : 1');
       this.resourcesQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
@@ -105,12 +103,9 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
-    console.log(filter);
-    console.log('filter');
     this.filter = filter;
     this.cachedResources = [];
     this.pageInfo.pageIndex = 0;
-    console.log('launch : 3');
     this.resourcesQuery.fetchMore({
       variables: {
         first: ITEMS_PER_PAGE,
