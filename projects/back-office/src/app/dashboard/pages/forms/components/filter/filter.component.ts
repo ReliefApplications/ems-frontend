@@ -22,7 +22,7 @@ export class FilterComponent implements OnInit {
       startDate: [null],
       endDate: [null],
       status: [''],
-      core: ['']
+      core: [null]
     });
     this.form.valueChanges.subscribe((value) => {
       this.emitFilter(value);
@@ -53,8 +53,12 @@ export class FilterComponent implements OnInit {
     if (value.endDate) {
       filters.push({ field: 'createdAt', operator: 'lte', value: value.endDate });
     }
-    if (value.core) {
-      filters.push({ field: 'core', operator: 'eq', value: value.core });
+    if (value.core != null) {
+      if (value.core) {
+        filters.push({ field: 'core', operator: 'eq', value: true });
+      } else {
+        filters.push({ field: 'core', operator: 'neq', value: true });
+      }
     }
     const filter = {
       logic: 'and',

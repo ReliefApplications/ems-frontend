@@ -1,9 +1,9 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container>
-  <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
-
-  <div>
+  <div class="forms-header">
+    <!-- FILTERING -->
+    <app-filter (filter)="onFilter($event)"></app-filter>
+    <!-- ACTIONS -->
     <div class="actions">
       <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
         Create a form
