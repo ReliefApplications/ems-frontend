@@ -21,7 +21,6 @@ export class FilterComponent implements OnInit {
       name: [''],
       startDate: [null],
       endDate: [null],
-      status: ['']
     });
     this.form.valueChanges.pipe(
       debounceTime(1000),
@@ -45,9 +44,6 @@ export class FilterComponent implements OnInit {
     const filters: any[] = [];
     if (value.name) {
       filters.push({ field: 'name', operator: 'contains', value: value.name });
-    }
-    if (value.status) {
-      filters.push({ field: 'status', operator: 'eq', value: value.status });
     }
     if (value.startDate) {
       filters.push({ field: 'createdAt', operator: 'gte', value: value.startDate });
@@ -76,4 +72,5 @@ export class FilterComponent implements OnInit {
   clearDateFilter(): void {
     this.form.setValue({ ...this.form.value, startDate: null, endDate: null });
   }
+
 }

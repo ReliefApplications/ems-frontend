@@ -369,8 +369,8 @@ query GetResources($first: Int, $afterCursor: ID){
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-query GetResourcesExtended($first: Int, $afterCursor: ID){
-  resources(first: $first, afterCursor: $afterCursor) {
+query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON){
+  resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
