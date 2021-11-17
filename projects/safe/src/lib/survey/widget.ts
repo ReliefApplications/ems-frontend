@@ -136,7 +136,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
-        const dropdownComponent = buildRecordDropdown(question, el);
+        // const dropdownComponent = buildRecordDropdown(question, el);
         if (question.survey.mode !== 'display' && question.resource) {
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
@@ -341,6 +341,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     instance.filter = question.filters;
     instance.field = question.displayField;
     instance.placeholder = question.placeholder;
+    instance.record = question.value;
+    question.survey.onValueChanged.add((survey: any, options: any) => {
+      if (options.name === question.name) {
+        instance.record = question.value;
+      }
+    });
+    instance.choice.subscribe(res => question.value = res);
     return instance;
   };
 
