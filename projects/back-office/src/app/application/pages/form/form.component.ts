@@ -123,7 +123,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message), { error: true });
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
@@ -141,7 +141,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message), { error: true });
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName));

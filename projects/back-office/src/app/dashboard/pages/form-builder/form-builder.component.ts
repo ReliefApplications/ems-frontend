@@ -183,7 +183,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
@@ -245,7 +245,7 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message), { error: true });
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName));
@@ -273,7 +273,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
