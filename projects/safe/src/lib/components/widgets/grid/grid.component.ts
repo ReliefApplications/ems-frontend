@@ -846,7 +846,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const queryFields = this.settings.query.fields.filter((x: any) => x.type === item[0].__typename);
       const detailsRecordsIds = item.map((x: { id: any; }) => x.id);
       // for resources, open it inside the SafeResourceGrid
-      const dialogRef = this.dialog.open(SafeResourceGridModalComponent, {
+      this.dialog.open(SafeResourceGridModalComponent, {
         data: {
           multiselect: false,
           gridSettings: {
@@ -858,10 +858,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           selectedRecords: detailsRecordsIds
         }
       });
-      dialogRef.afterClosed().subscribe((rows: any[]) => {
-
-      });
     } else {
+      // open the detail in the modal
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
           recordId: item.id,
