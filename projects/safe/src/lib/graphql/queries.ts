@@ -119,14 +119,24 @@ query GetShortResourceById($id: ID!) {
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
-      id
-      data(display: $display)
+    records(filter: $filter) {
+      edges {
+        node {
+          id
+          data(display: $display)
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
     fields
     forms {

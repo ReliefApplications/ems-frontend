@@ -23,3 +23,16 @@ export interface Record {
     canUpdate?: boolean;
     canDelete?: boolean;
 }
+
+export interface RecordConnection {
+    totalCount?: number;
+    edges?: {
+        node?: Record;
+        cursor?: string
+    }[];
+    pageInfo?: {
+        startCursor?: string;
+        endCursor?: string;
+        hasNextPage?: boolean;
+    };
+}
