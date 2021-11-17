@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom.service';
+import { SafeRecordDropdownComponent } from '../../components/record-dropdown/record-dropdown.component';
 
 export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
 
@@ -169,6 +170,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
 
       Survey.Serializer.addProperty('resource', {
         name: 'test service',
+        type: 'resourceRecordDropdown',
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
@@ -180,20 +182,22 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         },
         visibleIndex: 3,
-        choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceById({id: obj.resource}).subscribe(response => {
-              const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
-              const res = [];
-              res.push({value: null});
-              for (const item of serverRes) {
-                res.push({value: item?.id, text: item?.data[obj.displayField]});
-              }
-              choicesCallback(res);
-            });
-          }
-        },
       });
+      const resourceRecordDropdownEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(SafeRecordDropdownComponent, htmlElement);
+          const instance: SafeRecordDropdownComponent = dropdown.instance;
+          instance.resourceId = question.resource;
+          instance.filter = filters;
+          instance.field = question.displayField;
+          instance.placeholder = question.placeholder;
+          instance.choice.subscribe(res => {
+            return editor.onChanged(res);
+          });
+        }
+      };
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor('resourceRecordDropdown', resourceRecordDropdownEditor);
       Survey.Serializer.addProperty('resource', {
         name: 'canAddNew:boolean',
         category: 'Custom Questions',
@@ -508,7 +512,10 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.contentQuestion.choices = [];
       }
     },
-    onAfterRender(question: any, el: any): void {},
+    onAfterRender(question: any, el: any): void {
+      const element = el.getElementsByClassName('sv_select_wrapper')[0].parentElement;
+      element.style.display = 'none';
+    },
     convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
       if (!gridSettingsRaw.fields) {
         return null;

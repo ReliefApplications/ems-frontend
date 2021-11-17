@@ -9,6 +9,7 @@ import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
+import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 
 
 function addZero(i: any): string {
@@ -134,9 +135,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         }
       }
       // Display of add button for resource question
-      if (question.getType() === 'resource' && question.resource) {
-
-        if (question.survey.mode !== 'display') {
+      if (question.getType() === 'resource') {
+        const dropdownComponent = buildRecordDropdown(question, el);
+        if (question.survey.mode !== 'display' && question.resource) {
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -330,6 +331,17 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     }
     addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
     return addButton;
+  };
+
+  const buildRecordDropdown = (question: any, el: any): any => {
+    let instance: SafeRecordDropdownComponent;
+    const dropdown = domService.appendComponentToBody(SafeRecordDropdownComponent, el.parentElement);
+    instance = dropdown.instance;
+    instance.resourceId = question.resource;
+    instance.filter = question.filters;
+    instance.field = question.displayField;
+    instance.placeholder = question.placeholder;
+    return instance;
   };
 
   const buildRecordsGrid = (question: any, el: any): any => {

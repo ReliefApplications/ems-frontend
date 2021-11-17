@@ -34,7 +34,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
-        filters: data.filters
+        filter: data.filters
       }
     });
   };
