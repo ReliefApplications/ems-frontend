@@ -58,6 +58,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   @Input()
   selectedRows: string[] = [];
 
+  @Input()
+  selectedRecords: string[] = [];
+
   // === PARENT DATA FOR CHILDREN-GRID ===
   @Input() parent: any;
 
@@ -214,6 +217,9 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   /*  Set the list of items to display.
   */
   private loadItems(): void {
+    // filter the record to show only the one needed
+    this.items = this.selectedRecords.length > 1 ? this.items.filter((x: any) => this.selectedRecords.includes(x.id)) : this.items;
+    this.totalCount = this.selectedRecords.length > 1 ? this.items.length : this.totalCount;
     this.gridData = {
       data: this.items,
       total: this.totalCount
