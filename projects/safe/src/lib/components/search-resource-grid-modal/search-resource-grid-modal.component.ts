@@ -15,7 +15,6 @@ interface DialogData {
 export class SafeResourceGridModalComponent implements OnInit {
 
   public multiSelect = false;
-  public canUpdate!: boolean;
   public gridSettings = {};
 
   public selectedRows: any [] = [];
