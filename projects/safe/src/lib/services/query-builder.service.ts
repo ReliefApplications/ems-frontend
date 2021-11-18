@@ -210,7 +210,7 @@ export class QueryBuilderService {
       name: [value ? value.name : '', validators ? Validators.required : null],
       template: [value ? value.template : '', null],
       fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
-       validators ? Validators.required : null),
+        validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
@@ -248,6 +248,7 @@ export class QueryBuilderService {
       case 'LIST': {
         return this.formBuilder.group({
           name: [{ value: field.name, disabled: true }],
+          label: [field.label],
           type: [newField ? field.type.ofType.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?
