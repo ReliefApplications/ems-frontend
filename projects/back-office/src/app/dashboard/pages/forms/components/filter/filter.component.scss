@@ -1,0 +1,9 @@
+.forms-filter {
+    .top, .advanced {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+}

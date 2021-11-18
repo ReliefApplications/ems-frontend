@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeResourceGridModule } from '../resource-grid/resource-grid.module';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
+import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 
 @NgModule({
   declarations: [SafeChooseRecordModalComponent],
@@ -22,7 +23,8 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
     MatProgressSpinnerModule,
     SafeResourceGridModule,
     SafeResourceDropdownModule,
-    SafeApplicationDropdownModule
+    SafeApplicationDropdownModule,
+    SafeRecordDropdownModule
   ],
   exports: [SafeChooseRecordModalComponent]
 })

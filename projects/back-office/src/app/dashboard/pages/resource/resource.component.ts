@@ -1,12 +1,14 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS, SafeConfirmModalComponent, Record, Form } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
   DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE, RestoreRecordMutationResponse, RESTORE_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID } from '../../../graphql/queries';
+import { GetResourceByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RESOURCE_BY_ID, GET_RESOURCE_RECORDS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-resource',
@@ -17,9 +19,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   private resourceSubscription?: Subscription;
+  private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public loading = true;
   public id = '';
   public resource: any;
+  public cachedRecords: Record[] = [];
 
   // === RECORDS ASSOCIATED ===
   displayedColumnsRecords: string[] = [];
@@ -31,6 +35,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
+
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   constructor(
     private apollo: Apollo,
@@ -60,17 +71,33 @@ export class ResourceComponent implements OnInit, OnDestroy {
     if (this.resourceSubscription) {
       this.resourceSubscription.unsubscribe();
     }
+
+    // get the records according to the open resource
+    this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+      query: GET_RESOURCE_RECORDS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        id: this.id,
+        display: false
+      }
+    });
+    this.recordsQuery.valueChanges.subscribe(res => {
+      this.cachedRecords = res.data.resource.records.edges.map(x => x.node);
+      this.dataSourceRecords = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.resource.records.totalCount;
+      this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
+    });
+
+    // get the resource and the form linked
     this.resourceSubscription = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
       query: GET_RESOURCE_BY_ID,
       variables: {
-        id: this.id,
-        display: true,
-        showDeletedRecords: this.showDeletedRecords
+        id: this.id
       }
     }).valueChanges.subscribe((res) => {
       if (res.data.resource) {
         this.resource = res.data.resource;
-        this.dataSourceRecords = this.resource.records;
         this.dataSourceForms = this.resource.forms;
         this.setDisplayedColumns(false);
         this.loading = res.loading;
@@ -82,6 +109,38 @@ export class ResourceComponent implements OnInit, OnDestroy {
       this.snackBar.openSnackBar(err.message, { error: true });
       this.router.navigate(['/resources']);
     });
+  }
+
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+   onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedRecords.length) {
+      this.recordsQuery.fetchMore({
+        variables: {
+          id: this.id,
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            resource: {
+              records: {
+                edges: [...prev.resource.records.edges, ...fetchMoreResult.resource.records.edges],
+                pageInfo: fetchMoreResult.resource.records.pageInfo,
+                totalCount: fetchMoreResult.resource.records.totalCount
+              }
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSourceRecords = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
   }
 
   /**

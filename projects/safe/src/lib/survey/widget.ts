@@ -9,6 +9,8 @@ import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
+import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
+
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -133,9 +135,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         }
       }
       // Display of add button for resource question
-      if (question.getType() === 'resource' && question.resource) {
-
-        if (question.survey.mode !== 'display') {
+      if (question.getType() === 'resource') {
+        // const dropdownComponent = buildRecordDropdown(question, el);
+        if (question.survey.mode !== 'display' && question.resource) {
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -251,6 +253,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       }
+      if (question.getType() === 'file') {
+        question.maxSize = 7340032;
+      }
     }
   };
 
@@ -292,7 +297,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           data: {
             template: question.addTemplate,
             locale: question.resource.value,
-            askForConfirm: false
+            askForConfirm: false,
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
           autoFocus: false
         });
@@ -325,6 +331,24 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     }
     addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
     return addButton;
+  };
+
+  const buildRecordDropdown = (question: any, el: any): any => {
+    let instance: SafeRecordDropdownComponent;
+    const dropdown = domService.appendComponentToBody(SafeRecordDropdownComponent, el.parentElement);
+    instance = dropdown.instance;
+    instance.resourceId = question.resource;
+    instance.filter = question.filters;
+    instance.field = question.displayField;
+    instance.placeholder = question.placeholder;
+    instance.record = question.value;
+    question.survey.onValueChanged.add((survey: any, options: any) => {
+      if (options.name === question.name) {
+        instance.record = question.value;
+      }
+    });
+    instance.choice.subscribe(res => question.value = res);
+    return instance;
   };
 
   const buildRecordsGrid = (question: any, el: any): any => {

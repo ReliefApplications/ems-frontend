@@ -78,6 +78,10 @@ const GRADIENT_SETTINGS: GradientSettings = {
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
+const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
+
+const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -297,10 +301,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
    * @returns list of choices.
    */
   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    const choices = choicesByUrl.path ? [...get(res, choicesByUrl.path)] : [...res];
     return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
+      value: (choicesByUrl.value ? get(x, choicesByUrl.value) : x).toString(),
+      text: choicesByUrl.text ? get(x, choicesByUrl.text) : choicesByUrl.value ? get(x, choicesByUrl.value) : x
     })) : [];
   }
 
@@ -1057,7 +1061,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
            selectedRecords.map(x => x.id), sortField, sortOrder);
         if (options.export) {
-          this.onExportRecord(this.selectedRowsIndex, 'xlsx');
+          this.grid?.saveAsExcel();
         }
       }
       if (promises.length > 0) {
@@ -1115,8 +1119,12 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Return a list of promises containing all the mutations in order to modify selected records accordingly to settings.
-      Apply inline edition before applying modifications.
+ /**
+  * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+  * Applies inline edition before applying modifications.
+  * @param modifications list of modifications to apply.
+  * @param rows rows to edit.
+  * @returns Array of Promises to execute.
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
@@ -1124,8 +1132,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       const record = this.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
-          data[modification.field.name] = new Date();
+        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+          data[modification.field.name] = this.getDateForFilter(modification.value);
         } else {
           data[modification.field.name] = modification.value;
         }
@@ -1142,6 +1150,33 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
+  }
+
+  /**
+   * Gets from input date value the three dates used for filtering.
+   * @param value input date value
+   * @returns calculated day, beginning of day, and ending of day
+   */
+  private getDateForFilter(value: any): Date {
+    // today's date
+    let date: Date;
+    if (value === 'today()') {
+      date = new Date();
+      // today + number of days
+    } else if (REGEX_PLUS.test(value)) {
+      const difference = parseInt(value.split('+')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // today - number of days
+    } else if (REGEX_MINUS.test(value)) {
+      const difference = - parseInt(value.split('-')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // classic date
+    } else {
+      date = new Date(value);
+    }
+    return date;
   }
 
   /* Download the file.

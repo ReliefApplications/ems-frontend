@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   public dashboardId = '60745912910c55004ccd79b3';
   public formId = '60a60a044473cd002a9baed1';
   public workflowId = '603f420adac33300299560f7';
-  public applicationId = '6038d454a45d9f008f91a242';
+  public applicationId = '6008387ac67fc800441130df';
   public selectedPageId = '';
 
   public pages: Page[] = [];

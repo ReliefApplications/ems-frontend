@@ -1,9 +1,10 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_RECORD_DETAILS
+  GetFormRecordsQueryResponse,
+  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_FORM_RECORDS, GET_RECORD_DETAILS
 } from '../../../graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -19,8 +20,10 @@ import {
   NOTIFICATIONS, SafeSnackBarService
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeDownloadService } from '@safe/builder';
+import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-form-records',
@@ -31,6 +34,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   public loading = true;
+  private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -38,12 +42,21 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   public showSidenav = true;
   private historyId = '';
   private formSubscription?: Subscription;
+  public cachedRecords: Record[] = [];
+
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
+
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
 
   @ViewChild('xlsxFile') xlsxFile: any;
 
@@ -73,17 +86,36 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
     }
+
+    // get the records linked to the form
+    this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
+      query: GET_FORM_RECORDS,
+      variables: {
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        display: false
+      }
+    });
+
+    this.recordsQuery.valueChanges.subscribe(res => {
+      this.cachedRecords = res.data.form.records.edges.map((x: any) => x.node);
+      this.dataSource = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.form.records.totalCount;
+      this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+    });
+
+    // get the form detail
     this.formSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
       query: GET_FORM_BY_ID,
       variables: {
         id: this.id,
-        display: false,
+        display: true,
         showDeletedRecords: this.showDeletedRecords
       }
     }).valueChanges.subscribe(res => {
       if (res.data.form) {
         this.form = res.data.form;
-        this.dataSource = this.form.records;
         this.setDisplayedColumns();
         this.loading = res.loading;
       }
@@ -94,8 +126,42 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*  Modify the list of columns.
-    */
+  /**
+   * Handles page event.
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedRecords.length) {
+      this.recordsQuery.fetchMore({
+        variables: {
+          id: this.id,
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            form: {
+              records: {
+                edges: [...prev.form.records.edges, ...fetchMoreResult.form.records.edges],
+                pageInfo: fetchMoreResult.form.records.pageInfo,
+                totalCount: fetchMoreResult.form.records.totalCount
+              }
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource = this.cachedRecords.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+    }
+  }
+
+
+  /**
+   * Modifies the list of columns.
+   */
   private setDisplayedColumns(): void {
     const columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
@@ -208,7 +274,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;
-    const queryString = new URLSearchParams({type}).toString();
+    const queryString = new URLSearchParams({ type }).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
   }
 
@@ -217,7 +283,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   onDownloadTemplate(): void {
     const path = `download/form/records/${this.id}`;
-    const queryString = new URLSearchParams({type: 'xlsx', template: 'true'}).toString();
+    const queryString = new URLSearchParams({ type: 'xlsx', template: 'true' }).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, `${this.form.name}_template.xlsx`);
   }
 
@@ -235,7 +301,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         this.getFormData();
       }
     }, (error: any) => {
-      this.snackBar.openSnackBar(error.error, {error: true});
+      this.snackBar.openSnackBar(error.error, { error: true });
       this.xlsxFile.nativeElement.value = '';
     });
   }
