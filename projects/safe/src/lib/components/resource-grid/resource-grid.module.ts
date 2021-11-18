@@ -11,6 +11,7 @@ import { DropDownListModule, MultiSelectModule } from '@progress/kendo-angular-d
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DatePickerModule, DateTimePickerModule, TimePickerModule } from '@progress/kendo-angular-dateinputs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [SafeResourceGridComponent],
@@ -20,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
     GroupModule,
     ButtonModule,
     MatSelectModule,
+    MatButtonModule,
     MatDialogModule,
     TextBoxModule,
     FormsModule,
