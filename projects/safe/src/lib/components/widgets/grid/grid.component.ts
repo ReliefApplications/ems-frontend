@@ -47,6 +47,8 @@ import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
+import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
+
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -306,23 +308,38 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     })) : [];
   }
 
+  /**
+   * Transforms an array into a flat array, putting nested objects to the main level.
+   * @param arr any array.
+   * @returns Flat array.
+   */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
+  /**
+   * Generates the field information for the grid.
+   * @param fields List of fields to display.
+   * @param prefix Field prefix, used by nested objects.
+   * @param disabled Is the field editable or not.
+   * @returns List of fields for the grid component.
+   */
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     const cachedFields = this.layout?.fields || {};
-
-    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+    return this.flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, fullName, true);
         }
         default: {
-          const metaData = get(this.metaFields, fullName);
+          let metaData = get(this.metaFields, fullName);
           const cachedField = get(cachedFields, fullName);
           const title = f.label ? f.label : prettifyLabel(f.name);
+          if (f.kind === 'LIST') {
+            metaData = Object.assign([], metaData);
+            metaData.type = 'records';
+          }
           return {
             name: fullName,
             title,
@@ -335,6 +352,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
+            ...f.kind === 'LIST' && {
+              query: {
+                sort: f.sort,
+                fields: f.fields,
+                filter: f.filter
+              }
+            }
           };
         }
       }
@@ -833,26 +857,53 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
+ /**
+  * Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
+  * Opens list of records in grids.
+  * @param item item to display.
   */
-  public onShowDetails(item: any): void {
-    const dialogRef = this.dialog.open(SafeRecordModalComponent, {
-      data: {
-        recordId: item.id,
-        locale: 'en',
-        canUpdate: item.canUpdate,
-        template: this.parent ? null : this.settings.query.template
-      },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
-      autoFocus: false
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        this.onUpdateRow(item.id);
-      }
-    });
+  public onShowDetails(item: any, field?: any): void {
+    const isArray = Array.isArray(item);
+    // check if the detail is for a record, a resource or resources.
+    item = isArray ? (item.length <= 1 ? item[0] : item) : item;
+    if (isArray && item.length >= 2) {
+      const idsFilter = { field: 'ids', operator: 'in', value: item.map((x: { id: any; }) => x.id) };
+      // for resources, open it inside the SafeResourceGrid
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          multiselect: false,
+          gridSettings: {
+            fields: field.query.fields,
+            sort: field.query.sort,
+            filter: {
+              logic: 'and',
+              filters: [idsFilter, field.query.filter]
+            },
+            name: this.queryBuilder.getQueryNameFromResourceName(field.type),
+            template: null
+          }
+        }
+      });
+    } else {
+      // open the detail in the modal
+      const dialogRef = this.dialog.open(SafeRecordModalComponent, {
+        data: {
+          recordId: item.id,
+          locale: 'en',
+          canUpdate: item.canUpdate,
+          template: isArray ? null : this.parent ? null : this.settings.query.template
+        },
+        height: '98%',
+        width: '100vw',
+        panelClass: 'full-screen-modal',
+        autoFocus: false
+      });
+      dialogRef.afterClosed().subscribe(value => {
+        if (value) {
+          this.onUpdateRow(item.id);
+        }
+      });
+    }
   }
 
   private confirmRevertDialog(record: any, version: any): void {
