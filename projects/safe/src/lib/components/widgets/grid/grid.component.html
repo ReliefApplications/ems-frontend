@@ -140,7 +140,7 @@
                             *ngIf="field.meta.type === 'records'">
                             <div *ngIf="dataItem[field.name]" class="textbox-container">
                                 <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
-                                    matTooltip="Open the details" (click)="onShowDetails(dataItem[field.name], field)">
+                                    matTooltip="Open detail" (click)="onShowDetails(dataItem[field.name], field)">
                                     {{dataItem[field.name].length}} item<span
                                         *ngIf="dataItem[field.name].length > 1">s</span>
                                 </div>
