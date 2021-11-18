@@ -135,12 +135,14 @@
                             <!-- In order to display the div -->
                             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
                         </ng-template>
-                        <!-- DISPLAY ( list ) -->
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'list'">
+                        <!-- DISPLAY ( records ) -->
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                            *ngIf="field.meta.type === 'records'">
                             <div *ngIf="dataItem[field.name]" class="textbox-container">
                                 <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
-                                matTooltip="Open the details" (click)="onShowDetails(dataItem[field.name])">
-                                    {{dataItem[field.name].length}} item<span *ngIf="dataItem[field.name].length > 1">s</span>
+                                    matTooltip="Open the details" (click)="onShowDetails(dataItem[field.name], field)">
+                                    {{dataItem[field.name].length}} item<span
+                                        *ngIf="dataItem[field.name].length > 1">s</span>
                                 </div>
                             </div>
                         </ng-template>

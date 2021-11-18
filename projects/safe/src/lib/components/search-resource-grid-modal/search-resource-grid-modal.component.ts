@@ -5,7 +5,6 @@ interface DialogData {
   gridSettings: any;
   multiselect: boolean;
   selectedRows: string[];
-  selectedRecords: string[];
 }
 
 @Component({
@@ -16,10 +15,10 @@ interface DialogData {
 export class SafeResourceGridModalComponent implements OnInit {
 
   public multiSelect = false;
+  public canUpdate!: boolean;
   public gridSettings = {};
 
   public selectedRows: any [] = [];
-  public selectedRecords: any [] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -33,9 +32,6 @@ export class SafeResourceGridModalComponent implements OnInit {
     this.gridSettings = {query: this.data.gridSettings};
     if (this.data.selectedRows) {
       this.selectedRows = this.data.selectedRows;
-    }
-    if (this.data.selectedRecords) {
-      this.selectedRecords = this.data.selectedRecords;
     }
     this.ref.tick();
   }

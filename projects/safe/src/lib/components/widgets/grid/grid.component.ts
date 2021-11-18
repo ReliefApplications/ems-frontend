@@ -48,7 +48,7 @@ import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
-import { query } from '@angular/animations';
+
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -308,13 +308,24 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     })) : [];
   }
 
+  /**
+   * Transforms an array into a flat array, putting nested objects to the main level.
+   * @param arr any array.
+   * @returns Flat array.
+   */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   }
 
+  /**
+   * Generates the field information for the grid.
+   * @param fields List of fields to display.
+   * @param prefix Field prefix, used by nested objects.
+   * @param disabled Is the field editable or not.
+   * @returns List of fields for the grid component.
+   */
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
     const cachedFields = this.layout?.fields || {};
-
     return this.flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
@@ -327,7 +338,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           const title = f.label ? f.label : prettifyLabel(f.name);
           if (f.kind === 'LIST') {
             metaData = Object.assign([], metaData);
-            metaData.type = 'list';
+            metaData.type = 'records';
           }
           return {
             name: fullName,
@@ -341,6 +352,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
+            ...f.kind === 'LIST' && {
+              query: {
+                sort: f.sort,
+                fields: f.fields,
+                filter: f.filter
+              }
+            }
           };
         }
       }
@@ -839,27 +857,31 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
-   * If there are more than one record, it will open in a resource grid.
+ /**
+  * Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
+  * Opens list of records in grids.
+  * @param item item to display.
   */
-  public onShowDetails(item: any): void {
+  public onShowDetails(item: any, field?: any): void {
     const isArray = Array.isArray(item);
     // check if the detail is for a record, a resource or resources.
     item = isArray ? (item.length <= 1 ? item[0] : item) : item;
     if (isArray && item.length >= 2) {
-      const queryFields = this.settings.query.fields.filter((x: any) => x.type === item[0].__typename);
-      const detailsRecordsIds = item.map((x: { id: any; }) => x.id);
+      const idsFilter = { field: 'ids', operator: 'in', value: item.map((x: { id: any; }) => x.id) };
       // for resources, open it inside the SafeResourceGrid
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
           multiselect: false,
           gridSettings: {
-            fields: queryFields[0].fields,
-            filter: queryFields[0].filter,
-            name: this.settings.query.name,
+            fields: field.query.fields,
+            sort: field.query.sort,
+            filter: {
+              logic: 'and',
+              filters: [idsFilter, field.query.filter]
+            },
+            name: this.queryBuilder.getQueryNameFromResourceName(field.type),
             template: null
-          },
-          selectedRecords: detailsRecordsIds
+          }
         }
       });
     } else {
@@ -882,7 +904,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
     }
-
   }
 
   private confirmRevertDialog(record: any, version: any): void {
