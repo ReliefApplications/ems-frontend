@@ -22,9 +22,12 @@ import { environment } from '../environments/environment';
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { BehaviorSubject } from 'rxjs';
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+export const SCHEMA_UPDATE = new BehaviorSubject<boolean>(false);
 
 /*  Configuration of the Apollo client.
 */
@@ -54,6 +57,11 @@ export function provideApollo(httpLink: HttpLink): any {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
+      },
+      connectionCallback: (error) => {
+        if (!error) {
+          SCHEMA_UPDATE.next(true);
+        }
       }
     }
   });
@@ -158,4 +166,13 @@ export function provideApollo(httpLink: HttpLink): any {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private apollo: Apollo) {
+    SCHEMA_UPDATE.asObservable().subscribe((refresh) => {
+      if (refresh) {
+        this.apollo.client.cache.reset();
+        SCHEMA_UPDATE.next(false);
+      }
+    });
+  }
+}
