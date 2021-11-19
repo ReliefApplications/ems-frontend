@@ -504,8 +504,8 @@ export interface GetApplicationByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
-  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
