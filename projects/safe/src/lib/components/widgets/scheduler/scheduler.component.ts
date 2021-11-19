@@ -57,7 +57,8 @@ export class SafeSchedulerComponent implements OnInit {
             id: item.node?.id,
             title: item.node?.data[this.settings.events.title],
             description: this.settings.events.description ? item.node?.data[this.settings.events.description] : null,
-            start: item.node?.data[this.settings.events.startDate] ? this.parseAdjust(item.node?.data[this.settings.events.startDate]) : new Date(),
+            start: item.node?.data[this.settings.events.startDate] ?
+             this.parseAdjust(item.node?.data[this.settings.events.startDate]) : new Date(),
             end: (this.settings.events.endDate && item.node?.data[this.settings.events.endDate]) ?
               this.parseAdjust(item.node?.data[this.settings.events.endDate]) : this.endlessDate
           } as SchedulerEvent
