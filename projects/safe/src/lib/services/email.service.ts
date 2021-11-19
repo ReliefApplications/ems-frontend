@@ -31,13 +31,13 @@ export class SafeEmailService {
 
     body = await this.preprocessor.preprocess(body, {settings, ids, sortField, sortOrder });
     this.clipboard.copy(body);
-    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard);
+    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, { duration: 3000});
 
     subject = await this.preprocessor.preprocess(subject);
 
     // === SEND THE EMAIL ===
     try {
-      window.location.href = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`;
+      window.location.href = `mailto:${recipient}?subject=${subject}`;
     } catch (error) {
       this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
       try {
