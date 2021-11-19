@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
 const ITEMS_PER_PAGE = 10;
+const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
 @Component({
   selector: 'app-resource',
@@ -19,6 +20,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   // === DATA ===
   private resourceSubscription?: Subscription;
+  private recordsSubscription?: Subscription;
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public loading = true;
   public id = '';
@@ -26,6 +28,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   public cachedRecords: Record[] = [];
 
   // === RECORDS ASSOCIATED ===
+  recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
   displayedColumnsRecords: string[] = [];
   dataSourceRecords: any[] = [];
 
@@ -71,6 +74,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     if (this.resourceSubscription) {
       this.resourceSubscription.unsubscribe();
     }
+    if (this.recordsSubscription) {
+      this.recordsSubscription.unsubscribe();
+    }
 
     // get the records according to the open resource
     this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
@@ -78,10 +84,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
       variables: {
         first: ITEMS_PER_PAGE,
         id: this.id,
-        display: false
+        display: false,
+        showDeletedRecords: this.showDeletedRecords
       }
     });
-    this.recordsQuery.valueChanges.subscribe(res => {
+    this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(res => {
       this.cachedRecords = res.data.resource.records.edges.map(x => x.node);
       this.dataSourceRecords = this.cachedRecords.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
@@ -148,7 +155,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param core Is the form core.
    */
   private setDisplayedColumns(core: boolean): void {
-    const columns = [];
+    let columns = [];
     if (core) {
       for (const field of this.resource.fields.filter((x: any) => x.isRequired === true)) {
         columns.push(field.name);
@@ -158,7 +165,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         columns.push(field.name);
       }
     }
-    columns.push('_actions');
+    columns = columns.concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
 

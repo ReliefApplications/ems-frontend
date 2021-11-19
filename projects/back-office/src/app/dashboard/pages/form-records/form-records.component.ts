@@ -24,6 +24,7 @@ import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 const ITEMS_PER_PAGE = 10;
+const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
 @Component({
   selector: 'app-form-records',
@@ -42,8 +43,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   public showSidenav = true;
   private historyId = '';
   private formSubscription?: Subscription;
+  private recordsSubscription?: Subscription;
   public cachedRecords: Record[] = [];
-
+  public defaultColumns = DEFAULT_COLUMNS;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -86,6 +88,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
     }
+    if (this.recordsSubscription) {
+      this.recordsSubscription.unsubscribe();
+    }
 
     // get the records linked to the form
     this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
@@ -93,11 +98,12 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       variables: {
         id: this.id,
         first: ITEMS_PER_PAGE,
-        display: false
+        display: false,
+        showDeletedRecords: this.showDeletedRecords
       }
     });
 
-    this.recordsQuery.valueChanges.subscribe(res => {
+    this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(res => {
       this.cachedRecords = res.data.form.records.edges.map((x: any) => x.node);
       this.dataSource = this.cachedRecords.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
@@ -163,14 +169,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * Modifies the list of columns.
    */
   private setDisplayedColumns(): void {
-    const columns: any[] = [];
+    let columns: any[] = [];
     const structure = JSON.parse(this.form.structure);
     if (structure && structure.pages) {
       for (const page of JSON.parse(this.form.structure).pages) {
         extractColumns(page, columns);
       }
     }
-    columns.push('_actions');
+    columns = columns.concat(DEFAULT_COLUMNS);
     this.displayedColumns = columns;
   }
 
