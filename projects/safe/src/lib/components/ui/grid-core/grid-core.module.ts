@@ -21,6 +21,7 @@ import { SafeArrayFilterModule } from './array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu.module';
 import { SafeDropdownFilterModule } from './dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-filter-menu.module';
+import { SafeGridModule } from './grid/grid.module';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-fi
     SafeDropdownFilterModule,
     SafeDropdownFilterMenuModule,
     MatDividerModule,
+    SafeGridModule
   ],
   exports: [
     SafeGridCoreComponent

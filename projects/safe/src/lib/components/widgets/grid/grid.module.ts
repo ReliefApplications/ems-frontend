@@ -26,4 +26,4 @@ import { SafeGridCoreModule } from '../../ui/grid-core/grid-core.module';
   ],
   exports: [SafeGridWidgetComponent]
 })
-export class SafeGridModule { }
+export class SafeGridWidgetModule { }

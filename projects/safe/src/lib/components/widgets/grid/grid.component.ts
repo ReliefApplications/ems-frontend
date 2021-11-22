@@ -24,7 +24,7 @@ const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 @Component({
-  selector: 'safe-grid',
+  selector: 'safe-grid-widget',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
