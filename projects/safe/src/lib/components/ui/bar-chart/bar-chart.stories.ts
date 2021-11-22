@@ -38,54 +38,70 @@ const Template: Story<SafeBarChartComponent> = args => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  legend: {visible: false, orientation: 'horizontal', position: 'bottom'},
+  legend: {visible: true, orientation: 'horizontal', position: 'bottom'},
   title: {visible: true, text: 'title', position: 'bottom'},
   series: [
     {
+      name: 'Serie 1',
       data: [
         {
           field: 8,
-          category: 'category 1',
-          color: undefined
+          category: 'category 1'
         },
         {
           field: 7,
-          category: 'category 2',
-          color: undefined
+          category: 'category 2'
         },
         {
           field: 19,
-          category: 'category 3',
-          color: undefined
+          category: 'category 3'
         },
         {
           field: 16,
-          category: 'category 4',
-          color: undefined
+          category: 'category 4'
         }
       ]
     },
     {
+      name: 'Serie 2',
+      color: '#F4E683',
       data: [
         {
           field: 8,
-          category: 'category 1',
-          color: '#FDA649'
+          category: 'category 1'
         },
         {
           field: 7,
-          category: 'category 2',
-          color: '#F4E683'
+          category: 'category 2'
         },
         {
           field: 19,
-          category: 'category 3',
-          color: '#B83C70'
+          category: 'category 3'
         },
         {
           field: 16,
-          category: 'category 4',
-          color: '#4DB3E4'
+          category: 'category 4'
+        }
+      ]
+    },
+    {
+      name: 'Serie 3',
+      data: [
+        {
+          field: 8,
+          category: 'category 1'
+        },
+        {
+          field: 7,
+          category: 'category 2'
+        },
+        {
+          field: 19,
+          category: 'category 5'
+        },
+        {
+          field: 16,
+          category: 'category 6'
         }
       ]
     }
