@@ -34,7 +34,13 @@ const DEFAULT_DATA = [
         boolean: true,
         color: 'red',
         dropdown: 1,
-        radiogroup: 2
+        radiogroup: 2,
+        date: new Date(),
+        file: [
+            {
+                name: 'file'
+            }
+        ]
     }
 ];
 
@@ -108,6 +114,23 @@ Default.args = {
                     }
                 ]
             }
+        },
+        {
+            title: 'Date',
+            name: 'date',
+            type: 'date',
+            meta: {
+                type: 'date',
+                format: 'dd/MM/yy'
+            }
+        },
+        {
+            title: 'File',
+            name: 'file',
+            type: 'JSON',
+            meta: {
+                type: 'file'
+            }
         }
     ],
     data: {
@@ -120,4 +143,113 @@ export const Loading = Template.bind({});
 Loading.args = {
     ...Default.args,
     loading: true
+};
+
+const MULTI_SELECT_DATA = [
+    {
+        checkbox: [1, 2],
+        tagbox: [1, 2],
+        users: [1, 2]
+    }
+];
+
+export const MultiSelectInputs = Template.bind({});
+MultiSelectInputs.args = {
+    fields: [
+        {
+            title: 'Checkbox',
+            name: 'checkbox',
+            type: 'JSON',
+            meta: {
+                type: 'checkbox',
+                choices: [
+                    {
+                        value: 1,
+                        text: 'Option 1'
+                    },
+                    {
+                        value: 2,
+                        text: 'Option 2'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Tagbox',
+            name: 'tagbox',
+            type: 'JSON',
+            meta: {
+                type: 'tagbox',
+                choices: [
+                    {
+                        value: 1,
+                        text: 'Option 1'
+                    },
+                    {
+                        value: 2,
+                        text: 'Option 2'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Users',
+            name: 'users',
+            type: 'JSON',
+            meta: {
+                type: 'users',
+                choices: [
+                    {
+                        value: 1,
+                        text: 'User 1'
+                    },
+                    {
+                        value: 2,
+                        text: 'User 2'
+                    }
+                ]
+            }
+        }
+    ],
+    data: {
+        data: MULTI_SELECT_DATA,
+        total: MULTI_SELECT_DATA.length
+    }
+};
+
+const COMPLEX_DATA = [
+    {
+        multipletext: {
+            first: 'first text',
+            second: 'second text'
+        }
+    }
+];
+
+export const ComplexInputs = Template.bind({});
+ComplexInputs.args = {
+    fields: [
+        {
+            title: 'Multiple text',
+            name: 'multipletext',
+            type: 'JSON',
+            meta: {
+                type: 'multipletext',
+                columns: [
+                    {
+                        label: 'First',
+                        name: 'first'
+                    },
+                    {
+                        label: 'Second',
+                        name: 'second'
+                    }
+                ]
+            }
+        }
+    ],
+    data: {
+        data: COMPLEX_DATA,
+        total: COMPLEX_DATA.length
+    }
 };

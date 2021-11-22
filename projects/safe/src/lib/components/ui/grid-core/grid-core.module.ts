@@ -5,7 +5,7 @@ import { SafeGridCoreComponent } from './grid-core.component';
 import { ExcelModule, GridModule, GroupModule } from '@progress/kendo-angular-grid';
 import { SafeFormModalModule } from '../../form-modal/form-modal.module';
 import { MatMenuModule } from '@angular/material/menu';
-import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -31,7 +31,6 @@ import { SafeGridModule } from './grid/grid.module';
     SafeFormModalModule,
     MatMenuModule,
     GroupModule,
-    ButtonModule,
     MatCheckboxModule,
     InputsModule,
     DateInputsModule,

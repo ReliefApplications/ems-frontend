@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.
   imports: [
     CommonModule,
     GridModule,
+    ButtonModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,

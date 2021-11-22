@@ -4,6 +4,8 @@ import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comme
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 
+const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
+
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -11,12 +13,16 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class SafeGridComponent implements OnInit {
 
+  public multiSelectTypes: string[] = MULTISELECT_TYPES;
+
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
   }
@@ -38,6 +44,15 @@ export class SafeGridComponent implements OnInit {
     } else {
       return value;
     }
+  }
+
+  // === EXPORT ===
+  /**
+   * Downloads file of record.
+   * @param file File to download.
+   */
+  public onDownload(file: any): void {
+    console.log('donwload');
   }
 
   // === UTILITIES ===

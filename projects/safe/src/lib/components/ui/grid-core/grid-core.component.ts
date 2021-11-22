@@ -974,16 +974,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === EXPORT ===
-
-  /**
-   * Downloads file of record.
-   * @param file File to download.
-   */
-  public onDownload(file: any): void {
-    const path = `download/file/${file.content}`;
-    this.downloadService.getFile(path, file.type, file.name);
-  }
-
   /**
    * Exports selected records to excel / csv file.
    * @param items items to download.
