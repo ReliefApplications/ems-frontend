@@ -1,14 +1,9 @@
 import { Pie } from './charts/pie';
 
 export const CHART_TYPES = [
-    // {
-    //     name: 'bar',
-    //     icon: 'bar_chart',
-    //     class: Pie
-    // },
     {
         name: 'donut',
-        icon: 'donut_small',
+        icon: '/assets/donut.svg',
         class: Pie
     },
     {
@@ -18,19 +13,19 @@ export const CHART_TYPES = [
     },
     {
         name: 'line',
-        icon: 'show_chart',
+        icon: '/assets/line.svg',
         class: Pie
     },
     {
         name: 'pie',
-        icon: 'pie_chart',
+        icon: '/assets/pie.svg',
         class: Pie
     },
-    // {
-    //     name: 'scatter',
-    //     icon: 'scatter_plot',
-    //     class: Pie
-    // }
+    {
+        name: 'bar',
+        icon: '/assets/bar.svg',
+        class: Pie
+    }
 ];
 
 export const LEGEND_POSITIONS = [

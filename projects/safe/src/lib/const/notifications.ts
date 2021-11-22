@@ -33,6 +33,7 @@ export const NOTIFICATIONS = {
     emailRegistered: 'Some emails are already part of the application and will not be invited.',
     emailTooLong(error: any): string { return `Failed to open your email client with selected records in the body. Either your browser or your email client does not support such long mailto command. ${error}`; },
     emailClientNotResponding(error: any): string { return `Failed to open your email client even without body. ${error}`; },
+    emailBodyCopiedToClipboard: 'Email body copied to clipboard, you can now past it to the opened email.',
     dataRecovered: 'The data has been recovered',
     profileSaved: 'Preferences saved.',
     appEdited: 'This application has been updated by someone else.',
