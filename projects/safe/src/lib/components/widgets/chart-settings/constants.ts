@@ -12,6 +12,11 @@ export const CHART_TYPES = [
         class: Pie
     },
     {
+        name: 'column',
+        icon: 'donut_small',
+        class: Pie
+    },
+    {
         name: 'line',
         icon: 'show_chart',
         class: Pie
