@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeGridComponent } from './grid.component';
+import { SafeGridWidgetComponent } from './grid.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeFormModalModule } from '../../form-modal/form-modal.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,7 @@ import { SafeGridCoreModule } from '../../ui/grid-core/grid-core.module';
 
 @NgModule({
   declarations: [
-    SafeGridComponent
+    SafeGridWidgetComponent
   ],
   imports: [
     CommonModule,
@@ -24,6 +24,6 @@ import { SafeGridCoreModule } from '../../ui/grid-core/grid-core.module';
     MatTooltipModule,
     SafeGridCoreModule
   ],
-  exports: [SafeGridComponent]
+  exports: [SafeGridWidgetComponent]
 })
 export class SafeGridModule { }

@@ -30,7 +30,7 @@ const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnChanges {
+export class SafeGridWidgetComponent implements OnChanges {
 
   // === TEMPLATE REFERENCE TO GRID ===
   @ViewChild(SafeGridCoreComponent) private grid?: SafeGridCoreComponent;

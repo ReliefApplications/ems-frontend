@@ -27,7 +27,7 @@
       "@progress/kendo-angular-indicators": "@progress/kendo-angular-indicators",
       "@progress/kendo-angular-common": "@progress/kendo-angular-common",
       "lodash/get": "lodash/get",
-      "lodash/iEqual": "lodash/isEqual"
+      "lodash/isEqual": "lodash/isEqual"
     }
   }
 }

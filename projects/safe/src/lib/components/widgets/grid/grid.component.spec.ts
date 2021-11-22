@@ -1,20 +1,20 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeGridComponent } from './grid.component';
+import { SafeGridWidgetComponent } from './grid.component';
 
-describe('SafeGridComponent', () => {
-  let component: SafeGridComponent;
-  let fixture: ComponentFixture<SafeGridComponent>;
+describe('SafeGridWidgetComponent', () => {
+  let component: SafeGridWidgetComponent;
+  let fixture: ComponentFixture<SafeGridWidgetComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SafeGridComponent ]
+      declarations: [ SafeGridWidgetComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeGridComponent);
+    fixture = TestBed.createComponent(SafeGridWidgetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

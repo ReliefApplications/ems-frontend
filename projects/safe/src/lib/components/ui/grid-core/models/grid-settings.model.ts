@@ -1,6 +1,9 @@
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 // TO-DO Finish it
+/**
+ * Grid Settings Interface.
+ */
 export interface GridSettings {
     id?: string;
     query?: {
