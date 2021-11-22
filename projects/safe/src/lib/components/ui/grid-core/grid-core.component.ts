@@ -753,24 +753,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
-  /**
-   * Displays text instead of values for questions with select.
-   * @param meta meta data of the question.
-   * @param value question value.
-   * @returns text value of the question.
-   */
-  public getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
-    if (meta.choices) {
-      if (Array.isArray(value)) {
-        return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
-      } else {
-        return meta.choices.find(x => x.value === value)?.text || '';
-      }
-    } else {
-      return value;
-    }
-  }
-
   // === SELECTION ===
 
   /**
@@ -1230,42 +1212,5 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    */
   columnVisibilityChange(): void {
     this.setColumnsConfig();
-  }
-
-
-  // === UTILITIES ===
-
-  /**
-   * Expands text in a full window modal.
-   * TODO: move to grid
-   * @param item Item to display data of.
-   * @param rowTitle field name.
-   */
-   public onExpandComment(item: any, rowTitle: any): void {
-    const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
-      data: {
-        title: rowTitle,
-        comment: get(item, rowTitle),
-        readOnly: !this.settings.actions || !this.settings.actions.inlineEdition
-      },
-      autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0'
-      },
-      panelClass: 'expanded-widget-dialog'
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
-        this.items.find(x => x.id === item.id)[rowTitle] = res;
-        if (this.updatedItems.find(x => x.id === item.id) !== undefined) {
-          this.updatedItems.find(x => x.id === item.id)[rowTitle] = res;
-        }
-        else {
-          this.updatedItems.push({ [rowTitle]: res, id: item.id });
-        }
-      }
-    });
   }
 }

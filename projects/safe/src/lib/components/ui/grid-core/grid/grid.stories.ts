@@ -32,7 +32,9 @@ const DEFAULT_DATA = [
         text: 'dummy text',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
         boolean: true,
-        color: 'red'
+        color: 'red',
+        dropdown: 1,
+        radiogroup: 2
     }
 ];
 
@@ -69,6 +71,42 @@ Default.args = {
             type: 'color',
             meta: {
                 type: 'color'
+            }
+        },
+        {
+            title: 'Dropdown',
+            name: 'dropdown',
+            type: 'dropdown',
+            meta: {
+                type: 'dropdown',
+                choices: [
+                    {
+                        value: 1,
+                        text: 'Option 1'
+                    },
+                    {
+                        value: 2,
+                        text: 'Option 2'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Radiogroup',
+            name: 'radiogroup',
+            type: 'radiogroup',
+            meta: {
+                type: 'radiogroup',
+                choices: [
+                    {
+                        value: 1,
+                        text: 'Option 1'
+                    },
+                    {
+                        value: 2,
+                        text: 'Option 2'
+                    }
+                ]
             }
         }
     ],
