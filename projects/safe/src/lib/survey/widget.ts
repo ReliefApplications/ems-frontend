@@ -304,12 +304,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
         dialogRef.afterClosed().subscribe(res => {
           if (res) {
-            if (question.displayAsGrid && gridComponent) {
-              gridComponent.availableRecords.push({
-                value: res.data.id,
-                text: res.data.data[question.displayField]
-              });
-            }
+            // TODO
+            // if (question.displayAsGrid && gridComponent) {
+            //   gridComponent.availableRecords.push({
+            //     value: res.data.id,
+            //     text: res.data.data[question.displayField]
+            //   });
+            // }
             if (multiselect) {
               const newItem = {
                 value: res.data.id,
