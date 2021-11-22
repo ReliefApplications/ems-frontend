@@ -1,22 +1,22 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { withKnobs } from '@storybook/addon-knobs';
-import { SafeBarChartComponent } from './bar-chart.component';
-import { SafeBarChartModule } from './bar-chart.module';
+import { SafeColumnChartComponent } from './column-chart.component';
+import { SafeColumnChartModule } from './column-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
-    component: SafeBarChartComponent,
+    component: SafeColumnChartComponent,
     decorators: [
         moduleMetadata({
             imports: [
-                SafeBarChartModule,
+                SafeColumnChartModule,
                 BrowserAnimationsModule
             ],
             providers: []
         }),
         withKnobs
     ],
-    title: 'UI/Charts/Bar Chart',
+    title: 'UI/Charts/Column Chart',
     argTypes: {
         series: {
             control: { type: 'object' }
@@ -30,8 +30,8 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeBarChartComponent> = args => ({
-    template: '<div style="height:400px"><safe-bar-chart [legend]="legend" [title]="title" [series]="series"></safe-bar-chart></div>',
+const Template: Story<SafeColumnChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-column-chart [legend]="legend" [title]="title" [series]="series"></safe-column-chart></div>',
     props: {
         ...args
     }

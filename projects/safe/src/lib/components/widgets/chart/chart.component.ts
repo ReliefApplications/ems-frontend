@@ -5,6 +5,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
+import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 
 const DEFAULT_FILE_NAME = 'chart.png';
@@ -31,7 +32,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   // === CHART ===
   @ViewChild('chartWrapper')
-  private chartWrapper?: SafeLineChartComponent | SafePieChartComponent | SafeDonutChartComponent | SafeBarChartComponent;
+  private chartWrapper?: SafeLineChartComponent | SafePieChartComponent | SafeDonutChartComponent |
+    SafeBarChartComponent | SafeColumnChartComponent;
 
   constructor(
     private aggregationBuilder: AggregationBuilderService
@@ -64,7 +66,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   */
   private getData(): void {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-      if (['pie', 'donut', 'line', 'bar'].includes(this.settings.chart.type)) {
+      if (['pie', 'donut', 'line', 'bar', 'column'].includes(this.settings.chart.type)) {
         this.series = [
           {
             data: JSON.parse(JSON.stringify(res.data.recordsAggregation))

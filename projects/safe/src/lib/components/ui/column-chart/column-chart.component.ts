@@ -23,11 +23,11 @@ interface ChartSeries {
 }
 
 @Component({
-  selector: 'safe-bar-chart',
-  templateUrl: './bar-chart.component.html',
-  styleUrls: ['./bar-chart.component.scss']
+  selector: 'safe-column-chart',
+  templateUrl: './column-chart.component.html',
+  styleUrls: ['./column-chart.component.scss']
 })
-export class SafeBarChartComponent implements OnInit {
+export class SafeColumnChartComponent implements OnInit {
 
   @Input() title: ChartTitle | undefined;
 

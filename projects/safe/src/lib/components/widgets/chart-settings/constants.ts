@@ -7,6 +7,11 @@ export const CHART_TYPES = [
         class: Pie
     },
     {
+        name: 'column',
+        icon: '/assets/column.svg',
+        class: Pie
+    },
+    {
         name: 'line',
         icon: '/assets/line.svg',
         class: Pie

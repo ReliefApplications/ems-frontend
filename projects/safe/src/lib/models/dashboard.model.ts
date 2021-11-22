@@ -29,6 +29,21 @@ export const WIDGET_TYPES = [
         settingsTemplate: SafeChartSettingsComponent
     },
     {
+        id: 'column-chart',
+        name: 'Column chart',
+        icon: '/assets/column.svg',
+        color: '#3B8CC4',
+        settings: {
+            title: 'Column chart', chart: {
+                type: 'column'
+            }
+        },
+        defaultCols: 3,
+        defaultRows: 3,
+        component: 'chart',
+        settingsTemplate: SafeChartSettingsComponent
+    },
+    {
         id: 'line-chart',
         name: 'Line chart',
         icon: '/assets/line.svg',
