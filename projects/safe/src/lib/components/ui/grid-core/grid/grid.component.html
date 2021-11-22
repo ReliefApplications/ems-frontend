@@ -1,5 +1,5 @@
 <!-- GRID HEADER -->
-<kendo-grid [loading]="loading" [data]="data" [autoSize]="false" [resizable]="resizable">
+<kendo-grid [loading]="loading" [data]="data" [autoSize]="false" [resizable]="resizable" [reorderable]="reorderable">
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="!readOnly" [width]="41" [headerClass]="{'text-center': true}"
@@ -19,8 +19,7 @@
                         <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                             let-filterService="filterService">
                             <safe-dropdown-filter-menu [filter]="filter" [filterService]="filterService"
-                                [data]="field.meta.choices" [field]="field.name" textField="text"
-                                valueField="value">
+                                [data]="field.meta.choices" [field]="field.name" textField="text" valueField="value">
                             </safe-dropdown-filter-menu>
                         </ng-template>
                         <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
@@ -40,7 +39,8 @@
                                 {{dataItem[field.name]}}
                             </div>
                             <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" mat-icon-button (click)="onExpandText(dataItem, field)">
+                                <button class="expand-text-button" mat-icon-button
+                                    (click)="onExpandText(dataItem, field)">
                                     <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
                                     </mat-icon>
                                 </button>
@@ -48,8 +48,7 @@
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( boolean ) -->
-                    <ng-template kendoGridCellTemplate let-dataItem="dataItem"
-                        *ngIf="field.meta.type === 'boolean'">
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
                         <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled />
                     </ng-template>
                     <!-- DISPLAY ( color ) -->
@@ -206,8 +205,7 @@
                                             <ng-container *ngIf="column.type === 'text'">
                                                 <textarea rows="2"
                                                     [formControl]="formGroup.get([field.name, row.name, column.name])"
-                                                    kendoGridFocusable [name]="row.name"
-                                                    class="k-textbox"></textarea>
+                                                    kendoGridFocusable [name]="row.name" class="k-textbox"></textarea>
                                             </ng-container>
                                             <ng-container *ngIf="['dropdown', 'radiogroup'].includes(column.type)">
                                                 <kendo-dropdownlist [data]="field.meta.choices" [textField]="'text'"
@@ -222,20 +220,17 @@
                                         <li *ngFor="let group of formGroup.get(field.name).controls; let i = index"
                                             [formGroup]="group">
                                             <ng-container *ngIf="column.cellType === 'text'">
-                                                <textarea rows="2" [formControlName]="column.name"
-                                                    kendoGridFocusable [name]="field.name + i"
-                                                    class="k-textbox"></textarea>
+                                                <textarea rows="2" [formControlName]="column.name" kendoGridFocusable
+                                                    [name]="field.name + i" class="k-textbox"></textarea>
                                             </ng-container>
-                                            <ng-container
-                                                *ngIf="['dropdown', 'radiogroup'].includes(column.cellType)">
+                                            <ng-container *ngIf="['dropdown', 'radiogroup'].includes(column.cellType)">
                                                 <kendo-dropdownlist [data]="field.meta.choices" [textField]="'text'"
                                                     [valueField]="'value'" [valuePrimitive]="true"
                                                     [formControlName]="column.name">
                                                 </kendo-dropdownlist>
                                             </ng-container>
                                             <ng-container *ngIf="column.cellType === 'boolean'">
-                                                <input type="checkbox" kendoCheckBox
-                                                    [formControlName]="column.name" />
+                                                <input type="checkbox" kendoCheckBox [formControlName]="column.name" />
                                             </ng-container>
                                             <ng-container *ngIf="multiSelectTypes.includes(column.cellType)">
                                                 <kendo-multiselect [data]="field.meta.choices" [textField]="'text'"
@@ -274,16 +269,16 @@
                     [matMenuTriggerFor]="menu">
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button *ngIf="(!settings.actions || settings.actions.update) && dataItem.canUpdate"
-                        mat-menu-item color="warn" (click)="onUpdateRow(dataItem.id)">
+                    <button *ngIf="(!settings.actions || settings.actions.update) && dataItem.canUpdate" mat-menu-item
+                        color="warn" (click)="onUpdateRow(dataItem.id)">
                         Update
                     </button>
                     <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
                         (click)="onViewHistory(dataItem.id)">
                         History
                     </button>
-                    <button *ngIf="(!settings.actions || settings.actions.convert) && dataItem.canUpdate"
-                        mat-menu-item color="warn" (click)="onConvertRecord([idx - skip])">
+                    <button *ngIf="(!settings.actions || settings.actions.convert) && dataItem.canUpdate" mat-menu-item
+                        color="warn" (click)="onConvertRecord([idx - skip])">
                         Convert
                     </button>
                     <ng-container *ngIf="(!settings.actions || settings.actions.delete) && dataItem.canDelete">
@@ -299,7 +294,8 @@
     <!-- ROW SUBGRID -->
     <ng-container *ngIf="detailsField">
         <div *kendoGridDetailTemplate="let dataItem">
-            <safe-grid-core [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></safe-grid-core>
+            <safe-grid-core [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()">
+            </safe-grid-core>
         </div>
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->

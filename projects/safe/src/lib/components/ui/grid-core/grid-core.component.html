@@ -4,7 +4,7 @@
 [reorderable]="!readOnly" [sortable]="!readOnly" [pageable]="pagerSettings" [sort]="sort" [rowSelected]="isRowSelected"
 [selectable]="!readOnly ? selectableSettings : false" (selectionChange)="selectionChange($event)" (sortChange)="sortChange($event)"
 (pageChange)="pageChange($event)" [filterable]="filterType === 'classic' ? showFilter ? true : 'menu' : false" [filter]="filter"
-(filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="!readOnly"
+(filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
 (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
 (columnVisibilityChange)="columnVisibilityChange()">
     <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly"> -->

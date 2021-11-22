@@ -26,6 +26,7 @@ const Template: Story<SafeGridComponent> = args => ({
         [fields]="fields"
         [data]="data"
         [resizable]="resizable"
+        [reorderable]="reorderable"
     ></safe-grid></div>`,
     props: {
         ...args
@@ -153,8 +154,9 @@ Loading.args = {
 export const Fixed = Template.bind({});
 Fixed.args = {
     ...Default.args,
-    resizable: false
-}
+    resizable: false,
+    reorderable: false
+};
 
 const MULTI_SELECT_DATA = [
     {
