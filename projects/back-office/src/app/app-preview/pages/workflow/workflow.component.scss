@@ -1,14 +1,4 @@
-.mat-stepper-vertical, .mat-stepper-horizontal {
-    background-color: transparent;
-}
-
-.nav-buttons {
-    margin-top: 20px;
-    .next-button {
-        float: right;
-    }
-    
-    .back-button {
-        float: left;
-    }
+safe-workflow-stepper {
+    margin: 16px -24px;
+    display: block;
 }

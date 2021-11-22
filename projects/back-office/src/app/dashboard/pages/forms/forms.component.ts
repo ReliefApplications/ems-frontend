@@ -2,7 +2,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
 import { GET_SHORT_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
@@ -18,7 +17,6 @@ import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_F
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -32,10 +30,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
-  dataSource = new MatTableDataSource<Form>([]);
+  public displayedColumns = ['name', 'createdAt', 'status', 'versionsCount', 'recordsCount', 'core', 'parentForm', 'actions'];
+  public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
-
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -44,23 +41,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
-  // === FILTERS ===
-  public filtersDate = { startDate: '', endDate: '' };
-  public showFilters = false;
-  public searchText = '';
-  public statusFilter = '';
-  public coreFilter = '';
+  // === FILTERING ===
+  public filter: any;
 
+  // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: ''
   };
-
-  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
 
   constructor(
     private apollo: Apollo,
@@ -83,12 +73,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.formsQuery.valueChanges.subscribe(res => {
       this.cachedForms = res.data.forms.edges.map(x => x.node);
-      this.dataSource.data = this.cachedForms.slice(
+      this.forms.data = this.cachedForms.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
 
     this.authSubscription = this.authService.user.subscribe(() => {
@@ -106,7 +95,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.formsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -120,27 +110,39 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     } else {
-      this.dataSource.data = this.cachedForms.slice(
+      this.forms.data = this.cachedForms.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
   }
 
-  private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.coreFilter.trim().length === 0 ||
-          (this.coreFilter.trim().length > 0 && data.core.toString().toLowerCase().includes(this.coreFilter.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate));
-    };
+  /**
+   * Filters forms and updates table.
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.cachedForms = [];
+    this.pageInfo.pageIndex = 0;
+    this.formsQuery.fetchMore({
+      variables: {
+        first: ITEMS_PER_PAGE,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: fetchMoreResult.forms.edges,
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount
+          }
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+    this.forms.sort = this.sort || null;
   }
 
   ngOnDestroy(): void {
@@ -149,39 +151,47 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  /*  Remove a form if authorized.
+ /**
+  * Removes a form.
+  * @param form Form to delete.
+  * @param e click event.
   */
-  onDelete(element: any, e: any): void {
+  onDelete(form: Form, e: any): void {
     const warning = 'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${element.name} ? ${element.core ? warning : ''}`,
+        content: `Do you confirm the deletion of the form ${form.name} ? ${form.core ? warning : ''}`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        const id = element.id;
+        const id = form.id;
         this.apollo.mutate<DeleteFormMutationResponse>({
           mutation: DELETE_FORM,
           variables: {
             id
           }
         }).subscribe((res: any) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
-          this.dataSource.data = this.dataSource.data.filter(x => {
-            return x.id !== element.id && element.id !== x.resource?.coreForm?.id;
-          });
+          if (!res.errors) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
+            this.forms.data = this.forms.data.filter(x => {
+              return x.id !== form.id && form.id !== x.resource?.coreForm?.id;
+            });
+          } else {
+            this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message), { error: true });
+          }
         });
       }
     });
   }
 
-  /*  Display the AddForm modal.
-    Create a new form on closed if result.
+ /**
+  * Displays the AddForm modal.
+  * Creates a new form on closed if result.
   */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddFormComponent, {
@@ -212,32 +222,5 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       }
     });
-  }
-
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else if (column === 'core') {
-      this.coreFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.dataSource.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    // ignore that error
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.coreFilter = '';
-    this.clearDateFilter();
   }
 }

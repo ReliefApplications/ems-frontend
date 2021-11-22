@@ -45,7 +45,7 @@ export class SafeResourceGridModalComponent implements OnInit {
     this.ref.tick();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   onRowSelected(rows: any): void {
     if (this.multiSelect) {

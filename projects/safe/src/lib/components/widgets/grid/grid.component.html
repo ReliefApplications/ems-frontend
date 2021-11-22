@@ -1,4 +1,5 @@
 <div class="widget-container">
+    <!-- WIDGET HEADER ( title - quick action buttons ) -->
     <div class="widget-header">
         <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
         <div class="floating-button">
@@ -10,6 +11,7 @@
             </ng-container>
         </div>
     </div>
-    <safe-grid-core [settings]="settings" [layout]="layout" (defaultLayoutChanged)="onDefaultLayoutChanged($event)" (layoutChanged)="onLayoutChanged($event)"
-        [showSaveLayout]="true"></safe-grid-core>
+    <!-- GRID CONTENT -->
+    <safe-grid-core [settings]="settings" [layout]="layout" (defaultLayoutChanged)="onDefaultLayoutChanged($event)"
+        (layoutChanged)="onLayoutChanged($event)" [showSaveLayout]="true"></safe-grid-core>
 </div>

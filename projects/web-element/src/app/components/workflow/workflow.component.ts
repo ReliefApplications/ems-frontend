@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatHorizontalStepper } from '@angular/material/stepper';
 import { Workflow, Step } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../graphql/queries';
@@ -18,9 +17,9 @@ export class WorkflowComponent implements OnInit {
   public workflow?: Workflow;
   public steps: Step[] = [];
 
-  // === SELECTED STEP ===
-  public selectedStep?: Step;
-  public selectedIndex = 0;
+  // === ACTIVE STEP ===
+  public activeStep = 0;
+  public step: Step | null = null;
 
   constructor(
     private apollo: Apollo
@@ -38,29 +37,42 @@ export class WorkflowComponent implements OnInit {
         this.steps = res.data.workflow.steps || [];
         this.loading = res.loading;
         if (this.steps.length > 0) {
-          this.stepChange({ selectedIndex: 0 });
+          this.onOpenStep(0);
         }
       }
     });
   }
 
-  /* Display selected step
-  */
-  stepChange(e: any): void {
-    this.selectedStep = this.steps[e.selectedIndex];
-    this.selectedIndex = e.selectedIndex;
+  /**
+   * On Open Step.
+   */
+  public onOpenStep(index: number): void {
+    if (index >= 0 && index < this.steps.length) {
+      this.activeStep = index;
+      this.step = this.steps[index];
+    }
   }
 
-  /* Trigger step changes from grid widgets
+  /* Get data from within selected step
   */
-  onActivate(e: any, stepper: MatHorizontalStepper): void {
-    if (this.selectedIndex + 1 < this.steps.length) {
-      stepper.next();
-    } else if (this.selectedIndex + 1 === this.steps.length) {
-      stepper.selectedIndex = 0;
-      // this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
-    } else {
-      // this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+  onActivate(elementRef: any): void {
+    if (elementRef.goToNextStep) {
+      elementRef.goToNextStep.subscribe((event: any) => {
+        if (event) {
+          this.goToNextStep();
+        }
+      });
+    }
+  }
+
+  /**
+   * Navigates to the next step if possible and change selected step / index consequently
+   */
+  private goToNextStep(): void {
+    if (this.activeStep + 1 < this.steps.length) {
+      this.onOpenStep(this.activeStep + 1);
+    } else if (this.activeStep + 1 === this.steps.length) {
+      this.onOpenStep(0);
     }
   }
 }

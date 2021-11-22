@@ -17,6 +17,11 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeEmailService } from '../../../services/email.service';
 import { GridLayout } from '../../ui/grid-core/models/grid-layout.model';
 import { SafeGridCoreComponent } from '../../ui/grid-core/grid-core.component';
+import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+
+const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
+
+const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 @Component({
   selector: 'safe-grid',
@@ -126,8 +131,15 @@ export class SafeGridComponent implements OnChanges {
           name: this.settings.query.name,
           fields: options.bodyFields
         }};
-        this.emailService.sendMail(options.distributionList, options.subject, emailSettings, selectedRecords.map(x => x.id).length );
-        this.grid?.onExportRecord(this.grid?.selectedRowsIndex, 'xlsx');
+        const sortField = (this.grid.sort.length > 0 && this.grid.sort[0].dir) ? this.grid.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+        const sortOrder = (this.grid.sort.length > 0 && this.grid.sort[0].dir) ? this.grid.sort[0].dir : (this.settings.query.sort?.order || '');
+        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+           selectedRecords.map(x => x.id), sortField, sortOrder);
+        // TODO
+           // if (options.export) {
+        //   this.grid?.grid.saveAsExcel();
+        // }
       }
       if (promises.length > 0) {
         await Promise.all(promises);
@@ -184,8 +196,12 @@ export class SafeGridComponent implements OnChanges {
     }
   }
 
-  /*  Return a list of promises containing all the mutations in order to modify selected records accordingly to settings.
-      Apply inline edition before applying modifications.
+ /**
+  * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+  * Applies inline edition before applying modifications.
+  * @param modifications list of modifications to apply.
+  * @param rows rows to edit.
+  * @returns Array of Promises to execute.
   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
@@ -193,8 +209,8 @@ export class SafeGridComponent implements OnChanges {
       const record = this.grid?.gridData.data[index];
       const data = Object.assign({}, record);
       for (const modification of modifications) {
-        if (modification.value === 'today()' && modification.field.type.name === 'Date') {
-          data[modification.field.name] = new Date();
+        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+          data[modification.field.name] = this.getDateForFilter(modification.value);
         } else {
           data[modification.field.name] = modification.value;
         }
@@ -211,6 +227,33 @@ export class SafeGridComponent implements OnChanges {
       }).toPromise());
     }
     return promises;
+  }
+
+  /**
+   * Gets from input date value the three dates used for filtering.
+   * @param value input date value
+   * @returns calculated day, beginning of day, and ending of day
+   */
+  private getDateForFilter(value: any): Date {
+    // today's date
+    let date: Date;
+    if (value === 'today()') {
+      date = new Date();
+      // today + number of days
+    } else if (REGEX_PLUS.test(value)) {
+      const difference = parseInt(value.split('+')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // today - number of days
+    } else if (REGEX_MINUS.test(value)) {
+      const difference = - parseInt(value.split('-')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // classic date
+    } else {
+      date = new Date(value);
+    }
+    return date;
   }
 
   /* Download the file.

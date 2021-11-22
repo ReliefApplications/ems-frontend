@@ -9,6 +9,7 @@ import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent }
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
+import { SCHEMA_UPDATE } from '../../../app.module';
 
 @Component({
   selector: 'app-form-builder',
@@ -149,15 +150,20 @@ export class FormBuilderComponent implements OnInit {
       }).subscribe(res => {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
-          this.form = { ...res.data?.editForm, structure };
-          this.structure = structure;
-          localStorage.removeItem(`form:${this.id}`);
-          this.hasChanges = false;
-          this.authService.canLogout.next(true);
+          SCHEMA_UPDATE.asObservable().subscribe(refresh => {
+            if (refresh) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
+              this.form = { ...res.data?.editForm, structure };
+              this.structure = structure;
+              localStorage.removeItem(`form:${this.id}`);
+              this.hasChanges = false;
+              this.authService.canLogout.next(true);
+              statusModal.close();
+            }
+          });
         }
-        statusModal.close();
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
         statusModal.close();
@@ -183,7 +189,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
@@ -245,7 +251,7 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message), { error: true });
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName));
@@ -273,7 +279,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));

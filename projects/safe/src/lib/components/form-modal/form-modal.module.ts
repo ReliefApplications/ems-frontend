@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 
 @NgModule({
   declarations: [SafeFormModalComponent],
@@ -17,7 +19,9 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatButtonModule,
     MatTabsModule,
     SafeButtonModule,
-    SafeIconModule
+    SafeIconModule,
+    SafeRecordHistoryModalModule,
+    SafeRecordSummaryModule
   ],
   exports: [SafeFormModalComponent]
 })

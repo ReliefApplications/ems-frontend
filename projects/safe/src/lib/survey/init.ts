@@ -27,6 +27,7 @@ export function initCustomWidgets(
   environment: any
 ): void {
   Survey.settings.commentPrefix = '_comment';
+  // supportCreatorV2
   widgets.select2tagbox(Survey);
   initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);

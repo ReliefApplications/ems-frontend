@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule, SafeApplicationsSummaryModule } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -21,9 +21,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FilterComponent } from './components/filter/filter.component';
 
 @NgModule({
-  declarations: [ApplicationsComponent, ChoseRoleComponent],
+  declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
     imports: [
       CommonModule,
       ApplicationsRoutingModule,
@@ -47,7 +48,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
       MatDividerModule,
       SafeButtonModule,
       MatButtonModule,
-      MatPaginatorModule
+      MatPaginatorModule,
+      SafeApplicationsSummaryModule
     ],
   exports: [ApplicationsComponent]
 })
