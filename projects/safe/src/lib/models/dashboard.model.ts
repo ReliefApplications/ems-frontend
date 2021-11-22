@@ -59,6 +59,21 @@ export const WIDGET_TYPES = [
         settingsTemplate: SafeChartSettingsComponent
     },
     {
+      id: 'bar-chart',
+      name: 'Bar chart',
+      icon: '/assets/pie.svg',
+      color: '#8CCDD5',
+      settings: {
+        title: 'Bar chart', chart: {
+          type: 'bar'
+        }
+      },
+      defaultCols: 3,
+      defaultRows: 3,
+      component: 'chart',
+      settingsTemplate: SafeChartSettingsComponent
+    },
+    {
         id: 'grid',
         name: 'Grid',
         icon: '/assets/grid.svg',
