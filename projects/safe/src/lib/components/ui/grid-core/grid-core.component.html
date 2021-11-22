@@ -16,7 +16,7 @@
         <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
         (click)="onCancelChanges()">Cancel</button>
         <button *ngIf="filterType === 'classic'" kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
-        <input *ngIf="filterType === 'fullGrid'" placeholder="Search in all columns..." kendoTextBox (input)="onFilterFullGrid($event.target)" />
+        <input *ngIf="filterType === 'fullGrid'" placeholder="Search in all columns..." kendoTextBox (input)="onSearch($event.target)" />
         <span kendotooltip *ngIf="!parent && isAdmin && showSaveLayout">
             <button title="Saving will store the current grid layout as default layout for other users"
                 class='k-button' (click)="saveDefaultLayout()" [disabled]="!hasLayoutChanges">Save Layout as default</button>
