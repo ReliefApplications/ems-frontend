@@ -1237,6 +1237,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Expands text in a full window modal.
+   * TODO: move to grid
    * @param item Item to display data of.
    * @param rowTitle field name.
    */
@@ -1266,14 +1267,5 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-  }
-
-  /**
-   * Checks if element overflows
-   * @param e Component resizing event.
-   * @returns True if overflows.
-   */
-  isEllipsisActive(e: any): boolean {
-    return (e.offsetWidth < e.scrollWidth);
   }
 }
