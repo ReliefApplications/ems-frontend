@@ -230,7 +230,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*  Edit the permissions layer.
+ /**
+  * Edits the permissions layer.
+  * @param e New permissions.
   */
   saveAccess(e: any): void {
     this.apollo.mutate<EditResourceMutationResponse>({
@@ -246,6 +248,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Downloads the list of records of the resource.
+   * @param type Type of the document to download ( excel or csv ).
+   */
   onDownload(type: string): void {
     const path = `download/resource/records/${this.id}`;
     const fileName = `${this.resource.name}.${type}`;
@@ -257,17 +263,24 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * Get the records template, for upload.
    */
   onDownloadTemplate(): void {
-    const formCoreID = this.resource.forms.filter((x: any) => x.core === true);
-    const path = `download/form/records/${formCoreID[0].id}`;
+    const path = `download/resource/records/${this.resource.id}`;
     const queryString = new URLSearchParams({ type: 'xlsx', template: 'true' }).toString();
     this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, `${this.resource.name}_template.xlsx`);
   }
 
+  /**
+   * Detects changes on the file.
+   * @param event new file event.
+   */
   onFileChange(event: any): void {
     const file = event.target.files[0];
     this.uploadFileData(file);
   }
 
+  /**
+   * Calls rest endpoint to upload new records for the resource.
+   * @param file File to upload.
+   */
   uploadFileData(file: any): void {
     const path = `upload/resource/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(res => {
