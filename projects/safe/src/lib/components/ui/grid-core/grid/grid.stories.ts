@@ -21,7 +21,12 @@ export default {
 } as Meta;
 
 const Template: Story<SafeGridComponent> = args => ({
-    template: '<div style="height: 400px"><safe-grid [loading]="loading" [fields]="fields" [data]="data"></safe-grid></div>',
+    template: `<div style="height: 400px"><safe-grid
+        [loading]="loading"
+        [fields]="fields"
+        [data]="data"
+        [resizable]="resizable"
+    ></safe-grid></div>`,
     props: {
         ...args
     }
@@ -144,6 +149,12 @@ Loading.args = {
     ...Default.args,
     loading: true
 };
+
+export const Fixed = Template.bind({});
+Fixed.args = {
+    ...Default.args,
+    resizable: false
+}
 
 const MULTI_SELECT_DATA = [
     {

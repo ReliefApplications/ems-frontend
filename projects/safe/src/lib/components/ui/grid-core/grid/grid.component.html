@@ -1,5 +1,5 @@
 <!-- GRID HEADER -->
-<kendo-grid [loading]="loading" [data]="data" [autoSize]="false">
+<kendo-grid [loading]="loading" [data]="data" [autoSize]="false" [resizable]="resizable">
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="!readOnly" [width]="41" [headerClass]="{'text-center': true}"

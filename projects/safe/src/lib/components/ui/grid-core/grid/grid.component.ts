@@ -19,6 +19,7 @@ export class SafeGridComponent implements OnInit {
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
+  @Input() resizable = true;
 
   constructor(
     private dialog: MatDialog
