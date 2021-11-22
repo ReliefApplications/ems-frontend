@@ -61,7 +61,7 @@ export const WIDGET_TYPES = [
     {
       id: 'bar-chart',
       name: 'Bar chart',
-      icon: '/assets/pie.svg',
+      icon: '/assets/bar.svg',
       color: '#8CCDD5',
       settings: {
         title: 'Bar chart', chart: {
