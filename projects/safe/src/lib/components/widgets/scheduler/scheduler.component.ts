@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
 
@@ -58,7 +58,7 @@ export class SafeSchedulerComponent implements OnInit {
             title: item.node?.data[this.settings.events.title],
             description: this.settings.events.description ? item.node?.data[this.settings.events.description] : null,
             start: item.node?.data[this.settings.events.startDate] ?
-             this.parseAdjust(item.node?.data[this.settings.events.startDate]) : new Date(),
+              this.parseAdjust(item.node?.data[this.settings.events.startDate]) : new Date(),
             end: (this.settings.events.endDate && item.node?.data[this.settings.events.endDate]) ?
               this.parseAdjust(item.node?.data[this.settings.events.endDate]) : this.endlessDate
           } as SchedulerEvent

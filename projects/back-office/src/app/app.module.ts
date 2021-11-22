@@ -20,17 +20,14 @@ import { environment } from '../environments/environment';
 
 // MSAL
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
+import { BehaviorSubject } from 'rxjs';
 
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
-localStorage.setItem('loaded', 'false');
-
-const REFRESH = new BehaviorSubject<boolean>(false);
+export const SCHEMA_UPDATE = new BehaviorSubject<boolean>(false);
 
 /*  Configuration of the Apollo client.
 */
@@ -62,12 +59,9 @@ export function provideApollo(httpLink: HttpLink): any {
         authToken: localStorage.getItem('msal.idtoken')
       },
       connectionCallback: (error) => {
-        if (localStorage.getItem('loaded') === 'true') {
-          // location.reload();
-          REFRESH.next(true);
-          localStorage.setItem('loaded', 'false');
+        if (!error) {
+          SCHEMA_UPDATE.next(true);
         }
-        localStorage.setItem('loaded', 'true');
       }
     }
   });
@@ -173,16 +167,12 @@ export function provideApollo(httpLink: HttpLink): any {
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(
-    private apollo: Apollo
-  ) {
-    REFRESH.asObservable().subscribe((res) => {
-      console.log('Schema generated without cache reloading.');
-      // if (res) {
-      //   this.apollo.client.cache.reset().then(() => {
-      //     console.log('Schema generated.');
-      //   });
-      // }
+  constructor(private apollo: Apollo) {
+    SCHEMA_UPDATE.asObservable().subscribe((refresh) => {
+      if (refresh) {
+        this.apollo.client.cache.reset();
+        SCHEMA_UPDATE.next(false);
+      }
     });
   }
 }

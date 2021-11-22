@@ -13,6 +13,8 @@ import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { SafeApiProxyService } from '../../services/api-proxy.service';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
+import { SafeResourceGridModalComponent } from '../search-resource-grid-modal/search-resource-grid-modal.component';
+import { prettifyLabel } from '../../utils/prettify';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -232,22 +234,35 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   }
 
   private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
-    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+    return this.flatDeep(fields.map(f => {
+      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
-          return this.getFields(f.fields, f.name, true);
+          return this.getFields(f.fields, fullName, true);
         }
         default: {
+          let metaData = get(this.metaFields, fullName);
+          const title = f.label ? f.label : prettifyLabel(f.name);
+          if (f.kind === 'LIST') {
+            metaData = Object.assign([], metaData);
+            metaData.type = 'records';
+          }
           return {
-            name: prefix ? `${prefix}.${f.name}` : f.name,
-            title: f.label ? f.label : f.name,
+            name: fullName,
+            title,
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
-            filter: this.getFilter(f.type),
-            meta: this.metaFields[f.name],
-            disabled: disabled || DISABLED_FIELDS.includes(f.name)
-            // disabled: disabled || DISABLED_FIELDS.includes(f.name) || this.metaFields[f.name].readOnly
+            filter: (this.parent || prefix) ? '' : this.getFilter(f.type),
+            meta: metaData,
+            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            ...f.kind === 'LIST' && {
+              query: {
+                sort: f.sort,
+                fields: f.fields,
+                filter: f.filter
+              }
+            }
           };
         }
       }
@@ -357,17 +372,53 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
     // }
   }
 
-  public onShowDetails(index: number): void {
-    this.dialog.open(SafeRecordModalComponent, {
-      data: {
-        recordId: this.gridData.data[index].id,
-        locale: 'en',
-      },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
-      autoFocus: false
-    });
+  /**
+   * Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
+   * Opens list of records in grids.
+   * @param item item to display.
+   */
+  public onShowDetails(item: any, field?: any): void {
+    const isArray = Array.isArray(item);
+    // check if the detail is for a record, a resource or resources.
+    item = isArray ? (item.length <= 1 ? item[0] : item) : item;
+    if (isArray && item.length >= 2) {
+      const idsFilter = { field: 'ids', operator: 'in', value: item.map((x: { id: any; }) => x.id) };
+      // for resources, open it inside the SafeResourceGrid
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          multiselect: false,
+          gridSettings: {
+            fields: field.query.fields,
+            sort: field.query.sort,
+            filter: {
+              logic: 'and',
+              filters: [idsFilter, field.query.filter]
+            },
+            name: this.queryBuilder.getQueryNameFromResourceName(field.type),
+            template: null
+          }
+        }
+      });
+    } else {
+      // open the detail in the modal
+      const dialogRef = this.dialog.open(SafeRecordModalComponent, {
+        data: {
+          recordId: item.id,
+          locale: 'en',
+          template: isArray ? null : this.parent ? null : this.settings.query.template
+        },
+        height: '98%',
+        width: '100vw',
+        panelClass: 'full-screen-modal',
+        autoFocus: false
+      });
+    }
+  }
+
+  /* Check if element overflows
+  */
+  isEllipsisActive(e: any): boolean {
+    return (e.offsetWidth < e.scrollWidth);
   }
 
   onFilter(filter: any): void {
@@ -404,7 +455,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
    * @param path Path of the property.
    * @returns Value of the property.
    */
-   public getPropertyValue(item: any, path: string): any {
+  public getPropertyValue(item: any, path: string): any {
     const meta = get(this.metaFields, path);
     const value = get(item, path);
     if (meta.choices) {

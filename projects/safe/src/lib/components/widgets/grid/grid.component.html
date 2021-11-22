@@ -19,8 +19,8 @@
         (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true"
         (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
         (columnVisibilityChange)="columnVisibilityChange()">
+        <!-- ACTIONS -->
         <ng-template kendoGridToolbarTemplate position="top">
-            <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
             <button type="button" kendoGridExcelCommand class="k-button">Export all</button>
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
@@ -140,7 +140,7 @@
                             *ngIf="field.meta.type === 'records'">
                             <div *ngIf="dataItem[field.name]" class="textbox-container">
                                 <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
-                                    matTooltip="Open the details" (click)="onShowDetails(dataItem[field.name], field)">
+                                    matTooltip="Open detail" (click)="onShowDetails(dataItem[field.name], field)">
                                     {{dataItem[field.name].length}} item<span
                                         *ngIf="dataItem[field.name].length > 1">s</span>
                                 </div>
