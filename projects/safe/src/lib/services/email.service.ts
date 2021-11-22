@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from './snackbar.service';
 import { NOTIFICATIONS } from '../const/notifications';
 import { SafePreprocessorService } from './preprocessor.service';
-import {Clipboard} from '@angular/cdk/clipboard';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +29,9 @@ export class SafeEmailService {
     recipient: string, subject: string, body: string = '{dataset}', settings: any, ids: string[],
     sortField?: string, sortOrder?: string): Promise<void> {
 
-    body = await this.preprocessor.preprocess(body, {settings, ids, sortField, sortOrder });
+    body = await this.preprocessor.preprocess(body, { settings, ids, sortField, sortOrder });
     this.clipboard.copy(body);
-    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, { duration: 3000});
+    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, { duration: 3000 });
 
     subject = await this.preprocessor.preprocess(subject);
 
