@@ -31,7 +31,7 @@ export const WIDGET_TYPES = [
     {
         id: 'column-chart',
         name: 'Column chart',
-        icon: '/assets/donut.svg',
+        icon: '/assets/column.svg',
         color: '#3B8CC4',
         settings: {
             title: 'Column chart', chart: {

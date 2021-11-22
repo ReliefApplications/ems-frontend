@@ -31,6 +31,7 @@ export default {
 } as Meta;
 
 const Template: Story<SafeColumnChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-column-chart [legend]="legend" [title]="title" [series]="series"></safe-column-chart></div>',
     props: {
         ...args
     }
@@ -38,55 +39,72 @@ const Template: Story<SafeColumnChartComponent> = args => ({
 
 export const Default = Template.bind({});
 Default.args = {
+    legend: { visible: true, orientation: 'horizontal', position: 'bottom' },
+    title: { visible: true, text: 'title', position: 'bottom' },
     series: [
         {
+            name: 'Serie 1',
             data: [
                 {
                     field: 8,
-                    category: 'category 1',
-                    color: undefined
+                    category: 'category 1'
                 },
                 {
                     field: 7,
-                    category: 'category 2',
-                    color: undefined
+                    category: 'category 2'
                 },
                 {
                     field: 19,
-                    category: 'category 3',
-                    color: undefined
+                    category: 'category 3'
                 },
                 {
                     field: 16,
-                    category: 'category 4',
-                    color: undefined
+                    category: 'category 4'
                 }
             ]
         },
         {
+            name: 'Serie 2',
+            color: '#F4E683',
             data: [
                 {
-                    field: 3,
-                    category: 'category 1',
-                    color: '#FDA649'
+                    field: 8,
+                    category: 'category 1'
                 },
                 {
-                    field: 12,
-                    category: 'category 2',
-                    color: '#F4E683'
+                    field: 7,
+                    category: 'category 2'
                 },
                 {
-                    field: 4,
-                    category: 'category 3',
-                    color: '#B83C70'
+                    field: 19,
+                    category: 'category 3'
                 },
                 {
-                    field: 6,
-                    category: 'category 4',
-                    color: '#4DB3E4'
+                    field: 16,
+                    category: 'category 4'
+                }
+            ]
+        },
+        {
+            name: 'Serie 3',
+            data: [
+                {
+                    field: 8,
+                    category: 'category 1'
+                },
+                {
+                    field: 7,
+                    category: 'category 2'
+                },
+                {
+                    field: 19,
+                    category: 'category 5'
+                },
+                {
+                    field: 16,
+                    category: 'category 6'
                 }
             ]
         }
     ]
 };
-

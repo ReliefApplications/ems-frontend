@@ -8,7 +8,7 @@ export const CHART_TYPES = [
     },
     {
         name: 'column',
-        icon: 'donut_small',
+        icon: '/assets/column.svg',
         class: Pie
     },
     {

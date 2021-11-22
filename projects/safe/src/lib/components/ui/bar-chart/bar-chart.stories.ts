@@ -5,105 +5,106 @@ import { SafeBarChartModule } from './bar-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
-  component: SafeBarChartComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [
-        SafeBarChartModule,
-        BrowserAnimationsModule
-      ],
-      providers: []
-    }),
-    withKnobs
-  ],
-  title: 'UI/Charts/Bar Chart',
-  argTypes: {
-    series: {
-      control: { type: 'object' }
-    },
-    legend: {
-      control: { type: 'object' }
-    },
-    title: {
-      control: { type: 'object' }
+    component: SafeBarChartComponent,
+    decorators: [
+        moduleMetadata({
+            imports: [
+                SafeBarChartModule,
+                BrowserAnimationsModule
+            ],
+            providers: []
+        }),
+        withKnobs
+    ],
+    title: 'UI/Charts/Bar Chart',
+    argTypes: {
+        series: {
+            control: { type: 'object' }
+        },
+        legend: {
+            control: { type: 'object' }
+        },
+        title: {
+            control: { type: 'object' }
+        }
     }
-  }
 } as Meta;
 
 const Template: Story<SafeBarChartComponent> = args => ({
-  props: {
-    ...args
-  }
+    template: '<div style="height:400px"><safe-bar-chart [legend]="legend" [title]="title" [series]="series"></safe-bar-chart></div>',
+    props: {
+        ...args
+    }
 });
 
 export const Default = Template.bind({});
 Default.args = {
-  legend: {visible: true, orientation: 'horizontal', position: 'bottom'},
-  title: {visible: true, text: 'title', position: 'bottom'},
-  series: [
-    {
-      name: 'Serie 1',
-      data: [
+    legend: { visible: true, orientation: 'horizontal', position: 'bottom' },
+    title: { visible: true, text: 'title', position: 'bottom' },
+    series: [
         {
-          field: 8,
-          category: 'category 1'
+            name: 'Serie 1',
+            data: [
+                {
+                    field: 8,
+                    category: 'category 1'
+                },
+                {
+                    field: 7,
+                    category: 'category 2'
+                },
+                {
+                    field: 19,
+                    category: 'category 3'
+                },
+                {
+                    field: 16,
+                    category: 'category 4'
+                }
+            ]
         },
         {
-          field: 7,
-          category: 'category 2'
+            name: 'Serie 2',
+            color: '#F4E683',
+            data: [
+                {
+                    field: 8,
+                    category: 'category 1'
+                },
+                {
+                    field: 7,
+                    category: 'category 2'
+                },
+                {
+                    field: 19,
+                    category: 'category 3'
+                },
+                {
+                    field: 16,
+                    category: 'category 4'
+                }
+            ]
         },
         {
-          field: 19,
-          category: 'category 3'
-        },
-        {
-          field: 16,
-          category: 'category 4'
+            name: 'Serie 3',
+            data: [
+                {
+                    field: 8,
+                    category: 'category 1'
+                },
+                {
+                    field: 7,
+                    category: 'category 2'
+                },
+                {
+                    field: 19,
+                    category: 'category 5'
+                },
+                {
+                    field: 16,
+                    category: 'category 6'
+                }
+            ]
         }
-      ]
-    },
-    {
-      name: 'Serie 2',
-      color: '#F4E683',
-      data: [
-        {
-          field: 8,
-          category: 'category 1'
-        },
-        {
-          field: 7,
-          category: 'category 2'
-        },
-        {
-          field: 19,
-          category: 'category 3'
-        },
-        {
-          field: 16,
-          category: 'category 4'
-        }
-      ]
-    },
-    {
-      name: 'Serie 3',
-      data: [
-        {
-          field: 8,
-          category: 'category 1'
-        },
-        {
-          field: 7,
-          category: 'category 2'
-        },
-        {
-          field: 19,
-          category: 'category 5'
-        },
-        {
-          field: 16,
-          category: 'category 6'
-        }
-      ]
-    }
-  ]
+    ]
 };
