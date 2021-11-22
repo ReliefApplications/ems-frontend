@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
 
