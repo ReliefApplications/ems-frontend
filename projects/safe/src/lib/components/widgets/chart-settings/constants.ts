@@ -21,6 +21,11 @@ export const CHART_TYPES = [
         icon: 'pie_chart',
         class: Pie
     },
+    {
+      name: 'bar',
+      icon: 'bar_chart',
+      class: Pie
+    },
     // {
     //     name: 'scatter',
     //     icon: 'scatter_plot',

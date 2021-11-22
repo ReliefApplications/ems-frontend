@@ -6,6 +6,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeDonutChartModule } from '../../ui/donut-chart/donut-chart.module';
 import { SafePieChartModule } from '../../ui/pie-chart/pie-chart.module';
 import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
+import {SafeBarChartModule} from '../../ui/bar-chart/bar-chart.module';
 
 @NgModule({
   declarations: [SafeChartComponent],
@@ -15,7 +16,8 @@ import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
         SafeButtonModule,
         SafeDonutChartModule,
         SafePieChartModule,
-        SafeLineChartModule
+        SafeLineChartModule,
+        SafeBarChartModule
     ],
   exports: [SafeChartComponent]
 })
