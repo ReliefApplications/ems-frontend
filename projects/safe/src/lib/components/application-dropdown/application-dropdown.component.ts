@@ -45,8 +45,10 @@ export class SafeApplicationDropdownComponent implements OnInit {
       this.apollo.query<GetApplicationsQueryResponse>({
         query: GET_APPLICATIONS,
         variables: {
-          filters: {
-            ids: this.value
+          filter: {
+            logic: 'and',
+            filters: [{ field: 'ids', operator: 'in', value: this.value}]
+            // ids: this.value
           }
         }
       }).subscribe(res => {

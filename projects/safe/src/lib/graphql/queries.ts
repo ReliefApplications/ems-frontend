@@ -63,7 +63,7 @@ export const GET_FORM_STRUCTURE = gql`
 
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetFormById($id: ID!) {
   form(id: $id) {
     id
     name
@@ -71,10 +71,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     structure
     status
     fields
-    records(filters: $filters) {
-      id
-      data(display: $display)
-    }
     resource{
       id
     }
@@ -508,8 +504,8 @@ export interface GetApplicationByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
-  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
