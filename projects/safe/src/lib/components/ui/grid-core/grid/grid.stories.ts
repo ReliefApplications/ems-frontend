@@ -235,7 +235,31 @@ const COMPLEX_DATA = [
         multipletext: {
             first: 'first text',
             second: 'second text'
-        }
+        },
+        matrix: {
+            first: 'first',
+            second: 'second'
+        },
+        matrixdropdown: {
+            first: {
+                first: 'first',
+                second: 'second'
+            },
+            second: {
+                first: 'first',
+                second: 'second'
+            }
+        },
+        matrixdynamic: [
+            {
+                first: 'first',
+                second: 'second'
+            },
+            {
+                first: 'first',
+                second: 'second'
+            }
+        ]
     }
 ];
 
@@ -256,6 +280,88 @@ ComplexInputs.args = {
                     {
                         label: 'Second',
                         name: 'second'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Matrix',
+            name: 'matrix',
+            type: 'JSON',
+            meta: {
+                type: 'matrix',
+                rows: [
+                    {
+                        label: '1st',
+                        name: 'first'
+                    },
+                    {
+                        label: '2nd',
+                        name: 'second'
+                    }
+                ],
+                columns: [
+                    {
+                        label: 'First',
+                        name: 'first'
+                    },
+                    {
+                        label: 'Second',
+                        name: 'second'
+                    },
+                    {
+                        label: 'Third',
+                        name: 'third'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Matrix Dropdown',
+            name: 'matrixdropdown',
+            type: 'JSON',
+            meta: {
+                type: 'matrixdropdown',
+                rows: [
+                    {
+                        label: '1st',
+                        name: 'first'
+                    },
+                    {
+                        label: '2nd',
+                        name: 'second'
+                    }
+                ],
+                columns: [
+                    {
+                        label: 'First',
+                        name: 'first',
+                        type: 'dropdown'
+                    },
+                    {
+                        label: 'Second',
+                        name: 'second',
+                        type: 'radiogroup'
+                    }
+                ]
+            }
+        },
+        {
+            title: 'Matrix Dynamic',
+            name: 'matrixdynamic',
+            type: 'JSON',
+            meta: {
+                type: 'matrixdynamic',
+                columns: [
+                    {
+                        label: 'First',
+                        name: 'first',
+                        type: 'dropdown'
+                    },
+                    {
+                        label: 'Second',
+                        name: 'second',
+                        type: 'radiogroup'
                     }
                 ]
             }
