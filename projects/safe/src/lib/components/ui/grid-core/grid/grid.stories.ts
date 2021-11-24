@@ -23,6 +23,7 @@ export default {
 const Template: Story<SafeGridComponent> = args => ({
     template: `<div style="height: 400px"><safe-grid
         [loading]="loading"
+        [error]="error"
         [fields]="fields"
         [data]="data"
         [resizable]="resizable"
@@ -50,98 +51,119 @@ const DEFAULT_DATA = [
     }
 ];
 
+const DEFAULT_FIELDS = [
+    {
+        title: 'Text',
+        name: 'text',
+        type: 'text',
+        meta: {
+            type: 'text'
+        }
+    },
+    {
+        title: 'Comment',
+        name: 'comment',
+        type: 'comment',
+        meta: {
+            type: 'text'
+        }
+    },
+    {
+        title: 'Boolean',
+        name: 'boolean',
+        type: 'boolean',
+        meta: {
+            type: 'boolean'
+        }
+    },
+    {
+        title: 'Color',
+        name: 'color',
+        type: 'color',
+        meta: {
+            type: 'color'
+        }
+    },
+    {
+        title: 'Dropdown',
+        name: 'dropdown',
+        type: 'dropdown',
+        meta: {
+            type: 'dropdown',
+            choices: [
+                {
+                    value: 1,
+                    text: 'Option 1'
+                },
+                {
+                    value: 2,
+                    text: 'Option 2'
+                }
+            ]
+        }
+    },
+    {
+        title: 'Radiogroup',
+        name: 'radiogroup',
+        type: 'radiogroup',
+        meta: {
+            type: 'radiogroup',
+            choices: [
+                {
+                    value: 1,
+                    text: 'Option 1'
+                },
+                {
+                    value: 2,
+                    text: 'Option 2'
+                }
+            ]
+        }
+    },
+    {
+        title: 'Date',
+        name: 'date',
+        type: 'date',
+        meta: {
+            type: 'date',
+            format: 'dd/MM/yy'
+        }
+    },
+    {
+        title: 'File',
+        name: 'file',
+        type: 'JSON',
+        meta: {
+            type: 'file'
+        }
+    }
+];
+
 export const Default = Template.bind({});
 Default.args = {
-    fields: [
-        {
-            title: 'Text',
-            name: 'text',
-            type: 'text',
-            meta: {
-                type: 'text'
-            }
-        },
-        {
-            title: 'Comment',
-            name: 'comment',
-            type: 'comment',
-            meta: {
-                type: 'text'
-            }
-        },
-        {
-            title: 'Boolean',
-            name: 'boolean',
-            type: 'boolean',
-            meta: {
-                type: 'boolean'
-            }
-        },
-        {
-            title: 'Color',
-            name: 'color',
-            type: 'color',
-            meta: {
-                type: 'color'
-            }
-        },
-        {
-            title: 'Dropdown',
-            name: 'dropdown',
-            type: 'dropdown',
-            meta: {
-                type: 'dropdown',
-                choices: [
-                    {
-                        value: 1,
-                        text: 'Option 1'
-                    },
-                    {
-                        value: 2,
-                        text: 'Option 2'
-                    }
-                ]
-            }
-        },
-        {
-            title: 'Radiogroup',
-            name: 'radiogroup',
-            type: 'radiogroup',
-            meta: {
-                type: 'radiogroup',
-                choices: [
-                    {
-                        value: 1,
-                        text: 'Option 1'
-                    },
-                    {
-                        value: 2,
-                        text: 'Option 2'
-                    }
-                ]
-            }
-        },
-        {
-            title: 'Date',
-            name: 'date',
-            type: 'date',
-            meta: {
-                type: 'date',
-                format: 'dd/MM/yy'
-            }
-        },
-        {
-            title: 'File',
-            name: 'file',
-            type: 'JSON',
-            meta: {
-                type: 'file'
-            }
-        }
-    ],
+    fields: DEFAULT_FIELDS,
     data: {
         data: DEFAULT_DATA,
         total: DEFAULT_DATA.length
+    }
+};
+
+export const Empty = Template.bind({});
+Empty.args = {
+    fields: DEFAULT_FIELDS,
+    data: {
+        data: DEFAULT_DATA,
+        total: DEFAULT_DATA.length
+    }
+};
+
+export const Error = Template.bind({});
+Error.args = {
+    fields: DEFAULT_FIELDS,
+    error: true,
+    data: {
+        data: [],
+        total: 0
     }
 };
 

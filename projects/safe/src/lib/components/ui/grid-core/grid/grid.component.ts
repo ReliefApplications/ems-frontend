@@ -3,8 +3,7 @@ import { GridDataResult } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
+import { MULTISELECT_TYPES } from './grid.constants';
 
 @Component({
   selector: 'safe-grid',
@@ -19,6 +18,7 @@ export class SafeGridComponent implements OnInit {
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
+  @Input() error = false;
 
   // === DISPLAY ===
   @Input() resizable = true;

@@ -1,5 +1,5 @@
 <!-- GRID HEADER -->
-<kendo-grid [loading]="loading" [data]="data" [autoSize]="false" [resizable]="resizable" [reorderable]="reorderable">
+<kendo-grid [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable" [reorderable]="reorderable">
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="!readOnly" [width]="41" [headerClass]="{'text-center': true}"
@@ -300,6 +300,6 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
+        {{ error ? 'Invalid grid configuration' : 'No record detected.' }}
     </ng-template>
 </kendo-grid>
