@@ -72,7 +72,8 @@ const DEFAULT_FIELDS = [
         name: 'text',
         type: 'text',
         meta: {
-            type: 'text'
+            type: 'text',
+            filter: 'text'
         }
     },
     {
@@ -80,7 +81,8 @@ const DEFAULT_FIELDS = [
         name: 'comment',
         type: 'comment',
         meta: {
-            type: 'text'
+            type: 'text',
+            filter: 'text'
         }
     },
     {
@@ -88,7 +90,8 @@ const DEFAULT_FIELDS = [
         name: 'boolean',
         type: 'boolean',
         meta: {
-            type: 'boolean'
+            type: 'boolean',
+            filter: 'boolean'
         }
     },
     {
@@ -96,7 +99,8 @@ const DEFAULT_FIELDS = [
         name: 'color',
         type: 'color',
         meta: {
-            type: 'color'
+            type: 'color',
+            filter: ''
         }
     },
     {
@@ -105,6 +109,7 @@ const DEFAULT_FIELDS = [
         type: 'dropdown',
         meta: {
             type: 'dropdown',
+            filter: '',
             choices: [
                 {
                     value: 1,
@@ -123,6 +128,7 @@ const DEFAULT_FIELDS = [
         type: 'radiogroup',
         meta: {
             type: 'radiogroup',
+            filter: '',
             choices: [
                 {
                     value: 1,
@@ -141,6 +147,7 @@ const DEFAULT_FIELDS = [
         type: 'date',
         meta: {
             type: 'date',
+            filter: 'date',
             format: 'dd/MM/yy'
         }
     },
@@ -149,7 +156,8 @@ const DEFAULT_FIELDS = [
         name: 'file',
         type: 'JSON',
         meta: {
-            type: 'file'
+            type: 'file',
+            filter: ''
         }
     }
 ];

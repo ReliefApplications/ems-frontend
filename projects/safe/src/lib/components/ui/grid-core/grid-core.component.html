@@ -4,15 +4,13 @@
 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
 (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
 (columnVisibilityChange)="columnVisibilityChange()">
-    <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly"> -->
-<!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
-<!-- <kendo-grid-column-chooser></kendo-grid-column-chooser>
+    <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
+<button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button>
         <button *ngIf="showExport" type="button" kendoGridExcelCommand class="k-button">Export</button>
         <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
         (click)="onSaveChanges()">Save</button>
         <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button' [disabled]="!hasChanges"
         (click)="onCancelChanges()">Cancel</button>
-        <button *ngIf="filterType === 'classic'" kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
         <input *ngIf="filterType === 'fullGrid'" placeholder="Search in all columns..." kendoTextBox (input)="onSearch($event.target)" />
         <span kendotooltip *ngIf="!parent && isAdmin && showSaveLayout">
             <button title="Saving will store the current grid layout as default layout for other users"
@@ -35,8 +33,7 @@
                 Export selected
             </kendo-dropdownbutton>
         </ng-container>
-    </ng-template>
- FIELDS -->
+    </ng-template> -->
 <!-- <ng-container *ngFor="let field of fields"> -->
 <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
 <!-- <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"

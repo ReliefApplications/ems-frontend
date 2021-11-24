@@ -8,6 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
+import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
+import { SafeArrayFilterModule } from '../array-filter/array-filter.module';
+import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-menu.module';
 
 
 @NgModule({
@@ -23,7 +27,12 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    SafeExpandedCommentModule
+    SafeExpandedCommentModule,
+    // === FILTER ===
+    SafeDropdownFilterModule,
+    SafeDropdownFilterMenuModule,
+    SafeArrayFilterModule,
+    SafeArrayFilterMenuModule
   ],
   exports: [
     SafeGridComponent

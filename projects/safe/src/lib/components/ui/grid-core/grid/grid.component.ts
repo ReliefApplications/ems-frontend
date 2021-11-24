@@ -4,7 +4,7 @@ import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comme
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import { MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
-import { SortDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 
 @Component({
   selector: 'safe-grid',
@@ -30,17 +30,22 @@ export class SafeGridComponent implements OnInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
-
   get columnMenu(): { columnChooser: boolean, filter: boolean } {
     return {
       columnChooser: false,
-      filter: true
+      filter: !this.showFilter
     };
   }
 
   // === SELECT ===
   public selectableSettings = SELECTABLE_SETTINGS;
   @Output() selectionChange = new EventEmitter();
+
+  // === FILTER ===
+  @Input() filterable = true;
+  @Input() showFilter = false;
+  @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  @Output() filterChange = new EventEmitter();
 
   // === SORT ===
   @Input() sortable = true;
@@ -73,6 +78,25 @@ export class SafeGridComponent implements OnInit {
     } else {
       return value;
     }
+  }
+
+  // === FILTER ===
+
+  /**
+   * Handles filter change event.
+   * @param filter Filter event.
+   */
+  public onFilterChange(filter: CompositeFilterDescriptor): void {
+    this.filter = filter;
+    this.filterChange.emit(filter);
+  }
+
+  /**
+   * Toggles quick filter visibility
+   */
+  public onToggleFilter(): void {
+    this.showFilter = !this.showFilter;
+    this.onFilterChange({logic: 'and', filters: []});
   }
 
   // === SORT ===
