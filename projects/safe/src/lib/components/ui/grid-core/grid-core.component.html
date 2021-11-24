@@ -1,9 +1,5 @@
 <!-- GRID HEADER -->
-<!-- <kendo-grid id="customGrid" class="widget-content"
-[filterable]="filterType === 'classic' ? showFilter ? true : 'menu' : false" [filter]="filter"
-(filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-(columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
-(columnVisibilityChange)="columnVisibilityChange()">
+<!-- <kendo-grid id="customGrid" class="widget-content" (cellClick)="cellClickHandler($event)">
     <ng-template kendoGridToolbarTemplate position="top" *ngIf="!readOnly">
 <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button>
         <button *ngIf="showExport" type="button" kendoGridExcelCommand class="k-button">Export</button>
@@ -29,9 +25,6 @@
                 (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                 [disabled]="!canUpdateSelectedRows">Convert
             </button>
-            <kendo-dropdownbutton *ngIf="showExport" [data]="exportData" style="float: right">
-                Export selected
-            </kendo-dropdownbutton>
         </ng-container>
     </ng-template> -->
 <!-- <ng-container *ngFor="let field of fields"> -->
@@ -40,24 +33,6 @@
                 [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                 [filter]="field.filter" [filterable]="field.filter" [width]="field.width" [hidden]="field.hidden"
                 [minResizableWidth]="50"> -->
-<!-- FILTER -->
-<!-- <ng-container *ngIf="field.meta"> -->
-<!-- FILTER ( dropdown / radiogroup ) -->
-<!-- <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-                        <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
-                            let-filterService="filterService">
-                            <safe-dropdown-filter-menu [filter]="filter" [filterService]="filterService"
-                                [data]="field.meta.choices" [field]="field.name" textField="text"
-                                valueField="value">
-                            </safe-dropdown-filter-menu>
-                        </ng-template>
-                        <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                            <safe-dropdown-filter [filter]="filter" [data]="field.meta.choices" [field]="field.name"
-                                textField="text" valueField="value">
-                            </safe-dropdown-filter>
-                        </ng-template>
-                    </ng-container>
-                </ng-container> -->
 <!-- DISPLAY -->
 <!-- <ng-container *ngIf="field.meta"> -->
 <!-- DISPLAY ( text / comment ) -->
@@ -144,20 +119,6 @@
 <!-- <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                 [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
                 [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50">
-                <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
-                    let-filterService="filterService">
-                    <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
-                        [data]="field.meta.choices || []" [field]="field.name" textField="text" valueField="value">
-                    </safe-array-filter-menu>
-                </ng-template>
-                <ng-template kendoGridFilterCellTemplate let-filter let-dataItem="dataItem">
-                    <safe-array-filter [filter]="filter" [data]="field.meta.choices || []" [field]="field.name"
-                        textField="text" valueField="value">
-                    </safe-array-filter>
-                </ng-template>
-                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                    {{ getDisplayText(dataItem[field.name], field.meta) }}
-                </ng-template>
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                     <kendo-multiselect [data]="field.meta.choices" textField="text" valueField="value"
                         [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false">
@@ -294,5 +255,8 @@
 <!-- EXCEL EXPORT -->
 <!-- <kendo-grid-excel [fileName]="excelFileName"></kendo-grid-excel>
 </kendo-grid> -->
+<ng-template #toolbarTemplate>
+    <div>test</div>
+</ng-template>
 <safe-grid [fields]="fields" [data]="gridData" [loading]="loading" [pageSize]="pageSize" [skip]="skip"
     (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"></safe-grid>

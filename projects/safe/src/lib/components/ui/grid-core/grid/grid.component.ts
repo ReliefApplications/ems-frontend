@@ -1,19 +1,43 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { ColumnReorderEvent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import { MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+  const block = () => overlay.scrollStrategies.block();
+  return block;
+}
 
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss']
+  styleUrls: ['./grid.component.scss'],
+  providers: [
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    MonthViewService,
+    WeekNamesService,
+    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
+  ]
 })
 export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+
+  @Input() toolbarTemplate?: TemplateRef<any>;
 
   // === PAGINATION ===
   @Input() pageSize = 10;
@@ -36,6 +60,7 @@ export class SafeGridComponent implements OnInit {
       filter: !this.showFilter
     };
   }
+  @Output() columnChange = new EventEmitter();
 
   // === SELECT ===
   public selectableSettings = SELECTABLE_SETTINGS;
@@ -96,7 +121,7 @@ export class SafeGridComponent implements OnInit {
    */
   public onToggleFilter(): void {
     this.showFilter = !this.showFilter;
-    this.onFilterChange({logic: 'and', filters: []});
+    this.onFilterChange({ logic: 'and', filters: [] });
   }
 
   // === SORT ===
@@ -136,6 +161,57 @@ export class SafeGridComponent implements OnInit {
    * @returns selected status of the row.
    */
   public isRowSelected = (row: RowArgs) => this.selectedRows.includes(row.index);
+
+  // === LAYOUT ===
+  /**
+   * Set and emit new grid configuration after column reorder event.
+   * @param e ColumnReorderEvent
+   */
+  onColumnReorder(e: ColumnReorderEvent): void {
+    if ((e.oldIndex !== e.newIndex)) {
+      // const columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
+      const columnsOrder: any[] = [];
+      const tempFields: any[] = [];
+      let j = 0;
+      const oldIndex = e.oldIndex;
+      const newIndex = e.newIndex;
+
+      for (let i = 0; i < columnsOrder.length; i++) {
+        if (i === newIndex) {
+          if (oldIndex < newIndex) {
+            tempFields[j] = columnsOrder[i];
+            j++;
+            tempFields[j] = columnsOrder[oldIndex];
+          }
+          if (oldIndex > newIndex) {
+            tempFields[j] = columnsOrder[oldIndex];
+            j++;
+            tempFields[j] = columnsOrder[i];
+          }
+          j++;
+        }
+        else if (i !== oldIndex) {
+          tempFields[j] = columnsOrder[i];
+          j++;
+        }
+      }
+      this.columnChange.emit(tempFields.filter(x => x !== undefined));
+    }
+  }
+
+  /**
+   * Sets and emits new grid configuration after column resize event.
+   */
+  onColumnResize(): void {
+    this.columnChange.emit();
+  }
+
+  /**
+   * Sets and emits new grid configuration after column visibility event.
+   */
+  onColumnVisibilityChange(): void {
+    this.columnChange.emit();
+  }
 
   // === EXPORT ===
   /**

@@ -109,7 +109,7 @@ const DEFAULT_FIELDS = [
         type: 'dropdown',
         meta: {
             type: 'dropdown',
-            filter: '',
+            filter: 'dropdown',
             choices: [
                 {
                     value: 1,
@@ -128,7 +128,7 @@ const DEFAULT_FIELDS = [
         type: 'radiogroup',
         meta: {
             type: 'radiogroup',
-            filter: '',
+            filter: 'radiogroup',
             choices: [
                 {
                     value: 1,

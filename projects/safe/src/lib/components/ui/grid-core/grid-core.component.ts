@@ -8,8 +8,7 @@ import {
   GridComponent as KendoGridComponent,
   GridDataResult,
   PageChangeEvent,
-  SelectionEvent,
-  ColumnReorderEvent
+  SelectionEvent
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
@@ -35,13 +34,6 @@ import { GridLayout } from './models/grid-layout.model';
 import { GridSettings, FilterType } from './models/grid-settings.model';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
-import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
-import { PopupService } from '@progress/kendo-angular-popup';
-import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -61,25 +53,10 @@ const GRADIENT_SETTINGS: GradientSettings = {
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
-
 @Component({
   selector: 'safe-grid-core',
   templateUrl: './grid-core.component.html',
-  styleUrls: ['./grid-core.component.scss'],
-  providers: [
-    // PopupService,
-    // ResizeBatchService,
-    // CalendarDOMService,
-    // MonthViewService,
-    // WeekNamesService,
-    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-  ]
+  styleUrls: ['./grid-core.component.scss']
 })
 export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -1124,56 +1101,5 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       };
     }, {});
     this.saveLocalLayout();
-  }
-
-  /**
-   * Set and emit new grid configuration after column reorder event.
-   * @param e ColumnReorderEvent
-   */
-  columnReorder(e: ColumnReorderEvent): void {
-    if ((e.oldIndex !== e.newIndex)) {
-      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
-
-      const tempFields: any[] = [];
-      let j = 0;
-      const oldIndex = e.oldIndex;
-      const newIndex = e.newIndex;
-
-      for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex) {
-          if (oldIndex < newIndex) {
-            tempFields[j] = this.columnsOrder[i];
-            j++;
-            tempFields[j] = this.columnsOrder[oldIndex];
-          }
-          if (oldIndex > newIndex) {
-            tempFields[j] = this.columnsOrder[oldIndex];
-            j++;
-            tempFields[j] = this.columnsOrder[i];
-          }
-          j++;
-        }
-        else if (i !== oldIndex) {
-          tempFields[j] = this.columnsOrder[i];
-          j++;
-        }
-      }
-      this.columnsOrder = tempFields.filter(x => x !== undefined);
-      this.setColumnsConfig();
-    }
-  }
-
-  /**
-   * Sets and emits new grid configuration after column resize event.
-   */
-  columnResize(): void {
-    this.setColumnsConfig();
-  }
-
-  /**
-   * Sets and emits new grid configuration after column visibility event.
-   */
-  columnVisibilityChange(): void {
-    this.setColumnsConfig();
   }
 }

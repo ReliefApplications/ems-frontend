@@ -1,14 +1,17 @@
 <!-- GRID HEADER -->
 <kendo-grid [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
-    [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu"
-    [pageable]="pagerSettings" [pageSize]="pageSize" [skip]="skip"
-    [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter" (filterChange)="onFilterChange($event)"
-    (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort" (sortChange)="onSortChange($event)"
-    [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected" (selectionChange)="onSelectionChange($event)">
+    [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu" [pageable]="pagerSettings"
+    [pageSize]="pageSize" [skip]="skip" [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter"
+    (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
+    (sortChange)="onSortChange($event)" [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected"
+    (selectionChange)="onSelectionChange($event)" (columnReorder)="onColumnReorder($event)"
+    (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()">
     <ng-container *ngIf="fields.length > 0">
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-            <button matTooltip="Click to toggle visibility of filter" kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+            <ng-container [ngTemplateOutlet]="toolbarTemplate"></ng-container>
+            <button matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
+                (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
         </ng-template>
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
