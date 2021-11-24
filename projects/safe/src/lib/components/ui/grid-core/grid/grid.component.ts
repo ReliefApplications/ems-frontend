@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
@@ -60,6 +60,27 @@ export class SafeGridComponent implements OnInit {
     } else {
       return value;
     }
+  }
+
+  // === SORT ===
+  /**
+   * Handles sort change event.
+   * @param sort Sort event.
+   */
+  public onSortChange(sort: SortDescriptor[]): void {
+    this.sort = sort;
+    this.sortChange.emit(sort);
+  }
+
+  // === PAGINATION ===
+  /**
+   * Handles page change event.
+   * @param page Page event.
+   */
+  public onPageChange(page: PageChangeEvent): void {
+    this.skip = page.skip;
+    this.pageSize = page.take;
+    this.pageChange.emit(page);
   }
 
   // === EXPORT ===

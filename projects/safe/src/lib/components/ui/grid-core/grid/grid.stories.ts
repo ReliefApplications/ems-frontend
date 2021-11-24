@@ -35,7 +35,7 @@ const Template: Story<SafeGridComponent> = args => ({
     }
 });
 
-const DEFAULT_DATA = Array(10).fill(
+const DEFAULT_DATA = [
     {
         text: 'dummy text',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
@@ -49,8 +49,22 @@ const DEFAULT_DATA = Array(10).fill(
                 name: 'file'
             }
         ]
+    },
+    {
+        text: 'dummy text 2',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
+        boolean: false,
+        color: 'blue',
+        dropdown: 2,
+        radiogroup: 1,
+        date: new Date(),
+        file: [
+            {
+                name: 'file'
+            }
+        ]
     }
-);
+];
 
 const DEFAULT_FIELDS = [
     {
