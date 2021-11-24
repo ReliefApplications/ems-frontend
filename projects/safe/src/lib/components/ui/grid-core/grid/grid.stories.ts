@@ -28,13 +28,14 @@ const Template: Story<SafeGridComponent> = args => ({
         [data]="data"
         [resizable]="resizable"
         [reorderable]="reorderable"
+        [sortable]="sortable"
     ></safe-grid></div>`,
     props: {
         ...args
     }
 });
 
-const DEFAULT_DATA = [
+const DEFAULT_DATA = Array(10).fill(
     {
         text: 'dummy text',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
@@ -49,7 +50,7 @@ const DEFAULT_DATA = [
             }
         ]
     }
-];
+);
 
 const DEFAULT_FIELDS = [
     {
@@ -177,7 +178,8 @@ export const Fixed = Template.bind({});
 Fixed.args = {
     ...Default.args,
     resizable: false,
-    reorderable: false
+    reorderable: false,
+    sortable: false
 };
 
 const MULTI_SELECT_DATA = [

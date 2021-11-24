@@ -10,7 +10,6 @@ import {
   PageChangeEvent,
   SelectableSettings,
   SelectionEvent,
-  PagerSettings,
   ColumnReorderEvent,
   RowArgs
 } from '@progress/kendo-angular-grid';
@@ -34,7 +33,6 @@ import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.com
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { NOTIFICATIONS } from '../../../const/notifications';
-import { SafeExpandedCommentComponent } from './expanded-comment/expanded-comment.component';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings, FilterType } from './models/grid-settings.model';
 import get from 'lodash/get';
@@ -63,14 +61,6 @@ const SELECTABLE_SETTINGS: SelectableSettings = {
   checkboxOnly: true,
   mode: 'multiple',
   drag: false
-};
-
-const PAGER_SETTINGS: PagerSettings = {
-  buttonCount: 5,
-  type: 'numeric',
-  info: true,
-  pageSizes: true,
-  previousNext: true
 };
 
 const GRADIENT_SETTINGS: GradientSettings = {
@@ -178,7 +168,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   public canUpdateSelectedRows = false;
   public canDeleteSelectedRows = false;
   public selectableSettings = SELECTABLE_SETTINGS;
-  public pagerSettings = PAGER_SETTINGS;
   public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
@@ -290,7 +279,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Removes subscriptions when component is destroyed, to avoid duplication.
    */
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
@@ -745,7 +734,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    */
   public reloadData(): void {
     if (!this.parent) {
-      this.pageChange({ skip: 0, take: this.pageSize });
+      this.onPageChange({ skip: 0, take: this.pageSize });
     } else {
       this.childChanged.emit();
     }
@@ -997,7 +986,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Detects pagination events and update the items loaded.
    * @param event Page change event.
    */
-   public pageChange(event: PageChangeEvent): void {
+  public onPageChange(event: PageChangeEvent): void {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
@@ -1070,7 +1059,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({ skip: 0, take: this.pageSize });
+      this.onPageChange({ skip: 0, take: this.pageSize });
     }
   }
 
@@ -1102,7 +1091,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Detects sort events and update the items loaded.
    * @param sort Sort event.
    */
-  public sortChange(sort: SortDescriptor[]): void {
+  public onSortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
     this.layout.sort = sort;
     this.saveLocalLayout();
@@ -1110,7 +1099,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.loadItems();
     } else {
-      this.pageChange({ skip: 0, take: this.pageSize });
+      this.onPageChange({ skip: 0, take: this.pageSize });
     }
   }
 

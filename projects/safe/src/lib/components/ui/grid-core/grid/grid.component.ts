@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-import { MULTISELECT_TYPES } from './grid.constants';
+import { MULTISELECT_TYPES, PAGER_SETTINGS } from './grid.constants';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 @Component({
   selector: 'safe-grid',
@@ -14,6 +15,12 @@ export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
+  // === PAGINATION ===
+  @Input() pageSize = 10;
+  @Input() skip = 0;
+  public pagerSettings = PAGER_SETTINGS;
+  @Output() pageChange = new EventEmitter();
+
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
@@ -23,6 +30,11 @@ export class SafeGridComponent implements OnInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
+
+  // === SORT ===
+  @Input() sortable = true;
+  @Input() sort: SortDescriptor[] = [];
+  @Output() sortChange = new EventEmitter();
 
   constructor(
     private dialog: MatDialog
