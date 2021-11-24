@@ -12,20 +12,6 @@
             <button title="Saving will store the current grid layout as default layout for other users"
                 class='k-button' (click)="saveDefaultLayout()" [disabled]="!hasLayoutChanges">Save Layout as default</button>
         </span>
-        <ng-container *ngIf="selectedRowsIndex.length > 0">
-            <button *ngIf="(!settings.actions || settings.actions.delete)" class='k-button'
-                (click)="onDeleteRow(selectedRowsIndex)" style="float: right"
-                [disabled]="!canDeleteSelectedRows">Delete
-            </button>
-            <button *ngIf="(!settings.actions || settings.actions.update)" class='k-button'
-                (click)="onUpdateRow(selectedRowsIndex)" style="float: right"
-                [disabled]="!canUpdateSelectedRows">Update
-            </button>
-            <button *ngIf="(!settings.actions || settings.actions.convert)" class='k-button'
-                (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
-                [disabled]="!canUpdateSelectedRows">Convert
-            </button>
-        </ng-container>
     </ng-template> -->
 <!-- <ng-container *ngFor="let field of fields"> -->
 <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->

@@ -30,6 +30,8 @@ const Template: Story<SafeGridComponent> = args => ({
         [resizable]="resizable"
         [reorderable]="reorderable"
         [sortable]="sortable"
+        [filterable]="filterable"
+        [selectable]="selectable"
     ></safe-grid></div>`,
     props: {
         ...args
@@ -38,6 +40,7 @@ const Template: Story<SafeGridComponent> = args => ({
 
 const DEFAULT_DATA = [
     {
+        id: '1',
         text: 'dummy text',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
         boolean: true,
@@ -52,6 +55,7 @@ const DEFAULT_DATA = [
         ]
     },
     {
+        id: '2',
         text: 'dummy text 2',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
         boolean: false,

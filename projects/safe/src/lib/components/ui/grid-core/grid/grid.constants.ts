@@ -11,6 +11,7 @@ export const PAGER_SETTINGS: PagerSettings = {
 };
 
 export const SELECTABLE_SETTINGS: SelectableSettings = {
+    enabled: true,
     checkboxOnly: true,
     mode: 'multiple',
     drag: false

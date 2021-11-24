@@ -38,17 +38,17 @@ export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
-  // === PAGINATION ===
-  @Input() pageSize = 10;
-  @Input() skip = 0;
-  public pagerSettings = PAGER_SETTINGS;
-  @Output() pageChange = new EventEmitter();
-
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
+
+  // === EXPORT ===
+  @Input() exportable = true;
+
+  // === EDITION ===
+  @Input() editable = false;
 
   // === ACTIONS ===
   @Input() toolbarActions: GridAction[] = [];
@@ -67,7 +67,10 @@ export class SafeGridComponent implements OnInit {
   @Output() columnChange = new EventEmitter();
 
   // === SELECT ===
+  @Input() selectable = true;
+  @Input() multiSelect = true;
   public selectableSettings = SELECTABLE_SETTINGS;
+  @Input() selectedRows: any[] = [];
   @Output() selectionChange = new EventEmitter();
 
   // === FILTER ===
@@ -76,11 +79,15 @@ export class SafeGridComponent implements OnInit {
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   @Output() filterChange = new EventEmitter();
 
+  // === PAGINATION ===
+  @Input() pageSize = 10;
+  @Input() skip = 0;
+  public pagerSettings = PAGER_SETTINGS;
+  @Output() pageChange = new EventEmitter();
+
   // === SORT ===
   @Input() sortable = true;
-  @Input() multiSelect = true;
   @Input() sort: SortDescriptor[] = [];
-  @Input() selectedRows: number[] = [];
   @Output() sortChange = new EventEmitter();
 
   constructor(
@@ -155,7 +162,6 @@ export class SafeGridComponent implements OnInit {
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
-    console.log(selection);
     this.selectionChange.emit(selection);
   }
 
