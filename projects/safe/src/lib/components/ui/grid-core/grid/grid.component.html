@@ -270,10 +270,10 @@
             </kendo-grid-column-group>
         </ng-container>
         <!-- ROW DETAILS -->
-        <kendo-grid-column *ngIf="showDetails" [columnMenu]="false" [width]="54" [resizable]="false">
+        <kendo-grid-column [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                    (click)="onShowDetails(dataItem)" matTooltip="Open detail"></button>
+                    (click)="openRecord.emit(dataItem)" matTooltip="Open detail"></button>
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->

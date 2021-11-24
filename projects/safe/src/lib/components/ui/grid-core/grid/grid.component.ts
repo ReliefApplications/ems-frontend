@@ -43,6 +43,7 @@ export class SafeGridComponent implements OnInit {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
+  @Output() openRecord = new EventEmitter();
 
   // === EXPORT ===
   @Input() exportable = true;
