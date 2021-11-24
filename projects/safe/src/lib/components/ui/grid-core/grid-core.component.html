@@ -1,8 +1,5 @@
 <!-- GRID HEADER -->
 <!-- <kendo-grid id="customGrid" class="widget-content"
-[columnMenu]="!readOnly && filterType === 'classic' ? { columnChooser: false, filter: !showFilter } : false"
-[rowSelected]="isRowSelected"
-(selectionChange)="selectionChange($event)"
 [filterable]="filterType === 'classic' ? showFilter ? true : 'menu' : false" [filter]="filter"
 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
 (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
@@ -39,12 +36,7 @@
             </kendo-dropdownbutton>
         </ng-container>
     </ng-template>
-    <ng-container *ngIf="fields.length > 0"> -->
-<!-- ROW SELECTION -->
-<!-- <kendo-grid-checkbox-column *ngIf="!readOnly" [width]="41" [headerClass]="{'text-center': true}"
-            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="true">
-        </kendo-grid-checkbox-column> -->
-<!-- FIELDS -->
+ FIELDS -->
 <!-- <ng-container *ngFor="let field of fields"> -->
 <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
 <!-- <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"

@@ -31,6 +31,13 @@ export class SafeGridComponent implements OnInit {
   @Input() resizable = true;
   @Input() reorderable = true;
 
+  get columnMenu(): { columnChooser: boolean, filter: boolean } {
+    return {
+      columnChooser: false,
+      filter: true
+    };
+  }
+
   // === SELECT ===
   public selectableSettings = SELECTABLE_SETTINGS;
   @Output() selectionChange = new EventEmitter();
@@ -90,6 +97,10 @@ export class SafeGridComponent implements OnInit {
   }
 
   // === SELECT ===
+  /**
+   * Handles selection change event.
+   * @param selection Selection event.
+   */
   public onSelectionChange(selection: SelectionEvent): void {
     console.log(selection);
     this.selectionChange.emit(selection);

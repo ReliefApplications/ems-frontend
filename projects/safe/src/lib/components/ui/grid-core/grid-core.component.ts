@@ -8,10 +8,8 @@ import {
   GridComponent as KendoGridComponent,
   GridDataResult,
   PageChangeEvent,
-  SelectableSettings,
   SelectionEvent,
-  ColumnReorderEvent,
-  RowArgs
+  ColumnReorderEvent
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
@@ -73,11 +71,11 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   templateUrl: './grid-core.component.html',
   styleUrls: ['./grid-core.component.scss'],
   providers: [
-    PopupService,
-    ResizeBatchService,
-    CalendarDOMService,
-    MonthViewService,
-    WeekNamesService,
+    // PopupService,
+    // ResizeBatchService,
+    // CalendarDOMService,
+    // MonthViewService,
+    // WeekNamesService,
     { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },

@@ -1,9 +1,13 @@
 <!-- GRID HEADER -->
 <kendo-grid [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
-    [reorderable]="reorderable" [pageable]="pagerSettings" [pageSize]="pageSize" [skip]="skip"
+    [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu"
+    [pageable]="pagerSettings" [pageSize]="pageSize" [skip]="skip"
     (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort" (sortChange)="onSortChange($event)"
     [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected" (selectionChange)="onSelectionChange($event)">
     <ng-container *ngIf="fields.length > 0">
+        <ng-template kendoGridToolbarTemplate position="top">
+            <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
+        </ng-template>
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
             [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
@@ -263,7 +267,7 @@
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="!readOnly && hasEnabledActions" [columnMenu]="false" [width]="54" [resizable]="false">
+        <!-- <kendo-grid-column *ngIf="!readOnly && hasEnabledActions" [columnMenu]="false" [width]="54" [resizable]="false">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <button
                     *ngIf="settings.actions && ((settings.actions.update && dataItem.canUpdate) || settings.actions.history ||
@@ -292,7 +296,7 @@
                     </ng-container>
                 </mat-menu>
             </ng-template>
-        </kendo-grid-column>
+        </kendo-grid-column> -->
     </ng-container>
     <!-- ROW SUBGRID -->
     <ng-container *ngIf="detailsField">
