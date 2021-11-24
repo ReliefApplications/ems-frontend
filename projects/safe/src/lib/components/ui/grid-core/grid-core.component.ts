@@ -134,8 +134,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public hasEnabledActions = false;
-  public canUpdateSelectedRows = false;
-  public canDeleteSelectedRows = false;
   public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
@@ -744,8 +742,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
       this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
     }
-    this.canUpdateSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canUpdate);
-    this.canDeleteSelectedRows = !this.gridData.data.some((x, idx) => this.selectedRowsIndex.includes(idx) && !x.canDelete);
   }
 
   // === GRID ACTIONS ===
@@ -951,8 +947,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    this.canUpdateSelectedRows = false;
-    this.canDeleteSelectedRows = false;
     if (!!this.parent) {
       this.loadItems();
       this.loading = false;

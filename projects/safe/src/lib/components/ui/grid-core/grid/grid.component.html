@@ -9,7 +9,7 @@
     <ng-container *ngIf="fields.length > 0">
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-            <ng-container [ngTemplateOutlet]="toolbarTemplate"></ng-container>
+            <safe-grid-toolbar [actions]="toolbarActions" [items]="selectedRows" (action)="action.emit($event)"></safe-grid-toolbar>
             <button matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
                 (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
         </ng-template>

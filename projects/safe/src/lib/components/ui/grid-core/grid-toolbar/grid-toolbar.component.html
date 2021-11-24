@@ -1,0 +1,4 @@
+<ng-container *ngIf="items.length > 0">
+    <button *ngFor="action of actions" kendoButton [disabled]="action.disabled" (click)="onAction(action.id)">
+        {{ action.name }}</button>
+</ng-container>

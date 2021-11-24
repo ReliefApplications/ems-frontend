@@ -3,6 +3,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridModule } from './grid.module';
+import { GridAction } from '../models/grid-action.model';
 
 export default {
     component: SafeGridComponent,
@@ -162,13 +163,29 @@ const DEFAULT_FIELDS = [
     }
 ];
 
+const DEFAULT_TOOLBAR_ACTIONS: GridAction[] = [
+    {
+        id: 'delete',
+        name: 'Delete'
+    },
+    {
+        id: 'update',
+        name: 'Update'
+    },
+    {
+        id: 'Convert',
+        name: 'Convert'
+    }
+];
+
 export const Default = Template.bind({});
 Default.args = {
     fields: DEFAULT_FIELDS,
     data: {
         data: DEFAULT_DATA,
         total: DEFAULT_DATA.length
-    }
+    },
+    toolbarActions: DEFAULT_TOOLBAR_ACTIONS
 };
 
 export const Empty = Template.bind({});

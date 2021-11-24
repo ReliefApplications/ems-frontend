@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ColumnReorderEvent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
@@ -12,6 +12,7 @@ import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
+import { GridAction } from '../models/grid-action.model';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -37,8 +38,6 @@ export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
-  @Input() toolbarTemplate?: TemplateRef<any>;
-
   // === PAGINATION ===
   @Input() pageSize = 10;
   @Input() skip = 0;
@@ -50,6 +49,11 @@ export class SafeGridComponent implements OnInit {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
+
+  // === ACTIONS ===
+  @Input() toolbarActions: GridAction[] = [];
+  @Input() rowActions: GridAction[] = [];
+  @Output() action = new EventEmitter();
 
   // === DISPLAY ===
   @Input() resizable = true;
