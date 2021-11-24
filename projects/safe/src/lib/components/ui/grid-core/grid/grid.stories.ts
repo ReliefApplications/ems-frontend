@@ -32,6 +32,7 @@ const Template: Story<SafeGridComponent> = args => ({
         [sortable]="sortable"
         [filterable]="filterable"
         [selectable]="selectable"
+        [rowActions]="rowActions"
     ></safe-grid></div>`,
     props: {
         ...args
@@ -177,8 +178,27 @@ const DEFAULT_TOOLBAR_ACTIONS: GridAction[] = [
         name: 'Update'
     },
     {
-        id: 'Convert',
+        id: 'convert',
         name: 'Convert'
+    }
+];
+
+const DEFAULT_ROW_ACTIONS: GridAction[] = [
+    {
+        id: 'update',
+        name: 'Update'
+    },
+    {
+        id: 'history',
+        name: 'History'
+    },
+    {
+        id: 'convert',
+        name: 'Convert'
+    },
+    {
+        id: 'delete',
+        name: 'Delete'
     }
 ];
 
@@ -189,7 +209,8 @@ Default.args = {
         data: DEFAULT_DATA,
         total: DEFAULT_DATA.length
     },
-    toolbarActions: DEFAULT_TOOLBAR_ACTIONS
+    toolbarActions: DEFAULT_TOOLBAR_ACTIONS,
+    rowActions: DEFAULT_ROW_ACTIONS
 };
 
 export const Empty = Template.bind({});

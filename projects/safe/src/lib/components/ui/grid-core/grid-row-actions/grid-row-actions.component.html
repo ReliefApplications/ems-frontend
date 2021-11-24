@@ -1,0 +1,7 @@
+<button kendoButton style="text-align: center" [icon]="'more-vertical'" [look]="'flat'"
+    [matMenuTriggerFor]="menu"></button>
+<mat-menu #menu="matMenu">
+    <button *ngFor="let action of actions" mat-menu-item color="warn" (click)="onAction(action.id)">
+        {{ action.name }}
+    </button>
+</mat-menu>

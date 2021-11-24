@@ -13,6 +13,7 @@ import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-f
 import { SafeArrayFilterModule } from '../array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-menu.module';
 import { SafeGridToolbarModule } from '../grid-toolbar/grid-toolbar.module';
+import { SafeGridRowActionsModule } from '../grid-row-actions/grid-row-actions.module';
 
 
 @NgModule({
@@ -31,6 +32,8 @@ import { SafeGridToolbarModule } from '../grid-toolbar/grid-toolbar.module';
     SafeExpandedCommentModule,
     // === TOOLBAR ===
     SafeGridToolbarModule,
+    // === DETAILS ===
+    SafeGridRowActionsModule,
     // === FILTER ===
     SafeDropdownFilterModule,
     SafeDropdownFilterMenuModule,

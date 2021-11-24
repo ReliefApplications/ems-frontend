@@ -277,36 +277,11 @@
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <!-- <kendo-grid-column *ngIf="!readOnly && hasEnabledActions" [columnMenu]="false" [width]="54" [resizable]="false">
+        <kendo-grid-column *ngIf="rowActions.length > 0" [columnMenu]="false" [width]="54" [resizable]="false">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
-                <button
-                    *ngIf="settings.actions && ((settings.actions.update && dataItem.canUpdate) || settings.actions.history ||
-                    (settings.actions.convert && dataItem.canUpdate) || (settings.actions.delete && dataItem.canDelete))"
-                    style="text-align: center" kendoButton [icon]="'more-vertical'" [look]="'flat'"
-                    [matMenuTriggerFor]="menu">
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button *ngIf="(!settings.actions || settings.actions.update) && dataItem.canUpdate" mat-menu-item
-                        color="warn" (click)="onUpdateRow(dataItem.id)">
-                        Update
-                    </button>
-                    <button *ngIf="!settings.actions || settings.actions.history" mat-menu-item color="warn"
-                        (click)="onViewHistory(dataItem.id)">
-                        History
-                    </button>
-                    <button *ngIf="(!settings.actions || settings.actions.convert) && dataItem.canUpdate" mat-menu-item
-                        color="warn" (click)="onConvertRecord([idx - skip])">
-                        Convert
-                    </button>
-                    <ng-container *ngIf="(!settings.actions || settings.actions.delete) && dataItem.canDelete">
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item (click)="onDeleteRow([idx - skip])">
-                            Delete
-                        </button>
-                    </ng-container>
-                </mat-menu>
+                <safe-grid-row-actions [actions]="rowActions"></safe-grid-row-actions>
             </ng-template>
-        </kendo-grid-column> -->
+        </kendo-grid-column>
     </ng-container>
     <!-- ROW SUBGRID -->
     <ng-container *ngIf="detailsField">

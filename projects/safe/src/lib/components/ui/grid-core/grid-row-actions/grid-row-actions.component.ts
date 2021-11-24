@@ -2,14 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GridAction } from '../models/grid-action.model';
 
 @Component({
-  selector: 'safe-grid-toolbar',
-  templateUrl: './grid-toolbar.component.html',
-  styleUrls: ['./grid-toolbar.component.scss']
+  selector: 'safe-grid-row-actions',
+  templateUrl: './grid-row-actions.component.html',
+  styleUrls: ['./grid-row-actions.component.scss']
 })
-export class SafeGridToolbarComponent implements OnInit {
+export class SafeGridRowActionsComponent implements OnInit {
 
   // === DATA ===
-  @Input() items: any[] = [];
 
   // === ACTIONS ===
   @Input() actions: GridAction[] = [];
@@ -24,7 +23,7 @@ export class SafeGridToolbarComponent implements OnInit {
    * Emits an action.
    * @param action Action descriptor.
    */
-  public onAction(action: string): void {
-    this.action.emit({ action, ids: this.items.map(x => x.id) });
+   public onAction(action: string): void {
+    this.action.emit({ action, ids: null });
   }
 }
