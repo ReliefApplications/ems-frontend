@@ -57,12 +57,6 @@ const flatDeep = (arr: any[]): any[] => {
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-const SELECTABLE_SETTINGS: SelectableSettings = {
-  checkboxOnly: true,
-  mode: 'multiple',
-  drag: false
-};
-
 const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
@@ -167,7 +161,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   public hasEnabledActions = false;
   public canUpdateSelectedRows = false;
   public canDeleteSelectedRows = false;
-  public selectableSettings = SELECTABLE_SETTINGS;
   public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
@@ -220,7 +213,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
-    this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
+    // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
       // const filter = this.lintFilter(this.layout.filter);
@@ -757,13 +750,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       });
     }
   }
-
-  /**
-   * Returns selected status of a row.
-   * @param row Row to test.
-   * @returns selected status of the row.
-   */
-  public isRowSelected = (row: RowArgs) => this.selectedRowsIndex.includes(row.index);
 
   /**
    * Detects selection event and display actions available on rows.

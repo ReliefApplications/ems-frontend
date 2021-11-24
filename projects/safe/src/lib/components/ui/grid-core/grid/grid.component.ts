@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-import { MULTISELECT_TYPES, PAGER_SETTINGS } from './grid.constants';
+import { MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
 import { SortDescriptor } from '@progress/kendo-data-query';
 
 @Component({
@@ -31,9 +31,15 @@ export class SafeGridComponent implements OnInit {
   @Input() resizable = true;
   @Input() reorderable = true;
 
+  // === SELECT ===
+  public selectableSettings = SELECTABLE_SETTINGS;
+  @Output() selectionChange = new EventEmitter();
+
   // === SORT ===
   @Input() sortable = true;
+  @Input() multiSelect = true;
   @Input() sort: SortDescriptor[] = [];
+  @Input() selectedRows: number[] = [];
   @Output() sortChange = new EventEmitter();
 
   constructor(
@@ -82,6 +88,19 @@ export class SafeGridComponent implements OnInit {
     this.pageSize = page.take;
     this.pageChange.emit(page);
   }
+
+  // === SELECT ===
+  public onSelectionChange(selection: SelectionEvent): void {
+    console.log(selection);
+    this.selectionChange.emit(selection);
+  }
+
+  /**
+   * Returns selected status of a row.
+   * @param row Row to test.
+   * @returns selected status of the row.
+   */
+  public isRowSelected = (row: RowArgs) => this.selectedRows.includes(row.index);
 
   // === EXPORT ===
   /**

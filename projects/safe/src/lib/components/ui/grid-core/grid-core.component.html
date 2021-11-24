@@ -2,7 +2,7 @@
 <!-- <kendo-grid id="customGrid" class="widget-content"
 [columnMenu]="!readOnly && filterType === 'classic' ? { columnChooser: false, filter: !showFilter } : false"
 [rowSelected]="isRowSelected"
-[selectable]="!readOnly ? selectableSettings : false" (selectionChange)="selectionChange($event)"
+(selectionChange)="selectionChange($event)"
 [filterable]="filterType === 'classic' ? showFilter ? true : 'menu' : false" [filter]="filter"
 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
 (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"

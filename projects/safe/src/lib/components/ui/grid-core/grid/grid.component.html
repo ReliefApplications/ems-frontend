@@ -1,11 +1,12 @@
 <!-- GRID HEADER -->
 <kendo-grid [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
     [reorderable]="reorderable" [pageable]="pagerSettings" [pageSize]="pageSize" [skip]="skip"
-    (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort" (sortChange)="onSortChange($event)">
+    (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort" (sortChange)="onSortChange($event)"
+    [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected" (selectionChange)="onSelectionChange($event)">
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
-        <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}"
-            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="true">
+        <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
+            [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->
         <ng-container *ngFor="let field of fields">
