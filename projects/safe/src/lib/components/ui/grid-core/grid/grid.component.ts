@@ -169,9 +169,11 @@ export class SafeGridComponent implements OnInit {
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
-    this.skip = page.skip;
-    this.pageSize = page.take;
-    this.pageChange.emit(page);
+    if (!this.loading) {
+      this.skip = page.skip;
+      this.pageSize = page.take;
+      this.pageChange.emit(page);
+    }
   }
 
   // === SELECT ===
