@@ -63,6 +63,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
       };
+      Survey.Serializer.addProperty('survey', {
+        name: 'onCompleteExpression:expression',
+        type: 'expression',
+        visibleIndex: 350,
+        category: 'logic',
+      });
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
