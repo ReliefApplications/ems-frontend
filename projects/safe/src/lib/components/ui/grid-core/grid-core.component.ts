@@ -10,7 +10,6 @@ import {
   PageChangeEvent,
   SelectionEvent
 } from '@progress/kendo-angular-grid';
-import { GradientSettings } from '@progress/kendo-angular-inputs';
 import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -33,17 +32,9 @@ import { GridSettings, FilterType } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 
-const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
-
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
-
-
-
-const GRADIENT_SETTINGS: GradientSettings = {
-  opacity: false
-};
 
 @Component({
   selector: 'safe-grid-core',
@@ -125,7 +116,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public hasEnabledActions = false;
-  public gradientSettings = GRADIENT_SETTINGS;
   public editionActive = false;
 
   // === DOWNLOAD ===
@@ -229,7 +219,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = false;
       this.queryError = true;
     }
-    this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   /**
@@ -275,9 +264,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       rowIndex += 1;
     }
     // Closes current inline edition.
-    if (this.editedRecordId) {
-      this.updateCurrent();
-    }
+    // if (this.editedRecordId) {
+    //   this.updateCurrent();
+    // }
     // creates the form group.
     this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
     this.editedRecordId = dataItem.id;
@@ -288,22 +277,22 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Cancels inline edition.
    */
-  public cancelHandler(): void {
-    this.closeEditor();
-  }
+  // public cancelHandler(): void {
+  //   this.closeEditor();
+  // }
 
   /**
    * Updates a record when inline edition completed.
    */
-  public updateCurrent(): void {
-    if (this.isNew) {
-    } else {
-      if (this.formGroup.dirty) {
-        this.update(this.editedRecordId, this.formGroup.value);
-      }
-    }
-    this.closeEditor();
-  }
+  // public updateCurrent(): void {
+  //   if (this.isNew) {
+  //   } else {
+  //     if (this.formGroup.dirty) {
+  //       this.update(this.editedRecordId, this.formGroup.value);
+  //     }
+  //   }
+  //   this.closeEditor();
+  // }
 
   /**
    * Finds item in data items and updates it with new values, from inline edition.
@@ -321,37 +310,25 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Closes the inline edition.
-   */
-  private closeEditor(): void {
-    this.grid?.closeRow(this.editedRowIndex);
-    this.grid?.cancelCell();
-    this.isNew = false;
-    this.editedRowIndex = 0;
-    this.editedRecordId = '';
-    this.formGroup = new FormGroup({});
-  }
-
-  /**
    * Saves all inline changes and then reload data.
    */
-  public onSaveChanges(): void {
-    this.closeEditor();
-    if (this.hasChanges) {
-      Promise.all(this.promisedChanges()).then(() => this.reloadData());
-    }
-  }
+  // public onSaveChanges(): void {
+  //   this.closeEditor();
+  //   if (this.hasChanges) {
+  //     Promise.all(this.promisedChanges()).then(() => this.reloadData());
+  //   }
+  // }
 
   /**
    * Cancels inline edition without saving.
    */
-  public onCancelChanges(): void {
-    this.closeEditor();
-    this.updatedItems = [];
-    this.items = this.originalItems;
-    this.originalItems = cloneData(this.originalItems);
-    this.loadItems();
-  }
+  // public onCancelChanges(): void {
+  //   this.closeEditor();
+  //   this.updatedItems = [];
+  //   this.items = this.originalItems;
+  //   this.originalItems = cloneData(this.originalItems);
+  //   this.loadItems();
+  // }
 
   /**
    * Creates a list of promise to send for inline edition of records, once completed.
@@ -372,17 +349,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       }).toPromise());
     }
     return promises;
-  }
-
-  /**
-   * Detects document click to save record if outside the inline edition form.
-   * @param e click event.
-   */
-  private onDocumentClick(e: any): void {
-    if (this.formGroup && !this.editionActive && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
-      this.updateCurrent();
-    }
   }
 
   // === DATA ===

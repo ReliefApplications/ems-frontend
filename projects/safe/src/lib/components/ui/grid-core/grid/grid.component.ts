@@ -274,7 +274,7 @@ export class SafeGridComponent implements OnInit {
    */
    private onDocumentClick(e: any): void {
     if (this.formGroup && this.formGroup.valid &&
-      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
+      !matches(e.target, '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container')) {
       if (this.formGroup.dirty) {
         console.log('update');
         // this.update(this.currentEditedId, this.formGroup.value);

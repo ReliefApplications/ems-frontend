@@ -87,49 +87,50 @@ const DEFAULT_FIELDS = [
         title: 'Text',
         name: 'text',
         type: 'text',
+        filter: 'text',
+        editor: 'text',
         meta: {
-            type: 'text',
-            filter: 'text',
-            editor: 'text'
+            type: 'text'
         }
     },
     {
         title: 'Comment',
         name: 'comment',
         type: 'comment',
+        filter: 'text',
+        editor: 'text',
         meta: {
-            type: 'text',
-            filter: 'text',
-            editor: 'text'
+            type: 'text'
         }
     },
     {
         title: 'Boolean',
         name: 'boolean',
         type: 'boolean',
+        filter: 'boolean',
+        editor: 'boolean',
         meta: {
-            type: 'boolean',
-            filter: 'boolean',
-            editor: 'boolean'
+            type: 'boolean'
         }
     },
     {
         title: 'Color',
         name: 'color',
         type: 'color',
+        filter: null,
+        editor: 'text',
         meta: {
-            type: 'color',
-            filter: null,
-            editor: 'color'
+            type: 'color'
         }
     },
     {
         title: 'Dropdown',
         name: 'dropdown',
         type: 'dropdown',
+        filter: 'dropdown',
+        editor: 'text',
         meta: {
             type: 'dropdown',
-            filter: 'dropdown',
             choices: [
                 {
                     value: 1,
@@ -146,9 +147,10 @@ const DEFAULT_FIELDS = [
         title: 'Radiogroup',
         name: 'radiogroup',
         type: 'radiogroup',
+        filter: 'radiogroup',
+        editor: 'text',
         meta: {
             type: 'radiogroup',
-            filter: 'radiogroup',
             choices: [
                 {
                     value: 1,
@@ -165,21 +167,21 @@ const DEFAULT_FIELDS = [
         title: 'Date',
         name: 'date',
         type: 'date',
+        filter: 'date',
+        format: 'dd/MM/yy',
+        editor: 'date',
         meta: {
-            type: 'date',
-            filter: 'date',
-            format: 'dd/MM/yy',
-            editor: 'date'
+            type: 'date'
         }
     },
     {
         title: 'File',
         name: 'file',
         type: 'JSON',
+        filter: null,
+        editor: null,
         meta: {
-            type: 'file',
-            filter: null,
-            editor: null
+            type: 'file'
         }
     }
 ];

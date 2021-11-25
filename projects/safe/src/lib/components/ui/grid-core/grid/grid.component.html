@@ -1,5 +1,5 @@
 <!-- GRID HEADER -->
-<kendo-grid [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
+<kendo-grid id="recordsGrid" [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
     [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu" [pageable]="pagerSettings"
     [pageSize]="pageSize" [skip]="skip" [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter"
     (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
