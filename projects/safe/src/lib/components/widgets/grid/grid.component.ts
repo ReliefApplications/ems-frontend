@@ -186,13 +186,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
 
-  public selectAllCheckbox = 'unchecked';
-  // public isRowSelected: any;
-  // Use an arrow function to cçapture the 'this' execution context of the class.
-  // public mySelection: any[] = [1, 3, 5];
-  // public rowSelectedGrid: any[] = [];
   public allRowSelection = false;
-  // public isRowSelected = (e: RowArgs) => this.settings.id;
   public isRowSelected = (e: RowArgs) => this.allRowSelection;
 
   get hasChanges(): boolean {
@@ -222,8 +216,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    console.log('this.id');
-    console.log(this.id);
   }
 
   /*  Detect changes of the settings to (re)load the data.
@@ -1042,8 +1034,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public async onFloatingButtonClick(options: any): Promise<void> {
     let rowsIndexToModify = [...this.selectedRowsIndex];
     this.loading = true;
-    console.log('HEY');
-    console.log(options);
     if (options.autoSave && options.modifySelectedRows) {
       const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
       if (unionRows.length > 0) {
@@ -1052,28 +1042,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
       }
     }
-    console.log(options.selectAllRecords);
     if (options.selectAllRecords) {
-      console.log('options.selectAllRecords');
-      console.log('selectedRecords');
-      console.log('this.grid');
-      console.log(this.grid);
-      console.log('this.grid?.data');
-      console.log(this.grid?.data);
-      this.selectAllCheckbox = 'checked';
-      console.log(this.grid?.rowClass);
-      console.log('this.rowSelectedGrid.indexOf(this.id)');
-      console.log('this.id');
-      console.log(this.id);
-      console.log('this.settings');
-      console.log(this.settings);
-      console.log('this.rowSelectedGrid');
-      // console.log(this.rowSelectedGrid);
-      // console.log(this.rowSelectedGrid.findIndex((v) => v === this.settings.id));
-      // console.log(this.rowSelectedGrid.indexOf(this.settings.id));
-      //
-      // this.rowSelectedGrid.push(this.settings.id);
-
       this.allRowSelection = !this.allRowSelection;
     }
 

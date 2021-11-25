@@ -190,17 +190,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
     });
 
-    // this.buttonForm?.get('selectAllRecord')?.valueChanges.subscribe((selectAllRecord: boolean) => {
-    //   console.log('selectAllRecord');
-    //   console.log(selectAllRecord);
-    //   // if (selectAllRecord) {
-    //   //   this.buttonForm?.get('confirmationText')?.setValidators([Validators.required]);
-    //   // } else {
-    //   //   this.buttonForm?.get('confirmationText')?.clearValidators();
-    //   // }
-    //   // this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
-    // });
-
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
   }
 
