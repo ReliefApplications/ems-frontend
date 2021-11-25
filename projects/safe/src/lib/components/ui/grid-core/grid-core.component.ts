@@ -447,7 +447,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       }
       case 'update': {
         if (event.item) {
-          this.onUpdate(event.item);
+          this.onUpdate([event.item]);
         }
         break;
       }
@@ -457,9 +457,15 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
+      case 'convert': {
+        if (event.item) {
+          this.onConvert([event.item]);
+        }
+        break;
+      }
       case 'delete': {
         if (event.item) {
-          this.onDelete(event.item);
+          this.onDelete([event.item]);
         }
         break;
       }
@@ -487,7 +493,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.onUpdate(item);
+        this.onUpdate([item]);
       }
     });
   }
@@ -496,8 +502,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens the form corresponding to selected row in order to update it
    * @param items items to update.
    */
-  public onUpdate(items: any | any[]): void {
-    const ids = Array.isArray(items) ? items.map(x => x.id) : [items.id];
+  public onUpdate(items: any[]): void {
+    const ids: string[] = items.map(x => x.id);
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
@@ -516,8 +522,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens a confirmation modal and deletes the selected records.
    * @param items items to delete.
    */
-  public onDelete(items: any | any[]): void {
-    const recordIds: string[] = Array.isArray(items) ? items.map(x => x.id) : [items.id];
+  public onDelete(items: any[]): void {
+    const ids: string[] = items.map(x => x.id);
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -533,7 +539,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         this.apollo.mutate<EditRecordMutationResponse>({
           mutation: DELETE_RECORDS,
           variables: {
-            ids: recordIds
+            ids
           }
         }).subscribe(() => {
           this.reloadData();
@@ -547,13 +553,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens a dialog component which provide tools to convert the selected record
    * @param items items to convert to another form.
    */
-  public onConvertRecord(items: number[]): void {
+  public onConvert(items: any[]): void {
     const rowsSelected = items.length;
-    const record: string = this.gridData.data[items[0]].id;
     const dialogRef = this.dialog.open(SafeConvertModalComponent, {
       data: {
         title: `Convert record${rowsSelected > 1 ? 's' : ''}`,
-        record
+        record: items[0].id
       },
     });
     dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {

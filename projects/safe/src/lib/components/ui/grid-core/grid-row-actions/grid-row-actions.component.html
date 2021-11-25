@@ -7,6 +7,9 @@
     <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
         History
     </button>
+    <button *ngIf="actions.convert && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'convert', item: item })">
+        Convert
+    </button>
     <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
         Delete
     </button>
