@@ -58,6 +58,7 @@ export class SafeGridComponent implements OnInit {
   private currentEditedId = '';
   private currentEditedRow = 0;
   public gradientSettings = GRADIENT_SETTINGS;
+  public editing = false;
 
   // === ACTIONS ===
   @Input() toolbarActions: GridAction[] = [];
@@ -291,6 +292,7 @@ export class SafeGridComponent implements OnInit {
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
     this.currentEditedId = '';
+    this.editing = false;
     this.formGroup = new FormGroup({});
   }
 

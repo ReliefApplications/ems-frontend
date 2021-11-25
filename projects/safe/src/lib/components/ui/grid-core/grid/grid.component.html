@@ -1,5 +1,5 @@
 <!-- GRID HEADER -->
-<kendo-grid id="recordsGrid" [loading]="loading" [data]="!error && data" [autoSize]="false" [resizable]="resizable"
+<kendo-grid id="recordsGrid" [loading]="loading" [data]="error ? [] : data" [autoSize]="false" [resizable]="resizable"
     [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu" [pageable]="pagerSettings"
     [pageSize]="pageSize" [skip]="skip" [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter"
     (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
@@ -92,8 +92,8 @@
                     <!-- EDITION ( color ) -->
                     <ng-container *ngIf="field.meta.type === 'color'">
                         <kendo-colorpicker [formControl]="formGroup.get(field.name)" [format]="'hex'"
-                            [gradientSettings]="gradientSettings" (open)="editionActive = true"
-                            (close)="editionActive = false"></kendo-colorpicker>
+                            [gradientSettings]="gradientSettings" (open)="editing = true"
+                            (close)="editing = false"></kendo-colorpicker>
                     </ng-container>
                     <!-- EDITION ( dropdown / radiogroup ) -->
                     <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
@@ -105,19 +105,19 @@
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'date'">
                     <kendo-datepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-datepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-datepicker>
                 </ng-template>
                 <!-- EDITION ( time ) -->
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'time'">
                     <kendo-timepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-timepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-timepicker>
                 </ng-template>
                 <!-- EDITION ( datetime / datetime-local ) -->
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'datetime'">
                     <kendo-datetimepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-datetimepicker>
                 </ng-template>
             </kendo-grid-column>
             <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner ) -->
