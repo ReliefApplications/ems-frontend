@@ -1,7 +1,10 @@
 <button *ngIf="display" kendoButton style="text-align: center" [icon]="'more-vertical'" [look]="'flat'"
     [matMenuTriggerFor]="menu"></button>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
+    <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
         History
+    </button>
+    <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
+        Delete
     </button>
 </mat-menu>

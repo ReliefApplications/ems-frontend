@@ -451,6 +451,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
+      case 'delete': {
+        if (event.item) {
+          this.onDelete(event.item);
+        }
+        break;
+      }
       default: {
         break;
       }
@@ -505,12 +511,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens a confirmation modal and deletes the selected records.
    * @param items items to delete.
    */
-  public onDeleteRow(items: number[]): void {
-    const recordIds: string[] = [];
-    for (const index of items) {
-      const id = this.gridData.data[index].id;
-      recordIds.push(id);
-    }
+  public onDelete(items: any | any[]): void {
+    const recordIds: string[] = Array.isArray(items) ? items.map(x => x.id) : [items.id];
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
