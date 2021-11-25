@@ -10,7 +10,7 @@ import {
   PageChangeEvent,
   SelectionEvent
 } from '@progress/kendo-angular-grid';
-import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth.service';
@@ -46,7 +46,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   @Input() layout: GridLayout = {}; // Cached layout
-  @Input() parent: any; // Parent data for children grid
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -60,7 +59,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   @Input() filterType: FilterType = 'classic';
 
   // === OUTPUTS ===
-  @Output() childChanged: EventEmitter<any> = new EventEmitter();
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
 
@@ -140,7 +138,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private renderer: Renderer2,
     private resolver: ComponentFactoryResolver,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
@@ -181,26 +178,24 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
-    if (!this.parent) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      const filters = [this.filter];
-      if (this.settings?.query?.filter) {
-        filters.push(this.settings?.query?.filter);
-      }
-      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings?.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings?.query?.sort?.order || '');
-      this.dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: { logic: 'and', filters },
-          sortField,
-          sortOrder
-        }
-      });
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    const filters = [this.filter];
+    if (this.settings?.query?.filter) {
+      filters.push(this.settings?.query?.filter);
     }
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
+    const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings?.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings?.query?.sort?.order || '');
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: {
+        first: this.pageSize,
+        filter: { logic: 'and', filters },
+        sortField,
+        sortOrder
+      }
+    });
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
         this.queryError = false;
@@ -359,58 +354,37 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   private getRecords(): void {
     this.loading = true;
     this.updatedItems = [];
-    // Child grid
-    if (!!this.parent) {
-      this.items = cloneData(this.parent[this.settings?.name]);
-      if (this.items.length > 0) {
-        const layoutFields = this.layout.fields || {};
-        const fields = this.settings?.fields || [];
-        this.fields = this.gridService.getFields(fields, this.metaFields, layoutFields);
-        this.convertDateFields(this.items);
-        this.originalItems = cloneData(this.items);
-        this.detailsField = this.settings?.fields.find((x: any) => x.kind === 'LIST');
-      } else {
-        this.originalItems = [];
-        this.fields = [];
-        this.detailsField = '';
-      }
-      this.totalCount = this.items.length;
-      this.loadItems();
-      this.loading = false;
-      // Parent grid
-    } else {
-      if (this.dataQuery) {
-        this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-          this.queryError = false;
-          const fields = this.settings?.query?.fields || [];
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.fields = this.gridService.getFields(fields, this.metaFields, {}, '', { filter: false });
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
-              this.totalCount = res.data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
-              if (this.detailsField) {
-                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
-                // this.detailsField = { query: {...this.detailsField}, actions: this.settings.actions };
-              }
-              this.loadItems();
-              if (!this.readOnly) {
-                this.initSelectedRows();
-              }
+    if (this.dataQuery) {
+      this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+        this.queryError = false;
+        const fields = this.settings?.query?.fields || [];
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.fields = this.gridService.getFields(fields, this.metaFields, {}, '', { filter: false });
+            const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+            this.totalCount = res.data[field].totalCount;
+            this.items = cloneData(nodes);
+            this.convertDateFields(this.items);
+            this.originalItems = cloneData(this.items);
+            this.detailsField = fields.find((x: any) => x.kind === 'LIST');
+            if (this.detailsField) {
+              this.detailsField = { ...this.detailsField, actions: this.settings.actions };
+              // this.detailsField = { query: {...this.detailsField}, actions: this.settings.actions };
+            }
+            this.loadItems();
+            if (!this.readOnly) {
+              this.initSelectedRows();
             }
           }
-          this.loading = false;
-        },
-          () => {
-            this.queryError = true;
-            this.loading = false;
-          });
-      } else {
+        }
         this.loading = false;
-      }
+      },
+        () => {
+          this.queryError = true;
+          this.loading = false;
+        });
+    } else {
+      this.loading = false;
     }
   }
 
@@ -418,29 +392,17 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Sets the list of items to display.
    */
   private loadItems(): void {
-    if (!!this.parent) {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)).slice(this.skip, this.skip + this.pageSize),
-        total: this.totalCount
-      };
-    } else {
-      this.gridData = {
-        data: this.items,
-        total: this.totalCount
-      };
-    }
+    this.gridData = {
+      data: this.items,
+      total: this.totalCount
+    };
   }
 
   /**
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
-    if (!this.parent) {
-      this.onPageChange({ skip: 0, take: this.pageSize });
-    } else {
-      this.childChanged.emit();
-    }
+    this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRowsIndex = [];
     this.updatedItems = [];
   }
@@ -493,7 +455,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         recordId: item.id,
         locale: 'en',
         canUpdate: this.settings.actions && this.settings.actions.update && item.canUpdate,
-        template: this.parent ? null : this.settings.query.template
+        template: this.settings.query.template
       },
       height: '98%',
       width: '100vw',
@@ -684,42 +646,37 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    if (!!this.parent) {
-      this.loadItems();
-      this.loading = false;
-    } else {
-      const filters = [this.filter];
-      if (this.settings.query.filter) {
-        filters.push(this.settings.query.filter);
-      }
-      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-      this.dataQuery.fetchMore({
-        variables: {
-          first: this.pageSize,
-          skip: this.skip,
-          filter: { logic: 'and', filters },
-          sortField,
-          sortOrder
-        },
-        updateQuery: (prev: any, { fetchMoreResult }: any) => {
-          this.loading = false;
-          if (!fetchMoreResult) { return prev; }
-          for (const field in fetchMoreResult) {
-            if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-              return Object.assign({}, prev, {
-                [field]: {
-                  edges: fetchMoreResult[field].edges,
-                  totalCount: fetchMoreResult[field].totalCount
-                }
-              });
-            }
-          }
-          return prev;
-        }
-      });
+    const filters = [this.filter];
+    if (this.settings.query.filter) {
+      filters.push(this.settings.query.filter);
     }
+    const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    this.dataQuery.fetchMore({
+      variables: {
+        first: this.pageSize,
+        skip: this.skip,
+        filter: { logic: 'and', filters },
+        sortField,
+        sortOrder
+      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        this.loading = false;
+        if (!fetchMoreResult) { return prev; }
+        for (const field in fetchMoreResult) {
+          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+            return Object.assign({}, prev, {
+              [field]: {
+                edges: fetchMoreResult[field].edges,
+                totalCount: fetchMoreResult[field].totalCount
+              }
+            });
+          }
+        }
+        return prev;
+      }
+    });
   }
 
   // === FILTERING ===
@@ -748,11 +705,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.filter = filter;
     this.layout.filter = this.filter;
     this.saveLocalLayout();
-    if (!!this.parent) {
-      this.loadItems();
-    } else {
-      this.onPageChange({ skip: 0, take: this.pageSize });
-    }
+    this.onPageChange({ skip: 0, take: this.pageSize });
   }
 
   /**
@@ -788,11 +741,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.layout.sort = sort;
     this.saveLocalLayout();
     this.skip = 0;
-    if (!!this.parent) {
-      this.loadItems();
-    } else {
-      this.onPageChange({ skip: 0, take: this.pageSize });
-    }
+    this.onPageChange({ skip: 0, take: this.pageSize });
   }
 
   // === LAYOUT ===
