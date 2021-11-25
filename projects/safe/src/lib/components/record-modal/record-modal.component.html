@@ -34,9 +34,9 @@
     <button mat-button (click)="onClose()">Close</button>
     <button mat-flat-button mat-dialog-close="true" cdkFocusInitial color="primary">Revert to past record</button>
 </mat-dialog-actions>
-<mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo && canEdit">
+<mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
     <button mat-button color="warn" (click)="onClose()">Close</button>
     <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
     <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
-    <button mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
+    <button mat-flat-button color="primary" (click)="onEdit()" *ngIf="canEdit">Edit record</button>
 </mat-dialog-actions>

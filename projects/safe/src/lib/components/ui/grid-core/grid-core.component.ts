@@ -419,6 +419,23 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === GRID ACTIONS ===
+  /**
+   * Handles grid actions.
+   * @param event Grid Action.
+   */
+  public onAction(event: {action: string, item?: any}): void {
+    switch (event.action) {
+      case 'details': {
+        if (event.item) {
+          this.onShowDetails(event.item);
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
 
   /**
    * Opens the record on a read-only modal. If edit mode is enabled, can open edition modal.
