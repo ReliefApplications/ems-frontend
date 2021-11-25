@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { GridAction } from '../models/grid-action.model';
 
 @Component({
   selector: 'safe-grid-row-actions',
@@ -9,21 +8,26 @@ import { GridAction } from '../models/grid-action.model';
 export class SafeGridRowActionsComponent implements OnInit {
 
   // === DATA ===
+  @Input() item: any;
 
   // === ACTIONS ===
-  @Input() actions: GridAction[] = [];
+  @Input() actions = {
+    update: false,
+    delete: false,
+    history: false,
+    convert: false
+  };
   @Output() action = new EventEmitter();
+
+  get display(): boolean {
+    return this.actions.history ||
+      this.actions.delete ||
+      this.actions.update ||
+      this.actions.convert;
+  }
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  /**
-   * Emits an action.
-   * @param action Action descriptor.
-   */
-   public onAction(action: string): void {
-    this.action.emit({ action, ids: null });
   }
 }

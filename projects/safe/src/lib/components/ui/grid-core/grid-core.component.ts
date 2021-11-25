@@ -150,6 +150,13 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
+  public rowActions = {
+    update: false,
+    delete: false,
+    history: false,
+    convert: false
+  };
+
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -179,6 +186,13 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
+    // define row actions
+    this.rowActions = {
+      history: this.settings.actions?.history,
+      update: this.settings.actions?.update,
+      delete: this.settings.actions?.delete,
+      convert: this.settings.actions?.convert
+    };
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
@@ -431,6 +445,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
+      case 'history': {
+        if (event.item) {
+          this.onViewHistory(event.item);
+        }
+        break;
+      }
       default: {
         break;
       }
@@ -556,19 +576,19 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens the history of the record on the right side of the screen.
    * @param id id of record to get history of.
    */
-  public onViewHistory(id: string): void {
+  public onViewHistory(item: any): void {
     this.apollo.query<GetRecordDetailsQueryResponse>({
       query: GET_RECORD_DETAILS,
       variables: {
-        id
+        id: item.id
       }
     }).subscribe(res => {
       this.layoutService.setRightSidenav({
         factory: this.factory,
         inputs: {
           record: res.data.record,
-          revert: (item: any, dialog: any) => {
-            this.confirmRevertDialog(res.data.record, item);
+          revert: (record: any, dialog: any) => {
+            this.confirmRevertDialog(res.data.record, record);
           },
           template: this.settings.query.template
         },

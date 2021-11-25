@@ -62,7 +62,12 @@ export class SafeGridComponent implements OnInit {
 
   // === ACTIONS ===
   @Input() toolbarActions: GridAction[] = [];
-  @Input() rowActions: GridAction[] = [];
+  @Input() rowActions = {
+    update: false,
+    delete: false,
+    history: false,
+    convert: false
+  };
   @Output() action = new EventEmitter();
 
   // === DISPLAY ===
