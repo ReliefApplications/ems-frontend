@@ -1,6 +1,11 @@
 :host {
     display: flex;
     height: 100%;
+    width: 100%;
+}
+
+#recordsGrid {
+    width: 100%;
 }
 
 :host ::ng-deep .k-grid-content,

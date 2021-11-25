@@ -1,6 +1,6 @@
 import {
   Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
-  Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild
+  Inject, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
