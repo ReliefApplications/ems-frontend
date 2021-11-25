@@ -196,5 +196,5 @@
 <ng-template #toolbarTemplate>
     <div>test</div>
 </ng-template>
-<safe-grid [fields]="fields" [data]="gridData" [loading]="loading" [pageSize]="pageSize" [skip]="skip"
+<safe-grid [fields]="fields" [data]="gridData" [loading]="loading" [error]="error" [pageSize]="pageSize" [skip]="skip"
     (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"></safe-grid>

@@ -96,7 +96,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   public formGroup: FormGroup = new FormGroup({});
   private isNew = false;
   public loading = true;
-  public queryError = false;
+  public error = false;
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -114,6 +114,14 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   public showFilter = false;
 
+  get queryFilter(): CompositeFilterDescriptor {
+    const filters = [this.filter];
+    if (this.settings?.query?.filter) {
+      filters.push(this.settings?.query?.filter);
+    }
+    return { logic: 'and', filters };
+  }
+
   // === LAYOUT CHANGES ===
   public hasLayoutChanges = false;
 
@@ -122,7 +130,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
-  public hasEnabledActions = false;
   public editionActive = false;
 
   // === DOWNLOAD ===
@@ -175,28 +182,21 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
-      // const filter = this.lintFilter(this.layout.filter);
       this.filter = this.layout.filter;
     }
     if (this.layout?.sort) {
       this.sort = this.layout.sort;
     }
     this.showFilter = !!this.layout?.showFilter;
-    this.loadItems();
-    this.hasEnabledActions = !this.settings.actions ||
-      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
+    // this.loadItems();
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    const filters = [this.filter];
-    if (this.settings?.query?.filter) {
-      filters.push(this.settings?.query?.filter);
-    }
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
       variables: {
         first: this.pageSize,
-        filter: { logic: 'and', filters },
+        filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
       }
@@ -204,7 +204,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
-        this.queryError = false;
+        this.error = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = Object.assign({}, res.data[field]);
@@ -216,11 +216,11 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         this.getRecords();
       }, () => {
         this.loading = false;
-        this.queryError = true;
+        this.error = true;
       });
     } else {
       this.loading = false;
-      this.queryError = true;
+      this.error = true;
     }
   }
 
@@ -338,8 +338,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
     if (this.dataQuery) {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-        console.log(res);
-        this.queryError = false;
+        this.loading = false;
+        this.error = false;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             const nodes = res.data[field].edges.map((x: any) => x.node) || [];
@@ -353,10 +353,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         }
-        this.loading = false;
       },
         () => {
-          this.queryError = true;
+          this.error = true;
           this.loading = false;
         });
     } else {
@@ -622,20 +621,16 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    const filters = [this.filter];
-    if (this.settings.query.filter) {
-      filters.push(this.settings.query.filter);
-    }
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,
         skip: this.skip,
-        filter: { logic: 'and', filters },
+        filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        this.loading = false;
+        // this.loading = false;
         if (!fetchMoreResult) { return prev; }
         for (const field in fetchMoreResult) {
           if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {

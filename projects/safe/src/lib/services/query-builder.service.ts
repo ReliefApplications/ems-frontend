@@ -145,10 +145,6 @@ export class QueryBuilderService {
               }
             }
             totalCount
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
         }
         }
       `;
