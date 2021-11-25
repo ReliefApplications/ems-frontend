@@ -150,7 +150,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     return this.updatedItems.length > 0;
   }
 
-  public rowActions = {
+  // === ACTIONS ===
+  public actions = {
     update: false,
     delete: false,
     history: false,
@@ -187,7 +188,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    */
   ngOnChanges(): void {
     // define row actions
-    this.rowActions = {
+    this.actions = {
       history: this.settings.actions?.history,
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
@@ -412,32 +413,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /**
-   * Detects selection event and display actions available on rows.
-   * @param selection selection event.
-   */
-  public selectionChange(selection: SelectionEvent): void {
-    this.rowSelected.emit(selection);
-    const deselectedRows = selection.deselectedRows || [];
-    const selectedRows = selection.selectedRows || [];
-    if (deselectedRows.length > 0) {
-      const deselectIndex = deselectedRows.map((item => item.index - this.skip));
-      this.selectedRowsIndex = [...this.selectedRowsIndex.filter((item) => !deselectIndex.includes(item))];
-      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))];
-    }
-    if (selectedRows.length > 0) {
-      const selectedItems = selectedRows.map((item) => item.index - this.skip);
-      this.selectedRowsIndex = this.selectedRowsIndex.concat(selectedItems);
-      this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
-    }
-  }
-
   // === GRID ACTIONS ===
   /**
    * Handles grid actions.
    * @param event Grid Action.
    */
-  public onAction(event: {action: string, item?: any}): void {
+  public onAction(event: {action: string, item?: any, items?: any[]}): void {
     switch (event.action) {
       case 'details': {
         if (event.item) {
@@ -448,6 +429,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       case 'update': {
         if (event.item) {
           this.onUpdate([event.item]);
+        }
+        if (event.items && event.items.length > 0) {
+          this.onUpdate(event.items);
         }
         break;
       }
@@ -461,11 +445,17 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         if (event.item) {
           this.onConvert([event.item]);
         }
+        if (event.items && event.items.length > 0) {
+          this.onConvert(event.items);
+        }
         break;
       }
       case 'delete': {
         if (event.item) {
           this.onDelete([event.item]);
+        }
+        if (event.items && event.items.length > 0) {
+          this.onDelete(event.items);
         }
         break;
       }

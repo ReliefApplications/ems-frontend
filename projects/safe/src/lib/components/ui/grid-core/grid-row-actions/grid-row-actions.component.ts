@@ -21,9 +21,8 @@ export class SafeGridRowActionsComponent implements OnInit {
 
   get display(): boolean {
     return this.actions.history ||
-      this.actions.delete ||
-      this.actions.update ||
-      this.actions.convert;
+      ( this.item.canDelete && this.actions.delete ) ||
+      ( this.item.canUpdate && ( this.actions.update || this.actions.convert ) );
   }
 
   constructor() { }

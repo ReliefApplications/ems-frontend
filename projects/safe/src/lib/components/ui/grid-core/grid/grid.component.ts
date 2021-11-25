@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
@@ -61,8 +61,7 @@ export class SafeGridComponent implements OnInit {
   public editing = false;
 
   // === ACTIONS ===
-  @Input() toolbarActions: GridAction[] = [];
-  @Input() rowActions = {
+  @Input() actions = {
     update: false,
     delete: false,
     history: false,
@@ -85,7 +84,7 @@ export class SafeGridComponent implements OnInit {
   @Input() selectable = true;
   @Input() multiSelect = true;
   public selectableSettings = SELECTABLE_SETTINGS;
-  @Input() selectedRows: any[] = [];
+  @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
 
   // === FILTER ===
@@ -194,7 +193,14 @@ export class SafeGridComponent implements OnInit {
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
-    this.selectedRows = selection.selectedRows?.map(x => x.dataItem.id) || [];
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
+    }
     this.selectionChange.emit(selection);
   }
 
@@ -203,7 +209,7 @@ export class SafeGridComponent implements OnInit {
    * @param row Row to test.
    * @returns selected status of the row.
    */
-  public isRowSelected = (row: RowArgs) => this.selectedRows.includes(row.index);
+  public isRowSelected = (row: RowArgs) => this.selectedRows.includes(row.dataItem.id);
 
   // === LAYOUT ===
   /**
@@ -350,7 +356,6 @@ export class SafeGridComponent implements OnInit {
    * @param rowTitle field name.
    */
   public onExpandText(item: any, field: any): void {
-    console.log('on expand');
     // const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
     //   data: {
     //     title: field.title,

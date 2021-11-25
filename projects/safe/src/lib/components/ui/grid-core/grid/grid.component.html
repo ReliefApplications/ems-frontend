@@ -17,7 +17,7 @@
             </ng-container>
             <button *ngIf="filterable" matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
                 (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
-            <safe-grid-toolbar [actions]="toolbarActions" [items]="selectedRows" (action)="action.emit($event)">
+            <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">
             </safe-grid-toolbar>
         </ng-template>
         <!-- ROW SELECTION -->
@@ -281,7 +281,7 @@
         <!-- ROW ACTIONS -->
         <kendo-grid-column [columnMenu]="false" [width]="54" [resizable]="false">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
-                <safe-grid-row-actions [item]="dataItem" [actions]="rowActions" (action)="action.emit($event)"></safe-grid-row-actions>
+                <safe-grid-row-actions [item]="dataItem" [actions]="actions" (action)="action.emit($event)"></safe-grid-row-actions>
             </ng-template>
         </kendo-grid-column>
     </ng-container>

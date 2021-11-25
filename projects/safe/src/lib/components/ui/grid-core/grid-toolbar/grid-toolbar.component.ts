@@ -12,19 +12,29 @@ export class SafeGridToolbarComponent implements OnInit {
   @Input() items: any[] = [];
 
   // === ACTIONS ===
-  @Input() actions: GridAction[] = [];
+  @Input() actions = {
+    update: false,
+    delete: false,
+    history: false,
+    convert: false
+  };
   @Output() action = new EventEmitter();
+
+  get display(): boolean {
+    return this.actions.delete ||
+      ( this.actions.update || this.actions.convert );
+  }
+
+  get canUpdate(): boolean {
+    return !this.items.some(x => x.canUpdate);
+  }
+
+  get canDelete(): boolean {
+    return !this.items.some(x => x.canDelete);
+  }
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  /**
-   * Emits an action.
-   * @param action Action descriptor.
-   */
-  public onAction(action: string): void {
-    this.action.emit({ action, ids: this.items.map(x => x.id) });
   }
 }
