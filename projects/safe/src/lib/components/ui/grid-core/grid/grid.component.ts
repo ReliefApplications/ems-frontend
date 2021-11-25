@@ -88,6 +88,7 @@ export class SafeGridComponent implements OnInit {
   @Input() showFilter = false;
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   @Output() filterChange = new EventEmitter();
+  @Output() showFilterChange = new EventEmitter();
 
   // === PAGINATION ===
   @Input() pageSize = 10;
@@ -105,7 +106,6 @@ export class SafeGridComponent implements OnInit {
   private grid?: GridComponent;
 
   constructor(
-    @Inject('environment') environment: any,
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
@@ -113,6 +113,7 @@ export class SafeGridComponent implements OnInit {
 
   ngOnInit(): void {
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    console.log(this.filter);
   }
 
   // === DATA ===
@@ -135,22 +136,26 @@ export class SafeGridComponent implements OnInit {
   }
 
   // === FILTER ===
-
   /**
    * Handles filter change event.
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    this.filter = filter;
-    this.filterChange.emit(filter);
+    if (!this.loading) {
+      this.filter = filter;
+      this.filterChange.emit(filter);
+    }
   }
 
   /**
    * Toggles quick filter visibility
    */
   public onToggleFilter(): void {
-    this.showFilter = !this.showFilter;
-    this.onFilterChange({ logic: 'and', filters: [] });
+    if (!this.loading) {
+      this.showFilter = !this.showFilter;
+      this.showFilterChange.emit(this.showFilter);
+      this.onFilterChange({ logic: 'and', filters: [] });
+    }
   }
 
   // === SORT ===
@@ -159,8 +164,10 @@ export class SafeGridComponent implements OnInit {
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
-    this.sort = sort;
-    this.sortChange.emit(sort);
+    if (!this.loading) {
+      this.sort = sort;
+      this.sortChange.emit(sort);
+    }
   }
 
   // === PAGINATION ===

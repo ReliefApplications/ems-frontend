@@ -648,16 +648,14 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === FILTERING ===
-
   /**
-   * Toggles quick filter visibility
+   *  Toggles quick filter visibility.
+   * @param showFilter Show filter event.
    */
-  public onToggleFilter(): void {
+  public onShowFilterChange(showFilter: boolean): void {
+    this.showFilter = showFilter;
     this.layout.showFilter = this.showFilter;
     this.saveLocalLayout();
-    this.layout.filter = this.filter;
-    this.saveLocalLayout();
-    this.loadItems();
   }
 
   /**
