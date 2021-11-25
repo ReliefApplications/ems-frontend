@@ -445,6 +445,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
+      case 'update': {
+        if (event.item) {
+          this.onUpdate(event.item);
+        }
+        break;
+      }
       case 'history': {
         if (event.item) {
           this.onViewHistory(event.item);
@@ -481,7 +487,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.onUpdateRow(item.id);
+        this.onUpdate(item);
       }
     });
   }
@@ -490,9 +496,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Opens the form corresponding to selected row in order to update it
    * @param items items to update.
    */
-  public onUpdateRow(items: number | number[]): void {
-    const ids = (Array.isArray(items) && items.length > 1) ? items.map((i) => (this.gridData.data as any)[i].id) :
-      (Array.isArray(items) ? this.gridData.data[(items as any)[0]].id : items);
+  public onUpdate(items: any | any[]): void {
+    const ids = Array.isArray(items) ? items.map(x => x.id) : [items.id];
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,

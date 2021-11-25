@@ -1,6 +1,9 @@
 <button *ngIf="display" kendoButton style="text-align: center" [icon]="'more-vertical'" [look]="'flat'"
     [matMenuTriggerFor]="menu"></button>
 <mat-menu #menu="matMenu">
+    <button *ngIf="actions.update && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'update', item: item })">
+        Update
+    </button>
     <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
         History
     </button>
