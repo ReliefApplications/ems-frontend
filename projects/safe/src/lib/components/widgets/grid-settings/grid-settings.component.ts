@@ -154,6 +154,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   }
 
   private createFloatingButtonForm(value: any): FormGroup {
+    console.log('value');
+    console.log(value);
+    console.log('Validators');
+    console.log(Validators);
+    console.log('Validators.required');
+    console.log(Validators.required);
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
@@ -193,7 +199,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       bodyFields: this.formBuilder.array((value && value.bodyFields) ?
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
         value && value.sendMail ? Validators.required : null),
-      bodyText: [value && value.bodyText ? value.bodyText : '']
+      bodyText: [value && value.bodyText ? value.bodyText : ''],
+      selectAllRecords: [value && value.selectAllRecords ? value.selectAllRecords : false]
     });
     return buttonForm;
   }

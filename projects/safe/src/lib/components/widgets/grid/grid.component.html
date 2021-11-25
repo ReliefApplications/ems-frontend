@@ -18,7 +18,7 @@
         (pageChange)="pageChange($event)" [filterable]="showFilter ? true : 'menu'" [filter]="filter"
         (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true"
         (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
-        (columnVisibilityChange)="columnVisibilityChange()">
+        (columnVisibilityChange)="columnVisibilityChange()" [rowSelected]="isRowSelected">
         <!-- ACTIONS -->
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
