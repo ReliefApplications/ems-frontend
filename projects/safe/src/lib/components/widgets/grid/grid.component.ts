@@ -7,7 +7,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent, RowArgs
+  ColumnReorderEvent,
+  RowArgs
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
