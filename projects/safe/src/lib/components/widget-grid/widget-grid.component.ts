@@ -2,7 +2,6 @@ import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-dr
 import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
-import { SafeGridService } from '../../services/grid.service';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 @Component({
@@ -43,8 +42,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   constructor(
-    public dialog: MatDialog,
-    private gridService: SafeGridService
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {

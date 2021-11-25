@@ -2,7 +2,7 @@ import {
   Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
   Inject, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   GridComponent as KendoGridComponent,
@@ -15,13 +15,11 @@ import { CompositeFilterDescriptor, filterBy, orderBy, SortDescriptor } from '@p
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth.service';
-import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeDownloadService } from '../../../services/download.service';
 import { SafeLayoutService } from '../../../services/layout.service';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { prettifyLabel } from '../../../utils/prettify';
 import { ConvertRecordMutationResponse, CONVERT_RECORD, DELETE_RECORDS, EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
@@ -32,8 +30,8 @@ import { Form } from '../../../models/form.model';
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings, FilterType } from './models/grid-settings.model';
-import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
+import { SafeGridService } from '../../../services/grid.service';
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -41,17 +39,11 @@ const DEFAULT_FILE_NAME = 'grid.xlsx';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
-const flatDeep = (arr: any[]): any[] => {
-  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
-};
 
-const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false
 };
-
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 
 @Component({
   selector: 'safe-grid-core',
@@ -97,7 +89,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   private items: any[] = [];
   public fields: any[] = [];
   private metaFields: any;
-  public multiSelectTypes: string[] = MULTISELECT_TYPES;
   public detailsField?: any;
   private dataQuery: any;
   private metaQuery: any;
@@ -159,7 +150,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder,
     private renderer: Renderer2,
     private resolver: ComponentFactoryResolver,
     private queryBuilder: QueryBuilderService,
@@ -167,7 +157,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private apiProxyService: SafeApiProxyService
+    private gridService: SafeGridService
   ) {
     this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -227,7 +217,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             this.metaFields = Object.assign({}, res.data[field]);
-            await this.populateMetaFields();
+            await this.gridService.populateMetaFields(this.metaFields);
           }
         }
         this.getRecords();
@@ -252,166 +242,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === GRID FIELDS ===
-
-  /**
-   * Generates list of fields for the grid, based on grid parameters.
-   * @param fields list of fields saved in settings.
-   * @param prefix prefix of the field.
-   * @param disabled disabled status of the field, can overwrite the meta one.
-   * @returns List of fields for the grid.
-   */
-  private getFields(fields: any[], prefix?: string, disabled?: boolean): any[] {
-    const cachedFields = this.layout?.fields || {};
-    return flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, fullName, true);
-        }
-        default: {
-          const metaData = get(this.metaFields, fullName);
-          const cachedField = get(cachedFields, fullName);
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          return {
-            name: fullName,
-            title,
-            type: f.type,
-            format: this.getFormat(f.type),
-            editor: this.getEditor(f.type),
-            filter: (this.parent || prefix) ? '' : this.getFilter(f.type),
-            meta: metaData,
-            disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
-            hidden: cachedField?.hidden || false,
-            width: cachedField?.width || title.length * 7 + 50,
-            order: cachedField?.order,
-          };
-        }
-      }
-    })).sort((a, b) => a.order - b.order);
-  }
-
-  /**
-   * Gets editor of a field from its type.
-   * @param type Field type.
-   * @returns name of the editor.
-   */
-  private getEditor(type: any): string {
-    switch (type) {
-      case 'Int': {
-        return 'numeric';
-      }
-      case 'Float': {
-        return 'float';
-      }
-      case 'Boolean': {
-        return 'boolean';
-      }
-      case 'Date': {
-        return 'date';
-      }
-      case 'DateTime': {
-        return 'datetime';
-      }
-      case 'Time': {
-        return 'time';
-      }
-      case 'JSON': {
-        return '';
-      }
-      default: {
-        return 'text';
-      }
-    }
-  }
-
-  /**
-   * Gets format of a field from its type ( only for date fields ).
-   * @param type Type of the field.
-   * @returns Format of the field.
-   */
-  private getFormat(type: any): string {
-    switch (type) {
-      case 'Date':
-        return 'dd/MM/yy';
-      case 'DateTime':
-        return 'dd/MM/yy HH:mm';
-      case 'Time':
-        return 'HH:mm';
-      default:
-        return '';
-    }
-  }
-
-  /**
-   * Gets filter type of a field from its type.
-   * @param type Type of the field.
-   * @returns Name of the field filter.
-   */
-  private getFilter(type: any): string {
-    switch (type) {
-      case 'Int': {
-        return 'numeric';
-      }
-      case 'Boolean': {
-        return 'boolean';
-      }
-      case 'Date': {
-        return 'date';
-      }
-      case 'DateTime': {
-        return 'date';
-      }
-      case 'Time': {
-        return 'date';
-      }
-      case 'JSON': {
-        return '';
-      }
-      default: {
-        return 'text';
-      }
-    }
-  }
-
-  /**
-   * Fetches choices from URL for fields with url parameter.
-   */
-  private async populateMetaFields(): Promise<void> {
-    for (const fieldName of Object.keys(this.metaFields)) {
-      const meta = this.metaFields[fieldName];
-      if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
-          };
-        } else {
-          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl)
-          };
-        }
-      }
-    }
-  }
-
-  /**
-   * Extracts choices using choicesByUrl properties
-   * @param res Result of http request.
-   * @param choicesByUrl Choices By Url property.
-   * @returns list of choices.
-   */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
-    })) : [];
-  }
 
   /**
    * Converts fields with date type into javascript dates.
@@ -449,7 +279,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       this.updateCurrent();
     }
     // creates the form group.
-    this.formGroup = this.createFormGroup(dataItem);
+    this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
     this.editedRecordId = dataItem.id;
     this.editedRowIndex = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
@@ -555,67 +385,6 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /**
-   * Creates form group for inline edition.
-   * @param dataItem Data item to open in inline edition.
-   * @returns Form group of the item.
-   */
-  public createFormGroup(dataItem: any): FormGroup {
-    const formGroup: any = {};
-    this.fields.filter(x => !x.disabled).forEach((field, index) => {
-      if (field.type !== 'JSON' || this.multiSelectTypes.includes(field.meta.type)) {
-        formGroup[field.name] = [dataItem[field.name]];
-      } else {
-        if (field.meta.type === 'multipletext') {
-          const fieldGroup: any = {};
-          for (const item of field.meta.items) {
-            fieldGroup[item.name] = [dataItem[field.name] ? dataItem[field.name][item.name] : null];
-          }
-          formGroup[field.name] = this.formBuilder.group(fieldGroup);
-        }
-        if (field.meta.type === 'matrix') {
-          const fieldGroup: any = {};
-          for (const row of field.meta.rows) {
-            fieldGroup[row.name] = [dataItem[field.name] ? dataItem[field.name][row.name] : null];
-          }
-          formGroup[field.name] = this.formBuilder.group(fieldGroup);
-        }
-        if (field.meta.type === 'matrixdropdown') {
-          const fieldGroup: any = {};
-          const fieldValue = dataItem[field.name];
-          for (const row of field.meta.rows) {
-            const rowValue = fieldValue ? fieldValue[row.name] : null;
-            const rowGroup: any = {};
-            for (const column of field.meta.columns) {
-              const columnValue = rowValue ? rowValue[column.name] : null;
-              rowGroup[column.name] = [columnValue];
-            }
-            fieldGroup[row.name] = this.formBuilder.group(rowGroup);
-          }
-          formGroup[field.name] = this.formBuilder.group(fieldGroup);
-        }
-        if (field.meta.type === 'matrixdynamic') {
-          const fieldArray: any = [];
-          const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
-          for (const rowValue of fieldValue) {
-            const rowGroup: any = {};
-            for (const column of field.meta.columns) {
-              const columnValue = rowValue ? rowValue[column.name] : null;
-              if (this.multiSelectTypes.includes(column.cellType)) {
-                rowGroup[column.name] = [columnValue];
-              } else {
-                rowGroup[column.name] = columnValue;
-              }
-            }
-            fieldArray.push(this.formBuilder.group(rowGroup));
-          }
-          formGroup[field.name] = this.formBuilder.array(fieldArray);
-        }
-      }
-    });
-    return this.formBuilder.group(formGroup);
-  }
-
   // === DATA ===
 
   /**
@@ -628,7 +397,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     if (!!this.parent) {
       this.items = cloneData(this.parent[this.settings?.name]);
       if (this.items.length > 0) {
-        this.fields = this.getFields(this.settings?.fields || []);
+        const layoutFields = this.layout.fields || {};
+        const fields = this.settings?.fields || [];
+        this.fields = this.gridService.getFields(fields, this.metaFields, layoutFields);
         this.convertDateFields(this.items);
         this.originalItems = cloneData(this.items);
         this.detailsField = this.settings?.fields.find((x: any) => x.kind === 'LIST');
@@ -648,7 +419,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
           const fields = this.settings?.query?.fields || [];
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.fields = this.getFields(fields);
+              this.fields = this.gridService.getFields(fields, this.metaFields, {}, '', { filter: false });
               const nodes = res.data[field].edges.map((x: any) => x.node) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Dashboard } from '../models/dashboard.model';
+import { Dashboard, WIDGET_TYPES } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
@@ -8,6 +8,9 @@ import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutati
   providedIn: 'root'
 })
 export class SafeDashboardService {
+
+  // === LIST OF DEFAULT WIDGETS AVAILABLE ===
+  public availableTiles = WIDGET_TYPES;
 
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
 
@@ -107,5 +110,12 @@ export class SafeDashboardService {
       }
     }).subscribe(res => {
     }, error => console.log(error));
+  }
+
+  /*  Find the settings component from the widget passed as 'tile'.
+  */
+  public findSettingsTemplate(tile: any): any {
+    const availableTile = this.availableTiles.find(x => x.component === tile.component);
+    return availableTile && availableTile.settingsTemplate ? availableTile.settingsTemplate : null;
   }
 }

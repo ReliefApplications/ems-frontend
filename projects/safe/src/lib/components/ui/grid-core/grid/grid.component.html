@@ -284,12 +284,12 @@
         </kendo-grid-column>
     </ng-container>
     <!-- ROW SUBGRID -->
-    <ng-container *ngIf="detailsField">
+    <!-- <ng-container *ngIf="detailsField">
         <div *kendoGridDetailTemplate="let dataItem">
             <safe-grid-core [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()">
             </safe-grid-core>
         </div>
-    </ng-container>
+    </ng-container> -->
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
         {{ error ? 'Invalid grid configuration' : 'No record detected.' }}

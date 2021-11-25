@@ -163,6 +163,7 @@ export class SafeGridComponent implements OnInit {
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
+    this.selectedRows = selection.selectedRows?.map(x => x.dataItem.id) || [];
     this.selectionChange.emit(selection);
   }
 
