@@ -348,9 +348,9 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
             this.convertDateFields(this.items);
             this.originalItems = cloneData(this.items);
             this.loadItems();
-            if (!this.readOnly) {
-              this.initSelectedRows();
-            }
+            // if (!this.readOnly) {
+            //   this.initSelectedRows();
+            // }
           }
         }
       },
@@ -664,11 +664,12 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Detects filtering events and update the items loaded.
    * @param filter composite filter created by Kendo.
    */
-  public filterChange(filter: CompositeFilterDescriptor): void {
+  public onFilterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.layout.filter = this.filter;
     this.saveLocalLayout();
-    this.onPageChange({ skip: 0, take: this.pageSize });
+    this.skip = 0;
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 
   /**

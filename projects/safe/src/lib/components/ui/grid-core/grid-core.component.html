@@ -193,8 +193,6 @@
                 </ng-container>
             </kendo-grid-column-group>
         </ng-container> -->
-<ng-template #toolbarTemplate>
-    <div>test</div>
-</ng-template>
 <safe-grid [fields]="fields" [data]="gridData" [loading]="loading" [error]="error" [pageSize]="pageSize" [skip]="skip"
-    (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"></safe-grid>
+    (pageChange)="onPageChange($event)" [sort]="sort" (sortChange)="onSortChange($event)"
+    [filter]="filter" (filterChange)="onFilterChange($event)"></safe-grid>
