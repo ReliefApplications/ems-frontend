@@ -10,6 +10,7 @@
     <ng-container *ngIf="fields.length > 0">
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
+            <button *ngIf="actions.add" kendoButton (action)="action.emit({ action: 'add' })">Add</button>
             <button *ngIf="exportable" kendoButton>Export</button>
             <ng-container *ngIf="editable">
                 <button kendoButton>Save</button>

@@ -152,6 +152,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
 
   // === ACTIONS ===
   public actions = {
+    add: false,
     update: false,
     delete: false,
     history: false,
@@ -189,6 +190,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // define row actions
     this.actions = {
+      add: this.settings.actions?.addRecord && this.settings.query?.template,
       history: this.settings.actions?.history,
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
@@ -420,6 +422,10 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onAction(event: {action: string, item?: any, items?: any[]}): void {
     switch (event.action) {
+      case 'add': {
+        console.log('add');
+        break;
+      }
       case 'details': {
         if (event.item) {
           this.onShowDetails(event.item);
@@ -673,6 +679,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
         if (!fetchMoreResult) { return prev; }
         for (const field in fetchMoreResult) {
           if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+            this.loading = false;
             return Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,

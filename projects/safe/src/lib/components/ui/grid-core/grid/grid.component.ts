@@ -62,6 +62,7 @@ export class SafeGridComponent implements OnInit {
 
   // === ACTIONS ===
   @Input() actions = {
+    add: false,
     update: false,
     delete: false,
     history: false,
