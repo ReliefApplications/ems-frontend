@@ -5,7 +5,8 @@
     (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
     (sortChange)="onSortChange($event)" [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected"
     (selectionChange)="onSelectionChange($event)" (columnReorder)="onColumnReorder($event)"
-    (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()">
+    (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
+    (cellClick)="cellClickHandler($event)">
     <ng-container *ngIf="fields.length > 0">
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
@@ -16,7 +17,8 @@
             </ng-container>
             <button *ngIf="filterable" matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
                 (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
-            <safe-grid-toolbar [actions]="toolbarActions" [items]="selectedRows" (action)="action.emit($event)"></safe-grid-toolbar>
+            <safe-grid-toolbar [actions]="toolbarActions" [items]="selectedRows" (action)="action.emit($event)">
+            </safe-grid-toolbar>
         </ng-template>
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
@@ -32,7 +34,7 @@
                 <!-- FILTER -->
                 <ng-container *ngIf="field.meta">
                     <!-- FILTER ( dropdown / radiogroup ) -->
-                    <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
+                    <ng-container *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)">
                         <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                             let-filterService="filterService">
                             <safe-dropdown-filter-menu [filter]="filter" [filterService]="filterService"
@@ -283,13 +285,6 @@
             </ng-template>
         </kendo-grid-column>
     </ng-container>
-    <!-- ROW SUBGRID -->
-    <!-- <ng-container *ngIf="detailsField">
-        <div *kendoGridDetailTemplate="let dataItem">
-            <safe-grid-core [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()">
-            </safe-grid-core>
-        </div>
-    </ng-container> -->
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
         {{ error ? 'Invalid grid configuration' : 'No record detected.' }}

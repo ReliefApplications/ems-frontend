@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridModule } from './grid.module';
 import { GridAction } from '../models/grid-action.model';
+import { HttpClientModule } from '@angular/common/http';
 
 export default {
     component: SafeGridComponent,
@@ -11,9 +12,15 @@ export default {
         moduleMetadata({
             imports: [
                 SafeGridModule,
+                HttpClientModule,
                 BrowserAnimationsModule
             ],
-            providers: []
+            providers: [
+                {
+                    provide: 'environment',
+                    useValue: {}
+                }
+            ]
         }),
         withKnobs
     ],
@@ -32,6 +39,7 @@ const Template: Story<SafeGridComponent> = args => ({
         [sortable]="sortable"
         [filterable]="filterable"
         [selectable]="selectable"
+        [editable]="editable"
         [rowActions]="rowActions"
     ></safe-grid></div>`,
     props: {
@@ -53,7 +61,8 @@ const DEFAULT_DATA = [
             {
                 name: 'file'
             }
-        ]
+        ],
+        canUpdate: true
     },
     {
         id: '2',
@@ -68,7 +77,8 @@ const DEFAULT_DATA = [
             {
                 name: 'file'
             }
-        ]
+        ],
+        canUpdate: true
     }
 ];
 
@@ -79,7 +89,8 @@ const DEFAULT_FIELDS = [
         type: 'text',
         meta: {
             type: 'text',
-            filter: 'text'
+            filter: 'text',
+            editor: 'text'
         }
     },
     {
@@ -88,7 +99,8 @@ const DEFAULT_FIELDS = [
         type: 'comment',
         meta: {
             type: 'text',
-            filter: 'text'
+            filter: 'text',
+            editor: 'text'
         }
     },
     {
@@ -97,7 +109,8 @@ const DEFAULT_FIELDS = [
         type: 'boolean',
         meta: {
             type: 'boolean',
-            filter: 'boolean'
+            filter: 'boolean',
+            editor: 'boolean'
         }
     },
     {
@@ -106,7 +119,8 @@ const DEFAULT_FIELDS = [
         type: 'color',
         meta: {
             type: 'color',
-            filter: ''
+            filter: null,
+            editor: 'color'
         }
     },
     {
@@ -154,7 +168,8 @@ const DEFAULT_FIELDS = [
         meta: {
             type: 'date',
             filter: 'date',
-            format: 'dd/MM/yy'
+            format: 'dd/MM/yy',
+            editor: 'date'
         }
     },
     {
@@ -163,7 +178,8 @@ const DEFAULT_FIELDS = [
         type: 'JSON',
         meta: {
             type: 'file',
-            filter: ''
+            filter: null,
+            editor: null
         }
     }
 ];
@@ -210,7 +226,8 @@ Default.args = {
         total: DEFAULT_DATA.length
     },
     toolbarActions: DEFAULT_TOOLBAR_ACTIONS,
-    rowActions: DEFAULT_ROW_ACTIONS
+    rowActions: DEFAULT_ROW_ACTIONS,
+    editable: true
 };
 
 export const Empty = Template.bind({});
@@ -250,17 +267,20 @@ const MULTI_SELECT_DATA = [
     {
         checkbox: [1, 2],
         tagbox: [1, 2],
-        users: [1, 2]
+        users: [1, 2],
+        canUpdate: true
     }
 ];
 
 export const MultiSelectInputs = Template.bind({});
 MultiSelectInputs.args = {
+    ...Default.args,
     fields: [
         {
             title: 'Checkbox',
             name: 'checkbox',
             type: 'JSON',
+            editor: '',
             meta: {
                 type: 'checkbox',
                 choices: [
@@ -279,6 +299,7 @@ MultiSelectInputs.args = {
             title: 'Tagbox',
             name: 'tagbox',
             type: 'JSON',
+            editor: '',
             meta: {
                 type: 'tagbox',
                 choices: [
@@ -297,6 +318,7 @@ MultiSelectInputs.args = {
             title: 'Users',
             name: 'users',
             type: 'JSON',
+            editor: '',
             meta: {
                 type: 'users',
                 choices: [
@@ -353,6 +375,7 @@ const COMPLEX_DATA = [
 
 export const ComplexInputs = Template.bind({});
 ComplexInputs.args = {
+    ...Default.args,
     fields: [
         {
             title: 'Multiple text',

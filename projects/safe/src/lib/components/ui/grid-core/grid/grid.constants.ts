@@ -1,4 +1,5 @@
 import { PagerSettings, SelectableSettings } from '@progress/kendo-angular-grid';
+import { GradientSettings } from '@progress/kendo-angular-inputs';
 
 export const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner', 'users'];
 
@@ -15,4 +16,8 @@ export const SELECTABLE_SETTINGS: SelectableSettings = {
     checkboxOnly: true,
     mode: 'multiple',
     drag: false
+};
+
+export const GRADIENT_SETTINGS: GradientSettings = {
+    opacity: false
 };

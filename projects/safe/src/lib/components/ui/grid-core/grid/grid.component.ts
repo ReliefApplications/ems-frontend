@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ColumnReorderEvent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-import { MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
+import { GRADIENT_SETTINGS, MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
@@ -13,11 +13,15 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { GridAction } from '../models/grid-action.model';
+import { FormGroup } from '@angular/forms';
+import { SafeGridService } from '../../../../services/grid.service';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
 }
+
+const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
 
 @Component({
   selector: 'safe-grid',
@@ -50,6 +54,10 @@ export class SafeGridComponent implements OnInit {
 
   // === EDITION ===
   @Input() editable = false;
+  public formGroup: FormGroup = new FormGroup({});
+  private currentEditedId = '';
+  private currentEditedRow = 0;
+  public gradientSettings = GRADIENT_SETTINGS;
 
   // === ACTIONS ===
   @Input() toolbarActions: GridAction[] = [];
@@ -91,11 +99,19 @@ export class SafeGridComponent implements OnInit {
   @Input() sort: SortDescriptor[] = [];
   @Output() sortChange = new EventEmitter();
 
+  // === TEMPLATE ===
+  @ViewChild(GridComponent)
+  private grid?: GridComponent;
+
   constructor(
-    private dialog: MatDialog
+    @Inject('environment') environment: any,
+    private dialog: MatDialog,
+    private gridService: SafeGridService,
+    private renderer: Renderer2,
   ) { }
 
   ngOnInit(): void {
+    this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
   // === DATA ===
@@ -225,6 +241,74 @@ export class SafeGridComponent implements OnInit {
     this.columnChange.emit();
   }
 
+  // === INLINE EDITION ===
+
+  /**
+   * Detects cell click event and opens row form if user is authorized.
+   * @param param0 click event.
+   */
+   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
+    // Parameters that prevent the inline edition.
+    if (!this.data.data[rowIndex - this.skip].canUpdate || !this.editable ||
+      isEdited || (this.formGroup && !this.formGroup.valid)) {
+      return;
+    }
+    // Closes current inline edition.
+    if (this.currentEditedId) {
+      if (this.formGroup.dirty) {
+        console.log('update');
+        // this.update(this.currentEditedId, this.formGroup.value);
+      }
+      this.closeEditor();
+    }
+    // creates the form group.
+    this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
+    this.currentEditedId = dataItem.id;
+    this.currentEditedRow = rowIndex;
+    this.grid?.editRow(rowIndex, this.formGroup);
+  }
+
+  /**
+   * Detects document click to save record if outside the inline edition form.
+   * @param e click event.
+   */
+   private onDocumentClick(e: any): void {
+    if (this.formGroup && this.formGroup.valid &&
+      !matches(e.target, '#customGrid tbody *, #customGrid .k-grid-toolbar .k-button .k-animation-container')) {
+      if (this.formGroup.dirty) {
+        console.log('update');
+        // this.update(this.currentEditedId, this.formGroup.value);
+      }
+      this.closeEditor();
+    }
+  }
+
+  /**
+   * Closes the inline edition.
+   */
+   private closeEditor(): void {
+    this.grid?.closeRow(this.currentEditedRow);
+    this.grid?.cancelCell();
+    this.currentEditedRow = 0;
+    this.currentEditedId = '';
+    this.formGroup = new FormGroup({});
+  }
+
+  /**
+   * Finds item in data items and updates it with new values, from inline edition.
+   * @param id Item id.
+   * @param value Updated value of the item.
+   */
+  //  private update(id: string, value: any): void {
+  //   const item = this.updatedItems.find(x => x.id === id);
+  //   if (item) {
+  //     Object.assign(item, { ...value, id });
+  //   } else {
+  //     this.updatedItems.push({ ...value, id });
+  //   }
+  //   Object.assign(this.items.find(x => x.id === id), value);
+  // }
+
   // === EXPORT ===
   /**
    * Downloads file of record.
@@ -250,19 +334,20 @@ export class SafeGridComponent implements OnInit {
    * @param rowTitle field name.
    */
   public onExpandText(item: any, field: any): void {
-    const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
-      data: {
-        title: field.title,
-        comment: get(item, field.name)
-      },
-      autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0'
-      },
-      panelClass: 'expanded-widget-dialog'
-    });
-    dialogRef.afterClosed().subscribe(res => {
+    console.log('on expand');
+    // const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
+    //   data: {
+    //     title: field.title,
+    //     comment: get(item, field.name)
+    //   },
+    //   autoFocus: false,
+    //   position: {
+    //     bottom: '0',
+    //     right: '0'
+    //   },
+    //   panelClass: 'expanded-widget-dialog'
+    // });
+    // dialogRef.afterClosed().subscribe(res => {
       // TODO: finish that
       // if (res !== item[rowTitle]) {
       //   this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
@@ -274,6 +359,6 @@ export class SafeGridComponent implements OnInit {
       //     this.updatedItems.push({ [rowTitle]: res, id: item.id });
       //   }
       // }
-    });
+    // });
   }
 }
