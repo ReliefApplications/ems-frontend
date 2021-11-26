@@ -233,7 +233,8 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
-        name: 'canAddNew:boolean',
+        name: 'addRecord:boolean',
+        displayName: 'Add new records',
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: (obj: any) => {
@@ -242,6 +243,76 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           } else {
             return true;
             // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'delete:boolean',
+        displayName: 'Delete records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'history:boolean',
+        displayName: 'Show history',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'convert:boolean',
+        displayName: 'Convert records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'update:boolean',
+        dislayName: 'Update records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'inlineEdition:boolean',
+        displayName: 'Inline edition',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
           }
         },
         visibleIndex: 3,
@@ -264,22 +335,22 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.canAddNew) {
+          if (!obj.resource || !obj.addRecord) {
             return false;
           } else {
             return true;
             // const uniqueRecord = hasUniqueRecord(obj.resource);
             // if (uniqueRecord) {
-            //   obj.canAddNew = false;
+            //   obj.addRecord = false;
             // }
             // return !uniqueRecord;
           }
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource && obj.canAddNew) {
+          if (obj.resource && obj.addRecord) {
             getResourceById({id: obj.resource}).subscribe((response) => {
               const serverRes = response.data.resource.forms || [];
               const res = [];
@@ -295,9 +366,9 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resources', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.canAddNew) {
+          if (!obj.resource || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -545,7 +616,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.displayField = null;
         filters = [];
         this.resourceFieldsName = [];
-        question.canAddNew = false;
+        question.addRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
