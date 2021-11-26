@@ -7,7 +7,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent
+  ColumnReorderEvent,
+  RowArgs
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -184,6 +185,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
+
+  // public allRowSelection = false;
+  public isRowSelected = (e: RowArgs) => this.selectedRowsIndex.includes(e.index);
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -1028,8 +1032,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
-    let rowsIndexToModify = [...this.selectedRowsIndex];
     this.loading = true;
+    if (options.selectAll) {
+      this.selectionChange({ selectedRows: this.gridData.data.map((x, index) => {
+        return {
+          dataItem: x,
+          index
+        };
+      }) });
+    }
+    let rowsIndexToModify = [...this.selectedRowsIndex];
     if (options.autoSave && options.modifySelectedRows) {
       const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
       if (unionRows.length > 0) {
