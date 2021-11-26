@@ -55,8 +55,8 @@ export class SafeGridComponent implements OnInit {
   // === EDITION ===
   @Input() editable = false;
   public formGroup: FormGroup = new FormGroup({});
-  private currentEditedId = '';
   private currentEditedRow = 0;
+  private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
   public editing = false;
 
@@ -276,16 +276,15 @@ export class SafeGridComponent implements OnInit {
       return;
     }
     // Closes current inline edition.
-    if (this.currentEditedId) {
+    if (this.currentEditedItem) {
       if (this.formGroup.dirty) {
-        console.log('update');
-        // this.update(this.currentEditedId, this.formGroup.value);
+        this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
       }
       this.closeEditor();
     }
     // creates the form group.
     this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
-    this.currentEditedId = dataItem.id;
+    this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
   }
@@ -298,8 +297,7 @@ export class SafeGridComponent implements OnInit {
     if (this.formGroup && this.formGroup.valid &&
       !matches(e.target, '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container')) {
       if (this.formGroup.dirty) {
-        console.log('update');
-        // this.update(this.currentEditedId, this.formGroup.value);
+        this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
       }
       this.closeEditor();
     }
@@ -312,9 +310,25 @@ export class SafeGridComponent implements OnInit {
     this.grid?.closeRow(this.currentEditedRow);
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
-    this.currentEditedId = '';
+    this.currentEditedItem = null;
     this.editing = false;
     this.formGroup = new FormGroup({});
+  }
+
+  /**
+   * Saves edition.
+   */
+  public onSave(): void {
+    this.closeEditor();
+    this.action.emit({ action: 'save' });
+  }
+
+  /**
+   * Cancels edition.
+   */
+  public onCancel(): void {
+    this.closeEditor();
+    this.action.emit({ action: 'cancel' });
   }
 
   /**

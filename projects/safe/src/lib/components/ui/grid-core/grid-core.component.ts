@@ -7,8 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   GridComponent as KendoGridComponent,
   GridDataResult,
-  PageChangeEvent,
-  SelectionEvent
+  PageChangeEvent
 } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -159,6 +158,8 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
     convert: false
   };
 
+  public editable = false;
+
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -196,6 +197,7 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
       delete: this.settings.actions?.delete,
       convert: this.settings.actions?.convert
     };
+    this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
     if (this.layout?.filter) {
@@ -293,14 +295,16 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * @param id Item id.
    * @param value Updated value of the item.
    */
-  private update(id: string, value: any): void {
-    const item = this.updatedItems.find(x => x.id === id);
-    if (item) {
-      Object.assign(item, { ...value, id });
+  private update(item: any, value: any): void {
+    console.log(item);
+    const updatedItem = this.updatedItems.find(x => x.id === item.id);
+    if (updatedItem) {
+      Object.assign(updatedItem, ...value);
     } else {
-      this.updatedItems.push({ ...value, id });
+      this.updatedItems.push(Object.assign({...item}, ...value));
     }
-    Object.assign(this.items.find(x => x.id === id), value);
+    Object.assign(this.items.find(x => x.id === item.id), value);
+    this.loadItems();
   }
 
   /**
@@ -420,10 +424,24 @@ export class SafeGridCoreComponent implements OnInit, OnChanges, OnDestroy {
    * Handles grid actions.
    * @param event Grid Action.
    */
-  public onAction(event: {action: string, item?: any, items?: any[]}): void {
+  public onAction(event: { action: string, item?: any, items?: any[], value?: any }): void {
     switch (event.action) {
       case 'add': {
         console.log('add');
+        break;
+      }
+      case 'edit': {
+        if (event.item && event.value) {
+          this.update(event.item, event.value);
+        }
+        break;
+      }
+      case 'save': {
+        console.log('save');
+        break;
+      }
+      case 'cancel': {
+        console.log('cancel');
         break;
       }
       case 'details': {
