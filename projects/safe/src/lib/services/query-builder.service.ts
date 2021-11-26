@@ -158,13 +158,13 @@ export class QueryBuilderService {
     }
   }
 
-  public buildMetaQuery(settings: any, subQuery = false): Observable<ApolloQueryResult<any>> | null {
-    const builtQuery = subQuery ? settings : settings.query;
+  public buildMetaQuery(settings: any): Observable<ApolloQueryResult<any>> | null {
+    const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomMetaQuery {
-          _${subQuery ? builtQuery.type : builtQuery.name}Meta {
+          _${builtQuery.name}Meta {
             ${metaFields}
           }
         }

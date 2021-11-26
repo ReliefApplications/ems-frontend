@@ -169,10 +169,4 @@
   <ng-template kendoGridNoRecordsTemplate>
     {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
   </ng-template>
-  <!-- ROW SUBGRID -->
-  <ng-container *ngIf="detailsField">
-    <div *kendoGridDetailTemplate="let dataItem">
-      <safe-resource-grid [settings]="detailsField" [parent]="dataItem"></safe-resource-grid>
-    </div>
-  </ng-container>
 </kendo-grid>
