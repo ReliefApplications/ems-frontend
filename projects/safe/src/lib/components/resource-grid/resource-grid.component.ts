@@ -60,9 +60,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   @Input()
   selectedRows: string[] = [];
 
-  // === PARENT DATA FOR CHILDREN-GRID ===
-  @Input() parent: any;
-
   @Output()
   rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
@@ -93,7 +90,6 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   private dataQuery: any;
 
   private dataSubscription?: Subscription;
-  public detailsField: any;
 
   public loading = true;
   public queryError = false;
@@ -147,7 +143,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
         for (const field in res.data) {
@@ -167,49 +163,26 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
   private getRecords(): void {
     this.loading = true;
 
-    // Child grid
-    if (!!this.parent) {
-      this.items = this.parent[this.settings.name];
-      if (this.items.length > 0) {
-        this.fields = this.getFields(this.settings.fields);
-        this.convertDateFields(this.items);
-        this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
-      } else {
-        this.fields = [];
-        this.detailsField = '';
-      }
-      this.gridData = {
-        data: this.items,
-        total: this.items.length
-      };
-      this.loading = false;
-      // Parent grid
-    } else {
-      if (this.dataQuery) {
-        this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-          const fields = this.settings.query.fields;
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.fields = this.getFields(fields);
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
-              this.totalCount = res.data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
-              if (this.detailsField) {
-                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
-              }
-              this.loadItems();
-              if (!this.readOnly) {
-                this.getSelectedRows();
-              }
-              this.loading = false;
+    if (this.dataQuery) {
+      this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+        const fields = this.settings.query.fields;
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.fields = this.getFields(fields);
+            const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+            this.totalCount = res.data[field].totalCount;
+            this.items = cloneData(nodes);
+            this.convertDateFields(this.items);
+            this.loadItems();
+            if (!this.readOnly) {
+              this.getSelectedRows();
             }
+            this.loading = false;
           }
-        }, () => this.loading = false);
-      } else {
-        this.loading = false;
-      }
+        }
+      }, () => this.loading = false);
+    } else {
+      this.loading = false;
     }
   }
 
@@ -253,7 +226,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
-            filter: (this.parent || prefix) ? '' : this.getFilter(f.type),
+            filter: prefix ? '' : this.getFilter(f.type),
             meta: metaData,
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             ...f.kind === 'LIST' && {
@@ -405,7 +378,7 @@ export class SafeResourceGridComponent implements OnInit, OnDestroy {
         data: {
           recordId: item.id,
           locale: 'en',
-          template: isArray ? null : this.parent ? null : this.settings.query.template
+          template: isArray ? null : this.settings.query.template
         },
         height: '98%',
         width: '100vw',

@@ -7,7 +7,8 @@ import {
   SelectableSettings,
   SelectionEvent,
   PagerSettings,
-  ColumnReorderEvent
+  ColumnReorderEvent,
+  RowArgs
 } from '@progress/kendo-angular-grid';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -115,7 +116,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public queryError = false;
   public fields: any[] = [];
   private metaFields: any;
-  public detailsField: any;
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
@@ -142,9 +142,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
-
-  // === PARENT DATA FOR CHILDREN-GRID ===
-  @Input() parent: any;
 
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
@@ -184,6 +181,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
     }
   ];
+
+  // public allRowSelection = false;
+  public isRowSelected = (e: RowArgs) => this.selectedRowsIndex.includes(e.index);
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -225,28 +225,26 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
-    if (!this.parent) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      if (builtQuery) {
-        const filters = [this.filter];
-        if (this.settings.query.filter) {
-          filters.push(this.settings.query.filter);
-        }
-        const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-          (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-        const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-        this.dataQuery = this.apollo.watchQuery<any>({
-          query: builtQuery,
-          variables: {
-            first: this.pageSize,
-            filter: { logic: 'and', filters },
-            sortField,
-            sortOrder
-          }
-        });
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    if (builtQuery) {
+      const filters = [this.filter];
+      if (this.settings.query.filter) {
+        filters.push(this.settings.query.filter);
       }
+      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.pageSize,
+          filter: { logic: 'and', filters },
+          sortField,
+          sortOrder
+        }
+      });
     }
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, this.parent);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
       this.metaQuery.subscribe(async (res: any) => {
         this.queryError = false;
@@ -346,7 +344,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             type: f.type,
             format: this.getFormat(f.type),
             editor: this.getEditor(f.type),
-            filter: (this.parent || prefix) ? '' : this.getFilter(f.type),
+            filter: prefix ? '' : this.getFilter(f.type),
             meta: metaData,
             disabled: disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
@@ -382,71 +380,39 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
 
-    // Child grid
-    if (!!this.parent) {
-      this.items = cloneData(this.parent[this.settings.name]);
-      if (this.items.length > 0) {
-        this.fields = this.getFields(this.settings.fields);
-        this.convertDateFields(this.items);
-        this.originalItems = cloneData(this.items);
-        this.detailsField = this.settings.fields.find((x: any) => x.kind === 'LIST');
-      } else {
-        this.originalItems = [];
-        this.fields = [];
-        this.detailsField = '';
-      }
-      this.totalCount = this.items.length;
-      this.loadItems();
-      this.loading = false;
-
-      // Parent grid
-    } else {
-      if (this.dataQuery) {
-        this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-          this.queryError = false;
-          const fields = this.settings.query.fields;
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.fields = this.getFields(fields);
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
-              this.totalCount = res.data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.detailsField = fields.find((x: any) => x.kind === 'LIST');
-              if (this.detailsField) {
-                this.detailsField = { ...this.detailsField, actions: this.settings.actions };
-              }
-              this.loadItems();
-            }
+    if (this.dataQuery) {
+      this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+        this.queryError = false;
+        const fields = this.settings.query.fields;
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            this.fields = this.getFields(fields);
+            const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+            this.totalCount = res.data[field].totalCount;
+            this.items = cloneData(nodes);
+            this.convertDateFields(this.items);
+            this.originalItems = cloneData(this.items);
+            this.loadItems();
           }
-          this.loading = false;
-        },
-          () => {
-            this.queryError = true;
-            this.loading = false;
-          });
-      } else {
+        }
         this.loading = false;
-      }
+      },
+        () => {
+          this.queryError = true;
+          this.loading = false;
+        });
+    } else {
+      this.loading = false;
     }
   }
 
   /*  Set the list of items to display.
   */
   private loadItems(): void {
-    if (!!this.parent) {
-      this.gridData = {
-        data: (this.sort ? orderBy((this.filter ? filterBy(this.items, this.filter) : this.items), this.sort) :
-          (this.filter ? filterBy(this.items, this.filter) : this.items)).slice(this.skip, this.skip + this.pageSize),
-        total: this.totalCount
-      };
-    } else {
-      this.gridData = {
-        data: this.items,
-        total: this.totalCount
-      };
-    }
+    this.gridData = {
+      data: this.items,
+      total: this.totalCount
+    };
   }
 
   /**
@@ -726,11 +692,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.layout.sort = sort;
     this.layoutChanged.emit(this.layout);
     this.skip = 0;
-    if (!!this.parent) {
-      this.loadItems();
-    } else {
-      this.pageChange({ skip: 0, take: this.pageSize });
-    }
+    this.pageChange({ skip: 0, take: this.pageSize });
   }
 
   /**
@@ -744,43 +706,38 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedRowsIndex = [];
     this.canUpdateSelectedRows = false;
     this.canDeleteSelectedRows = false;
-    if (!!this.parent) {
-      this.loadItems();
-      this.loading = false;
-    } else {
-      const filters = [this.filter];
-      if (this.settings.query.filter) {
-        filters.push(this.settings.query.filter);
-      }
-      const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-      this.dataQuery.fetchMore({
-        variables: {
-          first: this.pageSize,
-          skip: this.skip,
-          filter: { logic: 'and', filters },
-          sortField,
-          sortOrder
-        },
-        updateQuery: (prev: any, { fetchMoreResult }: any) => {
-          this.loading = false;
-          if (!fetchMoreResult) { return prev; }
-          for (const field in fetchMoreResult) {
-            if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-              return Object.assign({}, prev, {
-                [field]: {
-                  edges: fetchMoreResult[field].edges,
-                  totalCount: fetchMoreResult[field].totalCount,
-                  pageInfo: fetchMoreResult[field].pageInfo
-                }
-              });
-            }
-          }
-          return prev;
-        }
-      });
+    const filters = [this.filter];
+    if (this.settings.query.filter) {
+      filters.push(this.settings.query.filter);
     }
+    const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    this.dataQuery.fetchMore({
+      variables: {
+        first: this.pageSize,
+        skip: this.skip,
+        filter: { logic: 'and', filters },
+        sortField,
+        sortOrder
+      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        this.loading = false;
+        if (!fetchMoreResult) { return prev; }
+        for (const field in fetchMoreResult) {
+          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+            return Object.assign({}, prev, {
+              [field]: {
+                edges: fetchMoreResult[field].edges,
+                totalCount: fetchMoreResult[field].totalCount,
+                pageInfo: fetchMoreResult[field].pageInfo
+              }
+            });
+          }
+        }
+        return prev;
+      }
+    });
   }
 
   /**
@@ -791,11 +748,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.filter = filter;
     this.layout.filter = this.filter;
     this.layoutChanged.emit(this.layout);
-    if (!!this.parent) {
-      this.loadItems();
-    } else {
-      this.pageChange({ skip: 0, take: this.pageSize });
-    }
+    this.pageChange({ skip: 0, take: this.pageSize });
   }
 
   /* Detect selection event and display actions available on rows.
@@ -857,17 +810,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
- /**
-  * Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
-  * Opens list of records in grids.
-  * @param item item to display.
-  */
+  /**
+   * Opens the record on a read-only modal. If edit mode is enabled, open edition modal.
+   * Opens list of records in grids.
+   * @param item item to display.
+   */
   public onShowDetails(item: any, field?: any): void {
     const isArray = Array.isArray(item);
     // check if the detail is for a record, a resource or resources.
     item = isArray ? (item.length <= 1 ? item[0] : item) : item;
     if (isArray && item.length >= 2) {
-      const idsFilter = { field: 'ids', operator: 'in', value: item.map((x: { id: any; }) => x.id) };
+      const idsFilter = { field: 'ids', operator: 'in', value: item.map((x: { id: any; }) => x.id) };
       // for resources, open it inside the SafeResourceGrid
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
@@ -891,7 +844,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: item.id,
           locale: 'en',
           canUpdate: item.canUpdate,
-          template: isArray ? null : this.parent ? null : this.settings.query.template
+          template: isArray ? null : this.settings.query.template
         },
         height: '98%',
         width: '100vw',
@@ -1017,19 +970,25 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Reload data and unselect all rows
   */
   public reloadData(): void {
-    if (!this.parent) {
-      this.pageChange({ skip: 0, take: this.pageSize });
-    } else {
-      this.childChanged.emit();
-    }
+    this.pageChange({ skip: 0, take: this.pageSize });
     this.selectedRowsIndex = [];
   }
 
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
-    let rowsIndexToModify = [...this.selectedRowsIndex];
     this.loading = true;
+    if (options.selectAll) {
+      this.selectionChange({
+        selectedRows: this.gridData.data.map((x, index) => {
+          return {
+            dataItem: x,
+            index
+          };
+        })
+      });
+    }
+    let rowsIndexToModify = [...this.selectedRowsIndex];
     if (options.autoSave && options.modifySelectedRows) {
       const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
       if (unionRows.length > 0) {
@@ -1072,15 +1031,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         }).toPromise());
       }
       if (options.sendMail && selectedRecords.length > 0) {
-        const emailSettings = { query: {
-          name: this.settings.query.name,
-          fields: options.bodyFields
-        }};
+        const emailSettings = {
+          query: {
+            name: this.settings.query.name,
+            fields: options.bodyFields
+          }
+        };
         const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-        (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+          (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
         const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
         this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
-           selectedRecords.map(x => x.id), sortField, sortOrder);
+          selectedRecords.map(x => x.id), sortField, sortOrder);
         if (options.export) {
           this.grid?.saveAsExcel();
         }
@@ -1140,13 +1101,13 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
- /**
-  * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
-  * Applies inline edition before applying modifications.
-  * @param modifications list of modifications to apply.
-  * @param rows rows to edit.
-  * @returns Array of Promises to execute.
-  */
+  /**
+   * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
+   * Applies inline edition before applying modifications.
+   * @param modifications list of modifications to apply.
+   * @param rows rows to edit.
+   * @returns Array of Promises to execute.
+   */
   private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
     for (const index of rows) {
@@ -1425,7 +1386,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       query: builtQuery,
       variables: {
         first: this.gridData.total,
-        filter: { logic: 'and', filters },
+        filter: { logic: 'and', filters },
         sortField,
         sortOrder
       }

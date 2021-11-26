@@ -1,5 +1,5 @@
 <div class="widget-container">
-    <div class="widget-header" *ngIf="!parent">
+    <div class="widget-header">
         <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
         <div class="floating-button">
             <ng-container *ngFor="let floatingButton of settings.floatingButtons">
@@ -18,7 +18,7 @@
         (pageChange)="pageChange($event)" [filterable]="showFilter ? true : 'menu'" [filter]="filter"
         (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [resizable]="true"
         (columnReorder)="columnReorder($event)" (columnResize)="columnResize()"
-        (columnVisibilityChange)="columnVisibilityChange()">
+        (columnVisibilityChange)="columnVisibilityChange()" [rowSelected]="isRowSelected">
         <!-- ACTIONS -->
         <ng-template kendoGridToolbarTemplate position="top">
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
@@ -28,16 +28,16 @@
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
                 [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button>
             <button kendoButton icon="eye" (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
-            <span kendotooltip *ngIf="!parent && isAdmin">
+            <span kendotooltip *ngIf="isAdmin">
                 <button title="This will save this layout as the default one for all users" class='k-button'
                     (click)="saveDefaultLayout()">Save Layout as default</button>
             </span>
-            <span kendotooltip *ngIf="!parent">
+            <span kendotooltip>
                 <button title="This will erase current layout with default layout" class='k-button'
                     (click)="resetDefaultLayout()">Reset default Layout</button>
             </span>
             <span kendotooltip
-                *ngIf="!parent && settings.actions && settings.actions.addRecord && settings.query && settings.query.template">
+                *ngIf="settings.actions && settings.actions.addRecord && settings.query && settings.query.template">
                 <button class='k-button' (click)="onAdd()">Add new record</button>
             </span>
             <ng-container *ngIf="selectedRowsIndex.length > 0">
@@ -383,12 +383,6 @@
                     </mat-menu>
                 </ng-template>
             </kendo-grid-column>
-        </ng-container>
-        <!-- ROW SUBGRID -->
-        <ng-container *ngIf="detailsField">
-            <div *kendoGridDetailTemplate="let dataItem">
-                <safe-grid [settings]="detailsField" [parent]="dataItem" (childChanged)="reloadData()"></safe-grid>
-            </div>
         </ng-container>
         <!-- EMPTY TABLE / INVALID QUERY -->
         <ng-template kendoGridNoRecordsTemplate>

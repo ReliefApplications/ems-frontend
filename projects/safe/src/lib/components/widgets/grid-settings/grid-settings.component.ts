@@ -157,6 +157,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
+      selectAll: [value && value.selectAll ? value.selectAll : false],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       prefillForm: [value && value.prefillForm ? value.prefillForm : false],
       prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,

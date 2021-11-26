@@ -13,6 +13,7 @@
           <input matInput formControlName="name" type="string">
         </mat-form-field>
 
+        <mat-checkbox formControlName="selectAll">Select all records</mat-checkbox>
         <ng-container *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="prefillForm">Pre-fill form with selected data</mat-checkbox>
           <div *ngIf="buttonForm.value.prefillForm" class="sub-parameters">

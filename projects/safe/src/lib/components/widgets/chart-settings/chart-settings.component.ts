@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
 import { Chart } from './charts/chart';
 import { CHART_TYPES, LEGEND_ORIENTATIONS, LEGEND_POSITIONS, TITLE_POSITIONS } from './constants';
 
