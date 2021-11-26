@@ -421,8 +421,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
           this.loading = false;
-          console.log('SETTINGS FIELDS', this.settings.query.fields);
-          console.log('FIELDS', this.fields);
         },
           () => {
             this.queryError = true;
