@@ -157,6 +157,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
+      selectAll: [value && value.selectAll ? value.selectAll : false],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       prefillForm: [value && value.prefillForm ? value.prefillForm : false],
       prefillTargetForm: [value && value.prefillTargetForm ? value.prefillTargetForm : null,
@@ -193,8 +194,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       bodyFields: this.formBuilder.array((value && value.bodyFields) ?
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
         value && value.sendMail ? Validators.required : null),
-      bodyText: [value && value.bodyText ? value.bodyText : ''],
-      selectAllRecords: [value && value.selectAllRecords ? value.selectAllRecords : false]
+      bodyText: [value && value.bodyText ? value.bodyText : '']
     });
     return buttonForm;
   }

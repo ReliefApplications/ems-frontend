@@ -49,7 +49,6 @@ import { SafeEmailService } from '../../../services/email.service';
 import get from 'lodash/get';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
-import {any} from 'codelyzer/util/function';
 
 
 const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -187,8 +186,8 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
 
-  public allRowSelection = false;
-  public isRowSelected = (e: RowArgs) => this.allRowSelection;
+  // public allRowSelection = false;
+  public isRowSelected = (e: RowArgs) => this.selectedRowsIndex.includes(e.index);
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -1033,8 +1032,16 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   /* Execute sequentially actions enabled by settings for the floating button
   */
   public async onFloatingButtonClick(options: any): Promise<void> {
-    let rowsIndexToModify = [...this.selectedRowsIndex];
     this.loading = true;
+    if (options.selectAll) {
+      this.selectionChange({ selectedRows: this.gridData.data.map((x, index) => {
+        return {
+          dataItem: x,
+          index
+        };
+      }) });
+    }
+    let rowsIndexToModify = [...this.selectedRowsIndex];
     if (options.autoSave && options.modifySelectedRows) {
       const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
       if (unionRows.length > 0) {
@@ -1042,9 +1049,6 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         this.updatedItems = this.updatedItems.filter(x => !unionRows.some(y => x.id === this.gridData.data[y].id));
         rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
       }
-    }
-    if (options.selectAllRecords) {
-      this.allRowSelection = !this.allRowSelection;
     }
 
     if (options.autoSave) {
