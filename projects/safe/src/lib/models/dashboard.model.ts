@@ -32,7 +32,7 @@ export const WIDGET_TYPES = [
         id: 'column-chart',
         name: 'Column chart',
         icon: '/assets/column.svg',
-        color: '#3B8CC4',
+        color: '#EBA075',
         settings: {
             title: 'Column chart', chart: {
                 type: 'column'
@@ -77,7 +77,7 @@ export const WIDGET_TYPES = [
       id: 'bar-chart',
       name: 'Bar chart',
       icon: '/assets/bar.svg',
-      color: '#8CCDD5',
+      color: '#B5DC8D',
       settings: {
         title: 'Bar chart', chart: {
           type: 'bar'
