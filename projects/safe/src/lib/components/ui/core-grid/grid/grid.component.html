@@ -9,6 +9,7 @@
     (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->
     <ng-template kendoGridToolbarTemplate position="top">
+        <input placeholder="Search in text fields..." kendoTextBox (input)="onSearch($event.target)" class="grid-searchbox"/>
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
         <!-- <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
             [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>

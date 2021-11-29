@@ -5,6 +5,7 @@ import { MatSelect } from '@angular/material/select';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
+import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -28,7 +29,9 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
 
   // === REACTIVE FORM ===
   chooseRecordForm: FormGroup = new FormGroup({});
-  settings: any = {};
+
+  // === GRID SETTINGS ===
+  public settings: GridSettings = {};
 
   // === DATA ===
   private records = new BehaviorSubject<IRecord[]>([]);
@@ -58,7 +61,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
-    this.filter = this.settings.query.filter || {};
+    this.filter = this.settings.query?.filter || {};
     const builtQuery = this.queryBuilder.buildQuery({ ...this.settings, query: {
       ...this.settings.query,
       fields: [{ kind: 'SCALAR', name: this.data.targetFormField }]
@@ -69,8 +72,8 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
         ...builtQuery.variables, ...{
           first: ITEMS_PER_PAGE,
           filter: this.filter,
-          sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-          sortOrder: this.settings.query.sort?.order || ''
+          sortField: this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+          sortOrder: this.settings.query?.sort?.order || ''
         }
       }
     });
@@ -94,14 +97,28 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     this.chooseRecordForm = this.formBuilder.group({
       record: [null, Validators.required]
     });
+    this.settings = {
+      query: this.data.targetFormQuery,
+      actions: {
+        delete: false,
+        history: false,
+        convert: false,
+        update: false,
+        inlineEdition: false
+      }
+    };
   }
 
   onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
   }
 
-  onRowSelected(rows: any): void {
-    this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem.id);
+  onSelectionChange(rows: any): void {
+    if (rows.selectedRows && rows.selectedRows.length > 0) {
+      this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem.id);
+    } else {
+      this.chooseRecordForm.get('record')?.setValue(null);
+    }
   }
   /*  Close the modal without sending data.
   */
@@ -140,8 +157,8 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
             skip: this.records.getValue().length,
             afterCursor: this.pageInfo.endCursor,
             filter: this.filter,
-            sortField: this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-            sortOrder: this.settings.query.sort?.order || ''
+            sortField: this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
+            sortOrder: this.settings.query?.sort?.order || ''
           },
           updateQuery: (prev: any, { fetchMoreResult }: any) => {
             if (!fetchMoreResult) { return prev; }

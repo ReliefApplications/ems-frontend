@@ -167,6 +167,38 @@ export class SafeGridComponent implements OnInit {
     }
   }
 
+  /**
+   * Searchs through all text columns.
+   * @param search text input value.
+   */
+  public onSearch(search: any): void {
+    // const filteredData: any[] = [];
+    // const searchText = filter.value.toLowerCase();
+    // this.items.forEach((data: any) => {
+    //   const auxData = data;
+    //   delete auxData.canDelete;
+    //   delete auxData.canUpdate;
+    //   delete auxData.__typename;
+    //   if (Object.keys(auxData).some((key: string, index) => {
+    //     if (auxData[key]) {
+    //       const meta = this.metaFields[key];
+    //       if (meta && meta.choices) {
+    //         return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
+    //       } else {
+    //         return auxData[key].toString().toLowerCase().includes(searchText);
+    //       }
+    //     }
+    //   })) {
+    //     filteredData.push(data);
+    //   }
+    // });
+    // this.gridData = {
+    //   data: filteredData,
+    //   total: this.totalCount
+    // };
+    // this.getSelectedRows();
+  }
+
   // === SORT ===
   /**
    * Handles sort change event.
