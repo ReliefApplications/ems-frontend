@@ -11,18 +11,6 @@
     <ng-template kendoGridToolbarTemplate position="top">
         <input placeholder="Search in text fields..." kendoTextBox (input)="onSearch($event.target)" class="grid-searchbox"/>
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-        <!-- <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
-            [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
-        <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
-            [disabled]="!hasChanges" (click)="onCancelChanges()">Cancel</button> -->
-        <!-- <span kendotooltip *ngIf="isAdmin">
-            <button title="This will save this layout as the default one for all users" class='k-button'
-                (click)="saveDefaultLayout()">Save Layout as default</button>
-        </span>
-        <span kendotooltip>
-            <button title="This will erase current layout with default layout" class='k-button'
-                (click)="resetDefaultLayout()">Reset default Layout</button>
-        </span> -->
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">Add</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">Export</button>
         <ng-container *ngIf="editable">
@@ -31,6 +19,17 @@
         </ng-container>
         <button *ngIf="filterable" matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
             (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+        <!-- ADMIN FEATURES -->
+        <ng-container *ngIf="admin">
+            <span kendotooltip>
+                <button title="This will save this layout as the default one for all users" class='k-button'
+                    (click)="action.emit({ action: 'saveLayout' })">Save Layout as default</button>
+            </span>
+            <span kendotooltip>
+                <button title="This will erase current layout with default layout" class='k-button'
+                    (click)="action.emit({ action: 'resetLayout' })">Reset default Layout</button>
+            </span>
+        </ng-container>
         <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">
         </safe-grid-toolbar>
     </ng-template>

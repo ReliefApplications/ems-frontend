@@ -2,5 +2,6 @@
     (pageChange)="onPageChange($event)" [sort]="sort" (sortChange)="onSortChange($event)" [filter]="filter"
     [showFilter]="showFilter" (filterChange)="onFilterChange($event)" (showFilterChange)="onShowFilterChange($event)"
     (action)="onAction($event)" [actions]="actions" [editable]="editable" [hasChanges]="hasChanges"
-    [selectable]="selectable" (selectionChange)="onSelectionChange($event)" [selectedRows]="selectedRows">
+    [selectable]="selectable" (selectionChange)="onSelectionChange($event)" [selectedRows]="selectedRows" [admin]="admin"
+    (columnChange)="onColumnChange($event)">
 </safe-grid>

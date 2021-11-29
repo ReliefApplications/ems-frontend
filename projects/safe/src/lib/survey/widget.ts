@@ -279,7 +279,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
           if (rows.length > 0) {
             question.value = multiselect ? rows : rows[0];
-            console.log(question.value);
           } else {
             question.value = null;
           }
@@ -376,7 +375,6 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
    * @param question survey question.
    */
   const setGridInputs = (instance: SafeCoreGridComponent, question: any): void => {
-    console.log(question);
     instance.multiSelect = true;
     const query = question.gridFieldsSettings || {};
     const settings = {

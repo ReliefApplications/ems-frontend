@@ -83,7 +83,6 @@ export class SafeGridComponent implements OnInit {
       filter: !this.showFilter
     };
   }
-  @Output() columnChange = new EventEmitter();
 
   // === SELECT ===
   @Input() selectable = true;
@@ -114,6 +113,11 @@ export class SafeGridComponent implements OnInit {
   @ViewChild(GridComponent)
   private grid?: GridComponent;
 
+  // === ADMIN ===
+  @Input() admin = false;
+  private columnsOrder: any[] = [];
+  @Output() columnChange = new EventEmitter();
+
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
@@ -132,7 +136,7 @@ export class SafeGridComponent implements OnInit {
    * @param path Path of the property.
    * @returns Value of the property.
    */
-   public getPropertyValue(item: any, path: string): any {
+  public getPropertyValue(item: any, path: string): any {
     const meta = this.fields.find(x => x.name === path).meta;
     const value = get(item, path);
     if (meta.choices) {
@@ -257,33 +261,33 @@ export class SafeGridComponent implements OnInit {
    */
   onColumnReorder(e: ColumnReorderEvent): void {
     if ((e.oldIndex !== e.newIndex)) {
-      // const columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).map((x: any) => x.field) || [];
-      const columnsOrder: any[] = [];
+      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex)
+        .map((x: any) => x.field) || [];
       const tempFields: any[] = [];
       let j = 0;
       const oldIndex = e.oldIndex;
       const newIndex = e.newIndex;
-
-      for (let i = 0; i < columnsOrder.length; i++) {
+      for (let i = 0; i < this.columnsOrder.length; i++) {
         if (i === newIndex) {
           if (oldIndex < newIndex) {
-            tempFields[j] = columnsOrder[i];
+            tempFields[j] = this.columnsOrder[i];
             j++;
-            tempFields[j] = columnsOrder[oldIndex];
+            tempFields[j] = this.columnsOrder[oldIndex];
           }
           if (oldIndex > newIndex) {
-            tempFields[j] = columnsOrder[oldIndex];
+            tempFields[j] = this.columnsOrder[oldIndex];
             j++;
-            tempFields[j] = columnsOrder[i];
+            tempFields[j] = this.columnsOrder[i];
           }
           j++;
         }
         else if (i !== oldIndex) {
-          tempFields[j] = columnsOrder[i];
+          tempFields[j] = this.columnsOrder[i];
           j++;
         }
       }
-      this.columnChange.emit(tempFields.filter(x => x !== undefined));
+      this.columnsOrder = tempFields.filter(x => x !== undefined);
+      this.setColumnsConfig();
     }
   }
 
@@ -291,14 +295,35 @@ export class SafeGridComponent implements OnInit {
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
-    this.columnChange.emit();
+    this.setColumnsConfig();
   }
 
   /**
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.columnChange.emit();
+    this.setColumnsConfig();
+  }
+
+  /**
+   * Generates the cached fields config from the grid columns.
+   */
+  private setColumnsConfig(): void {
+    if (this.admin) {
+      const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+        return {
+          ...obj,
+          [c.field]: {
+            field: c.field,
+            title: c.title,
+            width: c.width,
+            hidden: c.hidden,
+            order: this.columnsOrder.findIndex((x) => x === c.field)
+          }
+        };
+      }, {});
+      this.columnChange.emit(fields);
+    }
   }
 
   // === INLINE EDITION ===
@@ -307,7 +332,7 @@ export class SafeGridComponent implements OnInit {
    * Detects cell click event and opens row form if user is authorized.
    * @param param0 click event.
    */
-   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
+  public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     // Parameters that prevent the inline edition.
     if (!this.data.data[rowIndex - this.skip].canUpdate || !this.editable ||
       isEdited || (this.formGroup && !this.formGroup.valid)) {
@@ -331,7 +356,7 @@ export class SafeGridComponent implements OnInit {
    * Detects document click to save record if outside the inline edition form.
    * @param e click event.
    */
-   private onDocumentClick(e: any): void {
+  private onDocumentClick(e: any): void {
     if (this.formGroup && this.formGroup.valid &&
       !matches(e.target, '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container')) {
       if (this.formGroup.dirty) {
@@ -344,7 +369,7 @@ export class SafeGridComponent implements OnInit {
   /**
    * Closes the inline edition.
    */
-   private closeEditor(): void {
+  private closeEditor(): void {
     this.grid?.closeRow(this.currentEditedRow);
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
@@ -368,21 +393,6 @@ export class SafeGridComponent implements OnInit {
     this.closeEditor();
     this.action.emit({ action: 'cancel' });
   }
-
-  /**
-   * Finds item in data items and updates it with new values, from inline edition.
-   * @param id Item id.
-   * @param value Updated value of the item.
-   */
-  //  private update(id: string, value: any): void {
-  //   const item = this.updatedItems.find(x => x.id === id);
-  //   if (item) {
-  //     Object.assign(item, { ...value, id });
-  //   } else {
-  //     this.updatedItems.push({ ...value, id });
-  //   }
-  //   Object.assign(this.items.find(x => x.id === id), value);
-  // }
 
   // === EXPORT ===
   /**
@@ -432,7 +442,7 @@ export class SafeGridComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res && res !== get(item, field)) {
-        const value = { field: res };
+        const value = { field: res };
         this.action.emit({ action: 'edit', item, value });
       }
     });

@@ -60,14 +60,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === FEATURES INPUTS ===
-  @Input() readOnly = false;
   @Input() showDetails = true;
   @Input() showExport = false;
-  @Input() showSaveLayout = false;
+  @Input() admin = false;
 
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -237,7 +237,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = Object.assign({}, res.data[field]);
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
-            this.fields = this.gridService.getFields(fields, this.metaFields, {}, '', { filter: true });
+            const layoutFields = this.layout.fields || {};
+            this.fields = this.gridService.getFields(fields, this.metaFields, layoutFields, '', { filter: true });
           }
         }
         this.getRecords();
@@ -304,7 +305,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
-    console.log(item);
     let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value};
@@ -505,6 +505,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         if (event.items && event.items.length > 0) {
           this.onDelete(event.items);
         }
+        break;
+      }
+      case 'saveLayout': {
+        this.saveDefaultLayout();
+        break;
+      }
+      case 'resetLayout': {
+        this.resetDefaultLayout();
         break;
       }
       default: {
@@ -837,6 +845,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === LAYOUT ===
   /**
+   * Detects fields changes.
+   * @param fields Fields event.
+   */
+  onColumnChange(fields: any[]): void {
+    this.layout.fields = fields;
+    this.saveLocalLayout();
+  }
+
+  /**
    * Saves the current layout of the grid as default layout
    */
   saveDefaultLayout(): void {
@@ -858,26 +875,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Reset the currently cached layout to the default one
    */
    resetDefaultLayout(): void {
-     // TODO
-    // this.defaultLayoutReset.emit();
-  }
-
-  /**
-   * Generates the cached fields config from the grid columns.
-   */
-  private setColumnsConfig(): void {
-    this.layout.fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      return {
-        ...obj,
-        [c.field]: {
-          field: c.field,
-          title: c.title,
-          width: c.width,
-          hidden: c.hidden,
-          order: this.columnsOrder.findIndex((x) => x === c.field)
-        }
-      };
-    }, {});
-    this.saveLocalLayout();
+    this.defaultLayoutReset.emit();
   }
 }

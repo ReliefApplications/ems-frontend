@@ -501,14 +501,14 @@ export class SafeGridWidgetComponent implements OnInit {
   /**
    * Save the current layout of the grid as default layout
    */
-  // saveDefaultLayout(): void {
-  //   this.defaultLayoutChanged.emit(this.layout);
-  // }
+  onDefaultLayout(): void {
+    this.defaultLayoutChanged.emit(this.layout);
+  }
 
   /**
    * Reset the currently cached layout to the default one
    */
-  // resetDefaultLayout(): void {
-  //   this.defaultLayoutReset.emit();
-  // }
+  onResetDefaultLayout(): void {
+    this.defaultLayoutReset.emit();
+  }
 }
