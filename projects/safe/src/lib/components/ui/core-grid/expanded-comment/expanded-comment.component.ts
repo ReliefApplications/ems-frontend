@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 interface DialogData {
   title: string;
   comment: string;
+  readonly?: boolean;
 }
 
 @Component({
@@ -12,9 +13,6 @@ interface DialogData {
   styleUrls: ['./expanded-comment.component.scss']
 })
 export class SafeExpandedCommentComponent implements OnInit {
-
-  // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   public comment = '';
 
@@ -26,8 +24,4 @@ export class SafeExpandedCommentComponent implements OnInit {
   ngOnInit(): void {
     this.comment = this.data.comment;
   }
-
-  // onClose(): void {
-  //   this.dialogRef.close({data: this.comment});
-  // }
 }
