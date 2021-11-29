@@ -128,7 +128,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       records: 'all',
       fields: 'all',
       format: 'csv'
-    }
+    };
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
@@ -292,9 +292,9 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         mongoIds.push(mongoId);
       }
     } else if (this.exportOptions.records === 'all' && !!this.gridData.data[0].id) { // If the 'all' option has been selected and there is at least one record on the table
-      mongoIds.push(this.gridData.data[0].id) // Load this id in arrays
+      mongoIds.push(this.gridData.data[0].id); // Load this id in arrays
     } else { // Else something wrong happened or there is no record in the table, but we need at least one to get the resource/form ID in the backend
-      console.log("Error : please load at least 1 record in the grid"); // TODO create a proper snackbar
+      console.log('Error : please load at least 1 record in the grid'); // TODO create a proper snackbar
     }
 
     // Build the request body with all the useful data
@@ -303,10 +303,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       ids: mongoIds,
       fields: this.fields,
       filters: this.filter // TODO fields don't seem to be working
-    }
+    };
 
     // Build and make the request
-    let fileName = `${this.settings.title}.${this.exportOptions.format}`;
+    const fileName = `${this.settings.title}.${this.exportOptions.format}`;
     this.downloadService.getFile(`${this.apiUrl}/download/records`, `text/${this.exportOptions.format};charset=utf-8;`, fileName, body);
   }
 
