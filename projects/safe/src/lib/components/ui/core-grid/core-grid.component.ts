@@ -560,7 +560,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const ids: string[] = items.map(x => x.id ? x.id : x);
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
-        recordId: ids,
+        recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
         template: this.settings.query.template || null
       }
