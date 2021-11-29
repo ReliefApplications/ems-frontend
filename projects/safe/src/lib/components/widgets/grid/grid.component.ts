@@ -277,7 +277,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
   }
 
-  public openMatDialog(dialogRef: TemplateRef<any>) {
+  public openMatDialog(dialogRef: TemplateRef<any>): void {
     this.dialog.open(dialogRef);
   }
 
@@ -291,9 +291,10 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
         const mongoId = this.gridData.data[index].id;
         mongoIds.push(mongoId);
       }
-    } else if (this.exportOptions.records === 'all' && !!this.gridData.data[0].id) { // If the 'all' option has been selected and there is at least one record on the table
+    } // Else, if the 'all' option has been selected and there is at least one record on the table
+    else if (this.exportOptions.records === 'all' && !!this.gridData.data[0].id) {
       mongoIds.push(this.gridData.data[0].id); // Load this id in arrays
-    } else { // Else something wrong happened or there is no record in the table, but we need at least one to get the resource/form ID in the backend
+    } else { // Else there is no record in the table, but we need at least one to get the resource/form ID in the backend
       console.log('Error : please load at least 1 record in the grid'); // TODO create a proper snackbar
     }
 
