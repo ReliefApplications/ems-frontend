@@ -23,7 +23,7 @@
                 (click)="resetDefaultLayout()">Reset default Layout</button>
         </span> -->
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">Add</button>
-        <button *ngIf="exportable" kendoButton>Export</button>
+        <button *ngIf="exportable" kendoButton (click)="onExport()">Export</button>
         <ng-container *ngIf="editable">
             <button kendoButton (click)="onSave()">Save</button>
             <button kendoButton (click)="onCancel()">Cancel</button>
@@ -72,7 +72,7 @@
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
                             <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
+                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
                                     mat-icon-button>
                                     <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
                                     </mat-icon>
@@ -91,7 +91,7 @@
                                 </div>
                             </a>
                             <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandComment(dataItem, field.name)"
+                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
                                     mat-icon-button>
                                     <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
                                     </mat-icon>
@@ -112,7 +112,7 @@
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'records'">
                         <div *ngIf="dataItem[field.name]" class="textbox-container">
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
-                                matTooltip="Open detail" (click)="onShowDetails(dataItem[field.name], field)">
+                                matTooltip="Open detail" (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
                                 {{dataItem[field.name].length}} item<span
                                     *ngIf="dataItem[field.name].length > 1">s</span>
                             </div>
@@ -135,8 +135,8 @@
                     <!-- EDITION ( color ) -->
                     <ng-container *ngIf="field.meta.type === 'color'">
                         <kendo-colorpicker [formControl]="formGroup.get(field.name)" [format]="'hex'"
-                            [gradientSettings]="gradientSettings" (open)="editionActive = true"
-                            (close)="editionActive = false"></kendo-colorpicker>
+                            [gradientSettings]="gradientSettings" (open)="editing = true"
+                            (close)="editing = false"></kendo-colorpicker>
                     </ng-container>
                     <!-- EDITION ( dropdown / radiogroup ) -->
                     <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
@@ -148,19 +148,19 @@
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'date'">
                     <kendo-datepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-datepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-datepicker>
                 </ng-template>
                 <!-- EDITION ( time ) -->
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'time'">
                     <kendo-timepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-timepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-timepicker>
                 </ng-template>
                 <!-- EDITION ( datetime / datetime-local ) -->
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup"
                     *ngIf="field.editor === 'datetime'">
                     <kendo-datetimepicker [formControl]="formGroup.get(field.name)" [format]="field.format"
-                        (open)="editionActive = true" (close)="editionActive = false"></kendo-datetimepicker>
+                        (open)="editing = true" (close)="editing = false"></kendo-datetimepicker>
                 </ng-template>
             </kendo-grid-column>
             <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
@@ -318,7 +318,7 @@
         <kendo-grid-column [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
-                    (click)="action.emit({ action: 'details', item: dataItem })" matTooltip="Open detail"></button>
+                    (click)="action.emit({ action: 'details', items: dataItem })" matTooltip="Open detail"></button>
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
@@ -333,6 +333,4 @@
     <ng-template kendoGridNoRecordsTemplate>
         {{ error ? 'Invalid grid configuration' : 'No record detected' }}
     </ng-template>
-    <!-- EXCEL EXPORT -->
-    <!-- <kendo-grid-excel [fileName]="excelFileName" [fetchData]="fetchExportData"></kendo-grid-excel> -->
 </kendo-grid>

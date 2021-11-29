@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
-const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
 
 const flatDeep = (arr: any[]): any[] => {
   return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
@@ -41,6 +41,31 @@ export class SafeGridService {
       switch (f.kind) {
         case 'OBJECT': {
           return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true });
+        }
+        case 'LIST': {
+          let metaData = get(metaFields, fullName);
+          metaData = Object.assign([], metaData);
+          metaData.type = 'records';
+          const cachedField = get(layoutFields, fullName);
+          const title = f.label ? f.label : prettifyLabel(f.name);
+          return {
+            name: fullName,
+            title,
+            type: f.type,
+            format: this.getFieldFormat(f.type),
+            editor: this.getFieldEditor(f.type),
+            filter: prefix ? '' : this.getFieldFilter(f.type),
+            meta: metaData,
+            disabled: options?.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            hidden: cachedField?.hidden || false,
+            width: cachedField?.width || title.length * 7 + 50,
+            order: cachedField?.order,
+            query: {
+              sort: f.sort,
+              fields: f.fields,
+              filter: f.filter
+            }
+          };
         }
         default: {
           const metaData = get(metaFields, fullName);
