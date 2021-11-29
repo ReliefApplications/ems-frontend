@@ -384,30 +384,24 @@ export class SafeGridComponent implements OnInit {
    * @param rowTitle field name.
    */
   public onExpandText(item: any, field: any): void {
-    // const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
-    //   data: {
-    //     title: field.title,
-    //     comment: get(item, field.name)
-    //   },
-    //   autoFocus: false,
-    //   position: {
-    //     bottom: '0',
-    //     right: '0'
-    //   },
-    //   panelClass: 'expanded-widget-dialog'
-    // });
-    // dialogRef.afterClosed().subscribe(res => {
-      // TODO: finish that
-      // if (res !== item[rowTitle]) {
-      //   this.gridData.data.find(x => x.id === item.id)[rowTitle] = res;
-      //   this.items.find(x => x.id === item.id)[rowTitle] = res;
-      //   if (this.updatedItems.find(x => x.id === item.id) !== undefined) {
-      //     this.updatedItems.find(x => x.id === item.id)[rowTitle] = res;
-      //   }
-      //   else {
-      //     this.updatedItems.push({ [rowTitle]: res, id: item.id });
-      //   }
-      // }
-    // });
+    const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
+      data: {
+        title: field.title,
+        comment: get(item, field),
+        readonly: !this.actions.update
+      },
+      autoFocus: false,
+      position: {
+        bottom: '0',
+        right: '0'
+      },
+      panelClass: 'expanded-widget-dialog'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res && res !== get(item, field)) {
+        const value = { field: res };
+        this.action.emit({ action: 'edit', item, value });
+      }
+    });
   }
 }
