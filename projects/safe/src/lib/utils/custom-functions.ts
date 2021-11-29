@@ -31,6 +31,5 @@ export default function addCustomFunctions(Survey: any, authService: SafeAuthSer
         data: { [fieldName]: value },
       }
     }).subscribe();
-});
-
+  });
 }

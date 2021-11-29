@@ -19,7 +19,6 @@ import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
@@ -76,7 +75,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
@@ -100,11 +98,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
-    this.survey = this.formService.createSurvey(JSON.stringify(structure));
-    this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
-    this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
-    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-    this.survey.onUpdateQuestionCssClasses.add((_, options) => this.onSetCustomCss(options));
+    this.survey = this.formService.createSurvey(JSON.stringify(structure),
+      !this.record && !this.form.canCreateRecords, this.pages, '', this.temporaryFilesStorage);
+
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       this.form.fields?.forEach(field => {
@@ -156,22 +152,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey.locale = 'en';
     }
 
-    this.survey.showNavigationButtons = false;
-    this.setPages();
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
-    if (!this.record && !this.form.canCreateRecords) {
-      this.survey.mode = 'display';
-    }
     this.survey.onCurrentPageChanged.add((survey, options) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       this.selectedTabIndex = survey.currentPageNo;
-    });
-    this.survey.onPageVisibleChanged.add(() => {
-      this.setPages();
-    });
-    this.survey.onSettingQuestionErrors.add((survey, options) => {
-      this.setPages();
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
@@ -300,73 +285,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(locale => locale.text === ev)[0].value;
-  }
-
-  private onClearFiles(survey: Survey.SurveyModel, options: any): void {
-    options.callback('success');
-  }
-
-  private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
-    if (this.temporaryFilesStorage[options.name] !== undefined) {
-      this.temporaryFilesStorage[options.name].concat(options.files);
-    } else {
-      this.temporaryFilesStorage[options.name] = options.files;
-    }
-    let content: any[] = [];
-    options
-      .files
-      .forEach((file: any) => {
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => {
-          content = content.concat([
-            {
-              name: file.name,
-              type: file.type,
-              content: fileReader.result,
-              file
-            }
-          ]);
-          if (content.length === options.files.length) {
-            options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
-            }));
-          }
-        };
-        fileReader.readAsDataURL(file);
-      });
-  }
-
-  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    if (options.content.indexOf('base64') !== -1 || options.content.indexOf('http') !== -1) {
-      options.callback('success', options.content);
-      return;
-    } else {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
-      xhr.onloadstart = () => {
-        xhr.responseType = 'blob';
-      };
-      xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
-        };
-        reader.readAsDataURL(file);
-      };
-      xhr.send();
-    }
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   * @param survey current survey.
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'safe-qst-content';
   }
 
   private setPages(): void {

@@ -13,7 +13,6 @@ import {
   GetRecordDetailsQueryResponse, GET_RECORD_DETAILS
 } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
@@ -64,7 +63,6 @@ export class SafeRecordModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formService: SafeFormService
@@ -114,26 +112,16 @@ export class SafeRecordModalComponent implements OnInit {
     await Promise.all(promises);
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
-    this.survey = this.formService.createSurvey(this.form?.structure || '');
-    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
-      this.selectedTabIndex = surveyModel.currentPageNo;
+    this.survey = this.formService.createSurvey(this.form?.structure || '', true, this.pages, this.data.locale || '');
+    this.survey.onCurrentPageChanged.add((survey, options) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
     });
     this.survey.data = this.record.data;
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
-    this.survey.mode = 'display';
-    this.survey.showNavigationButtons = 'none';
-    this.survey.showProgressBar = 'off';
     this.survey.render(this.containerId);
-    this.setPages();
     if (this.data.compareTo) {
-      this.surveyNext = this.formService.createSurvey(this.form?.structure || '');
-      this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+      this.surveyNext = this.formService.createSurvey(this.form?.structure || '', true, this.pages, this.data.locale || '');
       this.surveyNext.data = this.data.compareTo.data;
-      this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
-      this.surveyNext.mode = 'display';
-      this.surveyNext.showNavigationButtons = 'none';
-      this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];
       const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
@@ -169,26 +157,6 @@ export class SafeRecordModalComponent implements OnInit {
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }
-  }
-
-  /* Download the file.
-  */
-  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
-    xhr.onloadstart = () => {
-      xhr.responseType = 'blob';
-    };
-    xhr.onload = () => {
-      const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        options.callback('success', e.target?.result);
-      };
-      reader.readAsDataURL(file);
-    };
-    xhr.send();
   }
 
   public onEdit(): void {
