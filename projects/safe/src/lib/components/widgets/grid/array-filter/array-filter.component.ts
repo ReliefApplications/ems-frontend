@@ -9,7 +9,7 @@ import { BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-
 export class SafeArrayFilterComponent extends BaseFilterCellComponent implements OnInit {
 
   public get selectedValue(): any {
-    const filter = this.filterByField(this.valueField);
+    const filter = this.filterByField(this.field);
     return filter ? filter.value : null;
   }
 
