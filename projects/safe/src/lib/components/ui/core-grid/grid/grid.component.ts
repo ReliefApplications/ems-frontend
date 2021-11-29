@@ -12,9 +12,10 @@ import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid.service';
 import { SafeDownloadService } from '../../../../services/download.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -97,6 +98,8 @@ export class SafeGridComponent implements OnInit {
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
+  public search = new FormControl('');
+  @Output() searchChange = new EventEmitter();
 
   // === PAGINATION ===
   @Input() pageSize = 10;
@@ -127,6 +130,13 @@ export class SafeGridComponent implements OnInit {
 
   ngOnInit(): void {
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    // this way we can wait for 2s before sending an update
+    this.search.valueChanges.pipe(
+      debounceTime(2000),
+      distinctUntilChanged()
+    ).subscribe((value) => {
+      this.searchChange.emit(value);
+    });
   }
 
   // === DATA ===
@@ -178,31 +188,7 @@ export class SafeGridComponent implements OnInit {
    * @param search text input value.
    */
   public onSearch(search: any): void {
-    // const filteredData: any[] = [];
-    // const searchText = filter.value.toLowerCase();
-    // this.items.forEach((data: any) => {
-    //   const auxData = data;
-    //   delete auxData.canDelete;
-    //   delete auxData.canUpdate;
-    //   delete auxData.__typename;
-    //   if (Object.keys(auxData).some((key: string, index) => {
-    //     if (auxData[key]) {
-    //       const meta = this.metaFields[key];
-    //       if (meta && meta.choices) {
-    //         return this.getPropertyValue(auxData, key).toString().toLowerCase().includes(searchText);
-    //       } else {
-    //         return auxData[key].toString().toLowerCase().includes(searchText);
-    //       }
-    //     }
-    //   })) {
-    //     filteredData.push(data);
-    //   }
-    // });
-    // this.gridData = {
-    //   data: filteredData,
-    //   total: this.totalCount
-    // };
-    // this.getSelectedRows();
+    this.searchChange.emit(search);
   }
 
   // === SORT ===
