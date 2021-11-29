@@ -8,6 +8,15 @@ import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-men
 import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { GridModule } from '@progress/kendo-angular-grid';
+import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 @NgModule({
   declarations: [
@@ -15,6 +24,19 @@ import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    // === MATERIAL ===
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    // === KENDO ===
+    GridModule,
+    ButtonModule,
+    InputsModule,
+    DateInputsModule,
+    DropDownsModule,
+    ButtonsModule,
     // === UTILS ===
     SafeExpandedCommentModule,
     // === FILTER ===
