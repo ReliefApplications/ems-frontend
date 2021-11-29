@@ -51,6 +51,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() multiSelect = true;
   @Input() selectedRows: string[] = [];
   @Input() selectable = true;
+  @Output() selectionChange = new EventEmitter();
 
   // === FEATURES INPUTS ===
   @Input() readOnly = false;
@@ -795,7 +796,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: filteredData,
       total: this.totalCount
     };
-    this.initSelectedRows();
+    // this.initSelectedRows();
   }
 
   // === SORTING ===
