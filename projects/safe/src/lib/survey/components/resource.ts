@@ -443,7 +443,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
           }
-          question.survey.render();
         });
 
         if (question.selectQuestion) {
