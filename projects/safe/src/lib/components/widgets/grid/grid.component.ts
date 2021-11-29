@@ -30,7 +30,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject
+  ComponentFactoryResolver, EventEmitter, Inject, TemplateRef
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -118,6 +118,17 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   private metaQuery: any;
   private dataSubscription?: Subscription;
   private columnsOrder: any[] = [];
+
+  // === EXPORT MENU SELECTION ===
+  public exportOptions: {
+    records: 'all' | 'selected',
+    fields: 'all' | 'displayed',
+    format: 'csv' | 'excel'
+  } = {
+      records: 'all',
+      fields: 'all',
+      format: 'csv'
+    }
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
@@ -264,6 +275,39 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
       this.queryError = true;
     }
     this.docClickSubscription = this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+  }
+
+  public openMatDialog(dialogRef: TemplateRef<any>) {
+    this.dialog.open(dialogRef);
+  }
+
+  /* Export selected records to a csv file
+  */
+  public exportRecords(): void {
+
+    const mongoIds: any[] = [];
+    if (this.exportOptions.records === 'selected') { // If the 'selected' option has been chosen by the user
+      for (const index of this.selectedRowsIndex) { // Build an array of the actual objects ids from the table data
+        const mongoId = this.gridData.data[index].id;
+        mongoIds.push(mongoId);
+      }
+    } else if (this.exportOptions.records === 'all' && !!this.gridData.data[0].id) { // If the 'all' option has been selected and there is at least one record on the table
+      mongoIds.push(this.gridData.data[0].id) // Load this id in arrays
+    } else { // Else something wrong happened or there is no record in the table, but we need at least one to get the resource/form ID in the backend
+      console.log("Error : please load at least 1 record in the grid"); // TODO create a proper snackbar
+    }
+
+    // Build the request body with all the useful data
+    const body = {
+      exportOptions: this.exportOptions,
+      ids: mongoIds,
+      fields: this.fields,
+      filters: this.filter // TODO fields don't seem to be working
+    }
+
+    // Build and make the request
+    let fileName = `${this.settings.title}.${this.exportOptions.format}`;
+    this.downloadService.getFile(`${this.apiUrl}/download/records`, `text/${this.exportOptions.format};charset=utf-8;`, fileName, body);
   }
 
   /**

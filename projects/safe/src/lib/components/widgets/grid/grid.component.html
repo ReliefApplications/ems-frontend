@@ -22,7 +22,41 @@
         <ng-template kendoGridToolbarTemplate position="top">
             <!-- <button (click)="onAdd()" class="k-button" *ngIf="canEdit && settings.canAdd && settings.addTemplate">Add</button> -->
             <kendo-grid-column-chooser></kendo-grid-column-chooser>
-            <button type="button" kendoGridExcelCommand class="k-button">Export all</button>
+
+            <!-- EXPORT MENU -->
+
+            <button type="button" (click)="openMatDialog(exportOptionsDialog)" class="k-button">Export</button>
+
+            <ng-template #exportOptionsDialog>
+
+                <mat-dialog-content class="export-options-dialog-content">
+                    <label id="export-options-records">Select records to export</label>
+                    <mat-radio-group [(ngModel)]="exportOptions.records" required aria-labelledby="export-options-records">
+                        <mat-radio-button value="all">All records in view</mat-radio-button>
+                        <mat-radio-button value="selected">Only selected records</mat-radio-button>
+                    </mat-radio-group>
+
+                    <label id="export-options-columns">Select columns to export</label>
+                    <mat-radio-group [(ngModel)]="exportOptions.fields" required aria-labelledby="export-options-columns">
+                        <mat-radio-button value="all">All available columns</mat-radio-button>
+                        <mat-radio-button value="displayed">Only displayed columns</mat-radio-button>
+                    </mat-radio-group>
+
+                    <label id="export-options-format">Select export format</label>
+                    <mat-radio-group [(ngModel)]="exportOptions.format" requires aria-labelledby="export-options-format">
+                        <mat-radio-button value="csv">CSV</mat-radio-button>
+                        <mat-radio-button value="excel">Excel</mat-radio-button>
+                    </mat-radio-group>
+                </mat-dialog-content>
+                
+                <mat-dialog-actions class="export-options-dialog-acions">
+                    <button mat-button mat-dialog-close (click)="exportRecords()">Okay</button>
+                </mat-dialog-actions>
+
+            </ng-template>
+
+            <!-- END EXPORT MENU -->
+
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'
                 [disabled]="!hasChanges" (click)="onSaveChanges()">Save</button>
             <button *ngIf="this.settings.actions && this.settings.actions.inlineEdition" class='k-button'

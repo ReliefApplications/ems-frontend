@@ -23,6 +23,8 @@ import { SafeArrayFilterMenuModule } from './array-filter-menu/array-filter-menu
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeDropdownFilterModule } from './dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-filter-menu.module';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-fi
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatDialogModule,
+    MatRadioModule,
     GroupModule,
     ButtonModule,
     MatCheckboxModule,

@@ -51,3 +51,25 @@ textarea {
     font-size: 16px !important;
     vertical-align: top;
 }
+
+.export-options-dialog-content {
+    padding: 32px;
+
+    label {
+        display: block;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+
+    mat-radio-button {
+        display: block;
+    }
+}
+
+.export-options-dialog-acions {
+    button {
+        display: block;
+        margin: 0 auto;
+    }
+}
