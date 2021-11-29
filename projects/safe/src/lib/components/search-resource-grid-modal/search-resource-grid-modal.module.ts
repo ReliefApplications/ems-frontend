@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
+import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
@@ -19,7 +20,8 @@ import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.mod
     MatButtonModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
-    SafeRecordDropdownModule
+    SafeRecordDropdownModule,
+    SafeCoreGridModule
   ],
   exports: [SafeResourceGridModalComponent]
 })

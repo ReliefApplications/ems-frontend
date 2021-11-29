@@ -35,7 +35,7 @@
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
-        <kendo-grid-checkbox-column [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
+        <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
             [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->

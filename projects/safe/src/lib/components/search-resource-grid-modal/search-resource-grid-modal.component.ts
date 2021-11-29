@@ -5,12 +5,13 @@ interface DialogData {
   gridSettings: any;
   multiselect: boolean;
   selectedRows: string[];
+  selectable?: boolean;
 }
 
 @Component({
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
-  styleUrls: ['./search-resource-grid-modal.component.css']
+  styleUrls: ['./search-resource-grid-modal.component.scss']
 })
 export class SafeResourceGridModalComponent implements OnInit {
 
@@ -18,6 +19,10 @@ export class SafeResourceGridModalComponent implements OnInit {
   public gridSettings = {};
 
   public selectedRows: any [] = [];
+
+  get selectable(): boolean {
+    return this.data.selectable || false;
+  }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,

@@ -50,6 +50,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
   @Input() selectedRows: string[] = [];
+  @Input() selectable = true;
 
   // === FEATURES INPUTS ===
   @Input() readOnly = false;
