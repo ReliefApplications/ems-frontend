@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeGridComponent } from './grid.component';
+import { SafeGridWidgetComponent } from './grid.component';
 import { ExcelModule, GridModule, GroupModule } from '@progress/kendo-angular-grid';
 import { SafeFormModalModule } from '../../form-modal/form-modal.module';
 import { MatTableModule } from '@angular/material/table';
@@ -26,7 +26,7 @@ import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-fi
 
 @NgModule({
   declarations: [
-    SafeGridComponent
+    SafeGridWidgetComponent
   ],
   imports: [
     CommonModule,
@@ -57,6 +57,6 @@ import { SafeDropdownFilterMenuModule } from './dropdown-filter-menu/dropdown-fi
     SafeDropdownFilterMenuModule,
     MatDividerModule
   ],
-  exports: [SafeGridComponent]
+  exports: [SafeGridWidgetComponent]
 })
-export class SafeGridModule { }
+export class SafeGridWidgetModule { }

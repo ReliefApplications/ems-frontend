@@ -84,13 +84,13 @@ const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 @Component({
-  selector: 'safe-grid',
+  selector: 'safe-grid-widget',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeGridWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   // === CONST ACCESSIBLE IN TEMPLATE ===
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
