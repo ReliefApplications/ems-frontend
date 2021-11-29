@@ -120,13 +120,32 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === FILTERING ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   public showFilter = false;
+  public search = '';
 
   get queryFilter(): CompositeFilterDescriptor {
-    const filters = [this.filter];
+    const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
-      filters.push(this.settings?.query?.filter);
+      gridFilters.push(this.settings?.query?.filter);
     }
-    return { logic: 'and', filters };
+    if (this.search) {
+      const textFields = this.fields.filter(x => x.meta && x.meta.type === 'text');
+      const searchFilters = textFields.map(x => {
+        return {
+          field: x.name,
+          operator: 'contains',
+          value: this.search
+        };
+      });
+      return {
+        logic: 'and',
+        filters: [
+          { logic: 'and', filters: gridFilters },
+          { logic: 'or', filters: searchFilters }
+        ]
+      };
+    } else {
+      return { logic: 'and', filters: gridFilters };
+    }
   }
 
   // === LAYOUT CHANGES ===
@@ -807,26 +826,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 
-  /**
-   * Filters all the columns using the input text.
-   * @param value search value.
-   */
-  public onSearch(value: any): void {
-    const filteredData: any[] = [];
-    this.items.forEach((data: any) => {
-      const auxData = data;
-      delete auxData.canDelete;
-      delete auxData.canUpdate;
-      delete auxData.__typename;
-      if (Object.values(auxData).filter((o: any) => !!o && o.toString().toLowerCase().includes(value.value.toLowerCase())).length > 0) {
-        filteredData.push(data);
-      }
-    });
-    this.gridData = {
-      data: filteredData,
-      total: this.totalCount
-    };
-    // this.initSelectedRows();
+  public onSearchChange(search: string): void {
+    console.log(search);
+    this.search = search;
+    this.skip = 0;
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 
   // === SORTING ===
