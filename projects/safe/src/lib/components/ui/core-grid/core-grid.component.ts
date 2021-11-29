@@ -7,7 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   GridComponent as KendoGridComponent,
   GridDataResult,
-  PageChangeEvent
+  PageChangeEvent,
+  Selection,
+  SelectionEvent
 } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -52,6 +54,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedRows: string[] = [];
   @Input() selectable = true;
   @Output() selectionChange = new EventEmitter();
+
+  get selectedItems(): any[] {
+    return this.gridData.data.filter(x => this.selectedRows.includes(x.id));
+  }
 
   // === FEATURES INPUTS ===
   @Input() readOnly = false;
@@ -401,11 +407,27 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public reloadData(): void {
     this.onPageChange({ skip: 0, take: this.pageSize });
-    this.selectedRowsIndex = [];
+    this.selectedRows = [];
     this.updatedItems = [];
   }
 
   // === SELECTION ===
+
+  /**
+   * Handles selection change event.
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
+    }
+    this.selectionChange.emit(selection);
+  }
 
   /**
    * Initializes selected rows from input.

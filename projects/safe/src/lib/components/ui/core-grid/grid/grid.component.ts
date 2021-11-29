@@ -14,6 +14,7 @@ import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progres
 import { PopupService } from '@progress/kendo-angular-popup';
 import { FormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid.service';
+import { SafeDownloadService } from '../../../../services/download.service';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -117,6 +118,7 @@ export class SafeGridComponent implements OnInit {
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
+    private downloadService: SafeDownloadService
   ) { }
 
   ngOnInit(): void {
@@ -388,10 +390,8 @@ export class SafeGridComponent implements OnInit {
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    console.log('donwload');
-    // TODO
-    // const path = `download/file/${file.content}`;
-    // this.downloadService.getFile(path, file.type, file.name);
+    const path = `download/file/${file.content}`;
+    this.downloadService.getFile(path, file.type, file.name);
   }
 
   /**

@@ -48,6 +48,7 @@ import get from 'lodash/get';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
+import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 
 
 // const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
@@ -94,9 +95,9 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
   // === CONST ACCESSIBLE IN TEMPLATE ===
   // public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
-  // === TEMPLATE REFERENCE TO KENDO GRID ===
-  // @ViewChild(KendoGridComponent)
-  // private grid?: KendoGridComponent;
+  // === TEMPLATE REFERENCE ===
+  @ViewChild(SafeCoreGridComponent)
+  private grid!: SafeCoreGridComponent;
 
   // === DETECTION OF TRIGGER FOR INLINE EDITION ===
   // private docClickSubscription: any;
@@ -234,9 +235,9 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
   //   Object.assign(this.items.find(x => x.id === id), value);
   // }
 
-  private promisedChanges(): Promise<any>[] {
+  private promisedChanges(items: any[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
-    for (const item of this.updatedItems) {
+    for (const item of items) {
       const data = Object.assign({}, item);
       delete data.id;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
@@ -275,18 +276,11 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
 
   /* Execute sequentially actions enabled by settings for the floating button
   */
-  public async onFloatingButtonClick(options: any): Promise<void> {
+  public async onQuickAction(options: any): Promise<void> {
     this.loading = true;
+    // Select all the records in the core grid
     if (options.selectAll) {
-      // TODO
-      // this.selectionChange({
-      //   selectedRows: this.gridData.data.map((x, index) => {
-      //     return {
-      //       dataItem: x,
-      //       index
-      //     };
-      //   })
-      // });
+      this.grid.selectedRows = this.grid.gridData.data.map(x => x.id);
     }
     // let rowsIndexToModify = [...this.selectedRowsIndex];
     // if (options.autoSave && options.modifySelectedRows) {
@@ -298,107 +292,109 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
     //   }
     // }
 
-    // if (options.autoSave) {
-    //   await Promise.all(this.promisedChanges());
-    // }
-    // if (options.modifySelectedRows) {
-    //   await Promise.all(this.promisedRowsModifications(options.modifications, rowsIndexToModify));
-    // }
+    // Auto save all records
+    if (options.autoSave) {
+      await Promise.all(this.promisedChanges(this.grid.updatedItems));
+    }
+    // Auto modify the selected rows
+    if (options.modifySelectedRows) {
+      await Promise.all(this.promisedRowsModifications(options.modifications, this.grid.selectedItems));
+    }
 
-    // if (this.selectedRowsIndex.length > 0) {
-    //   const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
-    //   if (options.attachToRecord) {
-    //     await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField, options.targetFormQuery);
-    //   }
-    //   const promises: Promise<any>[] = [];
-    //   if (options.notify) {
-    //     promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-    //       mutation: PUBLISH_NOTIFICATION,
-    //       variables: {
-    //         action: options.notificationMessage ? options.notificationMessage : 'Records update',
-    //         content: selectedRecords,
-    //         channel: options.notificationChannel
-    //       }
-    //     }).toPromise());
-    //   }
-    //   if (options.publish) {
-    //     promises.push(this.apollo.mutate<PublishMutationResponse>({
-    //       mutation: PUBLISH,
-    //       variables: {
-    //         ids: selectedRecords.map(x => x.id),
-    //         channel: options.publicationChannel
-    //       }
-    //     }).toPromise());
-    //   }
-    //   if (options.sendMail && selectedRecords.length > 0) {
-    //     const emailSettings = {
-    //       query: {
-    //         name: this.settings.query.name,
-    //         fields: options.bodyFields
-    //       }
-    //     };
-    //     const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    //       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-    //     const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-    //     this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
-    //       selectedRecords.map(x => x.id), sortField, sortOrder);
-    //     if (options.export) {
-    //       this.grid?.saveAsExcel();
-    //     }
-    //   }
-    //   if (promises.length > 0) {
-    //     await Promise.all(promises);
-    //   }
+    if (this.grid.selectedRows.length > 0) {
+      //   const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
+      //   if (options.attachToRecord) {
+      //     await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField, options.targetFormQuery);
+      //   }
+      //   const promises: Promise<any>[] = [];
+      //   if (options.notify) {
+      //     promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+      //       mutation: PUBLISH_NOTIFICATION,
+      //       variables: {
+      //         action: options.notificationMessage ? options.notificationMessage : 'Records update',
+      //         content: selectedRecords,
+      //         channel: options.notificationChannel
+      //       }
+      //     }).toPromise());
+      //   }
+      //   if (options.publish) {
+      //     promises.push(this.apollo.mutate<PublishMutationResponse>({
+      //       mutation: PUBLISH,
+      //       variables: {
+      //         ids: selectedRecords.map(x => x.id),
+      //         channel: options.publicationChannel
+      //       }
+      //     }).toPromise());
+      //   }
+      //   if (options.sendMail && selectedRecords.length > 0) {
+      //     const emailSettings = {
+      //       query: {
+      //         name: this.settings.query.name,
+      //         fields: options.bodyFields
+      //       }
+      //     };
+      //     const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
+      //       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      //     const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+      //     this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+      //       selectedRecords.map(x => x.id), sortField, sortOrder);
+      //     if (options.export) {
+      //       this.grid?.saveAsExcel();
+      //     }
+      //   }
+      //   if (promises.length > 0) {
+      //     await Promise.all(promises);
+      //   }
 
-    //   if (options.prefillForm) {
-    //     const promisedRecords: Promise<any>[] = [];
-    //     // Fetch the record object for each selected record
-    //     for (const record of selectedRecords) {
-    //       promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
-    //         query: GET_RECORD_DETAILS,
-    //         variables: {
-    //           id: record.id
-    //         }
-    //       }).toPromise());
-    //     }
-    //     const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
+      // Opens a form with selected records.
+      if (options.prefillForm) {
+        const promisedRecords: Promise<any>[] = [];
+        // Fetches the record object for each selected record.
+        for (const record of this.grid.selectedItems) {
+          promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
+            query: GET_RECORD_DETAILS,
+            variables: {
+              id: record.id
+            }
+          }).toPromise());
+        }
+        const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
 
-    //     // Open a modal containing the prefilled form
-    //     this.dialog.open(SafeFormModalComponent, {
-    //       data: {
-    //         template: options.prefillTargetForm,
-    //         locale: 'en',
-    //         prefillRecords: records,
-    //         askForConfirm: false
-    //       },
-    //       autoFocus: false
-    //     });
-    //   }
-    // }
+        // Opens a modal containing the prefilled form.
+        this.dialog.open(SafeFormModalComponent, {
+          data: {
+            template: options.prefillTargetForm,
+            locale: 'en',
+            prefillRecords: records,
+            askForConfirm: false
+          },
+          autoFocus: false
+        });
+      }
+    }
 
-    /* Next Step button, open a confirm modal if required
-    */
-    // if (options.goToNextStep || options.closeWorkflow) {
-    //   if (options.goToNextStep) {
-    //     this.goToNextStep.emit(true);
-    //   } else {
-    //     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-    //       data: {
-    //         title: `Close workflow`,
-    //         content: options.confirmationText,
-    //         confirmText: 'Yes',
-    //         confirmColor: 'primary'
-    //       }
-    //     });
-    //     dialogRef.afterClosed().subscribe((confirm: boolean) => {
-    //       if (confirm) {
-    //         this.workflowService.closeWorkflow();
-    //       }
-    //     });
-    //   }
-    // } else {
-    //   this.reloadData();
-    // }
+    // Workflow only: goes to next step, or closes the workflow.
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+          data: {
+            title: `Close workflow`,
+            content: options.confirmationText,
+            confirmText: 'Yes',
+            confirmColor: 'primary'
+          }
+        });
+        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
+          }
+        });
+      }
+    } else {
+      this.grid.reloadData();
+    }
   }
 
   /**
@@ -408,31 +404,30 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
    * @param rows rows to edit.
    * @returns Array of Promises to execute.
    */
-  // private promisedRowsModifications(modifications: any[], rows: number[]): Promise<any>[] {
-  //   const promises: Promise<any>[] = [];
-  //   for (const index of rows) {
-  //     const record = this.gridData.data[index];
-  //     const data = Object.assign({}, record);
-  //     for (const modification of modifications) {
-  //       if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-  //         data[modification.field.name] = this.getDateForFilter(modification.value);
-  //       } else {
-  //         data[modification.field.name] = modification.value;
-  //       }
-  //     }
-  //     delete data.id;
-  //     delete data.__typename;
-  //     promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-  //       mutation: EDIT_RECORD,
-  //       variables: {
-  //         id: record.id,
-  //         data,
-  //         template: this.settings.query.template
-  //       }
-  //     }).toPromise());
-  //   }
-  //   return promises;
-  // }
+  private promisedRowsModifications(modifications: any[], items: any[]): Promise<any>[] {
+    const promises: Promise<any>[] = [];
+    for (const item of items) {
+      const data = Object.assign({}, item);
+      for (const modification of modifications) {
+        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+          data[modification.field.name] = this.getDateForFilter(modification.value);
+        } else {
+          data[modification.field.name] = modification.value;
+        }
+      }
+      delete data.id;
+      delete data.__typename;
+      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+          data,
+          template: this.settings.query.template
+        }
+      }).toPromise());
+    }
+    return promises;
+  }
 
   /**
    * Gets from input date value the three dates used for filtering.

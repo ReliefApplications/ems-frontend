@@ -3,7 +3,7 @@
         <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
         <div class="floating-button">
             <ng-container *ngFor="let floatingButton of settings.floatingButtons">
-                <button mat-button color="primary" (click)="onFloatingButtonClick(floatingButton)"
+                <button mat-button color="primary" (click)="onQuickAction(floatingButton)"
                     *ngIf="floatingButton.show">
                     {{floatingButton.name}}
                 </button>
