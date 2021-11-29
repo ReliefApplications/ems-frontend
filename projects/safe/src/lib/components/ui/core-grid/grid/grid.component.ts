@@ -68,7 +68,9 @@ export class SafeGridComponent implements OnInit {
     convert: false
   };
   @Output() action = new EventEmitter();
-  public hasEnabledActions = true;
+  get hasEnabledActions(): boolean {
+    return Object.values(this.actions).includes(true);
+  }
 
   // === DISPLAY ===
   @Input() resizable = true;
