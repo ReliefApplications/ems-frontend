@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeWidgetComponent } from './widget.component';
 import { SafeChartModule } from '../widgets/chart/chart.module';
 import { SafeEditorModule } from '../widgets/editor/editor.module';
-import { SafeGridModule } from '../widgets/grid/grid.module';
+import { SafeGridWidgetModule } from '../widgets/grid/grid.module';
 import { SafeMapModule } from '../widgets/map/map.module';
 import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
 import 'hammerjs';
@@ -14,7 +14,7 @@ import 'hammerjs';
     CommonModule,
     SafeChartModule,
     SafeEditorModule,
-    SafeGridModule,
+    SafeGridWidgetModule,
     SafeMapModule,
     SafeSchedulerModule
   ],
