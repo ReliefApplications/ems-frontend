@@ -326,22 +326,23 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
       //       }
       //     }).toPromise());
       //   }
-      //   if (options.sendMail && selectedRecords.length > 0) {
-      //     const emailSettings = {
-      //       query: {
-      //         name: this.settings.query.name,
-      //         fields: options.bodyFields
-      //       }
-      //     };
-      //     const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-      //       (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-      //     const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-      //     this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
-      //       selectedRecords.map(x => x.id), sortField, sortOrder);
-      //     if (options.export) {
-      //       this.grid?.saveAsExcel();
-      //     }
-      //   }
+      // Opens email client of user.
+      if (options.sendMail) {
+        const emailSettings = {
+          query: {
+            name: this.settings.query.name,
+            fields: options.bodyFields
+          }
+        };
+        const sortField = this.grid.sortField || '';
+        const sortOrder = this.grid.sortOrder || '';
+        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+          this.grid.selectedRows, sortField, sortOrder);
+        if (options.export) {
+          // TODO
+          // this.grid?.saveAsExcel();
+        }
+      }
       //   if (promises.length > 0) {
       //     await Promise.all(promises);
       //   }
