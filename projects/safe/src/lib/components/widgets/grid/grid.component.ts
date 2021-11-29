@@ -302,30 +302,35 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
     }
 
     if (this.grid.selectedRows.length > 0) {
-      //   const selectedRecords = this.gridData.data.filter((x, index) => this.selectedRowsIndex.includes(index));
-      //   if (options.attachToRecord) {
-      //     await this.promisedAttachToRecord(selectedRecords, options.targetForm, options.targetFormField, options.targetFormQuery);
-      //   }
-      //   const promises: Promise<any>[] = [];
-      //   if (options.notify) {
-      //     promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-      //       mutation: PUBLISH_NOTIFICATION,
-      //       variables: {
-      //         action: options.notificationMessage ? options.notificationMessage : 'Records update',
-      //         content: selectedRecords,
-      //         channel: options.notificationChannel
-      //       }
-      //     }).toPromise());
-      //   }
-      //   if (options.publish) {
-      //     promises.push(this.apollo.mutate<PublishMutationResponse>({
-      //       mutation: PUBLISH,
-      //       variables: {
-      //         ids: selectedRecords.map(x => x.id),
-      //         channel: options.publicationChannel
-      //       }
-      //     }).toPromise());
-      //   }
+      // Attaches the records to another one.
+      if (options.attachToRecord) {
+        await this.promisedAttachToRecord(this.grid.selectedItems, options.targetForm, options.targetFormField, options.targetFormQuery);
+      }
+      const promises: Promise<any>[] = [];
+      // Notifies on a channel.
+      if (options.notify) {
+        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: options.notificationMessage ? options.notificationMessage : 'Records update',
+            content: this.grid.selectedItems,
+            channel: options.notificationChannel
+          }
+        }).toPromise());
+      }
+      // Publishes on a channel.
+      if (options.publish) {
+        promises.push(this.apollo.mutate<PublishMutationResponse>({
+          mutation: PUBLISH,
+          variables: {
+            ids: this.grid.selectedRows,
+            channel: options.publicationChannel
+          }
+        }).toPromise());
+      }
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
       // Opens email client of user.
       if (options.sendMail) {
         const emailSettings = {
@@ -343,9 +348,6 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
           // this.grid?.saveAsExcel();
         }
       }
-      //   if (promises.length > 0) {
-      //     await Promise.all(promises);
-      //   }
 
       // Opens a form with selected records.
       if (options.prefillForm) {
