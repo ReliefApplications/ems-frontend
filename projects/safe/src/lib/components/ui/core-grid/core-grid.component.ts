@@ -443,8 +443,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
       case 'details': {
-        if (event.item) {
-          this.onShowDetails(event.item, event.field);
+        if (event.items) {
+          this.onShowDetails(event.items, event.field);
         }
         break;
       }
@@ -557,7 +557,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param items items to update.
    */
   public onUpdate(items: any[]): void {
-    const ids: string[] = items.map(x => x.id);
+    const ids: string[] = items.map(x => x.id ? x.id : x);
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       data: {
         recordId: ids,
@@ -577,7 +577,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param items items to delete.
    */
   public onDelete(items: any[]): void {
-    const ids: string[] = items.map(x => x.id);
+    const ids: string[] = items.map(x => x.id ? x.id : x);
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -612,18 +612,17 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const dialogRef = this.dialog.open(SafeConvertModalComponent, {
       data: {
         title: `Convert record${rowsSelected > 1 ? 's' : ''}`,
-        record: items[0].id
+        record: items[0].id ? items[0].id : items[0]
       },
     });
     dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
       if (value) {
         const promises: Promise<any>[] = [];
-        for (const index of items) {
-          const id = this.gridData.data[index].id;
+        for (const item of items) {
           promises.push(this.apollo.mutate<ConvertRecordMutationResponse>({
             mutation: CONVERT_RECORD,
             variables: {
-              id,
+              id: item.id ? item.id : item,
               form: value.targetForm.id,
               copyRecord: value.copyRecord
             }

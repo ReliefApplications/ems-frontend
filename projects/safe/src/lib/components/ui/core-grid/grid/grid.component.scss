@@ -35,11 +35,22 @@ textarea {
 
 .textbox-container {
     display: flex;
+
+    &>.url-container {
+        text-decoration: underline;
+    }
 }
 
 .textbox {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.external-link {
+    color: #008dc9;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .expand-text-button {

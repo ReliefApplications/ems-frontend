@@ -36,7 +36,7 @@ export class SafeGridService {
   public getFields(
     fields: any[], metaFields: any, layoutFields: any, prefix?: string,
     options?: { disabled?: boolean, filter?: boolean }): any[] {
-    return flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
+    return flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
