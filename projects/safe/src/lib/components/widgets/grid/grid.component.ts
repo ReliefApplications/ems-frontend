@@ -90,36 +90,17 @@ const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 })
 /*  Grid widget using KendoUI.
 */
-export class SafeGridWidgetComponent implements OnInit, OnChanges {
-
-  // === CONST ACCESSIBLE IN TEMPLATE ===
-  // public multiSelectTypes: string[] = MULTISELECT_TYPES;
+export class SafeGridWidgetComponent implements OnInit {
 
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
 
-  // === DETECTION OF TRIGGER FOR INLINE EDITION ===
-  // private docClickSubscription: any;
-
   // === DATA ===
-  // public gridData: GridDataResult = { data: [], total: 0 };
-  private totalCount = 0;
-  private items: any[] = [];
-  private originalItems: any[] = [];
-  private updatedItems: any[] = [];
-  private editedRowIndex = 0;
-  private editedRecordId = '';
-  public formGroup: FormGroup = new FormGroup({});
   private isNew = false;
   public loading = true;
   public queryError = false;
   public fields: any[] = [];
-  private metaFields: any;
-  private dataQuery: any;
-  private metaQuery: any;
-  private dataSubscription?: Subscription;
-  private columnsOrder: any[] = [];
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
@@ -167,73 +148,23 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
 
   // === DOWNLOAD ===
   public excelFileName = '';
-  private apiUrl = '';
-  // public exportData: Array<any> = [
-  //   {
-  //     text: '.csv',
-  //     click: () => this.onExportRecord(this.selectedRowsIndex, 'csv')
-  //   },
-  //   {
-  //     text: '.xlsx',
-  //     click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
-  //   }
-  // ];
 
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder,
-    private renderer: Renderer2,
-    private queryBuilder: QueryBuilderService,
-    private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
-    private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private apiProxyService: SafeApiProxyService,
     private emailService: SafeEmailService
   ) {
-    this.fetchExportData = this.fetchExportData.bind(this);
-    this.apiUrl = environment.API_URL;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
   }
-
-  /*  Detect changes of the settings to (re)load the data.
-  */
-  ngOnChanges(): void {
-    this.filter = this.layout?.filter || { logic: 'and', filters: [] };
-    this.sort = this.layout?.sort || [];
-    this.hasEnabledActions = !this.settings.actions ||
-      Object.entries(this.settings.actions).filter((action) => action.includes(true)).length > 0;
-  }
-
-  /*  Update a record when inline edition completed.
-  */
-  // public updateCurrent(): void {
-  //   if (this.isNew) {
-  //   } else {
-  //     if (this.formGroup.dirty) {
-  //       this.update(this.editedRecordId, this.formGroup.value);
-  //     }
-  //   }
-  //   this.closeEditor();
-  // }
-
-  // private update(id: string, value: any): void {
-  //   const item = this.updatedItems.find(x => x.id === id);
-  //   if (item) {
-  //     Object.assign(item, { ...value, id });
-  //   } else {
-  //     this.updatedItems.push({ ...value, id });
-  //   }
-  //   Object.assign(this.items.find(x => x.id === id), value);
-  // }
 
   private promisedChanges(items: any[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
@@ -252,30 +183,10 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
     return promises;
   }
 
-  // public onCancelChanges(): void {
-  //   this.closeEditor();
-  //   this.updatedItems = [];
-  //   this.items = this.originalItems;
-  //   this.originalItems = cloneData(this.originalItems);
-  //   this.loadItems();
-  // }
-
-  /* Export selected records to a csv file
-  */
-  // public onExportRecord(items: number[], type: string): void {
-  //   const ids: any[] = [];
-  //   for (const index of items) {
-  //     const id = this.gridData.data[index].id;
-  //     ids.push(id);
-  //   }
-  //   const url = `${this.apiUrl}/download/records`;
-  //   const fileName = `${this.settings.title}.${type}`;
-  //   const queryString = new URLSearchParams({ type }).toString();
-  //   this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, { params: { ids: ids.join(',') } });
-  // }
-
-  /* Execute sequentially actions enabled by settings for the floating button
-  */
+  /**
+   * Executes sequentially actions enabled by settings for the floating button
+   * @param options action options.
+   */
   public async onQuickAction(options: any): Promise<void> {
     this.loading = true;
     // Select all the records in the core grid
@@ -593,52 +504,6 @@ export class SafeGridWidgetComponent implements OnInit, OnChanges {
   // saveDefaultLayout(): void {
   //   this.defaultLayoutChanged.emit(this.layout);
   // }
-
-  /**
-   * Exports data event for export.
-   * @returns Excel Export data.
-   */
-  async fetchExportData(): Promise<ExcelExportData> {
-    const items: any = await this.fetchAllRecords();
-    const result: ExcelExportData = {
-      data: items
-    };
-    return result;
-  }
-
-  /**
-   * Gets all records from grid parameters.
-   * @returns List of all records.
-   */
-  private async fetchAllRecords(): Promise<void> {
-    // TODO
-    // let items: any = [];
-    // const filters = [this.filter];
-    // const sortField = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    //   (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
-    // const sortOrder = (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
-    // const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    // const dataQuery = this.apollo.query<any>({
-    //   query: builtQuery,
-    //   variables: {
-    //     first: this.gridData.total,
-    //     filter: { logic: 'and', filters },
-    //     sortField,
-    //     sortOrder
-    //   }
-    // }).toPromise();
-
-    // return dataQuery.then((res: any) => {
-    //   for (const field in res.data) {
-    //     if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-    //       const nodes = res.data[field].edges.map((x: any) => x.node) || [];
-    //       items = cloneData(nodes);
-    //       this.convertDateFields(items);
-    //     }
-    //   }
-    //   return items;
-    // });
-  }
 
   /**
    * Reset the currently cached layout to the default one
