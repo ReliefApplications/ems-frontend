@@ -53,6 +53,7 @@ export class SafeGridComponent implements OnInit {
 
   // === EDITION ===
   @Input() editable = false;
+  @Input() hasChanges = false;
   public formGroup: FormGroup = new FormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;

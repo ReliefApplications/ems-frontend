@@ -56,7 +56,7 @@ export class SafeGridService {
             editor: this.getFieldEditor(f.type),
             filter: prefix ? '' : this.getFieldFilter(f.type),
             meta: metaData,
-            disabled: options?.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            disabled: true,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,

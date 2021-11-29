@@ -25,8 +25,8 @@
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">Add</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">Export</button>
         <ng-container *ngIf="editable">
-            <button kendoButton (click)="onSave()">Save</button>
-            <button kendoButton (click)="onCancel()">Cancel</button>
+            <button kendoButton (click)="onSave()" [disabled]="!hasChanges">Save</button>
+            <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">Cancel</button>
         </ng-container>
         <button *ngIf="filterable" matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
             (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>

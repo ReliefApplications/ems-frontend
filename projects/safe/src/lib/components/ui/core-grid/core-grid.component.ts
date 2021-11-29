@@ -297,11 +297,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   private update(item: any, value: any): void {
     console.log(item);
-    const updatedItem = this.updatedItems.find(x => x.id === item.id);
+    let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
-      Object.assign(updatedItem, ...value);
+      updatedItem = { ...updatedItem, ...value};
+      const index = this.updatedItems.findIndex(x => x.id);
+      this.updatedItems.splice(index, 1, updatedItem);
     } else {
-      this.updatedItems.push(Object.assign({...item}, ...value));
+      this.updatedItems.push({ id: item.id, ...value });
     }
     Object.assign(this.items.find(x => x.id === item.id), value);
     this.loadItems();
@@ -435,7 +437,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
       case 'save': {
-        console.log('save');
+        this.onSaveChanges();
         break;
       }
       case 'cancel': {
