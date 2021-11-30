@@ -31,7 +31,7 @@ import { SafeRecordHistoryComponent } from '../../record-history/record-history.
 import { SafeLayoutService } from '../../../services/layout.service';
 import {
   Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output, ComponentFactory, Renderer2,
-  ComponentFactoryResolver, EventEmitter, Inject
+  ComponentFactoryResolver, EventEmitter, Inject, TemplateRef
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -102,6 +102,9 @@ export class SafeGridWidgetComponent implements OnInit {
   public queryError = false;
   public fields: any[] = [];
 
+  // === DOWNLOAD ===
+  public excelFileName = '';
+
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
 
@@ -145,9 +148,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
-
-  // === DOWNLOAD ===
-  public excelFileName = '';
 
   constructor(
     @Inject('environment') environment: any,
@@ -255,8 +255,7 @@ export class SafeGridWidgetComponent implements OnInit {
         this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
           this.grid.selectedRows, sortField, sortOrder);
         if (options.export) {
-          // TODO
-          // this.grid?.saveAsExcel();
+          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'all' });
         }
       }
 

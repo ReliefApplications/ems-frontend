@@ -3,5 +3,5 @@
     [showFilter]="showFilter" (filterChange)="onFilterChange($event)" (showFilterChange)="onShowFilterChange($event)"
     (action)="onAction($event)" [actions]="actions" [editable]="editable" [hasChanges]="hasChanges"
     [selectable]="selectable" (selectionChange)="onSelectionChange($event)" [selectedRows]="selectedRows" [admin]="admin"
-    (columnChange)="onColumnChange($event)" (searchChange)="onSearchChange($event)">
+    (columnChange)="onColumnChange($event)" (searchChange)="onSearchChange($event)" (export)="onExport($event)">
 </safe-grid>
