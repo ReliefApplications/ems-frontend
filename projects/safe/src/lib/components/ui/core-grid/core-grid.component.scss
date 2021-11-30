@@ -1,0 +1,13 @@
+:host {
+    display: flex;
+    height: calc(100% - 41px);
+}
+
+.widget-content {
+    flex-grow: 2;
+    max-width: 100%;
+}
+
+.modal-grid {
+    height: 410px;
+}

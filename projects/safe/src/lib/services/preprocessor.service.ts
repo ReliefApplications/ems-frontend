@@ -57,7 +57,7 @@ export class SafePreprocessorService {
             }
           }
         });
-        const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings, false);
+        const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings);
         let metaFields: any = [];
         if (metaQuery) {
           promises.push(metaQuery.pipe(

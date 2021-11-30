@@ -41,6 +41,13 @@ textarea {
     text-overflow: ellipsis;
 }
 
+.external-link {
+    color: #008dc9;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .expand-text-button {
     height: 20px !important;
     width: 20px !important;

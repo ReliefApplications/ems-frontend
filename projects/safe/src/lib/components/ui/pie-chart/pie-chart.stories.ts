@@ -31,6 +31,7 @@ export default {
 } as Meta;
 
 const Template: Story<SafePieChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-pie-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-chart></div>',
     props: {
         ...args
     }
