@@ -126,11 +126,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public exportOptions: {
     records: 'all' | 'selected',
     fields: 'all' | 'displayed',
-    format: 'csv' | 'excel'
+    format: 'csv' | 'xlsx'
   } = {
       records: 'all',
       fields: 'all',
-      format: 'csv'
+      format: 'xlsx'
     };
 
   // === CACHED CONFIGURATION ===
@@ -269,29 +269,36 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     this.dialog.open(dialogRef);
   }
 
-  /* Export selected records to a csv or excel file
+ /**
+  * Exports selected records to either xlsx or csv file.
   */
   public exportRecords(): void {
 
     const mongoIds: any[] = [];
     if (this.exportOptions.records === 'selected') { // If the 'selected' option has been chosen by the user
-      for (const index of this.selectedRowsIndex) { // Build an array of the actual objects ids from the table data
-        const mongoId = this.gridData.data[index].id;
-        mongoIds.push(mongoId);
+      if (this.selectedRowsIndex.length > 0) {
+        for (const index of this.selectedRowsIndex) { // Build an array of the actual objects ids from the table data
+          const mongoId = this.gridData.data[index].id;
+          mongoIds.push(mongoId);
+        }
+      } else {
+        this.snackBar.openSnackBar('Please select at least one record in the grid.', { error: true });
       }
     } // Else, if the 'all' option has been selected and there is at least one record on the table
     else if (this.exportOptions.records === 'all' && !!this.gridData.data[0].id) {
       mongoIds.push(this.gridData.data[0].id); // Load this id in arrays
     } else { // Else there is no record in the table, but we need at least one to get the resource/form ID in the backend
-      console.log('Error : please load at least 1 record in the grid'); // TODO create a proper snackbar
+      this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
     }
 
     // Build the request body with all the useful data
     const body = {
       exportOptions: this.exportOptions,
       ids: mongoIds,
-      fields: this.fields,
-      filters: this.filter // TODO fields don't seem to be working
+      filter: this.exportOptions.records === 'selected' ?
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: mongoIds }]} : this.filter,
+      format: this.exportOptions.format,
+      ...this.exportOptions.fields === 'displayed' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
     };
 
     // Build and make the request
