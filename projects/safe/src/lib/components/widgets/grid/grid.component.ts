@@ -104,18 +104,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   // === DOWNLOAD ===
   public excelFileName = '';
-  private apiUrl = '';
-
-  // === EXPORT MENU SELECTION ===
-  public exportOptions: {
-    records: 'all' | 'selected',
-    fields: 'all' | 'displayed',
-    format: 'csv' | 'xlsx'
-  } = {
-      records: 'all',
-      fields: 'all',
-      format: 'xlsx'
-    };
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};

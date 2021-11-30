@@ -37,13 +37,13 @@ export class SafeDownloadService {
   }
 
   /**
-   * Download file from the server with a POST request
+   * Downloads records file from the server with a POST request
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
    * @param body (optional) request body
    */
-  getFileByPost(path: string, type: string, fileName: string, body?: any): void {
+  getRecordsExport(path: string, type: string, fileName: string, body?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({

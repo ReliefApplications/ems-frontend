@@ -21,3 +21,9 @@ export const SELECTABLE_SETTINGS: SelectableSettings = {
 export const GRADIENT_SETTINGS: GradientSettings = {
     opacity: false
 };
+
+export const EXPORT_SETTINGS = {
+    records: 'all',
+    fields: 'all',
+    format: 'xlsx'
+};

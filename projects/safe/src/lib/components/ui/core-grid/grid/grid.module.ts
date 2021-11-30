@@ -17,6 +17,7 @@ import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { SafeExportModule } from '../export/export.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,9 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     // === ROW ===
     SafeGridRowActionsModule,
     // === TOOLBAR ===
-    SafeGridToolbarModule
+    SafeGridToolbarModule,
+    // === EXPORT ===
+    SafeExportModule
   ],
   exports: [
     SafeGridComponent

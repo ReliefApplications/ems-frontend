@@ -3,7 +3,7 @@ import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, Row
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-import { GRADIENT_SETTINGS, MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
+import { EXPORT_SETTINGS, GRADIENT_SETTINGS, MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
@@ -16,6 +16,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SafeExportComponent } from '../export/export.component';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -52,6 +53,7 @@ export class SafeGridComponent implements OnInit {
 
   // === EXPORT ===
   @Input() exportable = true;
+  public exportSettings = EXPORT_SETTINGS;
 
   // === EDITION ===
   @Input() editable = false;
@@ -391,10 +393,20 @@ export class SafeGridComponent implements OnInit {
   }
 
   /**
-   * Downloads records.
+   * Opens export modal.
    */
   public onExport(): void {
-    console.log('export');
+    const dialogRef = this.dialog.open(SafeExportComponent, {
+      data: {
+        export: this.exportSettings
+      },
+      autoFocus: false
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+      }
+    });
   }
 
   // === UTILITIES ===
