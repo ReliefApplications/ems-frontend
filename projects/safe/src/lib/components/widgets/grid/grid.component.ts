@@ -308,7 +308,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Build and make the request
     const fileName = `${this.settings.title}.${this.exportOptions.format}`;
-    this.downloadService.getFile(`${this.apiUrl}/download/records`, `text/${this.exportOptions.format};charset=utf-8;`, fileName, body);
+    this.downloadService.getFileByPost(`${this.apiUrl}/download/records`, `text/${this.exportOptions.format};charset=utf-8;`, fileName, body);
   }
 
   /**
