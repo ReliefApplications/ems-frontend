@@ -22,7 +22,7 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
-import { SafeFormService } from '../../services/form.service';
+import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
@@ -79,7 +79,7 @@ export class SafeFormModalComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
-    private formService: SafeFormService
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
   }
@@ -143,7 +143,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   private initSurvey(): void {
-    this.survey = this.formService.createSurvey(this.form?.structure || '');
+    this.survey = this.formBuilderService.createSurvey(this.form?.structure || '');
     this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));

@@ -19,7 +19,7 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeFormService } from '../../services/form.service';
+import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -67,7 +67,7 @@ export class SafeRecordModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private formService: SafeFormService
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -114,7 +114,7 @@ export class SafeRecordModalComponent implements OnInit {
     await Promise.all(promises);
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
-    this.survey = this.formService.createSurvey(this.form?.structure || '');
+    this.survey = this.formBuilderService.createSurvey(this.form?.structure || '');
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
     this.survey.onCurrentPageChanged.add((surveyModel, options) => {
       this.selectedTabIndex = surveyModel.currentPageNo;
@@ -127,7 +127,7 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey.render(this.containerId);
     this.setPages();
     if (this.data.compareTo) {
-      this.surveyNext = this.formService.createSurvey(this.form?.structure || '');
+      this.surveyNext = this.formBuilderService.createSurvey(this.form?.structure || '');
       this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';

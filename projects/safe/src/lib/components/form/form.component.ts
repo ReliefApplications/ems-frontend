@@ -25,7 +25,7 @@ import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
 import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../graphql/queries';
 import { SafeLayoutService } from '../../services/layout.service';
-import { SafeFormService } from '../../services/form.service';
+import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 
@@ -80,7 +80,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
-    private formService: SafeFormService
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
   }
@@ -100,7 +100,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
-    this.survey = this.formService.createSurvey(JSON.stringify(structure));
+    this.survey = this.formBuilderService.createSurvey(JSON.stringify(structure));
     this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));

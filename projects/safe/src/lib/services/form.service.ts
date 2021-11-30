@@ -31,15 +31,4 @@ export class SafeFormService {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(Survey, domService, dialog, apollo, formBuilder, authService, environment);
   }
-
-  createSurvey(structure: string): Survey.Survey {
-    const survey = new Survey.Model(structure);
-    const onCompleteExpression = survey.toJSON().onCompleteExpression;
-    if (onCompleteExpression) {
-      survey.onCompleting.add(() => {
-        survey.runExpression(onCompleteExpression);
-      });
-    }
-    return survey;
-  }
 }
