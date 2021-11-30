@@ -765,13 +765,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.filter,
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
       ...e.fields === 'visible' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
     };
 
     // Builds and make the request
-    const fileName = `${this.settings.title}.${e.format}`;
+    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
