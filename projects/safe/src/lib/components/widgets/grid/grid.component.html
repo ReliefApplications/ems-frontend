@@ -89,9 +89,6 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <kendo-dropdownbutton [data]="exportData" style="float: right">
-                    Export selected
-                </kendo-dropdownbutton>
             </ng-container>
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
@@ -428,7 +425,5 @@
         <ng-template kendoGridNoRecordsTemplate>
             {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
         </ng-template>
-        <!-- EXCEL EXPORT -->
-        <kendo-grid-excel [fileName]="excelFileName" [fetchData]="fetchExportData"></kendo-grid-excel>
     </kendo-grid>
 </div>
