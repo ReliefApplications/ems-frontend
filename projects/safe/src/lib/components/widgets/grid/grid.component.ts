@@ -123,11 +123,11 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
   public exportOptions: {
     records: 'all' | 'selected',
     fields: 'all' | 'displayed',
-    format: 'csv' | 'excel'
+    format: 'csv' | 'xlsx'
   } = {
       records: 'all',
       fields: 'all',
-      format: 'csv'
+      format: 'xlsx'
     };
 
   // === CACHED CONFIGURATION ===
@@ -302,7 +302,7 @@ export class SafeGridComponent implements OnInit, OnChanges, OnDestroy {
     const body = {
       exportOptions: this.exportOptions,
       ids: mongoIds,
-      fields: this.fields,
+      fields: this.fields.filter(x => !x.hidden).map(x => x.name),
       filters: this.filter // TODO fields don't seem to be working
     };
 
