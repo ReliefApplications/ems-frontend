@@ -826,8 +826,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 
+  /**
+   * Handles search event.
+   * @param search Search event.
+   */
   public onSearchChange(search: string): void {
-    console.log(search);
     this.search = search;
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });

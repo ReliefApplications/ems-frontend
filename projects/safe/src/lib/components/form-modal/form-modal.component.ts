@@ -160,11 +160,9 @@ export class SafeFormModalComponent implements OnInit {
     });
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     if (this.data.recordId && this.record) {
-      console.log('In if');
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
-      console.log('Show completed = false');
     }
     if (this.storedMergedData) {
       this.survey.data = this.storedMergedData;
