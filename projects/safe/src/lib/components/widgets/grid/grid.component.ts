@@ -255,8 +255,7 @@ export class SafeGridWidgetComponent implements OnInit {
         this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
           this.grid.selectedRows, sortField, sortOrder);
         if (options.export) {
-          // TODO
-          // this.grid?.saveAsExcel();
+          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'all' });
         }
       }
 

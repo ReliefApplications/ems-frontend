@@ -49,11 +49,11 @@ export class SafeGridComponent implements OnInit {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
-  @Output() openRecord = new EventEmitter();
 
   // === EXPORT ===
   @Input() exportable = true;
   public exportSettings = EXPORT_SETTINGS;
+  @Output() export = new EventEmitter();
 
   // === EDITION ===
   @Input() editable = false;
@@ -404,7 +404,8 @@ export class SafeGridComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
+        this.exportSettings = res;
+        this.export.emit(this.exportSettings);
       }
     });
   }

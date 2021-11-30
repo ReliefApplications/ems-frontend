@@ -161,16 +161,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === DOWNLOAD ===
   public excelFileName = '';
   private apiUrl = '';
-  public exportData: Array<any> = [
-    {
-      text: '.csv',
-      click: () => this.onExportRecord(this.selectedRowsIndex, 'csv')
-    },
-    {
-      text: '.xlsx',
-      click: () => this.onExportRecord(this.selectedRowsIndex, 'xlsx')
-    }
-  ];
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -754,17 +744,40 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param items items to download.
    * @param type type of export file.
    */
-  public onExportRecord(items: number[], type: string): void {
-    // this.gridService.export()
-    const ids: any[] = [];
-    for (const index of items) {
-      const id = this.gridData.data[index].id;
-      ids.push(id);
+  public onExport(e: any): void {
+    let ids: any[];
+    if (e.records === 'selected') {
+      ids = this.selectedRows;
+      if (ids.length === 0) {
+        this.snackBar.openSnackBar('Please select at least one record in the grid.', { error: true });
+        return;
+      }
+    } else {
+      if (this.gridData.data.length > 0) {
+        ids = [this.gridData.data[0].id];
+      } else {
+        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
+        return;
+      }
     }
-    const url = `${this.apiUrl}/download/records`;
-    const fileName = `${this.settings.title}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${url}?${queryString}`, `text/${type};charset=utf-8;`, fileName, { params: { ids: ids.join(',') } });
+    // Builds the request body with all the useful data
+    const body = {
+      exportOptions: e,
+      ids,
+      filter: e.records === 'selected' ?
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.filter,
+      format: e.format,
+      ...e.fields === 'visible' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
+    };
+
+    // Builds and make the request
+    const fileName = `${this.settings.title}.${e.format}`;
+    this.downloadService.getRecordsExport(
+      `${this.apiUrl}/download/records`,
+      `text/${e.format};charset=utf-8;`,
+      fileName,
+      body
+    );
   }
 
   // === PAGINATION ===
