@@ -34,5 +34,5 @@ export function initCustomWidgets(
   initOwnerComponent(Survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(Survey, domService, apollo, dialog, formBuilder);
   initCustomWidget(Survey, domService, dialog, environment);
-  addCustomFunctions(Survey, authService);
+  addCustomFunctions(Survey, authService, apollo);
 }
