@@ -131,7 +131,7 @@ export class SafeTabFilterComponent implements OnInit {
   ngOnInit(): void {
     // TODO: move somewhere else
     if (this.settings) {
-      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings, false);
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
       if (this.metaQuery) {
         this.metaQuery.subscribe((res: any) => {
           for (const field in res.data) {

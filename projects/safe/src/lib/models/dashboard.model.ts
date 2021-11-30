@@ -29,6 +29,21 @@ export const WIDGET_TYPES = [
         settingsTemplate: SafeChartSettingsComponent
     },
     {
+        id: 'column-chart',
+        name: 'Column chart',
+        icon: '/assets/column.svg',
+        color: '#EBA075',
+        settings: {
+            title: 'Column chart', chart: {
+                type: 'column'
+            }
+        },
+        defaultCols: 3,
+        defaultRows: 3,
+        component: 'chart',
+        settingsTemplate: SafeChartSettingsComponent
+    },
+    {
         id: 'line-chart',
         name: 'Line chart',
         icon: '/assets/line.svg',
@@ -57,6 +72,21 @@ export const WIDGET_TYPES = [
         defaultRows: 3,
         component: 'chart',
         settingsTemplate: SafeChartSettingsComponent
+    },
+    {
+      id: 'bar-chart',
+      name: 'Bar chart',
+      icon: '/assets/bar.svg',
+      color: '#B5DC8D',
+      settings: {
+        title: 'Bar chart', chart: {
+          type: 'bar'
+        }
+      },
+      defaultCols: 3,
+      defaultRows: 3,
+      component: 'chart',
+      settingsTemplate: SafeChartSettingsComponent
     },
     {
         id: 'grid',

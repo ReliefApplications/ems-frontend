@@ -1,5 +1,5 @@
 <div class="record-history" *ngIf="cacheDate">
-    <safe-button *ngIf="!record" [isIcon]="true" icon="restart_alt" matTooltip="Clear history" (click)="clear.emit()"></safe-button>
+    <safe-button *ngIf="!record" [isIcon]="true" icon="restart_alt" matTooltip="Clear cache" (click)="clear.emit()"></safe-button>
     <span>Loaded from cache {{ cacheDate | date:'dd/MM/yy, h:mm a'}}</span>
 </div>
 <div class="record-history" *ngIf="record">

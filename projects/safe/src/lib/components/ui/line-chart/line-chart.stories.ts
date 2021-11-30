@@ -31,6 +31,7 @@ export default {
 } as Meta;
 
 const Template: Story<SafeLineChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-line-chart [legend]="legend" [title]="title" [series]="series"></safe-line-chart></div>',
     props: {
         ...args
     }

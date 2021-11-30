@@ -222,6 +222,7 @@ query GetFormRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $di
       edges {
         node {
           id
+          incrementalId
           data(display: $display)
           versions {
             id
@@ -306,6 +307,7 @@ query GetResourceRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON,
       edges {
         node {
           id
+          incrementalId
           data(display: $display)
           versions {
             id
