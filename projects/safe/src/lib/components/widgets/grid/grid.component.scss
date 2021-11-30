@@ -53,23 +53,30 @@ textarea {
 }
 
 .export-options-dialog-content {
-    padding: 32px;
+    font-size: 16px;
+    padding: 24px;
+    margin: 0;
 
-    label {
+    * {
         display: block;
-        margin-top: 16px;
-        margin-bottom: 16px;
     }
 
+    & > label {
+        margin: 24px 0 12px 0;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
 
     mat-radio-button {
-        display: block;
+        margin: 6px 0 6px 36px;
     }
 }
 
 .export-options-dialog-acions {
     button {
-        display: block;
         margin: 0 auto;
+        margin-top: -24px;
     }
 }

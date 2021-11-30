@@ -31,26 +31,28 @@
 
                 <mat-dialog-content class="export-options-dialog-content">
                     <label id="export-options-records">Select records to export</label>
-                    <mat-radio-group [(ngModel)]="exportOptions.records" required aria-labelledby="export-options-records">
+                    <mat-radio-group [(ngModel)]="exportOptions.records" class="form-radio-group" required aria-labelledby="export-options-records">
                         <mat-radio-button value="all">All records in view</mat-radio-button>
                         <mat-radio-button value="selected">Only selected records</mat-radio-button>
                     </mat-radio-group>
 
                     <label id="export-options-columns">Select columns to export</label>
-                    <mat-radio-group [(ngModel)]="exportOptions.fields" required aria-labelledby="export-options-columns">
+                    <mat-radio-group [(ngModel)]="exportOptions.fields" class="form-radio-group" required aria-labelledby="export-options-columns">
                         <mat-radio-button value="all">All available columns</mat-radio-button>
                         <mat-radio-button value="displayed">Only displayed columns</mat-radio-button>
                     </mat-radio-group>
 
                     <label id="export-options-format">Select export format</label>
-                    <mat-radio-group [(ngModel)]="exportOptions.format" requires aria-labelledby="export-options-format">
+                    <mat-radio-group [(ngModel)]="exportOptions.format" class="form-radio-group" requires aria-labelledby="export-options-format">
                         <mat-radio-button value="csv">CSV</mat-radio-button>
                         <mat-radio-button value="xlsx">Excel</mat-radio-button>
                     </mat-radio-group>
                 </mat-dialog-content>
                 
                 <mat-dialog-actions class="export-options-dialog-acions">
-                    <button mat-button mat-dialog-close (click)="exportRecords()">Okay</button>
+
+                    <button mat-button mat-dialog-close mat-flat-button color="primary" (click)="exportRecords()">Okay</button>
+
                 </mat-dialog-actions>
 
             </ng-template>
@@ -87,9 +89,6 @@
                     (click)="onConvertRecord(selectedRowsIndex)" style="float: right"
                     [disabled]="!canUpdateSelectedRows">Convert
                 </button>
-                <kendo-dropdownbutton [data]="exportData" style="float: right">
-                    Export selected
-                </kendo-dropdownbutton>
             </ng-container>
         </ng-template>
         <ng-container *ngIf="fields.length > 0">
@@ -426,7 +425,5 @@
         <ng-template kendoGridNoRecordsTemplate>
             {{ queryError ? 'Invalid data query.' : 'No record detected.' }}
         </ng-template>
-        <!-- EXCEL EXPORT -->
-        <kendo-grid-excel [fileName]="excelFileName" [fetchData]="fetchExportData"></kendo-grid-excel>
     </kendo-grid>
 </div>

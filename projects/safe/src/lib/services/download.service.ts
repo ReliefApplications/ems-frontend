@@ -17,13 +17,33 @@ export class SafeDownloadService {
   }
 
   /**
-   * Download file from the server with a POST request
+   * Download file from the server
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
    * @param options (optional) request options
    */
-  getFile(path: string, type: string, fileName: string, body?: any): void {
+   getFile(path: string, type: string, fileName: string, options?: any): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
+      const blob = new Blob([res], {type});
+      this.saveFile(fileName, blob);
+    });
+  }
+
+  /**
+   * Download file from the server with a POST request
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param body (optional) request body
+   */
+  getFileByPost(path: string, type: string, fileName: string, body?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
