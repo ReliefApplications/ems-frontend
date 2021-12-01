@@ -87,17 +87,17 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-    const defaultThemeColorsSurvey = Survey
-      .StylesManager
-      .ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    // const defaultThemeColorsSurvey = Survey
+    //   .StylesManager
+    //   .ThemeColors.default;
+    // defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    // defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
-    Survey
-      .StylesManager
-      .applyTheme();
+    // Survey
+    //   .StylesManager
+    //   .applyTheme();
     
-    Survey.StylesManager.findSheet('default');
+    // Survey.StylesManager.findSheet('default');
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
