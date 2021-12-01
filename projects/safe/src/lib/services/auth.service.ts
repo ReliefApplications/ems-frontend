@@ -16,7 +16,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class SafeAuthService {
 
   // === LOGGED USER ===
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-denylist, id-match
   private _user = new BehaviorSubject<User | null>(null);
   public account: Account | null = null;
 
