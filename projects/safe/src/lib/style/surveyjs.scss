@@ -172,14 +172,33 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_default_css .sv_progress-buttons__list .sv_progress-buttons__page-description {
     color: $text-color;
 }
-.sv_main .sv_p_root > .sv_row {
-    border-bottom: 1px solid #e7e7e7;
+.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed:before {
+    border-color: $main-color;
+    background-color: $main-color;
 }
-.sv_main .sv_p_root > .sv_row:nth-child(odd) {
+.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed + li:after {
+    border-color: $main-color;
+    background-color: $main-color;
+}
+.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed + li:after {
+    background-color: $progress-buttons-color;
+}
+.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--current:before {
+    border-color: $main-color;
     background-color: white;
 }
+.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed.sv_progress-buttons__list-element--current:before {
+    border-color: $main-color;
+    background-color: white;
+}
+.sv_main .sv_p_root > .sv_row {
+    border-color: $border-color;
+}
+.sv_main .sv_p_root > .sv_row:nth-child(odd) {
+    background-color: $body-background-color;
+}
 .sv_main .sv_p_root > .sv_row:nth-child(even) {
-    background-color: #f4f4f4;
+    background-color: $body-container-background-color;
 }
 .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
     border: 1px solid #ed5565;
@@ -918,13 +937,6 @@ td.td.sv_matrix_cell .sv_qbln .sv-boolean {
         transform: translate(0, 0);
     }
 }
-        ".sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed:before": "border-color: $main-color; background-color: $main-color;",
-        ".sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed + li:after": "background-color: $progress-buttons-color",
-        ".sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--current:before": "border-color: $main-color; background-color: white;",
-        ".sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed.sv_progress-buttons__list-element--current:before": "border-color: $main-color; background-color: white;",
-        ".sv_default_css .sv_p_root > .sv_row": "border-color: $border-color;",
-        ".sv_default_css .sv_p_root > .sv_row:nth-child(odd)": "background-color: $body-background-color;",
-        ".sv_default_css .sv_p_root > .sv_row:nth-child(even)": "background-color: $body-container-background-color;",
         ".sv_default_css .sv_q_other input": "color: $text-color; -webkit-text-fill-color: $text-color; border-color: $border-color; background-color: $inputs-background-color;",
         ".sv_default_css .sv_q_text_root": "color: $text-color; -webkit-text-fill-color: $text-color; border-color: $border-color; background-color: $inputs-background-color;",
         ".sv_default_css .sv_q_dropdown_control": "color: $text-input-color; border-color: $border-color; background-color: $inputs-background-color;",
