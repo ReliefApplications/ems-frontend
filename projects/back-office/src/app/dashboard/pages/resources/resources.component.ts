@@ -56,7 +56,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.resourcesQuery.valueChanges.subscribe(res => {
       this.cachedResources = res.data.resources.edges.map(x => x.node);
       this.resources.data = this.cachedResources.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
@@ -69,17 +69,26 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    */
    onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedResources.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedResources.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
       this.resourcesQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: neededSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            resources: {
+            forms: {
               edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],
               pageInfo: fetchMoreResult.resources.pageInfo,
               totalCount: fetchMoreResult.resources.totalCount
@@ -89,8 +98,9 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       });
     } else {
       this.resources.data = this.cachedResources.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -103,7 +113,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.pageInfo.pageIndex = 0;
     this.resourcesQuery.fetchMore({
       variables: {
-        first: ITEMS_PER_PAGE,
+        first: this.pageInfo.pageSize,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {

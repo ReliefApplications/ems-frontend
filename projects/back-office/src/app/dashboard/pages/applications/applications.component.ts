@@ -71,7 +71,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
       this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
@@ -86,19 +86,28 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * Handles page event.
    * @param e page event.
    */
-  onPage(e: any): void {
+   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApplications.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedApplications.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
       this.applicationsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: neededSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            applications: {
+            forms: {
               edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
               pageInfo: fetchMoreResult.applications.pageInfo,
               totalCount: fetchMoreResult.applications.totalCount
@@ -108,8 +117,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     } else {
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -122,7 +132,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pageInfo.pageIndex = 0;
     this.applicationsQuery.fetchMore({
       variables: {
-        first: ITEMS_PER_PAGE,
+        first: this.pageInfo.pageSize,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {

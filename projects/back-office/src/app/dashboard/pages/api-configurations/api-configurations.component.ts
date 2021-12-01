@@ -71,7 +71,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     this.apiConfigurationsQuery.valueChanges.subscribe(res => {
       this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(x => x.node);
       this.dataSource.data = this.cachedApiConfigurations.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.apiConfigurations.totalCount;
       this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
       this.loading = res.loading;
@@ -87,18 +87,27 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
    * Handles page event.
    * @param e page event.
    */
-  onPage(e: any): void {
+   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApiConfigurations.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedApiConfigurations.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
       this.apiConfigurationsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: neededSize,
           afterCursor: this.pageInfo.endCursor
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            apiConfigurations: {
+            forms: {
               edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
               pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
               totalCount: fetchMoreResult.apiConfigurations.totalCount
@@ -108,8 +117,9 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
       });
     } else {
       this.dataSource.data = this.cachedApiConfigurations.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   private filterPredicate(): void {

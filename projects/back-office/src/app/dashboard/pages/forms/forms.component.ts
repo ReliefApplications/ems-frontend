@@ -74,7 +74,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.formsQuery.valueChanges.subscribe(res => {
       this.cachedForms = res.data.forms.edges.map(x => x.node);
       this.forms.data = this.cachedForms.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
@@ -91,10 +91,19 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    */
    onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedForms.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedForms.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
       this.formsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: neededSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
@@ -111,8 +120,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     } else {
       this.forms.data = this.cachedForms.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -125,7 +135,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.pageInfo.pageIndex = 0;
     this.formsQuery.fetchMore({
       variables: {
-        first: ITEMS_PER_PAGE,
+        first: this.pageInfo.pageSize,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {
