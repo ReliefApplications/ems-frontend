@@ -1,4 +1,4 @@
-SAFE Front-end
+OORT Front-end
 =======
 [![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)
 [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml)
@@ -11,7 +11,7 @@ This front-end was made using [Angular](https://angular.io/). It uses multiple e
 *   [SurveyJS](https://surveyjs.io/), for the form builder
 *   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
 
-It was made for a Proof of Concept of a UI Builder for SAFE.
+It was made for a Proof of Concept of a UI Builder for WHO.
 
 To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
 
