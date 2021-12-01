@@ -59,7 +59,7 @@ import { SafeAuthService } from './auth.service';
 })
 export class SafeApplicationService {
 
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-denylist, id-match
   private _application = new BehaviorSubject<Application | null>(null);
   private applicationSubscription?: Subscription;
   private notificationSubscription?: Subscription;

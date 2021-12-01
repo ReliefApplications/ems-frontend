@@ -1,5 +1,5 @@
 // This is needed for compilation of surveyjs-widgets with strict option enabled.
-// tslint:disable-next-line: no-reference
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
 
 import * as widgets from 'surveyjs-widgets';

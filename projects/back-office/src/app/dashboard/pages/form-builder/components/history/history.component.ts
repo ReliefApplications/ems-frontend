@@ -12,7 +12,7 @@ export class HistoryComponent implements OnInit {
   displayedColumns: string[] = ['id', 'createdAt'];
 
   // === EMIT THE SELECTED FORM VERSION ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
