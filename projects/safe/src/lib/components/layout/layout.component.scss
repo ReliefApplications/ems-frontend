@@ -67,6 +67,11 @@
             color: #aeaeaf;
         }
     }
+
+    .nav-text {
+        text-overflow: ellipsis;
+        width: 9em;
+    }
 }
 
 .cdk-drag-preview {
