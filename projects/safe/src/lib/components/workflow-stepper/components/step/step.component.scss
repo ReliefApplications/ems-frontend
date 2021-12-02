@@ -28,10 +28,12 @@
         color: #6E7478;
         font-size: 12px;
         text-align: center;
-        width: 7em;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 8px;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space:nowrap;
+        max-height: 30px;
     }
 
     .safe-step-active {
