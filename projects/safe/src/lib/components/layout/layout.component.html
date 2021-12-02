@@ -77,7 +77,7 @@
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
-                    <div mat-line>{{ item.name }}</div>
+                    <div mat-line class="nav-text" [matTooltip]="item.name" [matTooltipShowDelay]="1000">{{ item.name }}</div>
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
