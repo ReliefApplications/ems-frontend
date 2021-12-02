@@ -9,21 +9,14 @@
   .filters{
 
     mat-form-field {
-        margin-top: -0.25em;  
-        font-size: 1em;
-    }
-    #custom-search{
-        position: absolute;
-        margin-top: -1em;
-        margin-left: 2em;
-        font-size: 1em;
-        height: 1.5em;
-    }
-    mat-icon{
-        position: absolute;
-        font-size: 1.5em;
-        margin-top: -1.55em;
-    }
+      margin-top: -0.25em;
+
+      #custom-search {
+          position: relative;
+          top: -0.15em;
+      }
+  }
+  ::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.42em 0px !important;}
   }
 
   .actions {
