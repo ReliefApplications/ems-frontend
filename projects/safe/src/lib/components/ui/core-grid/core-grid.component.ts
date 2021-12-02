@@ -478,6 +478,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
       case 'details': {
+        console.log(event);
         if (event.items) {
           this.onShowDetails(event.items, event.field);
         }
@@ -578,7 +579,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
-          recordId: items.id,
+          recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
           template: this.settings.query.template
@@ -589,7 +590,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       });
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
-          this.onUpdate([items]);
+          this.onUpdate(isArray ? items : [items]);
         }
       });
     }
