@@ -34,7 +34,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
