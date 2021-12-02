@@ -109,7 +109,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            forms: {
+            apiConfigurations: {
               edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
               pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
               totalCount: fetchMoreResult.apiConfigurations.totalCount
