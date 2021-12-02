@@ -65,7 +65,7 @@ export class SafeFormModalComponent implements OnInit {
   private temporaryFilesStorage: any = {};
 
   // === SURVEY COLORS
-  primaryColor = '#008DC9';
+  // primaryColor = '#008DC9';
 
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
@@ -86,15 +86,15 @@ export class SafeFormModalComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.data = {  ...DEFAULT_DIALOG_DATA, ...this.data };
-    const defaultThemeColorsSurvey = Survey
-      .StylesManager
-      .ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    // const defaultThemeColorsSurvey = Survey
+    //   .StylesManager
+    //   .ThemeColors.default;
+    // defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    // defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
-    Survey
-      .StylesManager
-      .applyTheme();
+    // Survey
+    //   .StylesManager
+    //   .applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void>[] = [];

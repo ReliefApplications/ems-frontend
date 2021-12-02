@@ -53,7 +53,7 @@ export class SafeRecordModalComponent implements OnInit {
   public containerNextId = '';
 
   // === SURVEY COLORS
-  primaryColor = '#008DC9';
+  // primaryColor = '#008DC9';
 
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
@@ -77,15 +77,15 @@ export class SafeRecordModalComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    const defaultThemeColorsSurvey = Survey
-      .StylesManager
-      .ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    // const defaultThemeColorsSurvey = Survey
+    //   .StylesManager
+    //   .ThemeColors.default;
+    // defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    // defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
-    Survey
-      .StylesManager
-      .applyTheme();
+    // Survey
+    //   .StylesManager
+    //   .applyTheme();
     const promises: Promise<GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void>[] = [];
     // Fetch structure from template if needed
     if (this.data.template) {
