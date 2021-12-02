@@ -15,7 +15,7 @@ import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-applications',
@@ -38,7 +38,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public pageInfo = {
     pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     endCursor: ''
   };
@@ -59,11 +59,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private previewService: PreviewService
   ) { }
 
+  /**
+   * Creates the application query and subscribes to the query changes.
+   */
   ngOnInit(): void {
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE
       }
     });
 
@@ -71,7 +74,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
       this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
@@ -86,12 +89,21 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * Handles page event.
    * @param e page event.
    */
-  onPage(e: any): void {
+   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApplications.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedApplications.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
       this.applicationsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
@@ -108,8 +120,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     } else {
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -122,7 +135,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pageInfo.pageIndex = 0;
     this.applicationsQuery.fetchMore({
       variables: {
-        first: ITEMS_PER_PAGE,
+        first: this.pageInfo.pageSize,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -138,18 +151,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.applications.sort = this.sort || null;
   }
 
+  /**
+   * Removes all subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
 
-  /*  Delete an application if authorized.
-  */
+  /**
+   * Deletes an application if authorized.
+   * @param element application.
+   * @param e click event.
+   */
   onDelete(element: any, e?: any): void {
     if (e) {
       e.stopPropagation();
@@ -183,9 +205,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Display the AddApplication component.
-    Add a new application once closed, if result exists.
-  */
+  /**
+   * Displays the AddApplication component.
+   * Adds a new application once closed, if result exists.
+   */
   onAdd(): void {
     this.apollo.mutate<AddApplicationMutationResponse>({
       mutation: ADD_APPLICATION
@@ -202,8 +225,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Edit the permissions layer.
-  */
+  /**
+   * Edits the permissions layer.
+   * @param e permissions.
+   * @param element application.
+   */
   saveAccess(e: any, element: Application): void {
     this.apollo.mutate<EditApplicationMutationResponse>({
       mutation: EDIT_APPLICATION,
@@ -221,8 +247,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to choose roles to fit in the preview.
-  */
+  /**
+   * Opens a dialog to choose roles to fit in the preview.
+   * @param element application to preview.
+   */
   onPreview(element: Application): void {
     const dialogRef = this.dialog.open(ChoseRoleComponent, {
       data: {
@@ -237,8 +265,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to give a name for the duplicated application
-  */
+  /**
+   * Opens a dialog to give a name for the duplicated application.
+   * @param application application to duplicate.
+   */
   onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {

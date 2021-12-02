@@ -59,8 +59,10 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     private router: Router
   ) { }
 
+  /**
+   * Creates the API configuration query, and subscribes to the query changes.
+   */
   ngOnInit(): void {
-
     this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS,
       variables: {
@@ -71,7 +73,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     this.apiConfigurationsQuery.valueChanges.subscribe(res => {
       this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(x => x.node);
       this.dataSource.data = this.cachedApiConfigurations.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.apiConfigurations.totalCount;
       this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
       this.loading = res.loading;
@@ -89,16 +91,25 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
    */
   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApiConfigurations.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize)
+      && e.length > this.cachedApiConfigurations.length) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
       this.apiConfigurationsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: neededSize,
           afterCursor: this.pageInfo.endCursor
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            apiConfigurations: {
+            forms: {
               edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
               pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
               totalCount: fetchMoreResult.apiConfigurations.totalCount
@@ -108,10 +119,14 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
       });
     } else {
       this.dataSource.data = this.cachedApiConfigurations.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
+  /**
+   * Frontend filtering.
+   */
   private filterPredicate(): void {
     this.dataSource.filterPredicate = (data: any) => {
       return (((this.searchText.trim().length === 0 ||
@@ -121,6 +136,11 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     };
   }
 
+  /**
+   * Applies the filter to the data source.
+   * @param column Column to filter on.
+   * @param event Value of the filter.
+   */
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
@@ -130,15 +150,19 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     this.dataSource.filter = '##';
   }
 
+  /**
+   * Removes all the filters.
+   */
   clearAllFilters(): void {
     this.searchText = '';
     this.statusFilter = '';
     this.applyFilter('', null);
   }
 
-  /*  Display the AddApiConfiguration modal.
-      Create a new apiConfiguration on closed if result.
-  */
+  /**
+   * Displays the AddApiConfiguration modal.
+   * Creates a new apiConfiguration on closed if result.
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
     dialogRef.afterClosed().subscribe(value => {
@@ -163,8 +187,11 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
-  /*  Remove an apiConfiguration if authorized.
-  */
+  /**
+   * Removes an apiConfiguration if authorized.
+   * @param element API config to delete.
+   * @param e click event.
+   */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -192,10 +219,16 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
   }
 
+  /**
+   * Removes all subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
