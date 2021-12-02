@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-resources',
@@ -32,7 +32,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     endCursor: ''
   };
@@ -49,7 +49,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE
       }
     });
 
@@ -74,21 +74,21 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       && e.length > this.cachedResources.length){
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
+      let first = e.pageSize;
       // If the fetch is for a new page size, the old page size is substracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
+        first -= this.pageInfo.pageSize;
       }
       this.resourcesQuery.fetchMore({
         variables: {
-          first: neededSize,
+          first,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            forms: {
+            resources: {
               edges: [...prev.resources.edges, ...fetchMoreResult.resources.edges],
               pageInfo: fetchMoreResult.resources.pageInfo,
               totalCount: fetchMoreResult.resources.totalCount

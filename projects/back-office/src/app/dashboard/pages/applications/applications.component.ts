@@ -15,7 +15,7 @@ import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-applications',
@@ -38,7 +38,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public pageInfo = {
     pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     endCursor: ''
   };
@@ -59,11 +59,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private previewService: PreviewService
   ) { }
 
+  /**
+   * Creates the application query and subscribes to the query changes.
+   */
   ngOnInit(): void {
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE
       }
     });
 
@@ -93,21 +96,21 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       && e.length > this.cachedApplications.length){
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
+      let first = e.pageSize;
       // If the fetch is for a new page size, the old page size is substracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
+        first -= this.pageInfo.pageSize;
       }
       this.applicationsQuery.fetchMore({
         variables: {
-          first: neededSize,
+          first,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
           return Object.assign({}, prev, {
-            forms: {
+            applications: {
               edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
               pageInfo: fetchMoreResult.applications.pageInfo,
               totalCount: fetchMoreResult.applications.totalCount
@@ -148,18 +151,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.applications.sort = this.sort || null;
   }
 
+  /**
+   * Removes all subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
 
-  /*  Delete an application if authorized.
-  */
+  /**
+   * Deletes an application if authorized.
+   * @param element application.
+   * @param e click event.
+   */
   onDelete(element: any, e?: any): void {
     if (e) {
       e.stopPropagation();
@@ -193,9 +205,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Display the AddApplication component.
-    Add a new application once closed, if result exists.
-  */
+  /**
+   * Displays the AddApplication component.
+   * Adds a new application once closed, if result exists.
+   */
   onAdd(): void {
     this.apollo.mutate<AddApplicationMutationResponse>({
       mutation: ADD_APPLICATION
@@ -212,8 +225,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Edit the permissions layer.
-  */
+  /**
+   * Edits the permissions layer.
+   * @param e permissions.
+   * @param element application.
+   */
   saveAccess(e: any, element: Application): void {
     this.apollo.mutate<EditApplicationMutationResponse>({
       mutation: EDIT_APPLICATION,
@@ -231,8 +247,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to choose roles to fit in the preview.
-  */
+  /**
+   * Opens a dialog to choose roles to fit in the preview.
+   * @param element application to preview.
+   */
   onPreview(element: Application): void {
     const dialogRef = this.dialog.open(ChoseRoleComponent, {
       data: {
@@ -247,8 +265,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to give a name for the duplicated application
-  */
+  /**
+   * Opens a dialog to give a name for the duplicated application.
+   * @param application application to duplicate.
+   */
   onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {

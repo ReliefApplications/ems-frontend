@@ -18,7 +18,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-forms',
@@ -47,7 +47,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     endCursor: ''
   };
@@ -60,14 +60,14 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService
   ) {}
 
-  /*  Load the forms.
-    Check user permission to add new forms.
-  */
+  /**
+   * Creates the form query, and subscribes to the query changes.
+   */
   ngOnInit(): void {
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_SHORT_FORMS,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE
       }
     });
 
@@ -96,14 +96,14 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       && e.length > this.cachedForms.length){
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
+      let first = e.pageSize;
       // If the fetch is for a new page size, the old page size is substracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
+        first -= this.pageInfo.pageSize;
       }
       this.formsQuery.fetchMore({
         variables: {
-          first: neededSize,
+          first,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
@@ -151,10 +151,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.forms.sort = this.sort || null;
   }
 
+  /**
+   * Removes all the subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
