@@ -1,9 +1,45 @@
-.actions {
+.header {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end !important;
-    text-align: end;
-    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: top;
+
+    .filters {
+        .top,
+        .advanced {
+            display: flex;
+            flex-direction: row;
+            align-items: top;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        mat-form-field {
+            margin-top: -0.25em;
+
+            #custom-search {
+                position: relative;
+                top: -0.15em;
+            }
+        }
+        ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+            padding: 0.42em 0px !important;
+        }
+        ::ng-deep .mat-form-field-label-wrapper {
+            top: -1.4em;
+        }
+
+        ::ng-deep
+            .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+            .mat-form-field-label {
+            transform: translateY(-1.1em) scale(0.75);
+            width: 133.33333%;
+        }
+    }
+
+    .actions {
+        margin-left: auto;
+    }
 }
 
 .table-column {
@@ -12,26 +48,4 @@
 
 .action-column {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.searchbar {
-    float: left;
-  
-    .filters-toggle {
-      margin-left: 12px;
-    }
-  
-    button {
-      margin-bottom: 10px;
-    }
-}
-  
-.filters {
-    clear: both;
-    float: left;
-    margin-left: -12px;
-
-    .mat-form-field {
-        margin-left: 12px;
-    }
 }

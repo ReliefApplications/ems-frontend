@@ -23,11 +23,11 @@
     }
 
     .header {
-        padding: 8px;
+        padding: 8px 8px 0 8px;
     }
 
     .bottom {
-        padding: 8px 0 8px 8px;
+        padding: 0 0 8px 8px;
     }
 
     .users {
@@ -52,5 +52,10 @@
         font-weight: 500;
         font-size: 20px;
         text-align: center;
+        overflow: hidden;
+        padding: 4px 8px;
+        width: 100%;
+        box-sizing: border-box;
+        text-overflow: ellipsis;
     }
 }
