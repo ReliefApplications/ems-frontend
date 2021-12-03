@@ -44,7 +44,6 @@ export class SafePieChartComponent implements OnInit {
   @Input() series: ChartSeries[] = [];
 
   @Input() labels: ChartLabels | undefined;
-
   public chartLabels!: any;
 
   @ViewChild('chart')
