@@ -68,7 +68,10 @@ export class SafeGridService {
           };
         }
         default: {
-          const metaData = get(metaFields, fullName);
+          const metaData = Object.assign({}, get(metaFields, fullName));
+          if (metaData.hasOther) {
+            metaData.choices = [...metaData.choices, { value: 'other', text: 'Other' }];
+          }
           const cachedField = get(layoutFields, fullName);
           const title = f.label ? f.label : prettifyLabel(f.name);
           return {
