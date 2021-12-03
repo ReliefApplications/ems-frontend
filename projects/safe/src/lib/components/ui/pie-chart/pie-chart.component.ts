@@ -8,9 +8,14 @@ interface ChartTitle {
 }
 
 interface ChartLegend {
-  visible: boolean;
-  orientation: 'horizontal' | 'vertical';
-  position: 'top' | 'bottom' | 'left' | 'right';
+  title?: {
+    text: string,
+    font?: string,
+    align?: 'center' | 'left' | 'right'
+  };
+  visible?: boolean;
+  orientation?: 'horizontal' | 'vertical';
+  position?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 interface ChartSeries {

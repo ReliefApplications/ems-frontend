@@ -64,5 +64,14 @@ Default.args = {
                 }
             ]
         }
-    ]
+    ],
+    legend: {
+        title: {
+            text: 'Categories',
+            align: 'left'
+        },
+        visible: true,
+        orientation: 'vertical',
+        position: 'right'
+    }
 };
