@@ -7,6 +7,6 @@
     <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
     <kendo-chart-series>
         <kendo-chart-series-item *ngFor='let item of series' type="pie" [data]="item.data" field="field"
-            categoryField="category"></kendo-chart-series-item>
+            categoryField="category" [labels]="chartLabels"></kendo-chart-series-item>
     </kendo-chart-series>
 </kendo-chart>
