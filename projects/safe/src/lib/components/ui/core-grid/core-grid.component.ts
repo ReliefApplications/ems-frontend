@@ -761,6 +761,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         return;
       }
     }
+    console.log(this.layout.fields);
     // Builds the request body with all the useful data
     const body = {
       exportOptions: e,
@@ -768,7 +769,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
+      ...e.fields === 'visible' && { fields: Object.values(this.layout.fields).filter((x: any) => !x.hidden)
+        .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
     };
 
     // Builds and make the request
