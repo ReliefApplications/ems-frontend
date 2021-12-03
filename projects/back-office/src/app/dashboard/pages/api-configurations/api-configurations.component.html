@@ -1,41 +1,38 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container>
+<ng-container *ngIf="!loading">
 
-  <div>
-    <div class="searchbar" *ngIf="!loading">
-      <mat-form-field appearance="outline">
-        <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          placeholder="Search...">
-      </mat-form-field>
-      <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-        Filter
-      </safe-button>
+  <div class="header">
+    <div class="filters">
+      <div class="top">
+        <mat-form-field appearance="outline">
+          <mat-icon matPrefix>search</mat-icon>
+          <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
+            placeholder="Search...">
+        </mat-form-field>
+        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
+          Filter
+        </safe-button>
+      </div>
+      <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+            <mat-option>-</mat-option>
+            <mat-option value="active">
+              Active
+            </mat-option>
+            <mat-option value="pending">
+              Pending
+            </mat-option>
+            <mat-option value="archived">
+              Archived
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <safe-button variant="danger" (click)="clearAllFilters()">Clear Filters</safe-button>
+      </div>
     </div>
 
-    <div class="filters" [style.display]="!showFilters ? 'none' : ''">
-
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
-          <mat-option>-</mat-option>
-          <mat-option value="active">
-            Active
-          </mat-option>
-          <mat-option value="pending">
-            Pending
-          </mat-option>
-          <mat-option value="archived">
-            Archived
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <safe-button variant="danger" (click)="clearAllFilters()">Clear Filters</safe-button>
-    </div>
-  </div>
-
-  <div>
     <div class="actions">
       <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
         Create an API Configuration
