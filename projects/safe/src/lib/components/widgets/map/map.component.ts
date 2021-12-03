@@ -76,12 +76,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.drawMap();
     if (this.settings.query){
       const builtQuery =  this.queryBuilder.buildQuery(this.settings);
-        this.dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: 100
+        }
       });
-      //if (this.dataQuery) {
-        this.getData();
-      //}
+      this.getData();
     }
 
     this.displayFields = this.settings.query?.fields.map((f: any) => f.name) || [];
@@ -138,7 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].map((x: any) => this.drawMarkers(myIcon, x));
+          res.data[field].edges.map((x: any) => this.drawMarkers(myIcon, x.node));
         }
       }
     });
