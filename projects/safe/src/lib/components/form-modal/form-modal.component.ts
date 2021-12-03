@@ -125,7 +125,6 @@ export class SafeFormModalComponent implements OnInit {
       }).toPromise().then(res => {
         this.form = res.data.form;
         if (this.data.prefillData) {
-          console.log('haha')
           this.storedMergedData = this.data.prefillData;
         }
         if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
@@ -169,10 +168,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.showCompletedPage = false;
     }
     if (this.storedMergedData) {
-      console.log(JSON.parse(JSON.stringify(this.survey.data)));
-      console.log(JSON.parse(JSON.stringify(omitBy(this.storedMergedData, isNil))));
       this.survey.data = { ...this.survey.data, ...omitBy(this.storedMergedData, isNil) };
-      console.log(JSON.parse(JSON.stringify(this.survey.data)));
     }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
