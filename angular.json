@@ -77,7 +77,7 @@
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "projects/safe/src/lib/style/surveyjs.scss",
-              "node_modules/survey-creator/survey-creator.min.css",
+              "projects/safe/src/lib/style/surveyjs-builder.scss",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -274,7 +274,7 @@
               },
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/surveyjs.scss",
-              "node_modules/survey-creator/survey-creator.css"
+              "projects/safe/src/lib/style/surveyjs-builder.scss"
             ],
             "scripts": []
           }
@@ -340,7 +340,7 @@
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "projects/safe/src/lib/style/surveyjs.scss",
-              "node_modules/survey-creator/survey-creator.css",
+              "projects/safe/src/lib/style/surveyjs-builder.scss",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -529,7 +529,7 @@
             "styles": [
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/surveyjs.scss",
-              "node_modules/survey-creator/survey-creator.css"
+              "projects/safe/src/lib/style/surveyjs-builder.scss"
             ],
             "scripts": []
           }
@@ -673,7 +673,7 @@
             "styles": [
               "projects/web-element/src/styles.scss",
               "projects/safe/src/lib/style/surveyjs.scss",
-              "node_modules/survey-creator/survey-creator.css"
+              "projects/safe/src/lib/style/surveyjs-builder.scss"
             ],
             "scripts": []
           }

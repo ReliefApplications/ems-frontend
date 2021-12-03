@@ -185,23 +185,23 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   setCustomTheme(): void {
-    const defaultThemeColorsSurvey = Survey
-      .StylesManager
-      .ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    // const defaultThemeColorsSurvey = Survey
+    //   .StylesManager
+    //   .ThemeColors.default;
+    // defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
+    // defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
     const defaultThemeColorsEditor = SurveyCreator
       .StylesManager
       .ThemeColors.default;
-    defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
+    // defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
+    // defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
+    // defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
+    // defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
 
-    Survey
-      .StylesManager
-      .applyTheme();
+    // Survey
+    //   .StylesManager
+    //   .applyTheme();
     SurveyCreator
       .StylesManager
       .applyTheme();
