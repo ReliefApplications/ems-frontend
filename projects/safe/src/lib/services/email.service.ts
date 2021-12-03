@@ -26,7 +26,7 @@ export class SafeEmailService {
    * @param sortOrder sort order
    */
   public async sendMail(
-    recipient: string, subject: string, body: string = '{dataset}', settings: any, ids: string[],
+    recipient: string[], subject: string, body: string = '{dataset}', settings: any, ids: string[],
     sortField?: string, sortOrder?: string): Promise<void> {
 
     body = await this.preprocessor.preprocess(body, { settings, ids, sortField, sortOrder });
@@ -37,7 +37,7 @@ export class SafeEmailService {
 
     // === SEND THE EMAIL ===
     try {
-      window.location.href = `mailto:${recipient}?subject=${subject}`;
+      window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
     } catch (error) {
       this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
       try {

@@ -91,7 +91,7 @@
       <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
         [routerLink]="['/applications', row.id]"></tr>
     </table>
-    <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of applications"
+    <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of applications"
       (page)="onPage($event)">
     </mat-paginator>
   </ng-container>

@@ -38,6 +38,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private previewService: PreviewService
   ) { }
 
+  /**
+   * Gets the workflow from the route.
+   */
   ngOnInit(): void {
     this.previewService.roleId.subscribe((role) => {
       this.role = role;
@@ -69,8 +72,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Get data from within selected step
-  */
+  /**
+   * Activates the clicked element.
+   * @param elementRef Element ref.
+   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
@@ -96,7 +101,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * On Open Step.
+   * Navigates to the new step.
+   * @param index Index of the step in the workflow.
    */
   public onOpenStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {
@@ -112,6 +118,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Deletes all subscriptions of the page.
+   */
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();

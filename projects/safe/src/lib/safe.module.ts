@@ -7,7 +7,7 @@ import { SafeChartModule } from './components/widgets/chart/chart.module';
 import { SafeChartSettingsModule } from './components/widgets/chart-settings/chart-settings.module';
 import { SafeEditorModule } from './components/widgets/editor/editor.module';
 import { SafeEditorSettingsModule } from './components/widgets/editor-settings/editor-settings.module';
-import { SafeGridModule } from './components/widgets/grid/grid.module';
+import { SafeGridWidgetModule } from './components/widgets/grid/grid.module';
 import { SafeGridSettingsModule } from './components/widgets/grid-settings/grid-settings.module';
 import { SafeMapModule } from './components/widgets/map/map.module';
 import { SafeMapSettingsModule } from './components/widgets/map-settings/map-settings.module';
@@ -40,7 +40,7 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
     SafeChartSettingsModule,
     SafeEditorModule,
     SafeEditorSettingsModule,
-    SafeGridModule,
+    SafeGridWidgetModule,
     SafeGridSettingsModule,
     SafeMapModule,
     SafeMapSettingsModule,

@@ -1,0 +1,27 @@
+<mat-dialog-content class="safe-grid-export">
+    <!-- RECORDS -->
+    <label id="export-options-records">Select records to export</label>
+    <mat-radio-group [(ngModel)]="export.records" class="form-radio-group" required
+        aria-labelledby="export-options-records">
+        <mat-radio-button value="all">All records in view</mat-radio-button>
+        <mat-radio-button value="selected">Only selected records</mat-radio-button>
+    </mat-radio-group>
+    <!-- COLUMNS -->
+    <label id="export-options-columns">Select columns to export</label>
+    <mat-radio-group [(ngModel)]="export.fields" class="form-radio-group" required
+        aria-labelledby="export-options-columns">
+        <mat-radio-button value="all">All available columns</mat-radio-button>
+        <mat-radio-button value="visible">Only visible columns</mat-radio-button>
+    </mat-radio-group>
+    <!-- FORMAT -->
+    <label id="export-options-format">Select export format</label>
+    <mat-radio-group [(ngModel)]="export.format" class="form-radio-group" requires
+        aria-labelledby="export-options-format">
+        <mat-radio-button value="csv">CSV</mat-radio-button>
+        <mat-radio-button value="xlsx">Excel</mat-radio-button>
+    </mat-radio-group>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button [mat-dialog-close]="export" mat-flat-button color="primary">Export</button>
+</mat-dialog-actions>
