@@ -26,6 +26,8 @@ import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
+import isNil from 'lodash/isNil';
+import omitBy from 'lodash/omitBy';
 
 /**
  * Interface of Dialog data.
@@ -127,8 +129,9 @@ export class SafeFormModalComponent implements OnInit {
         }
         if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
           this.storedMergedData = this.mergedData(this.data.prefillRecords);
-          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === this.data.prefillRecords[0].form?.resource?.id) {
+          const resId = this.data.prefillRecords[0].form?.resource?.id;
+          const resourcesField = this.form.fields?.find(x => (x.type === 'resources') && (x.resource === resId));
+          if (resourcesField) {
             this.storedMergedData[resourcesField.name] = this.data.prefillRecords.map(x => x.id);
           }
           else {
@@ -165,7 +168,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.showCompletedPage = false;
     }
     if (this.storedMergedData) {
-      this.survey.data = this.storedMergedData;
+      this.survey.data = { ...this.survey.data, ...omitBy(this.storedMergedData, isNil) };
     }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent } from '@progress/kendo-angular-charts';
+import { ChartComponent, LegendLabelsContentArgs } from '@progress/kendo-angular-charts';
 
 interface ChartTitle {
   visible: boolean;
@@ -8,9 +8,14 @@ interface ChartTitle {
 }
 
 interface ChartLegend {
-  visible: boolean;
-  orientation: 'horizontal' | 'vertical';
-  position: 'top' | 'bottom' | 'left' | 'right';
+  title?: {
+    text: string,
+    font?: string,
+    align?: 'center' | 'left' | 'right'
+  };
+  visible?: boolean;
+  orientation?: 'horizontal' | 'vertical';
+  position?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 interface ChartSeries {
@@ -19,6 +24,10 @@ interface ChartSeries {
     field: any;
     color?: string;
   }[];
+}
+
+interface ChartLabels {
+  visible: boolean;
 }
 
 @Component({
@@ -34,12 +43,22 @@ export class SafePieChartComponent implements OnInit {
 
   @Input() series: ChartSeries[] = [];
 
+  @Input() labels: ChartLabels | undefined;
+  public chartLabels!: any;
+
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
+    this.chartLabels = {
+      visible: this.labels?.visible || false,
+      content: this.labelContent.bind(this)
+    };
   }
 
+  public labelContent(args: LegendLabelsContentArgs): string {
+    return `${args.dataItem.category}\n${args.dataItem.field}`;
+  }
 }
