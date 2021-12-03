@@ -235,7 +235,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
-      }
+      },
+      fetchPolicy: 'cache-first'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -478,7 +479,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
       case 'details': {
-        console.log(event);
         if (event.items) {
           this.onShowDetails(event.items, event.field);
         }
@@ -804,12 +804,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         for (const field in fetchMoreResult) {
           if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
             this.loading = false;
-            return Object.assign({}, prev, {
+            const prevReturn = Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount
+                totalCount: fetchMoreResult[field].totalCount,
               }
             });
+            return prevReturn;
           }
         }
         return prev;
