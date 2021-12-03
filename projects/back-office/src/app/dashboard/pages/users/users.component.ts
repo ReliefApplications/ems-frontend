@@ -19,7 +19,7 @@ export class UsersComponent implements OnInit {
   public loading = true;
   public users = new MatTableDataSource<User>([]);
   public roles: Role[] = [];
-  public displayedColumns = ['name', 'username', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['username', 'name', 'oid', 'roles', 'actions'];
 
   constructor(
     private apollo: Apollo

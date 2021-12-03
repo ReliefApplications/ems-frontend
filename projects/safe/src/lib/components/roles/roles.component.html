@@ -1,18 +1,16 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="header">
-    <div class="filters">
-      <mat-form-field appearance="outline">
-        <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          placeholder="Search...">
-      </mat-form-field>
-    </div>
-    <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-        Create a role
-      </safe-button>
-    </div>
+<ng-container>
+  <div class="searchbar" *ngIf="!loading">
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
+        placeholder="Search...">
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
+      Create a role
+    </safe-button>
   </div>
   <table mat-table [dataSource]="roles" matSort>
     <ng-container matColumnDef="title">

@@ -50,11 +50,10 @@
         align-items: center;
         flex: 1;
         height: 100%;
-        overflow: hidden;
     }
 
     .nav-actions {
-        display: none;
+        margin-left: auto;
     }
 
     .nav-action, .nav-item-handle {
@@ -64,16 +63,9 @@
         line-height: 24px;
     }
     &:hover {
-        .nav-actions {
-            display: block;
-        }
         .nav-action, .nav-item-handle {
             color: #aeaeaf;
         }
-    }
-
-    .nav-text {
-        text-overflow: ellipsis;
     }
 }
 

@@ -8,11 +8,6 @@ interface ChartTitle {
 }
 
 interface ChartLegend {
-  title?: {
-    text: string,
-    font?: string,
-    align?: 'center' | 'left' | 'right'
-  };
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';

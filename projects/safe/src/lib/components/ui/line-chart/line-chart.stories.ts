@@ -42,7 +42,6 @@ Default.args = {
     series: [
         {
             color: '#a4e084',
-            name: 'Serie 1',
             data: [
                 {
                     field: 8,
@@ -67,7 +66,6 @@ Default.args = {
             ]
         },
         {
-            name: 'Serie 2',
             data: [
                 {
                     field: 3,
@@ -91,14 +89,5 @@ Default.args = {
                 }
             ]
         }
-    ],
-    legend: {
-        title: {
-            text: 'Categories',
-            align: 'left'
-        },
-        visible: true,
-        orientation: 'vertical',
-        position: 'right'
-    }
+    ]
 };

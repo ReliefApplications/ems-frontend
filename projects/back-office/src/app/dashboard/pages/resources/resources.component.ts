@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
-const DEFAULT_PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-resources',
@@ -32,7 +32,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: ''
   };
@@ -49,14 +49,14 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
       variables: {
-        first: DEFAULT_PAGE_SIZE
+        first: ITEMS_PER_PAGE
       }
     });
 
     this.resourcesQuery.valueChanges.subscribe(res => {
       this.cachedResources = res.data.resources.edges.map(x => x.node);
       this.resources.data = this.cachedResources.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
@@ -69,19 +69,10 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    */
    onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
-      && e.length > this.cachedResources.length){
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedResources.length) {
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
@@ -98,9 +89,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       });
     } else {
       this.resources.data = this.cachedResources.slice(
-        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -113,7 +103,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     this.pageInfo.pageIndex = 0;
     this.resourcesQuery.fetchMore({
       variables: {
-        first: this.pageInfo.pageSize,
+        first: ITEMS_PER_PAGE,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {

@@ -25,13 +25,6 @@ export interface IContentType {
  */
 export const CONTENT_TYPES: IContentType[] = [
     {
-        value: 'form',
-        name: 'form',
-        img: '/assets/form.svg',
-        color: '#C5D3FC33',
-        focusColor: '#92ADFF'
-    },
-    {
         value: 'workflow',
         name: 'workflow',
         img: '/assets/workflow.svg',
@@ -44,6 +37,13 @@ export const CONTENT_TYPES: IContentType[] = [
         img: '/assets/dashboard.svg',
         color: '#F6C48133',
         focusColor: '#F6C481'
+    },
+    {
+        value: 'form',
+        name: 'form',
+        img: '/assets/form.svg',
+        color: '#C5D3FC33',
+        focusColor: '#92ADFF'
     }
 ];
 

@@ -26,15 +26,12 @@ export default {
         },
         title: {
             control: { type: 'object' }
-        },
-        labels: {
-            control: { type: 'object' }
         }
     }
 } as Meta;
 
 const Template: Story<SafePieChartComponent> = args => ({
-    template: '<div style="height:400px"><safe-pie-chart [legend]="legend" [title]="title" [series]="series" [labels]="labels"></safe-pie-chart></div>',
+    template: '<div style="height:400px"><safe-pie-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-chart></div>',
     props: {
         ...args
     }
@@ -67,17 +64,5 @@ Default.args = {
                 }
             ]
         }
-    ],
-    legend: {
-        title: {
-            text: 'Categories',
-            align: 'left'
-        },
-        visible: true,
-        orientation: 'vertical',
-        position: 'right'
-    },
-    labels: {
-        visible: true
-    }
+    ]
 };

@@ -24,13 +24,9 @@
     margin-right: 4px;
 }
 
-safe-icon {
-    display: inline-block;
-
-    &:not(.safe-btn-icon) {
-        display: flex;
-        justify-content: center;
-    }
+safe-icon:not(.safe-btn-icon) {
+    display: flex;
+    justify-content: center;
 }
 
 .safe-btn-success {

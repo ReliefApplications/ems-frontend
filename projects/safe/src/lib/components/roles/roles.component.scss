@@ -1,25 +1,21 @@
-.header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: top;
+.actions {
+  margin: 10px 0 16px;
+  text-align: right;
+}
 
-  .filters {
-    mat-form-field {
-      margin-top: -0.25em;
+.searchbar {
+  float: left;
 
-      #custom-search {
-        position: relative;
-        top: -0.15em;
-      }
-    }
-    ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
-      padding: 0.42em 0px !important;
-    }
+  .filters-toggle {
+    margin-left: 12px;
   }
+}
 
-  .actions {
-    margin-left: auto;
+.filters {
+  clear: both;
+  margin-left: -12px;
+
+  .mat-form-field {
+    margin-left: 12px;
   }
 }

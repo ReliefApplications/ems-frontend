@@ -7,7 +7,7 @@ interface DialogData {
     records: string,
     fields: string,
     format: string
-  };
+  }
 }
 
 @Component({

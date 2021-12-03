@@ -18,7 +18,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
-const DEFAULT_PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-forms',
@@ -47,7 +47,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: ''
   };
@@ -60,21 +60,21 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService
   ) {}
 
-  /**
-   * Creates the form query, and subscribes to the query changes.
-   */
+  /*  Load the forms.
+    Check user permission to add new forms.
+  */
   ngOnInit(): void {
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_SHORT_FORMS,
       variables: {
-        first: DEFAULT_PAGE_SIZE
+        first: ITEMS_PER_PAGE
       }
     });
 
     this.formsQuery.valueChanges.subscribe(res => {
       this.cachedForms = res.data.forms.edges.map(x => x.node);
       this.forms.data = this.cachedForms.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
@@ -91,19 +91,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    */
    onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
-      && e.length > this.cachedForms.length){
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
+    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedForms.length) {
       this.formsQuery.fetchMore({
         variables: {
-          first,
+          first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter
         },
@@ -120,9 +111,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     } else {
       this.forms.data = this.cachedForms.slice(
-        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -135,7 +125,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.pageInfo.pageIndex = 0;
     this.formsQuery.fetchMore({
       variables: {
-        first: this.pageInfo.pageSize,
+        first: ITEMS_PER_PAGE,
         filter: this.filter
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -151,16 +141,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /**
-   * Sets the sort in the view.
-   */
   ngAfterViewInit(): void {
     this.forms.sort = this.sort || null;
   }
 
-  /**
-   * Removes all the subscriptions.
-   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();

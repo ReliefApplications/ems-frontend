@@ -1,5 +1,5 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<ng-container>
   <div class="forms-header">
     <!-- FILTERING -->
     <app-filter (filter)="onFilter($event)"></app-filter>
@@ -129,7 +129,7 @@
       [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
       [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
   </table>
-  <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of forms"
+  <mat-paginator [pageSize]="pageInfo.pageSize" [length]="pageInfo.length" aria-label="Select page of forms"
     (page)="onPage($event)">
   </mat-paginator>
 </ng-container>
