@@ -1,0 +1,39 @@
+div {
+    display: inline-block;
+    font-size: 0.75em;
+    border-radius: 100em;
+  }
+
+.safe-badge-small {
+    padding: 0 0.5em;
+    line-height: 1.5em;
+    height: 1.5em;
+}
+
+.safe-badge-medium {
+    padding: 0 0.75em;
+    line-height: 2em;
+    height: 2em;
+}
+
+.safe-badge-default{
+    background-color: #f1f1f1;
+    font-weight: lighter;
+}
+
+.safe-badge-primary{
+    background-color: #53a7ff;
+    color: white;
+}
+
+.safe-badge-danger{
+    background-color: #e9a2a2;
+}
+.safe-badge-success{
+    background-color: #a4e982;
+    font-weight: lighter;
+}
+.safe-badge-warning{
+    background-color: #f7e298;
+    font-weight: lighter;
+}
