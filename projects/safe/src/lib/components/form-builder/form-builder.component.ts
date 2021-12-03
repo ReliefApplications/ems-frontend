@@ -194,10 +194,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     const defaultThemeColorsEditor = SurveyCreator
       .StylesManager
       .ThemeColors.default;
-    // defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
-    // defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
-    // defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
-    // defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
 
     // Survey
     //   .StylesManager

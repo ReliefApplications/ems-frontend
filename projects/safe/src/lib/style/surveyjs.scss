@@ -1,7 +1,7 @@
 $header-background-color: #e7e7e7;
 $body-container-background-color: #f4f4f4;
-$main-color: #008DC9;
-$main-hover-color: #008DC9;
+$main-color: #008dc9;
+$main-hover-color: #008dc9;
 $body-background-color: white;
 $inputs-background-color: white;
 $text-color: #6d7072;
@@ -26,9 +26,9 @@ $progress-buttons-line-color: #d4d4d4;
     position: fixed;
     bottom: 3px;
     right: 10px;
-    background-color: cadetblue;
+    background-color: #5f9ea0;
     padding: 1px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -49,12 +49,10 @@ $progress-buttons-line-color: #d4d4d4;
     border: 1px solid #ccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
-    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     line-break: auto;
     z-index: 100;
 }
-
 .sv_window_title {
     padding: 8px 14px;
     margin: 0;
@@ -63,21 +61,18 @@ $progress-buttons-line-color: #d4d4d4;
     border-bottom: 1px solid #ebebeb;
     border-radius: 5px 5px 0 0;
 }
-
 .sv_window_content {
     padding: 8px;
     margin: 0;
 }
-
 .sv_window_title a,
 .sv_window_title a:link,
 .sv_window_title a:visited {
     text-decoration: none;
     font-size: 14px;
     font-style: normal;
-    color: black;
+    color: #000;
 }
-
 .sv_main.sv_frame .sv_container {
     max-width: 80%;
     margin: auto;
@@ -87,30 +82,24 @@ $progress-buttons-line-color: #d4d4d4;
     padding-top: 5em;
     padding-bottom: 1em;
 }
-
 .sv_main {
-    background-color: $body-container-background-color;
+    background-color: #f4f4f4;
 }
 .sv_main hr {
     border-bottom: 1px solid #e7e7e7;
-    border-color: $border-color;
 }
-.sv_main input[type="button"],
-.sv_main button {
-    &:not(.k-button):not(.mat-button-base) {
-        color: $body-background-color;
-        background-color: $main-color;
-    }
+.sv_main button,
+.sv_main input[type="button"] {
+    color: #fff;
+    background-color: #1ab394;
 }
-.sv_main input[type="button"]:hover,
-.sv_main button:hover {
-    &:not(.k-button):not(.mat-button-base) {
-        background-color: $main-hover-color;
-    }
+.sv_main button:hover,
+.sv_main input[type="button"]:hover {
+    background-color: #179d82;
 }
+.sv_main .sv_q_dropdown_control,
 .sv_main .sv_q_other input,
 .sv_main .sv_q_text_root,
-.sv_main .sv_q_dropdown_control,
 .sv_main
     input:not([type="button"]):not([type="reset"]):not([type="submit"]):not([type="image"]):not([type="checkbox"]):not([type="radio"]),
 .sv_main select,
@@ -118,107 +107,74 @@ $progress-buttons-line-color: #d4d4d4;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    border: 1px solid $border-color;
-    color: $text-color;
-    background-color: $inputs-background-color;
+    border: 1px solid #e7e7e7;
+    color: #6d7072;
+    background-color: #fff;
     opacity: 1;
 }
-
+.sv_main .sv_q_dropdown_control:focus,
 .sv_main .sv_q_other input:focus,
 .sv_main .sv_q_text_root:focus,
-.sv_main .sv_q_dropdown_control:focus,
 .sv_main
     input:not([type="button"]):not([type="reset"]):not([type="submit"]):not([type="image"]):not([type="checkbox"]):not([type="radio"]):focus,
 .sv_main select:focus,
 .sv_main textarea:focus {
-    border: 1px solid $main-color;
+    border: 1px solid #1ab394;
 }
 .sv_main .sv_select_wrapper {
-    background-color: white;
+    background-color: #fff;
 }
 .sv_main .sv_select_wrapper:before {
-    background-color: $main-color;
+    background-color: #1ab394;
 }
 .sv_main .sv_header {
-    color: $header-color;
+    color: #6d7072;
 }
 .sv_main .sv_custom_header {
-    background-color: $header-background-color;
+    background-color: #e7e7e7;
 }
 .sv_main .sv_container {
-    color: $text-color;
+    color: #6d7072;
 }
 .sv_main .sv_body {
-    background-color: $body-background-color;
-    border-color: $main-color;
+    background-color: #fff;
+    border-top: 2px solid #1ab394;
 }
 .sv_main .sv_progress {
-    background-color: $border-color;
+    background-color: #e7e7e7;
     margin-bottom: 2em;
 }
 .sv_main .sv_progress_bar {
-    background-color: $main-color;
-}
-.sv_default_css .sv_progress-buttons__list li:before {
-    border-color: $progress-buttons-color;
-    background-color: $progress-buttons-color;
-}
-.sv_default_css .sv_progress-buttons__list li:after {
-    background-color: $progress-buttons-line-color;
-}
-.sv_default_css .sv_progress-buttons__list .sv_progress-buttons__page-title {
-    color: $text-color;
-}
-.sv_default_css .sv_progress-buttons__list .sv_progress-buttons__page-description {
-    color: $text-color;
-}
-.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed:before {
-    border-color: $main-color;
-    background-color: $main-color;
-}
-.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed + li:after {
-    border-color: $main-color;
-    background-color: $main-color;
-}
-.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed + li:after {
-    background-color: $progress-buttons-color;
-}
-.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--current:before {
-    border-color: $main-color;
-    background-color: white;
-}
-.sv_default_css .sv_progress-buttons__list li.sv_progress-buttons__list-element--passed.sv_progress-buttons__list-element--current:before {
-    border-color: $main-color;
-    background-color: white;
+    background-color: #1ab394;
 }
 .sv_main .sv_p_root > .sv_row {
-    border-color: $border-color;
+    border-bottom: 1px solid #e7e7e7;
 }
 .sv_main .sv_p_root > .sv_row:nth-child(odd) {
-    background-color: $body-background-color;
+    background-color: #fff;
 }
-.sv_main .sv_p_root > .sv_row:nth-child(even) {
-    background-color: $body-container-background-color;
+.sv_main .sv_p_root > .sv_row:nth-child(2n) {
+    background-color: #f4f4f4;
 }
 .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
     border: 1px solid #ed5565;
     background-color: #fcdfe2;
     color: #ed5565;
 }
+.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + .sv_select_wrapper select,
 .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + input,
-.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + textarea,
-.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + .sv_select_wrapper select {
+.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + textarea {
     border: 1px solid #ed5565;
 }
+.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + .sv_select_wrapper select:focus,
 .sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + input:focus,
-.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + textarea:focus,
-.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + .sv_select_wrapper select:focus {
-    outline: #ed5565 auto 5px;
+.sv_main .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) + textarea:focus {
+    outline: 5px auto #ed5565;
 }
-.sv_main table.sv_q_matrix tr,
 .sv_main table.sv_q_matrix_dropdown tr,
-.sv_main table.sv_q_matrix_dynamic tr {
-    border-bottom: 1px solid $border-color;;
+.sv_main table.sv_q_matrix_dynamic tr,
+.sv_main table.sv_q_matrix tr {
+    border-bottom: 1px solid #e7e7e7;
 }
 .sv_main .sv_matrix_cell {
     vertical-align: top;
@@ -234,74 +190,71 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_matrix_cell_detail_button {
     width: 29px;
     height: 29px;
-    min-width: 0px;
+    min-width: 0;
     padding: 0;
     outline: none;
 }
 .sv_main .sv_matrix_cell_detail_button_expanded {
-    background-color: lightgray;
+    background-color: #d3d3d3;
 }
 .sv_main .sv_matrix_cell_detail_button_expanded:hover {
-    background-color: darkgray;
+    background-color: #a9a9a9;
 }
 .sv_main .sv_matrix_cell_detail_rowtext {
     vertical-align: middle;
 }
 .sv_main .sv_q_m_cell_selected {
-    color: $body-background-color;
-    background-color: $main-hover-color;
+    color: #fff;
+    background-color: #179d82;
 }
 .sv_main .sv_q_rating_item.active .sv_q_rating_item_text {
-    background-color: $main-hover-color;
-    border-color: $main-hover-color;
-    color: $body-background-color;
+    background-color: #179d82;
+    border-color: #179d82;
+    color: #fff;
 }
 .sv_main .sv_q_rating_item .sv_q_rating_item_text {
-    border: 1px solid $border-color;;
+    border: 1px solid #e7e7e7;
 }
 .sv_main .sv_q_rating_item .sv_q_rating_item_text:hover {
-    border: 1px solid $main-hover-color;
+    border: 1px solid #179d82;
 }
 .sv_main .sv_q_imgsel.checked label > div {
-    background-color: $main-color;
+    background-color: #1ab394;
 }
 .sv_main .sv_q_file_remove:hover {
-    color: $main-color;
+    color: #1ab394;
 }
 .sv_main .sv-boolean__switch {
-    background-color: $main-color;
+    background-color: #1ab394;
 }
 .sv_main .sv-boolean__slider {
-    background-color: $slider-color;
+    background-color: #fff;
 }
 .sv_main .sv-boolean__label--disabled {
-    color: $disabled-label-color;
+    color: rgba(64, 64, 64, 0.5);
 }
-
 .sv_main {
     position: relative;
     width: 100%;
-    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif, "Helvetica Neue", Arial, sans-serif;
+    font-family: Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
 .sv_main hr {
     border: none;
 }
-.sv_main input[type="button"],
-.sv_main button {
-    &:not(.k-button):not(.mat-button-base) {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        font-size: 0.85em;
-        font-weight: bold;
-        line-height: 2em;
-        border: none;
-        min-width: 100px;
-        cursor: pointer;
-        padding: 0 2em;
-        border-radius: 2px;
-    }
+.sv_main button,
+.sv_main input[type="button"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 0.85em;
+    font-weight: 700;
+    line-height: 2em;
+    border: none;
+    min-width: 100px;
+    cursor: pointer;
+    padding: 0 2em;
+    border-radius: 2px;
 }
 .sv_main .sv_custom_header {
     position: absolute;
@@ -321,7 +274,7 @@ $progress-buttons-line-color: #d4d4d4;
     margin: 0;
 }
 .sv_main .sv_container .sv_body {
-    padding: 1em 1em 1.6428em 1em;
+    padding: 1em 1em 1.6428em;
 }
 .sv_main .sv_container .sv_body.sv_completed_page {
     text-align: center;
@@ -350,21 +303,21 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_container .sv_body .sv_p_root .sv_page_title {
     font-size: 1em;
     margin-top: 0.1em;
-    font-weight: normal;
+    font-weight: 400;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_p_title {
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1.15em;
-    margin: 1.5em 0 0 0;
+    margin: 1.5em 0 0;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_p_panel {
-    margin: 0 0 1.5em 0;
+    margin: 0 0 1.5em;
 }
 .sv_main .sv_container .sv_body .sv_p_root > .sv_row {
     padding: 0;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q_title {
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1em;
     margin: 0.5em 0;
 }
@@ -375,22 +328,19 @@ $progress-buttons-line-color: #d4d4d4;
     margin-top: -0.6em;
     min-height: 0.6em;
 }
-.sv_default_css .sv_p_description {
-    padding-left: 1.29em;
-}
 .sv_main .sv_container .sv_body .sv_p_root .sv_q_flow .sv_q_checkbox_inline,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q_flow .sv_q_radiogroup_inline,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q_flow .sv_q_imagepicker_inline {
+.sv_main .sv_container .sv_body .sv_p_root .sv_q_flow .sv_q_imagepicker_inline,
+.sv_main .sv_container .sv_body .sv_p_root .sv_q_flow .sv_q_radiogroup_inline {
     line-height: 2em;
     display: inline-block;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q {
-    padding: 0.5em 1em 1.5em 1em;
+    padding: 0.5em 1em 1.5em;
     box-sizing: border-box;
     overflow: auto;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_panel_dynamic .sv_q_title {
-    font-weight: normal;
+    font-weight: 400;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_panel_dynamic .sv-paneldynamic__progress-container {
     position: relative;
@@ -408,9 +358,9 @@ $progress-buttons-line-color: #d4d4d4;
     margin: 1em 0;
     padding: 1em;
 }
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_other input,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_text_root,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control,
 .sv_main
     .sv_container
     .sv_body
@@ -426,9 +376,9 @@ $progress-buttons-line-color: #d4d4d4;
     line-height: 2em;
     padding-left: 1em;
 }
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control:focus,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_other input:focus,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_text_root:focus,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control:focus,
 .sv_main
     .sv_container
     .sv_body
@@ -439,8 +389,8 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_container .sv_body .sv_p_root .sv_q textarea:focus {
     outline: none;
 }
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_other input,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control,
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_other input,
 .sv_main
     .sv_container
     .sv_body
@@ -450,8 +400,8 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_container .sv_body .sv_p_root .sv_q select {
     height: calc(2em + 1px);
 }
-.sv_main .sv_container .sv_body .sv_p_root .sv_q div.sv_q_text_root,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q div.sv_q_dropdown_control {
+.sv_main .sv_container .sv_body .sv_p_root .sv_q div.sv_q_dropdown_control,
+.sv_main .sv_container .sv_body .sv_p_root .sv_q div.sv_q_text_root {
     min-height: 2.43em;
     min-width: 7em;
 }
@@ -480,34 +430,29 @@ $progress-buttons-line-color: #d4d4d4;
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAzNCAzNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzQgMzQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPHBvbHlnb24gY2xhc3M9InN0MCIgcG9pbnRzPSIxMiwxNiAxNCwxNCAxNywxNyAyMCwxNCAyMiwxNiAxNywyMSAiLz4KPC9zdmc+Cg==);
     content: "";
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: 50%;
     z-index: 1;
     pointer-events: none;
-}
-.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_select_wrapper .sv_q_dropdown_control {
-    background-color: $inputs-background-color;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="color"] {
     min-height: 2em;
     padding: 0;
 }
-.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="radio"],
-.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="checkbox"] {
-    margin: 0;
-    margin-right: 0.55em;
+.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="checkbox"],
+.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="radio"] {
     width: 1.2em;
     height: 1.2em;
     vertical-align: middle;
     font-size: 1em;
-    margin-top: -0.1em;
+    margin: -0.1em 0.55em 0 0;
 }
-.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="radio"]:focus,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="checkbox"]:focus {
-    outline: 1px dotted $main-color;
+.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="checkbox"]:focus,
+.sv_main .sv_container .sv_body .sv_p_root .sv_q input[type="radio"]:focus {
+    outline: 1px dotted #1ab394;
 }
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_radiogroup.sv_q_radiogroup_inline:not(:last-child),
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_checkbox.sv_q_checkbox_inline:not(:last-child),
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imgsel.sv_q_imagepicker_inline:not(:last-child) {
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imgsel.sv_q_imagepicker_inline:not(:last-child),
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_radiogroup.sv_q_radiogroup_inline:not(:last-child) {
     margin-right: 1.5em;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imgsel label > div {
@@ -515,7 +460,7 @@ $progress-buttons-line-color: #d4d4d4;
     white-space: nowrap;
     text-overflow: ellipsis;
     padding: 4px;
-    border: 1px solid lightgray;
+    border: 1px solid #d3d3d3;
     border-radius: 4px;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imgsel label > div > img {
@@ -527,8 +472,8 @@ $progress-buttons-line-color: #d4d4d4;
     margin-top: 0.5em;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_checkbox_inline,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_radiogroup_inline,
-.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imagepicker_inline {
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_imagepicker_inline,
+.sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_radiogroup_inline {
     line-height: 2em;
     display: inline-block;
 }
@@ -576,7 +521,7 @@ $progress-buttons-line-color: #d4d4d4;
     line-height: 1.3em;
     padding: 0.5em;
     vertical-align: bottom;
-    font-weight: bold;
+    font-weight: 700;
 }
 .sv_main .sv_container .sv_body .sv_p_root fieldset.sv_qcbc {
     line-height: 2em;
@@ -600,13 +545,13 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_container .sv_body .sv_p_root .sv_q_rating .sv_q_rating_item {
     cursor: pointer;
     word-spacing: -0.3em;
-    font-weight: normal;
+    font-weight: 400;
     display: inline;
 }
 .sv_main .sv_container .sv_body .sv_p_root .sv_q_rating .sv_q_rating_item > * {
-    word-spacing: initial;
+    word-spacing: normal;
 }
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+@media (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .sv_main .sv_container .sv_body .sv_p_root .sv_q_rating .sv_q_rating_item > * {
         word-spacing: normal;
     }
@@ -637,12 +582,10 @@ $progress-buttons-line-color: #d4d4d4;
     padding: 1em 0;
     min-height: 2em;
 }
-.sv_main .sv_container .sv_body .sv_nav .sv_start_btn,
+.sv_main .sv_container .sv_body .sv_nav .sv_complete_btn,
 .sv_main .sv_container .sv_body .sv_nav .sv_next_btn,
-.sv_main .sv_container .sv_body .sv_nav .sv_complete_btn {
-    float: right;
-}
-.sv_main .sv_container .sv_body .sv_nav .sv_preview_btn {
+.sv_main .sv_container .sv_body .sv_nav .sv_preview_btn,
+.sv_main .sv_container .sv_body .sv_nav .sv_start_btn {
     float: right;
 }
 .sv_main .sv_container .sv_body .sv_nav .sv_prev_btn {
@@ -651,55 +594,36 @@ $progress-buttons-line-color: #d4d4d4;
 .sv_main .sv_q_image {
     display: inline-block;
 }
-
 .sv_main.sv_main .sv-action-bar-item.sv_edit_btn {
-    color: white;
-    background-color: $main-color;
+    color: #fff;
+    background-color: #1ab394;
     float: left;
     margin-bottom: 7px;
 }
-
 .sv_main.sv_main .sv-action-bar-item.sv_edit_btn:hover {
     background-color: #179d82;
 }
-.sv_main .sv-action-bar-item {
-    color: $text-color;
-}
-.sv_main .sv-action-bar-item__icon use {
-    fill: $foreground-light;
-}
-.sv_main .sv-action-bar-item:hover {
-    background-color: $background-dim;
-}
-
 .sv_main .sv_p_root .sv_row .sv_q.sv_qstn:first-child:last-child {
     flex: none !important;
 }
-
 [dir="rtl"] .sv_main input,
-[style*="direction:rtl"] .sv_main input {
-    text-align: right;
-}
-
 [dir="rtl"] .sv_main th,
+[style*="direction:rtl"] .sv_main input,
 [style*="direction:rtl"] .sv_main th {
     text-align: right;
 }
-
-[dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_start_btn,
-[dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_next_btn,
 [dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_complete_btn,
-[style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_start_btn,
+[dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_next_btn,
+[dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_start_btn,
+[style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_complete_btn,
 [style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_next_btn,
-[style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_complete_btn {
+[style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_start_btn {
     float: left;
 }
-
 [dir="rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_prev_btn,
 [style*="direction:rtl"] .sv_main .sv_container .sv_body .sv_nav .sv_prev_btn {
     float: right;
 }
-
 @media (max-width: 600px) {
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn {
@@ -710,83 +634,79 @@ $progress-buttons-line-color: #d4d4d4;
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .title-left {
         float: none;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q .sv_q_radiogroup_inline,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q .sv_q_checkbox_inline,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q .sv_q_imagepicker_inline,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .sv_q_radiogroup_inline,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q .sv_q_radiogroup_inline,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .sv_q_checkbox_inline,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .sv_q_imagepicker_inline {
-        display: block;
-    }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .sv_q_imagepicker_inline,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn .sv_q_radiogroup_inline,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic {
         display: block;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix thead,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown thead,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic thead,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix thead,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown thead,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic thead,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix thead,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown thead,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic thead {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix thead {
         display: none;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td.sv-table__cell--choice,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown td.sv-table__cell--choice,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td.sv-table__cell--choice,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td.sv-table__cell--choice,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown td.sv-table__cell--choice,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic td.sv-table__cell--choice,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td.sv-table__cell--choice,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown td.sv-table__cell--choice,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td.sv-table__cell--choice {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td.sv-table__cell--choice {
         text-align: initial;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix tbody,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix tr,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown tbody,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown tr,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown td,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic tbody,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic tr,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic td,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix tbody,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix tr,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown tbody,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown tr,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown td,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown tr,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic tbody,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic tr,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix tbody,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix tr,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown tbody,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown td,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown tr,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic tbody,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic td,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic tr,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix tbody,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix tr {
         display: block;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown td:before,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic td:before,
     .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dropdown td:before,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td:before {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix_dynamic td:before,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dropdown td:before,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix_dynamic td:before {
         content: attr(title);
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td label.sv_q_m_label,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td label.sv_q_m_label {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td label.sv_q_m_label,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td label.sv_q_m_label {
         display: inline;
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td:after,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td:after {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix td:after,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix td:after {
         content: attr(title);
     }
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix .sv_q_m_cell,
-    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix .sv_q_m_cell {
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_qstn table.sv_q_matrix .sv_q_m_cell,
+    .sv_main .sv_container .sv_body .sv_p_root .sv_row .sv_q table.sv_q_matrix .sv_q_m_cell {
         text-align: initial;
     }
 }
-
 .sv_main .sv_qstn .sv_q_file .sv-visuallyhidden {
     position: absolute !important;
     opacity: 0;
 }
-
 .sv_main .sv_qstn .sv_q_file .sv_q_file_choose_button {
     display: inline-block;
     box-sizing: border-box;
@@ -794,24 +714,14 @@ $progress-buttons-line-color: #d4d4d4;
     line-height: 2em;
     padding: 0.25em 2em;
     font-size: 0.85em;
-    font-weight: bold;
+    font-weight: 700;
     border: none;
     border-radius: 2px;
     cursor: pointer;
 }
-.sv_main .sv_q_file_choose_button {
-    color: $body-background-color;
-    background-color: $main-color;
-
-    &:hover {
-        background-color: $main-hover-color;
-    }
-}
-
 .sv_main .sv_qstn .sv_q_file .sv_q_file_remove_button {
     padding: 0.25em 2em;
 }
-
 .sv_main .sv_qstn .sv_q_file .sv-file__decorator {
     display: inline-block;
     min-width: 250px;
@@ -820,7 +730,6 @@ $progress-buttons-line-color: #d4d4d4;
     margin-left: 1em;
     display: inline-block;
 }
-
 .sv-visuallyhidden {
     position: absolute;
     width: 1px;
@@ -828,104 +737,87 @@ $progress-buttons-line-color: #d4d4d4;
     overflow: hidden;
     clip: rect(0 0 0 0);
 }
-
 .sjs_sp_container {
     position: relative;
-    border: 1px dashed $disable-color;
 }
-
 .sjs_sp_controls {
     position: absolute;
     left: 0;
     bottom: 0;
 }
-
 .sjs_sp_controls > button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
-
 .sjs_sp_container > div > canvas:focus {
     outline: none;
 }
-
 .sjs_sp_placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     z-index: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     pointer-events: none;
     width: 100%;
     height: 100%;
-    color: $foreground-light;
 }
-
 .sv-boolean__decorator {
     border-radius: 2px;
 }
-
 .sv_main .sv-boolean__decorator + .sv-boolean__label {
     float: none;
     vertical-align: top;
     margin-left: 0.5em;
 }
-
 .sv-boolean__svg {
     border: none;
     border-radius: 2px;
-    background-color: $main-color;
-    fill: white;
+    background-color: #1ab394;
+    fill: #fff;
     width: 24px;
     height: 24px;
 }
-
 .sv-boolean--allowhover:hover .sv-boolean__checked-path {
     display: inline-block;
 }
-
 .sv-boolean--allowhover:hover .sv-boolean__svg {
     background-color: #9f9f9f;
-    fill: white;
+    fill: #fff;
 }
-
+.sv-boolean--allowhover:hover .sv-boolean__indeterminate-path,
 .sv-boolean--allowhover:hover .sv-boolean__unchecked-path,
-.sv-boolean--allowhover:hover .sv-boolean__indeterminate-path {
-    display: none;
-}
-
 .sv-boolean__checked-path,
 .sv-boolean__indeterminate-path {
     display: none;
 }
-
 .sv-boolean--indeterminate .sv-boolean__svg {
     background-color: inherit;
-    fill: $main-color;
+    fill: #1ab394;
 }
-
 .sv-boolean--indeterminate .sv-boolean__indeterminate-path {
     display: inline-block;
 }
-
-.sv-boolean--indeterminate .sv-boolean__unchecked-path,
-.sv-boolean--checked .sv-boolean__unchecked-path {
+.sv-boolean--checked .sv-boolean__unchecked-path,
+.sv-boolean--indeterminate .sv-boolean__unchecked-path {
     display: none;
 }
-
 .sv-boolean--checked .sv-boolean__checked-path {
     display: inline-block;
 }
-
 .sv-boolean--disabled.sv-boolean--indeterminate .sv-boolean__svg {
     background-color: inherit;
     fill: #dbdbdb;
 }
-
 .sv-boolean--disabled .sv-boolean__svg {
     background-color: #dbdbdb;
 }
-
 td.sv_matrix_cell .sv_qbln,
 td.td.sv_matrix_cell .sv_qbln {
     text-align: center;
@@ -934,125 +826,51 @@ td.sv_matrix_cell .sv_qbln .sv-boolean,
 td.td.sv_matrix_cell .sv_qbln .sv-boolean {
     text-align: initial;
 }
-
 .sv-dragdrop-movedown {
-    transform: translate(0, 0);
+    transform: translate(0);
+    -webkit-animation: svdragdropmovedown 0.1s;
     animation: svdragdropmovedown 0.1s;
+    -webkit-animation-timing-function: ease-in-out;
     animation-timing-function: ease-in-out;
 }
-
+@-webkit-keyframes svdragdropmovedown {
+    0% {
+        transform: translateY(-50px);
+    }
+    to {
+        transform: translate(0);
+    }
+}
 @keyframes svdragdropmovedown {
     0% {
-        transform: translate(0, -50px);
+        transform: translateY(-50px);
     }
-    100% {
-        transform: translate(0, 0);
+    to {
+        transform: translate(0);
     }
 }
-
 .sv-dragdrop-moveup {
-    transform: translate(0, 0);
+    transform: translate(0);
+    -webkit-animation: svdragdropmoveup 0.1s;
     animation: svdragdropmoveup 0.1s;
+    -webkit-animation-timing-function: ease-in-out;
     animation-timing-function: ease-in-out;
 }
-
+@-webkit-keyframes svdragdropmoveup {
+    0% {
+        transform: translateY(50px);
+    }
+    to {
+        transform: translate(0);
+    }
+}
 @keyframes svdragdropmoveup {
     0% {
-        transform: translate(0, 50px);
+        transform: translateY(50px);
     }
-    100% {
-        transform: translate(0, 0);
+    to {
+        transform: translate(0);
     }
-}
-.sv_default_css input[type='text']:focus {
-    border-color: $main-color;
-}
-.sv_default_css .sv_select_wrapper {
-    background-color: $body-background-color;
-}
-.sv_default_css .sv_select_wrapper::before {
-    background-color: $main-color;
-}
-.sv_main .sv-progress {
-    background-color: $header-background-color;
-}
-.sv_main .sv-progress__bar {
-    background-color: $main-color;
-}
-.sv_main .sv-paneldynamic__prev-btn.sv-paneldynamic__prev-btn--disabled, .sv_main .sv-paneldynamic__next-btn.sv-paneldynamic__next-btn--disabled {
-    fill: $disable-color;
-}
-.sv_main .sv-paneldynamic__progress-text {
-    color: $progress-text-color;
-}
-.sv_main .sv-paneldynamic__prev-btn, .sv_main .sv-paneldynamic__next-btn {
-    fill: $text-color;
-}
-.sv_main .sv-boolean--disabled .sv-boolean__switch {
-    background-color: $disabled-switch-color;
-}
-.sv_main .sv-boolean--disabled .sv-boolean__slider {
-    background-color: $disabled-slider-color;
-}
-.sv_main .sv_matrix_detail_row {
-    background-color: #ededed;
-    border-top: 1px solid $header-background-color;
-    border-bottom: 1px solid $header-background-color;
-}
-.sv_main .sv-button-group__item--hover:hover {
-    background-color: $background-dim;
-}
-.sv_main .sv-button-group__item-icon use {
-    fill: $foreground-light;
-}
-.sv_main .sv-button-group__item--selected {
-    color: $main-color;
-}
-.sv_main .sv-button-group__item--selected .sv-button-group__item-icon use {
-    fill: $main-color;
-}
-.sv_main .sv-button-group__item--disabled {
-    color: $foreground-disabled;
-}
-.sv_main .sv-button-group__item--disabled .sv-button-group__item-icon use {
-    fill: $foreground-disabled;
-}
-.sv_main .sv-button-group__item {
-    background: $body-background-color; border-color: $border-color;
-}
-.sv_main .sv_qstn textarea {
-    max-width: 100%;
-}
-.sv_main .sv-matrixdynamic__drag-icon {
-    padding-top:14px;
-}
-.sv_main .sv-matrixdynamic__drag-icon:after {
-    content: ' ';
-    display: block;
-    height: 6px;
-    width: 20px;
-    border: 1px solid $border-color;
-    box-sizing: border-box;
-    border-radius: 10px;
-    cursor: move;
-    margin-top: 12px;
-}
-.sv_main .sv-matrix__drag-drop-ghost-position-top, .sv_main .sv-matrix__drag-drop-ghost-position-bottom {
-    position: relative;
-}
-.sv_main .sv-matrix__drag-drop-ghost-position-top::after, .sv_main .sv-matrix__drag-drop-ghost-position-bottom::after {
-    content: '';
-    width: 100%;
-    height: 4px;
-    background-color: var(--primary, #19b394);
-    position: absolute;
-    left: 0;
-}
-.sv_main .sv-matrix__drag-drop-ghost-position-top::after {
-    top: 0;
-}
-.sv_main .sv-matrix__drag-drop-ghost-position-bottom::after {
-    bottom: 0;
 }
 
 // === CUSTOM ===
