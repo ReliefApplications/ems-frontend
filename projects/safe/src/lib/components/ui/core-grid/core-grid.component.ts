@@ -804,13 +804,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         for (const field in fetchMoreResult) {
           if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
             this.loading = false;
-            const prevReturn = Object.assign({}, prev, {
+            return Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,
                 totalCount: fetchMoreResult[field].totalCount,
               }
             });
-            return prevReturn;
           }
         }
         return prev;
