@@ -2,9 +2,6 @@ name: Front-end DEV CD
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'dev'
 
 jobs:
   build:
