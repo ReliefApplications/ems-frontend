@@ -235,7 +235,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
-      }
+      },
+      fetchPolicy: 'cache-first'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -578,7 +579,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
-          recordId: items.id,
+          recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
           template: this.settings.query.template
@@ -589,7 +590,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       });
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
-          this.onUpdate([items]);
+          this.onUpdate(isArray ? items : [items]);
         }
       });
     }
@@ -767,7 +768,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
+      ...e.fields === 'visible' && { fields: Object.values(this.layout.fields).filter((x: any) => !x.hidden)
+        .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
     };
 
     // Builds and make the request
@@ -806,7 +808,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             return Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount
+                totalCount: fetchMoreResult[field].totalCount,
               }
             });
           }

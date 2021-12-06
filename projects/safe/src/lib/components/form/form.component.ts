@@ -96,7 +96,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     Survey
       .StylesManager
       .applyTheme();
-    
+
     Survey.StylesManager.findSheet('default');
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
