@@ -81,7 +81,9 @@ export class SafeFloatingOptionsComponent implements OnInit {
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+        if (res) {
+          this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+        }
       });
     }
     if (item.name === 'Expand') {
