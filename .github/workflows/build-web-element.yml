@@ -28,7 +28,7 @@ jobs:
     - name: Build Web Elements
       run: npm run build -- --configuration=oort-dev --project=web-element
     - name: Bundles Web Element
-      run: npm bundle:elem
+      run: npm run bundle:elem
     - name: Archive build Web Elements
       if: success()
       uses: actions/upload-artifact@v2
