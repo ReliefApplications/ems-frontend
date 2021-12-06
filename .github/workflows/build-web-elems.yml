@@ -1,0 +1,34 @@
+name: Build Web Elements
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [15.x]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install Dependencies
+      run: npm ci
+    - name: Build Shared Library
+      run: npm run build -- --prod safe
+    - name: Build Web Elements
+      run: npm run build -- --configuration=oort-dev --project=web-element
+    - name: Bundles Web Element
+      run: npm bundle:elem
+    - name: Archive build Web Elements
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: deploy_dist_web_element
+        path: dist/web-element
