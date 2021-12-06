@@ -761,7 +761,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         return;
       }
     }
-    console.log(this.layout.fields);
     // Builds the request body with all the useful data
     const body = {
       exportOptions: e,
