@@ -1,4 +1,4 @@
-<div class="toolbar">
+<div class="toolbar" *ngIf="this.application?.status != 'active'">
     <div class="toolbar-buttons">
         <safe-button *ngIf="application?.canUpdate && locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
         </safe-button>
