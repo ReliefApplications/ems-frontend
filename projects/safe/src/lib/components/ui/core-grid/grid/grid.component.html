@@ -29,6 +29,13 @@
                 <button title="This will erase current layout with default layout" class='k-button'
                     (click)="action.emit({ action: 'resetLayout' })">Reset default Layout</button>
             </span>
+            <span kendotooltip>
+                  <select></select>
+            </span>
+            <span kendotooltip>
+                <button title="This will add this layout to your layout list" class='k-button'
+                        (click)="action.emit({ action: 'saveLayoutToList' })">Add new</button>
+            </span>
         </ng-container>
         <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">
         </safe-grid-toolbar>

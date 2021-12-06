@@ -68,6 +68,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+  @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -524,6 +525,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         this.resetDefaultLayout();
         break;
       }
+      case 'saveLayoutToList': {
+        this.addLayoutToList();
+        break;
+      }
       default: {
         break;
       }
@@ -896,5 +901,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
    resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
+  }
+
+  /**
+   * Saves the current layout of the grid as default layout
+   */
+  addLayoutToList(): void {
+    console.log(this.layout);
+    this.layoutListChanged.emit(this.layout);
+    this.hasLayoutChanges = false;
   }
 }

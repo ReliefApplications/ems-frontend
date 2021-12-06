@@ -64,6 +64,8 @@ export class SafeGridWidgetComponent implements OnInit {
 
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
 
+  @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
