@@ -2,6 +2,9 @@ name: Build Web Elements
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'AB#16813'
 
 jobs:
   build:
