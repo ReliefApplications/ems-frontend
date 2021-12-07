@@ -22,21 +22,21 @@ div {
 }
 
 .safe-badge-primary{
-    background-color: #6db4ff;
-    color: white;
+    background-color: rgba(0, 141, 201, 0.1);
+    color: rgb(0, 141, 201);
 }
 
 .safe-badge-danger{
-    background-color: #e9a2a2;
-    color: white;
+    background-color: rgba(241, 67, 67, 0.19);
+    color: rgb(241, 67, 67);
 }
 .safe-badge-success{
-    background-color: #94ce77;
-    color: white;
+    background-color: rgba(149, 221, 101, 0.2);
+    color: rgb(149, 221, 101);
 }
 .safe-badge-warning{
-    background-color: #efc530;
-    color: white;
+    background-color: rgba(244, 174, 82, 0.2);
+    color: rgb(244, 174, 82);
 }
 
 .safe-btn-icon {
