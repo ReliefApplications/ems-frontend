@@ -195,7 +195,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         }
       });
       Survey.Serializer.addProperty('resource', {
-        name: 'canAddNew:boolean',
+        name: 'addRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: (obj: any) => {
@@ -226,9 +226,9 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj || !obj.canAddNew) {
+          if (!obj || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -237,7 +237,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource && obj.canAddNew) {
+          if (obj.resource && obj.addRecord) {
             getResourceById({id: obj.resource}).subscribe(response => {
               const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
@@ -257,9 +257,9 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resource', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.canAddNew) {
+          if (!obj.resource || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -488,7 +488,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
-        question.canAddNew = false;
+        question.addRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
