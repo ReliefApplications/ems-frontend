@@ -148,7 +148,7 @@ export class SafeDashboardService {
       const currentLayout = { ...layout, timestamp: + new Date() };
       const index = dashboardStructure.findIndex((v: any) => v.id === id);
       let layoutList;
-      if(!dashboardStructure[index].settings.layoutList){
+      if (!dashboardStructure[index].settings.layoutList){
         layoutList = [currentLayout];
       }
       else {
