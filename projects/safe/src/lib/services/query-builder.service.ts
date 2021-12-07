@@ -30,9 +30,10 @@ export class QueryBuilderService {
     private apollo: Apollo,
     private formBuilder: FormBuilder
   ) {
-    this.apollo.watchQuery<GetQueryTypes>({
+    console.log('querying types');
+    this.apollo.query<GetQueryTypes>({
       query: GET_QUERY_TYPES,
-    }).valueChanges.subscribe((res) => {
+    }).subscribe((res) => {
       this.availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
       this.availableTypes.next(res.data.__schema.types);
       this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name));
