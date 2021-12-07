@@ -157,7 +157,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
 
           el.parentElement.insertBefore(actionsButtons, el);
 
-          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -169,11 +169,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('addRecord',
+          question.registerFunctionOnPropertyValueChanged('canAddNew',
             () => {
-              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -195,7 +195,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
-          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -207,11 +207,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('addRecord',
+          question.registerFunctionOnPropertyValueChanged('canAddNew',
             () => {
-              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -298,7 +298,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
   const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeCoreGridComponent): any => {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new record';
-    if (question.addRecord && question.addTemplate) {
+    if (question.canAddNew && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
@@ -337,7 +337,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
       };
     }
-    addButton.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
+    addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
     return addButton;
   };
 
