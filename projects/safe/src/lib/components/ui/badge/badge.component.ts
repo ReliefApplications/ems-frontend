@@ -19,5 +19,4 @@ export class SafeBadgeComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

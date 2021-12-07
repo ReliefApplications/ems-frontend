@@ -38,7 +38,7 @@ export default {
 } as Meta;
 
 const TemplateWithText: Story<SafeBadgeComponent> = args => ({
-    template: '<safe-badge [icon]="icon">{{content}}</safe-badge>',
+    template: '<safe-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</safe-badge>',
     props: {
         ...args,
         content: text('Text', 'This is a badge'),
