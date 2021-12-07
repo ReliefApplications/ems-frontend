@@ -68,4 +68,8 @@
     -webkit-appearance: none;
     position: relative;
   }
+
+  .sv_row div {
+    min-width: unset;
+  }
 }
