@@ -38,3 +38,14 @@ div {
     background-color: #efc530;
     color: white;
 }
+
+.safe-btn-icon {
+    width: 2em;
+    background-color: white;
+    line-height: initial;
+
+    safe-icon {
+        position: absolute;
+        margin-top: -1.39em;
+    }
+}

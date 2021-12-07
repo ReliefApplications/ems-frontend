@@ -13,6 +13,8 @@ export class SafeBadgeComponent implements OnInit {
 
   @Input() variant: BadgeVariant | string = BadgeVariant.DEFAULT;
 
+  @Input() icon = '';
+
   constructor() { }
 
   ngOnInit(): void {

@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeBadgeComponent } from './badge.component';
 import { MatChipsModule } from '@angular/material/chips';
-
-
+import { SafeIconModule } from '../icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -11,7 +10,8 @@ import { MatChipsModule } from '@angular/material/chips';
   ],
   imports: [
     CommonModule,
-    MatChipsModule
+    MatChipsModule,
+    SafeIconModule
   ],
   exports: [
     SafeBadgeComponent
