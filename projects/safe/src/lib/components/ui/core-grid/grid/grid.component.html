@@ -71,13 +71,7 @@
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
-                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
-                                    </mat-icon>
-                                </button>
-                            </div>
+                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm" (click)="onExpandText(dataItem, field.name)" [look]="'flat'" matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( url ) -->
@@ -90,13 +84,7 @@
                                     {{getPropertyValue(dataItem, field.name)}}
                                 </div>
                             </a>
-                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
-                                    </mat-icon>
-                                </button>
-                            </div>
+                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm" (click)="onExpandText(dataItem, field.name)" [look]="'flat'" matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( boolean ) -->
