@@ -81,8 +81,6 @@ export class SafeGridWidgetComponent implements OnInit {
     private emailService: SafeEmailService
   ) {
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
-    console.log('this.layoutList: widget/grid.component');
-    console.log(this.layoutList);
   }
 
   ngOnInit(): void {

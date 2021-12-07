@@ -45,7 +45,6 @@ export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
-  @Input() layout: GridLayout = {}; // Cached layout
   @Input() layoutList: any = []; // Cached layout
 
   // === DATA ===
@@ -143,10 +142,6 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
-    console.log('===> this.layout');
-    console.log(this.layout);
-    console.log('this.layoutList: grid.component');
-    console.log(this.layoutList);
   }
 
   // === DATA ===

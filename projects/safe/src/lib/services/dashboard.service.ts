@@ -166,8 +166,6 @@ export class SafeDashboardService {
       newDashboard.structure = updatedDashboardStructure;
       console.log('newDashboard.structure');
       console.log(newDashboard.structure);
-      console.log(newDashboard.structure[index].settings);
-      console.log(newDashboard.structure[index].settings.layoutList);
       this.openDashboard(newDashboard);
       return newDashboard.structure[index].settings.layoutList;
     }, error => console.log(error));

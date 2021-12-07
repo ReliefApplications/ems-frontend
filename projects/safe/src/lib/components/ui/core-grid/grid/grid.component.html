@@ -31,7 +31,7 @@
             </span>
             <span kendotooltip>
                   <select>
-                    <option *ngFor="let layout of layoutList; let index = index;" value='TESSSST'>{{'Layout '+index}}</option>
+                    <option *ngFor="let layout of layoutList; let index = index;" [value]="'Layout '+index">{{'Layout '+index}}</option>
                   </select>
             </span>
             <span kendotooltip>

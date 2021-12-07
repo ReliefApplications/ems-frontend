@@ -910,10 +910,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Saves the current layout of the grid as default layout
    */
   addLayoutToList(): void {
-    console.log(this.layout);
     this.layoutListChanged.emit(this.layout);
     this.hasLayoutChanges = false;
-    console.log('%%% this.layout');
-    console.log(this.layout);
   }
 }
