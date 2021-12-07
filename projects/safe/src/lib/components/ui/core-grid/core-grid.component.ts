@@ -48,6 +48,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   @Input() layout: GridLayout = {}; // Cached layout
+  @Input() layoutList: any = [];
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -519,6 +520,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       case 'saveLayout': {
         this.saveDefaultLayout();
+        console.log('xxxxx> this.layout');
+        console.log(this.layout);
         break;
       }
       case 'resetLayout': {
@@ -910,5 +913,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     console.log(this.layout);
     this.layoutListChanged.emit(this.layout);
     this.hasLayoutChanges = false;
+    console.log('%%% this.layout');
+    console.log(this.layout);
   }
 }

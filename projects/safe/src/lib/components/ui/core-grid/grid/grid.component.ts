@@ -17,6 +17,7 @@ import { SafeGridService } from '../../../../services/grid.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
+import {GridLayout} from '../models/grid-layout.model';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -43,6 +44,9 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
 export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+
+  @Input() layout: GridLayout = {}; // Cached layout
+  @Input() layoutList: any = []; // Cached layout
 
   // === DATA ===
   @Input() fields: any[] = [];
@@ -139,6 +143,10 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
+    console.log('===> this.layout');
+    console.log(this.layout);
+    console.log('this.layoutList: grid.component');
+    console.log(this.layoutList);
   }
 
   // === DATA ===

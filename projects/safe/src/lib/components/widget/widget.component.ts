@@ -11,6 +11,7 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   @Input() widget: any;
   @Input() header = true;
   public layout: any;
+  public layoutList: any;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -21,10 +22,17 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    this.layoutList = this.widget.settings.layoutList;
+    console.log('this.layout: widget comp');
+    console.log(this.layout);
+    console.log('this.widget');
+    console.log(this.widget);
+    console.log(this.widget.settings.layoutList);
   }
 
   ngOnChanges(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    this.layoutList = this.widget.settings.layoutList;
   }
 
   public onLayoutChanged(e: any): void {
@@ -45,6 +53,8 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
     // console.log('=> onLayoutListChanged <=');
     // console.log(this.widget.id);
     // console.log(e);
-    this.dashboardService.saveWidgetLayoutToList(this.widget.id, e);
+    this.layoutList = this.dashboardService.saveWidgetLayoutToList(this.widget.id, e);
+    console.log('GANG: layoutList');
+    console.log(this.layoutList);
   }
 }

@@ -18,7 +18,6 @@ export class SafeDashboardService {
     return this.dashboard.asObservable();
   }
 
-
   constructor(private apollo: Apollo) {}
 
   /**
@@ -133,39 +132,20 @@ export class SafeDashboardService {
    * @param id dashboard id.
    * @param layout layout to save.
    */
-  saveWidgetLayoutToList(id: number, layout: any): void {
+  saveWidgetLayoutToList(id: number, layout: any): any {
+    console.log('layout');
+    console.log(layout);
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    console.log('dashboardStructure 2');
-    console.log(dashboardStructure);
     const currentLayout = { ...layout, timestamp: + new Date() };
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
-    // let a = [];
-    // if(dashboardStructure[index].settings.layoutList) {
-    //   a = dashboardStructure[index].settings.layoutList;
-    // }
-    // console.log('BEFORE: a');
-    // console.log(a);
-    // console.log('JSON.stringify(defaultLayout)');
-    // console.log(JSON.stringify(defaultLayout));
-    // a.push(JSON.stringify(defaultLayout));
-    // console.log('AFTER: a');
-    // console.log(a);
-    console.log('dashboardStructure[index].settings.layoutList');
-    console.log(dashboardStructure[index].settings);
-    console.log(dashboardStructure[index].settings.layoutList);
-    console.log('JSON.stringify(currentLayout)');
-    console.log(currentLayout);
     let layoutList;
     if(!dashboardStructure[index].settings.layoutList){
-      console.log('IN IFFFF');
       layoutList = [currentLayout];
     }
     else {
       layoutList = [...dashboardStructure[index].settings.layoutList, currentLayout];
     }
-    console.log('layoutList');
-    console.log(layoutList);
     const widgetTemp = {
       ...dashboardStructure[index],
       settings: {
@@ -175,8 +155,6 @@ export class SafeDashboardService {
     };
     const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
     updatedDashboardStructure[index] = widgetTemp;
-    console.log('updatedDashboardStructure');
-    console.log(updatedDashboardStructure);
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -184,11 +162,14 @@ export class SafeDashboardService {
         structure: updatedDashboardStructure,
       }
     }).subscribe(res => {
-      console.log(res);
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
-      console.log(newDashboard);
+      console.log('newDashboard.structure');
+      console.log(newDashboard.structure);
+      console.log(newDashboard.structure[index].settings);
+      console.log(newDashboard.structure[index].settings.layoutList);
       this.openDashboard(newDashboard);
+      return newDashboard.structure[index].settings.layoutList;
     }, error => console.log(error));
   }
 }
