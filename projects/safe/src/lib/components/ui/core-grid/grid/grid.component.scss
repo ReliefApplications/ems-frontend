@@ -35,7 +35,6 @@ textarea {
 
 .textbox-container {
     display: flex;
-    align-items: center;
 
     &>.url-container {
         color: #008dc9;
@@ -57,4 +56,15 @@ textarea {
     &:hover {
         cursor: pointer;
     }
+}
+
+.expand-text-button {
+    height: 20px !important;
+    width: 20px !important;
+    vertical-align: top;
+}
+
+.expand-text-icon {
+    font-size: 16px !important;
+    vertical-align: top !important;
 }
