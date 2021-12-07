@@ -89,7 +89,7 @@ export class SafeDashboardService {
    * @param layout layout to save.
    */
   saveWidgetDefaultLayout(id: number, layout: any): void {
-    if(!(layout && Object.keys(layout).length === 0 && Object.getPrototypeOf(layout) === Object.prototype)) {
+    if (!(layout && Object.keys(layout).length === 0 && Object.getPrototypeOf(layout) === Object.prototype)) {
       console.log('IF Default');
       const dashboardId = this.dashboard.getValue()?.id;
       const dashboardStructure = this.dashboard.getValue()?.structure;
@@ -141,7 +141,7 @@ export class SafeDashboardService {
   saveWidgetLayoutToList(id: number, layout: any): any {
     console.log('layout');
     console.log(layout);
-    if(!(layout && Object.keys(layout).length === 0 && Object.getPrototypeOf(layout) === Object.prototype)) {
+    if (!(layout && Object.keys(layout).length === 0 && Object.getPrototypeOf(layout) === Object.prototype)) {
       console.log('IF List');
       const dashboardId = this.dashboard.getValue()?.id;
       const dashboardStructure = this.dashboard.getValue()?.structure;
@@ -158,7 +158,7 @@ export class SafeDashboardService {
         ...dashboardStructure[index],
         settings: {
           ...dashboardStructure[index].settings,
-          layoutList: layoutList
+          layoutList
         }
       };
       const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
