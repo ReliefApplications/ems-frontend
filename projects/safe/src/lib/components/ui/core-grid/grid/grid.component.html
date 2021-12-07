@@ -9,7 +9,7 @@
     (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->
     <ng-template kendoGridToolbarTemplate position="top">
-        <input placeholder="Search in text fields..." kendoTextBox [formControl]="search" class="grid-searchbox"/>
+        <input placeholder="Search in text fields..." kendoTextBox [formControl]="search" class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">Add</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">Export</button>
@@ -35,8 +35,8 @@
     </ng-template>
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
-        <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}" [class]="{'text-center': true}"
-            [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
+        <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}"
+            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->
         <ng-container *ngFor="let field of fields">
@@ -71,13 +71,9 @@
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
-                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
-                                    </mat-icon>
-                                </button>
-                            </div>
+                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm"
+                                (click)="onExpandText(dataItem, field.name)" [look]="'flat'"
+                                matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( url ) -->
@@ -90,13 +86,9 @@
                                     {{getPropertyValue(dataItem, field.name)}}
                                 </div>
                             </a>
-                            <div class="expand-text-wrapper" *ngIf="isEllipsisActive(refSpan)">
-                                <button class="expand-text-button" (click)="onExpandText(dataItem, field.name)"
-                                    mat-icon-button>
-                                    <mat-icon class="expand-text-icon" matTooltip="Open in full width">launch
-                                    </mat-icon>
-                                </button>
-                            </div>
+                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm"
+                                (click)="onExpandText(dataItem, field.name)" [look]="'flat'"
+                                matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( boolean ) -->
@@ -112,7 +104,8 @@
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'records'">
                         <div *ngIf="dataItem[field.name]" class="textbox-container">
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
-                                matTooltip="Open detail" (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
+                                matTooltip="Open detail"
+                                (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
                                 {{dataItem[field.name].length}} item<span
                                     *ngIf="dataItem[field.name].length > 1">s</span>
                             </div>
@@ -135,8 +128,8 @@
                     <!-- EDITION ( color ) -->
                     <ng-container *ngIf="field.meta.type === 'color'">
                         <kendo-colorpicker [formControl]="formGroup.get(field.name)" [format]="'hex'"
-                            [gradientSettings]="gradientSettings" (open)="editing = true"
-                            (close)="editing = false"></kendo-colorpicker>
+                            [gradientSettings]="gradientSettings" (open)="editing = true" (close)="editing = false">
+                        </kendo-colorpicker>
                     </ng-container>
                     <!-- EDITION ( dropdown / radiogroup ) -->
                     <ng-container *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
