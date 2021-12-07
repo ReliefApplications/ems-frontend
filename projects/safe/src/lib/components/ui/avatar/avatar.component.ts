@@ -17,7 +17,5 @@ export class SafeAvatarComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

@@ -1,23 +1,15 @@
-div {
-    position: relative;
-    display: inline-block;
-    font-size: 1.10em;
-    border-radius: 100em;
+.safe-avatar {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .safe-avatar-content{
-        position: absolute;
-        height: 1em;
-        width: 1em;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-        text-align: center;
-    }
-    
-    .safe-avatar-letter{
-        padding-bottom: 10%;
+    .safe-avatar-content {
+        display: inline-block;
+
+        safe-icon {
+            display: flex;
+        }
     }
 }
 
