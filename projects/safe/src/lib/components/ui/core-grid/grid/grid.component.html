@@ -4,7 +4,7 @@
     [pageSize]="pageSize" [skip]="skip" [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter"
     (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
     (sortChange)="onSortChange($event)" [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected"
-    (selectionChange)="onSelectionChange($event)" (columnReorder)="onColumnReorder($event)"
+    (selectionChange)="onSelectionChange($event)"
     (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
     (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->

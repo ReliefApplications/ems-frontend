@@ -33,6 +33,7 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
+import { SafeGridComponent } from './grid/grid.component';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -47,7 +48,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
-  @Input() layout: GridLayout = {}; // Cached layout
+  @Input() defaultLayout: GridLayout = {}; // Cached layout
+  get layout(): any { // Current layout
+    return this.grid?.layout;
+  }
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -72,9 +76,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  // === TEMPLATE REFERENCE TO KENDO GRID ===
-  @ViewChild(KendoGridComponent)
-  private grid?: KendoGridComponent;
+  // === TEMPLATE REFERENCE TO GRID ===
+  @ViewChild(SafeGridComponent)
+  private grid?: SafeGridComponent;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -110,11 +114,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
-    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query?.sort?.order || '');
   }
 
   // === FILTERING ===
@@ -122,6 +126,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public showFilter = false;
   public search = '';
 
+  /**
+   * All active filters of the grid.
+   */
   get queryFilter(): CompositeFilterDescriptor {
     const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
@@ -216,15 +223,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
-    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
-    if (this.layout?.filter) {
-      this.filter = this.layout.filter;
+    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout)) : true;
+    if (this.defaultLayout?.filter) {
+      this.filter = this.defaultLayout.filter;
     }
-    if (this.layout?.sort) {
-      this.sort = this.layout.sort;
+    if (this.defaultLayout?.sort) {
+      this.sort = this.defaultLayout.sort;
     }
-    this.showFilter = !!this.layout?.showFilter;
-    // this.loadItems();
+    this.showFilter = !!this.defaultLayout?.showFilter;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
@@ -247,8 +253,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = Object.assign({}, res.data[field]);
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
-            const layoutFields = this.layout.fields || {};
-            this.fields = this.gridService.getFields(fields, this.metaFields, layoutFields, '', { filter: true });
+            const defaultLayoutFields = this.defaultLayout.fields || {};
+            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
           }
         }
         this.getRecords();
@@ -287,27 +293,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
-
-  // === INLINE EDITION ===
-  /**
-   * Cancels inline edition.
-   */
-  // public cancelHandler(): void {
-  //   this.closeEditor();
-  // }
-
-  /**
-   * Updates a record when inline edition completed.
-   */
-  // public updateCurrent(): void {
-  //   if (this.isNew) {
-  //   } else {
-  //     if (this.formGroup.dirty) {
-  //       this.update(this.editedRecordId, this.formGroup.value);
-  //     }
-  //   }
-  //   this.closeEditor();
-  // }
 
   /**
    * Finds item in data items and updates it with new values, from inline edition.
@@ -762,13 +747,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     // Builds the request body with all the useful data
+    const currentLayout = this.layout;
     const body = {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(this.layout.fields).filter((x: any) => !x.hidden)
+      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
         .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
     };
 
@@ -825,7 +811,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onShowFilterChange(showFilter: boolean): void {
     this.showFilter = showFilter;
-    this.layout.showFilter = this.showFilter;
     this.saveLocalLayout();
   }
 
@@ -835,7 +820,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.layout.filter = this.filter;
     this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
@@ -859,7 +843,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
-    this.layout.sort = sort;
     this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
@@ -870,8 +853,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects fields changes.
    * @param fields Fields event.
    */
-  onColumnChange(fields: any[]): void {
-    this.layout.fields = fields;
+  onColumnChange(): void {
     this.saveLocalLayout();
   }
 
