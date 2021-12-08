@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
@@ -41,7 +41,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit {
+export class SafeGridComponent implements OnInit, AfterViewInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -140,6 +140,11 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Wait for columns to be reordered before updating the layout
+    this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
   }
 
   // === DATA ===

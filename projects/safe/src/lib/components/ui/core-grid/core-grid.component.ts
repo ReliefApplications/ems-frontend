@@ -870,6 +870,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Saves the current layout of the grid as local layout for this user
    */
   saveLocalLayout(): void {
+    console.log(this.layout);
     this.layoutChanged.emit(this.layout);
     if (!this.hasLayoutChanges) {
       this.hasLayoutChanges = true;
