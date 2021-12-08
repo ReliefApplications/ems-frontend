@@ -582,7 +582,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          template: this.settings.query.template
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
