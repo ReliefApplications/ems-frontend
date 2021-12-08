@@ -114,11 +114,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
-    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query?.sort?.order || '');
   }
 
   // === FILTERING ===

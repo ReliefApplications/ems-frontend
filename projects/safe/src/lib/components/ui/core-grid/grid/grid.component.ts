@@ -249,35 +249,7 @@ export class SafeGridComponent implements OnInit {
    * @param e ColumnReorderEvent
    */
   onColumnReorder(e: ColumnReorderEvent): void {
-    if ((e.oldIndex !== e.newIndex)) {
-      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-        .map((x: any) => x.field) || [];
-      const tempFields: any[] = [];
-      let j = 0;
-      const oldIndex = e.oldIndex;
-      const newIndex = e.newIndex;
-      for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex) {
-          if (oldIndex < newIndex) {
-            tempFields[j] = this.columnsOrder[i];
-            j++;
-            tempFields[j] = this.columnsOrder[oldIndex];
-          }
-          if (oldIndex > newIndex) {
-            tempFields[j] = this.columnsOrder[oldIndex];
-            j++;
-            tempFields[j] = this.columnsOrder[i];
-          }
-          j++;
-        }
-        else if (i !== oldIndex) {
-          tempFields[j] = this.columnsOrder[i];
-          j++;
-        }
-      }
-      this.columnsOrder = tempFields.filter(x => x !== undefined);
-      this.columnChange.emit();
-    }
+    this.columnChange.emit();
   }
 
   /**
@@ -298,18 +270,19 @@ export class SafeGridComponent implements OnInit {
    * Returns the visible columns of the grid.
    */
   get visibleFields(): any {
-    return this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      return {
-        ...obj,
-        [c.field]: {
-          field: c.field,
-          title: c.title,
-          width: c.width,
-          hidden: c.hidden,
-          order: this.columnsOrder.findIndex((x) => x === c.field)
-        }
-      };
-    }, {});
+    return this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).
+      filter((x: any) => x.field).reduce((obj, c: any) => {
+        return {
+          ...obj,
+          [c.field]: {
+            field: c.field,
+            title: c.title,
+            width: c.width,
+            hidden: c.hidden,
+            order: c.orderIndex
+          }
+        };
+      }, {});
   }
 
   /**
