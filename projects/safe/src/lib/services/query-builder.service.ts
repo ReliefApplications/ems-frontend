@@ -30,7 +30,6 @@ export class QueryBuilderService {
     private apollo: Apollo,
     private formBuilder: FormBuilder
   ) {
-    console.log('querying types');
     this.apollo.query<GetQueryTypes>({
       query: GET_QUERY_TYPES,
     }).subscribe((res) => {
