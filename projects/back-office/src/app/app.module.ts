@@ -170,7 +170,8 @@ export class AppModule {
   constructor(private apollo: Apollo) {
     SCHEMA_UPDATE.asObservable().subscribe((refresh) => {
       if (refresh) {
-        this.apollo.client.cache.reset();
+        // TODO: we should either refresh the cache, or reload the schema
+        // this.apollo.client.cache.reset();
         SCHEMA_UPDATE.next(false);
       }
     });
