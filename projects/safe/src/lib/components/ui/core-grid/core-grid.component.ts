@@ -110,7 +110,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
@@ -317,7 +317,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(item: any, value: any): void {
     let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
-      updatedItem = { ...updatedItem, ...value};
+      updatedItem = { ...updatedItem, ...value };
       const index = this.updatedItems.findIndex(x => x.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
@@ -757,39 +757,23 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.gridData.data.length > 0) {
         ids = [this.gridData.data[0].id];
       } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
+        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
         return;
       }
     }
-
-    console.log("fields")
-    console.log(this.fields)
-
-    console.log("object.values")
-    console.log(Object.values(this.fields))
-    
-    console.log("filter")
-    console.log(Object.values(this.fields).filter((x: any) => !x.hidden))
-    
-    console.log("sort")
-    console.log(Object.values(this.fields).filter((x: any) => !x.hidden).sort((a: any, b: any) => a.order - b.order))
-    
-    console.log("map")
-    console.log(Object.values(this.fields).filter((x: any) => !x.hidden).sort((a: any, b: any) => a.order - b.order).map((x: any) => { return {name: x.name, title: x.title}}))
-    
 
     // Builds the request body with all the useful data
     const body = {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(this.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => { return {name: x.name, title: x.title}}) }
+      ...e.fields === 'visible' && {
+        fields: Object.values(this.fields).filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.name, title: x.title }))
+      }
     };
-
-    console.log(body)
 
     // Builds and make the request
     const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
@@ -915,7 +899,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Reset the currently cached layout to the default one
    */
-   resetDefaultLayout(): void {
+  resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
 }
