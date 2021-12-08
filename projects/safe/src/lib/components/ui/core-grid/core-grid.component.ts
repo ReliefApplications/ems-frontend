@@ -33,6 +33,7 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
+import { SafeGridComponent } from './grid/grid.component';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -47,7 +48,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
-  @Input() layout: GridLayout = {}; // Cached layout
+  // @Input() layout: GridLayout = {}; // Cached layout
+  get layout(): any {
+    return this.grid?.layout;
+  }
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -72,9 +76,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  // === TEMPLATE REFERENCE TO KENDO GRID ===
-  @ViewChild(KendoGridComponent)
-  private grid?: KendoGridComponent;
+  // === TEMPLATE REFERENCE TO GRID ===
+  @ViewChild(SafeGridComponent)
+  private grid?: SafeGridComponent;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -217,12 +221,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
-    if (this.layout?.filter) {
-      this.filter = this.layout.filter;
-    }
-    if (this.layout?.sort) {
-      this.sort = this.layout.sort;
-    }
+    // if (this.layout?.filter) {
+    //   this.filter = this.layout.filter;
+    // }
+    // if (this.layout?.sort) {
+    //   this.sort = this.layout.sort;
+    // }
     this.showFilter = !!this.layout?.showFilter;
     // this.loadItems();
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
@@ -762,13 +766,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     // Builds the request body with all the useful data
+    const currentLayout = this.layout;
+    console.log(currentLayout);
     const body = {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(this.layout.fields).filter((x: any) => !x.hidden)
+      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
         .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
     };
 
@@ -825,8 +831,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onShowFilterChange(showFilter: boolean): void {
     this.showFilter = showFilter;
-    this.layout.showFilter = this.showFilter;
-    this.saveLocalLayout();
+    // this.layout.showFilter = this.showFilter;
+    // this.saveLocalLayout();
   }
 
   /**
@@ -835,8 +841,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.layout.filter = this.filter;
-    this.saveLocalLayout();
+    // this.layout.filter = this.filter;
+    // this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
@@ -859,8 +865,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
-    this.layout.sort = sort;
-    this.saveLocalLayout();
+    // this.layout.sort = sort;
+    // this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
@@ -870,9 +876,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects fields changes.
    * @param fields Fields event.
    */
-  onColumnChange(fields: any[]): void {
-    this.layout.fields = fields;
-    this.saveLocalLayout();
+  onColumnChange(): void {
+    // this.layout.fields = fields;
+    // this.saveLocalLayout();
   }
 
   /**

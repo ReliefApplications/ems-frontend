@@ -17,6 +17,7 @@ import { SafeGridService } from '../../../../services/grid.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
+import { GridLayout } from '../models/grid-layout.model';
 
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
@@ -275,7 +276,7 @@ export class SafeGridComponent implements OnInit {
         }
       }
       this.columnsOrder = tempFields.filter(x => x !== undefined);
-      this.setColumnsConfig();
+      this.columnChange.emit();
     }
   }
 
@@ -283,35 +284,44 @@ export class SafeGridComponent implements OnInit {
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
-   * Generates the cached fields config from the grid columns.
+   * Returns the visible columns of the grid.
    */
-  private setColumnsConfig(): void {
-    if (this.admin) {
-      const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-        return {
-          ...obj,
-          [c.field]: {
-            field: c.field,
-            title: c.title,
-            width: c.width,
-            hidden: c.hidden,
-            order: this.columnsOrder.findIndex((x) => x === c.field)
-          }
-        };
-      }, {});
-      this.columnChange.emit(fields);
-    }
+  get visibleFields(): any {
+    return this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+      return {
+        ...obj,
+        [c.field]: {
+          field: c.field,
+          title: c.title,
+          width: c.width,
+          hidden: c.hidden,
+          order: this.columnsOrder.findIndex((x) => x === c.field)
+        }
+      };
+    }, {});
+  }
+
+  /**
+   * Returns the current grid layout.
+   */
+  get layout(): GridLayout {
+    return {
+      fields: this.visibleFields,
+      sort: this.sort,
+      filter: this.filter,
+      showFilter: this.showFilter
+    };
   }
 
   // === INLINE EDITION ===
