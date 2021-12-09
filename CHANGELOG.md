@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.0.0...v1.1.0) (2021-12-09)
+
+
+### Bug Fixes
+
+* exporting dataset when sending email now export only visible fields [#16907](https://github.com/ReliefApplications/oort-frontend/issues/16907) ([815dc7a](https://github.com/ReliefApplications/emrs-safe-frontend/commits/815dc7a4134fbf2a4a0ecd0ad9afe2bec04e8a30))
+* issue where editing would not prevent datepicker to close on click ([1a9a81c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/1a9a81ce4b03179a7bcade324c46d3514d5f8cbd))
+* issue where having default alyout would break widget options when edition closed [#16802](https://github.com/ReliefApplications/oort-frontend/issues/16802) ([cdfc3b8](https://github.com/ReliefApplications/emrs-safe-frontend/commits/cdfc3b8ec02ef91b7fdae47b53d56670556682be))
+* issue where wrong template would be used to show details of a field ([ad683be](https://github.com/ReliefApplications/emrs-safe-frontend/commits/ad683be210e80d49b85ccf13831c3cfc4c006632))
+* layout of core grid should now be the correct one ([229bfb5](https://github.com/ReliefApplications/emrs-safe-frontend/commits/229bfb530f7413173c7bff5d714b70907defd486))
+* long title of app does not go outside the box ([5e0e6a4](https://github.com/ReliefApplications/emrs-safe-frontend/commits/5e0e6a4561441ecbd96ebc8c8f399ccdec774b25))
+* remove null values from emails [#16682](https://github.com/ReliefApplications/oort-frontend/issues/16682) ([6353749](https://github.com/ReliefApplications/emrs-safe-frontend/commits/635374906792717af1e60ce2b46133262eeae33d))
+* step with long name would not go out of the box ([8044be6](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8044be666cd41bcc6295a349b23fcf2423137300))
+
 ## [1.0.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.6...v1.0.0) (2021-12-01)
 
 
