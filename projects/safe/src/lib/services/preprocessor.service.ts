@@ -143,7 +143,7 @@ export class SafePreprocessorService {
           body += this.datasetRowToString(item ? item[field.name] : null, field.fields, tabs + '\t');
           break;
         default:
-          const rawValue = item ? item[field.name] : '';
+          const rawValue = get(item, field.name, '') || '';
           const value = rawValue && OPTION_QUESTIONS.includes(field.meta.type) ? this.getDisplayText(rawValue, field.meta) : rawValue;
           body += `${tabs}${field.label ? field.label : field.title ? field.title : field.name}:\t${value}\n`;
       }

@@ -33,3 +33,43 @@
 ::ng-deep .sv_main .sv-title-actions {
   display: block !important;
 }
+
+::ng-deep .sv_main safe-core-grid {
+  height: 410px;
+
+  .k-button {
+    border-color: rgba(0, 0, 0, 0.08);
+    min-width: unset;
+    color: #424242;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.02));
+    border-radius: 2px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 14px;
+    line-height: 1.4285714286;
+    font-family: inherit;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    position: relative;
+  }
+
+  .sv_row div {
+    min-width: unset;
+  }
+}

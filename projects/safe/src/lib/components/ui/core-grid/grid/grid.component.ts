@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
 import {
   ColumnBase,
   ColumnReorderEvent,
@@ -49,7 +49,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit, AfterViewChecked {
+export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -161,6 +161,11 @@ export class SafeGridComponent implements OnInit, AfterViewChecked {
     console.log(this.columnsOrder);
   }
 
+  ngAfterViewInit(): void {
+    // Wait for columns to be reordered before updating the layout
+    this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
+  }
+
   // === DATA ===
   /**
    * Returns property value in object from path.
@@ -268,57 +273,29 @@ export class SafeGridComponent implements OnInit, AfterViewChecked {
    * @param e ColumnReorderEvent
    */
   onColumnReorder(e: ColumnReorderEvent): void {
-    if ((e.oldIndex !== e.newIndex)) {
-      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-        .map((x: any) => x.field) || [];
-      const tempFields: any[] = [];
-      let j = 0;
-      const oldIndex = e.oldIndex;
-      const newIndex = e.newIndex;
-      for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex) {
-          if (oldIndex < newIndex) {
-            tempFields[j] = this.columnsOrder[i];
-            j++;
-            tempFields[j] = this.columnsOrder[oldIndex];
-          }
-          if (oldIndex > newIndex) {
-            tempFields[j] = this.columnsOrder[oldIndex];
-            j++;
-            tempFields[j] = this.columnsOrder[i];
-          }
-          j++;
-        }
-        else if (i !== oldIndex) {
-          tempFields[j] = this.columnsOrder[i];
-          j++;
-        }
-      }
-      this.columnsOrder = tempFields.filter(x => x !== undefined);
-      this.setColumnsConfig();
-    }
+    this.columnChange.emit();
   }
 
   /**
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
-   * Generates the cached fields config from the grid columns.
+   * Returns the visible columns of the grid.
    */
-  private setColumnsConfig(): void {
-    if (this.admin) {
-      const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+  get visibleFields(): any {
+    return this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).
+      filter((x: any) => x.field).reduce((obj, c: any) => {
         return {
           ...obj,
           [c.field]: {
@@ -326,15 +303,26 @@ export class SafeGridComponent implements OnInit, AfterViewChecked {
             title: c.title,
             width: c.width,
             hidden: c.hidden,
-            order: this.columnsOrder.findIndex((x) => x === c.field)
+            order: c.orderIndex
           }
         };
       }, {});
-      console.log(this.grid?.columns.toArray());
-      console.log('setColumnsConfig ---> fields');
-      console.log(fields);
-      this.columnChange.emit(fields);
-    }
+      // console.log(this.grid?.columns.toArray());
+      // console.log('setColumnsConfig ---> fields');
+      // console.log(fields);
+      // this.columnChange.emit(fields);
+  }
+
+  /**
+   * Returns the current grid layout.
+   */
+  get layout(): GridLayout {
+    return {
+      fields: this.visibleFields,
+      sort: this.sort,
+      filter: this.filter,
+      showFilter: this.showFilter
+    };
   }
 
   getColumns(): any {

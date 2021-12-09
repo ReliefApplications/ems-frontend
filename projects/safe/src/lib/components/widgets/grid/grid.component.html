@@ -10,7 +10,7 @@
         </div>
     </div>
     <!-- GRID CONTENT -->
-    <safe-core-grid [settings]="settings" [layout]="layout" [admin]="isAdmin"
+    <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
         (defaultLayoutChanged)="defaultLayoutChanged.emit($event)" (layoutChanged)="layoutChanged.emit($event)"
         (defaultLayoutReset)="defaultLayoutReset.emit($event)" (layoutListChanged)="layoutListChanged.emit($event)" [layoutList]="this.layoutList"></safe-core-grid>
 </div>

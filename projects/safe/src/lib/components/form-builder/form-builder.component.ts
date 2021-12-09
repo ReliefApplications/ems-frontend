@@ -46,6 +46,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'defaultValue',
   'defaultValueExpression',
   'relatedName',
+  'addRecord',
+  'addTemplate',
   'Search resource table',
   'visible',
   'readOnly',
