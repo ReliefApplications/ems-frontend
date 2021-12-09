@@ -9,7 +9,7 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
-declare let L: any
+declare let L: any;
 
 const MARKER_OPTIONS = {
   color: '#0090d1',
@@ -106,7 +106,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     console.log(L.map);
 
     const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-    const basemapEnum = "OSM:Standard";
+    const basemapEnum = 'OSM:Standard';
 
     this.map = L.map(this.mapId, {
       zoomControl: false,
@@ -119,7 +119,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
-      apiKey: apiKey
+      apiKey
     }).addTo(this.map);
 
     // // USE AN ESRI MAP
@@ -231,7 +231,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 //             center: L.latLng(35.29, -112),
 //             zoom: 5,
 //             minZoom: 4,
-//             maxZoom: 12      
+//             maxZoom: 12
 //         });
 
 //         L.esri.basemapLayer("Gray").addTo(map);
@@ -240,5 +240,5 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 //         format: 'image/png',
 //         transparent: true,
 //         }).addTo(map);
-//     }  
+//     }
 // }
