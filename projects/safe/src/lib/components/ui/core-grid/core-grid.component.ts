@@ -33,6 +33,7 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
+import {SafeGridComponent} from './grid/grid.component';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -77,6 +78,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === TEMPLATE REFERENCE TO KENDO GRID ===
   @ViewChild(KendoGridComponent)
   private grid?: KendoGridComponent;
+
+  @ViewChild(SafeGridComponent)
+  private safeGrid?: SafeGridComponent;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -261,6 +265,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = false;
       this.error = true;
     }
+    // console.log(this.grid);
+    console.log('GAAAAANG: this.safeGrid?.getColumns() azertyuiop');
+    // this.safeGrid?.getColumns();
   }
 
   /**
@@ -411,6 +418,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: this.items,
       total: this.totalCount
     };
+    console.log('=======> this.gridData');
+    console.log(this.gridData);
   }
 
   /**

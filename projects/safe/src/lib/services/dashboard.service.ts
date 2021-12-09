@@ -48,6 +48,10 @@ export class SafeDashboardService {
       const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
       const cachedDate = new Date(cachedLayout.timestamp || null);
       if (defaultDate > cachedDate) {
+        if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
+          defaultLayout.sort = [];
+          defaultLayout.filter = {filter: [], logic: 'and'};
+        }
         return defaultLayout;
       } else {
         return cachedLayout;

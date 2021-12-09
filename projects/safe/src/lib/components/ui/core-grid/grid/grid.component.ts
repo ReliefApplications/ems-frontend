@@ -1,5 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
+import {AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
+import {
+  ColumnBase,
+  ColumnReorderEvent,
+  GridComponent,
+  GridDataResult,
+  PageChangeEvent,
+  RowArgs,
+  SelectionEvent
+} from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
@@ -41,7 +49,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit {
+export class SafeGridComponent implements OnInit, AfterViewChecked {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -142,6 +150,15 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
+    console.log('=== this.data ===');
+    console.log(this.data);
+  }
+
+  ngAfterViewChecked(): void {
+    // this.grid?.columnReorder.emit({ new ColumnBase, 0, 0 }: ColumnReorderEvent);
+    console.log('this.getColumns');
+    this.getColumns();
+    console.log(this.columnsOrder);
   }
 
   // === DATA ===
@@ -313,8 +330,32 @@ export class SafeGridComponent implements OnInit {
           }
         };
       }, {});
+      console.log(this.grid?.columns.toArray());
+      console.log('setColumnsConfig ---> fields');
+      console.log(fields);
       this.columnChange.emit(fields);
     }
+  }
+
+  getColumns(): any {
+    console.log('maaaaan 2');
+    const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
+      return {
+        ...obj,
+        [c.field]: {
+          field: c.field,
+          title: c.title,
+          width: c.width,
+          hidden: c.hidden,
+          order: this.columnsOrder.findIndex((x) => x === c.field)
+        }
+      };
+    }, {});
+    console.log(' ??????    fields');
+    console.log(fields);
+    return fields;
+    // console.log(this.grid?.columns.toArray());
+    // return this.grid?.columns.toArray();
   }
 
   // === INLINE EDITION ===
