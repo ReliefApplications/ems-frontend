@@ -1,12 +1,15 @@
 import { Apollo } from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
-import * as L from 'leaflet';
-import 'leaflet.markercluster';
-import * as esri from 'esri-leaflet';
+// import * as L from 'leaflet';
+// import 'leaflet.markercluster';
+// import * as esri from 'esri-leaflet';
+// import 'esri-leaflet-vector';
 
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+
+declare let L: any
 
 const MARKER_OPTIONS = {
   color: '#0090d1',
@@ -100,20 +103,30 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
-    // const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+    console.log(L.map);
+
+    const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+    const basemapEnum = "OSM:Standard";
 
     this.map = L.map(this.mapId, {
-      zoomControl: false
+      zoomControl: false,
+      minZoom: 2,
+      maxZoom: 18
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
-
 
     L.control.zoom({
       position: 'bottomleft'
     }).addTo(this.map);
 
+    L.esri.Vector.vectorBasemapLayer(basemapEnum, {
+      apiKey: apiKey
+    }).addTo(this.map);
 
-    // USE AN ESRI MAP
-    esri.basemapLayer('Streets').addTo(this.map);
+    // // USE AN ESRI MAP
+    // L.esri.basemapLayer('Streets', {
+    //   attribution: 'Map',
+    //   minZoom: 1,
+    // }).addTo(this.map);
 
     // USE THE OPEN STREET MAP
     // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -122,17 +135,18 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     //   minZoom: 1,
     // }).addTo(this.map);
 
-    this.markersLayerGroup = L.featureGroup().addTo(this.map);
-    this.markersLayerGroup.on('click', (event: any) => {
-      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
-      this.popupMarker = L.popup({})
-        .setLatLng([event.latlng.lat, event.latlng.lng])
-        .setContent(this.selectedItem ? this.selectedItem.data : '')
-        .addTo(this.map);
+    // This needs to be updated to esri-leaflet
+    // this.markersLayerGroup = L.featureGroup().addTo(this.map);
+    // this.markersLayerGroup.on('click', (event: any) => {
+    //   this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+    //   this.popupMarker = L.popup({})
+    //     .setLatLng([event.latlng.lat, event.latlng.lng])
+    //     .setContent(this.selectedItem ? this.selectedItem.data : '')
+    //     .addTo(this.map);
 
-    });
+    // });
 
-    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+    // this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
   /* Load the data, using widget parameters.
@@ -191,3 +205,40 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 }
+
+
+// import { Component, OnInit, Input } from '@angular/core';
+// declare const L:any;
+// @Component({
+//       selector: 'safe-map',
+//       templateUrl: './map.component.html',
+//       styleUrls: ['./map.component.scss'],
+// })
+// export class SafeMapComponent implements OnInit {
+
+//     leafletTestText = 'Leaflet and Esri-leaflet prototype with Angular 4';
+//       @Input() header = true;
+//       @Input() settings: any = null;
+
+//     constructor() {}
+
+//     ngOnInit() {
+
+//         const osmUrl = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+//         const  osm = new L.TileLayer(osmUrl, {minZoom: 3 , maxZoom: 12});
+//         const map = L.map('leafletmap', {
+//             zoomControl: false,
+//             center: L.latLng(35.29, -112),
+//             zoom: 5,
+//             minZoom: 4,
+//             maxZoom: 12      
+//         });
+
+//         L.esri.basemapLayer("Gray").addTo(map);
+//         const andreas = L.tileLayer.wms('//fs.bioe.orst.edu:6443/arcgis/services/SoCal_SEVA/biodiv_ssolnw/ImageServer/WMSServer', {
+//         layers: '0',
+//         format: 'image/png',
+//         transparent: true,
+//         }).addTo(map);
+//     }  
+// }
