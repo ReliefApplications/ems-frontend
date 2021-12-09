@@ -101,7 +101,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
     // const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-    
+
     this.map = L.map(this.mapId, {
       zoomControl: false
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
@@ -114,7 +114,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // USE AN ESRI MAP
     esri.basemapLayer('Streets').addTo(this.map);
-    
+
     // USE THE OPEN STREET MAP
     // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     //   attribution: 'Map',
