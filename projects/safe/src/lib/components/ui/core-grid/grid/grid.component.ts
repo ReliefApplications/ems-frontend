@@ -152,18 +152,27 @@ export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecke
     });
     console.log('=== this.data ===');
     console.log(this.data);
+    console.log('this.getColumns');
+    console.log(this.columnsOrder);
   }
 
   ngAfterViewChecked(): void {
     // this.grid?.columnReorder.emit({ new ColumnBase, 0, 0 }: ColumnReorderEvent);
-    console.log('this.getColumns');
-    this.getColumns();
-    console.log(this.columnsOrder);
+    // this.getColumns();
+    // console.log('this.getColumns');
+    // console.log(this.columnsOrder);
+    // console.log('this.layout');
+    // console.log(this.layout);
   }
 
   ngAfterViewInit(): void {
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
+    setTimeout(() => console.log(this.layout), 1000);
+    setTimeout(() => {
+      console.log('HEYYYYYY');
+      console.log(this.grid?.columns.toArray());
+    }, 5000);
   }
 
   // === DATA ===
