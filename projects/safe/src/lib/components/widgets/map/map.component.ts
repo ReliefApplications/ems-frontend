@@ -101,31 +101,27 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
     // const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-    // const basemapEnum = 'ArcGIS:Navigation';
-
+    
     this.map = L.map(this.mapId, {
       zoomControl: false
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
-    const basemapLayer = {
-      Topographic: esri.basemapLayer('Topographic').addTo(this.map),
-      Gray: esri.basemapLayer('Gray').addTo(this.map),
-      Streets: esri.basemapLayer('Streets').addTo(this.map)
-    };
-
-    console.log(esri);
-
-    L.control.layers(basemapLayer, undefined, {collapsed: true}).addTo(this.map);
 
     L.control.zoom({
       position: 'bottomleft'
     }).addTo(this.map);
 
-    /*L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: 'Map',
-      noWrap: true,
-      minZoom: 1,
-    }).addTo(this.map);*/
+
+    // USE AN ESRI MAP
+    esri.basemapLayer('Streets').addTo(this.map);
+    
+    // USE THE OPEN STREET MAP
+    // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    //   attribution: 'Map',
+    //   noWrap: true,
+    //   minZoom: 1,
+    // }).addTo(this.map);
+
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
