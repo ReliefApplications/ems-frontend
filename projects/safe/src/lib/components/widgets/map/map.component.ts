@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
+import * as esri from 'esri-leaflet';
 
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
@@ -99,17 +100,32 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
-    this.map = L.map(this.mapId, {zoomControl: false}).setView([centerLat, centerLong], this.settings.zoom || 3);
+    // const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+    // const basemapEnum = 'ArcGIS:Navigation';
+
+    this.map = L.map(this.mapId, {
+      zoomControl: false
+    }).setView([centerLat, centerLong], this.settings.zoom || 3);
+
+    const basemapLayer = {
+      Topographic: esri.basemapLayer('Topographic').addTo(this.map),
+      Gray: esri.basemapLayer('Gray').addTo(this.map),
+      Streets: esri.basemapLayer('Streets').addTo(this.map)
+    };
+
+    console.log(esri);
+
+    L.control.layers(basemapLayer, undefined, {collapsed: true}).addTo(this.map);
 
     L.control.zoom({
       position: 'bottomleft'
     }).addTo(this.map);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    /*L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: 'Map',
       noWrap: true,
       minZoom: 1,
-    }).addTo(this.map);
+    }).addTo(this.map);*/
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
@@ -123,7 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
-  /*  Load the data, using widget parameters.
+  /* Load the data, using widget parameters.
   */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
