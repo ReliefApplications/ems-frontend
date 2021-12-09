@@ -398,7 +398,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     if (!question.readOnlyGrid) {
       Object.assign(settings, {
         actions: {
-          delete: question.delete,
+          delete: question.canDelete,
           history: question.history,
           convert: question.convert,
           update: question.update,
