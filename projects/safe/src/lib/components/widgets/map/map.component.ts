@@ -1,9 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
-// import * as L from 'leaflet';
-// import 'leaflet.markercluster';
-// import * as esri from 'esri-leaflet';
-// import 'esri-leaflet-vector';
+import 'leaflet.markercluster';
 
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
@@ -120,14 +117,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       apiKey
     }).addTo(this.map);
 
-  // OLD METHOD / Witout Esri Leaflet
-    // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    //   attribution: 'Map',
-    //   noWrap: true,
-    //   minZoom: 1,
-    // }).addTo(this.map);
-
-  // This system does not work with Esri Leaflet
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
