@@ -1,6 +1,5 @@
-import {AfterViewInit, AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
 import {
-  ColumnBase,
   ColumnReorderEvent,
   GridComponent,
   GridDataResult,
@@ -49,7 +48,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -131,7 +130,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecke
 
   // === ADMIN ===
   @Input() admin = false;
-  private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
   constructor(
@@ -150,30 +148,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecke
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
-    console.log('=== this.data ===');
-    console.log(this.data);
-    console.log('this.getColumns');
-    console.log(this.columnsOrder);
-  }
-
-  ngAfterViewChecked(): void {
-    // this.grid?.columnReorder.emit({ new ColumnBase, 0, 0 }: ColumnReorderEvent);
-    // this.getColumns();
-    // console.log('this.getColumns');
-    // console.log(this.columnsOrder);
-    // console.log('this.layout');
-    // console.log(this.layout);
-  }
-
-  ngAfterViewInit(): void {
-    // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
-    setTimeout(() => console.log(this.layout), 1000);
-    // setTimeout(() => {
-    //   console.log('HEYYYYYY');
-    //   console.log(this.grid?.columns.toArray());
-    // }, 5000);
-    setTimeout(() => console.log(this.grid?.columns.toArray()), 5000);
   }
 
   // === DATA ===
@@ -333,27 +307,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, AfterViewChecke
       filter: this.filter,
       showFilter: this.showFilter
     };
-  }
-
-  getColumns(): any {
-    console.log('maaaaan 2');
-    const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-      return {
-        ...obj,
-        [c.field]: {
-          field: c.field,
-          title: c.title,
-          width: c.width,
-          hidden: c.hidden,
-          order: this.columnsOrder.findIndex((x) => x === c.field)
-        }
-      };
-    }, {});
-    console.log(' ??????    fields');
-    console.log(fields);
-    return fields;
-    // console.log(this.grid?.columns.toArray());
-    // return this.grid?.columns.toArray();
   }
 
   // === INLINE EDITION ===

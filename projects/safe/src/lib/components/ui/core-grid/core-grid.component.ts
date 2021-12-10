@@ -5,10 +5,8 @@ import {
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  GridComponent as KendoGridComponent,
   GridDataResult,
   PageChangeEvent,
-  Selection,
   SelectionEvent
 } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
@@ -95,7 +93,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataQuery: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
-  private columnsOrder: any[] = [];
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -104,10 +101,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  private editedRowIndex = 0;
-  private editedRecordId = '';
   public formGroup: FormGroup = new FormGroup({});
-  private isNew = false;
   public loading = true;
   public error = false;
 
@@ -268,9 +262,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = false;
       this.error = true;
     }
-    // console.log(this.grid);
-    console.log('GAAAAANG: this.safeGrid?.getColumns() azertyuiop');
-    // this.safeGrid?.getColumns();
   }
 
   /**
@@ -400,8 +391,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: this.items,
       total: this.totalCount
     };
-    console.log('=======> this.gridData');
-    console.log(this.gridData);
   }
 
   /**
@@ -511,8 +500,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
       case 'saveLayout': {
         this.saveDefaultLayout();
-        console.log('xxxxx> this.layout');
-        console.log(this.layout);
         break;
       }
       case 'resetLayout': {
