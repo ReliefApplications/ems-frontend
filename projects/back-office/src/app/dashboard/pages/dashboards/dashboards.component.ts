@@ -42,7 +42,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       this.dashboards = res.data.dashboards;
       this.loading = res.loading;
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
   }

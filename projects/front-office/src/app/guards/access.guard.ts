@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,7 +10,6 @@ import { map } from 'rxjs/operators';
 export class AccessGuard implements CanActivate {
   constructor(
     private authService: SafeAuthService,
-    private snackBar: SafeSnackBarService,
     private router: Router
   ) { }
 
@@ -20,15 +19,8 @@ export class AccessGuard implements CanActivate {
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {
-          if (res.data.me.isAdmin) {
-            this.authService.user.next(res.data.me);
-            return true;
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
-            this.authService.logout();
-            this.router.navigate(['/auth']);
-            return false;
-          }
+          this.authService.user.next(res.data.me);
+          return true;
         } else {
           if (this.authService.account) {
             this.authService.logout();

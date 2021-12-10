@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
+import { AccessGuard } from './guards/access.guard';
 
 const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./dashboard/dashboard.module')
     .then(m => m.DashboardModule),
-    canActivate: [MsalGuard]
+    canActivate: [MsalGuard, AccessGuard]
   },
   {
     path: 'auth',
