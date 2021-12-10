@@ -128,16 +128,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // }).addTo(this.map);
 
   // This system does not work with Esri Leaflet
-    // this.markersLayerGroup = L.featureGroup().addTo(this.map);
-    // this.markersLayerGroup.on('click', (event: any) => {
-    //   this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
-    //   this.popupMarker = L.popup({})
-    //     .setLatLng([event.latlng.lat, event.latlng.lng])
-    //     .setContent(this.selectedItem ? this.selectedItem.data : '')
-    //     .addTo(this.map);
-    // });
+    this.markersLayerGroup = L.featureGroup().addTo(this.map);
+    this.markersLayerGroup.on('click', (event: any) => {
+      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+      this.popupMarker = L.popup({})
+        .setLatLng([event.latlng.lat, event.latlng.lng])
+        .setContent(this.selectedItem ? this.selectedItem.data : '')
+        .addTo(this.map);
+    });
 
-    //this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
   /* Load the data, using widget parameters.
