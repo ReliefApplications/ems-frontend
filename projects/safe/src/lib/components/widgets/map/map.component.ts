@@ -37,6 +37,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private markersLayer: any;
   private markersLayerGroup: any;
   private popupMarker: any;
+  private categoryNames: string[] = [];
 
   // === RECORDS ===
   private selectedItem: Record | null = null;
@@ -49,6 +50,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
+
+  private placeholder = 'place';
+
 
   constructor(
     private apollo: Apollo,
@@ -105,7 +109,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     this.map = L.map(this.mapId, {
       zoomControl: false,
-      minZoom: 1,
+      minZoom: 2,
       maxZoom: 18
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
@@ -117,16 +121,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       apiKey
     }).addTo(this.map);
 
-    this.markersLayerGroup = L.featureGroup().addTo(this.map);
-    this.markersLayerGroup.on('click', (event: any) => {
-      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
-      this.popupMarker = L.popup({})
-        .setLatLng([event.latlng.lat, event.latlng.lng])
-        .setContent(this.selectedItem ? this.selectedItem.data : '')
-        .addTo(this.map);
+    const overlayMaps = {};
+
+    this.categoryNames.map((name: string) => {
+      this.markersLayerGroup[name] = L.featureGroup().addTo(this.map);
+      this.markersLayerGroup[name].on('click', (event: any) => {
+        this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+        this.popupMarker = L.popup({})
+          .setLatLng([event.latlng.lat, event.latlng.lng])
+          .setContent(this.selectedItem ? this.selectedItem.data : '')
+          .addTo(this.map);
+      });
+
+      this.markersLayer[name] = L.markerClusterGroup({}).addTo(this.markersLayerGroup[name]);
+      // overlayMaps[name] = this.markersLayer[name]
+
     });
 
-    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+    L.control.layers(null, overlayMaps, {collapsed: false}).addTo(this.map);
   }
 
   /* Load the data, using widget parameters.
@@ -141,14 +153,20 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
       this.data = [];
+      this.categoryNames = [];
       this.selectedItem = null;
       this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].edges.map((x: any) => this.drawMarkers(myIcon, x.node));
+          res.data[field].edges.map((x: any) => {
+          // Gets all markers categories
+            if (!this.categoryNames.includes(x.node[this.placeholder])) {
+              this.categoryNames.push(x.node[this.placeholder]);
+            }
+            this.drawMarkers(myIcon, x.node);
+          });
         }
       }
-      console.log(this.data);
     });
   }
 
@@ -175,7 +193,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             longitude
           ],
           options);
-        this.markersLayer.addLayer(marker);
+        this.markersLayer[item[this.placeholder]].addLayer(marker);
       }
     }
   }

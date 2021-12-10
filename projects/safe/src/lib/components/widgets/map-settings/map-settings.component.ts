@@ -38,6 +38,7 @@ export class SafeMapSettingsComponent implements OnInit {
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
       longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
+      category: [(tileSettings && tileSettings.category) ? tileSettings.category : null, Validators.required],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
       centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
       centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]]
@@ -56,6 +57,7 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.controls.name.valueChanges.subscribe(() => {
       this.tileForm?.controls.latitude.setValue('');
       this.tileForm?.controls.longitude.setValue('');
+      this.tileForm?.controls.category.setValue('');
     });
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
