@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+import { SafeAuthService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
-    private router: Router
+    private router: Router,
+    private authService: SafeAuthService
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!activeAccount && this.msalService.instance.getAllAccounts().length > 0) {
       const accounts = this.msalService.instance.getAllAccounts();
       this.msalService.instance.setActiveAccount(accounts[0]);
+      this.authService.checkAccount();
     }
   }
 

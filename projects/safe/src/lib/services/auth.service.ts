@@ -97,12 +97,4 @@ export class SafeAuthService {
   get userValue(): User | null {
     return this.user.getValue();
   }
-
-  /* Check if account exist and fetch it if not
-  */
-  getAccountIfNull(): void {
-    if (!this.account) {
-      this.checkAccount();
-    }
-  }
 }
