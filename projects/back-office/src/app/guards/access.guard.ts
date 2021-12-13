@@ -19,6 +19,7 @@ export class AccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.authService.getProfile().pipe(
       map((res) => {
+        console.log(res);
         if (res.data.me) {
           if (res.data.me.isAdmin) {
             this.authService.user.next(res.data.me);

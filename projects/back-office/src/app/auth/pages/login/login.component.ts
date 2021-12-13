@@ -17,10 +17,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  /* Redirect to Azure authentication page.
-  */
+  /**
+   * Redirects to Azure authentication page.
+   */
   onLogin(): void {
     if (this.msalGuardConfig.authRequest) {
+      console.log(this.msalGuardConfig.authRequest)
       this.msalService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
     } else {
       this.msalService.loginRedirect();
