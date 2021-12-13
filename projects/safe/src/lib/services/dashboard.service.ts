@@ -3,6 +3,7 @@ import { Dashboard, WIDGET_TYPES } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -136,16 +137,15 @@ export class SafeDashboardService {
    * @param id dashboard id.
    * @param layout layout to save.
    */
-  saveWidgetLayoutToList(id: number, layout: any): any {
+  saveWidgetLayoutToList(id: number, layout: any): Observable<any> {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    const currentLayout = { ...layout, timestamp: + new Date() };
+    const currentLayout = {...layout, timestamp: +new Date()};
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     let layoutList;
-    if (!dashboardStructure[index].settings.layoutList){
+    if (!dashboardStructure[index].settings.layoutList) {
       layoutList = [currentLayout];
-    }
-    else {
+    } else {
       layoutList = [...dashboardStructure[index].settings.layoutList, currentLayout];
     }
     const widgetTemp = {
@@ -157,19 +157,19 @@ export class SafeDashboardService {
     };
     const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
     updatedDashboardStructure[index] = widgetTemp;
-    this.apollo.mutate<EditDashboardMutationResponse>({
+    return this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
         id: dashboardId,
         structure: updatedDashboardStructure,
       }
-    }).subscribe(res => {
+    }).pipe(map(res => {
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
-      console.log('newDashboard.structure');
-      console.log(newDashboard.structure);
       this.openDashboard(newDashboard);
+      console.log('newDashboard.structure[index].settings.layoutList');
+      console.log(newDashboard.structure[index].settings.layoutList);
       return newDashboard.structure[index].settings.layoutList;
-    }, error => console.log(error));
+    }));
   }
 }
