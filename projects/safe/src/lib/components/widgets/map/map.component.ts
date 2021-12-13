@@ -117,23 +117,29 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
+    // Key to access esri maps
     const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+    // Base map
     const basemapEnum = 'OSM:Standard';
 
+    // Defines map
     this.map = L.map(this.mapId, {
       zoomControl: false,
       minZoom: 2,
       maxZoom: 18
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
+    // Adds a zoom control
     L.control.zoom({
       position: 'bottomleft'
     }).addTo(this.map);
 
+    // Sets map base
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
       apiKey
     }).addTo(this.map);
 
+    // Popup at marker click
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
@@ -142,7 +148,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
     });
-
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
@@ -157,6 +162,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
+      // Empties all variables used in map
       this.data = [];
       this.categoryNames = [];
       this.markersCategories = [];
@@ -213,8 +219,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
   private setMarkers(): void
   {
-    if (this.layerControl)
-    {
+    if (this.layerControl) {
       this.layerControl.remove();
     }
     this.categoryNames.map((name: string) => {
