@@ -30,8 +30,8 @@
                     (click)="action.emit({ action: 'resetLayout' })">Reset default Layout</button>
             </span>
             <span kendotooltip>
-                  <select>
-                    <option *ngFor="let layout of layoutList; let index = index;" [value]="'Layout '+index">{{'Layout '+index}}</option>
+                  <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)">
+                    <option *ngFor="let layout of layoutList; let index = index;" [ngValue]="layout">{{'Layout '+index}}</option>
                   </select>
             </span>
             <span kendotooltip>

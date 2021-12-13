@@ -59,6 +59,7 @@ export class SafeGridComponent implements OnInit {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
+  public selectedLayout: any;
 
   // === EXPORT ===
   @Input() exportable = true;
@@ -148,6 +149,8 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
+    console.log(this.layoutList[0]);
+    this.selectedLayout = this.layoutList[0];
   }
 
   // === DATA ===
@@ -440,5 +443,10 @@ export class SafeGridComponent implements OnInit {
         this.action.emit({ action: 'edit', item, value });
       }
     });
+  }
+
+  public onSelectLayout(e: any): void {
+    console.log('+x+x+> this.layoutList');
+    console.log(this.selectedLayout);
   }
 }
