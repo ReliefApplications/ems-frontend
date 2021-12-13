@@ -32,7 +32,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user.subscribe((user) => {
+    this.authSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
         this.user = { ...user};
         this.userForm = this.formBuilder.group(

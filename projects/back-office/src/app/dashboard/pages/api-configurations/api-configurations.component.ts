@@ -80,7 +80,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
       this.filterPredicate();
     });
 
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
   }

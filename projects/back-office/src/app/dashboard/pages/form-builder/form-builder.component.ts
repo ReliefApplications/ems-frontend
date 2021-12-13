@@ -9,7 +9,6 @@ import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent }
 import { Observable } from 'rxjs';
 import {  map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
-import { SCHEMA_UPDATE } from '../../../app.module';
 
 @Component({
   selector: 'app-form-builder',
