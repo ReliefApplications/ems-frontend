@@ -17,7 +17,7 @@ const MARKER_OPTIONS = {
   radius: 6
 };
 
-interface markersLayerValue {
+interface IMarkersLayerValue {
   [name: string]: any;
 }
 
@@ -38,7 +38,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
   // === MARKERS ===
-  private markersLayer: markersLayerValue = [];
+  private markersLayer: IMarkersLayerValue = [];
   private markersLayerGroup: any;
   private popupMarker: any;
   private categoryNames: string[] = [];
@@ -190,7 +190,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private setMarkers()
+  private setMarkers(): void
   {
     // this.categoryNames.map((name: string) => {
     //   if (!this.markersLayerGroup[name])
