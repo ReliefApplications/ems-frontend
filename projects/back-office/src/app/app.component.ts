@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
 import { SafeAuthService, SafeFormService } from '@safe/builder';
@@ -21,7 +21,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
     private router: Router,
-    private route: ActivatedRoute,
     private authService: SafeAuthService,
     // We need to initialize the service there
     private formService: SafeFormService

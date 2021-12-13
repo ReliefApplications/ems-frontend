@@ -27,8 +27,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { IPublicClientApplication, PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { LogLevel } from '@azure/msal-common';
 
-/*  Configuration of the Apollo client.
-*/
+/**
+ * Configuration of the Apollo client.
+ * @param httpLink Apollo http link
+ * @returns void
+ */
 export function provideApollo(httpLink: HttpLink): any {
   const basic = setContext((operation, context) => ({
     headers: {
@@ -96,10 +99,19 @@ export function provideApollo(httpLink: HttpLink): any {
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
+/**
+ * Logger for dev purpose.
+ * @param logLevel MSAL log level.
+ * @param message MSAL message.
+ */
 export function loggerCallback(logLevel: LogLevel, message: string): void {
   console.log(message);
 }
 
+/**
+ * Configures MSAL instance.
+ * @returns MSAL Client Application.
+ */
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
@@ -114,7 +126,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     },
     system: {
       loggerOptions: {
-        loggerCallback,
+        // Can be enabled for dev purpose
+        // loggerCallback,
         logLevel: LogLevel.Info,
         piiLoggingEnabled: false
       }
@@ -122,6 +135,10 @@ export function MSALInstanceFactory(): IPublicClientApplication {
   });
 }
 
+/**
+ * Configures MSAL interceptor.
+ * @returns MSAL interceptor configuration.
+ */
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set(`${environment.API_URL}/*`, [`${environment.clientId}/.default`]);
@@ -131,6 +148,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   };
 }
 
+/**
+ * Configures MSAL guard.
+ * @returns MSAL guard configuration.
+ */
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
