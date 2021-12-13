@@ -64,7 +64,9 @@ export class SafeFloatingOptionsComponent implements OnInit {
         }
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'display', id: this.widget.id, options: res});
+        if (res) {
+          this.edit.emit({ type: 'display', id: this.widget.id, options: res});
+        }
       });
     }
     if (item.name === 'Settings') {
