@@ -6,6 +6,7 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
+// Declares L to be able to use Leaflet from CDN
 declare let L: any;
 
 const MARKER_OPTIONS = {
@@ -17,6 +18,7 @@ const MARKER_OPTIONS = {
   radius: 6
 };
 
+// Declares an interface that will be used in the cluster markers layers
 interface IMarkersLayerValue {
   [name: string]: any;
 }
@@ -38,10 +40,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
   // === MARKERS ===
-  private markersLayer: IMarkersLayerValue = [];
+  private markersLayer: any;
   private markersLayerGroup: any;
   private popupMarker: any;
+  private markersCategories: IMarkersLayerValue = [];
   private categoryNames: string[] = [];
+  private overlays: IMarkersLayerValue = {};
+  private layerControl: any;
 
   // === RECORDS ===
   private selectedItem: Record | null = null;
@@ -55,6 +60,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // This will be substituted when the querry returns the catgory tippe
   private placeholder = 'type';
 
 
@@ -82,7 +88,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /*  Once template is ready, build the map.
   */
   ngAfterViewInit(): void {
+    // Calls the function wich draw the map.
     this.drawMap();
+    // Gets the settings from the DB.
     if (this.settings.query){
       const builtQuery =  this.queryBuilder.buildQuery(this.settings);
       this.dataQuery = this.apollo.watchQuery<any>({
@@ -91,6 +99,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           first: 100
         }
       });
+      // Handles the settings data and changes the map accordingly.
       this.getData();
     }
 
@@ -124,6 +133,17 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
       apiKey
     }).addTo(this.map);
+
+    this.markersLayerGroup = L.featureGroup().addTo(this.map);
+    this.markersLayerGroup.on('click', (event: any) => {
+      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+      this.popupMarker = L.popup({})
+        .setLatLng([event.latlng.lat, event.latlng.lng])
+        .setContent(this.selectedItem ? this.selectedItem.data : '')
+        .addTo(this.map);
+    });
+
+    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
   /* Load the data, using widget parameters.
@@ -139,15 +159,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
       this.data = [];
       this.categoryNames = [];
+      this.markersCategories = [];
       this.selectedItem = null;
-      this.categoryNames.map((name: string) => {
-        this.markersLayer[name].clearLayers();
-      });
+      this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           res.data[field].edges.map((x: any) => {
           // Gets all markers categories
             if (!this.categoryNames.includes(x.node[this.placeholder])) {
+              console.log(x.node);
               this.categoryNames.push(x.node[this.placeholder]);
             }
             this.drawMarkers(myIcon, x.node);
@@ -181,34 +201,31 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             longitude
           ],
           options);
-        if (!this.markersLayer[item[this.placeholder]])
+        if (!this.markersCategories[item[this.placeholder]])
         {
-          this.markersLayer[item[this.placeholder]] = L.markerClusterGroup({});
+          this.markersCategories[item[this.placeholder]] = [];
         }
-        this.markersLayer[item[this.placeholder]].addLayer(marker);
+        this.markersCategories[item[this.placeholder]].push(marker);
+
       }
     }
   }
 
   private setMarkers(): void
   {
-    // this.categoryNames.map((name: string) => {
-    //   if (!this.markersLayerGroup[name])
-    //   {
-    //     this.markersLayerGroup[name] = new L.featureGroup;
-    //   }
-    //   this.markersLayerGroup[name] = L.featureGroup().addTo(this.map);
-    //   this.markersLayerGroup[name].on('click', (event: any) => {
-    //     this.selectedItem = this.data.find(x => x[name].id === event.layer.options.id);
-    //     this.popupMarker = L.popup({})
-    //       .setLatLng([event.latlng.lat, event.latlng.lng])
-    //       .setContent(this.selectedItem ? this.selectedItem.data : '')
-    //       .addTo(this.map);
-    //   });
-    //   this.markersLayer[name] = L.markerClusterGroup({}).addTo(this.markersLayerGroup[name]);
-    //   console.log(this.markersLayer);
-    // });
-    L.control.layers(null, this.markersLayer, {collapsed: false}).addTo(this.map);
+    if (this.layerControl)
+    {
+      this.layerControl.remove();
+    }
+    this.categoryNames.map((name: string) => {
+      this.overlays[name] = L.featureGroup.subGroup(
+        this.markersLayer,
+        this.markersCategories[name]
+      ).addTo(this.map);
+    });
+    if (this.categoryNames[1]) {
+      this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
+    }
   }
 
   public ngOnDestroy(): void {
