@@ -56,10 +56,10 @@ export function provideApollo(httpLink: HttpLink): any {
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
@@ -158,7 +158,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
  */
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(`${environment.API_URL}/*`, [`${environment.clientId}/.default`]);
+  protectedResourceMap.set(`${environment.apiUrl}/*`, [`${environment.clientId}/.default`]);
   return {
     interactionType: InteractionType.Redirect,
     protectedResourceMap

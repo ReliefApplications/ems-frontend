@@ -10,10 +10,10 @@
       ],
       "parserOptions": {
         "project": [
-          "projects/safe/tsconfig.lib.json",
+          "projects/safe/tsconfig.eslint.json",
           "projects/safe/tsconfig.spec.json"
         ],
-        "createDefaultProgram": true
+        "createDefaultProgram": false
       },
       "rules": {
         "@angular-eslint/component-selector": [

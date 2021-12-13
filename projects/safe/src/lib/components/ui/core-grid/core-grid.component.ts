@@ -196,7 +196,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private safeAuthService: SafeAuthService,
     private gridService: SafeGridService
   ) {
-    this.apiUrl = environment.API_URL;
+    this.apiUrl = environment.apiUrl;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 

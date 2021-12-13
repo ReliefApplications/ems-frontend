@@ -13,7 +13,7 @@ export class SafeDownloadService {
     @Inject('environment') environment: any,
     private http: HttpClient
   ) {
-    this.baseUrl = environment.API_URL;
+    this.baseUrl = environment.apiUrl;
   }
 
   /**
