@@ -10,7 +10,7 @@
       ],
       "parserOptions": {
         "project": [
-          "projects/web-element/tsconfig.app.json",
+          "projects/web-element/tsconfig.eslint.json",
           "projects/web-element/tsconfig.spec.json",
           "projects/web-element/e2e/tsconfig.json"
         ],
