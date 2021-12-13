@@ -148,7 +148,35 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
     });
+
+    // Address searchbar
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [L.esri.Geocoding.arcgisOnlineProvider({
+        apikey: apiKey,
+        nearby: {
+          lat: -33.8688,
+          lng: 151.2093
+        },
+      })]
+    }).addTo(this.map);
+
+    const results = L.layerGroup().addTo(this.map);
+
+    searchControl.on('results', (data: any) => {
+      results.clearLayers();
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${Math.round(data.results[i].latlng.lat * 100000) / 100000}`;
+        const marker = L.marker(data.results[i].latlng);
+        marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+        results.addLayer(marker);
+        marker.openPopup();
+      }
+    });
   }
 
   /* Load the data, using widget parameters.
