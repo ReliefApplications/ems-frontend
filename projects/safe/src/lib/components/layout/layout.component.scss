@@ -5,7 +5,7 @@
 }
 
 .sidenav {
-    min-width: 220px;
+    width: 240px;
 }
 
 .sidenav-container {
@@ -50,10 +50,11 @@
         align-items: center;
         flex: 1;
         height: 100%;
+        overflow: hidden;
     }
 
     .nav-actions {
-        margin-left: auto;
+        display: none;
     }
 
     .nav-action, .nav-item-handle {
@@ -63,9 +64,16 @@
         line-height: 24px;
     }
     &:hover {
+        .nav-actions {
+            display: block;
+        }
         .nav-action, .nav-item-handle {
             color: #aeaeaf;
         }
+    }
+
+    .nav-text {
+        text-overflow: ellipsis;
     }
 }
 

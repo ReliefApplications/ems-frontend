@@ -1,9 +1,7 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatHorizontalStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from '@safe/builder';
-
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
@@ -16,17 +14,18 @@ import { PreviewService } from '../../../services/preview.service';
 export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DATA ===
-  public id = '';
   public loading = true;
+
+  // === WORKFLOW ===
+  public id = '';
   public workflow?: Workflow;
   public steps: Step[] = [];
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
-  // === SELECTED STEP ===
-  public selectedStep?: Step;
-  public selectedIndex = 0;
+  // === ACTIVE STEP ===
+  public activeStep = 0;
 
   // === PREVIEWED ROLE ===
   public role = '';
@@ -39,6 +38,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private previewService: PreviewService
   ) { }
 
+  /**
+   * Gets the workflow from the route.
+   */
   ngOnInit(): void {
     this.previewService.roleId.subscribe((role) => {
       this.role = role;
@@ -57,7 +59,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = res.data.workflow.steps || [];
           this.loading = res.loading;
           if (this.steps.length > 0) {
-            this.stepChange({selectedIndex: 0});
+            this.onOpenStep(0);
           }
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('workflow'), { error: true });
@@ -70,34 +72,58 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Display selected step
-  */
-  stepChange(e: any): void {
-    this.selectedStep = this.steps[e.selectedIndex];
-    this.selectedIndex = e.selectedIndex;
-    if (this.selectedStep.type === ContentType.form) {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.id], { relativeTo: this.route });
-    } else {
-      this.router.navigate(['./' + this.selectedStep.type + '/' + this.selectedStep.content], { relativeTo: this.route });
-    }
-  }
-
-  /* Trigger step changes from grid widgets
-  */
-  onActivate(elementRef: any, stepper: MatHorizontalStepper): void {
+  /**
+   * Activates the clicked element.
+   * @param elementRef Element ref.
+   */
+  onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
         if (event) {
-          stepper.next();
+          this.goToNextStep();
         }
       });
     }
   }
 
+  /**
+   * Navigates to the next step if possible and change selected step / index consequently
+   */
+  private goToNextStep(): void {
+    if (this.activeStep + 1 < this.steps.length) {
+      this.onOpenStep(this.activeStep + 1);
+    } else if (this.activeStep + 1 === this.steps.length) {
+      this.onOpenStep(0);
+      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+    } else {
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+    }
+  }
+
+  /**
+   * Navigates to the new step.
+   * @param index Index of the step in the workflow.
+   */
+  public onOpenStep(index: number): void {
+    if (index >= 0 && index < this.steps.length) {
+      const step = this.steps[index];
+      this.activeStep = index;
+      if (step.type === ContentType.form) {
+        this.router.navigate(['./' + step.type + '/' + step.id], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./' + step.type + '/' + step.content], { relativeTo: this.route });
+      }
+    } else {
+      this.router.navigate(['./'], { relativeTo: this.route });
+    }
+  }
+
+  /**
+   * Deletes all subscriptions of the page.
+   */
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
   }
-
 }

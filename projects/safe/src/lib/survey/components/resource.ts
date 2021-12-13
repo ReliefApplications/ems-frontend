@@ -20,7 +20,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
     query: GET_RESOURCE_BY_ID,
     variables: {
       id: data.id,
-      filters: data.filters
+      filter: data.filters
     }
   });
 
@@ -183,19 +183,19 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({id: obj.resource}).subscribe(response => {
-              const serverRes = response.data.resource.records || [];
+              const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
-                res.push({value: item.id, text: item.data[obj.displayField]});
+                res.push({value: item?.id, text: item?.data[obj.displayField]});
               }
               choicesCallback(res);
             });
           }
-        },
+        }
       });
       Survey.Serializer.addProperty('resource', {
-        name: 'canAddNew:boolean',
+        name: 'addRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: (obj: any) => {
@@ -226,9 +226,9 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj || !obj.canAddNew) {
+          if (!obj || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -237,7 +237,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource && obj.canAddNew) {
+          if (obj.resource && obj.addRecord) {
             getResourceById({id: obj.resource}).subscribe(response => {
               const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
@@ -254,7 +254,19 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         name: 'placeholder',
         category: 'Custom Questions'
       });
-
+      Survey.Serializer.addProperty('resource', {
+        name: 'prefillWithCurrentRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['addRecord', 'resource'],
+        visibleIf: (obj: any) => {
+          if (!obj.resource || !obj.addRecord) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 8
+      });
       Survey.Serializer.addProperty('resource', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
@@ -419,10 +431,10 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         }
         getResourceById({id: question.resource}).subscribe(response => {
-          const serverRes = response.data.resource.records || [];
+          const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
           const res = [];
           for (const item of serverRes) {
-            res.push({value: item.id, text: item.data[question.displayField]});
+            res.push({value: item?.id, text: item?.data[question.displayField]});
           }
           question.contentQuestion.choices = res;
           if (!question.placeholder) {
@@ -431,7 +443,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
           }
-          question.survey.render();
         });
 
         if (question.selectQuestion) {
@@ -477,17 +488,18 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
-        question.canAddNew = false;
+        question.addRecord = false;
         question.addTemplate = null;
+        question.prefillWithCurrentRecord = false;
       }
     },
     populateChoices(question: any): void {
       if (question.resource) {
         getResourceById({id: question.resource, filters}).subscribe((response) => {
-          const serverRes = response.data.resource.records || [];
+          const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
           const res: any[] = [];
           for (const item of serverRes) {
-            res.push({value: item.id, text: item.data[question.displayField]});
+            res.push({value: item?.id, text: item?.data[question.displayField]});
           }
           question.contentQuestion.choices = res;
         });
@@ -495,7 +507,10 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.contentQuestion.choices = [];
       }
     },
-    onAfterRender(question: any, el: any): void {},
+    onAfterRender(question: any, el: any): void {
+      // const element = el.getElementsByClassName('sv_select_wrapper')[0];
+      // element.style.display = 'none';
+    },
     convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
       if (!gridSettingsRaw.fields) {
         return null;

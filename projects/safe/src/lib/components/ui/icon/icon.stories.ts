@@ -29,6 +29,10 @@ export default {
                 IconVariant.LIGHT
             ],
             control: { type: 'select' }
+        },
+        size: {
+            defaultValue: 24,
+            control: { type: 'number' }
         }
     }
 } as Meta;

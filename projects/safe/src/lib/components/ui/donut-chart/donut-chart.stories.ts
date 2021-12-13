@@ -31,8 +31,9 @@ export default {
 } as Meta;
 
 const Template: Story<SafeDonutChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-donut-chart [legend]="legend" [title]="title" [series]="series"></safe-donut-chart></div>',
     props: {
-        ...args 
+        ...args
     }
 });
 

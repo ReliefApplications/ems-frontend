@@ -23,7 +23,7 @@ export class SafeDownloadService {
    * @param fileName name of the file
    * @param options (optional) request options
    */
-  getFile(path: string, type: string, fileName: string, options?: any): void {
+   getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
@@ -31,6 +31,26 @@ export class SafeDownloadService {
       Authorization: `Bearer ${token}`
     });
     this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
+      const blob = new Blob([res], {type});
+      this.saveFile(fileName, blob);
+    });
+  }
+
+  /**
+   * Downloads records file from the server with a POST request
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param body (optional) request body
+   */
+  getRecordsExport(path: string, type: string, fileName: string, body?: any): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    this.http.post(url, body, {responseType: 'blob', headers}).subscribe((res) => {
       const blob = new Blob([res], {type});
       this.saveFile(fileName, blob);
     });

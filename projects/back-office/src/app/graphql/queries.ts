@@ -102,8 +102,8 @@ query GetFormNames($first: Int, $afterCursor: ID) {
 }`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms($first: Int, $afterCursor: ID) {
-  forms(first: $first, afterCursor: $afterCursor) {
+query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
+  forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
@@ -145,7 +145,7 @@ export interface GetFormsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -185,7 +185,7 @@ query GetShortFormById($id: ID!) {
 }`;
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+query GetFormById($id: ID!) {
   form(id: $id) {
     id
     name
@@ -197,15 +197,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecor
       id
       createdAt
       data
-    }
-    records(filters: $filters, archived: $showDeletedRecords) {
-      id
-      data(display: $display)
-      versions {
-        id
-        createdAt
-        data
-      }
     }
     canUpdate
   }
@@ -224,21 +215,56 @@ export interface GetFormByIdQueryResponse {
   form: Form;
 }
 
+export const GET_FORM_RECORDS = gql`
+query GetFormRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+  form(id: $id) {
+    records(first: $first, afterCursor: $afterCursor, filter: $filter, archived: $showDeletedRecords) {
+      edges {
+        node {
+          id
+          incrementalId
+          data(display: $display)
+          versions {
+            id
+            createdAt
+            data
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}`;
+
+export interface GetFormRecordsQueryResponse {
+  loading: boolean;
+  form: {
+    records: {
+      edges: {
+        node: Record;
+        cursor: string;
+      }[];
+      pageInfo: {
+        endCursor: string;
+        hasNextPage: boolean;
+      };
+      totalCount: number;
+    }
+  };
+}
+
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+query GetResourceById($id: ID!) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters, archived: $showDeletedRecords) {
-      id
-      data(display: $display)
-      form {
-        id
-        name
-      }
-    }
     fields
     forms {
       id
@@ -274,6 +300,53 @@ export interface GetResourceByIdQueryResponse {
   resource: Resource;
 }
 
+export const GET_RESOURCE_RECORDS = gql`
+query GetResourceRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
+  resource(id: $id) {
+    records(first: $first, afterCursor: $afterCursor, filter: $filter, archived: $showDeletedRecords) {
+      edges {
+        node {
+          id
+          incrementalId
+          data(display: $display)
+          versions {
+            id
+            createdAt
+            data
+          }
+          form {
+            id
+            name
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}`;
+
+export interface GetResourceRecordsQueryResponse {
+  loading: boolean;
+  resource: {
+    records: {
+      edges: {
+        node: Record;
+        cursor: string;
+      }[];
+      pageInfo: {
+        endCursor: string;
+        hasNextPage: boolean;
+      };
+      totalCount: number;
+    }
+  };
+}
+
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
 query GetResources($first: Int, $afterCursor: ID){
@@ -298,8 +371,8 @@ query GetResources($first: Int, $afterCursor: ID){
 }`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-query GetResourcesExtended($first: Int, $afterCursor: ID){
-  resources(first: $first, afterCursor: $afterCursor) {
+query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON){
+  resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
@@ -341,6 +414,9 @@ query GetRecordById($id: ID!) {
     createdAt
     modifiedAt
     createdBy {
+      name
+    }
+    modifiedBy {
       name
     }
     data
@@ -411,8 +487,8 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID) {
-  applications(first: $first, afterCursor: $afterCursor) {
+query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
@@ -702,7 +778,7 @@ export interface GetRoutingKeysQueryResponse {
     edges: {
       node: Application;
       cursor: string;
-    }[];
+    }[],
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;

@@ -7,7 +7,7 @@ import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql
 import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {  map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
 
 @Component({
@@ -149,15 +149,28 @@ export class FormBuilderComponent implements OnInit {
       }).subscribe(res => {
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          statusModal.close();
         } else {
+          // SCHEMA_UPDATE.asObservable().subscribe(refresh => {
+          //   if (refresh) {
+          //     this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
+          //     this.form = { ...res.data?.editForm, structure };
+          //     this.structure = structure;
+          //     localStorage.removeItem(`form:${this.id}`);
+          //     this.hasChanges = false;
+          //     this.authService.canLogout.next(true);
+          //     statusModal.close();
+          //   }
+          // });
+          // TODO: should be waiting for the BACK to be ready
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
           this.form = { ...res.data?.editForm, structure };
           this.structure = structure;
           localStorage.removeItem(`form:${this.id}`);
           this.hasChanges = false;
           this.authService.canLogout.next(true);
+          statusModal.close();
         }
-        statusModal.close();
       }, (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
         statusModal.close();
@@ -183,7 +196,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
@@ -245,7 +258,7 @@ export class FormBuilderComponent implements OnInit {
     }).subscribe(
       res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message), { error: true });
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName));
@@ -273,7 +286,7 @@ export class FormBuilderComponent implements OnInit {
       }
     }).subscribe(res => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message));
+        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message), { error: true });
         statusModal.close();
       } else {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));

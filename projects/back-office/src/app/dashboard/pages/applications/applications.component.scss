@@ -4,8 +4,6 @@
 }
 
 .searchbar {
-  float: left;
-
   .filters-toggle {
     margin-left: 12px;
   }
@@ -17,10 +15,14 @@
 
 .filters {
   clear: both;
-  float: left;
   margin-left: -12px;
 
   .mat-form-field {
     margin-left: 12px;
   }
+}
+
+safe-applications-summary {
+  display: block;
+  margin-bottom: 56px;
 }

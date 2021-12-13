@@ -25,7 +25,11 @@
       "@progress/kendo-angular-scheduler": "@progress/kendo-angular-scheduler",
       "@progress/kendo-angular-popup": "@progress/kendo-angular-popup",
       "@progress/kendo-angular-indicators": "@progress/kendo-angular-indicators",
-      "lodash/get": "lodash/get"
+      "lodash/get": "lodash/get",
+      "lodash/isEqual": "lodash/isEqual",
+      "lodash/isNil": "lodash/isNil",
+      "lodash/omitBy": "lodash/omitBy",
+      "@progress/kendo-angular-common": "@progress/kendo-angular-common"
     }
   }
 }

@@ -31,6 +31,9 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
+  /**
+   * Generates the routes from the application that is loaded.
+   */
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.previewService.roleId.subscribe((role: string) => {
@@ -93,6 +96,11 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Returns nav icon from the page's content type.
+   * @param type content type of the page.
+   * @returns name of the icon.
+   */
   private getNavIcon(type: string): string {
     switch (type) {
       case 'workflow':

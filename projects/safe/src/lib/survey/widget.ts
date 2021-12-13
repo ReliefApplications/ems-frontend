@@ -3,13 +3,14 @@ import { SafeFormModalComponent } from '../components/form-modal/form-modal.comp
 import { DomService } from '../services/dom.service';
 import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
-import { SafeResourceGridComponent } from '../components/resource-grid/resource-grid.component';
 import { ChoicesRestful } from 'survey-angular';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
-import { SafeButtonModule } from '../components/ui/button/button.module';
 import { EmbeddedViewRef } from '@angular/core';
+import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
+import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+
 
 function addZero(i: any): string {
   if (i < 10) {
@@ -62,6 +63,12 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
       };
+      Survey.Serializer.addProperty('survey', {
+        name: 'onCompleteExpression:expression',
+        type: 'expression',
+        visibleIndex: 350,
+        category: 'logic',
+      });
     },
     isDefaultRender: true,
     afterRender(question: any, el: any): void {
@@ -134,9 +141,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         }
       }
       // Display of add button for resource question
-      if (question.getType() === 'resource' && question.resource) {
-
-        if (question.survey.mode !== 'display') {
+      if (question.getType() === 'resource') {
+        // const dropdownComponent = buildRecordDropdown(question, el);
+        if (question.survey.mode !== 'display' && question.resource) {
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -150,7 +157,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
 
           el.parentElement.insertBefore(actionsButtons, el);
 
-          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -162,11 +169,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('canAddNew',
+          question.registerFunctionOnPropertyValueChanged('addRecord',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -188,7 +195,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
-          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -200,11 +207,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('canAddNew',
+          question.registerFunctionOnPropertyValueChanged('addRecord',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -252,6 +259,9 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         });
       }
+      if (question.getType() === 'file') {
+        question.maxSize = 7340032;
+      }
     }
   };
 
@@ -265,7 +275,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           data: {
             multiselect,
             gridSettings: fieldsSettingsForm,
-            selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : []
+            selectedRows: Array.isArray(question.value) ? question.value : question.value ? [question.value] : [],
+            selectable: true
           }
         });
         dialogRef.afterClosed().subscribe((rows: any[]) => {
@@ -284,26 +295,29 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     return searchButton;
   };
 
-  const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeResourceGridComponent): any => {
+  const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeCoreGridComponent): any => {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new record';
-    if (question.canAddNew && question.addTemplate) {
+    if (question.addRecord && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
             template: question.addTemplate,
-            locale: question.resource.value
+            locale: question.resource.value,
+            askForConfirm: false,
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
           autoFocus: false
         });
         dialogRef.afterClosed().subscribe(res => {
           if (res) {
-            if (question.displayAsGrid && gridComponent) {
-              gridComponent.availableRecords.push({
-                value: res.data.id,
-                text: res.data.data[question.displayField]
-              });
-            }
+            // TODO: call reload method
+            // if (question.displayAsGrid && gridComponent) {
+            //   gridComponent.availableRecords.push({
+            //     value: res.data.id,
+            //     text: res.data.data[question.displayField]
+            //   });
+            // }
             if (multiselect) {
               const newItem = {
                 value: res.data.id,
@@ -323,54 +337,77 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
       };
     }
-    addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+    addButton.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
     return addButton;
   };
 
+  const buildRecordDropdown = (question: any, el: any): any => {
+    let instance: SafeRecordDropdownComponent;
+    const dropdown = domService.appendComponentToBody(SafeRecordDropdownComponent, el.parentElement);
+    instance = dropdown.instance;
+    instance.resourceId = question.resource;
+    instance.filter = question.filters;
+    instance.field = question.displayField;
+    instance.placeholder = question.placeholder;
+    instance.record = question.value;
+    question.survey.onValueChanged.add((survey: any, options: any) => {
+      if (options.name === question.name) {
+        instance.record = question.value;
+      }
+    });
+    instance.choice.subscribe(res => question.value = res);
+    return instance;
+  };
+
   const buildRecordsGrid = (question: any, el: any): any => {
-    let instance: SafeResourceGridComponent;
+    let instance: SafeCoreGridComponent;
     if (question.displayAsGrid) {
-      const grid = domService.appendComponentToBody(SafeResourceGridComponent, el.parentElement);
+      const grid = domService.appendComponentToBody(SafeCoreGridComponent, el.parentElement);
       instance = grid.instance;
-      instance.multiSelect = true;
-      // instance.selectedRows = question.value || [];
-      instance.readOnly = true;
-      const questionQuery = question.gridFieldsSettings || {};
-      // const questionFilter = questionQuery.filter || {};
-      instance.settings = {
-        query: {
-          ...questionQuery, filter: {
-            logic: 'and',
-            filters: [{
-              field: 'ids',
-              operator: 'eq',
-              value: question.value || []
-            }]
-            // ...questionFilter
-          }
-        }
-      };
+      setGridInputs(instance, question);
       question.survey.onValueChanged.add((survey: any, options: any) => {
         if (options.name === question.name) {
-          instance.settings = {
-            query: {
-              ...questionQuery, filter: {
-                logic: 'and',
-                filters: [{
-                  field: 'ids',
-                  operator: 'eq',
-                  value: question.value || []
-                }]
-                // ...questionFilter
-              }
-            }
-          };
-          instance.init();
+          setGridInputs(instance, question);
         }
       });
       return instance;
     }
     return null;
+  };
+
+  /**
+   * Sets the inputs of the grid.
+   * @param instance grid instance.
+   * @param question survey question.
+   */
+  const setGridInputs = (instance: SafeCoreGridComponent, question: any): void => {
+    instance.multiSelect = true;
+    const query = question.gridFieldsSettings || {};
+    const settings = {
+      query: {
+        ...query, filter: {
+          logic: 'and',
+          filters: [{
+            field: 'ids',
+            operator: 'eq',
+            value: question.value || []
+          }]
+        }
+      }
+    };
+    if (!question.readOnlyGrid) {
+      Object.assign(settings, {
+        actions: {
+          delete: question.delete,
+          history: question.history,
+          convert: question.convert,
+          update: question.update,
+          inlineEdition: question.inlineEdition
+        }
+      });
+    }
+    instance.settings = settings;
+    instance.ngOnChanges();
   };
 
   Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');

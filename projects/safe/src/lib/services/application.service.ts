@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User, Role } from '../models/user.model';
@@ -52,6 +52,7 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 import { NOTIFICATIONS } from '../const/notifications';
 import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { SafeAuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +64,7 @@ export class SafeApplicationService {
   private applicationSubscription?: Subscription;
   private notificationSubscription?: Subscription;
   private lockSubscription?: Subscription;
+  private environment: any;
 
   /**
    * Return the application as an Observable.
@@ -93,10 +95,14 @@ export class SafeApplicationService {
   }
 
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private router: Router
-  ) { }
+  ) {
+    this.environment = environment;
+  }
 
   /*  Get the application from the database, using GraphQL.
   */
@@ -483,6 +489,7 @@ export class SafeApplicationService {
             };
             this._application.next(newApplication);
           }
+          this.authService.getProfile();
         }
       });
     }
@@ -715,6 +722,25 @@ export class SafeApplicationService {
           this._application.next(newApplication);
         }
       });
+    }
+  }
+
+  /**
+   * Moves to the first page of the application.
+   */
+  goToFirstPage(): void {
+    const application = this._application.getValue();
+    if (application?.pages && application.pages.length > 0) {
+      const page = application.pages[0];
+      if (this.environment.module === 'backoffice') {
+        this.router.navigate([(page.type === ContentType.form) ?
+          `applications/${application.id}/${page.type}/${page.id}` :
+          `applications/${application.id}/${page.type}/${page.content}`]);
+      } else {
+        this.router.navigate([(page.type === ContentType.form) ?
+          `/${page.type}/${page.id}` :
+          `/${page.type}/${page.content}`]);
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ import { PermissionsManagement, PermissionType, User } from '../../models/user.m
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
+import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
@@ -125,7 +125,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.userSubscription.unsubscribe();
     }
     this.userSubscription = this.authService.user$.subscribe((user) => {
-      console.log(user);
       if (user) {
         this.user = { ...user };
       }

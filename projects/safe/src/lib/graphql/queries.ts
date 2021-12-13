@@ -63,7 +63,7 @@ export const GET_FORM_STRUCTURE = gql`
 
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetFormById($id: ID!) {
   form(id: $id) {
     id
     name
@@ -71,10 +71,6 @@ query GetFormById($id: ID!, $filters: JSON, $display: Boolean) {
     structure
     status
     fields
-    records(filters: $filters) {
-      id
-      data(display: $display)
-    }
     resource{
       id
     }
@@ -119,14 +115,24 @@ query GetShortResourceById($id: ID!) {
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!, $filters: JSON, $display: Boolean) {
+query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
   resource(id: $id) {
     id
     name
     createdAt
-    records(filters: $filters) {
-      id
-      data(display: $display)
+    records(filter: $filter) {
+      edges {
+        node {
+          id
+          data(display: $display)
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
     fields
     forms {
@@ -235,6 +241,9 @@ query GetRecordById($id: ID!) {
     createdBy {
       name
     }
+    modifiedBy {
+      name
+    }
     form {
       id
       structure
@@ -325,8 +334,8 @@ export interface GetRolesQueryResponse {
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
+query GetUsers($applications: [ID]) {
+  users(applications: $applications) {
     id
     username
     name
@@ -495,8 +504,8 @@ export interface GetApplicationByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID, $filters: JSON) {
-  applications(first: $first, afterCursor: $afterCursor, filters: $filters) {
+query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
     edges {
       node {
         id
@@ -803,4 +812,50 @@ export const GET_DASHBOARD_BY_ID = gql`
 export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;
+}
+
+export const GET_RESOURCE_RECORDS = gql`
+query GetResourceRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $display: Boolean) {
+  resource(id: $id) {
+    records(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          data(display: $display)
+          versions {
+            id
+            createdAt
+            data
+          }
+          form {
+            id
+            name
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}`;
+
+export interface GetResourceRecordsQueryResponse {
+  loading: boolean;
+  resource: {
+    records: {
+      edges: {
+        node: Record;
+        cursor: string;
+      }[];
+      pageInfo: {
+        endCursor: string;
+        hasNextPage: boolean;
+      };
+      totalCount: number;
+    }
+  };
 }

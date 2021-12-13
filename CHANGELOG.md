@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.6...v1.0.0) (2021-12-01)
+
+
+### Features
+
+* ad step component [#11055](https://github.com/ReliefApplications/oort-frontend/issues/11055) ([1e7a44c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/1e7a44c5f2433b8916ac91989fed616e5db58310))
+* adapt display arguments for records data [#11477](https://github.com/ReliefApplications/oort-frontend/issues/11477) ([3082adb](https://github.com/ReliefApplications/emrs-safe-frontend/commits/3082adb1980231d0057bd81fca22ab8072363531))
+* Add survey property onCompleteExpression [#11271](https://github.com/ReliefApplications/oort-frontend/issues/11271) ([4898b2d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/4898b2d70a1d592b8acd462046eca5896d379e7c))
+* applications lsit [#11217](https://github.com/ReliefApplications/oort-frontend/issues/11217) ([178ad3d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/178ad3db666fffdb4371e2923fd7f82088f8b2e3))
+* display incrementalId in grid, form/resource [#11375](https://github.com/ReliefApplications/oort-frontend/issues/11375) ([e4a8d46](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e4a8d464d4aa6b4921c48501ca8ac2fe733835a5))
+* new workflow styling [#11055](https://github.com/ReliefApplications/oort-frontend/issues/11055) ([4f2632e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/4f2632e68afddef61310baea79facb46a0941370))
+* remove consumerID parameter for apiConfig [#16099](https://github.com/ReliefApplications/oort-frontend/issues/16099) ([402757d](https://github.com/ReliefApplications/emrs-safe-frontend/commits/402757d2024811df42950ec6ce4c24af0d734e19))
+* today() can now be used in modifications of automodify action [#11696](https://github.com/ReliefApplications/oort-frontend/issues/11696) ([828da3e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/828da3ecb785eb1bc9734a911722f1e530549eb6))
+* use title when no label for fields in mails ([15fabe3](https://github.com/ReliefApplications/emrs-safe-frontend/commits/15fabe311582d79714e5861519e714e54be93872))
+
+
+### Bug Fixes
+
+* bug with records type on resource [#16172](https://github.com/ReliefApplications/oort-frontend/issues/16172) ([e965cd9](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e965cd9196d6a34ae250a78c12b0c47a10339d7d))
+* new service to remove circular depedency ([2cfa18f](https://github.com/ReliefApplications/emrs-safe-frontend/commits/2cfa18f09a239fd4507221598bb485f3e97e2996))
+* Type 'string' is not assignable to type 'number' [#11634](https://github.com/ReliefApplications/oort-frontend/issues/11634) ([bb74419](https://github.com/ReliefApplications/emrs-safe-frontend/commits/bb74419b59cc229aca6fae20cc7a3a031ab8a2e4))
+* use lodash get to find choices from URL [#11477](https://github.com/ReliefApplications/oort-frontend/issues/11477) ([4b39b93](https://github.com/ReliefApplications/emrs-safe-frontend/commits/4b39b93e088714d478c821ab552aa34ed9c4cdf4))
+
+### [0.1.14-alpha.6](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.5...v0.1.14-alpha.6) (2021-11-08)
+
+
+### Features
+
+* Add choice to map createdBy in pullJobs [#11063](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11063) ([09f0631](https://github.com/ReliefApplications/emrs-safe-frontend/commits/09f0631960cf30a46707293dbf44523fc698983b))
+* add new records from grid [#11610](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11610) ([166bf80](https://github.com/ReliefApplications/emrs-safe-frontend/commits/166bf8071bba4437a1c94a289f17bd845966b332))
+* Add possibility to define body text for mail [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([cecf3eb](https://github.com/ReliefApplications/emrs-safe-frontend/commits/cecf3eb3b61236bd80350c854019797ef329c1a8))
+* refactor preprocessing into a new service [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([a547869](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a547869d9b12dc894445b60f723df9c89997d6fb))
+* working comment for some questions [#11322](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11322) ([d0e256c](https://github.com/ReliefApplications/emrs-safe-frontend/commits/d0e256c61de81cfbbb0d70f5a832a618b0f163eb))
+
+
+### Bug Fixes
+
+* filter / sort not reset to default after edition [#11460](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11460) ([3d11da2](https://github.com/ReliefApplications/emrs-safe-frontend/commits/3d11da2f629d5a83a32f0e0207ed19318470e2f9))
+* issue where email service was not updated after changes made on custom queries filter [#11726](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11726) ([9580b09](https://github.com/ReliefApplications/emrs-safe-frontend/commits/9580b098ae5cc53fc8ee7f0cc59ed6993102d106))
+* issue where some items could not be searched on [#11820](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11820) ([8e62703](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8e62703ab5dad32325de01f7e320632a76b2c39a))
+* linting [#11731](https://github.com/ReliefApplications/emrs-safe-frontend/issues/11731) ([e546eef](https://github.com/ReliefApplications/emrs-safe-frontend/commits/e546eefb538b487eb2c64a5d9ecfe34e9ed409c4))
+
 ### [0.1.14-alpha.5](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v0.1.14-alpha.4...v0.1.14-alpha.5) (2021-10-25)
 
 

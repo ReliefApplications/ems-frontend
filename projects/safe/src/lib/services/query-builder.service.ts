@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
+import { ApolloQueryResult } from '@apollo/client';
 
-const DEFAULT_FIELDS = ['id', 'createdAt', 'createdBy', 'lastUpdatedBy', 'modifiedAt', 'canUpdate', 'canDelete'];
 const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
 const USER_FIELDS = ['id', 'name', 'username'];
 
@@ -30,9 +30,9 @@ export class QueryBuilderService {
     private apollo: Apollo,
     private formBuilder: FormBuilder
   ) {
-    this.apollo.watchQuery<GetQueryTypes>({
+    this.apollo.query<GetQueryTypes>({
       query: GET_QUERY_TYPES,
-    }).valueChanges.subscribe((res) => {
+    }).subscribe((res) => {
       this.availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
       this.availableTypes.next(res.data.__schema.types);
       this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name));
@@ -144,10 +144,6 @@ export class QueryBuilderService {
               }
             }
             totalCount
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
         }
         }
       `;
@@ -157,13 +153,13 @@ export class QueryBuilderService {
     }
   }
 
-  public buildMetaQuery(settings: any, subQuery = false): any {
-    const builtQuery = subQuery ? settings : settings.query;
+  public buildMetaQuery(settings: any): Observable<ApolloQueryResult<any>> | null {
+    const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const metaFields = this.buildMetaFields(builtQuery.fields);
       const query = gql`
         query GetCustomMetaQuery {
-          _${subQuery ? builtQuery.type : builtQuery.name}Meta {
+          _${builtQuery.name}Meta {
             ${metaFields}
           }
         }
@@ -209,7 +205,7 @@ export class QueryBuilderService {
       name: [value ? value.name : '', validators ? Validators.required : null],
       template: [value ? value.template : '', null],
       fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
-       validators ? Validators.required : null),
+        validators ? Validators.required : null),
       sort: this.formBuilder.group({
         field: [(value && value.sort) ? value.sort.field : ''],
         order: [(value && value.sort) ? value.sort.order : 'asc']
@@ -231,7 +227,7 @@ export class QueryBuilderService {
           return this.formBuilder.group({
             field: filter.field,
             operator: filter.operator || 'eq',
-            value: filter.value
+            value: Array.isArray(filter.value) ? [filter.value] : filter.value
           });
         }
       }
@@ -247,6 +243,7 @@ export class QueryBuilderService {
       case 'LIST': {
         return this.formBuilder.group({
           name: [{ value: field.name, disabled: true }],
+          label: [field.label],
           type: [newField ? field.type.ofType.name : field.type],
           kind: [newField ? field.type.kind : field.kind],
           fields: this.formBuilder.array((!newField && field.fields) ?

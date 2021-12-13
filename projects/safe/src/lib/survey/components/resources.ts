@@ -34,7 +34,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
-        filters: data.filters
+        filter: data.filters
       }
     });
   };
@@ -208,11 +208,11 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({id: obj.resource}).subscribe((response) => {
-              const serverRes = response.data.resource.records || [];
+              const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
               const res = [];
               res.push({value: null});
               for (const item of serverRes) {
-                res.push({value: item.id, text: item.data[obj.displayField]});
+                res.push({value: item?.id, text: item?.data[obj.displayField]});
               }
               choicesCallback(res);
             });
@@ -233,7 +233,8 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
-        name: 'canAddNew:boolean',
+        name: 'addRecord:boolean',
+        displayName: 'Add new records',
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: (obj: any) => {
@@ -242,6 +243,76 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           } else {
             return true;
             // return !hasUniqueRecord(obj.resource);
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'delete:boolean',
+        displayName: 'Delete records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'history:boolean',
+        displayName: 'Show history',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'convert:boolean',
+        displayName: 'Convert records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'update:boolean',
+        dislayName: 'Update records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'inlineEdition:boolean',
+        displayName: 'Inline edition',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
           }
         },
         visibleIndex: 3,
@@ -264,22 +335,22 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.canAddNew) {
+          if (!obj.resource || !obj.addRecord) {
             return false;
           } else {
             return true;
             // const uniqueRecord = hasUniqueRecord(obj.resource);
             // if (uniqueRecord) {
-            //   obj.canAddNew = false;
+            //   obj.addRecord = false;
             // }
             // return !uniqueRecord;
           }
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource && obj.canAddNew) {
+          if (obj.resource && obj.addRecord) {
             getResourceById({id: obj.resource}).subscribe((response) => {
               const serverRes = response.data.resource.forms || [];
               const res = [];
@@ -291,6 +362,19 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             });
           }
         },
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'prefillWithCurrentRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['addRecord', 'resource'],
+        visibleIf: (obj: any) => {
+          if (!obj.resource || !obj.addRecord) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 8
       });
       Survey.Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',
@@ -445,10 +529,10 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         }
         getResourceById({id: question.resource}).subscribe(response => {
-          const serverRes = response.data.resource.records || [];
+          const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
           const res = [];
           for (const item of serverRes) {
-            res.push({value: item.id, text: item.data[question.displayField]});
+            res.push({value: item?.id, text: item?.data[question.displayField]});
           }
           question.contentQuestion.choices = res;
           if (!question.placeholder) {
@@ -457,7 +541,6 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
           }
-          question.survey.render();
         });
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
@@ -518,10 +601,10 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         }
       } else {
         getResourceById({id: question.resource, filters}).subscribe((response) => {
-          const serverRes = response.data.resource.records || [];
+          const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
           const res: any[] = [];
           for (const item of serverRes) {
-            res.push({value: item.id, text: item.data[question.displayField]});
+            res.push({value: item?.id, text: item?.data[question.displayField]});
           }
           question.contentQuestion.choices = res;
         });
@@ -532,8 +615,9 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.displayField = null;
         filters = [];
         this.resourceFieldsName = [];
-        question.canAddNew = false;
+        question.addRecord = false;
         question.addTemplate = null;
+        question.prefillWithCurrentRecord = false;
       }
     },
     onAfterRender(question: any, el: any): void {

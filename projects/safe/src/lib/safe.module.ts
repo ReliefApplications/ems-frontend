@@ -7,7 +7,7 @@ import { SafeChartModule } from './components/widgets/chart/chart.module';
 import { SafeChartSettingsModule } from './components/widgets/chart-settings/chart-settings.module';
 import { SafeEditorModule } from './components/widgets/editor/editor.module';
 import { SafeEditorSettingsModule } from './components/widgets/editor-settings/editor-settings.module';
-import { SafeGridModule } from './components/widgets/grid/grid.module';
+import { SafeGridWidgetModule } from './components/widgets/grid/grid.module';
 import { SafeGridSettingsModule } from './components/widgets/grid-settings/grid-settings.module';
 import { SafeMapModule } from './components/widgets/map/map.module';
 import { SafeMapSettingsModule } from './components/widgets/map-settings/map-settings.module';
@@ -27,6 +27,8 @@ import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
+import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
+import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
 
 @NgModule({
   exports: [
@@ -38,7 +40,7 @@ import { SafeContentChoiceModule } from './components/content-choice/content-cho
     SafeChartSettingsModule,
     SafeEditorModule,
     SafeEditorSettingsModule,
-    SafeGridModule,
+    SafeGridWidgetModule,
     SafeGridSettingsModule,
     SafeMapModule,
     SafeMapSettingsModule,
@@ -57,7 +59,9 @@ import { SafeContentChoiceModule } from './components/content-choice/content-cho
     SafeProfileModule,
     SafeSearchResourceGridModalModule,
     SafeButtonModule,
-    SafeContentChoiceModule
+    SafeContentChoiceModule,
+    SafeWorkflowStepperModule,
+    SafeApplicationsSummaryModule
   ],
   declarations: []})
 export class SafeModule { }

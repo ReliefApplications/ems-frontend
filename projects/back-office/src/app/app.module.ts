@@ -21,7 +21,7 @@ import { environment } from '../environments/environment';
 // MSAL
 import { MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService,
   MsalInterceptorConfiguration, MSAL_INTERCEPTOR_CONFIG, MSAL_INSTANCE, MsalGuardConfiguration,
-  MSAL_GUARD_CONFIG } from '@azure/msal-angular';
+  MSAL_GUARD_CONFIG, MsalModule} from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -33,8 +33,11 @@ localStorage.setItem('loaded', 'false');
 
 const REFRESH = new BehaviorSubject<boolean>(false);
 
-/*  Configuration of the Apollo client.
-*/
+/**
+ * Configuration of the Apollo client.
+ * @param httpLink Apollo http link
+ * @returns void
+ */
 export function provideApollo(httpLink: HttpLink): any {
   const basic = setContext((operation, context) => ({
     headers: {
@@ -113,10 +116,19 @@ export function provideApollo(httpLink: HttpLink): any {
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
+/**
+ * Logger for dev purpose.
+ * @param logLevel MSAL log level.
+ * @param message MSAL message.
+ */
 export function loggerCallback(logLevel: LogLevel, message: string): void {
   console.log(message);
 }
 
+/**
+ * Configures MSAL instance.
+ * @returns MSAL Client Application.
+ */
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
@@ -131,7 +143,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     },
     system: {
       loggerOptions: {
-        loggerCallback,
+        // Can be enabled for dev purpose
+        // loggerCallback,
         logLevel: LogLevel.Info,
         piiLoggingEnabled: false
       }
@@ -139,17 +152,23 @@ export function MSALInstanceFactory(): IPublicClientApplication {
   });
 }
 
+/**
+ * Configures MSAL interceptor.
+ * @returns MSAL interceptor configuration.
+ */
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(environment.API_URL, [`${environment.clientId}/openid`]);
-  protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read', 'openid', 'profile']);
-
+  protectedResourceMap.set(`${environment.API_URL}/*`, [`${environment.clientId}/.default`]);
   return {
     interactionType: InteractionType.Redirect,
     protectedResourceMap
   };
 }
 
+/**
+ * Configures MSAL guard.
+ * @returns MSAL guard configuration.
+ */
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
@@ -174,7 +193,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule
+    MatDialogModule,
+    MsalModule
   ],
   providers: [
     {
@@ -216,8 +236,8 @@ export class AppModule {
   constructor(
     private apollo: Apollo
   ) {
-    REFRESH.asObservable().subscribe((res) => {
-      console.log('Schema generated without cache reloading.');
-    });
+    // REFRESH.asObservable().subscribe((res) => {
+    //   console.log('Schema generated without cache reloading.');
+    // });
   }
 }

@@ -1,0 +1,60 @@
+:host {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+#recordsGrid {
+    width: 100%;
+}
+
+:host ::ng-deep .k-grid-content,
+.k-grid-content-locked,
+.k-pager-wrap {
+    white-space: nowrap !important;
+}
+
+textarea {
+    width: 100% !important;
+}
+
+.matrix-cell {
+    padding: unset;
+    margin: unset;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between !important;
+    li {
+        min-height: 20px;
+        .k-dropdown {
+            width: 100%;
+        }
+    }
+}
+
+.textbox-container {
+    display: flex;
+    align-items: center;
+
+    &>.url-container {
+        color: #008dc9;
+        text-decoration: underline;
+    }
+}
+
+.grid-searchbox {
+    width: 100%;
+}
+
+.textbox {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.external-link {
+    color: #008dc9;
+    &:hover {
+        cursor: pointer;
+    }
+}

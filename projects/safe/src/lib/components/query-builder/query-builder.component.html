@@ -21,18 +21,24 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="isField">
-      <mat-label>Field name</mat-label>
-      <input matInput formControlName="name" type="text"/>
-    </mat-form-field>
+    <ng-container *ngIf="isField">
+      <mat-form-field appearance="outline">
+        <mat-label>Field name</mat-label>
+        <input matInput formControlName="name" type="text" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Label</mat-label>
+        <input matInput formControlName="label" type="text" />
+      </mat-form-field>
+    </ng-container>
     <button class="form-error" mat-icon-button *ngIf="canSelectDataSet && form.invalid">
       <mat-icon>error</mat-icon>
     </button>
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
       <mat-tab label="Fields">
         <ng-template matTabContent>
-          <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)" [fields]="availableFields"
-                           [factory]="factory"></safe-tab-fields>
+          <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)"
+            [fields]="availableFields" [factory]="factory"></safe-tab-fields>
         </ng-template>
       </mat-tab>
       <mat-tab label="Sort" *ngIf="form.get('sort')">
@@ -42,7 +48,8 @@
       </mat-tab>
       <mat-tab label="Filter" *ngIf="form.get('filter')">
         <ng-template matTabContent>
-          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields"></safe-tab-filter>
+          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [settings]="settings">
+          </safe-tab-filter>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

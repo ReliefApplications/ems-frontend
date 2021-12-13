@@ -19,6 +19,20 @@ export interface Record {
     form?: Form;
     versions?: Version[];
     createdBy?: User;
+    modifiedBy?: User;
     canUpdate?: boolean;
     canDelete?: boolean;
+}
+
+export interface RecordConnection {
+    totalCount?: number;
+    edges?: {
+        node?: Record;
+        cursor?: string
+    }[];
+    pageInfo?: {
+        startCursor?: string;
+        endCursor?: string;
+        hasNextPage?: boolean;
+    };
 }

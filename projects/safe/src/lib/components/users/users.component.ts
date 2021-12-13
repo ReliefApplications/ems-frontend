@@ -16,6 +16,7 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SelectionModel } from '@angular/cdk/collections';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
+import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
 
@@ -33,7 +34,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -49,6 +50,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService
   ) { }
@@ -121,10 +123,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
-                  x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
+                  x = { ...x, roles: res.data?.editUser?.roles?.filter(role => !role.application)};
                 }
                 return x;
               });
+              this.authService.getProfile();
             }
           });
         }

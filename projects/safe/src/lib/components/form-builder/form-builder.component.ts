@@ -46,6 +46,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'defaultValue',
   'defaultValueExpression',
   'relatedName',
+  'addRecord',
+  'addTemplate',
   'Search resource table',
   'visible',
   'readOnly',
@@ -244,8 +246,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   */
   private setQuestionNames(element: any, page: any): void {
     if (element.type === 'panel') {
-      for (const el of element.elements) {
-        this.setQuestionNames(el, page);
+      if (element.elements) {
+        for (const el of element.elements) {
+          this.setQuestionNames(el, page);
+        }
       }
     } else {
       if (!element.valueName) {

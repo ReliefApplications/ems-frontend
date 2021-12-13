@@ -11,11 +11,10 @@
                     <mat-label>Chart Type</mat-label>
                     <mat-select formControlName="type">
                         <mat-select-trigger>
-                            <mat-icon inline="true" class="chart-icon">{{type.icon}}</mat-icon>{{type.name | uppercase
-                            }}
+                            <img class="chart-icon" [src]="type.icon" />{{type.name | uppercase}}
                         </mat-select-trigger>
                         <mat-option *ngFor="let type of types" [value]="type.name">
-                            <mat-icon>{{type.icon}}</mat-icon> {{type.name | uppercase }}
+                            <img class="chart-icon" [src]="type.icon" /> {{type.name | uppercase }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -23,9 +22,10 @@
         </div>
         <div formGroupName="chart" class="chart-form-container" *ngIf="chartForm">
             <div class="chart-form">
-                <mat-tab-group class="chart-settings" animationDuration="0ms" >
+                <mat-tab-group class="chart-settings" animationDuration="0ms">
                     <mat-tab label="Data source">
-                        <safe-button icon="refresh" category="secondary" variant="primary" (click)="refreshPipeline()" [disabled]="!pipelineChanged">
+                        <safe-button icon="refresh" category="secondary" variant="primary" (click)="refreshPipeline()"
+                            [disabled]="!pipelineChanged">
                             Apply changes
                         </safe-button>
                         <div class="form-group">
@@ -48,24 +48,20 @@
                                     <div>
                                         <h3>Position</h3>
                                         <div>
-                                            <safe-button
-                                              icon="{{ position.icon }}"
-                                              category="secondary"
-                                              [variant]="position.value === chartForm.value.legend.position ? 'primary' : ''"
-                                              (click)="chartForm.patchValue({legend: { position: position.value }})"
-                                              *ngFor="let position of legendPositions">
+                                            <safe-button icon="{{ position.icon }}" category="secondary"
+                                                [variant]="position.value === chartForm.value.legend.position ? 'primary' : ''"
+                                                (click)="chartForm.patchValue({legend: { position: position.value }})"
+                                                *ngFor="let position of legendPositions">
                                             </safe-button>
                                         </div>
                                     </div>
                                     <div>
                                         <h3>Orientation</h3>
                                         <div>
-                                            <safe-button
-                                              icon="{{ orientation.icon }}"
-                                              category="secondary"
-                                              [variant]="orientation.value === chartForm.value.legend.orientation ? 'primary' : ''"
-                                              (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
-                                              *ngFor="let orientation of legendOrientations">
+                                            <safe-button icon="{{ orientation.icon }}" category="secondary"
+                                                [variant]="orientation.value === chartForm.value.legend.orientation ? 'primary' : ''"
+                                                (click)="chartForm.patchValue({legend: { orientation: orientation.value }})"
+                                                *ngFor="let orientation of legendOrientations">
                                             </safe-button>
                                         </div>
                                     </div>
@@ -88,12 +84,10 @@
                                     <div>
                                         <h3>Position</h3>
                                         <div>
-                                            <safe-button
-                                              icon="{{ position.icon }}"
-                                              category="secondary"
-                                              [variant]="position.value === chartForm.value.title.position ? 'primary' : ''"
-                                              (click)="chartForm.patchValue({title: { position: position.value }})"
-                                              *ngFor="let position of titlePositions">
+                                            <safe-button icon="{{ position.icon }}" category="secondary"
+                                                [variant]="position.value === chartForm.value.title.position ? 'primary' : ''"
+                                                (click)="chartForm.patchValue({title: { position: position.value }})"
+                                                *ngFor="let position of titlePositions">
                                             </safe-button>
                                         </div>
                                     </div>
