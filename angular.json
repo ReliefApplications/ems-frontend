@@ -19,7 +19,8 @@
             "production": {
               "tsConfig": "projects/safe/tsconfig.lib.prod.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -235,19 +236,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "back-office:build"
+            "browserTarget": "back-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "back-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -295,14 +306,17 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/back-office/e2e/protractor.conf.js",
-            "devServerTarget": "back-office:serve"
+            "protractorConfig": "projects/back-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "back-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "back-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -494,19 +508,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "front-office:build"
+            "browserTarget": "front-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "front-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -550,14 +574,17 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/front-office/e2e/protractor.conf.js",
-            "devServerTarget": "front-office:serve"
+            "protractorConfig": "projects/front-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "front-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "front-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -639,19 +666,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "web-element:build"
+            "browserTarget": "web-element:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "web-element:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -694,14 +731,17 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/web-element/e2e/protractor.conf.js",
-            "devServerTarget": "web-element:serve"
+            "protractorConfig": "projects/web-element/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "web-element:serve:production"
+            },
+            "development": {
+              "devServerTarget": "web-element:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
