@@ -35,8 +35,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
   private map: any;
-  private southWest = L.latLng(-89.98155760646617, -180);
-  private northEast = L.latLng(89.99346179538875, 180);
+  private southWest = L.latLng(-90, -1000);
+  private northEast = L.latLng(90, 1000);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
   // === MARKERS ===
@@ -126,7 +126,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.map = L.map(this.mapId, {
       zoomControl: false,
       minZoom: 2,
-      maxZoom: 18
+      maxZoom: 18,
+      worldCopyJump: true
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     // Adds a zoom control
