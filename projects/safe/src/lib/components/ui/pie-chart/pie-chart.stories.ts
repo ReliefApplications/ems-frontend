@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafePieChartComponent } from './pie-chart.component';
 import { SafePieChartModule } from './pie-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,7 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Charts/Pie Chart',
     argTypes: {

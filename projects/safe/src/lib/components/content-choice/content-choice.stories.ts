@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeContentChoiceComponent } from './content-choice.component';
 import { SafeContentChoiceModule } from './content-choice.module';
 import { CONTENT_TYPES } from '../../models/page.model';
@@ -15,8 +14,7 @@ export default {
                 ReactiveFormsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Content Type Choice'
 } as Meta;

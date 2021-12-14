@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridModule } from './grid.module';
@@ -20,8 +19,7 @@ export default {
                     useValue: {}
                 }
             ]
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Grid',
     argTypes: {}

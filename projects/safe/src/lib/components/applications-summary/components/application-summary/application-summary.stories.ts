@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeApplicationSummaryComponent } from './application-summary.component';
 import { SafeApplicationsSummaryModule } from '../../applications-summary.module';
 import { status } from '../../../../models/form.model';
@@ -12,8 +11,7 @@ export default {
                 SafeApplicationsSummaryModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Applications/Application Summary',
     argTypes: {}

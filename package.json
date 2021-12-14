@@ -101,7 +101,6 @@
     "@compodoc/compodoc": "^1.1.11",
     "@storybook/addon-actions": "^6.4.9",
     "@storybook/addon-essentials": "^6.4.9",
-    "@storybook/addon-knobs": "^6.3.1",
     "@storybook/addon-links": "^6.4.9",
     "@storybook/angular": "^6.4.9",
     "@types/jasmine": "~3.8.0",
