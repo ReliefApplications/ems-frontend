@@ -170,9 +170,14 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     searchControl.on('results', (data: any) => {
       results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
-        const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${Math.round(data.results[i].latlng.lat * 100000) / 100000}`;
-        const marker = L.marker(data.results[i].latlng);
-        marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+        console.log(data.results[i]);
+        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
+        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
+        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
+        marker.bindPopup(`
+          <p>${data.results[i].properties.ShortLabel}</br>
+          <b>${'latitude: '}</b>${lat}</br>
+          <b>${'longitude: '}</b>${lng}</p>`);
         results.addLayer(marker);
         marker.openPopup();
       }
@@ -256,7 +261,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.markersCategories[name]
       ).addTo(this.map);
     });
-    if (this.categoryNames[1]) {
+    if (this.categoryNames) {
       this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
     }
   }
