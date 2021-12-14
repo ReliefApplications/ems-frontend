@@ -24,19 +24,19 @@ export class SafeMapSettingsComponent implements OnInit {
   public selectedFields: any[] = [];
 
   public basemaps: any[] = [
-    "Sreets",
-    "Navigation",
-    "Topographic",
-    "Light Gray",
-    "Dark Gray",
-    "Streets Relief",
-    "Imagery",
-    "ChartedTerritory",
-    "ColoredPencil",
-    "Nova",
-    "Midcentury",
-    "OSM",
-    "OSM:Streets"
+    'Sreets',
+    'Navigation',
+    'Topographic',
+    'Light Gray',
+    'Dark Gray',
+    'Streets Relief',
+    'Imagery',
+    'ChartedTerritory',
+    'ColoredPencil',
+    'Nova',
+    'Midcentury',
+    'OSM',
+    'OSM:Streets'
   ];
 
   constructor(

@@ -42,20 +42,20 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === BASEMAPS ===
 
   private basemapLayers: any = {
-    'Streets': 'ArcGIS:Streets',
-    'Navigation': 'ArcGIS:Navigation',
-    'Topographic': 'ArcGIS:Topographic',
+    Streets: 'ArcGIS:Streets',
+    Navigation: 'ArcGIS:Navigation',
+    Topographic: 'ArcGIS:Topographic',
     'Light Gray': 'ArcGIS:LightGray',
     'Dark Gray': 'ArcGIS:DarkGray',
     'Streets Relief': 'ArcGIS:StreetsRelief',
-    'Imagery': 'ArcGIS:Imagery',
-    'ChartedTerritory': 'ArcGIS:ChartedTerritory',
-    'ColoredPencil': 'ArcGIS:ColoredPencil',
-    'Nova': 'ArcGIS:Nova',
-    'Midcentury': 'ArcGIS:Midcentury',
-    'OSM': 'OSM:Standard',
+    Imagery: 'ArcGIS:Imagery',
+    ChartedTerritory: 'ArcGIS:ChartedTerritory',
+    ColoredPencil: 'ArcGIS:ColoredPencil',
+    Nova: 'ArcGIS:Nova',
+    Midcentury: 'ArcGIS:Midcentury',
+    OSM: 'OSM:Standard',
     'OSM:Streets': 'OSM:Street'
-  }
+  };
 
   // === MARKERS ===
   private markersLayer: any;
@@ -76,11 +76,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
-
-  // This will be substituted when the querry returns the catgory tippe
-  private placeholder = 'type';
-  private mapPlaceholder = 'OSM'
-
 
   constructor(
     private apollo: Apollo,
@@ -153,7 +148,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Sets map base
     L.esri.Vector.vectorBasemapLayer(this.basemapLayers[this.settings.mapbase]
       ? this.basemapLayers[this.settings.mapbase]
-      : this.basemapLayers['OSM'], {
+      : this.basemapLayers.OSM, {
       apiKey
     }).addTo(this.map);
 
