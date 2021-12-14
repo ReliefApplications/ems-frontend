@@ -23,6 +23,22 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
+  public basemaps: any[] = [
+    "Sreets",
+    "Navigation",
+    "Topographic",
+    "Light Gray",
+    "Dark Gray",
+    "Streets Relief",
+    "Imagery",
+    "ChartedTerritory",
+    "ColoredPencil",
+    "Nova",
+    "Midcentury",
+    "OSM",
+    "OSM:Streets"
+  ];
+
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
@@ -38,7 +54,8 @@ export class SafeMapSettingsComponent implements OnInit {
       query: this.queryBuilder.createQueryForm(tileSettings.query),
       latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
       longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
-      category: [(tileSettings && tileSettings.category) ? tileSettings.category : null, Validators.required],
+      category: [(tileSettings && tileSettings.category) ? tileSettings.category : null],
+      mapbase: [(tileSettings && tileSettings.mapbase) ? tileSettings.mapbase : null],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
       centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
       centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]]

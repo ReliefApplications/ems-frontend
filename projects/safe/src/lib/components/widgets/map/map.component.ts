@@ -39,6 +39,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private northEast = L.latLng(89.99346179538875, 180);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
+  // === BASEMAPS ===
+
+  private basemapLayers: any = {
+    'Streets': 'ArcGIS:Streets',
+    'Navigation': 'ArcGIS:Navigation',
+    'Topographic': 'ArcGIS:Topographic',
+    'Light Gray': 'ArcGIS:LightGray',
+    'Dark Gray': 'ArcGIS:DarkGray',
+    'Streets Relief': 'ArcGIS:StreetsRelief',
+    'Imagery': 'ArcGIS:Imagery',
+    'ChartedTerritory': 'ArcGIS:ChartedTerritory',
+    'ColoredPencil': 'ArcGIS:ColoredPencil',
+    'Nova': 'ArcGIS:Nova',
+    'Midcentury': 'ArcGIS:Midcentury',
+    'OSM': 'OSM:Standard',
+    'OSM:Streets': 'OSM:Street'
+  }
+
   // === MARKERS ===
   private markersLayer: any;
   private markersLayerGroup: any;
@@ -53,7 +71,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
-
   private displayFields: string[] = [];
 
   // === WIDGET CONFIGURATION ===
@@ -62,6 +79,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
   // This will be substituted when the querry returns the catgory tippe
   private placeholder = 'type';
+  private mapPlaceholder = 'OSM'
 
 
   constructor(
@@ -119,8 +137,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Key to access esri maps
     const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-    // Base map
-    const basemapEnum = 'OSM:Standard';
 
     // Defines map
     this.map = L.map(this.mapId, {
@@ -135,7 +151,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     // Sets map base
-    L.esri.Vector.vectorBasemapLayer(basemapEnum, {
+    L.esri.Vector.vectorBasemapLayer(this.basemapLayers[this.settings.mapbase]
+      ? this.basemapLayers[this.settings.mapbase]
+      : this.basemapLayers['OSM'], {
       apiKey
     }).addTo(this.map);
 
@@ -172,9 +190,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
           res.data[field].edges.map((x: any) => {
           // Gets all markers categories
-            if (!this.categoryNames.includes(x.node[this.placeholder])) {
-              console.log(x.node);
-              this.categoryNames.push(x.node[this.placeholder]);
+            if (!this.categoryNames.includes(x.node[this.settings.category])) {
+              this.categoryNames.push(x.node[this.settings.category]);
             }
             this.drawMarkers(myIcon, x.node);
           });
@@ -207,11 +224,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             longitude
           ],
           options);
-        if (!this.markersCategories[item[this.placeholder]])
+        if (!this.markersCategories[item[this.settings.category]])
         {
-          this.markersCategories[item[this.placeholder]] = [];
+          this.markersCategories[item[this.settings.category]] = [];
         }
-        this.markersCategories[item[this.placeholder]].push(marker);
+        this.markersCategories[item[this.settings.category]].push(marker);
 
       }
     }

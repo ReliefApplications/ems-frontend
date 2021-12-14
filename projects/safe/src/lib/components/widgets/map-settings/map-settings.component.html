@@ -33,12 +33,21 @@
                         <mat-option *ngFor="let field of selectedFields" [value]="field">
                             {{field}}
                         </mat-option>
+                        <mat-option>None</mat-option>
                     </mat-select>
                 </mat-form-field>
             </ng-container>
         </div>
         <div class="form-group">
             <div class="form-group-title">Default display</div>
+            <mat-form-field appearance="outline">
+                <mat-label>Base map</mat-label>
+                <mat-select formControlName="mapbase" placeholder="OSM">
+                    <mat-option *ngFor="let map of basemaps" [value]="map">
+                        {{map}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Zoom</mat-label>
                 <input type="number" matInput formControlName="zoom">
