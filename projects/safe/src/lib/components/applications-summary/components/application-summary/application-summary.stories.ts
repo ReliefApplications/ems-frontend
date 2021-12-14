@@ -19,14 +19,14 @@ export default {
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeApplicationSummaryComponent> = args => ({
+const TEMPLATE: Story<SafeApplicationSummaryComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     application: {
         name: 'Dummy Application',
         createdAt: new Date(),

@@ -18,11 +18,11 @@ export default {
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeAddApplicationComponent> = args => ({
+const TEMPLATE: Story<SafeAddApplicationComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {};
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {};

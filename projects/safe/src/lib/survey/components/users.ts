@@ -8,13 +8,14 @@ import { GetUsersQueryResponse, GET_USERS } from '../../graphql/queries';
 
 /**
  * Inits the users component.
- * @param Survey Survey class.
+ *
+ * @param survey survey class.
  * @param domService Dom service.
  * @param apollo Apollo client.
  * @param dialog Dialog service.
  * @param formBuilder Form Builder service.
  */
-export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
+export const init = (survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void => {
 
     const component = {
         name: 'users',
@@ -28,7 +29,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             choices: [] as any[],
         },
         onInit: (): void => {
-            Survey.Serializer.addProperty('users', {
+            survey.Serializer.addProperty('users', {
                 name: 'applications',
                 category: 'Users properties',
                 type: 'applicationsDropdown',
@@ -43,9 +44,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                     const dropdown = domService.appendComponentToBody(SafeApplicationDropdownComponent, htmlElement);
                     const instance: SafeApplicationDropdownComponent = dropdown.instance;
                     instance.value = question.applications;
-                    instance.choice.subscribe(res => {
-                        return editor.onChanged(res);
-                    });
+                    instance.choice.subscribe(res => editor.onChanged(res));
                 }
             };
 
@@ -53,7 +52,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 .SurveyPropertyEditorFactory
                 .registerCustomEditor('applicationsDropdown', applicationEditor);
         },
-        onLoaded(question: any): void {
+        onLoaded: (question: any): void => {
             apollo.query<GetUsersQueryResponse>({
                 query: GET_USERS,
                 variables: {
@@ -71,7 +70,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 }
             });
         },
-        onAfterRender(question: any, el: any): void {}
+        onAfterRender: (question: any, el: any): void => {}
     };
-    Survey.ComponentCollection.Instance.add(component);
-}
+    survey.ComponentCollection.Instance.add(component);
+};

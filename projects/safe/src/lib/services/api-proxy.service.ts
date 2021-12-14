@@ -23,7 +23,9 @@ export class SafeApiProxyService {
       const url = `${this.baseUrl}/${name}${pingUrl}`;
       const token = localStorage.getItem('msal.idtoken');
       const headers = new HttpHeaders({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: `Bearer ${token}`
       });
       return this.http.get(url, { headers });
@@ -34,7 +36,9 @@ export class SafeApiProxyService {
   public promisedRequestWithHeaders(url: string): Promise<any> {
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     return this.http.get(url, { headers }).toPromise();

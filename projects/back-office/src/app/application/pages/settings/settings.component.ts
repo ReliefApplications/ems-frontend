@@ -38,7 +38,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application){
         this.application = application;
         this.settingsForm = this.formBuilder.group(

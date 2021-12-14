@@ -41,7 +41,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         this.role = role;
       });
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name + ' (Preview)';
         const role = application.roles?.find(x => this.role ? x.id === this.role : true);

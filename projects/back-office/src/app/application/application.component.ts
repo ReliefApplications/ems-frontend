@@ -36,7 +36,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.applicationService.loadApplication(params.id);
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name || '';
         let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => ({

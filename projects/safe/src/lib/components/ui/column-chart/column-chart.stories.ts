@@ -30,15 +30,15 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeColumnChartComponent> = args => ({
+const TEMPLATE: Story<SafeColumnChartComponent> = args => ({
     template: '<div style="height:400px"><safe-column-chart [legend]="legend" [title]="title" [series]="series"></safe-column-chart></div>',
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     legend: { visible: true, orientation: 'horizontal', position: 'bottom' },
     title: { visible: true, text: 'title', position: 'bottom' },
     series: [

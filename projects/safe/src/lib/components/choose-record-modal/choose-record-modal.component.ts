@@ -82,9 +82,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            const nodes = res.data[field].edges.map((x: any) => {
-              return { value: x.node.id, label: x.node[this.data.targetFormField] };
-            }) || [];
+            const nodes = res.data[field].edges.map((x: any) => ({ value: x.node.id, label: x.node[this.data.targetFormField] })) || [];
             this.pageInfo = res.data[field].pageInfo;
             this.records.next(nodes);
           }
@@ -134,6 +132,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
   onOpenSelect(e: any): void {
@@ -145,6 +144,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
 
   /**
    * Fetches more resources on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

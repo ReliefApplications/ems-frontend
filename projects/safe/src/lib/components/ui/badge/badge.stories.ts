@@ -37,7 +37,7 @@ export default {
     }
 } as Meta;
 
-const TemplateWithText: Story<SafeBadgeComponent> = args => ({
+const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = args => ({
     template: '<safe-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</safe-badge>',
     props: {
         ...args,
@@ -45,14 +45,14 @@ const TemplateWithText: Story<SafeBadgeComponent> = args => ({
     }
 });
 
-export const Default = TemplateWithText.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.args = {
     size: BadgeSize.MEDIUM,
     variant: BadgeVariant.DEFAULT
 };
 
-export const Icon = TemplateWithText.bind({});
-Icon.args = {
-    ...Default.args,
+export const ICON = TEMPLATE_WITH_TEXT.bind({});
+ICON.args = {
+    ...DEFAULT.args,
     icon: 'home'
 };

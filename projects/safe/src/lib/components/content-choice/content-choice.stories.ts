@@ -21,7 +21,7 @@ export default {
     title: 'UI/Content Type Choice'
 } as Meta;
 
-const Template: Story<SafeContentChoiceComponent> = args => ({
+const TEMPLATE: Story<SafeContentChoiceComponent> = args => ({
     template: '<safe-content-choice [formControl]="type" [contentTypes]="contentTypes"></safe-content-choice>',
     props: {
         ...args,
@@ -29,7 +29,7 @@ const Template: Story<SafeContentChoiceComponent> = args => ({
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT  = TEMPLATE.bind({});
+DEFAULT.args = {
     contentTypes: CONTENT_TYPES
 };

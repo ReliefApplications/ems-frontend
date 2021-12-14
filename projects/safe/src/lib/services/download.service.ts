@@ -18,6 +18,7 @@ export class SafeDownloadService {
 
   /**
    * Download file from the server
+   *
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
@@ -27,7 +28,9 @@ export class SafeDownloadService {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
@@ -38,6 +41,7 @@ export class SafeDownloadService {
 
   /**
    * Downloads records file from the server with a POST request
+   *
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
@@ -47,7 +51,9 @@ export class SafeDownloadService {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     this.http.post(url, body, {responseType: 'blob', headers}).subscribe((res) => {
@@ -69,7 +75,9 @@ export class SafeDownloadService {
     const url = this.buildURL(path);
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     const formData = new FormData();

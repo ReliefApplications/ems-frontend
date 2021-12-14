@@ -111,12 +111,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
     this.surveyCreator
       .toolbox
-      .changeCategories(QUESTION_TYPES.map(x => {
-        return {
+      .changeCategories(QUESTION_TYPES.map(x => ({
           name: x,
           category: 'Question Library'
-        };
-      }));
+        })));
 
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey, option) => {
@@ -218,7 +216,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       .catch((error) => {
         this.snackBar.openSnackBar(error.message, { error: true });
       });
-  }
+  };
 
   /*  Making sure that value names are existent and snake case, to not cause backend problems.
   */
@@ -281,34 +279,26 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         });
       }
       if (element.type === 'matrix') {
-        element.columns = element.columns.map((x: any) => {
-          return {
+        element.columns = element.columns.map((x: any) => ({
             value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
             text: x.text ? x.text : x
-          };
-        });
-        element.rows = element.rows.map((x: any) => {
-          return {
+          }));
+        element.rows = element.rows.map((x: any) => ({
             value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
             text: x.text ? x.text : x
-          };
-        });
+          }));
       }
       if (element.type === 'matrixdropdown') {
-        element.columns = element.columns.map((x: any) => {
-          return {
+        element.columns = element.columns.map((x: any) => ({
             name: x.name ? this.toSnakeCase(x.name) : this.toSnakeCase(x.title ? x.title : x),
             title: x.title ? x.title : (x.name ? x.name : x),
             ...x.cellType && { cellType: x.cellType },
             ...x.isRequired && { isRequired: true }
-          };
-        });
-        element.rows = element.rows.map((x: any) => {
-          return {
+          }));
+        element.rows = element.rows.map((x: any) => ({
             value: x.value ? this.toSnakeCase(x.value) : this.toSnakeCase(x.text ? x.text : x),
             text: x.text ? x.text : x
-          };
-        });
+          }));
       }
       if (['resource', 'resources'].includes(element.type)) {
         if (element.relatedName) {
@@ -327,6 +317,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   /**
    * Add custom CSS classes to the survey elements.
+   *
    * @param survey current survey.
    * @param options survey options.
    */

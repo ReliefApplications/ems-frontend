@@ -28,7 +28,7 @@ export interface RecordConnection {
     totalCount?: number;
     edges?: {
         node?: Record;
-        cursor?: string
+        cursor?: string;
     }[];
     pageInfo?: {
         startCursor?: string;

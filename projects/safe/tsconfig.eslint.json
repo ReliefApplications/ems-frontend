@@ -22,7 +22,7 @@
         "src/test.ts",
         "**/*.spec.ts",
         "**/*.d.ts",
-        "**/*.stories.*",
+        // "**/*.stories.*",
         "**/node_modules/**"
     ]
 }

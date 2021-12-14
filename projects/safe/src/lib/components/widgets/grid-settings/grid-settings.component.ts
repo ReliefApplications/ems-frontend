@@ -97,6 +97,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         const query = this.queryBuilder.sourceQuery(this.queryName);
         if (query) {
           query.subscribe((res1: { data: any }) => {
+            // eslint-disable-next-line no-underscore-dangle
             const source = res1.data[`_${this.queryName}Meta`]._source;
             this.tileForm?.get('resource')?.setValue(source);
             if (source) {
@@ -132,7 +133,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.change.emit(this.tileForm);
       });
 
-      this.applicationService.application.subscribe((application: Application | null) => {
+      this.applicationService.application$.subscribe((application: Application | null) => {
         if (application) {
           this.apollo.watchQuery<GetChannelsQueryResponse>({
             query: GET_CHANNELS,

@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name || '';
         const adminNavItems: any[] = [];

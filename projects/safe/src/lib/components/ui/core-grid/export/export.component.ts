@@ -4,9 +4,9 @@ import { EXPORT_SETTINGS } from '../grid/grid.constants';
 
 interface DialogData {
   export: {
-    records: string,
-    fields: string,
-    format: string
+    records: string;
+    fields: string;
+    format: string;
   };
 }
 

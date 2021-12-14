@@ -17,6 +17,7 @@ export class SafeEmailService {
 
   /**
    * Opens a mail client with items in the body.
+   *
    * @param recipient recipient of the email.
    * @param subject subject of the email.
    * @param body body of the email, if not given we put the formatted records.
@@ -42,8 +43,8 @@ export class SafeEmailService {
       this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
       try {
         window.location.href = `mailto:${recipient}?subject=${subject}`;
-      } catch (error) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
+      } catch (error2) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error2), { error: true });
       }
     }
   }

@@ -43,12 +43,10 @@ export class SafeAddUserComponent implements OnInit {
       role: ['', Validators.required],
       ...this.data.positionAttributeCategories &&
       {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
-          return this.formBuilder.group({
+        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => this.formBuilder.group({
             value: [''],
             category: [x.id, Validators.required]
-          });
-        }))
+          })))
       }
     });
     this.filteredUsers = this.form.controls.email.valueChanges.pipe(

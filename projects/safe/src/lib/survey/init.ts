@@ -15,24 +15,33 @@ import { DomService } from '../services/dom.service';
 import { FormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../services/auth.service';
 
-/*  Execute all init methods of custom SurveyJS.
-*/
-export function initCustomWidgets(
-  Survey: any,
+/**
+ * Executes all init methods of custom SurveyJS.
+ *
+ * @param survey surveyjs or surveyjs creator
+ * @param domService Angular DOM service, used to inject components on the go
+ * @param dialog dialog service
+ * @param apollo apollo service
+ * @param formBuilder form builder service
+ * @param authService custom auth service
+ * @param environment injected environment
+ */
+export const initCustomWidgets = (
+  survey: any,
   domService: DomService,
   dialog: MatDialog,
   apollo: Apollo,
   formBuilder: FormBuilder,
   authService: SafeAuthService,
   environment: any
-): void {
-  Survey.settings.commentPrefix = '_comment';
+): void => {
+  survey.settings.commentPrefix = '_comment';
   // supportCreatorV2
-  widgets.select2tagbox(Survey);
-  initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
-  initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
-  initOwnerComponent(Survey, domService, apollo, dialog, formBuilder);
-  initUsersComponent(Survey, domService, apollo, dialog, formBuilder);
-  initCustomWidget(Survey, domService, dialog, environment);
-  addCustomFunctions(Survey, authService, apollo);
-}
+  widgets.select2tagbox(survey);
+  initResourceComponent(survey, domService, apollo, dialog, formBuilder);
+  initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
+  initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
+  initUsersComponent(survey, domService, apollo, dialog, formBuilder);
+  initCustomWidget(survey, domService, dialog, environment);
+  addCustomFunctions(survey, authService, apollo);
+};
