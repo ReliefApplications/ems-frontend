@@ -14,10 +14,11 @@ import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
 
-export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
-};
+}
 
 @Component({
   selector: 'safe-query-builder',

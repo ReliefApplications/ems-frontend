@@ -8,10 +8,11 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
 
-export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
-};
+}
 
 @Component({
   selector: 'safe-resource-dropdown',

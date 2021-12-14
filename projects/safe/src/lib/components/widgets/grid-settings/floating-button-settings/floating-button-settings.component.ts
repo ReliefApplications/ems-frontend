@@ -16,10 +16,11 @@ import { MatDialog } from '@angular/material/dialog';
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
-export const codesFactory = (): () => any => {
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function codesFactory(): () => any {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
-};
+}
 
 @Component({
   selector: 'safe-floating-button-settings',

@@ -8,10 +8,11 @@ import { Record } from '../../models/record.model';
 
 const ITEMS_PER_PAGE = 25;
 
-export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
-};
+}
 
 @Component({
   selector: 'safe-record-dropdown',
