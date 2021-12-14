@@ -137,33 +137,7 @@ export function provideApollo(httpLink: HttpLink): any {
     SafeFormModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: false, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-    {
-      popUp: false,
-      consentScopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      protectedResourceMap: [
-        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-      ],
-      extraQueryParameters: {}
-    }),
+    MsalModule,
   ],
   providers: [
     {
