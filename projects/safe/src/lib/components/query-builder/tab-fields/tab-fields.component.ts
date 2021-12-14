@@ -2,7 +2,6 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Component, ComponentFactory, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { prettifyLabel } from '../../../utils/prettify';
 
 @Component({
   selector: 'safe-tab-fields',

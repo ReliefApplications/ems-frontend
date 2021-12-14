@@ -2,16 +2,16 @@ import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnC
   OnInit, Output, SimpleChanges, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeLayoutService } from '../../services/layout.service';
-import { Account } from 'msal';
 import { PermissionsManagement, PermissionType, User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
+import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { AccountInfo } from '@azure/msal-common';
 
 @Component({
   selector: 'safe-layout',
@@ -41,11 +41,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   filteredNavGroups: any[] = [];
 
   // === NOTIFICATIONS ===
-  notifications: Notification[] = [];
-  notificationsSubscription?: Subscription;
+  public notifications: Notification[] = [];
+  private notificationsSubscription?: Subscription;
+  public hasMoreNotifications = false;
+  private hasMoreNotificationsSubscription?: Subscription;
+  public loadingNotifications = false;
 
   // === USER INFO ===
-  account: Account | null;
+  account: AccountInfo | null;
   public user?: User;
   private userSubscription?: Subscription;
 
@@ -79,8 +82,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.otherOffice = 'back office';
     }
     this.loadUserAndUpdateLayout();
-    this.notificationService.initNotifications();
-    this.notificationsSubscription = this.notificationService.notifications.subscribe((notifications: Notification[]) => {
+    this.notificationService.init();
+    this.notificationsSubscription = this.notificationService.notifications$.subscribe((notifications: Notification[]) => {
       if (notifications) {
         this.notifications = notifications;
       } else {
@@ -88,7 +91,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.layoutService.rightSidenav.subscribe(view => {
+    this.hasMoreNotificationsSubscription = this.notificationService.hasNextPage$.subscribe(res => {
+      this.hasMoreNotifications = res;
+      this.loadingNotifications = false;
+    });
+
+    this.layoutService.rightSidenav$.subscribe(view => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);
@@ -116,7 +124,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    this.userSubscription = this.authService.user.subscribe((user) => {
+    this.userSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
         this.user = { ...user };
       }
@@ -135,7 +143,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
             callback: group.callback,
             navItems
           };
-          this.filteredNavGroups.push(JSON.parse(JSON.stringify(filteredGroup)));
+          this.filteredNavGroups.push(filteredGroup);
         }
       }
     });
@@ -151,6 +159,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.hasMoreNotificationsSubscription) {
+      this.hasMoreNotificationsSubscription.unsubscribe();
     }
   }
 
@@ -218,6 +229,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       window.location.href = this.environment.backOfficeUri;
     }
+  }
+
+  public onLoadMoreNotifications(e: any): void {
+    e.stopPropagation();
+    this.notificationService.fetchMore();
+    this.loadingNotifications = true;
   }
 
   onMarkAllNotificationsAsRead(): void {

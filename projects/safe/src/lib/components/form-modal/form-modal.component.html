@@ -1,2 +1,17 @@
-<span mat-dialog-title *ngIf="modifiedAt" class="record-date">Last edit: {{ modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
+<safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
+<safe-record-summary *ngIf="record" [record]="record" (showHistory)="onShowHistory()"></safe-record-summary>
+<mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
+    <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name">
+        <ng-template mat-tab-label>
+            {{ page.title ? page.title : page.name }}
+            <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
+<div mat-dialog-actions align="end" *ngIf="survey">
+    <button mat-button color="warn" (click)="onClose()">Cancel</button>
+    <button [disabled]="survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
+    <button [disabled]="survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
+    <button mat-flat-button color="primary" (click)="submit()">Save and close</button>
+</div>

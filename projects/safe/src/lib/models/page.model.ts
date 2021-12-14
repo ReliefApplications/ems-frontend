@@ -1,13 +1,17 @@
 import { Application } from './application.model';
 
-/*  Enum of content types.
-*/
+/**
+ * Enum of content types.
+ */
 export enum ContentType {
     workflow = 'workflow',
     dashboard = 'dashboard',
     form = 'form'
 }
 
+/**
+ * Content type interface.
+ */
 export interface IContentType {
     value: string;
     name: string;
@@ -16,7 +20,17 @@ export interface IContentType {
     focusColor: string;
 }
 
+/**
+ * Available content types.
+ */
 export const CONTENT_TYPES: IContentType[] = [
+    {
+        value: 'form',
+        name: 'form',
+        img: '/assets/form.svg',
+        color: '#C5D3FC33',
+        focusColor: '#92ADFF'
+    },
     {
         value: 'workflow',
         name: 'workflow',
@@ -30,13 +44,6 @@ export const CONTENT_TYPES: IContentType[] = [
         img: '/assets/dashboard.svg',
         color: '#F6C48133',
         focusColor: '#F6C481'
-    },
-    {
-        value: 'form',
-        name: 'form',
-        img: '/assets/form.svg',
-        color: '#C5D3FC33',
-        focusColor: '#92ADFF'
     }
 ];
 

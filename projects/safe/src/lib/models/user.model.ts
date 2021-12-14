@@ -83,6 +83,10 @@ export class PermissionsManagement {
             apiconfigurations: {
                 create: Permissions.canManageApiConfigurations,
                 access: Permissions.canManageApiConfigurations
+            },
+            pulljobs: {
+                create: Permissions.canManageApiConfigurations,
+                access: Permissions.canManageApiConfigurations
             }
         },
         applications: {
@@ -120,5 +124,5 @@ export class PermissionsManagement {
 export interface AddUser {
     email: string;
     roles: string[];
-    attributes: { value: string, category: string };
+    attributes: { value: string; category: string };
   }

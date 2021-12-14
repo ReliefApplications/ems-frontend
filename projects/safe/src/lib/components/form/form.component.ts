@@ -1,20 +1,34 @@
 import { Apollo } from 'apollo-angular';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
 import { v4 as uuidv4 } from 'uuid';
-import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
+import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD,
+  UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { LANGUAGES } from '../../utils/languages';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { SafeWorkflowService } from '../../services/workflow.service';
-import { SafeDownloadService } from '../../services/download.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
+import { GET_RECORD_DETAILS, GetRecordDetailsQueryResponse } from '../../graphql/queries';
+import { SafeLayoutService } from '../../services/layout.service';
+import { SafeFormBuilderService } from '../../services/form-builder.service';
+import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 
 @Component({
   selector: 'safe-form',
@@ -25,18 +39,19 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<{completed: boolean, hideNewRecord?: boolean}> = new EventEmitter();
+  @Output() save: EventEmitter<{ completed: boolean; hideNewRecord?: boolean }> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage: { name: string, nativeName: string } = {
+  public surveyLanguage: { name: string; nativeName: string } = {
     name: 'English',
     nativeName: 'English'
   };
-  public usedLocales: Array<{ text: string, value: string }> = [];
+  public usedLocales: Array<{ text: string; value: string }> = [];
   public dropdownLocales: any[] = [];
   public surveyActive = true;
   public selectedTabIndex = 0;
+  private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
   public containerId: string;
 
@@ -46,28 +61,33 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   // === MODIFIED AT ===
   public modifiedAt: Date | null = null;
 
-  // === PASS RECORDS FROM WORKFLOW ===
-  private isStep = false;
-  private recordsSubscription?: Subscription;
-
   // === LOCALE STORAGE ===
   private storageId = '';
-  public storageDate: Date = new Date();
+  public storageDate?: Date;
   public isFromCacheData = false;
 
+  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
+  public factory?: ComponentFactory<any>;
+
+  public get pages$(): Observable<any[]> {
+    return this.pages.asObservable();
+  }
+
   constructor(
-    private apollo: Apollo,
     public dialog: MatDialog,
+    private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private router: Router,
-    private workflowService: SafeWorkflowService,
     private downloadService: SafeDownloadService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private layoutService: SafeLayoutService,
+    private resolver: ComponentFactoryResolver,
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
   }
 
   ngOnInit(): void {
+    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
     const defaultThemeColorsSurvey = Survey
       .StylesManager
       .ThemeColors.default;
@@ -78,10 +98,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       .StylesManager
       .applyTheme();
 
-    addCustomFunctions(Survey, this.authService, this.record);
+    Survey.StylesManager.findSheet('default');
+
+    addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
-    this.survey = new Survey.Model(JSON.stringify(structure));
+    this.survey = this.formBuilderService.createSurvey(JSON.stringify(structure));
     this.survey.onClearFiles.add((survey, options) => this.onClearFiles(survey, options));
     this.survey.onUploadFiles.add((survey, options) => this.onUploadFiles(survey, options));
     this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
@@ -98,27 +120,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
-    let cachedData = storedData ? JSON.parse(storedData).data : null;
-    this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : new Date();
+    const cachedData = storedData ? JSON.parse(storedData).data : null;
+    this.storageDate = storedData ? new Date(JSON.parse(storedData).date) : undefined;
     this.isFromCacheData = !(!cachedData);
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
-    }
-
-    this.isStep = this.router.url.includes('/workflow/');
-    if (this.isStep) {
-      this.recordsSubscription = this.workflowService.records$.subscribe(records => {
-        if (records.length > 0) {
-          const mergedData = this.mergedData(records);
-          cachedData = Object.assign({}, mergedData);
-          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === records[0].form?.resource?.id) {
-            cachedData[resourcesField.name] = records.map(x => x.id);
-          } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, { error: true });
-          }
-        }
-      });
     }
 
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
@@ -138,7 +144,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach(lang => {
         const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-        this.usedLocales.push({value: lang, text: nativeName});
+        this.usedLocales.push({ value: lang, text: nativeName });
         this.dropdownLocales.push(nativeName);
       });
     }
@@ -153,13 +159,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey.locale = 'en';
     }
 
+    this.survey.showNavigationButtons = false;
+    this.setPages();
     this.survey.onComplete.add(this.complete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
-      this.selectedTabIndex = surveyModel.currentPageNo;
+    this.survey.onCurrentPageChanged.add((survey, options) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
+    this.survey.onPageVisibleChanged.add(() => {
+      this.setPages();
+    });
+    this.survey.onSettingQuestionErrors.add((survey, options) => {
+      this.setPages();
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
@@ -181,8 +196,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     localStorage.setItem(this.storageId, JSON.stringify({ data: this.survey.data, date: new Date() }));
   }
 
-  /*  Custom SurveyJS method, save a new record or edit existing one.
-  */
+  /**
+   * Calls the complete method of the survey if no error.
+   */
+  public submit(): void {
+    if (!this.survey?.hasErrors()) {
+      this.survey?.completeLastPage();
+    } else {
+      this.snackBar.openSnackBar('Saving failed, some fields require your attention.', { error: true });
+    }
+  }
+
+  /**
+   * Creates the record, or update it if provided.
+   *
+   * @param survey Survey instance.
+   */
   public complete = async () => {
     let mutation: any;
     this.surveyActive = false;
@@ -213,7 +242,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key] && questions[field].getType() !== 'boolean') { data[key] = null; }
+        if (!data[key]) {
+          if (questions[field].getType() !== 'boolean') {
+            data[key] = null;
+          }
+          if (questions[field].readOnly || !questions[field].visible) {
+            delete data[key];
+          }
+        }
       }
     }
     this.survey.data = data;
@@ -262,7 +298,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
       }
     });
-  }
+  };
 
   /* Change language of the form.
   */
@@ -295,9 +331,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           ]);
           if (content.length === options.files.length) {
-            options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
-            }));
+            options.callback('success', content.map((fileContent) => ({ file: fileContent.file, content: fileContent.content })));
           }
         };
         fileReader.readAsDataURL(file);
@@ -329,6 +363,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Add custom CSS classes to the survey elements.
+   *
    * @param survey current survey.
    * @param options survey options.
    */
@@ -337,12 +372,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     classes.content += 'safe-qst-content';
   }
 
-  public onShowPage(i: number): void {
-    this.survey.currentPageNo = i;
-    this.selectedTabIndex = i;
-    if (this.survey.compareTo) {
-      this.survey.currentPageNo = i;
+  private setPages(): void {
+    const pages = [];
+    if (this.survey) {
+      for (const page of this.survey.pages) {
+        if (page.isVisible) {
+          pages.push(page);
+        }
+      }
     }
+    this.pages.next(pages);
+  }
+
+  public onShowPage(i: number): void {
+    if (this.survey) { this.survey.currentPageNo = i; }
+    if (this.survey.compareTo) { this.survey.currentPageNo = i; }
+    this.selectedTabIndex = i;
   }
 
   public onClear(): void {
@@ -350,59 +395,64 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
+    this.storageDate = undefined;
     this.survey.render();
   }
 
-  private mergedData(records: Record[]): any {
-    const data: any = {};
-    // Loop on source fields
-    for (const inputField of records[0].form?.fields || []) {
-      // If source field match with target field
-      if (this.form.fields?.some(x => x.name === inputField.name)) {
-        const targetField = this.form.fields?.find(x => x.name === inputField.name);
-        // If source field got choices
-        if (inputField.choices || inputField.choicesByUrl) {
-          // If the target has multiple choices we concatenate all the source values
-          if (targetField.type === 'tagbox' || targetField.type === 'checkbox') {
-            if (inputField.type === 'tagbox' || targetField.type === 'checkbox') {
-              data[inputField.name] = records.reduce((o: string[], record: Record) => {
-                o = o.concat(record.data[inputField.name]);
-                return o;
-              }, []);
-            } else {
-              data[inputField.name] = records.map(x => x.data[inputField.name]);
-            }
-          }
-          // If the target has single choice we we put the common choice if any or leave it empty
-          else {
-            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
-              data[inputField.name] = records[0].data[inputField.name];
-            }
-          }
-        }
-        // If source field is a free input and types are matching between source and target field
-        else if (inputField.type === targetField.type) {
-          // If type is text just put the text of the first record
-          if (inputField.type === 'text') {
-            data[inputField.name] = records[0].data[inputField.name];
-          }
-          // If type is different from text and there is a common value, put it. Otherwise leave empty
-          else {
-            if (!records.some(x => x.data[inputField.name] !== records[0].data[inputField.name])) {
-              data[inputField.name] = records[0].data[inputField.name];
-            }
-          }
-        }
-      }
-    }
-    return data;
+  ngOnDestroy(): void {
+    localStorage.removeItem(this.storageId);
   }
 
-  ngOnDestroy(): void {
-    if (this.recordsSubscription) {
-      this.recordsSubscription.unsubscribe();
-      this.workflowService.storeRecords([]);
+  private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
+    const date = new Date(parseInt(version.created, 0));
+    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: `Recovery data`,
+        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: record.id,
+            version: version.id
+          }
+        }).subscribe((res) => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+        });
+
+      }
+    });
+  }
+
+  /**
+   * Opens the history of the record on the right side of the screen.
+   */
+  public onShowHistory(): void {
+    if (this.record) {
+      this.apollo.query<GetRecordDetailsQueryResponse>({
+        query: GET_RECORD_DETAILS,
+        variables: {
+          id: this.record.id
+        }
+      }).subscribe(res => {
+        this.layoutService.setRightSidenav({
+          factory: this.factory,
+          inputs: {
+            record: res.data.record,
+            revert: (item: any, dialog: any) => {
+              this.confirmRevertDialog(res.data.record, item);
+            }
+          },
+        });
+      });
     }
-    localStorage.removeItem(this.storageId);
   }
 }

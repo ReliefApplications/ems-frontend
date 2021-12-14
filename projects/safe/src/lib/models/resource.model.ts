@@ -1,5 +1,5 @@
 import { Form } from './form.model';
-import { Record } from './record.model';
+import { RecordConnection } from './record.model';
 
 /*  Model for Resource object.
 */
@@ -9,7 +9,7 @@ export interface Resource {
     forms?: Form[];
     relatedForms?: Form[];
     createdAt?: Date;
-    records?: Record[];
+    records?: RecordConnection;
     fields?: any;
     canSee?: boolean;
     canUpdate?: boolean;

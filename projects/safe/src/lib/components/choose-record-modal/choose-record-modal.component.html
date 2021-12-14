@@ -7,16 +7,16 @@
                 <mat-form-field>
                     <mat-label>Record</mat-label>
                     <mat-select formControlName="record">
-                        <mat-option *ngFor="let record of records" [value]="record.id">
-                            {{record.data[data.targetFormField]}}
+                        <mat-option *ngFor="let record of records$ | async" [value]="record.value">
+                            {{record.label}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
         </form>
-        <safe-resource-grid *ngIf="isSearchActivated" [settings]="{ query: data.targetFormQuery }" [multiSelect]="false"
-            (rowSelected)="onRowSelected($event)">
-        </safe-resource-grid>
+        <safe-core-grid *ngIf="isSearchActivated" [settings]="settings" [multiSelect]="false" [selectedRows]="selectedRows"
+        (selectionChange)="onSelectionChange($event)" style="height: 410px;">
+        </safe-core-grid>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button mat-stroked-button color="primary" (click)="onSearch()" *ngIf="data.targetFormQuery">{{ isSearchActivated ? 'Select' : 'Search' }}</button>

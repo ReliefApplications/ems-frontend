@@ -4,7 +4,6 @@ import { SafeButtonComponent } from './button.component';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
-import { withKnobs, text } from '@storybook/addon-knobs';
 
 export default {
     component: SafeButtonComponent,
@@ -14,8 +13,7 @@ export default {
                 SafeButtonModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Button',
     argTypes: {
@@ -55,21 +53,43 @@ export default {
         isIcon: {
             defaultValue: false,
             control: { type: 'boolean' }
+        },
+        content: {
+            defaultValue: 'This is a button',
+            control: { type: 'text' }
         }
     }
 } as Meta;
 
-const Template: Story<SafeButtonComponent> = args => ({
-    template: '<safe-button>{{content}}</safe-button>',
+const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = args => ({
+    template: '<safe-button [icon]="icon">{{content}}</safe-button>',
     props: {
-        ...args,
-        content: text('Text', 'This is a button')
+        ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+const TEMPLATE_WITHOUT_TEXT: Story<SafeButtonComponent> = args => ({
+    props: {
+        ...args
+    }
+});
+
+export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.args = {
     category: ButtonCategory.PRIMARY,
     size: ButtonSize.MEDIUM,
     variant: ButtonVariant.DEFAULT
+};
+
+export const ICON_AND_TEXT = TEMPLATE_WITH_TEXT.bind({});
+ICON_AND_TEXT.args = {
+    ...DEFAULT.args,
+    icon: 'home'
+};
+
+export const ICON = TEMPLATE_WITHOUT_TEXT.bind({});
+ICON.args = {
+    ...DEFAULT.args,
+    isIcon: true,
+    icon: 'home'
 };

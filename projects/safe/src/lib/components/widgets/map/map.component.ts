@@ -50,6 +50,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   constructor(
+    private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
     this.mapId = this.generateUniqueId();
@@ -60,7 +61,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
     for (let i = 0; i < parts; i++) {
-      // tslint:disable-next-line:no-bitwise
+      // eslint-disable-next-line no-bitwise
       const S4 = (((1 + Math.random()) * 0x10000) | 0)
         .toString(16)
         .substring(1);
@@ -73,10 +74,14 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   */
   ngAfterViewInit(): void {
     this.drawMap();
-
-    this.dataQuery = this.queryBuilder.buildQuery(this.settings);
-
-    if (this.dataQuery) {
+    if (this.settings.query){
+      const builtQuery =  this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: 100
+        }
+      });
       this.getData();
     }
 
@@ -105,7 +110,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       noWrap: true,
       minZoom: 1,
     }).addTo(this.map);
-
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
@@ -135,7 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.markersLayer.clearLayers();
       for (const field in res.data) {
         if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].map((x: any) => this.drawMarkers(myIcon, x));
+          res.data[field].edges.map((x: any) => this.drawMarkers(myIcon, x.node));
         }
       }
     });

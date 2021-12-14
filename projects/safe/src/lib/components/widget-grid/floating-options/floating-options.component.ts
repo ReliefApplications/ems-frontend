@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeTileDisplayComponent } from './menu/tile-display/tile-display.component';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
-import { SafeGridService } from '../../../services/grid.service';
+import { SafeDashboardService } from '../../../services/dashboard.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 
 @Component({
@@ -27,7 +27,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private gridService: SafeGridService
+    private dashboardService: SafeDashboardService
   ) { }
 
   /*  Set the list of available actions.
@@ -64,14 +64,16 @@ export class SafeFloatingOptionsComponent implements OnInit {
         }
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'display', id: this.widget.id, options: res});
+        if (res) {
+          this.edit.emit({ type: 'display', id: this.widget.id, options: res});
+        }
       });
     }
     if (item.name === 'Settings') {
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         data: {
           tile: this.widget,
-          template: this.gridService.findSettingsTemplate(this.widget)
+          template: this.dashboardService.findSettingsTemplate(this.widget)
         },
         // hasBackdrop: false,
         position: {
@@ -81,7 +83,9 @@ export class SafeFloatingOptionsComponent implements OnInit {
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
-        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+        if (res) {
+          this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+        }
       });
     }
     if (item.name === 'Expand') {

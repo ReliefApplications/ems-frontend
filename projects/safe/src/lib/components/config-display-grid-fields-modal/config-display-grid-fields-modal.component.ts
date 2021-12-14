@@ -7,6 +7,7 @@ import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
@@ -40,7 +41,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.queryBuilder.availableQueries.subscribe((res) => {
+    this.queryBuilder.availableQueries$.subscribe((res) => {
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
         const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);

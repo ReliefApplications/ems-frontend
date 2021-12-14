@@ -29,16 +29,21 @@ export default {
                 IconVariant.LIGHT
             ],
             control: { type: 'select' }
+        },
+        size: {
+            defaultValue: 24,
+            control: { type: 'number' }
         }
     }
 } as Meta;
 
-const Template: Story<SafeIconComponent> = args => ({
-    template: '<safe-icon icon="edit"></safe-icon>',
+const TEMPLATE: Story<SafeIconComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {};
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
+    icon: 'edit'
+};

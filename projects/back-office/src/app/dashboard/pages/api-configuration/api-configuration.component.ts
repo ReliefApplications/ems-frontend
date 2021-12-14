@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiConfiguration, authType, NOTIFICATIONS, SafeSnackBarService, SafeApiProxyService, status } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
@@ -25,6 +25,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   public statusChoices = Object.values(status);
   public authTypeChoices = Object.values(authType);
 
+  get name(): AbstractControl | null {
+    return this.apiForm.get('name');
+  }
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -47,7 +51,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           this.apiConfiguration = res.data.apiConfiguration;
           this.apiForm = this.formBuilder.group(
             {
-              name: [this.apiConfiguration?.name, Validators.required],
+              name: [this.apiConfiguration?.name, [ Validators.required, Validators.pattern('^[A-Za-z-_]+$') ]],
               status: [this.apiConfiguration?.status, Validators.required],
               authType: [this.apiConfiguration?.authType, Validators.required],
               endpoint: [this.apiConfiguration?.endpoint, Validators.required],
@@ -91,8 +95,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
         safeSecret: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeSecret
           ? '●●●●●●●●●●●●●' : '', Validators.minLength(3)],
-        safeID: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.safeID
-          ? '●●●●●●●●●●●●●' : '', null],
         scope: [this.apiConfiguration?.settings && this.apiConfiguration?.settings.scope
           ? '●●●●●●●●●●●●●' : '', null],
       });

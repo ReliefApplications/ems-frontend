@@ -1,22 +1,5 @@
-.records-cell{
+.records-cell {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-}
-
-.searchbar {
-  float: left;
-
-  .filters-toggle {
-    margin-left: 12px;
-  }
-}
-
-.filters {
-  clear: both;
-  margin-left: -12px;
-
-  .mat-form-field {
-    margin-left: 12px;
-  }
 }

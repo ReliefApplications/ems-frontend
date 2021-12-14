@@ -15,7 +15,7 @@ import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-applications',
@@ -30,19 +30,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = ['name', 'createdAt', 'status', 'usersCount', 'actions'];
+  public newApplications: Application[] = [];
+  public filter: any;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
-  // === FILTERS ===
-  public filtersDate = {startDate: '', endDate: ''};
-  public searchText = '';
-  public statusFilter = '';
-  public showFilters = false;
-
   public pageInfo = {
     pageIndex: 0,
-    pageSize: ITEMS_PER_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     endCursor: ''
   };
@@ -63,24 +59,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private previewService: PreviewService
   ) { }
 
+  /**
+   * Creates the application query and subscribes to the query changes.
+   */
   ngOnInit(): void {
     this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
       query: GET_APPLICATIONS,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE
       }
     });
 
     this.applicationsQuery.valueChanges.subscribe(res => {
       this.cachedApplications = res.data.applications.edges.map(x => x.node);
+      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterPredicate();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create))
         || this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.manage));
     });
@@ -88,15 +87,26 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
-  onPage(e: any): void {
+   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedApplications.length) {
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize )
+      && e.length > this.cachedApplications.length){
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
       this.applicationsQuery.fetchMore({
         variables: {
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          first,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) { return prev; }
@@ -111,36 +121,64 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     } else {
       this.applications.data = this.cachedApplications.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
-  private filterPredicate(): void {
-    this.applications.filterPredicate = (data: any) => {
-      const endDate = new Date(this.filtersDate.endDate).getTime();
-      const startDate = new Date(this.filtersDate.startDate).getTime();
-      return (((this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim()))) &&
-        (!startDate || !endDate || data.createdAt >= startDate && data.createdAt <= endDate)));
-    };
+  /**
+   * Filters applications and updates table.
+   *
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.cachedApplications = [];
+    this.pageInfo.pageIndex = 0;
+    this.applicationsQuery.fetchMore({
+      variables: {
+        first: this.pageInfo.pageSize,
+        filter: this.filter
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) { return prev; }
+        return Object.assign({}, prev, {
+          applications: {
+            edges: fetchMoreResult.applications.edges,
+            pageInfo: fetchMoreResult.applications.pageInfo,
+            totalCount: fetchMoreResult.applications.totalCount
+          }
+        });
+      }
+    });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.applications.sort = this.sort || null;
   }
 
+  /**
+   * Removes all subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
 
-  /*  Delete an application if authorized.
-  */
-  onDelete(element: any, e: any): void {
-    e.stopPropagation();
+  /**
+   * Deletes an application if authorized.
+   *
+   * @param element application.
+   * @param e click event.
+   */
+  onDelete(element: any, e?: any): void {
+    if (e) {
+      e.stopPropagation();
+    }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete application',
@@ -159,17 +197,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
-          this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data?.deleteApplication.id;
-          });
+          this.applications.data = this.applications.data.filter(x => x.id !== res.data?.deleteApplication.id);
+          this.newApplications = this.newApplications.filter(x => x.id !== res.data?.deleteApplication.id);
         });
       }
     });
   }
 
-  /*  Display the AddApplication component.
-    Add a new application once closed, if result exists.
-  */
+  /**
+   * Displays the AddApplication component.
+   * Adds a new application once closed, if result exists.
+   */
   onAdd(): void {
     this.apollo.mutate<AddApplicationMutationResponse>({
       mutation: ADD_APPLICATION
@@ -186,8 +224,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Edit the permissions layer.
-  */
+  /**
+   * Edits the permissions layer.
+   *
+   * @param e permissions.
+   * @param element application.
+   */
   saveAccess(e: any, element: Application): void {
     this.apollo.mutate<EditApplicationMutationResponse>({
       mutation: EDIT_APPLICATION,
@@ -205,8 +247,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to choose roles to fit in the preview.
-  */
+  /**
+   * Opens a dialog to choose roles to fit in the preview.
+   *
+   * @param element application to preview.
+   */
   onPreview(element: Application): void {
     const dialogRef = this.dialog.open(ChoseRoleComponent, {
       data: {
@@ -221,9 +266,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /*  Open a dialog to give a name for the duplicated application
-  */
-  onDuplicate(application: Application): void {
+  /**
+   * Opens a dialog to give a name for the duplicated application.
+   *
+   * @param application application to duplicate.
+   */
+  onClone(application: Application): void {
     const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
       data: {
         id: application.id,
@@ -238,27 +286,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event ? event.target.value.trim().toLowerCase() : this.searchText;
-    }
-    this.applications.filter = '##';
-  }
-
-  clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
-    // ignore that error
-    this.startDate.value = '';
-    this.endDate.value = '';
-    this.applyFilter('createdAt', '');
-  }
-
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.clearDateFilter();
+  /**
+   * Navigates to application.
+   *
+   * @param id application id.
+   */
+  onOpenApplication(id: string): void {
+    this.router.navigate(['/applications', id]);
   }
 }

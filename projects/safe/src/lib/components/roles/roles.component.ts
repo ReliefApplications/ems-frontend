@@ -58,7 +58,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.inApplication) {
       this.loading = false;
-      this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+      this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
         if (application) {
           this.roles.data = application.roles || [];
         } else {
@@ -71,12 +71,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private filterPredicate(): void {
-    this.roles.filterPredicate = (data: any) => {
-      return (this.searchText.trim().length === 0 ||
+    this.roles.filterPredicate = (data: any) => (this.searchText.trim().length === 0 ||
         (this.searchText.trim().length > 0 && data.title.toLowerCase().includes(this.searchText.trim()))) &&
         (this.usersFilter.trim().length === 0 ||
           this.usersFilter.trim().length > 0 && data.usersCount.toString().includes(this.usersFilter.trim()));
-    };
 
   }
 

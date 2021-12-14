@@ -42,7 +42,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       this.dashboards = res.data.dashboards;
       this.loading = res.loading;
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
   }
@@ -65,9 +65,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       if (res.data) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'));
-        this.dashboards = this.dashboards.filter(x => {
-          return x.id !== res.data?.deleteDashboard.id;
-        });
+        this.dashboards = this.dashboards.filter(x => x.id !== res.data?.deleteDashboard.id);
       }
     });
   }

@@ -33,15 +33,14 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeSpinnerComponent> = args => ({
-    template: '<safe-spinner></safe-spinner>',
+const TEMPLATE: Story<SafeSpinnerComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     size: SpinnerSize.MEDIUM,
     variant: SpinnerVariant.DEFAULT
 };

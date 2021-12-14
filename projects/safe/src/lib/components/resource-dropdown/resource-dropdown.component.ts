@@ -8,6 +8,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
@@ -71,6 +72,7 @@ export class SafeResourceDropdownComponent implements OnInit {
 
   /**
    * Emits the selected resource id.
+   *
    * @param e select event.
    */
   onSelect(e: any): void {
@@ -79,6 +81,7 @@ export class SafeResourceDropdownComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenSelect(e: any): void {
@@ -90,6 +93,7 @@ export class SafeResourceDropdownComponent implements OnInit {
 
   /**
    * Fetches more resources on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

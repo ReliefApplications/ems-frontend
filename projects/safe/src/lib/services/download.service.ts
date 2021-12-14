@@ -13,24 +13,50 @@ export class SafeDownloadService {
     @Inject('environment') environment: any,
     private http: HttpClient
   ) {
-    this.baseUrl = environment.API_URL;
+    this.baseUrl = environment.apiUrl;
   }
 
   /**
    * Download file from the server
+   *
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
    * @param options (optional) request options
    */
-  getFile(path: string, type: string, fileName: string, options?: any): void {
+   getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
+      const blob = new Blob([res], {type});
+      this.saveFile(fileName, blob);
+    });
+  }
+
+  /**
+   * Downloads records file from the server with a POST request
+   *
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param body (optional) request body
+   */
+  getRecordsExport(path: string, type: string, fileName: string, body?: any): void {
+    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Authorization: `Bearer ${token}`
+    });
+    this.http.post(url, body, {responseType: 'blob', headers}).subscribe((res) => {
       const blob = new Blob([res], {type});
       this.saveFile(fileName, blob);
     });
@@ -49,7 +75,9 @@ export class SafeDownloadService {
     const url = this.buildURL(path);
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`
     });
     const formData = new FormData();

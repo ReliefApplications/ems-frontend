@@ -38,6 +38,9 @@ export class FormComponent implements OnInit {
     private router: Router
   ) { }
 
+  /**
+   * Gets the form from the page parameters.
+   */
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.loading = true;
@@ -85,11 +88,19 @@ export class FormComponent implements OnInit {
     });
   }
 
-  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+  /**
+   * Handles complete event.
+   *
+   * @param e complete event.
+   */
+  onComplete(e: {completed: boolean; hideNewRecord?: boolean}): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
 
+  /**
+   * Resets the form component.
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }

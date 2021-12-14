@@ -4,9 +4,9 @@ import { SafeEditorComponent } from './editor.component';
 
 @NgModule({
   declarations: [SafeEditorComponent],
-  imports: [
-    CommonModule
-  ],
+    imports: [
+      CommonModule
+    ],
   exports: [SafeEditorComponent]
 })
 export class SafeEditorModule { }

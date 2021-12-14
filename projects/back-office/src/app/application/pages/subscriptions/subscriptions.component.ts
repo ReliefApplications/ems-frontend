@@ -30,7 +30,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.subscriptions = application.subscriptions || [];
         this.channels = application.channels || [];
@@ -51,10 +51,10 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe((value: {
-      routingKey: string,
-      title: string,
-      convertTo: string,
-      channel: string
+      routingKey: string;
+      title: string;
+      convertTo: string;
+      channel: string;
     }) => {
       if (value) {
         this.applicationService.addSubscription(value);

@@ -3,7 +3,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService, SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
+import { Form, Page, Step, SafeFormComponent, SafeApplicationService, SafeSnackBarService,
+  SafeWorkflowService, NOTIFICATIONS } from '@safe/builder';
 import {
   GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID,
   GetPageByIdQueryResponse, GET_PAGE_BY_ID,
@@ -123,7 +124,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message), { error: true });
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', tabName));
@@ -141,7 +142,7 @@ export class FormComponent implements OnInit, OnDestroy {
         }
       }).subscribe(res => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message), { error: true });
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('page', tabName));
@@ -180,7 +181,7 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onComplete(e: { completed: boolean, hideNewRecord?: boolean }): void {
+  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

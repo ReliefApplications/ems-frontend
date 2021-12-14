@@ -1,7 +1,7 @@
-import { ElementRef, Injector, NgModule } from '@angular/core';
+import { DoBootstrap, ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeFormModule, SafeFormService, SafeWidgetGridModule } from '@safe/builder';
+import { SafeButtonModule, SafeFormModule, SafeFormService, SafeWidgetGridModule, SafeWorkflowStepperModule } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,20 +31,19 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormComponent } from './components/form/form.component';
 import { WorkflowComponent } from './components/workflow/workflow.component';
-import { MatStepperModule } from '@angular/material/stepper';
 import { ApplicationComponent } from './components/application/application.component';
 import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.component';
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
-
-localStorage.setItem('loaded', 'false');
+import { MsalModule } from '@azure/msal-angular';
 
 /*  Configuration of the Apollo client.
 */
-export function provideApollo(httpLink: HttpLink): any {
+export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'charset=utf-8'
     }
   }));
@@ -55,25 +54,20 @@ export function provideApollo(httpLink: HttpLink): any {
     const token = localStorage.getItem('msal.idtoken');
     return {
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: `Bearer ${token}`
       }
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
-      },
-      connectionCallback: (error) => {
-        if (localStorage.getItem('loaded') === 'true') {
-          localStorage.setItem('loaded', 'false');
-        }
-        localStorage.setItem('loaded', 'true');
       }
     }
   });
@@ -114,7 +108,7 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   };
-}
+};
 
 @NgModule({
   declarations: [
@@ -141,9 +135,11 @@ export function provideApollo(httpLink: HttpLink): any {
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatStepperModule,
     SafeWidgetGridModule,
-    SafeFormModule
+    SafeFormModule,
+    SafeButtonModule,
+    SafeWorkflowStepperModule,
+    MsalModule
   ],
   providers: [
     {
@@ -158,17 +154,17 @@ export function provideApollo(httpLink: HttpLink): any {
     },
     {
       provide: POPUP_CONTAINER,
-      useFactory: () => {
+      useFactory: () =>
         // return the container ElementRef, where the popup will be injected
-        return { nativeElement: document.body } as ElementRef;
-      }
+         ({ nativeElement: document.body } as ElementRef)
+
     }
   ],
   bootstrap: [
     AppComponent
   ]
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
   constructor(
     private injector: Injector,
     private formService: SafeFormService

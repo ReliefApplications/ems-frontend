@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Application, NOTIFICATIONS, SafeApplicationService, SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
+import { Application, NOTIFICATIONS, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { Apollo } from 'apollo-angular';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -28,7 +27,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       this.application = application;
       this.locked = this.application?.locked;
       this.lockedByUser = this.application?.lockedByUser;
@@ -36,10 +35,16 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Closes the application, go back to the back-office dashboard.
+   */
   onClose(): void {
     this.router.navigate(['/applications']);
   }
 
+  /**
+   * Unlocks the application, and controls edition.
+   */
   onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -54,6 +59,9 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Confirms publication of application, and makes it active.
+   */
   onPublish(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
@@ -74,6 +82,9 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Removes all the subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();

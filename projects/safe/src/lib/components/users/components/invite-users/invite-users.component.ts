@@ -81,6 +81,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Removes an user from the invitation list.
+   *
    * @param index index of user to remove.
    */
   onRemove(index: number): void {
@@ -89,6 +90,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Uploads a list of users as xlsx file.
+   *
    * @param $event Event of file upload.
    */
   onUpload($event: any): void {
@@ -131,6 +133,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Handles cell click events. Creates form group for edition.
+   *
    * @param param0 cell click event.
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
@@ -148,6 +151,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Creates a form group for inline edition of a row.
+   *
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
@@ -157,12 +161,10 @@ export class SafeInviteUsersComponent implements OnInit {
       role: [dataItem.role, Validators.required],
       ...this.data.positionAttributeCategories &&
       {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map((x, index) => {
-          return this.formBuilder.group({
+        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map((x, index) => this.formBuilder.group({
             value: [dataItem.positionAttributes[index].value || ''],
             category: [x.id, Validators.required]
-          });
-        }))
+          })))
       }
     };
     return this.formBuilder.group(formGroup);
@@ -182,6 +184,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Check that the file can be considered as valid.
+   *
    * @param file File to check extension of.
    * @returns does the file have correct extension.
    */

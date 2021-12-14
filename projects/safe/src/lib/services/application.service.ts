@@ -1,12 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
-import { PullJob } from '../models/pullJob.model';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddPageMutationResponse,
@@ -53,37 +52,39 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 import { NOTIFICATIONS } from '../const/notifications';
 import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { SafeAuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SafeApplicationService {
 
-  // tslint:disable-next-line: variable-name
-  private _application = new BehaviorSubject<Application | null>(null);
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private application = new BehaviorSubject<Application | null>(null);
   private applicationSubscription?: Subscription;
   private notificationSubscription?: Subscription;
   private lockSubscription?: Subscription;
+  private environment: any;
 
   /**
    * Return the application as an Observable.
    */
-  get application(): Observable<Application | null> {
-    return this._application.asObservable();
+  get application$(): Observable<Application | null> {
+    return this.application.asObservable();
   }
 
   get usersDownloadPath(): string {
-    const id = this._application.getValue()?.id;
+    const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
 
   get usersUploadPath(): string {
-    const id = this._application.getValue()?.id;
+    const id = this.application.getValue()?.id;
     return `upload/application/${id}/invite`;
   }
 
   get isUnlocked(): boolean {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application) {
       if (application?.locked && !application.lockedByUser) {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(application.name));
@@ -94,10 +95,14 @@ export class SafeApplicationService {
   }
 
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private router: Router
-  ) { }
+  ) {
+    this.environment = environment;
+  }
 
   /*  Get the application from the database, using GraphQL.
   */
@@ -109,8 +114,8 @@ export class SafeApplicationService {
         asRole
       }
     }).subscribe(res => {
-      this._application.next(res.data.application);
-      const application = this._application.getValue();
+      this.application.next(res.data.application);
+      const application = this.application.getValue();
       if (res.data.application.locked) {
         if (!application?.lockedByUser) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
@@ -136,12 +141,12 @@ export class SafeApplicationService {
       }
     }).subscribe((res) => {
       if (res.data?.applicationUnlocked) {
-        const application = this._application.getValue();
+        const application = this.application.getValue();
         const newApplication = { ...application,
           locked: res.data?.applicationUnlocked.locked,
           lockedByUser: res.data?.applicationUnlocked.lockedByUser
         };
-        this._application.next(newApplication);
+        this.application.next(newApplication);
       }
     });
   }
@@ -150,8 +155,8 @@ export class SafeApplicationService {
     Leave application and unsubscribe to application changes.
   */
   leaveApplication(): void {
-    const application = this._application.getValue();
-    this._application.next(null);
+    const application = this.application.getValue();
+    this.application.next(null);
     this.applicationSubscription?.unsubscribe();
     this.notificationSubscription?.unsubscribe();
     this.lockSubscription?.unsubscribe();
@@ -168,7 +173,7 @@ export class SafeApplicationService {
     Lock application edition.
   */
   lockApplication(): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     this.apollo.mutate<ToggleApplicationLockMutationResponse>({
       mutation: TOGGLE_APPLICATION_LOCK,
       variables: {
@@ -182,7 +187,7 @@ export class SafeApplicationService {
             locked: res.data?.toggleApplicationLock.locked,
             lockedByUser: res.data?.toggleApplicationLock.lockedByUser
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       }
     });
@@ -192,7 +197,7 @@ export class SafeApplicationService {
     Edit Application
   */
   editApplication(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditApplicationMutationResponse>({
         mutation: EDIT_APPLICATION,
@@ -213,7 +218,7 @@ export class SafeApplicationService {
               description: res.data.editApplication.description,
               status: res.data.editApplication.status
             };
-            this._application.next(newApplication);
+            this.application.next(newApplication);
           }
         }
       });
@@ -223,7 +228,7 @@ export class SafeApplicationService {
   /* Change the application's status and navigate to the applications list
   */
   publish(): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditApplicationMutationResponse>({
         mutation: EDIT_APPLICATION,
@@ -243,7 +248,7 @@ export class SafeApplicationService {
   /* Delete a page and the associated content.
   */
   deletePage(id: string): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeletePageMutationResponse>({
         mutation: DELETE_PAGE,
@@ -253,10 +258,10 @@ export class SafeApplicationService {
       }).subscribe(res => {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
-          const app = this._application.getValue();
+          const app = this.application.getValue();
           if (app) {
             const newApplication = { ...app, pages: app.pages?.filter(x => x.id !== res.data?.deletePage.id) };
-            this._application.next(newApplication);
+            this.application.next(newApplication);
             this.router.navigate([`./applications/${app.id}`]);
           }
         } else {
@@ -269,7 +274,7 @@ export class SafeApplicationService {
   /* Reorder the pages, using material Drag n Drop.
   */
   reorderPages(pages: string[]): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditApplicationMutationResponse>({
         mutation: EDIT_APPLICATION,
@@ -279,7 +284,7 @@ export class SafeApplicationService {
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
-        this._application.next({ ...application, ...{ pages: res.data?.editApplication.pages }});
+        this.application.next({ ...application, ...{ pages: res.data?.editApplication.pages }});
       });
     }
   }
@@ -287,7 +292,7 @@ export class SafeApplicationService {
   /* Update a specific page name in the opened application.
   */
   updatePageName(page: Page): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       const newApplication = {
         ...application, pages: application.pages?.map(x => {
@@ -297,14 +302,14 @@ export class SafeApplicationService {
           return x;
         })
       };
-      this._application.next(newApplication);
+      this.application.next(newApplication);
     }
   }
 
   /* Add a new page to the opened application.
   */
   addPage(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddPageMutationResponse>({
         mutation: ADD_PAGE,
@@ -318,7 +323,7 @@ export class SafeApplicationService {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', res.data.addPage.name));
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
           this.router.navigate([(value.type === ContentType.form) ?
             `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
             `/applications/${application.id}/${value.type}/${content}`]);
@@ -332,7 +337,7 @@ export class SafeApplicationService {
   /* Add a new role to the opened application.
   */
   addRole(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddRoleMutationResponse>({
         mutation: ADD_ROLE,
@@ -344,7 +349,7 @@ export class SafeApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'));
           const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -353,7 +358,7 @@ export class SafeApplicationService {
   /* Edit an existing role.
   */
   editRole(role: Role, value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditRoleMutationResponse>({
         mutation: EDIT_ROLE,
@@ -387,7 +392,7 @@ export class SafeApplicationService {
               return x;
             })
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -396,7 +401,7 @@ export class SafeApplicationService {
   /* Delete an existing role.
   */
   deleteRole(role: Role): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeleteRoleMutationResponse>({
         mutation: DELETE_ROLE,
@@ -406,7 +411,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
         const newApplication = { ...application, roles: application.roles?.filter(x => x.id !== role.id) };
-        this._application.next(newApplication);
+        this.application.next(newApplication);
       });
     }
   }
@@ -414,7 +419,7 @@ export class SafeApplicationService {
   /* Delete users to the opened application.
   */
   deleteUsersFromApplication(ids: any[], resolved: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
         mutation: DELETE_USERS_FROM_APPLICATION,
@@ -427,7 +432,7 @@ export class SafeApplicationService {
           const deletedUsers = res.data.deleteUsersFromApplication.map(x => x.id);
           this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('deleted', deletedUsers.length));
           const newApplication = { ...application, users: application.users?.filter(u => !deletedUsers.includes(u.id)) };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('deleted'), { error: true });
         }
@@ -439,7 +444,7 @@ export class SafeApplicationService {
   /* Invite an user to the opened application.
   */
   inviteUser(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddRoleToUsersMutationResponse>({
         mutation: ADD_ROLE_TO_USERS,
@@ -452,7 +457,7 @@ export class SafeApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.usersActions('invited', res.data.addRoleToUsers.length));
           const newApplication = { ...application, users: application.users?.concat(res.data.addRoleToUsers) };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.userInvalidActions('invited'), { error: true });
         }
@@ -463,7 +468,7 @@ export class SafeApplicationService {
   /* Edit an user that has access to the application.
   */
   editUser(user: User, value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditUserMutationResponse>({
         mutation: EDIT_USER,
@@ -482,8 +487,9 @@ export class SafeApplicationService {
               ...application,
               users: application.users?.map(x => String(x.id) === String(user.id) ? newUser || null : x) || []
             };
-            this._application.next(newApplication);
+            this.application.next(newApplication);
           }
+          this.authService.getProfile();
         }
       });
     }
@@ -492,7 +498,7 @@ export class SafeApplicationService {
   /* Add a new position to the opened application.
   */
   addPositionAttributeCategory(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddPositionAttributeCategoryMutationResponse>({
         mutation: ADD_POSITION_ATTRIBUTE_CATEGORY,
@@ -507,7 +513,7 @@ export class SafeApplicationService {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory])
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -516,7 +522,7 @@ export class SafeApplicationService {
   /* Remove a position from the opened application
   */
   deletePositionAttributeCategory(positionCategory: PositionAttributeCategory): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeletePositionAttributeCategoryMutationResponse>({
         mutation: DELETE_POSITION_ATTRIBUTE_CATEGORY,
@@ -532,7 +538,7 @@ export class SafeApplicationService {
             positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
               x.id !== res.data?.deletePositionAttributeCategory.id)
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -541,7 +547,7 @@ export class SafeApplicationService {
   /* Edit a position's name from the opened application
   */
   editPositionAttributeCategory(value: any, positionCategory: PositionAttributeCategory): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditPositionAttributeCategoryMutationResponse>({
         mutation: EDIT_POSITION_ATTRIBUTE_CATEGORY,
@@ -564,7 +570,7 @@ export class SafeApplicationService {
               return pos;
             })
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -573,7 +579,7 @@ export class SafeApplicationService {
   /* Add a new channel to the application.
   */
   addChannel(value: { title: string }): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddChannelMutationResponse>({
         mutation: ADD_CHANNEL,
@@ -585,7 +591,7 @@ export class SafeApplicationService {
         if (res.data) {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
           const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -593,7 +599,7 @@ export class SafeApplicationService {
   /* Edit a channel's title
     */
   editChannel(channel: Channel, title: string): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     this.apollo.mutate<EditChannelMutationResponse>({
       mutation: EDIT_CHANNEL,
       variables: {
@@ -611,7 +617,7 @@ export class SafeApplicationService {
               return x;
             })
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
   }
@@ -619,7 +625,7 @@ export class SafeApplicationService {
   /* Remove a channel from the system with all notifications linked to it
   */
   deleteChannel(channel: Channel): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeleteChannelMutationResponse>({
         mutation: DELETE_CHANNEL,
@@ -633,7 +639,7 @@ export class SafeApplicationService {
             ...application,
             channels: application.channels?.filter(x => x.id !== res.data?.deleteChannel.id)
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -641,8 +647,8 @@ export class SafeApplicationService {
 
   /* Add a new subscription to the application.
   */
-  addSubscription(value: { routingKey: string, title: string, convertTo: string, channel: string }): void {
-    const application = this._application.getValue();
+  addSubscription(value: { routingKey: string; title: string; convertTo: string; channel: string }): void {
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddSubscriptionMutationResponse>({
         mutation: ADD_SUBSCRIPTION,
@@ -660,7 +666,7 @@ export class SafeApplicationService {
             ...application,
             subscriptions: application.subscriptions?.concat([res.data.addSubscription])
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
@@ -670,7 +676,7 @@ export class SafeApplicationService {
   /* Delete subscription from application.
   */
   deleteSubscription(value: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeleteSubscriptionMutationResponse>({
         mutation: DELETE_SUBSCRIPTION,
@@ -681,7 +687,7 @@ export class SafeApplicationService {
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'));
         const newApplication = { ...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value) };
-        this._application.next(newApplication);
+        this.application.next(newApplication);
       });
     }
   }
@@ -689,7 +695,7 @@ export class SafeApplicationService {
   /* Edit existing subscription
   */
   editSubscription(value: any, previousSubscription: any): void {
-    const application = this._application.getValue();
+    const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditSubscriptionMutationResponse>({
         mutation: EDIT_SUBSCRIPTION,
@@ -713,21 +719,28 @@ export class SafeApplicationService {
               return sub;
             })
           };
-          this._application.next(newApplication);
+          this.application.next(newApplication);
         }
       });
     }
   }
 
-  /* Update application with latest pullJobs
-  */
-  updatePullJobs(pullJobs: PullJob[]): void {
-    const application = this._application.getValue();
-    if (application) {
-      const newApplication = {...application, pullJobs};
-      this._application.next(newApplication);
+  /**
+   * Moves to the first page of the application.
+   */
+  goToFirstPage(): void {
+    const application = this.application.getValue();
+    if (application?.pages && application.pages.length > 0) {
+      const page = application.pages[0];
+      if (this.environment.module === 'backoffice') {
+        this.router.navigate([(page.type === ContentType.form) ?
+          `applications/${application.id}/${page.type}/${page.id}` :
+          `applications/${application.id}/${page.type}/${page.content}`]);
+      } else {
+        this.router.navigate([(page.type === ContentType.form) ?
+          `/${page.type}/${page.id}` :
+          `/${page.type}/${page.content}`]);
+      }
     }
   }
-
-
 }

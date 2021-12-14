@@ -1,12 +1,10 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { User, Role } from '../../models/user.model';
 import {
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   EditUserMutationResponse,
   EDIT_USER,
   DELETE_USERS, DeleteUsersMutationResponse, AddUsersMutationResponse, ADD_USERS
@@ -16,8 +14,11 @@ import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { NOTIFICATIONS } from '../../const/notifications';
+import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
+import { SafeAuthService } from '../../services/auth.service';
+import { SafeDownloadService } from '../../services/download.service';
+import { Application } from '../../models/application.model';
 
 @Component({
   selector: 'safe-users',
@@ -33,7 +34,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() applicationService: any;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'username', 'name', 'oid', 'roles', 'actions'];
+  public displayedColumns = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -49,19 +50,19 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog
+    private authService: SafeAuthService,
+    public dialog: MatDialog,
+    private downloadService: SafeDownloadService
   ) { }
 
   ngOnInit(): void {
-    this.users.filterPredicate = (data: any) => {
-      return (
+    this.users.filterPredicate = (data: any) => (
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
             data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0))
       );
-    };
   }
 
   onInvite(): void {
@@ -120,10 +121,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
-                  x.roles = res.data?.editUser?.roles?.filter(role => !role.application);
+                  x = { ...x, roles: res.data?.editUser?.roles?.filter(role => !role.application)};
                 }
                 return x;
               });
+              this.authService.getProfile();
             }
           });
         }
@@ -135,7 +137,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete user',
-        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
+        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username}
+          ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
@@ -193,6 +196,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected() ?
       this.selection.clear() :
       this.users.data.forEach(row => this.selection.select(row));
@@ -204,5 +208,22 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  onExport(type: string): void {
+    // if we are in the Users page of an application
+    if (this.applicationService) {
+      this.applicationService.application$.subscribe((value: Application) => {
+        const fileName = `users_${value.name}.${type}`;
+        const path = `download/application/${value.id}/users`;
+        const queryString = new URLSearchParams({ type }).toString();
+        this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+      });
+    } else {
+      const fileName = `users.${type}`;
+      const path = `download/users`;
+      const queryString = new URLSearchParams({ type }).toString();
+      this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeDonutChartComponent } from './donut-chart.component';
 import { SafeDonutChartModule } from './donut-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,21 +12,31 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
-    title: 'UI/Donut Chart',
+    title: 'UI/Charts/Donut Chart',
+    argTypes: {
+        series: {
+            control: { type: 'object' }
+        },
+        legend: {
+            control: { type: 'object' }
+        },
+        title: {
+            control: { type: 'object' }
+        }
+    }
 } as Meta;
 
-const Template: Story<SafeDonutChartComponent> = args => ({
-    template: '<safe-donut-chart></safe-donut-chart>',
+const TEMPLATE: Story<SafeDonutChartComponent> = args => ({
+    template: '<div style="height:400px"><safe-donut-chart [legend]="legend" [title]="title" [series]="series"></safe-donut-chart></div>',
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     series: [
         {
             data: [

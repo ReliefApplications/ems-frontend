@@ -17,6 +17,9 @@ export class PreviewToolbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Closes the preview toolbar and navigates to main page.
+   */
   onClose(): void {
     this.previewService.setRole('');
     this.router.navigate(['/']);

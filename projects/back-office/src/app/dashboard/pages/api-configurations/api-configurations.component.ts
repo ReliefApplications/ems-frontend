@@ -2,15 +2,21 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Apollo } from 'apollo-angular';
-import { ApiConfiguration, NOTIFICATIONS, PermissionsManagement, PermissionType,
-  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
+import { Apollo, QueryRef } from 'apollo-angular';
+import {
+  ApiConfiguration, NOTIFICATIONS, PermissionsManagement, PermissionType,
+  SafeAuthService, SafeConfirmModalComponent, SafeSnackBarService
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { GetApiConfigurationsQueryResponse, GET_API_CONFIGURATIONS } from '../../../graphql/queries';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
-import { AddApiConfigurationMutationResponse, ADD_API_CONFIGURATIION,
-  DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION } from '../../../graphql/mutations';
+import {
+  AddApiConfigurationMutationResponse, ADD_API_CONFIGURATIION,
+  DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION
+} from '../../../graphql/mutations';
 import { Router } from '@angular/router';
+
+const ITEMS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-api-configurations',
@@ -21,8 +27,10 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
 
   // === DATA ===
   public loading = true;
+  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new MatTableDataSource<ApiConfiguration>([]);
+  public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -36,6 +44,13 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
   public searchText = '';
   public statusFilter = '';
 
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: ''
+  };
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -44,28 +59,88 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     private router: Router
   ) { }
 
+  /**
+   * Creates the API configuration query, and subscribes to the query changes.
+   */
   ngOnInit(): void {
-    this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+    this.apiConfigurationsQuery = this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
       query: GET_API_CONFIGURATIONS,
-    }).valueChanges.subscribe(res => {
-      this.dataSource.data = res.data.apiConfigurations;
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    });
+
+    this.apiConfigurationsQuery.valueChanges.subscribe(res => {
+      this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(x => x.node);
+      this.dataSource.data = this.cachedApiConfigurations.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex, this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1));
+      this.pageInfo.length = res.data.apiConfigurations.totalCount;
+      this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd = this.authService.userHasClaim(PermissionsManagement.getRightFromPath(this.router.url, PermissionType.create));
     });
   }
 
-  private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) => {
-      return (((this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-        (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))));
-    };
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
+    if ((e.pageIndex > e.previousPageIndex || e.pageSize > this.pageInfo.pageSize)
+      && e.length > this.cachedApiConfigurations.length) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let neededSize = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        neededSize -= this.pageInfo.pageSize;
+      }
+      this.apiConfigurationsQuery.fetchMore({
+        variables: {
+          first: neededSize,
+          afterCursor: this.pageInfo.endCursor
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) { return prev; }
+          return Object.assign({}, prev, {
+            apiConfigurations: {
+              edges: [...prev.apiConfigurations.edges, ...fetchMoreResult.apiConfigurations.edges],
+              pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
+              totalCount: fetchMoreResult.apiConfigurations.totalCount
+            }
+          });
+        }
+      });
+    } else {
+      this.dataSource.data = this.cachedApiConfigurations.slice(
+        e.pageSize * this.pageInfo.pageIndex, e.pageSize * (this.pageInfo.pageIndex + 1));
+    }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
+  /**
+   * Frontend filtering.
+   */
+  private filterPredicate(): void {
+    this.dataSource.filterPredicate = (data: any) => (((this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.statusFilter.trim().length === 0 ||
+          (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))));
+  }
+
+  /**
+   * Applies the filter to the data source.
+   *
+   * @param column Column to filter on.
+   * @param event Value of the filter.
+   */
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
       this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
@@ -75,23 +150,27 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     this.dataSource.filter = '##';
   }
 
+  /**
+   * Removes all the filters.
+   */
   clearAllFilters(): void {
     this.searchText = '';
     this.statusFilter = '';
     this.applyFilter('', null);
   }
 
-  /*  Display the AddApiConfiguration modal.
-      Create a new apiConfiguration on closed if result.
-  */
+  /**
+   * Displays the AddApiConfiguration modal.
+   * Creates a new apiConfiguration on closed if result.
+   */
   onAdd(): void {
-   const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-   dialogRef.afterClosed().subscribe(value => {
-     if (value) {
-       this.apollo.mutate<AddApiConfigurationMutationResponse>({
-         mutation: ADD_API_CONFIGURATIION,
-         variables: {
-           name: value.name
+    const dialogRef = this.dialog.open(AddApiConfigurationComponent);
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        this.apollo.mutate<AddApiConfigurationMutationResponse>({
+          mutation: ADD_API_CONFIGURATIION,
+          variables: {
+            name: value.name
           }
         }).subscribe(res => {
           if (res.errors) {
@@ -108,8 +187,12 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
-  /*  Remove an apiConfiguration if authorized.
-  */
+  /**
+   * Removes an apiConfiguration if authorized.
+   *
+   * @param element API config to delete.
+   * @param e click event.
+   */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -137,10 +220,16 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
+  /**
+   * Sets the sort in the view.
+   */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
   }
 
+  /**
+   * Removes all subscriptions.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();

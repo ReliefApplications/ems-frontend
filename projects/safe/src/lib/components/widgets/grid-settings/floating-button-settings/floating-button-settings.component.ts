@@ -1,4 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild,
+  ElementRef, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -10,10 +11,12 @@ import { MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
+import { MatDialog } from '@angular/material/dialog';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function codesFactory(): () => any {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
@@ -27,14 +30,12 @@ export function codesFactory(): () => any {
     { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory}
   ]
 })
-
 export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
   @Input() buttonForm?: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
-  @Input() forms: Form[] = [];
   @Input() relatedForms: Form[] = [];
 
   // Indicate is the page is a single dashboard.
@@ -61,6 +62,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     private componentFactoryResolver: ComponentFactoryResolver,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +84,16 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    this.buttonForm?.get('prefillForm')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.buttonForm?.get('prefillTargetForm')?.setValidators(Validators.required);
+      } else {
+        this.buttonForm?.get('prefillTargetForm')?.clearValidators();
+      }
+      this.buttonForm?.get('prefillTargetForm')?.updateValueAndValidity();
+    });
+
     this.buttonForm?.get('notify')?.valueChanges.subscribe(value => {
       if (value) {
         this.buttonForm?.get('notificationChannel')?.setValidators(Validators.required);
@@ -148,6 +160,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
       this.buttonForm?.get('subject')?.updateValueAndValidity();
     });
+
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
 
     this.buttonForm?.get('targetForm')?.valueChanges.subscribe(target => {
@@ -168,6 +181,15 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm?.get('bodyFields')?.clearValidators();
       }
       this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
+    });
+
+    this.buttonForm?.get('closeWorkflow')?.valueChanges.subscribe((closeWorkflow: boolean) => {
+      if (closeWorkflow) {
+        this.buttonForm?.get('confirmationText')?.setValidators([Validators.required]);
+      } else {
+        this.buttonForm?.get('confirmationText')?.clearValidators();
+      }
+      this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
     });
 
     this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);

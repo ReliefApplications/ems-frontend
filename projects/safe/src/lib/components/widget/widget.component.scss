@@ -7,8 +7,5 @@
 .widget-content {
     flex: 1;
     max-height: 100% !important;
-}
-
-safe-grid {
-    overflow-x: hidden;
+    max-width: 100%;
 }

@@ -20,9 +20,12 @@ export class UsersComponent implements OnInit, OnDestroy {
     public applicationService: SafeApplicationService
   ) { }
 
+  /**
+   * Gets the list of users from loaded application.
+   */
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.users.data = application.users || [];
         this.roles = application.roles || [];
@@ -33,6 +36,9 @@ export class UsersComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Destroys all the subscriptions of the page.
+   */
   ngOnDestroy(): void {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();

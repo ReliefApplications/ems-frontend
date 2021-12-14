@@ -80,7 +80,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
       }
       this.onNext();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authSubscription = this.authService.user$.subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
     });
   }
@@ -110,6 +110,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
   onNext(): void {
     switch (this.stage) {
       case 1: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.stepForm.controls.type.value === ContentType.form ? this.stage += 1 : this.onSubmit();
         break;
       }
@@ -154,6 +155,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenSelect(e: any): void {
@@ -165,6 +167,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

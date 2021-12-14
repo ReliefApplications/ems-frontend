@@ -1,8 +1,9 @@
 import { Page } from './page.model';
 import { Step } from './step.model';
 
-/*  Model for Workflow object.
-*/
+/**
+ * Workflow interface.
+ */
 export interface Workflow {
     id?: string;
     name?: string;

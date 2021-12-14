@@ -16,6 +16,9 @@
                 API Configuration Name
               </mat-label>
               <input matInput formControlName="name" type='text' placeholder="Enter a name for the API Configuration" />
+              <mat-error *ngIf="name?.errors">
+                Only letters, hypens, or underscores are accepted
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="flex: 1;">
@@ -81,12 +84,6 @@
                   Client secret
                 </mat-label>
                 <input matInput formControlName="safeSecret" type='text' placeholder="Enter client secret" onfocus="this.value=''"/>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  Consumer ID
-                </mat-label>
-                <input matInput formControlName="safeID" type='text' placeholder="Enter consumer ID" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>

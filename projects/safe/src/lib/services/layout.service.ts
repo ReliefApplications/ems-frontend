@@ -8,20 +8,20 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class SafeLayoutService {
 
-  // tslint:disable-next-line: variable-name
-  private _rightSidenav = new BehaviorSubject<any>(null);
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private rightSidenav = new BehaviorSubject<any>(null);
 
   constructor(private router: Router) {
     this.router.events.subscribe(() => {
-      this._rightSidenav.next(null);
+      this.rightSidenav.next(null);
     });
   }
 
   setRightSidenav(container: any): void {
-    this._rightSidenav.next(container);
+    this.rightSidenav.next(container);
   }
 
-  get rightSidenav(): Observable<any> {
-    return this._rightSidenav.asObservable();
+  get rightSidenav$(): Observable<any> {
+    return this.rightSidenav.asObservable();
   }
 }

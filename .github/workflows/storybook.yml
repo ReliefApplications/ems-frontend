@@ -63,5 +63,5 @@ jobs:
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
           folder: storybook
-          target-folder: emrs-safe-frontend/storybook
+          target-folder: oort/frontend/storybook
           clean: true

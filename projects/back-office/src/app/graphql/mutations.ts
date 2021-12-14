@@ -671,8 +671,10 @@ export interface DeleteApiConfigurationMutationResponse {
 
 // === EDIT API CONFIGURATION ===
 export const EDIT_API_CONFIGURATION = gql`
-mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
-  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
+mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType,
+  $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
+  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType,
+    endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
     id
     name
     status
@@ -707,8 +709,10 @@ export interface EditApiConfigurationMutationResponse {
 
 // === ADD PULL JOB ===
 export const ADD_PULL_JOB = gql`
-mutation addPullJob($application: ID!, $name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  addPullJob(application: $application, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+mutation addPullJob($name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String,
+  $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  addPullJob(name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule,
+    convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status
@@ -737,8 +741,8 @@ export interface AddPullJobMutationResponse {
 
 // === DELETE PULL JOB ===
 export const DELETE_PULL_JOB = gql`
-mutation deletePullJob($application: ID!, $id: ID!) {
-  deletePullJob(application: $application, id: $id) {
+mutation deletePullJob($id: ID!) {
+  deletePullJob(id: $id) {
     id
   }
 }`;
@@ -750,8 +754,10 @@ export interface DeletePullJobMutationResponse {
 
 // === EDIT PULL JOB ===
 export const EDIT_PULL_JOB = gql`
-mutation editPullJob($application: ID!, $id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  editPullJob(application: $application, id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
+mutation editPullJob($id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String,
+  $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
+  editPullJob(id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule,
+    convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
     id
     name
     status

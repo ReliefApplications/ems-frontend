@@ -4,7 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService,
+  NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -104,10 +105,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.autoSaveChanges();
   }
 
-  /*  Edit the settings or display of a widget.
+ /**
+  * Edits the settings or display of a widget.
+  *
+  * @param e widget to save.
   */
   onEditTile(e: any): void {
-    const options = e.options;
+    // make sure that we save the default layout.
+    const index = this.tiles.findIndex((v: any) => v.id === e.id);
+    const options = this.tiles[index]?.settings?.defaultLayout ?
+      {
+        ...e.options,
+        defaultLayout: this.tiles[index].settings.defaultLayout
+      } : e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
@@ -162,6 +172,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.tiles = res.data?.editDashboard.structure;
+      this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
       this.loading = false;
     }, error => this.loading = false);
   }
