@@ -1,4 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ElementRef, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild,
+  ElementRef, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -15,10 +16,10 @@ import { MatDialog } from '@angular/material/dialog';
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
-export function codesFactory(): () => any {
+export const codesFactory = (): () => any => {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
-}
+};
 
 @Component({
   selector: 'safe-floating-button-settings',

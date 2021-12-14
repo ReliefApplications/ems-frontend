@@ -12,8 +12,8 @@ export interface GridSettings {
         sort?: {
             field?: string;
             order?: 'asc' | 'desc';
-        },
-        filter?: CompositeFilterDescriptor
+        };
+        filter?: CompositeFilterDescriptor;
     };
     actions?: {
         delete?: boolean;

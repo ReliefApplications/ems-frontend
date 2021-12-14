@@ -19,7 +19,7 @@ export class SafeChartSettingsComponent implements OnInit {
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === DATA ===

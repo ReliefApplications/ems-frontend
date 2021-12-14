@@ -17,7 +17,7 @@ export class ShareUrlComponent implements OnInit {
     private clipboard: Clipboard,
     public dialogRef: MatDialogRef<ShareUrlComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      url: string
+      url: string;
     }
   ) { }
 

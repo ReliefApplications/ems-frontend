@@ -7,10 +7,10 @@ import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
   const block = () => overlay.scrollStrategies.block();
   return block;
-}
+};
 
 interface DialogData {
   form: any;

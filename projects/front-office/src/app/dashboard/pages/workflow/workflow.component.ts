@@ -20,11 +20,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public workflow?: Workflow;
   public steps: Step[] = [];
 
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
-
   // === ACTIVE STEP ===
   public activeStep = 0;
+
+  // === ROUTE ===
+  private routeSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -60,6 +60,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
+
   /* Get data from within selected step
   */
   onActivate(elementRef: any): void {
@@ -69,20 +75,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.goToNextStep();
         }
       });
-    }
-  }
-
-  /**
-   * Navigates to the next step if possible and change selected step / index consequently
-   */
-  private goToNextStep(): void {
-    if (this.activeStep + 1 < this.steps.length) {
-      this.onOpenStep(this.activeStep + 1);
-    } else if (this.activeStep + 1 === this.steps.length) {
-      this.onOpenStep(0);
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
-    } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
     }
   }
 
@@ -103,9 +95,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
+  /**
+   * Navigates to the next step if possible and change selected step / index consequently
+   */
+  private goToNextStep(): void {
+    if (this.activeStep + 1 < this.steps.length) {
+      this.onOpenStep(this.activeStep + 1);
+    } else if (this.activeStep + 1 === this.steps.length) {
+      this.onOpenStep(0);
+      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+    } else {
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
     }
   }
 }

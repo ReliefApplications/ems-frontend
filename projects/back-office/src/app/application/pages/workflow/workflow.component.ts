@@ -118,6 +118,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
  /**
   * Edits the permissions layer.
+  *
   * @param e permission event.
   */
   saveAccess(e: any): void {
@@ -134,6 +135,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
  /**
   * Deletes a step if authorized.
+  *
   * @param step step to delete
   */
   onDeleteStep(index: number): void {
@@ -159,9 +161,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }).subscribe(res => {
             if (res.data) {
               this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'));
-              this.steps = this.steps.filter(x => {
-                return x.id !== res.data?.deleteStep.id;
-              });
+              this.steps = this.steps.filter(x => x.id !== res.data?.deleteStep.id);
               if (index === this.activeStep) {
                 this.onOpenStep(-1);
               } else {
@@ -197,6 +197,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /**
    * Saves the new ordering
+   *
    * @param steps steps order.
    */
   onReorderSteps(steps: Step[]): void {

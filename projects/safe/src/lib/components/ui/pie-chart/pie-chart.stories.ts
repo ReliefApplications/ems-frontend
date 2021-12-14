@@ -30,15 +30,15 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafePieChartComponent> = args => ({
+const TEMPLATE: Story<SafePieChartComponent> = args => ({
     template: '<div style="height:400px"><safe-pie-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-chart></div>',
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     series: [
         {
             data: [

@@ -71,6 +71,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Confirms end of app.
+   */
+   ngOnDestroy(): void {
+    this.destroying$.next(undefined);
+    this.destroying$.complete();
+  }
+
+  /**
    * Gets active account and set one as active if no current account.
    */
   private checkAndSetActiveAccount(): void {
@@ -80,13 +88,5 @@ export class AppComponent implements OnInit, OnDestroy {
       this.msalService.instance.setActiveAccount(accounts[0]);
       this.authService.checkAccount();
     }
-  }
-
-  /**
-   * Confirms end of app.
-   */
-  ngOnDestroy(): void {
-    this.destroying$.next(undefined);
-    this.destroying$.complete();
   }
 }

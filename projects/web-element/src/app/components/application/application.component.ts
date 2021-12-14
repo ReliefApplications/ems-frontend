@@ -24,7 +24,7 @@ export class ApplicationComponent implements OnInit, OnChanges {
   public application?: Application;
   public selectedPage: Page | null = null;
 
-  public readonly ContentType = ContentType;
+  public readonly contentType = ContentType;
 
   constructor(
     private apollo: Apollo

@@ -87,6 +87,7 @@ export class AddFormComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
   onOpenSelect(e: any): void {
@@ -98,6 +99,7 @@ export class AddFormComponent implements OnInit {
 
   /**
    * Fetches more resources on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

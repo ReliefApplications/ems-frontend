@@ -11,6 +11,7 @@ export interface Version {
 
 /*  Enum of status.
 */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum status {
     active = 'active',
     pending = 'pending',

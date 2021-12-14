@@ -8,10 +8,10 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
 
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
   const block = () => overlay.scrollStrategies.block();
   return block;
-}
+};
 
 @Component({
   selector: 'safe-application-dropdown',
@@ -68,9 +68,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
       this.applications.next(res.data.applications.edges.map(x => x.node));
       if (this.selectedApplications.length > 0) {
         const applicationsIds = this.applications.getValue().map(x => x.id);
-        this.selectedApplications = this.selectedApplications.filter(x => {
-          return applicationsIds.indexOf(x.id) < 0;
-        });
+        this.selectedApplications = this.selectedApplications.filter(x => applicationsIds.indexOf(x.id) < 0);
       }
       this.pageInfo = res.data.applications.pageInfo;
       this.loading = res.loading;
@@ -79,6 +77,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
 
   /**
    * Emits the selected resource id.
+   *
    * @param e select event.
    */
   onSelect(e: any): void {
@@ -87,6 +86,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
   onOpenSelect(e: any): void {
@@ -98,6 +98,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
 
   /**
    * Fetches more resources on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

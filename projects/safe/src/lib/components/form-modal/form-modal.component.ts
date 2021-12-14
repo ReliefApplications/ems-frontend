@@ -189,6 +189,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Creates the record, or update it if provided.
+   *
    * @param survey Survey instance.
    */
   public completeMySurvey = (survey: any) => {
@@ -233,10 +234,11 @@ export class SafeFormModalComponent implements OnInit {
     } else {
       this.onUpdate(survey);
     }
-  }
+  };
 
   /**
    * Handles update data event.
+   *
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
@@ -269,6 +271,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Updates a specific record.
+   *
    * @param id record id.
    * @param survey current survey.
    */
@@ -289,6 +292,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Updates multiple records.
+   *
    * @param ids list of record ids.
    * @param survey current survey.
    */
@@ -358,9 +362,7 @@ export class SafeFormModalComponent implements OnInit {
             }
           ]);
           if (content.length === options.files.length) {
-            options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
-            }));
+            options.callback('success', content.map((fileContent) => ({ file: fileContent.file, content: fileContent.content })));
           }
         };
         fileReader.readAsDataURL(file);
@@ -454,6 +456,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Add custom CSS classes to the survey elements.
+   *
    * @param survey current survey.
    * @param options survey options.
    */
@@ -493,6 +496,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
