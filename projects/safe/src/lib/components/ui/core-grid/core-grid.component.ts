@@ -209,6 +209,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
+    this.updateLayout(this.defaultLayout);
+  }
+
+  updateLayout(layout: any): void {
     // define row actions
     this.actions = {
       add: this.settings.actions?.addRecord && this.settings.query?.template,
@@ -219,14 +223,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
-    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout)) : true;
-    if (this.defaultLayout?.filter) {
-      this.filter = this.defaultLayout.filter;
+    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(layout, JSON.parse(this.settings.defaultLayout)) : true;
+    if (layout?.filter) {
+      this.filter = layout.filter;
     }
-    if (this.defaultLayout?.sort) {
-      this.sort = this.defaultLayout.sort;
+    if (layout?.sort) {
+      this.sort = layout.sort;
     }
-    this.showFilter = !!this.defaultLayout?.showFilter;
+    this.showFilter = !!layout?.showFilter;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
@@ -249,7 +253,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = Object.assign({}, res.data[field]);
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
-            const defaultLayoutFields = this.defaultLayout.fields || {};
+            const defaultLayoutFields = layout.fields || {};
             this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
           }
         }
@@ -889,5 +893,18 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.layoutListChanged.emit(this.layout);
     console.log(this.layoutList);
     this.hasLayoutChanges = false;
+  }
+
+  currentLayoutChanges(currentLayout: any): void {
+    console.log('---------- currentLayoutChanges');
+    // // this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(currentLayout, JSON.parse(this.settings.defaultLayout)) : true;
+    // if (currentLayout?.filter) {
+    //   this.filter = currentLayout.filter;
+    // }
+    // if (currentLayout?.sort) {
+    //   this.sort = currentLayout.sort;
+    // }
+    // this.showFilter = !!currentLayout?.showFilter;
+    this.updateLayout(currentLayout);
   }
 }

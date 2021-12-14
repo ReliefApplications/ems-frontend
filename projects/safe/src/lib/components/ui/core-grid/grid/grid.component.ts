@@ -60,6 +60,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
   @Input() loading = false;
   @Input() error = false;
   public selectedLayout: any;
+  @Output() currentLayoutChanges = new EventEmitter();
 
   // === EXPORT ===
   @Input() exportable = true;
@@ -453,5 +454,6 @@ export class SafeGridComponent implements OnInit, OnChanges {
   public onSelectLayout(e: any): void {
     console.log('+x+x+> this.layoutList');
     console.log(this.selectedLayout);
+    this.currentLayoutChanges.emit(this.selectedLayout);
   }
 }
