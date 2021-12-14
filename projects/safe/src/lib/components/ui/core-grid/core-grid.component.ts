@@ -303,7 +303,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(item: any, value: any): void {
     let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
-      updatedItem = { ...updatedItem, ...value};
+      updatedItem = { ...updatedItem, ...value };
       const index = this.updatedItems.findIndex(x => x.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
@@ -754,20 +754,21 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.gridData.data.length > 0) {
         ids = [this.gridData.data[0].id];
       } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
+        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
         return;
       }
     }
+
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
+      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
+        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) }
     };
 
     // Builds and make the request
@@ -896,7 +897,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Reset the currently cached layout to the default one
    */
-   resetDefaultLayout(): void {
+  resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
 }
