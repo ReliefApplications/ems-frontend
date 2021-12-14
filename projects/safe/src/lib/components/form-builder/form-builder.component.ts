@@ -255,7 +255,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.valueName = this.toSnakeCase(element.title);
           if (!this.isSnakeCase(element.valueName)) {
             throw new Error('The value name ' + element.valueName + ' on page '
-              + page.name + ' is invalid. Please conform to snake_case.');
+            + page.name + ' is invalid. Please conform to snake_case.');
+          }
+        } else if (element.name) {
+          element.valueName = this.toSnakeCase(element.name);
+          if (!this.isSnakeCase(element.valueName)) {
+            throw new Error('The value name ' + element.valueName + ' on page '
+            + page.name + ' is invalid. Please conform to snake_case.');
           }
         } else {
           throw new Error('Missing value name for an element on page '
