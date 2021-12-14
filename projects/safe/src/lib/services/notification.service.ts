@@ -1,7 +1,8 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeNotificationsMutationResponse, SEE_NOTIFICATIONS } from '../graphql/mutations';
+import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeNotificationsMutationResponse,
+  SEE_NOTIFICATIONS } from '../graphql/mutations';
 import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/queries';
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../graphql/subscriptions';
 import { Notification } from '../models/notification.model';
@@ -84,6 +85,7 @@ export class SafeNotificationService {
 
   /**
    * Mark the given notification as seen and remove it from the array of notifications.
+   *
    * @param notification Notification to mark as seen.
    */
   public markAsSeen(notification: Notification): void {

@@ -27,7 +27,7 @@ export default {
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeGridComponent> = args => ({
+const TEMPLATE: Story<SafeGridComponent> = args => ({
     template: `<div style="height: 400px"><safe-grid
         [loading]="loading"
         [error]="error"
@@ -50,8 +50,9 @@ const DEFAULT_DATA = [
     {
         id: '1',
         text: 'dummy text',
+        // eslint-disable-next-line max-len
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
-        boolean: true,
+        bool: true,
         color: 'red',
         dropdown: 1,
         radiogroup: 2,
@@ -66,8 +67,9 @@ const DEFAULT_DATA = [
     {
         id: '2',
         text: 'dummy text 2',
+        // eslint-disable-next-line max-len
         comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non lacus non magna tempus bibendum vel vitae nisi. Maecenas vel felis sem.',
-        boolean: false,
+        bool: false,
         color: 'blue',
         dropdown: 2,
         radiogroup: 1,
@@ -104,7 +106,7 @@ const DEFAULT_FIELDS = [
     },
     {
         title: 'Boolean',
-        name: 'boolean',
+        name: 'bool',
         type: 'boolean',
         filter: 'boolean',
         editor: 'boolean',
@@ -185,8 +187,8 @@ const DEFAULT_FIELDS = [
     }
 ];
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     fields: DEFAULT_FIELDS,
     data: {
         data: DEFAULT_DATA,
@@ -195,8 +197,8 @@ Default.args = {
     editable: true
 };
 
-export const Empty = Template.bind({});
-Empty.args = {
+export const EMPTY = TEMPLATE.bind({});
+EMPTY.args = {
     fields: DEFAULT_FIELDS,
     data: {
         data: DEFAULT_DATA,
@@ -204,8 +206,8 @@ Empty.args = {
     }
 };
 
-export const Error = Template.bind({});
-Error.args = {
+export const ERROR = TEMPLATE.bind({});
+ERROR.args = {
     fields: DEFAULT_FIELDS,
     error: true,
     data: {
@@ -214,15 +216,15 @@ Error.args = {
     }
 };
 
-export const Loading = Template.bind({});
-Loading.args = {
-    ...Default.args,
+export const LOADING = TEMPLATE.bind({});
+LOADING.args = {
+    ...DEFAULT.args,
     loading: true
 };
 
-export const Fixed = Template.bind({});
-Fixed.args = {
-    ...Default.args,
+export const FIXED = TEMPLATE.bind({});
+FIXED.args = {
+    ...DEFAULT.args,
     resizable: false,
     reorderable: false,
     sortable: false
@@ -237,9 +239,9 @@ const MULTI_SELECT_DATA = [
     }
 ];
 
-export const MultiSelectInputs = Template.bind({});
-MultiSelectInputs.args = {
-    ...Default.args,
+export const MULTI_SELECT_INPUTS = TEMPLATE.bind({});
+MULTI_SELECT_INPUTS.args = {
+    ...DEFAULT.args,
     fields: [
         {
             title: 'Checkbox',
@@ -338,9 +340,9 @@ const COMPLEX_DATA = [
     }
 ];
 
-export const ComplexInputs = Template.bind({});
-ComplexInputs.args = {
-    ...Default.args,
+export const COMPLEX_INPUTS = TEMPLATE.bind({});
+COMPLEX_INPUTS.args = {
+    ...DEFAULT.args,
     fields: [
         {
             title: 'Multiple text',

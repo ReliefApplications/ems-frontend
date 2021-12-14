@@ -37,6 +37,7 @@ export class SafeWorkflowService {
 
   /**
    * Gets the workflow from the database, using GraphQL.
+   *
    * @param id workflow id.
    */
   loadWorkflow(id: any): void {
@@ -52,6 +53,7 @@ export class SafeWorkflowService {
 
   /**
    * Adds a step to the opened workflow and navigate to it.
+   *
    * @param step step to add.
    * @param route current route.
    */
@@ -86,6 +88,7 @@ export class SafeWorkflowService {
 
   /**
    * Updates a specific step name in the opened workflow.
+   *
    * @param step step to edit.
    */
   updateStepName(step: Step): void {

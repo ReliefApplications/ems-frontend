@@ -56,15 +56,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.users.filterPredicate = (data: any) => {
-      return (
+    this.users.filterPredicate = (data: any) => (
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 && !!data.roles && data.roles.length > 0 &&
             data.roles.filter((r: any) => r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())).length > 0))
       );
-    };
   }
 
   onInvite(): void {
@@ -139,7 +137,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Delete user',
-        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username} ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
+        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username}
+          ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
         confirmText: 'Delete',
         confirmColor: 'warn'
       }
@@ -197,6 +196,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected() ?
       this.selection.clear() :
       this.users.data.forEach(row => this.selection.select(row));
@@ -213,7 +213,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   onExport(type: string): void {
     // if we are in the Users page of an application
     if (this.applicationService) {
-      this.applicationService.application.subscribe((value: Application) => {
+      this.applicationService.application$.subscribe((value: Application) => {
         const fileName = `users_${value.name}.${type}`;
         const path = `download/application/${value.id}/users`;
         const queryString = new URLSearchParams({ type }).toString();

@@ -26,20 +26,20 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeWidgetChoiceComponent> = args => ({
+const TEMPLATE: Story<SafeWidgetChoiceComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     floating: false,
     widgetTypes: WIDGET_TYPES as IWidgetType[]
 };
 
-export const Floating = Template.bind({});
-Floating.args = {
-    ...Default.args,
+export const FLOATING = TEMPLATE.bind({});
+FLOATING.args = {
+    ...DEFAULT.args,
     floating: true
-}
+};

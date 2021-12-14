@@ -87,6 +87,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
    onPage(e: any): void {
@@ -127,6 +128,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Filters applications and updates table.
+   *
    * @param filter filter event.
    */
   onFilter(filter: any): void {
@@ -169,6 +171,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Deletes an application if authorized.
+   *
    * @param element application.
    * @param e click event.
    */
@@ -194,12 +197,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }).subscribe(res => {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
-          this.applications.data = this.applications.data.filter(x => {
-            return x.id !== res.data?.deleteApplication.id;
-          });
-          this.newApplications = this.newApplications.filter(x => {
-            return x.id !== res.data?.deleteApplication.id;
-          });
+          this.applications.data = this.applications.data.filter(x => x.id !== res.data?.deleteApplication.id);
+          this.newApplications = this.newApplications.filter(x => x.id !== res.data?.deleteApplication.id);
         });
       }
     });
@@ -227,6 +226,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Edits the permissions layer.
+   *
    * @param e permissions.
    * @param element application.
    */
@@ -249,6 +249,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Opens a dialog to choose roles to fit in the preview.
+   *
    * @param element application to preview.
    */
   onPreview(element: Application): void {
@@ -267,6 +268,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Opens a dialog to give a name for the duplicated application.
+   *
    * @param application application to duplicate.
    */
   onClone(application: Application): void {
@@ -286,6 +288,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Navigates to application.
+   *
    * @param id application id.
    */
   onOpenApplication(id: string): void {

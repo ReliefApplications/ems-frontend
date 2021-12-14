@@ -8,10 +8,10 @@ import { Record } from '../../models/record.model';
 
 const ITEMS_PER_PAGE = 25;
 
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
+export const scrollFactory = (overlay: Overlay): () => BlockScrollStrategy => {
   const block = () => overlay.scrollStrategies.block();
   return block;
-}
+};
 
 @Component({
   selector: 'safe-record-dropdown',
@@ -79,6 +79,7 @@ export class SafeRecordDropdownComponent implements OnInit {
 
   /**
    * Emits the selected resource id.
+   *
    * @param e select event.
    */
   onSelect(e: any): void {
@@ -87,6 +88,7 @@ export class SafeRecordDropdownComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenSelect(e: any): void {
@@ -98,6 +100,7 @@ export class SafeRecordDropdownComponent implements OnInit {
 
   /**
    * Fetches more items on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {

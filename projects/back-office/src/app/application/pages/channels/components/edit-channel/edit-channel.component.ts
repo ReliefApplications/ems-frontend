@@ -19,7 +19,7 @@ export class EditChannelComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditChannelComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      channel: Channel,
+      channel: Channel;
     },
   ) { }
 

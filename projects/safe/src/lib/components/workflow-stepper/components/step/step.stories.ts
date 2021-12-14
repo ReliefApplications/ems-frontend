@@ -21,14 +21,14 @@ export default {
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeStepComponent> = args => ({
+const TEMPLATE: Story<SafeStepComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     step: {
         name: 'Dashboard',
         type: ContentType.dashboard

@@ -3,8 +3,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeDownloadService, SafeSnackBarService, NOTIFICATIONS, SafeConfirmModalComponent, Record, Form } from '@safe/builder';
 import { DeleteFormMutationResponse, DeleteRecordMutationResponse, DELETE_FORM,
-  DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE, RestoreRecordMutationResponse, RESTORE_RECORD } from '../../../graphql/mutations';
-import { GetResourceByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RESOURCE_BY_ID, GET_RESOURCE_RECORDS } from '../../../graphql/queries';
+  DELETE_RECORD, EditResourceMutationResponse, EDIT_RESOURCE, RestoreRecordMutationResponse,
+  RESTORE_RECORD } from '../../../graphql/mutations';
+import { GetResourceByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RESOURCE_BY_ID,
+  GET_RESOURCE_RECORDS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -122,6 +124,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
    onPage(e: any): void {
@@ -154,6 +157,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Changes the list of displayed columns.
+   *
    * @param core Is the form core.
    */
   private setDisplayedColumns(core: boolean): void {
@@ -177,6 +181,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
+   *
    * @param id Id of record to delete.
    * @param e click event.
    */
@@ -203,6 +208,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Sends mutation to delete record.
+   *
    * @param id Id of record to delete.
    */
   private deleteRecord(id: string): void {
@@ -214,9 +220,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'));
-      this.dataSourceRecords = this.dataSourceRecords.filter(x => {
-        return x.id !== id;
-      });
+      this.dataSourceRecords = this.dataSourceRecords.filter(x => x.id !== id);
     });
   }
 
@@ -231,14 +235,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
       }
     }).subscribe(res => {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
-      this.dataSourceForms = this.dataSourceForms.filter(x => {
-        return x.id !== id;
-      });
+      this.dataSourceForms = this.dataSourceForms.filter(x => x.id !== id);
     });
   }
 
  /**
   * Edits the permissions layer.
+  *
   * @param e New permissions.
   */
   saveAccess(e: any): void {
@@ -257,6 +260,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Downloads the list of records of the resource.
+   *
    * @param type Type of the document to download ( excel or csv ).
    */
   onDownload(type: string): void {
@@ -277,6 +281,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Detects changes on the file.
+   *
    * @param event new file event.
    */
   onFileChange(event: any): void {
@@ -286,6 +291,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Calls rest endpoint to upload new records for the resource.
+   *
    * @param file File to upload.
    */
   uploadFileData(file: any): void {
@@ -304,6 +310,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle archive / active view.
+   *
    * @param e click event.
    */
   onSwitchView(e: any): void {
@@ -314,6 +321,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /**
    * Restores an archived record.
+   *
    * @param id Id of record to restore.
    * @param e click event.
    */
@@ -325,14 +333,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
         id,
       }
     }).subscribe(res => {
-      this.dataSourceRecords = this.dataSourceRecords.filter(x => {
-        return x.id !== id;
-      });
+      this.dataSourceRecords = this.dataSourceRecords.filter(x => x.id !== id);
     });
   }
 
   /**
    * Get list of forms filtering by record form.
+   *
    * @param record Record to filter templates with.
    * @returns list of different forms than the one used to create the record.
    */

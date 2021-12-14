@@ -59,7 +59,7 @@ export default {
     }
 } as Meta;
 
-const TemplateWithText: Story<SafeButtonComponent> = args => ({
+const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = args => ({
     template: '<safe-button [icon]="icon">{{content}}</safe-button>',
     props: {
         ...args,
@@ -67,28 +67,28 @@ const TemplateWithText: Story<SafeButtonComponent> = args => ({
     }
 });
 
-const TemplateWithoutText: Story<SafeButtonComponent> = args => ({
+const TEMPLATE_WITHOUT_TEXT: Story<SafeButtonComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = TemplateWithText.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.args = {
     category: ButtonCategory.PRIMARY,
     size: ButtonSize.MEDIUM,
     variant: ButtonVariant.DEFAULT
 };
 
-export const IconAndText = TemplateWithText.bind({});
-IconAndText.args = {
-    ...Default.args,
+export const ICON_AND_TEXT = TEMPLATE_WITH_TEXT.bind({});
+ICON_AND_TEXT.args = {
+    ...DEFAULT.args,
     icon: 'home'
 };
 
-export const Icon = TemplateWithoutText.bind({});
-Icon.args = {
-    ...Default.args,
+export const ICON = TEMPLATE_WITHOUT_TEXT.bind({});
+ICON.args = {
+    ...DEFAULT.args,
     isIcon: true,
     icon: 'home'
-}
+};

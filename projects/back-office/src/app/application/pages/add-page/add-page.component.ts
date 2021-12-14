@@ -2,7 +2,8 @@ import {Apollo, QueryRef} from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, CONTENT_TYPES, Form, Permissions, SafeApplicationService, SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { ContentType, CONTENT_TYPES, Form, Permissions, SafeApplicationService,
+  SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
@@ -110,6 +111,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
   onNext(): void {
     switch (this.step) {
       case 1: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.pageForm.controls.type.value === ContentType.form ? this.step += 1 : this.onSubmit();
         break;
       }
@@ -154,6 +156,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenSelect(e: any): void {
@@ -165,6 +168,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
