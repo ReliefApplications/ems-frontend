@@ -36,7 +36,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.previewService.roleId.subscribe((role: string) => {
+      this.previewService.roleId$.subscribe((role: string) => {
         this.applicationService.loadApplication(params.id, role);
         this.role = role;
       });
@@ -65,13 +65,11 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages?.filter(x => x.content).map(x => {
-              return {
+            navItems: application.pages?.filter(x => x.content).map(x => ({
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
                 icon: this.getNavIcon(x.type || '')
-              };
-            })
+              }))
           },
           {
             name: 'Administration',
@@ -98,6 +96,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
 
   /**
    * Returns nav icon from the page's content type.
+   *
    * @param type content type of the page.
    * @returns name of the icon.
    */

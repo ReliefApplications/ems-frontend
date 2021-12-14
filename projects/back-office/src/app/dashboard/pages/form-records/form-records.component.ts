@@ -134,6 +134,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
   onPage(e: any): void {
@@ -182,6 +183,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
+   *
    * @param id Id of record to delete.
    * @param e click envent.
    */
@@ -208,6 +210,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /**
    * Sends mutation to delete record.
+   *
    * @param id Id of record to delete.
    */
   private deleteRecord(id: string): void {
@@ -218,9 +221,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         hardDelete: this.showDeletedRecords
       }
     }).subscribe(res => {
-      this.dataSource = this.dataSource.filter(x => {
-        return x.id !== id;
-      });
+      this.dataSource = this.dataSource.filter(x => x.id !== id);
       if (id === this.historyId) {
         this.layoutService.setRightSidenav(null);
       }
@@ -228,6 +229,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   }
 
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -314,6 +316,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle archive / active view.
+   *
    * @param e click event.
    */
   onSwitchView(e: any): void {
@@ -324,6 +327,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /**
    * Restores an archived record.
+   *
    * @param id Id of record to restore.
    * @param e click event.
    */
@@ -335,9 +339,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         id,
       }
     }).subscribe(res => {
-      this.dataSource = this.dataSource.filter(x => {
-        return x.id !== id;
-      });
+      this.dataSource = this.dataSource.filter(x => x.id !== id);
       if (id === this.historyId) {
         this.layoutService.setRightSidenav(null);
       }

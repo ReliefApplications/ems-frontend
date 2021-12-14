@@ -2,7 +2,8 @@ import {Apollo} from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService } from '@safe/builder';
+import { Application, SafeApplicationService, SafeConfirmModalComponent,
+  SafeSnackBarService, NOTIFICATIONS, SafeAuthService } from '@safe/builder';
 import { MatDialog} from '@angular/material/dialog';
 import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
@@ -94,9 +95,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
             }
           }).subscribe(res => {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
-            this.applications.data = this.applications.data.filter(x => {
-              return x.id !== res.data?.deleteApplication.id;
-            });
+            this.applications.data = this.applications.data.filter(x => x.id !== res.data?.deleteApplication.id);
           });
           this.router.navigate(['/applications']);
         }

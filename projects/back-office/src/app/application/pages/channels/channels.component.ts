@@ -37,8 +37,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
       // Move roles in an array under corresponding applications under corresponding channels
       this.channelsData = this.channels.map((channel: ChannelDisplay) => {
         const subscribedApplications = Array.from(new Set(channel.subscribedRoles?.map(x => x.application?.name)))
-          .map((name?: string) => {
-            return {
+          .map((name?: string) => ({
               name: name ? name : 'Global',
               roles: channel.subscribedRoles ? channel.subscribedRoles.reduce((o: Role[], role: Role) => {
                 if (role?.application?.name === name) {
@@ -46,8 +45,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
                 }
                 return o;
               }, []) : []
-            };
-          });
+            }));
         return {...channel, subscribedApplications};
       });
     });

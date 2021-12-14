@@ -32,7 +32,8 @@
             "prefix": "app",
             "style": "camelCase"
           }
-        ]
+        ],
+        "@typescript-eslint/member-ordering": "off"
       }
     },
     {

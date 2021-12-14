@@ -254,7 +254,7 @@ export interface GetFormRecordsQueryResponse {
         hasNextPage: boolean;
       };
       totalCount: number;
-    }
+    };
   };
 }
 
@@ -343,7 +343,7 @@ export interface GetResourceRecordsQueryResponse {
         hasNextPage: boolean;
       };
       totalCount: number;
-    }
+    };
   };
 }
 
@@ -401,7 +401,7 @@ export interface GetResourcesQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -535,7 +535,7 @@ export interface GetApplicationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -778,11 +778,11 @@ export interface GetRoutingKeysQueryResponse {
     edges: {
       node: Application;
       cursor: string;
-    }[],
+    }[];
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -887,7 +887,7 @@ export interface GetApiConfigurationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -974,7 +974,7 @@ export interface GetPullJobsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }

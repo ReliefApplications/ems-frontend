@@ -10,6 +10,7 @@ import {
   GetFormsQueryResponse, GET_FORM_NAMES, GetRoutingKeysQueryResponse, GET_ROUTING_KEYS
 } from 'projects/back-office/src/app/graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+// eslint-disable-next-line max-len
 import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
 const ITEMS_PER_PAGE = 10;
@@ -90,7 +91,7 @@ export class PullJobModalComponent implements OnInit {
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA) public data: {
       channels: Channel[];
-      pullJob?: PullJob
+      pullJob?: PullJob;
     }
   ) { }
 
@@ -185,6 +186,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Get fields from form id.
+   *
    * @param id Id of selected form.
    */
   private getFields(id: string): void {
@@ -206,6 +208,7 @@ export class PullJobModalComponent implements OnInit {
 
  /**
   * Filters fields so we cannot add a multiple mapping for the same one.
+  *
   * @param name Field name.
   * @returns Filtered fields.
   */
@@ -215,6 +218,7 @@ export class PullJobModalComponent implements OnInit {
 
  /**
   * Removes element from the mapping
+  *
   * @param index mapping element index.
   */
   onDeleteElement(index: number): void {
@@ -242,9 +246,7 @@ export class PullJobModalComponent implements OnInit {
         value: [mapping[x], Validators.required],
       }))));
     } else {
-      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => {
-        return { ...o, [field.name]: field.value };
-      }, {});
+      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => ({ ...o, [field.name]: field.value }), {});
       this.pullJobForm.get('rawMapping')?.setValue(JSON.stringify(mapping, null, 2));
     }
     this.openRawJSON = !this.openRawJSON;
@@ -259,13 +261,12 @@ export class PullJobModalComponent implements OnInit {
 
  /**
   * Synchronizes mapping values on update button click.
+  *
   * @returns Return form value.
   */
   returnFormValue(): any {
     if (!this.openRawJSON) {
-      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => {
-        return { ...o, [field.name]: field.value };
-      }, {});
+      const mapping = this.pullJobForm.get('mapping')?.value.reduce((o: any, field: any) => ({ ...o, [field.name]: field.value }), {});
       this.pullJobForm.get('rawMapping')?.setValue(JSON.stringify(mapping, null, 2));
     }
     return this.pullJobForm.value;
@@ -273,6 +274,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
   onOpenFormsSelect(e: any): void {
@@ -284,6 +286,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadFormsOnScroll(e: any): void {
@@ -312,6 +315,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenApiSelect(e: any): void {
@@ -323,6 +327,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Fetches more API configurations on scroll.
+   *
    * @param e scroll event.
    */
   private loadApiOnScroll(e: any): void {
@@ -364,6 +369,7 @@ export class PullJobModalComponent implements OnInit {
 
   /**
    * Fetches more channels on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScrollApplication(e: any): void {

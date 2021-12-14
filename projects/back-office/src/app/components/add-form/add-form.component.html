@@ -21,7 +21,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <ng-container *ngIf="addForm.controls.resource.value != null">
+                <ng-container *ngIf="addForm.controls.resource.value !== null">
                     <div class="info-row">
                         <mat-slide-toggle formControlName="inheritsTemplate" class="form-slide-toggle">Start from
                             existing template</mat-slide-toggle>

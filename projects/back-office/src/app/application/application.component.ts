@@ -39,8 +39,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name || '';
-        let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => {
-          return {
+        let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => ({
             id: x.id,
             name: x.name,
             path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
@@ -52,8 +51,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               toolTip: 'Delete the page',
               callback: () => this.onDelete(x)
             }
-          };
-        }) || [];
+          })) || [];
         let adminNavItems: any[] = [];
         if (application.canUpdate) {
           displayNavItems = displayNavItems.concat(

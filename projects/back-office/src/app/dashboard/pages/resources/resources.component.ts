@@ -65,6 +65,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
    onPage(e: any): void {
@@ -105,6 +106,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
   /**
    * Filters applications and updates table.
+   *
    * @param filter filter event.
    */
   onFilter(filter: any): void {
@@ -135,6 +137,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
 
   /**
    * Removes a resource.
+   *
    * @param resource Resource to delete.
    */
   onDelete(resource: Resource): void {

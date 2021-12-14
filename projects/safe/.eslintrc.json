@@ -31,7 +31,8 @@
             "prefix": "safe",
             "style": "camelCase"
           }
-        ]
+        ],
+        "@typescript-eslint/member-ordering": "off"
       }
     },
     {

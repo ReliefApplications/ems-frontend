@@ -16,9 +16,9 @@ export class AddPositionComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddPositionComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      add: boolean,
-      edit: boolean,
-      title: string,
+      add: boolean;
+      edit: boolean;
+      title: string;
     }
   ) { }
 

@@ -51,10 +51,10 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe((value: {
-      routingKey: string,
-      title: string,
-      convertTo: string,
-      channel: string
+      routingKey: string;
+      title: string;
+      convertTo: string;
+      channel: string;
     }) => {
       if (value) {
         this.applicationService.addSubscription(value);
