@@ -23,8 +23,6 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
     this.layoutList = this.widget.settings.layoutList;
-    console.log('this.layout: widget comp');
-    console.log(this.layout);
   }
 
   ngOnChanges(): void {
@@ -48,8 +46,6 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   public onLayoutListChanged(e: any): void {
     this.dashboardService.saveWidgetLayoutToList(this.widget.id, e).subscribe((res) => {
       this.layoutList = res;
-      console.log('LIST changed finished');
-      console.log(this.layoutList);
     });
   }
 }

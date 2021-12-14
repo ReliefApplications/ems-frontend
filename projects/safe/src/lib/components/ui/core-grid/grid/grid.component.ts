@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
 import {
   ColumnReorderEvent,
   GridComponent,
@@ -48,7 +48,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit, OnChanges {
+export class SafeGridComponent implements OnInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -150,13 +150,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
-    console.log(this.layoutList[0]);
     this.selectedLayout = this.layoutList[0];
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes');
-    console.log(changes);
   }
 
   // === DATA ===
@@ -300,10 +294,6 @@ export class SafeGridComponent implements OnInit, OnChanges {
           }
         };
       }, {});
-      // console.log(this.grid?.columns.toArray());
-      // console.log('setColumnsConfig ---> fields');
-      // console.log(fields);
-      // this.columnChange.emit(fields);
   }
 
   /**
