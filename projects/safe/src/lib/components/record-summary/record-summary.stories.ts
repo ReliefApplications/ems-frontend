@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeRecordSummaryModule } from './record-summary.module';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,7 @@ export default {
                 SafeRecordSummaryModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'Form/Record Summary',
     argTypes: {

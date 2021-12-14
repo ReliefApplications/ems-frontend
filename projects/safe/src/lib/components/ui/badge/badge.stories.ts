@@ -2,7 +2,6 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeBadgeModule } from './badge.module';
 import { SafeBadgeComponent } from './badge.component';
 import { BadgeSize } from './badge-size.enum';
-import { withKnobs, text } from '@storybook/addon-knobs';
 import { BadgeVariant } from './badge-variant.enum';
 
 export default {
@@ -12,8 +11,7 @@ export default {
             imports: [
                 SafeBadgeModule
             ]
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Badge',
     argTypes: {
@@ -32,7 +30,11 @@ export default {
         },
         icon: {
             defaultValue: '',
-            control: { type: 'text' }
+            control: { type: 'text' }
+        },
+        content: {
+            defaultValue: 'This is a badge',
+            control: { type: 'text' }
         }
     }
 } as Meta;
@@ -40,8 +42,7 @@ export default {
 const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = args => ({
     template: '<safe-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</safe-badge>',
     props: {
-        ...args,
-        content: text('Text', 'This is a badge'),
+        ...args
     }
 });
 

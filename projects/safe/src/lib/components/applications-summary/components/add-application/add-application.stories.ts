@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeAddApplicationComponent } from './add-application.component';
 import { SafeApplicationsSummaryModule } from '../../applications-summary.module';
 
@@ -11,8 +10,7 @@ export default {
                 SafeApplicationsSummaryModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Applications/Add Application',
     argTypes: {}

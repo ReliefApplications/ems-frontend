@@ -2,7 +2,6 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeAvatarModule } from './avatar.module';
 import { SafeAvatarComponent } from './avatar.component';
 import { AvatarSize } from './avatar-size.enum';
-import { withKnobs, text } from '@storybook/addon-knobs';
 import { AvatarVariant } from './avatar-variant.enum';
 
 export default {
@@ -12,8 +11,7 @@ export default {
             imports: [
                 SafeAvatarModule
             ]
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Avatar',
     argTypes: {
@@ -33,6 +31,10 @@ export default {
         icon: {
             defaultValue: '',
             control: { type: 'text' }
+        },
+        content: {
+            defaultValue: 'P',
+            control: { type: 'text' }
         }
     }
 } as Meta;
@@ -40,8 +42,7 @@ export default {
 const TEMPLATE_WITH_TEXT: Story<SafeAvatarComponent> = args => ({
     template: '<safe-avatar [icon]="icon">{{content}}</safe-avatar>',
     props: {
-        ...args,
-        content: text('Text', 'P'),
+        ...args
     }
 });
 

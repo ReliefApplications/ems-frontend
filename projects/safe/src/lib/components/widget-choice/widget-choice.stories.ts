@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeWidgetChoiceComponent } from './widget-choice.component';
 import { SafeWidgetChoiceModule } from './widget-choice.module';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
@@ -14,8 +13,7 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Dashboard/Widget Choice',
     argsTypes: {

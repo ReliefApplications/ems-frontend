@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeColumnChartComponent } from './column-chart.component';
 import { SafeColumnChartModule } from './column-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,7 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Charts/Column Chart',
     argTypes: {

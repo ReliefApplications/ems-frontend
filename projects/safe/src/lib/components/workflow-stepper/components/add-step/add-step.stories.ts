@@ -1,5 +1,4 @@
-    import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
+import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeAddStepComponent } from './add-step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
 
@@ -11,8 +10,7 @@ export default {
                 SafeWorkflowStepperModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Workflow/Add Step',
     argTypes: {}
