@@ -10,6 +10,8 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { SafeBadgeModule } from '../../ui/badge/badge.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -24,7 +26,9 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
-    SafeQueryBuilderModule
+    SafeQueryBuilderModule,
+    SafeBadgeModule,
+    SafeButtonModule
   ],
   exports: [SafeMapSettingsComponent]
 })

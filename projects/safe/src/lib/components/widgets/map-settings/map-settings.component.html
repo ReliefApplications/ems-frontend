@@ -33,10 +33,34 @@
                         <mat-option *ngFor="let field of selectedFields" [value]="field">
                             {{field}}
                         </mat-option>
-                        <mat-option>None</mat-option>
+                        <mat-option>none</mat-option>
                     </mat-select>
                 </mat-form-field>
             </ng-container>
+        </div>
+        <div class="form-group">
+            <div class="form-group-title">Online layers</div>
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Add new layer
+                </mat-label>
+                <input type="text" matInput
+                [(ngModel)]="search"
+                [ngModelOptions]="{standalone: true}"
+                (input)="getContent()"
+                autocomplete="off">
+                <div *ngIf="suggestions.length > 0" class="suggestions">
+                    <button *ngFor="let suggestion of suggestions" mat-button (click)="addOnlineLayer(suggestion)">
+                        {{suggestion.title}}
+                        <safe-badge *ngFor="let tag of suggestion.tags">{{tag}}</safe-badge>
+                    </button>
+                </div>
+            </mat-form-field>
+            <h2 *ngIf="tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0"> Added layers</h2>
+            <h3 *ngFor="let layer of tileForm.value.onlineLayers">
+                {{layer.title}}
+                <safe-button icon="delete" category="primary" variant="danger" (click)="removeOnlineLayer(layer.id)"></safe-button>
+            </h3>
         </div>
         <div class="form-group">
             <div class="form-group-title">Default display</div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-
+import { SafeArcGISService } from '../../../services/arc-gis.service';
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
@@ -39,9 +39,13 @@ export class SafeMapSettingsComponent implements OnInit {
     'OSM:Streets'
   ];
 
+  public search = '';
+  public suggestions: any[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private arcGisService: SafeArcGISService
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
@@ -58,7 +62,8 @@ export class SafeMapSettingsComponent implements OnInit {
       mapbase: [(tileSettings && tileSettings.mapbase) ? tileSettings.mapbase : null],
       zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
       centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
-      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]]
+      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]],
+      onlineLayers: [(tileSettings && tileSettings.onlineLayers) ? tileSettings.onlineLayers : []]
     });
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
@@ -79,6 +84,20 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
+
+    this.arcGisService.clearItem();
+
+    // tileSettings.onlineLayers.map((x: any) => {this.tileForm!.value.onlineLayers.push(x);});
+
+    this.arcGisService.suggestions$.subscribe(suggestions => {
+      this.suggestions = suggestions;
+    });
+
+    this.arcGisService.currentItem$.subscribe(item => {
+      if (item.id) {
+        this.tileForm!.value.onlineLayers.push(item);
+      }
+    });
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -97,4 +116,28 @@ export class SafeMapSettingsComponent implements OnInit {
       }
     }));
   }
+
+  public getContent(): void
+  {
+    if (this.search == '') {
+      this.arcGisService.clearSuggestions();
+    }
+    else {
+      this.arcGisService.getSuggestions(this.search);
+    }
+  }
+
+  public addOnlineLayer(layer: any): void
+  {
+    this.search = '';
+    this.arcGisService.getItem(layer.id);
+    this.arcGisService.clearSuggestions();
+  }
+
+  public removeOnlineLayer(id: string): void
+  {
+    this.tileForm?.removeControl('onlineLayers');
+    console.log(this.tile.settings);
+  }
+
 }

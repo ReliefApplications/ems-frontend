@@ -103,6 +103,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
     this.drawMap();
+    console.log(this.settings);
     // Gets the settings from the DB.
     if (this.settings.query){
       const builtQuery =  this.queryBuilder.buildQuery(this.settings);
