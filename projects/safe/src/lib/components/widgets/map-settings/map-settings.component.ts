@@ -95,7 +95,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
     this.arcGisService.currentItem$.subscribe(item => {
       if (item.id) {
-        this.tileForm!.value.onlineLayers.push(item);
+        this.tileForm?.value.onlineLayers.push(item);
       }
     });
   }
@@ -119,7 +119,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public getContent(): void
   {
-    if (this.search == '') {
+    if (this.search === '') {
       this.arcGisService.clearSuggestions();
     }
     else {
