@@ -150,7 +150,9 @@ export class SafeGridComponent implements OnInit {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
-    this.selectedLayout = this.layoutList[0];
+    if (this.layoutList){
+      this.selectedLayout = this.layoutList[0];
+    }
   }
 
   // === DATA ===
@@ -443,6 +445,8 @@ export class SafeGridComponent implements OnInit {
 
   public onSelectLayout(e: any): void {
     console.log('+x+x+> this.layoutList');
+    console.log(this.layoutList);
+    console.log('+x+x+> this.selectedLayout');
     console.log(this.selectedLayout);
     this.currentLayoutChanges.emit(this.selectedLayout);
   }

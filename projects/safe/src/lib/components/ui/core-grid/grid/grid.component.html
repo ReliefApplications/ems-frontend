@@ -31,7 +31,7 @@
             </span>
             <span kendotooltip>
                   <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)">
-                    <option *ngFor="let layout of layoutList; let index = index;" [ngValue]="layout">{{'Layout '+index}}</option>
+                    <option *ngFor="let layout of layoutList; let index = index;" [ngValue]="layout">{{layout.name}}</option>
                   </select>
             </span>
             <span kendotooltip>

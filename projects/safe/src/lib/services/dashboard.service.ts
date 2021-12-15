@@ -140,8 +140,8 @@ export class SafeDashboardService {
   saveWidgetLayoutToList(id: number, layout: any): Observable<any> {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    const currentLayout = {...layout, timestamp: +new Date()};
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
+    const currentLayout = {...layout, timestamp: +new Date(), name: 'layout ' + dashboardStructure[index].settings.layoutList.length};
     let layoutList;
     if (!dashboardStructure[index].settings.layoutList) {
       layoutList = [currentLayout];
@@ -171,5 +171,59 @@ export class SafeDashboardService {
       console.log(newDashboard.structure[index].settings.layoutList);
       return newDashboard.structure[index].settings.layoutList;
     }));
+  }
+
+  /**
+   * Saves in DB the old defaultLayout.
+   * @param id dashboard id.
+   */
+  addDefaultLayoutRecoveryToList(id: number): Observable<any> {
+    const dashboardId = this.dashboard.getValue()?.id;
+    const dashboardStructure = this.dashboard.getValue()?.structure;
+    const index = dashboardStructure.findIndex((v: any) => v.id === id);
+    let updatedDashboardStructure: any;
+    console.log('-----------> INDEX ' + index);
+    console.log('ADDING defaultLayoutRecovery');
+    console.log(JSON.parse(dashboardStructure[index].settings.defaultLayout));
+    const currentLayout = {...JSON.parse(dashboardStructure[index].settings.defaultLayout), timestamp: +new Date(), name: 'default layout recovery', defaultLayoutRecovery: true};
+    let layoutList;
+    if (!dashboardStructure[index].settings.layoutList) {
+      layoutList = [currentLayout];
+    } else {
+      layoutList = [...dashboardStructure[index].settings.layoutList, currentLayout];
+    }
+    const widgetTemp = {
+      ...dashboardStructure[index],
+      settings: {
+        ...dashboardStructure[index].settings,
+        layoutList
+      }
+    };
+    updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
+    updatedDashboardStructure[index] = widgetTemp;
+    return this.apollo.mutate<EditDashboardMutationResponse>({
+      mutation: EDIT_DASHBOARD,
+      variables: {
+        id: dashboardId,
+        structure: updatedDashboardStructure,
+      }
+    }).pipe(map(res => {
+      const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
+      newDashboard.structure = updatedDashboardStructure;
+      this.openDashboard(newDashboard);
+      console.log('newDashboard.structure[index].settings.layoutList');
+      console.log(newDashboard.structure[index].settings.layoutList);
+      return newDashboard.structure[index].settings.layoutList;
+    }));
+  }
+
+  getDashboardFields(id: number): any {
+    console.log('test');
+    console.log(this.dashboard.getValue());
+    const dashboardStructure = this.dashboard.getValue()?.structure;
+    const index = dashboardStructure.findIndex((v: any) => v.id === id);
+    return {layoutList: dashboardStructure[index].settings.layoutList,
+      component: dashboardStructure[index].component,
+      defaultLayout: dashboardStructure[index].settings?.defaultLayout};
   }
 }

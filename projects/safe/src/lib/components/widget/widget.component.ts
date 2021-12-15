@@ -23,6 +23,13 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
     this.layoutList = this.widget.settings.layoutList;
+    const grid = this.dashboardService.getDashboardFields(this.widget.id);
+    console.log(grid);
+    if (!grid.layoutList?.find((l: any) => l.defaultLayoutRecovery) && grid.defaultLayout && grid.component === 'grid') {
+      this.dashboardService.addDefaultLayoutRecoveryToList(this.widget.id).subscribe((res) => {
+        this.layoutList = res;
+      });
+    }
   }
 
   ngOnChanges(): void {
