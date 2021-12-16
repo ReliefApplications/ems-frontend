@@ -114,7 +114,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
@@ -302,7 +302,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private update(item: any, value: any): void {
     let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
-      updatedItem = { ...updatedItem, ...value};
+      updatedItem = { ...updatedItem, ...value };
       const index = this.updatedItems.findIndex(x => x.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
@@ -567,7 +567,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          ...!isArray && { template: this.settings.query.template }
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
@@ -742,7 +742,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.gridData.data.length > 0) {
         ids = [this.gridData.data[0].id];
       } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
+        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
         return;
       }
     }
@@ -752,10 +752,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => {return {field: x.field, label: x.title}}) }
+      ...e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields)
+          .filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({ field: x.field, label: x.title }))
+      }
     };
 
     // Builds and make the request
@@ -878,7 +882,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Reset the currently cached layout to the default one
    */
-   resetDefaultLayout(): void {
+  resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
 }
