@@ -169,7 +169,8 @@ export class QueryBuilderService {
       `;
       return this.apollo.query<any>({
         query,
-        variables: {}
+        variables: {},
+        fetchPolicy: 'cache-first'
       });
     } else {
       return null;
