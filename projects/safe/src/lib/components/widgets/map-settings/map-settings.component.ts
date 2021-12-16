@@ -93,7 +93,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
     this.arcGisService.currentItem$.subscribe(item => {
       if (item.id) {
-        let temp: any[] = [];
+        const temp: any[] = [];
         this.tileForm?.value.onlineLayers.map((layer: any) => {
           temp.push(layer);
         });
@@ -139,12 +139,12 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public removeOnlineLayer(id: any): void
   {
-    let temp: any[] = [];
+    const temp: any[] = [];
     this.tileForm?.value.onlineLayers.map((layer: any) => {
       if (layer.id !== id) {
         temp.push(layer);
       }
-    })
+    });
     this.tileForm?.controls.onlineLayers.setValue(temp);
   }
 

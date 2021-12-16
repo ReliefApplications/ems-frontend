@@ -146,7 +146,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     // Sets map base
-    let apiKey = this.apiKey
+    const apiKey = this.apiKey;
     L.esri.Vector.vectorBasemapLayer(this.basemapLayers[this.settings.mapbase]
       ? this.basemapLayers[this.settings.mapbase]
       : this.basemapLayers.OSM, {
@@ -238,14 +238,14 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
         this.overlays[layer.title] = L.esri.featureLayer({
-          url: layer.url + "/0",
+          url: layer.url + '/0',
           simplifyFactor: 1,
           apikey: this.apiKey
           // pointToLayer: (geojson: any, latlng: any) => {
           //   return L.circleMarker(latlng, MARKER_OPTIONS);
           // }
         }).addTo(this.map);
-      })
+      });
     }
 
     this.categoryNames.map((name: string) => {
