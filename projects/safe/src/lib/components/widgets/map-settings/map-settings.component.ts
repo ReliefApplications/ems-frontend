@@ -123,7 +123,7 @@ export class SafeMapSettingsComponent implements OnInit {
   public getContent(): void
   {
     if (this.search === '') {
-      this.arcGisService.clearSuggestions();
+      setTimeout(() => { this.arcGisService.clearSuggestions(); }, 400);
     }
     else {
       this.arcGisService.getSuggestions(this.search);

@@ -5,6 +5,7 @@ import 'leaflet.markercluster';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { template } from 'lodash';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -241,12 +242,19 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           url: layer.url + '/0',
           simplifyFactor: 1,
           apikey: this.apiKey
-          // pointToLayer: (geojson: any, latlng: any) => {
-          //   return L.circleMarker(latlng, MARKER_OPTIONS);
-          // }
-        }).addTo(this.map);
+        });
+        this.overlays[layer.title].metadata((error: any) => {
+          if (!error) {
+            this.overlays[layer.title].addTo(this.map);
+          }
+          else {
+            console.log('Error at loadind "' + layer.title + '"');
+          }
+        });
       });
     }
+
+    console.log(this.overlays);
 
     this.categoryNames.map((name: string) => {
       this.overlays[name] = L.featureGroup.subGroup(
@@ -255,7 +263,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ).addTo(this.map);
     });
 
-    if (this.categoryNames[1] || this.settings.onlineLayers[0]) {
+    console.log(this.overlays);
+    if (this.categoryNames[1] || this.settings.onlineLayers) {
       this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
     }
   }
