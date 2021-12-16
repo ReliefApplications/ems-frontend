@@ -36,6 +36,34 @@ export class SafeDashboardService {
     this.dashboard.next(null);
   }
 
+  // /**
+  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
+  //  * @param widget widget to get layout of.
+  //  * @returns widget layout to apply.
+  //  */
+  // getWidgetLayout(widget: any): any {
+  //   try {
+  //     const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
+  //     const defaultDate = new Date(defaultLayout.timestamp || null);
+  //     const dashboardId = this.dashboard.getValue()?.id;
+  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+  //     const cachedDate = new Date(cachedLayout.timestamp || null);
+  //     if (defaultDate > cachedDate) {
+  //       if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
+  //         defaultLayout.sort = [];
+  //         defaultLayout.filter = {filter: [], logic: 'and'};
+  //       }
+  //       return defaultLayout;
+  //     } else {
+  //       return cachedLayout;
+  //     }
+  //   } catch {
+  //     const dashboardId = this.dashboard.getValue()?.id;
+  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+  //     return cachedLayout;
+  //   }
+  // }
+
   /**
    * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
    * @param widget widget to get layout of.
@@ -77,15 +105,26 @@ export class SafeDashboardService {
     }
   }
 
+  // /**
+  //  * Stores layout of a widget in local storage.
+  //  * @param id dashboard id.
+  //  * @param layout layout to save.
+  //  * @returns Stored event.
+  //  */
+  // saveWidgetLayout(id: number, layout: any): void {
+  //   const dashboardId = this.dashboard.getValue()?.id;
+  //   return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
+  // }
+
   /**
    * Stores layout of a widget in local storage.
    * @param id dashboard id.
-   * @param layout layout to save.
+   * @param layoutIndex layout index to save.
    * @returns Stored event.
    */
-  saveWidgetLayout(id: number, layout: any): void {
+  saveWidgetLayout(id: number, layoutIndex: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
-    return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
+    return localStorage.setItem(`widget:${dashboardId}:${id}`, layoutIndex);
   }
 
   /**
@@ -141,7 +180,13 @@ export class SafeDashboardService {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
-    const currentLayout = {...layout, timestamp: +new Date(), name: 'layout ' + dashboardStructure[index].settings.layoutList.length};
+    let currentLayout;
+    if (dashboardStructure[index].settings.layoutList) {
+      currentLayout = {...layout, timestamp: +new Date(), name: 'layout ' + dashboardStructure[index].settings.layoutList.length};
+    }
+    else {
+      currentLayout = {...layout, timestamp: +new Date(), name: 'layout 0'};
+    }
     let layoutList;
     if (!dashboardStructure[index].settings.layoutList) {
       layoutList = [currentLayout];
@@ -167,7 +212,7 @@ export class SafeDashboardService {
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
       this.openDashboard(newDashboard);
-      console.log('newDashboard.structure[index].settings.layoutList');
+      console.log('!!!! newDashboard.structure[index].settings.layoutList');
       console.log(newDashboard.structure[index].settings.layoutList);
       return newDashboard.structure[index].settings.layoutList;
     }));

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnChanges, Output, Renderer2, ViewChild} from '@angular/core';
 import {
   ColumnReorderEvent,
   GridComponent,
@@ -48,7 +48,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit {
+export class SafeGridComponent implements OnInit, OnChanges {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -154,6 +154,23 @@ export class SafeGridComponent implements OnInit {
       this.selectedLayout = this.layoutList[0];
     }
   }
+
+  ngOnChanges(changes: any): void {
+    console.log('changes');
+    console.log(changes);
+    console.log(this.layoutList);
+    if (changes?.layoutList && this.layoutList) {
+      this.selectedLayout = this.layoutList[this.layoutList.length - 1];
+    }
+  }
+
+  // public changeLayoutSelection(newLayout: any): void {
+  //   // console.log('newLayout');
+  //   // console.log(newLayout);
+  //   this.selectedLayout = newLayout;
+  //   // console.log('this.selectedLayout');
+  //   // console.log(this.selectedLayout);
+  // }
 
   // === DATA ===
   /**
@@ -444,10 +461,10 @@ export class SafeGridComponent implements OnInit {
   }
 
   public onSelectLayout(e: any): void {
-    console.log('+x+x+> this.layoutList');
-    console.log(this.layoutList);
+    // console.log('+x+x+> this.layoutList');
+    // console.log(this.layoutList);
     console.log('+x+x+> this.selectedLayout');
-    console.log(this.selectedLayout);
+    // console.log(this.selectedLayout);
     this.currentLayoutChanges.emit(this.selectedLayout);
   }
 }

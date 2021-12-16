@@ -893,11 +893,16 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.layoutListChanged.emit(this.layout);
     console.log('addLayoutToList');
     console.log(this.layoutList);
+    // this.grid?.selectedLayout = this.layout;
+    // this.grid?.changeLayoutSelection(this.layout);
+    // this.currentLayoutChanges(this.layout);
     this.hasLayoutChanges = false;
   }
 
   currentLayoutChanges(currentLayout: any): void {
     console.log('currentLayoutChanges');
     this.updateLayout(currentLayout);
+    // this.layoutChanged.emit(this.layout);
+    this.hasLayoutChanges = false;
   }
 }
