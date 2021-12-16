@@ -755,7 +755,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
       format: e.format,
       ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => x.field) }
+        .sort((a: any, b: any) => a.order - b.order).map((x: any) => {return {field: x.field, label: x.title}}) }
     };
 
     // Builds and make the request
