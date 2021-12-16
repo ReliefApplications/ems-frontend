@@ -241,7 +241,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         sortField: this.sortField,
         sortOrder: this.sortOrder
       },
-      fetchPolicy: 'cache-first'
+      fetchPolicy: 'cache-and-network'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
