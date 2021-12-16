@@ -87,15 +87,18 @@ export class SafeMapSettingsComponent implements OnInit {
 
     this.arcGisService.clearItem();
 
-    // tileSettings.onlineLayers.map((x: any) => {this.tileForm!.value.onlineLayers.push(x);});
-
     this.arcGisService.suggestions$.subscribe(suggestions => {
       this.suggestions = suggestions;
     });
 
     this.arcGisService.currentItem$.subscribe(item => {
       if (item.id) {
-        this.tileForm?.value.onlineLayers.push(item);
+        let temp: any[] = [];
+        this.tileForm?.value.onlineLayers.map((layer: any) => {
+          temp.push(layer);
+        });
+        temp.push(item);
+        this.tileForm?.controls.onlineLayers.setValue(temp);
       }
     });
   }
@@ -134,10 +137,15 @@ export class SafeMapSettingsComponent implements OnInit {
     this.arcGisService.clearSuggestions();
   }
 
-  public removeOnlineLayer(id: string): void
+  public removeOnlineLayer(id: any): void
   {
-    this.tileForm?.removeControl('onlineLayers');
-    console.log(this.tile.settings);
+    let temp: any[] = [];
+    this.tileForm?.value.onlineLayers.map((layer: any) => {
+      if (layer.id !== id) {
+        temp.push(layer);
+      }
+    })
+    this.tileForm?.controls.onlineLayers.setValue(temp);
   }
 
 }

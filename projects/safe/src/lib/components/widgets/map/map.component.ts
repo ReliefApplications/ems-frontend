@@ -57,6 +57,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     'OSM:Streets': 'OSM:Street'
   };
 
+  private apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+
   // === MARKERS ===
   private markersLayer: any;
   private markersLayerGroup: any;
@@ -131,9 +133,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
-    // Key to access esri maps
-    const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-
     // Defines map
     this.map = L.map(this.mapId, {
       zoomControl: false,
@@ -147,6 +146,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     // Sets map base
+    let apiKey = this.apiKey
     L.esri.Vector.vectorBasemapLayer(this.basemapLayers[this.settings.mapbase]
       ? this.basemapLayers[this.settings.mapbase]
       : this.basemapLayers.OSM, {
@@ -164,7 +164,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     });
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
-
   /* Load the data, using widget parameters.
   */
   private getData(): void {
@@ -235,13 +234,28 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     if (this.layerControl) {
       this.layerControl.remove();
     }
+
+    if (this.settings.onlineLayers) {
+      this.settings.onlineLayers.map((layer: any) => {
+        this.overlays[layer.title] = L.esri.featureLayer({
+          url: layer.url + "/0",
+          simplifyFactor: 1,
+          apikey: this.apiKey
+          // pointToLayer: (geojson: any, latlng: any) => {
+          //   return L.circleMarker(latlng, MARKER_OPTIONS);
+          // }
+        }).addTo(this.map);
+      })
+    }
+
     this.categoryNames.map((name: string) => {
       this.overlays[name] = L.featureGroup.subGroup(
         this.markersLayer,
         this.markersCategories[name]
       ).addTo(this.map);
     });
-    if (this.categoryNames[1]) {
+
+    if (this.categoryNames[1] || this.settings.onlineLayers[0]) {
       this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
     }
   }
