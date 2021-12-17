@@ -656,6 +656,32 @@
                 }
               ]
             },
+            "oort-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-element/src/environments/environment.ts",
+                  "with": "projects/web-element/src/environments/environment.oort.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
