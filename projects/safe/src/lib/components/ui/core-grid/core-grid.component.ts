@@ -1,6 +1,6 @@
 import {
   Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
-  Inject, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild
+  Inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -209,7 +209,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
-    this.updateLayout(this.defaultLayout);
+    // console.log('changes');
+    // console.log(changes);
+    console.log('this.defaultLayout');
+    console.log(this.defaultLayout);
+    console.log('this.layoutList');
+    console.log(this.layoutList);
+    if (this.layoutList) {
+      this.updateLayout(this.layoutList[this.layoutList.length - 1]);
+    }
+    else {
+      this.updateLayout({});
+    }
+    // this.updateLayout(this.defaultLayout);
   }
 
   updateLayout(layout: any): void {
@@ -900,7 +912,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   currentLayoutChanges(currentLayout: any): void {
-    console.log('currentLayoutChanges');
+    console.log('--- currentLayoutChanges ---');
+    console.log(currentLayout);
     this.updateLayout(currentLayout);
     // this.layoutChanged.emit(this.layout);
     this.hasLayoutChanges = false;

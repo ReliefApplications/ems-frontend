@@ -64,32 +64,46 @@ export class SafeDashboardService {
   //   }
   // }
 
+  // /**
+  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
+  //  * @param widget widget to get layout of.
+  //  * @returns widget layout to apply.
+  //  */
+  // getWidgetLayout(widget: any): any {
+  //   try {
+  //     const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
+  //     const defaultDate = new Date(defaultLayout.timestamp || null);
+  //     const dashboardId = this.dashboard.getValue()?.id;
+  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+  //     const cachedDate = new Date(cachedLayout.timestamp || null);
+  //     if (defaultDate > cachedDate) {
+  //       if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
+  //         defaultLayout.sort = [];
+  //         defaultLayout.filter = {filter: [], logic: 'and'};
+  //       }
+  //       return defaultLayout;
+  //     } else {
+  //       return cachedLayout;
+  //     }
+  //   } catch {
+  //     const dashboardId = this.dashboard.getValue()?.id;
+  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
+  //     return cachedLayout;
+  //   }
+  // }
+
   /**
    * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
    * @param widget widget to get layout of.
    * @returns widget layout to apply.
    */
   getWidgetLayout(widget: any): any {
-    try {
-      const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
-      const defaultDate = new Date(defaultLayout.timestamp || null);
-      const dashboardId = this.dashboard.getValue()?.id;
-      const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-      const cachedDate = new Date(cachedLayout.timestamp || null);
-      if (defaultDate > cachedDate) {
-        if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
-          defaultLayout.sort = [];
-          defaultLayout.filter = {filter: [], logic: 'and'};
-        }
-        return defaultLayout;
-      } else {
-        return cachedLayout;
-      }
-    } catch {
-      const dashboardId = this.dashboard.getValue()?.id;
-      const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-      return cachedLayout;
+    const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
+    if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
+      defaultLayout.sort = [];
+      defaultLayout.filter = {filter: [], logic: 'and'};
     }
+    return defaultLayout;
   }
 
   /**
@@ -263,8 +277,8 @@ export class SafeDashboardService {
   }
 
   getDashboardFields(id: number): any {
-    console.log('test');
-    console.log(this.dashboard.getValue());
+    // console.log('test');
+    // console.log(this.dashboard.getValue());
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     return {layoutList: dashboardStructure[index].settings.layoutList,

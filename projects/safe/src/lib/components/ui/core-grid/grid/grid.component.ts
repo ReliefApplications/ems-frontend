@@ -156,9 +156,9 @@ export class SafeGridComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: any): void {
-    console.log('changes');
-    console.log(changes);
-    console.log(this.layoutList);
+    // console.log('changes');
+    // console.log(changes);
+    // console.log(this.layoutList);
     if (changes?.layoutList && this.layoutList) {
       this.selectedLayout = this.layoutList[this.layoutList.length - 1];
     }
