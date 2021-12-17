@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
@@ -36,7 +36,10 @@ import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.compo
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
-import { MsalModule } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalGuard, MsalInterceptor, MsalInterceptorConfiguration, MsalModule,
+  MsalService, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
+import { IPublicClientApplication, PublicClientApplication, InteractionType } from '@azure/msal-browser';
+import { LogLevel } from 'msal';
 
 /*  Configuration of the Apollo client.
 */
@@ -110,6 +113,48 @@ export const provideApollo = (httpLink: HttpLink): any => {
   };
 };
 
+const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+/**
+ * Configures MSAL instance.
+ *
+ * @returns MSAL Client Application.
+ */
+ export const msalInstanceFactory = (): IPublicClientApplication => new PublicClientApplication({
+  auth: {
+    clientId: environment.clientId,
+    authority: environment.authority,
+    redirectUri: environment.redirectUrl,
+    postLogoutRedirectUri: environment.postLogoutRedirectUri
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+  },
+  system: {
+    loggerOptions: {
+      // Can be enabled for dev purpose
+      // loggerCallback,
+      logLevel: LogLevel.Info,
+      piiLoggingEnabled: false
+    }
+  }
+});
+
+/**
+ * Configures MSAL interceptor.
+ *
+ * @returns MSAL interceptor configuration.
+ */
+ export const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  protectedResourceMap.set(`${environment.apiUrl}/*`, [`${environment.clientId}/.default`]);
+  return {
+    interactionType: InteractionType.Redirect,
+    protectedResourceMap
+  };
+};
+
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -158,7 +203,27 @@ export const provideApollo = (httpLink: HttpLink): any => {
         // return the container ElementRef, where the popup will be injected
          ({ nativeElement: document.body } as ElementRef)
 
-    }
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: msalInstanceFactory
+    },
+    // {
+    //   provide: MSAL_GUARD_CONFIG,
+    //   useFactory: msalGuardConfigFactory
+    // },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: msalInterceptorConfigFactory
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService
   ],
   bootstrap: [
     AppComponent
