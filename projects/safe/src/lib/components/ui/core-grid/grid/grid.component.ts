@@ -62,6 +62,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
   public selectedLayout: any;
   @Output() currentLayoutChanges = new EventEmitter();
   @Input() currentLayoutIndex = 0;
+  @Output() updateLayout = new EventEmitter();
 
   // === EXPORT ===
   @Input() exportable = true;
@@ -154,12 +155,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
     if (this.layoutList){
       if (this.currentLayoutIndex) {
         this.selectedLayout = this.layoutList[this.currentLayoutIndex];
-        this.currentLayoutChanges.emit(
-          {
-            currentLayout: this.selectedLayout,
-            index: this.currentLayoutIndex
-          }
-        );
+        this.updateLayout.emit(this.selectedLayout);
       }
       else {
         this.selectedLayout = this.layoutList[0];
