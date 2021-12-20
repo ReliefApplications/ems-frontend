@@ -129,6 +129,9 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   public onResize(e: TileLayoutResizeEvent) {
+    if (e.newRowSpan > 4) {
+      e.newRowSpan = 4;
+    }
     // e.item.rowSpan = e.newRowSpan;
     // e.item.colSpan = e.newColSpan;
     // const targetItem = e.items.filter((item) => item !== e.item)[0];
