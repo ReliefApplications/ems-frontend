@@ -3,6 +3,7 @@ import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Ou
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent } from "@progress/kendo-angular-layout";
 
 @Component({
   selector: 'safe-widget-grid',
@@ -62,13 +63,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /*  Change display when windows size changes.
-  */
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
-
   /*  Change the number of displayed columns.
    */
   private setColsNumber(width: number): number {
@@ -123,5 +117,69 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
 
   onAdd(e: any): void {
     this.add.emit(e);
+  }
+
+  public onReorder(e: TileLayoutReorderEvent): void {
+    // prevent the default behavior
+    e.preventDefault();
+    // check whether the dragged item was dropped over another item
+    const targetItem = e.items.filter((item: TileLayoutItemComponent) =>
+      item.order === e.newIndex
+    )[0];
+      e.item.order = e.newIndex!;
+
+    if (targetItem) {
+      targetItem.order = e.oldIndex!;
+    }
+    console.log(this.widgets);
+    this.widgets = this.array_move(this.widgets, e.oldIndex, e.newIndex);
+    console.log(this.widgets);
+    this.move.emit();
+  }
+
+  private array_move(arr: any, old_index: number, new_index: number) {
+    let temp: Array<any> = [];
+    arr.map((value: any) => {temp.push(value)})
+    if (new_index >= temp.length) {
+        var k = new_index - temp.length + 1;
+        while (k--) {
+            temp.push(undefined);
+        }
+    }
+    temp.splice(new_index, 0, temp.splice(old_index, 1)[0]);
+    return (temp); // for testing
+};
+
+  public onResize(e: TileLayoutResizeEvent) {
+    e.item.rowSpan = e.newRowSpan;
+    e.item.colSpan = e.newColSpan;
+    const targetItem = e.items.filter((item) => item !== e.item)[0];
+
+    if (targetItem && this.isOverlapping(e.item, targetItem)) {
+      targetItem.row = e.item.row + e.item.rowSpan;
+    }
+    this.edit.emit({
+      type: 'display',
+      id: this.widgets[e.item.order].id,
+      options: {
+        id: this.widgets[e.item.order].id,
+        cols: e.newColSpan,
+        rows: e.newRowSpan
+      }});
+  }
+
+  test(widget: any){
+    console.log(widget);
+  }
+
+  private isOverlapping(
+    resizedItem: TileLayoutItemComponent,
+    otherItem: TileLayoutItemComponent
+  ): boolean {
+    const hasCommonColumns =
+      resizedItem.col + resizedItem.colSpan - 1 >= otherItem.col;
+    const hasCommonRows =
+      resizedItem.row + resizedItem.rowSpan - 1 >= otherItem.row;
+    return hasCommonColumns && hasCommonRows;
   }
 }

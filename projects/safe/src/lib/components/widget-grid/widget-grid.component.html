@@ -3,6 +3,26 @@
         <h2 *ngIf="widgets.length === 0">Add a widget</h2>
         <safe-widget-choice [floating]="widgets.length > 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)"></safe-widget-choice>
     </div>
+    <kendo-tilelayout
+    [columns]="colsNumber"
+    [rowHeight]="200"
+    [resizable]="true"
+    [reorderable]="true"
+    (reorder)="onReorder($event)"
+    (resize)="onResize($event)">
+        <kendo-tilelayout-item *ngFor="let widget of widgets; let i = index;"
+        [colSpan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
+        [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows"
+        [id]="widget.id"
+        (resize)="test(widget)">
+            <kendo-tilelayout-item-header>
+                <h4>{{widget.settings.title}}</h4>
+                <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
+                    (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
+            </kendo-tilelayout-item-header>
+            <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
+        </kendo-tilelayout-item>
+    </kendo-tilelayout>
     <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
             [colspan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"

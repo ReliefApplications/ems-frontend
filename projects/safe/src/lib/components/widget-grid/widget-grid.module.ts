@@ -20,6 +20,9 @@ import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.c
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import { GridModule } from '@progress/kendo-angular-grid';
 
 @NgModule({
   declarations: [
@@ -47,7 +50,10 @@ import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
     DragDropModule,
     MatDividerModule,
     SafeButtonModule,
-    SafeWidgetChoiceModule
+    SafeWidgetChoiceModule,
+    LayoutModule,
+    ChartsModule,
+    GridModule,
   ],
   exports: [SafeWidgetGridComponent]
 })

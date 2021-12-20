@@ -35,10 +35,6 @@ export class SafeFloatingOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        name: 'Display',
-        icon: 'settings'
-      },
-      {
         name: 'Settings',
         icon: 'insert_chart',
         disabled: !this.widget || !this.widget.settings
@@ -57,18 +53,6 @@ export class SafeFloatingOptionsComponent implements OnInit {
   /*  Open a modal, or emit an event depending on the action clicked.
   */
   onClick(item: any): void {
-    if (item.name === 'Display') {
-      const dialogRef = this.dialog.open(SafeTileDisplayComponent, {
-        data: {
-          tile: this.widget
-        }
-      });
-      dialogRef.afterClosed().subscribe(res => {
-        if (res) {
-          this.edit.emit({ type: 'display', id: this.widget.id, options: res});
-        }
-      });
-    }
     if (item.name === 'Settings') {
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         data: {

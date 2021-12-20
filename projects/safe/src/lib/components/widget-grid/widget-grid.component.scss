@@ -4,6 +4,10 @@
 
 // === DASHBOARD WIDGETS===
 
+.grid-container {
+    position: static;
+}
+
 .mat-grid-tile {
     overflow: unset;
 }
@@ -96,4 +100,13 @@
     width: 100%;
     z-index: 3000;
     pointer-events: none;
+}
+kendo-tilelayout-item-header {
+    position: relative;
+    height: 1.2em;
+
+    h4 {
+        position: relative;
+        bottom: 0.2em
+    }
 }
