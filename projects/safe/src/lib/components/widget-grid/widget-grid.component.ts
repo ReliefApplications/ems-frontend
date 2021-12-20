@@ -83,10 +83,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
 
   /*  Drag and drop a widget to move it.
   */
-  onMove($event: CdkDragEnter): void {
-    moveItemInArray(this.widgets, $event.item.data, $event.container.data);
-    this.move.emit();
-  }
 
   onEditWidget(e: any): void {
     this.edit.emit(e);
@@ -120,28 +116,27 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   public onReorder(e: TileLayoutReorderEvent): void {
-    // prevent the default behavior
-    e.preventDefault();
-    // check whether the dragged item was dropped over another item
-    const targetItem = e.items.filter((item: TileLayoutItemComponent) =>
-      item.order === e.newIndex
-    )[0];
-      e.item.order = e.newIndex;
+    // e.preventDefault();
+    // const targetItem = e.items.filter((item: TileLayoutItemComponent) =>
+    //   item.order === e.newIndex
+    // )[0];
+    //   e.item.order = e.newIndex;
 
-    if (targetItem ) {
-      targetItem.order = e.oldIndex;
-    }
+    // if (targetItem ) {
+    //   targetItem.order = e.oldIndex;
+    // }
     this.move.emit();
+    moveItemInArray(this.widgets, e.oldIndex, e.newIndex);
   }
 
   public onResize(e: TileLayoutResizeEvent) {
-    e.item.rowSpan = e.newRowSpan;
-    e.item.colSpan = e.newColSpan;
-    const targetItem = e.items.filter((item) => item !== e.item)[0];
+    // e.item.rowSpan = e.newRowSpan;
+    // e.item.colSpan = e.newColSpan;
+    // const targetItem = e.items.filter((item) => item !== e.item)[0];
 
-    if (targetItem && this.isOverlapping(e.item, targetItem)) {
-      targetItem.row = e.item.row + e.item.rowSpan;
-    }
+    // if (targetItem && this.isOverlapping(e.item, targetItem)) {
+    //   targetItem.row = e.item.row + e.item.rowSpan;
+    // }
     this.edit.emit({
       type: 'display',
       id: this.widgets[e.item.order].id,
@@ -150,10 +145,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
         cols: e.newColSpan,
         rows: e.newRowSpan
       }});
-  }
-
-  test(widget: any){
-    console.log(widget);
   }
 
   private isOverlapping(

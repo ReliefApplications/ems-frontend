@@ -13,8 +13,7 @@
         <kendo-tilelayout-item *ngFor="let widget of widgets; let i = index;"
         [colSpan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
         [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows"
-        [id]="widget.id"
-        (resize)="test(widget)">
+        [id]="widget.id">
             <kendo-tilelayout-item-header>
                 <h4>{{widget.settings.title}}</h4>
                 <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
@@ -23,22 +22,4 @@
             <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
         </kendo-tilelayout-item>
     </kendo-tilelayout>
-    <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
-            [colspan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
-            [rowspan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows">
-            <cdk-drop-list [cdkDropListConnectedTo]="drops" [cdkDropListData]="i">
-                <div cdkDrag [cdkDragDisabled] = "!this.canUpdate" (cdkDragEntered)="onMove($event)" [cdkDragData]="i" class="grid-widget"
-                    cdkDragBoundary=".grid-container">
-                    <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
-                                           (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
-                    <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
-                    <safe-button [isIcon]="true" icon="drag_indicator" class="widget-handle" cdkDragHandle *ngIf="canUpdate">
-                    </safe-button>
-                    <safe-button [isIcon]="true" icon="open_in_full" class="widget-expand" *ngIf="!canUpdate" (click)="onExpandWidget(widget)">
-                    </safe-button>
-                </div>
-            </cdk-drop-list>
-        </mat-grid-tile>
-    </mat-grid-list>
 </div>

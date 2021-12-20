@@ -101,12 +101,18 @@
     z-index: 3000;
     pointer-events: none;
 }
-kendo-tilelayout-item-header {
-    position: relative;
-    height: 1.2em;
 
-    h4 {
+kendo-tilelayout {
+    position: static;
+    grid-auto-flow: row;
+    
+    kendo-tilelayout-item-header {
         position: relative;
-        bottom: 0.2em
+        height: 1.2em;
+
+        h4 {
+            position: relative;
+            bottom: 0.2em
+        }
     }
 }

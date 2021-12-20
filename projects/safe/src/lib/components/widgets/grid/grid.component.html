@@ -1,14 +1,4 @@
 <div class="widget-container">
-    <div class="widget-header">
-        <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
-        <div class="floating-button">
-            <ng-container *ngFor="let floatingButton of settings.floatingButtons">
-                <button mat-button color="primary" (click)="onQuickAction(floatingButton)" *ngIf="floatingButton.show">
-                    {{floatingButton.name}}
-                </button>
-            </ng-container>
-        </div>
-    </div>
     <!-- GRID CONTENT -->
     <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
         (defaultLayoutChanged)="defaultLayoutChanged.emit($event)" (layoutChanged)="layoutChanged.emit($event)"
