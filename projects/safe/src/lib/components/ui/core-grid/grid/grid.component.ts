@@ -336,6 +336,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     this.grid?.editRow(rowIndex, this.formGroup);
   }
 
+  public cellCloseHandler(args: any) {
+    console.log("args = ", args);
+  }
+
   /**
    * Detects document click to save record if outside the inline edition form.
    *
@@ -367,6 +371,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Saves edition.
    */
   public onSave(): void {
+    if (this.formGroup.dirty) {
+      this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
