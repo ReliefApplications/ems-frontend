@@ -771,7 +771,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ field: x.field, label: x.title }))
+          .map((x: any) => ({ name: x.field, label: x.title }))
       }
     };
 
