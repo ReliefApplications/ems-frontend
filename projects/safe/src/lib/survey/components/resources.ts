@@ -245,7 +245,7 @@ export const init = (survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIndex: 3,
       });
       survey.Serializer.addProperty('resources', {
-        name: 'delete:boolean',
+        name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',
         dependsOn: 'resource',
