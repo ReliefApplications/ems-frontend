@@ -36,76 +36,6 @@ export class SafeDashboardService {
     this.dashboard.next(null);
   }
 
-  // /**
-  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
-  //  * @param widget widget to get layout of.
-  //  * @returns widget layout to apply.
-  //  */
-  // getWidgetLayout(widget: any): any {
-  //   try {
-  //     const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
-  //     const defaultDate = new Date(defaultLayout.timestamp || null);
-  //     const dashboardId = this.dashboard.getValue()?.id;
-  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-  //     const cachedDate = new Date(cachedLayout.timestamp || null);
-  //     if (defaultDate > cachedDate) {
-  //       if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
-  //         defaultLayout.sort = [];
-  //         defaultLayout.filter = {filter: [], logic: 'and'};
-  //       }
-  //       return defaultLayout;
-  //     } else {
-  //       return cachedLayout;
-  //     }
-  //   } catch {
-  //     const dashboardId = this.dashboard.getValue()?.id;
-  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-  //     return cachedLayout;
-  //   }
-  // }
-
-  // /**
-  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
-  //  * @param widget widget to get layout of.
-  //  * @returns widget layout to apply.
-  //  */
-  // getWidgetLayout(widget: any): any {
-  //   try {
-  //     const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
-  //     const defaultDate = new Date(defaultLayout.timestamp || null);
-  //     const dashboardId = this.dashboard.getValue()?.id;
-  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-  //     const cachedDate = new Date(cachedLayout.timestamp || null);
-  //     if (defaultDate > cachedDate) {
-  //       if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
-  //         defaultLayout.sort = [];
-  //         defaultLayout.filter = {filter: [], logic: 'and'};
-  //       }
-  //       return defaultLayout;
-  //     } else {
-  //       return cachedLayout;
-  //     }
-  //   } catch {
-  //     const dashboardId = this.dashboard.getValue()?.id;
-  //     const cachedLayout = JSON.parse(localStorage.getItem(`widget:${dashboardId}:${widget.id}`) || JSON.stringify({}));
-  //     return cachedLayout;
-  //   }
-  // }
-
-  // /**
-  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
-  //  * @param widget widget to get layout of.
-  //  * @returns widget layout to apply.
-  //  */
-  // getWidgetLayout(widget: any): any {
-  //   const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
-  //   if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
-  //     defaultLayout.sort = [];
-  //     defaultLayout.filter = {filter: [], logic: 'and'};
-  //   }
-  //   return defaultLayout;
-  // }
-
   /**
    * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
    * @param widget widget to get layout of.
@@ -129,17 +59,6 @@ export class SafeDashboardService {
     }
   }
 
-  // /**
-  //  * Stores layout of a widget in local storage.
-  //  * @param id dashboard id.
-  //  * @param layout layout to save.
-  //  * @returns Stored event.
-  //  */
-  // saveWidgetLayout(id: number, layout: any): void {
-  //   const dashboardId = this.dashboard.getValue()?.id;
-  //   return localStorage.setItem(`widget:${dashboardId}:${id}`, JSON.stringify({ ...layout, timestamp: + new Date() }));
-  // }
-
   /**
    * Stores layout of a widget in local storage.
    * @param id dashboard id.
@@ -159,11 +78,7 @@ export class SafeDashboardService {
   saveWidgetDefaultLayout(id: number, layout: any): void {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    console.log('dashboardStructure');
-    console.log(dashboardStructure);
     const defaultLayout = { ...layout, timestamp: + new Date() };
-    console.log('defaultLayout');
-    console.log(defaultLayout);
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     const widgetTemp = {
       ...dashboardStructure[index],
@@ -181,7 +96,6 @@ export class SafeDashboardService {
         structure: updatedDashboardStructure,
       }
     }).subscribe(res => {
-      console.log(res);
     }, error => console.log(error));
   }
 
@@ -236,8 +150,6 @@ export class SafeDashboardService {
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
       this.openDashboard(newDashboard);
-      console.log('!!!! newDashboard.structure[index].settings.layoutList');
-      console.log(newDashboard.structure[index].settings.layoutList);
       return newDashboard.structure[index].settings.layoutList;
     }));
   }
@@ -251,9 +163,6 @@ export class SafeDashboardService {
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     let updatedDashboardStructure: any;
-    console.log('-----------> INDEX ' + index);
-    console.log('ADDING defaultLayoutRecovery');
-    console.log(JSON.parse(dashboardStructure[index].settings.defaultLayout));
     const currentLayout = {...JSON.parse(dashboardStructure[index].settings.defaultLayout), timestamp: +new Date(), name: 'default layout recovery', defaultLayoutRecovery: true};
     let layoutList;
     if (!dashboardStructure[index].settings.layoutList) {
@@ -280,15 +189,11 @@ export class SafeDashboardService {
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
       this.openDashboard(newDashboard);
-      console.log('newDashboard.structure[index].settings.layoutList');
-      console.log(newDashboard.structure[index].settings.layoutList);
       return newDashboard.structure[index].settings.layoutList;
     }));
   }
 
   getDashboardFields(id: number): any {
-    // console.log('test');
-    // console.log(this.dashboard.getValue());
     const dashboardStructure = this.dashboard.getValue()?.structure;
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     return {layoutList: dashboardStructure[index].settings.layoutList,

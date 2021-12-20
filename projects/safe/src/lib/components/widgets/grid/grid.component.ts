@@ -13,7 +13,7 @@ import {
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component, OnInit, ViewChild, Input, Output, ComponentFactory,
-  ComponentFactoryResolver, EventEmitter, Inject, OnChanges, SimpleChanges
+  ComponentFactoryResolver, EventEmitter, Inject
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
@@ -88,11 +88,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
-  }
-
-  ngOnChange(changes: SimpleChanges): void {
-    console.log('----------------------- changes: GRID.COMP');
-    console.log(changes);
   }
 
   private promisedChanges(items: any[]): Promise<any>[] {

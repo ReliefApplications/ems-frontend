@@ -211,19 +211,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
-    // console.log('changes');
-    // console.log(changes);
-    // console.log('this.defaultLayout');
-    // console.log(this.defaultLayout);
-    // console.log('this.layoutList');
-    // console.log(this.layoutList);
     if (this.layoutList) {
       this.updateLayout(this.layoutList[this.layoutList.length - 1]);
     }
     else {
       this.updateLayout({});
     }
-    // this.updateLayout(this.defaultLayout);
   }
 
   updateLayout(layout: any): void {
@@ -905,17 +898,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   addLayoutToList(): void {
     this.layoutListChanged.emit(this.layout);
-    console.log('addLayoutToList');
-    console.log(this.layoutList);
-    // this.grid?.selectedLayout = this.layout;
-    // this.grid?.changeLayoutSelection(this.layout);
-    // this.currentLayoutChanges(this.layout);
     this.hasLayoutChanges = false;
   }
 
   currentLayoutChange(obj: any): void {
-    console.log('--- currentLayoutChanges ---');
-    console.log(obj.currentLayout);
     this.updateLayout(obj.currentLayout);
     this.layoutChanged.emit(obj.index);
     this.hasLayoutChanges = false;

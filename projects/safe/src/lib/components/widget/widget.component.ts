@@ -24,68 +24,35 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     // this.layout = this.dashboardService.getWidgetLayout(this.widget);
     this.layout = {};
-    console.log('WIDGET: this.layout');
-    console.log(this.layout);
     this.layoutList = this.widget.settings.layoutList;
-    // console.log('this.layoutList');
-    // console.log(this.layoutList);
     const grid = this.dashboardService.getDashboardFields(this.widget.id);
-    console.log(grid);
     if (!grid.layoutList?.find((l: any) => l.defaultLayoutRecovery) && grid.defaultLayout && grid.component === 'grid') {
       this.dashboardService.addDefaultLayoutRecoveryToList(this.widget.id).subscribe((res) => {
         this.layoutList = res;
       });
     }
     this.currentLayoutIndex = this.dashboardService.getWidgetLayout(this.widget);
-    console.log('this.currentLayoutIndex');
-    console.log(this.currentLayoutIndex);
   }
 
   ngOnChanges(): void {
-    // this.layout = this.dashboardService.getWidgetLayout(this.widget);
     this.layout = {};
-    console.log('WIDGET: this.layout');
-    console.log(this.layout);
-    // console.log('------- this.layout');
-    // console.log(this.layout);
     this.layoutList = this.widget.settings.layoutList;
   }
 
-  // public onLayoutChanged(e: any): void {
-  //   console.log('onLayoutChanged');
-  //   this.dashboardService.saveWidgetLayout(this.widget.id, e);
-  // }
-
   public onLayoutChanged(e: any): void {
-    console.log('onLayoutChanged');
-    console.log('e');
-    console.log(e);
     this.dashboardService.saveWidgetLayout(this.widget.id, e);
-    console.log(localStorage);
   }
 
   public onDefaultLayoutChanged(e: any): void {
-    console.log('onDefaultLayoutChanged');
     this.dashboardService.saveWidgetDefaultLayout(this.widget.id, e);
   }
 
-  // public onDefaultLayoutChanged(e: any): void {
-  //   console.log('onDefaultLayoutChanged');
-  //   this.dashboardService.saveWidgetDefaultLayout(this.widget.id, e);
-  // }
-
   public onDefaultLayoutReset(e: any): void {
-    console.log('onDefaultLayoutReset');
-    // this.dashboardService.resetDefaultWidgetLayout(this.widget.id);
-    // this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 
   public onLayoutListChanged(e: any): void {
-    console.log('e');
-    console.log(e);
     this.dashboardService.saveWidgetLayoutToList(this.widget.id, e).subscribe((res) => {
       this.layoutList = res;
-      // this.dashboardService.saveWidgetLayout(this.widget.id, this.layoutList.length);
     });
   }
 
