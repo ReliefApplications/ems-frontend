@@ -62,10 +62,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
 
-  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
-
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
 
   @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
@@ -349,20 +345,6 @@ export class SafeGridWidgetComponent implements OnInit {
         });
       });
     }
-  }
-
-  /**
-   * Save the current layout of the grid as default layout
-   */
-  onDefaultLayout(): void {
-    this.defaultLayoutChanged.emit(this.layout);
-  }
-
-  /**
-   * Reset the currently cached layout to the default one
-   */
-  onResetDefaultLayout(): void {
-    this.defaultLayoutReset.emit();
   }
 
   getCurrentLayout(): void {

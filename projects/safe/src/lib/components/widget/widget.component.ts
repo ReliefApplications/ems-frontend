@@ -47,9 +47,6 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
     this.dashboardService.saveWidgetDefaultLayout(this.widget.id, e);
   }
 
-  public onDefaultLayoutReset(e: any): void {
-  }
-
   public onLayoutListChanged(e: any): void {
     this.dashboardService.saveWidgetLayoutToList(this.widget.id, e).subscribe((res) => {
       this.layoutList = res;

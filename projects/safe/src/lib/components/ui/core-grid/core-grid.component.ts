@@ -70,8 +70,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
-  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
-  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
   @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
 
@@ -509,14 +507,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
-      case 'saveLayout': {
-        this.saveDefaultLayout();
-        break;
-      }
-      case 'resetLayout': {
-        this.resetDefaultLayout();
-        break;
-      }
       case 'saveLayoutToList': {
         this.addLayoutToList();
         break;
@@ -869,14 +859,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Saves the current layout of the grid as default layout
-   */
-  saveDefaultLayout(): void {
-    this.defaultLayoutChanged.emit(this.layout);
-    this.hasLayoutChanges = false;
-  }
-
-  /**
    * Saves the current layout of the grid as local layout for this user
    */
   saveLocalLayout(): void {
@@ -884,13 +866,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.hasLayoutChanges) {
       this.hasLayoutChanges = true;
     }
-  }
-
-  /**
-   * Reset the currently cached layout to the default one
-   */
-   resetDefaultLayout(): void {
-    this.defaultLayoutReset.emit();
   }
 
   /**
