@@ -63,30 +63,37 @@ const OPERATORS: any = {
 };
 
 const TYPES: any = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Int: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
   },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   String: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'startswith', 'endswith', 'isnull', 'isnotnull', 'isempty', 'isnotempty']
   },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
     defaultOperator: 'eq',
     operators: ['eq']
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Date: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DateTime: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Time: {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   JSON: {
     defaultOperator: 'contains',
     operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'isempty', 'isnotempty']
@@ -189,11 +196,12 @@ export class SafeTabFilterComponent implements OnInit {
 
   /**
    * Extracts choices using choicesByUrl properties
+   *
    * @param res Result of http request.
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-   private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string}): {value: string, text: string}[] {
+   private extractChoices(res: any, choicesByUrl: { path?: string; value?: string; text?: string}): {value: string; text: string}[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),

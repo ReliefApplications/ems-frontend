@@ -25,7 +25,7 @@ export class ChoseRoleComponent implements OnInit {
     public dialogRef: MatDialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA) public data: {
-      application: string
+      application: string;
     }
   ) { }
 

@@ -87,6 +87,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
    onPage(e: any): void {
@@ -127,6 +128,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Filters forms and updates table.
+   *
    * @param filter filter event.
    */
   onFilter(filter: any): void {
@@ -169,6 +171,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
 
  /**
   * Removes a form.
+  *
   * @param form Form to delete.
   * @param e click event.
   */
@@ -194,9 +197,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         }).subscribe((res: any) => {
           if (!res.errors) {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
-            this.forms.data = this.forms.data.filter(x => {
-              return x.id !== form.id && form.id !== x.resource?.coreForm?.id;
-            });
+            this.forms.data = this.forms.data.filter(x => x.id !== form.id && form.id !== x.resource?.coreForm?.id);
           } else {
             this.snackBar.openSnackBar(NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message), { error: true });
           }

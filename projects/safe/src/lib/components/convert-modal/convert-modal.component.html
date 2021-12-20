@@ -24,7 +24,7 @@
           <a>Following fields will be ignored:</a> <br/>
           <span *ngFor="let field of ignoredFields">{{field.name}}, </span>
       </ng-container>
-      <ng-container *ngIf="ignoredFields.length == 0">
+      <ng-container *ngIf="ignoredFields.length === 0">
           <a>Conversion OK</a>
       </ng-container>
   </div>

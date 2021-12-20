@@ -2,6 +2,7 @@ import { status } from './form.model';
 
 /*  Enum of authType.
 */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum authType {
     serviceToService = 'serviceToService',
     userToService = 'userToService'

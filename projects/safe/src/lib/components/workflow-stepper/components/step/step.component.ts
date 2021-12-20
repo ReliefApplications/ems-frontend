@@ -26,6 +26,7 @@ export class SafeStepComponent implements OnInit {
 
   /**
    * Emits delete event.
+   *
    * @param e click event.
    */
   public onDelete(e: any): void {

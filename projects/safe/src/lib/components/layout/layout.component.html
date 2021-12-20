@@ -22,7 +22,7 @@
   </div>
   <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
   </safe-button>
-  <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
+  <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length === 0">
     <mat-icon class="mat-badge-notification">
       <kendo-badge-container>
         notifications

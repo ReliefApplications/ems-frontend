@@ -87,6 +87,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
   onPage(e: any): void {
@@ -128,16 +129,15 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
    * Frontend filtering.
    */
   private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) => {
-      return (((this.searchText.trim().length === 0 ||
+    this.dataSource.filterPredicate = (data: any) => (((this.searchText.trim().length === 0 ||
         (this.searchText.trim().length > 0 && data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.statusFilter.trim().length === 0 ||
           (this.statusFilter.trim().length > 0 && data.status.toLowerCase().includes(this.statusFilter.trim())))));
-    };
   }
 
   /**
    * Applies the filter to the data source.
+   *
    * @param column Column to filter on.
    * @param event Value of the filter.
    */
@@ -189,6 +189,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
 
   /**
    * Removes an apiConfiguration if authorized.
+   *
    * @param element API config to delete.
    * @param e click event.
    */

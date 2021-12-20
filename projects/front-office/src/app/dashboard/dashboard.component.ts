@@ -11,19 +11,14 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  // === HEADER TITLE ===
   public title = '';
   public applications: Application[] = [];
-
-  // === SUBSCRIPTIONS ===
-  private authSubscription?: Subscription;
+  public navGroups: any[] = [];
   public application: Application | null = null;
+  private authSubscription?: Subscription;
   private applicationSubscription?: Subscription;
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
   private permissions: Permission[] = [];
   private roles: Role[] = [];
-  public navGroups: any[] = [];
 
   private firstLoad = true;
 
@@ -56,7 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
         this.title = application.name || '';
         const adminNavItems: any[] = [];
@@ -81,13 +76,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.navGroups = [
           {
             name: 'Pages',
-            navItems: application.pages?.filter(x => x.content).map(x => {
-              return {
+            navItems: application.pages?.filter(x => x.content).map(x => ({
                 name: x.name,
                 path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
                 icon: this.getNavIcon(x.type || '')
-              };
-            })
+              }))
           },
           {
             name: 'Administration',
@@ -112,6 +105,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
+  }
+
   onOpenApplication(application: Application): void {
     this.applicationService.loadApplication(application.id || '');
   }
@@ -126,14 +128,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return 'dashboard';
     }
   }
-
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
-  }
-
 }

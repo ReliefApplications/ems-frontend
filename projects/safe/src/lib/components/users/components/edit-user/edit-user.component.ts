@@ -43,12 +43,10 @@ export class SafeEditUserComponent implements OnInit {
         role: this.data.user?.roles ? this.data.user.roles[0].id : '',
         ...this.data.positionAttributeCategories &&
         {
-          positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => {
-            return this.formBuilder.group({
+          positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => this.formBuilder.group({
               value: [''],
               category: [x.id, Validators.required]
-            });
-          }))
+            })))
         }
       });
     }

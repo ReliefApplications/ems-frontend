@@ -20,7 +20,7 @@ export class WebDashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.layoutService.rightSidenav.subscribe(view => {
+    this.layoutService.rightSidenav$.subscribe(view => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);

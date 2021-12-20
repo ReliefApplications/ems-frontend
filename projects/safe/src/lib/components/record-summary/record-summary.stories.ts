@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeRecordSummaryModule } from './record-summary.module';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,7 @@ export default {
                 SafeRecordSummaryModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'Form/Record Summary',
     argTypes: {
@@ -27,14 +25,14 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeRecordSummaryComponent> = args => ({
+const TEMPLATE: Story<SafeRecordSummaryComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     record: {
         createdBy: {
             name: 'Dummy'
@@ -48,13 +46,13 @@ Default.args = {
     cacheDate: new Date()
 };
 
-export const CacheOnly = Template.bind({});
-CacheOnly.args = {
+export const CACHE_ONLY = TEMPLATE.bind({});
+CACHE_ONLY.args = {
     cacheDate: new Date()
 };
 
-export const WithoutCache = Template.bind({});
-WithoutCache.args = {
+export const WITHOUT_CACHE = TEMPLATE.bind({});
+WITHOUT_CACHE.args = {
     record: {
         createdBy: {
             name: 'Dummy'

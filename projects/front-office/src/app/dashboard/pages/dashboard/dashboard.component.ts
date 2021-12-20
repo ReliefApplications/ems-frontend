@@ -14,6 +14,9 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
   // === DATA ===
   public id = '';
   public loading = true;
@@ -22,9 +25,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
-
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private apollo: Apollo,

@@ -24,6 +24,7 @@ export class SafeSnackBarService {
 
   /**
    * Creates a snackbar message on top of the layout.
+   *
    * @param message text message to display.
    * @param config additional configuration of the message ( duration / color / error ).
    * @returns snackbar message reference.

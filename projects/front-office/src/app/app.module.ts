@@ -19,8 +19,10 @@ import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalInterceptor, MsalBroadcastService, MsalGuard, MsalGuardConfiguration,
-  MsalInterceptorConfiguration, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
+import {
+  MsalInterceptor, MsalBroadcastService, MsalGuard, MsalGuardConfiguration,
+  MsalInterceptorConfiguration, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG
+} from '@azure/msal-angular';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -29,12 +31,14 @@ import { LogLevel } from '@azure/msal-common';
 
 /**
  * Configuration of the Apollo client.
+ *
  * @param httpLink Apollo http link
  * @returns void
  */
-export function provideApollo(httpLink: HttpLink): any {
+export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'charset=utf-8'
     }
   }));
@@ -44,14 +48,15 @@ export function provideApollo(httpLink: HttpLink): any {
     const token = localStorage.getItem('msal.idtoken');
     return {
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: `Bearer ${token}`
       }
     };
   });
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
@@ -95,72 +100,72 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   };
-}
+};
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 /**
  * Logger for dev purpose.
+ *
  * @param logLevel MSAL log level.
  * @param message MSAL message.
  */
-export function loggerCallback(logLevel: LogLevel, message: string): void {
+export const loggerCallback = (logLevel: LogLevel, message: string): void => {
   console.log(message);
-}
+};
 
 /**
  * Configures MSAL instance.
+ *
  * @returns MSAL Client Application.
  */
-export function MSALInstanceFactory(): IPublicClientApplication {
-  return new PublicClientApplication({
-    auth: {
-      clientId: environment.clientId,
-      authority: environment.authority,
-      redirectUri: environment.redirectUrl,
-      postLogoutRedirectUri: environment.postLogoutRedirectUri
-    },
-    cache: {
-      cacheLocation: 'localStorage',
-      storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-    },
-    system: {
-      loggerOptions: {
-        // Can be enabled for dev purpose
-        // loggerCallback,
-        logLevel: LogLevel.Info,
-        piiLoggingEnabled: false
-      }
+export const msalInstanceFactory = (): IPublicClientApplication => new PublicClientApplication({
+  auth: {
+    clientId: environment.clientId,
+    authority: environment.authority,
+    redirectUri: environment.redirectUrl,
+    postLogoutRedirectUri: environment.postLogoutRedirectUri
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+  },
+  system: {
+    loggerOptions: {
+      // Can be enabled for dev purpose
+      // loggerCallback,
+      logLevel: LogLevel.Info,
+      piiLoggingEnabled: false
     }
-  });
-}
+  }
+});
 
 /**
  * Configures MSAL interceptor.
+ *
  * @returns MSAL interceptor configuration.
  */
-export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+export const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(`${environment.API_URL}/*`, [`${environment.clientId}/.default`]);
+  protectedResourceMap.set(`${environment.apiUrl}/*`, [`${environment.clientId}/.default`]);
   return {
     interactionType: InteractionType.Redirect,
     protectedResourceMap
   };
-}
+};
 
 /**
  * Configures MSAL guard.
+ *
  * @returns MSAL guard configuration.
  */
-export function MSALGuardConfigFactory(): MsalGuardConfiguration {
-  return {
+export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
     interactionType: InteractionType.Redirect,
     authRequest: {
       scopes: ['user.read', 'openid', 'profile']
     },
     loginFailedRoute: '/auth'
-  };
-}
+  });
 
 @NgModule({
   declarations: [
@@ -196,15 +201,15 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     },
     {
       provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory
+      useFactory: msalInstanceFactory
     },
     {
       provide: MSAL_GUARD_CONFIG,
-      useFactory: MSALGuardConfigFactory
+      useFactory: msalGuardConfigFactory
     },
     {
       provide: MSAL_INTERCEPTOR_CONFIG,
-      useFactory: MSALInterceptorConfigFactory
+      useFactory: msalInterceptorConfigFactory
     },
     MsalService,
     MsalGuard,

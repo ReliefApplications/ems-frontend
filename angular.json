@@ -31,14 +31,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/safe/tsconfig.lib.json",
-              "projects/safe/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/safe/**/*.ts",
+              "projects/safe/**/*.html"
             ]
           }
         }
@@ -116,7 +113,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -143,7 +140,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -170,7 +167,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -199,7 +196,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -228,7 +225,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -291,15 +288,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/back-office/tsconfig.app.json",
-              "projects/back-office/tsconfig.spec.json",
-              "projects/back-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/back-office/**/*.ts",
+              "projects/back-office/**/*.html"
             ]
           }
         },
@@ -392,7 +385,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -419,7 +412,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -446,7 +439,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -473,7 +466,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -500,7 +493,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -559,15 +552,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/front-office/tsconfig.app.json",
-              "projects/front-office/tsconfig.spec.json",
-              "projects/front-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/front-office/**/*.ts",
+              "projects/front-office/**/*.html"
             ]
           }
         },
@@ -658,7 +647,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -716,15 +705,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/web-element/tsconfig.app.json",
-              "projects/web-element/tsconfig.spec.json",
-              "projects/web-element/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/web-element/**/*.ts",
+              "projects/web-element/**/*.html"
             ]
           }
         },

@@ -41,7 +41,7 @@ export class FormAnswerComponent implements OnInit {
     }
   }
 
-  onComplete(e: {completed: boolean, hideNewRecord?: boolean}): void {
+  onComplete(e: {completed: boolean; hideNewRecord?: boolean}): void {
     this.completed = e.completed;
   }
 
