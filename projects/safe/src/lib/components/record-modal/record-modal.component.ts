@@ -215,6 +215,7 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {

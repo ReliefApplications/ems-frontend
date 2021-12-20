@@ -12,13 +12,13 @@ export class DashboardComponent implements OnInit, OnChanges {
 
   @Input() id = '';
 
+  // === STEP CHANGE FOR WORKFLOW ===
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
   // === DATA ===
   public loading = true;
   public tiles = [];
   public dashboard?: Dashboard;
-
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private apollo: Apollo

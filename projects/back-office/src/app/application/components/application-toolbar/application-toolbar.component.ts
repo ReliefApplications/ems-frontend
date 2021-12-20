@@ -27,7 +27,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
+    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       this.application = application;
       this.locked = this.application?.locked;
       this.lockedByUser = this.application?.lockedByUser;

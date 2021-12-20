@@ -7,9 +7,7 @@ import { SafeApiProxyService } from './api-proxy.service';
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
 
-const flatDeep = (arr: any[]): any[] => {
-  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
-};
+const flatDeep = (arr: any[]): any[] => arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +26,7 @@ export class SafeGridService {
 
   /**
    * Generates list of fields for the grid, based on grid parameters.
+   *
    * @param fields list of fields saved in settings.
    * @param prefix prefix of the field.
    * @param disabled disabled status of the field, can overwrite the meta one.
@@ -35,7 +34,7 @@ export class SafeGridService {
    */
   public getFields(
     fields: any[], metaFields: any, layoutFields: any, prefix?: string,
-    options?: { disabled?: boolean, filter?: boolean }): any[] {
+    options?: { disabled?: boolean; filter?: boolean }): any[] {
     return flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
@@ -91,6 +90,7 @@ export class SafeGridService {
 
   /**
    * Gets editor of a field from its type.
+   *
    * @param type Field type.
    * @returns name of the editor.
    */
@@ -125,6 +125,7 @@ export class SafeGridService {
 
   /**
    * Gets format of a field from its type ( only for date fields ).
+   *
    * @param type Type of the field.
    * @returns Format of the field.
    */
@@ -143,6 +144,7 @@ export class SafeGridService {
 
   /**
    * Gets filter type of a field from its type.
+   *
    * @param type Type of the field.
    * @returns Name of the field filter.
    */
@@ -200,11 +202,12 @@ export class SafeGridService {
 
   /**
    * Extracts choices using choicesByUrl properties
+   *
    * @param res Result of http request.
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string; value?: string; text?: string }): { value: string; text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
@@ -216,6 +219,7 @@ export class SafeGridService {
 
   /**
    * Creates form group for inline edition.
+   *
    * @param dataItem Data item to open in inline edition.
    * @param fields List of grid fields.
    * @returns Form group of the item.

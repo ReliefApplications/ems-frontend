@@ -124,5 +124,5 @@ export class PermissionsManagement {
 export interface AddUser {
     email: string;
     roles: string[];
-    attributes: { value: string, category: string };
+    attributes: { value: string; category: string };
   }

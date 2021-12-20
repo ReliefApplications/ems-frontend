@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeLineChartComponent } from './line-chart.component';
 import { SafeLineChartModule } from './line-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,7 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Charts/Line Chart',
     argTypes: {
@@ -30,15 +28,15 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeLineChartComponent> = args => ({
+const TEMPLATE: Story<SafeLineChartComponent> = args => ({
     template: '<div style="height:400px"><safe-line-chart [legend]="legend" [title]="title" [series]="series"></safe-line-chart></div>',
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     series: [
         {
             color: '#a4e084',

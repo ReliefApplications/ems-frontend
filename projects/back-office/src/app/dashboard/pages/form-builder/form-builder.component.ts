@@ -2,14 +2,14 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
+import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS,
+  EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
 import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
 import { Observable } from 'rxjs';
 import {  map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
-import { SCHEMA_UPDATE } from '../../../app.module';
 
 @Component({
   selector: 'app-form-builder',

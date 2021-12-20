@@ -42,7 +42,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * Gets the workflow from the route.
    */
   ngOnInit(): void {
-    this.previewService.roleId.subscribe((role) => {
+    this.previewService.roleId$.subscribe((role) => {
       this.role = role;
     });
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -74,6 +74,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /**
    * Activates the clicked element.
+   *
    * @param elementRef Element ref.
    */
   onActivate(elementRef: any): void {
@@ -102,6 +103,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /**
    * Navigates to the new step.
+   *
    * @param index Index of the step in the workflow.
    */
   public onOpenStep(index: number): void {

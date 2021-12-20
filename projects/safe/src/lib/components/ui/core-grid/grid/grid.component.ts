@@ -19,6 +19,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
@@ -81,7 +82,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
-  get columnMenu(): { columnChooser: boolean, filter: boolean } {
+  get columnMenu(): { columnChooser: boolean; filter: boolean } {
     return {
       columnChooser: false,
       filter: !this.showFilter
@@ -150,6 +151,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === DATA ===
   /**
    * Returns property value in object from path.
+   *
    * @param item Item to get property of.
    * @param path Path of the property.
    * @returns Value of the property.
@@ -171,6 +173,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === FILTER ===
   /**
    * Handles filter change event.
+   *
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
@@ -193,6 +196,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Searchs through all text columns.
+   *
    * @param search text input value.
    */
   public onSearch(search: any): void {
@@ -202,6 +206,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === SORT ===
   /**
    * Handles sort change event.
+   *
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
@@ -214,6 +219,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === PAGINATION ===
   /**
    * Handles page change event.
+   *
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
@@ -227,6 +233,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === SELECT ===
   /**
    * Handles selection change event.
+   *
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
@@ -243,6 +250,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Returns selected status of a row.
+   *
    * @param row Row to test.
    * @returns selected status of the row.
    */
@@ -251,6 +259,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === LAYOUT ===
   /**
    * Set and emit new grid configuration after column reorder event.
+   *
    * @param e ColumnReorderEvent
    */
   onColumnReorder(e: ColumnReorderEvent): void {
@@ -276,8 +285,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   get visibleFields(): any {
     return this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).
-      filter((x: any) => x.field).reduce((obj, c: any) => {
-        return {
+      filter((x: any) => x.field).reduce((obj, c: any) => ({
           ...obj,
           [c.field]: {
             field: c.field,
@@ -286,8 +294,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
             hidden: c.hidden,
             order: c.orderIndex
           }
-        };
-      }, {});
+        }), {});
   }
 
   /**
@@ -306,6 +313,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Detects cell click event and opens row form if user is authorized.
+   *
    * @param param0 click event.
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
@@ -330,6 +338,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Detects document click to save record if outside the inline edition form.
+   *
    * @param e click event.
    */
   private onDocumentClick(e: any): void {
@@ -373,6 +382,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === EXPORT ===
   /**
    * Downloads file of record.
+   *
    * @param file File to download.
    */
   public onDownload(file: any): void {
@@ -401,6 +411,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === UTILITIES ===
   /**
    * Checks if element overflows
+   *
    * @param e Component resizing event.
    * @returns True if overflows.
    */
@@ -410,6 +421,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Expands text in a full window modal.
+   *
    * @param item Item to display data of.
    * @param rowTitle field name.
    */

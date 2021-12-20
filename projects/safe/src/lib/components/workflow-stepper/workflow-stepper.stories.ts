@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeWorkflowStepperComponent } from './workflow-stepper.component';
 import { SafeWorkflowStepperModule } from './workflow-stepper.module';
 import { ContentType } from '../../models/page.model';
@@ -14,21 +13,20 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Workflow/Stepper',
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeWorkflowStepperComponent> = args => ({
+const TEMPLATE: Story<SafeWorkflowStepperComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     canUpdate: true,
     steps: [
         {

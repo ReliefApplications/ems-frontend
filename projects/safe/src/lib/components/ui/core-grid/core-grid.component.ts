@@ -20,7 +20,8 @@ import { SafeLayoutService } from '../../../services/layout.service';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { ConvertRecordMutationResponse, CONVERT_RECORD, DELETE_RECORDS, EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
+import { ConvertRecordMutationResponse, CONVERT_RECORD, DELETE_RECORDS,
+  EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -136,13 +137,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.search) {
       const textFields = this.fields.filter(x => x.meta && x.meta.type === 'text');
-      const searchFilters = textFields.map(x => {
-        return {
+      const searchFilters = textFields.map(x => ({
           field: x.name,
           operator: 'contains',
           value: this.search
-        };
-      });
+        }));
       return {
         logic: 'and',
         filters: [
@@ -196,7 +195,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private safeAuthService: SafeAuthService,
     private gridService: SafeGridService
   ) {
-    this.apiUrl = environment.API_URL;
+    this.apiUrl = environment.apiUrl;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
@@ -242,7 +241,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         sortField: this.sortField,
         sortOrder: this.sortOrder
       },
-      fetchPolicy: 'cache-first'
+      fetchPolicy: 'cache-and-network'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -281,6 +280,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Converts fields with date type into javascript dates.
+   *
    * @param items list of items to update.
    */
   private convertDateFields(items: any[]): void {
@@ -296,6 +296,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Finds item in data items and updates it with new values, from inline edition.
+   *
    * @param id Item id.
    * @param value Updated value of the item.
    */
@@ -333,6 +334,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Creates a list of promise to send for inline edition of records, once completed.
+   *
    * @returns List of promises to execute.
    */
   public promisedChanges(): Promise<any>[] {
@@ -410,6 +412,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Handles selection change event.
+   *
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
@@ -441,9 +444,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === GRID ACTIONS ===
   /**
    * Handles grid actions.
+   *
    * @param event Grid Action.
    */
-  public onAction(event: { action: string, item?: any, items?: any[], value?: any, field?: any }): void {
+  public onAction(event: { action: string; item?: any; items?: any[]; value?: any; field?: any }): void {
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -539,12 +543,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the record on a read-only modal. If edit mode is enabled, can open edition modal.
+   *
    * @param item item to get details of.
    */
   public onShowDetails(items: any | any[], field?: any): void {
     const isArray = Array.isArray(items);
     if (isArray && items.length >= 2) {
-      const idsFilter = { field: 'ids', operator: 'in', value: items.map((x: { id: any; }) => x.id) };
+      const idsFilter = { field: 'ids', operator: 'in', value: items.map((x: { id: any }) => x.id) };
       // for resources, open it inside the SafeResourceGrid
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
@@ -583,6 +588,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the form corresponding to selected row in order to update it
+   *
    * @param items items to update.
    */
   public onUpdate(items: any[]): void {
@@ -603,6 +609,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a confirmation modal and deletes the selected records.
+   *
    * @param items items to delete.
    */
   public onDelete(items: any[]): void {
@@ -634,6 +641,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a dialog component which provide tools to convert the selected record
+   *
    * @param items items to convert to another form.
    */
   public onConvert(items: any[]): void {
@@ -644,7 +652,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         record: items[0].id ? items[0].id : items[0]
       },
     });
-    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
+    dialogRef.afterClosed().subscribe((value: { targetForm: Form; copyRecord: boolean }) => {
       if (value) {
         const promises: Promise<any>[] = [];
         for (const item of items) {
@@ -668,6 +676,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the history of the record on the right side of the screen.
+   *
    * @param id id of record to get history of.
    */
   public onViewHistory(item: any): void {
@@ -692,10 +701,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a modal to confirm reversion of a record.
+   *
    * @param record record to revert.
    * @param version id of the target version.
    */
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -727,6 +738,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === EXPORT ===
   /**
    * Exports selected records to excel / csv file.
+   *
    * @param items items to download.
    * @param type type of export file.
    */
@@ -772,6 +784,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   /**
    * Detects pagination events and update the items loaded.
+   *
    * @param event Page change event.
    */
   public onPageChange(event: PageChangeEvent): void {
@@ -808,6 +821,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === FILTERING ===
   /**
    *  Toggles quick filter visibility.
+   *
    * @param showFilter Show filter event.
    */
   public onShowFilterChange(showFilter: boolean): void {
@@ -817,6 +831,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects filtering events and update the items loaded.
+   *
    * @param filter composite filter created by Kendo.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
@@ -828,6 +843,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Handles search event.
+   *
    * @param search Search event.
    */
   public onSearchChange(search: string): void {
@@ -840,6 +856,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects sort events and update the items loaded.
+   *
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
@@ -852,6 +869,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === LAYOUT ===
   /**
    * Detects fields changes.
+   *
    * @param fields Fields event.
    */
   onColumnChange(): void {

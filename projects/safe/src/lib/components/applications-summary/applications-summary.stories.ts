@@ -1,8 +1,7 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeApplicationsSummaryComponent } from './applications-summary.component';
 import { SafeApplicationsSummaryModule } from './applications-summary.module';
-import { status } from '../../models/form.model';
+import { status } from '../../models/form.model';
 
 export default {
     component: SafeApplicationsSummaryComponent,
@@ -12,21 +11,20 @@ export default {
                 SafeApplicationsSummaryModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Applications/Applications Summary',
     argTypes: {}
 } as Meta;
 
-const Template: Story<SafeApplicationsSummaryComponent> = args => ({
+const TEMPLATE: Story<SafeApplicationsSummaryComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     canCreate: true,
     applications: [
         {

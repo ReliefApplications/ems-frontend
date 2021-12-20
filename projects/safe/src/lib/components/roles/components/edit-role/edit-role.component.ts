@@ -54,8 +54,7 @@ export class SafeEditRoleComponent implements OnInit {
       this.channels = res.data.channels;
       // Move channels in an array under corresponding applications.
       this.applications = Array.from(new Set(this.channels.map(x => x.application?.name)))
-        .map(name => {
-          return {
+        .map(name => ({
             name: name ? name : 'Global',
             channels: this.channels.reduce((o: Channel[], channel: Channel) => {
               if (channel?.application?.name === name) {
@@ -63,8 +62,7 @@ export class SafeEditRoleComponent implements OnInit {
               }
               return o;
             }, [])
-          };
-        });
+          }));
     });
     this.roleForm = this.formBuilder.group({
       title: [this.data.role.title, Validators.required],

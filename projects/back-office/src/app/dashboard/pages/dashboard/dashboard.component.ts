@@ -4,7 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService, NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
+import { Dashboard, SafeSnackBarService, SafeApplicationService, SafeWorkflowService,
+  NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
@@ -106,6 +107,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
  /**
   * Edits the settings or display of a widget.
+  *
   * @param e widget to save.
   */
   onEditTile(e: any): void {

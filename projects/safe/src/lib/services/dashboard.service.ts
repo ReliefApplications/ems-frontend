@@ -22,6 +22,7 @@ export class SafeDashboardService {
 
   /**
    * Opens a new dashboard.
+   *
    * @param dashboard dashboard to open.
    */
   openDashboard(dashboard: Dashboard): void {
@@ -37,6 +38,7 @@ export class SafeDashboardService {
 
   /**
    * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
+   *
    * @param widget widget to get layout of.
    * @returns widget layout to apply.
    */
@@ -61,6 +63,7 @@ export class SafeDashboardService {
 
   /**
    * Resets the default layout for logged user.
+   *
    * @param id dashboard id.
    */
   resetDefaultWidgetLayout(id: number): void {
@@ -74,6 +77,7 @@ export class SafeDashboardService {
 
   /**
    * Stores layout of a widget in local storage.
+   *
    * @param id dashboard id.
    * @param layout layout to save.
    * @returns Stored event.
@@ -85,6 +89,7 @@ export class SafeDashboardService {
 
   /**
    * Saves in DB the new default layout.
+   *
    * @param id dashboard id.
    * @param layout layout to save.
    */
@@ -114,6 +119,7 @@ export class SafeDashboardService {
 
  /**
   * Finds the settings component from the widget passed as 'tile'.
+  *
   * @param tile tile to get settings of.
   * @returns Tile settings template.
   */

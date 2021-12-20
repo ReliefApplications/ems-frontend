@@ -1,5 +1,4 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeWidgetChoiceComponent } from './widget-choice.component';
 import { SafeWidgetChoiceModule } from './widget-choice.module';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
@@ -14,8 +13,7 @@ export default {
                 BrowserAnimationsModule
             ],
             providers: []
-        }),
-        withKnobs
+        })
     ],
     title: 'UI/Dashboard/Widget Choice',
     argsTypes: {
@@ -26,20 +24,20 @@ export default {
     }
 } as Meta;
 
-const Template: Story<SafeWidgetChoiceComponent> = args => ({
+const TEMPLATE: Story<SafeWidgetChoiceComponent> = args => ({
     props: {
         ...args
     }
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {
     floating: false,
     widgetTypes: WIDGET_TYPES as IWidgetType[]
 };
 
-export const Floating = Template.bind({});
-Floating.args = {
-    ...Default.args,
+export const FLOATING = TEMPLATE.bind({});
+FLOATING.args = {
+    ...DEFAULT.args,
     floating: true
-}
+};
