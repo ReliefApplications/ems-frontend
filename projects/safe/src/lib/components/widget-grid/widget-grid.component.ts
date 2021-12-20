@@ -125,8 +125,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     // if (targetItem ) {
     //   targetItem.order = e.oldIndex;
     // }
-    this.move.emit();
-    moveItemInArray(this.widgets, e.oldIndex, e.newIndex);
+    this.move.emit(e);
   }
 
   public onResize(e: TileLayoutResizeEvent) {

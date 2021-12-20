@@ -16,9 +16,9 @@
         [id]="widget.id">
             <kendo-tilelayout-item-header>
                 <h4>{{widget.settings.title}}</h4>
+            </kendo-tilelayout-item-header>
                 <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
                     (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
-            </kendo-tilelayout-item-header>
             <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
         </kendo-tilelayout-item>
     </kendo-tilelayout>

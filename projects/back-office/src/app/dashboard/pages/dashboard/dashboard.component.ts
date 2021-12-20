@@ -156,7 +156,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /*  Drag and drop a widget to move it.
   */
-  onMove(): void {
+  onMove(e: any): void {
+    // Dups array, some times the arrays is write protected
+    this.tiles = this.tiles.slice();
+    [this.tiles[e.oldIndex], this.tiles[e.newIndex]] = [this.tiles[e.newIndex], this.tiles[e.oldIndex]];
     this.autoSaveChanges();
   }
 

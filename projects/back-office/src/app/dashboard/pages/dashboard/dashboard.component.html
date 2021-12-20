@@ -19,6 +19,6 @@
             </safe-button>
         </form>
     </ng-container>
-    <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" (move)="onMove()" (edit)="onEditTile($event)"
+    <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" (move)="onMove($event)" (edit)="onEditTile($event)"
                       (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)" (add)="onAdd($event)"></safe-widget-grid>
 </ng-container>
