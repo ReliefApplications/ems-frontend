@@ -22,7 +22,7 @@
         <!-- ADMIN FEATURES -->
         <ng-container *ngIf="admin">
             <span kendotooltip>
-                  <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)">
+                  <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)" style="height: 49%; background-color: #1e2021; color: #beb9b0;">
                     <option *ngFor="let layout of layoutList; let index = index;" [ngValue]="layout">{{layout.name}}</option>
                   </select>
             </span>
