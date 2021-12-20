@@ -13,7 +13,7 @@ import {
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component, OnInit, ViewChild, Input, Output, ComponentFactory,
-  ComponentFactoryResolver, EventEmitter, Inject
+  ComponentFactoryResolver, EventEmitter, Inject, OnChanges, SimpleChanges
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
@@ -47,6 +47,7 @@ export class SafeGridWidgetComponent implements OnInit {
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};
   @Input() layoutList: GridLayout = {};
+  @Input() currentLayoutIndex = 0;
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -67,6 +68,8 @@ export class SafeGridWidgetComponent implements OnInit {
 
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
+
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -85,6 +88,11 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+  }
+
+  ngOnChange(changes: SimpleChanges): void {
+    console.log('----------------------- changes: GRID.COMP');
+    console.log(changes);
   }
 
   private promisedChanges(items: any[]): Promise<any>[] {
@@ -360,5 +368,9 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onResetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
+  }
+
+  getCurrentLayout(): void {
+    // return this.getCurrentLayoutEvent.emit();
   }
 }

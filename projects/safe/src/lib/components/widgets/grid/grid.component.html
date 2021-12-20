@@ -12,5 +12,7 @@
     <!-- GRID CONTENT -->
     <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
         (defaultLayoutChanged)="defaultLayoutChanged.emit($event)" (layoutChanged)="layoutChanged.emit($event)"
-        (defaultLayoutReset)="defaultLayoutReset.emit($event)" (layoutListChanged)="layoutListChanged.emit($event)" [layoutList]="this.layoutList"></safe-core-grid>
+        (defaultLayoutReset)="defaultLayoutReset.emit($event)" (layoutListChanged)="layoutListChanged.emit($event)"
+        [layoutList]="this.layoutList" (getCurrentLayoutEvent)="getCurrentLayout()" [currentLayoutIndex]="this.currentLayoutIndex"
+    ></safe-core-grid>
 </div>

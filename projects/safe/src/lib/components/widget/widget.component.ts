@@ -12,6 +12,7 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   @Input() header = true;
   public layout: any;
   public layoutList: any;
+  public currentLayoutIndex = 0;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -21,8 +22,13 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    // this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    this.layout = {};
+    console.log('WIDGET: this.layout');
+    console.log(this.layout);
     this.layoutList = this.widget.settings.layoutList;
+    // console.log('this.layoutList');
+    // console.log(this.layoutList);
     const grid = this.dashboardService.getDashboardFields(this.widget.id);
     console.log(grid);
     if (!grid.layoutList?.find((l: any) => l.defaultLayoutRecovery) && grid.defaultLayout && grid.component === 'grid') {
@@ -30,10 +36,16 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
         this.layoutList = res;
       });
     }
+    this.currentLayoutIndex = this.dashboardService.getWidgetLayout(this.widget);
+    console.log('this.currentLayoutIndex');
+    console.log(this.currentLayoutIndex);
   }
 
   ngOnChanges(): void {
-    this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    // this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    this.layout = {};
+    console.log('WIDGET: this.layout');
+    console.log(this.layout);
     // console.log('------- this.layout');
     // console.log(this.layout);
     this.layoutList = this.widget.settings.layoutList;
@@ -48,7 +60,8 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
     console.log('onLayoutChanged');
     console.log('e');
     console.log(e);
-    // this.dashboardService.saveWidgetLayout(this.widget.id, e);
+    this.dashboardService.saveWidgetLayout(this.widget.id, e);
+    console.log(localStorage);
   }
 
   public onDefaultLayoutChanged(e: any): void {
@@ -74,5 +87,9 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
       this.layoutList = res;
       // this.dashboardService.saveWidgetLayout(this.widget.id, this.layoutList.length);
     });
+  }
+
+  getCurrentLayout(): number {
+    return this.dashboardService.getWidgetLayout(this.widget.id);
   }
 }

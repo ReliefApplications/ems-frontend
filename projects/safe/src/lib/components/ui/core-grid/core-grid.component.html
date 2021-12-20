@@ -4,5 +4,5 @@
     (action)="onAction($event)" [actions]="actions" [editable]="editable" [hasChanges]="hasChanges"
     [selectable]="selectable" (selectionChange)="onSelectionChange($event)" [selectedRows]="selectedRows" [admin]="admin"
     (columnChange)="onColumnChange()" (searchChange)="onSearchChange($event)" (export)="onExport($event)" [layoutList]="this.layoutList"
-    (currentLayoutChanges)="currentLayoutChanges($event)">
+    (currentLayoutChanges)="currentLayoutChange($event)" [currentLayoutIndex]="this.currentLayoutIndex">
 </safe-grid>

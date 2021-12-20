@@ -51,6 +51,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   get layout(): any { // Current layout
     return this.grid?.layout;
   }
+  @Input() currentLayoutIndex = 0;
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -72,6 +73,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
+  @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -211,10 +213,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // console.log('changes');
     // console.log(changes);
-    console.log('this.defaultLayout');
-    console.log(this.defaultLayout);
-    console.log('this.layoutList');
-    console.log(this.layoutList);
+    // console.log('this.defaultLayout');
+    // console.log(this.defaultLayout);
+    // console.log('this.layoutList');
+    // console.log(this.layoutList);
     if (this.layoutList) {
       this.updateLayout(this.layoutList[this.layoutList.length - 1]);
     }
@@ -911,11 +913,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.hasLayoutChanges = false;
   }
 
-  currentLayoutChanges(currentLayout: any): void {
+  currentLayoutChange(obj: any): void {
     console.log('--- currentLayoutChanges ---');
-    console.log(currentLayout);
-    this.updateLayout(currentLayout);
-    // this.layoutChanged.emit(this.layout);
+    console.log(obj.currentLayout);
+    this.updateLayout(obj.currentLayout);
+    this.layoutChanged.emit(obj.index);
     this.hasLayoutChanges = false;
   }
 }

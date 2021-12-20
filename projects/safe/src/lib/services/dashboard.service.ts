@@ -92,18 +92,28 @@ export class SafeDashboardService {
   //   }
   // }
 
+  // /**
+  //  * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
+  //  * @param widget widget to get layout of.
+  //  * @returns widget layout to apply.
+  //  */
+  // getWidgetLayout(widget: any): any {
+  //   const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
+  //   if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
+  //     defaultLayout.sort = [];
+  //     defaultLayout.filter = {filter: [], logic: 'and'};
+  //   }
+  //   return defaultLayout;
+  // }
+
   /**
    * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
    * @param widget widget to get layout of.
    * @returns widget layout to apply.
    */
   getWidgetLayout(widget: any): any {
-    const defaultLayout = JSON.parse(widget.settings.defaultLayout || JSON.stringify({}));
-    if (!(defaultLayout && Object.keys(defaultLayout).length === 0 && Object.getPrototypeOf(defaultLayout) === Object.prototype)) {
-      defaultLayout.sort = [];
-      defaultLayout.filter = {filter: [], logic: 'and'};
-    }
-    return defaultLayout;
+    const dashboardId = this.dashboard.getValue()?.id;
+    return Number(localStorage.getItem(`widget:${dashboardId}:${widget.id}`)) || 0;
   }
 
   /**

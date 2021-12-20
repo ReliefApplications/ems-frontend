@@ -61,6 +61,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
   @Input() error = false;
   public selectedLayout: any;
   @Output() currentLayoutChanges = new EventEmitter();
+  @Input() currentLayoutIndex = 0;
 
   // === EXPORT ===
   @Input() exportable = true;
@@ -150,14 +151,29 @@ export class SafeGridComponent implements OnInit, OnChanges {
     ).subscribe((value) => {
       this.searchChange.emit(value);
     });
+    console.log('===> this.currentLayoutIndex');
+    console.log(this.currentLayoutIndex);
     if (this.layoutList){
-      this.selectedLayout = this.layoutList[0];
+      if (this.currentLayoutIndex) {
+        this.selectedLayout = this.layoutList[this.currentLayoutIndex];
+        this.currentLayoutChanges.emit(
+          {
+            currentLayout: this.selectedLayout,
+            index: this.currentLayoutIndex
+          }
+        );
+      }
+      else {
+        this.selectedLayout = this.layoutList[0];
+      }
     }
   }
 
   ngOnChanges(changes: any): void {
-    // console.log('changes');
-    // console.log(changes);
+    console.log('changes');
+    console.log(changes);
+    console.log('===> this.currentLayoutIndex');
+    console.log(this.currentLayoutIndex);
     // console.log(this.layoutList);
     if (changes?.layoutList && this.layoutList) {
       this.selectedLayout = this.layoutList[this.layoutList.length - 1];
@@ -464,7 +480,17 @@ export class SafeGridComponent implements OnInit, OnChanges {
     // console.log('+x+x+> this.layoutList');
     // console.log(this.layoutList);
     console.log('+x+x+> this.selectedLayout');
+    console.log('e');
+    console.log(e);
+    console.log(e.target.selectedIndex);
+    console.log('this.selectedLayout');
+    console.log(this.selectedLayout);
     // console.log(this.selectedLayout);
-    this.currentLayoutChanges.emit(this.selectedLayout);
+    this.currentLayoutChanges.emit(
+      {
+        currentLayout: this.selectedLayout,
+        index: e.target.selectedIndex
+      }
+    );
   }
 }
