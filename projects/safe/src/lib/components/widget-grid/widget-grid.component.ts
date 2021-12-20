@@ -3,7 +3,7 @@ import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Ou
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent } from "@progress/kendo-angular-layout";
+import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent } from '@progress/kendo-angular-layout';
 
 @Component({
   selector: 'safe-widget-grid',
@@ -126,29 +126,13 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     const targetItem = e.items.filter((item: TileLayoutItemComponent) =>
       item.order === e.newIndex
     )[0];
-      e.item.order = e.newIndex!;
+      e.item.order = e.newIndex;
 
-    if (targetItem) {
-      targetItem.order = e.oldIndex!;
+    if (targetItem ) {
+      targetItem.order = e.oldIndex;
     }
-    console.log(this.widgets);
-    this.widgets = this.array_move(this.widgets, e.oldIndex, e.newIndex);
-    console.log(this.widgets);
     this.move.emit();
   }
-
-  private array_move(arr: any, old_index: number, new_index: number) {
-    let temp: Array<any> = [];
-    arr.map((value: any) => {temp.push(value)})
-    if (new_index >= temp.length) {
-        var k = new_index - temp.length + 1;
-        while (k--) {
-            temp.push(undefined);
-        }
-    }
-    temp.splice(new_index, 0, temp.splice(old_index, 1)[0]);
-    return (temp); // for testing
-};
 
   public onResize(e: TileLayoutResizeEvent) {
     e.item.rowSpan = e.newRowSpan;
