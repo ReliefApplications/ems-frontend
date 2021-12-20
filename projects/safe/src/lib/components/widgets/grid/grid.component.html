@@ -12,6 +12,6 @@
     <!-- GRID CONTENT -->
     <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
                     (layoutChanged)="layoutChanged.emit($event)" (layoutListChanged)="layoutListChanged.emit($event)"
-        [layoutList]="this.layoutList" (getCurrentLayoutEvent)="getCurrentLayout()" [currentLayoutIndex]="this.currentLayoutIndex"
+        [layoutList]="this.layoutList" [currentLayoutIndex]="this.currentLayoutIndex"
     ></safe-core-grid>
 </div>

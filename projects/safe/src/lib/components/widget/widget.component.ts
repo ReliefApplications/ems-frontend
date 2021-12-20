@@ -52,8 +52,4 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
       this.layoutList = res;
     });
   }
-
-  getCurrentLayout(): number {
-    return this.dashboardService.getWidgetLayout(this.widget.id);
-  }
 }

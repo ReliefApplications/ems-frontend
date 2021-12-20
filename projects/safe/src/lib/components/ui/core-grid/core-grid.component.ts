@@ -71,7 +71,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
-  @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();

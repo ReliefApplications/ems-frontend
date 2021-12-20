@@ -9,7 +9,7 @@
         (goToNextStep)="goToNextStep.emit($event)"
                       (layoutChanged)="onLayoutChanged($event)"
                       (layoutListChanged)="onLayoutListChanged($event)" [layoutList]="layoutList"
-                      (getCurrentLayoutEvent)="getCurrentLayout()" [currentLayoutIndex]="currentLayoutIndex"
+                      [currentLayoutIndex]="currentLayoutIndex"
     ></safe-grid-widget>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">

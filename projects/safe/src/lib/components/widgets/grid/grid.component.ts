@@ -64,8 +64,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   @Output() layoutListChanged: EventEmitter<any> = new EventEmitter();
 
-  @Output() getCurrentLayoutEvent: EventEmitter<any> = new EventEmitter();
-
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
@@ -345,9 +343,5 @@ export class SafeGridWidgetComponent implements OnInit {
         });
       });
     }
-  }
-
-  getCurrentLayout(): void {
-    // return this.getCurrentLayoutEvent.emit();
   }
 }
