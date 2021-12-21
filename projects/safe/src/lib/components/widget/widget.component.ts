@@ -20,6 +20,7 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
+    console.log('Init');
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
   }
 

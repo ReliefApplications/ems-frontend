@@ -115,7 +115,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
@@ -572,7 +572,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          ...!isArray && { template: this.settings.query.template }
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
@@ -767,8 +767,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) }
+      ...e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields)
+          .filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({ name: x.field, label: x.title }))
+      }
     };
 
     // Builds and make the request
