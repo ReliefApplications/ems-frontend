@@ -20,6 +20,7 @@ import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [FormsComponent, FilterComponent],
@@ -44,7 +45,8 @@ import { FilterComponent } from './components/filter/filter.component';
     MatSelectModule,
     MatDividerModule,
     SafeButtonModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule
   ],
   exports: [FormsComponent]
 })

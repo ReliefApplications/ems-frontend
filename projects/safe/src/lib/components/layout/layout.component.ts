@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { AccountInfo } from '@azure/msal-common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-layout',
@@ -68,6 +69,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
+    public translate: TranslateService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
@@ -243,5 +245,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+  }
+
+  switchLang(lang: string) {
+    this.translate.use(lang);
   }
 }

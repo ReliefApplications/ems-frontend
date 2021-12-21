@@ -1,0 +1,80 @@
+{
+    "header": {
+        "title": "Back-Office",
+        "menu": {
+            "profile": "Profile",
+            "switch": "Switch to",
+            "logout": "Logout"
+        }
+    },
+
+    "sidenav": {
+        "addPage": "Add a Page"
+    },
+
+    "filter": {
+        "search": "Search...",
+        "show": "Show Filter",
+        "hide": "Hide Filter",
+        "date" : {
+            "title": "Date Range",
+            "clear": "Clear Range",
+            "apply": "Apply"
+        },
+        "status": {
+            "title": "Status",
+            "active": "Active",
+            "pending": "Pending"
+        },
+        "core": {
+            "title": "Is Core",
+            "yes": "Yes",
+            "no": "No"
+        },
+        "role": {
+            "title": "Role"
+        },
+        "clear": "Clear Filters"
+    },
+
+    "users": {
+        "exportBtn": "Export users",
+        "inviteBtn": "Invite users",
+        "table": {
+            "name": "Name",
+            "username": "Username",
+            "azure": "Azure",
+            "role": "Role",
+            "edit": "Edit",
+            "delete": "Delete",
+            "deleteSelected": "Delete selected users"
+        },
+        "invite": {
+            "title": "Invite users",
+            "description": "Select existing users, invite new users or import from Excel file",
+            "getTemplate": "Get template",
+            "inviteNew": "Invite new user",
+            "email": "Email",
+            "role": "Role",
+            "close": "Close",
+            "invite": "Invite users"
+        },
+        "add":
+        {
+            "title": "Add user",
+            "email": "Email",
+            "emailPlaceholder": "Enter user's email",
+            "role": "Role",
+            "roleDescription": "Select the role to assign",
+            "close": "Close",
+            "invite": "Invite"
+        },
+        "edit": {
+            "title": "Update user roles",
+            "roles": "Roles",
+            "close": "Close",
+            "update": "Update"
+        }
+    }
+}
+

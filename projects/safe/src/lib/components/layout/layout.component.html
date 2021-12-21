@@ -4,7 +4,19 @@
   <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">{{title}}</h1>
+    <h1 class="application-title">{{(route) ? (title) : ('header.title' | translate)}}</h1>
+    <span class="form-inline">
+      <select 
+          class="form-control" 
+          #selectedLang 
+          (change)="switchLang(selectedLang.value)">
+        <option *ngFor="let language of translate.getLangs()" 
+          [value]="language"
+          [selected]="language === translate.currentLang">
+          {{ language }}
+        </option>
+      </select>
+    </span>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -31,13 +43,13 @@
     </mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
+    <button mat-menu-item (click)="onOpenProfile()">{{'header.menu.profile' | translate}}</button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+      <button mat-menu-item (click)="onSwitchOffice()">{{'header.menu.switch' | translate}} {{ otherOffice }}</button>
     </ng-container>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="logout()" class="warn">Logout</button>
+    <button mat-menu-item (click)="logout()" class="warn">{{'header.menu.logout' | translate}}</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
@@ -70,7 +82,7 @@
                   <ng-container *ngIf="item.isAddPage">
                     <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
                       [class]="item.class ? item.class : ''">
-                      Add a Page
+                      {{'sidenav.addPage' | translate}}
                     </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">

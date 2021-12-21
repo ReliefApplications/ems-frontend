@@ -14,6 +14,7 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -56,7 +57,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    public translate: TranslateService
   ) { }
 
   /**

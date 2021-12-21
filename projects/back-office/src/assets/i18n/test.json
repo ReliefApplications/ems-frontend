@@ -1,0 +1,79 @@
+{
+    "header": {
+        "title": "******",
+        "menu": {
+            "profile": "******",
+            "switch": "******",
+            "logout": "******"
+        }
+    },
+
+    "sidenav": {
+        "addPage": "******"
+    },
+
+    "filter": {
+        "search": "******",
+        "show": "******",
+        "hide": "******",
+        "date" : {
+            "title": "******",
+            "clear": "******",
+            "apply": "******"
+        },
+        "status": {
+            "title": "******",
+            "active": "******",
+            "pending": "******"
+        },
+        "core": {
+            "title": "******",
+            "yes": "******",
+            "no": "******"
+        },
+        "role": {
+            "title": "******"
+        },
+        "clear": "******"
+    },
+
+    "users": {
+        "exportBtn": "******",
+        "inviteBtn": "******",
+        "table": {
+            "name": "******",
+            "username": "******",
+            "azure": "******",
+            "role": "******",
+            "edit": "******",
+            "delete": "******",
+            "deleteSelected": "******"
+        },
+        "invite": {
+            "title": "******",
+            "description": "******",
+            "getTemplate": "******",
+            "inviteNew": "******",
+            "email": "******",
+            "role": "******",
+            "close": "******",
+            "invite": "******"
+        },
+        "add":
+        {
+            "title": "******",
+            "email": "******",
+            "emailPlaceholder": "******",
+            "role": "******",
+            "roleDescription": "******",
+            "close": "******",
+            "invite": "******"
+        },
+        "edit": {
+            "title": "******",
+            "roles": "******",
+            "close": "******",
+            "update": "******"
+        }
+    }
+}

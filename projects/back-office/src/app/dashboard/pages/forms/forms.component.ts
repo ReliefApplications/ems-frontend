@@ -17,6 +17,7 @@ import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_F
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -57,7 +58,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    public translate: TranslateService
   ) {}
 
   /**

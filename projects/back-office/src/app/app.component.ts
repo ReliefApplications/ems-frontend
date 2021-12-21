@@ -5,6 +5,8 @@ import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -23,8 +25,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: SafeAuthService,
     // We need to initialize the service there
-    private formService: SafeFormService
-  ) { }
+    private formService: SafeFormService,
+    public translate: TranslateService
+  ) {
+    translate.addLangs(environment.availableLanguages);
+    translate.setDefaultLang(environment.defaultLanguage);
+  }
 
   /**
    * Configuration of the MSAL behavior.

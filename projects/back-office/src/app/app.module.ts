@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
@@ -30,6 +30,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MatDialogModule } from '@angular/material/dialog';
 
+// TRANSLATOR
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 localStorage.setItem('loaded', 'false');
 
@@ -184,6 +187,11 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
   loginFailedRoute: '/auth'
 });
 
+
+
+  // AOT compilation support
+export const httpTranslateLoader = (http: HttpClient) => new TranslateHttpLoader(http);
+
 @NgModule({
   declarations: [
     AppComponent
@@ -199,7 +207,14 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
     MatDatepickerModule,
     MatNativeDateModule,
     MatDialogModule,
-    MsalModule
+    MsalModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     {

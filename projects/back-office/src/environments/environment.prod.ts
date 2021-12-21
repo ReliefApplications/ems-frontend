@@ -8,5 +8,7 @@ export const environment = {
   postLogoutRedirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth',
   frontOfficeUri: 'https://safe.development.humanitarian.tech/',
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
-  module: 'backoffice'
+  module: 'backoffice',
+  availableLanguages: ['en'],
+  defaultLanguage: 'en'
 };
