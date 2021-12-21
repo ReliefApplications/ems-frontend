@@ -37,6 +37,46 @@
         "clear": "Clear Filters"
     },
 
+    "apps": {
+        "recent": "Recent applications",
+        "all": "All applications",
+        "table": {
+            "name": "Name",
+            "date": "Created on",
+            "status": "Status",
+            "users": "Users",
+            "preview": "Preview",
+            "access": "Access",
+            "duplicate": "Duplicate",
+            "delete": "Delete"
+        }
+    },
+
+    "forms": {
+        "createBtn": "Create a form",
+        "table": {
+            "name": "Name",
+            "date": "Created on",
+            "status": "Status",
+            "history": "History",
+            "records": "Records",
+            "core": "Is core",
+            "parent": "Parent form",
+            "edit": "Edit",
+            "view": "View",
+            "delete": "Delete"
+        }
+    },
+
+    "resources": {
+        "table": {
+            "name": "Name",
+            "date": "Created on",
+            "records": "Records",
+            "delete": "Delete"
+        }
+    },
+
     "users": {
         "exportBtn": "Export users",
         "inviteBtn": "Invite users",

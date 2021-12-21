@@ -37,6 +37,46 @@
         "clear": "******"
     },
 
+    "apps": {
+        "recent": "******",
+        "all": "******",
+        "table": {
+            "name": "******",
+            "date": "******",
+            "status": "******",
+            "users": "******",
+            "preview": "******",
+            "access": "******",
+            "duplicate": "******",
+            "delete": "******"
+        }
+    },
+
+    "forms": {
+        "createBtn": "******",
+        "table": {
+            "name": "******",
+            "date": "******",
+            "status": "******",
+            "history": "******",
+            "records": "******",
+            "core": "******",
+            "parent": "******",
+            "edit": "******",
+            "view": "******",
+            "delete": "******"
+        }
+    },
+
+    "resources": {
+        "table": {
+            "name": "******",
+            "date": "******",
+            "records": "******",
+            "delete": "******"
+        }
+    },
+
     "users": {
         "exportBtn": "******",
         "inviteBtn": "******",
