@@ -15,7 +15,7 @@
         [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows"
         >
             <kendo-tilelayout-item-header>
-                <h4>{{widget.settings.title}}</h4>
+                <h4>{{(widget.settings && widget.settings.title) ? widget.settings.title : ''}}</h4>
             </kendo-tilelayout-item-header>
                 <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
                     (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
