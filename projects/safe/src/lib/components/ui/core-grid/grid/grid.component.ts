@@ -367,6 +367,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Saves edition.
    */
   public onSave(): void {
+    // Closes the editor, and saves the value locally
+    if (this.formGroup.dirty) {
+      this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
