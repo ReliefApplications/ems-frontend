@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.dashboardNameForm = new FormGroup({
             dashboardName: new FormControl(this.dashboard.name, Validators.required)
           });
-          this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
+          this.tiles = res.data.dashboard.structure ? [ ...res.data.dashboard.structure ] : [];
           this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
           this.applicationId = this.dashboard.page ? this.dashboard.page.application?.id : this.dashboard.step ?
             this.dashboard.step.workflow?.page?.application?.id : '';
@@ -154,8 +154,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.autoSaveChanges();
   }
 
-  /*  Drag and drop a widget to move it.
-  */
+  /**
+   * Drags and drops a widget to move it.
+   * @param e move event.
+   */
   onMove(e: any): void {
     // Dups array, some times the arrays is write protected
     this.tiles = this.tiles.slice();
@@ -166,7 +168,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Save the dashboard changes in the database.
   */
   private autoSaveChanges(): void {
-    this.loading = true;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {
@@ -174,9 +175,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         structure: this.tiles
       }
     }).subscribe(res => {
-      this.tiles = res.data?.editDashboard.structure;
-      this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
-      this.loading = false;
+      this.dashboardService.openDashboard({ ...this.dashboard, structure: this.tiles });
     }, error => this.loading = false);
   }
 
