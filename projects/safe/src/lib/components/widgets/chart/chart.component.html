@@ -1,4 +1,7 @@
 <div class="widget-container">
+    <kendo-tilelayout-item-header>
+        <h4 [title]="settings.title">{{settings.title}}</h4>
+    </kendo-tilelayout-item-header>
     <safe-button *ngIf="export" [isIcon]="true" icon="get_app" class="export-button" (click)="onExport()">
     </safe-button>
     <safe-line-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'line'" [title]="settings.chart.title"

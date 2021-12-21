@@ -6,12 +6,6 @@
 
 .sidenav {
     width: 240px;
-    margin-top: 64px;
-}
-
-.sidenav-when-toolbar {
-    width: 240px;
-    margin-top: 117px;
 }
 
 .sidenav-container {
@@ -131,11 +125,9 @@
 }
 
 
-mat-sidenav-container {
-    position: static;
-}
-mat-sidenav-content {
-    position: static;
-}
-
-
+// mat-sidenav-container {
+//     position: static;
+// }
+// mat-sidenav-content {
+//     position: static;
+// }
