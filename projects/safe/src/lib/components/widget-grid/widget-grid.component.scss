@@ -106,14 +106,27 @@ kendo-tilelayout {
     position: static;
     grid-auto-flow: row;
     
-    kendo-tilelayout-item-header {
-        position: relative;
-        height: 1.2em;
+    kendo-tilelayout-item {
+        border: none;
+        border-radius: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 5px 0 rgba(134,134,134,.2);
 
-        h4 {
+        kendo-tilelayout-item-header {
             position: relative;
-            bottom: 0.2em;
-            font-weight: 450;
+            height: 1.2em;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            border-bottom: solid 1px rgba(134,134,134,.25);
+
+            h4 {
+                position: relative;
+                bottom: 0.2em;
+                font-weight: 400;
+            }
         }
     }
 }
