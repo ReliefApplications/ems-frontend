@@ -8,6 +8,7 @@ import { EditUserProfileMutationResponse, EDIT_USER_PROFILE } from '../../graphq
 import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {

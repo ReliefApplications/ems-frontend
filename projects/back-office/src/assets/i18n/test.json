@@ -5,6 +5,10 @@
             "profile": "******",
             "switch": "******",
             "logout": "******"
+        },
+        "notification": {
+            "read": "******",
+            "load": "******"
         }
     },
 
@@ -226,5 +230,17 @@
         "preview": "******",
         "duplicate": "******",
         "delete": "******"
+    },
+
+    "profile": {
+        "title": "******",
+        "name": "******",
+        "username": "******",
+        "saveBtn": "******",
+        "apps": "******",
+        "role": "******",
+        "position": "******",
+        "fav": "******"
+
     }
 }

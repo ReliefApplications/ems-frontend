@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeProfileComponent],
@@ -22,7 +23,8 @@ import { SafeButtonModule } from '../../components/ui/button/button.module';
     MatMenuModule,
     ReactiveFormsModule,
     MatIconModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [SafeProfileComponent]
 })

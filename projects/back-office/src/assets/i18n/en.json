@@ -5,6 +5,10 @@
             "profile": "Profile",
             "switch": "Switch to",
             "logout": "Logout"
+        },
+        "notification": {
+            "read": "Mark all as read",
+            "load": "Load more"
         }
     },
 
@@ -231,6 +235,18 @@
         "preview": "Preview",
         "duplicate": "Duplicate",
         "delete": "Delete"
+    },
+
+    "profile": {
+        "title": "Your profile",
+        "name": "Name",
+        "username": "Username",
+        "saveBtn": "Save changes",
+        "apps": "Applications",
+        "role": "Role",
+        "position": "Position attributes",
+        "fav": "Set as favorite"
+
     }
 }
 

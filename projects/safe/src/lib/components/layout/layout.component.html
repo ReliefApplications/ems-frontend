@@ -5,6 +5,9 @@
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">{{(route) ? (title) : ('header.title' | translate)}}</h1>
+
+
+    <!-- Temporal language changer -->
     <span class="form-inline">
       <select 
           class="form-control" 
@@ -17,6 +20,8 @@
         </option>
       </select>
     </span>
+
+
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -53,14 +58,16 @@
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline
+      <a (click)="onMarkAllNotificationsAsRead()">{{'header.notification.read' | translate}}<mat-icon [inline]="true">check_circle_outline
         </mat-icon></a>
       <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{
         notification.action }} -
         {{ notification.createdAt | date }}</button>
     </div>
     <safe-button *ngIf="hasMoreNotifications" category="primary" variant="primary" [block]="true"
-      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">Load more</safe-button>
+      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">
+      {{'header.notification.load' | translate}}
+    </safe-button>
   </mat-menu>
 </mat-toolbar>
 
