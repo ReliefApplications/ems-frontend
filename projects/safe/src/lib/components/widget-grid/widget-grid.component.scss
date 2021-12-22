@@ -39,7 +39,6 @@
 }
 
 kendo-tilelayout {
-    position: static;
     grid-auto-flow: row;
     background-color: unset;
     
@@ -47,8 +46,6 @@ kendo-tilelayout {
         border: none;
         border-radius: 0;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
         box-shadow: 0 2px 5px 0 rgba(134,134,134,.2);
     }
 }
