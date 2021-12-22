@@ -9,6 +9,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -47,7 +48,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    public translate: TranslateService
   ) {}
 
   ngOnInit(): void {

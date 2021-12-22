@@ -55,6 +55,11 @@
             "access": "Access",
             "duplicate": "Duplicate",
             "delete": "Delete"
+        },
+        "home": {
+            "step1": "Add a page",
+            "step2": "Customize each of the pages created",
+            "step3": "Click on create to finish the process"
         }
     },
 
@@ -322,5 +327,27 @@
             "confirm": "Update",
             "create": "Create"
         }
+    },
+
+    "addPage": {
+        "title": "Select what type of page you want to create",
+        "form": {
+            "title": "Available forms",
+            "select": "Select a form",
+            "createBtn": "Create a form"
+        },
+        "back": "Back",
+        "next": "Next"
+    },
+
+    "form": {
+        "edit": "Edit form",
+        "previous": "Previous",
+        "next": "Next",
+        "save": "Save",
+        "name": "Name",
+        "record": "New record",
+        "cancel": "Cancel",
+        "saveClose": "Save and close"
     }
 }

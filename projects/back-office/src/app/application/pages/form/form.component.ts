@@ -14,6 +14,7 @@ import {
   EditStepMutationResponse, EDIT_STEP,
   EditPageMutationResponse, EDIT_PAGE
 } from '../../../graphql/mutations';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form',
@@ -49,7 +50,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {
