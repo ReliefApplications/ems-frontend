@@ -6,6 +6,7 @@ import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { EditApiConfigurationMutationResponse, EDIT_API_CONFIGURATION } from '../../../graphql/mutations';
 import { GetApiConfigurationQueryResponse, GET_API_CONFIGURATION } from '../../../graphql/queries';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-api-configuration',
@@ -35,7 +36,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private apiProxy: SafeApiProxyService
+    private apiProxy: SafeApiProxyService,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {

@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatExpansionModule,
     MatDividerModule,
     SafeButtonModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule
   ]
 })
 export class PullJobsModule { }

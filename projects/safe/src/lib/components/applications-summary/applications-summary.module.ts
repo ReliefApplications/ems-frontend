@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatMenuModule,
     MatIconModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [
     SafeApplicationsSummaryComponent,

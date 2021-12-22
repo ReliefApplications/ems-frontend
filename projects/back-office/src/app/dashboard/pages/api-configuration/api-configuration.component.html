@@ -8,22 +8,22 @@
       <safe-access [access]="apiConfiguration?.permissions" (save)="saveAccess($event)" *ngIf="apiConfiguration?.canUpdate"></safe-access>
     </div>
     <form [formGroup]="apiForm" *ngIf="apiForm">
-        <h1>General</h1>
+        <h1>{{'APIConf.edit.general.title' | translate}}</h1>
         <div class="form-group">
           <div class="form-group-row">
             <mat-form-field appearance="outline" style="flex: 2;">
               <mat-label>
-                API Configuration Name
+                {{'APIConf.edit.general.name' | translate}}
               </mat-label>
-              <input matInput formControlName="name" type='text' placeholder="Enter a name for the API Configuration" />
+              <input matInput formControlName="name" type='text' [placeholder]="'APIConf.edit.general.namePlaceholder' | translate" />
               <mat-error *ngIf="name?.errors">
-                Only letters, hypens, or underscores are accepted
+                {{'APIConf.edit.general.nameWarning' | translate}}
               </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
-                Status
+                {{'APIConf.edit.general.status' | translate}}
               </mat-label>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{ statusChoice }}</mat-option>
@@ -32,7 +32,7 @@
 
             <mat-form-field appearance="outline" style="flex: 1;">
                 <mat-label>
-                  Authentication type
+                  {{'APIConf.edit.general.auth' | translate}}
                 </mat-label>
                 <mat-select formControlName="authType">
                   <mat-option *ngFor="let authTypeChoice of authTypeChoices" [value]=authTypeChoice>{{ authTypeChoice }}</mat-option>
@@ -40,56 +40,62 @@
               </mat-form-field>
           </div>
 
-          <h1>Endpoint</h1>
+          <h1>{{'APIConf.edit.endpoint.title' | translate}}</h1>
           <div class="form-group-row">
             <mat-form-field appearance="outline" style="flex: 2;">
               <mat-label>
-                Main endpoint
+                {{'APIConf.edit.endpoint.main' | translate}}
               </mat-label>
-              <input matInput formControlName="endpoint" type='text' placeholder="Base URL for the API" />
+              <input matInput formControlName="endpoint" type='text'
+              [placeholder]="'APIConf.edit.endpoint.mainPlaceholder' | translate" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
-                Ping extension
+                {{'APIConf.edit.endpoint.ping' | translate}}
               </mat-label>
-              <input matInput formControlName="pingUrl" type='text' placeholder="Ping extension URL" />
+              <input matInput formControlName="pingUrl" type='text'
+              [placeholder]="'APIConf.edit.endpoint.pingPlaceholder' | translate" />
             </mat-form-field>
 
             <div class="ping-button-container">
               <safe-button icon="online_prediction" category="secondary" variant="primary" (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
-                Send ping request
+                {{'APIConf.edit.endpoint.send' | translate}}
               </safe-button>
             </div>
 
           </div>
 
-          <h1>API authentication settings</h1>
+          <h1>{{'APIConf.edit.auth.title' | translate}}</h1>
           <ng-container *ngIf="apiForm.value.authType === 'serviceToService'">
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Access token URL
+                  {{'APIConf.edit.auth.tokenURL' | translate}}
                 </mat-label>
-                <input matInput formControlName="authTargetUrl" type='text' placeholder="Enter access token URL" onfocus="this.value=''"/>
+                <input matInput formControlName="authTargetUrl" type='text'
+                [placeholder]="'APIConf.edit.auth.tokenURLPlaceholder' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Client ID
+                  {{'APIConf.edit.auth.id' | translate}}
                 </mat-label>
-                <input matInput formControlName="apiClientID" type='text' placeholder="Enter client ID" onfocus="this.value=''"/>
+                <input matInput formControlName="apiClientID" type='text'
+                [placeholder]="'APIConf.edit.auth.idPlaceholder' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Client secret
+                  {{'APIConf.edit.auth.secret' | translate}}
                 </mat-label>
-                <input matInput formControlName="safeSecret" type='text' placeholder="Enter client secret" onfocus="this.value=''"/>
+                <input matInput formControlName="safeSecret" type='text'
+                [placeholder]="'APIConf.edit.auth.secretPlaceholder' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Scope
+                  {{'APIConf.edit.auth.scope' | translate}}
                 </mat-label>
-                <input matInput formControlName="scope" type='text' placeholder="Enter scope" onfocus="this.value=''"/>
+                <input matInput formControlName="scope" type='text'
+                [placeholder]="'APIConf.edit.auth.scopePlaceholder' | translate" onfocus="this.value=''"/>
               </mat-form-field>
             </div>
           </ng-container>
@@ -97,13 +103,16 @@
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">
                 <mat-label>
-                  Token
+                  {{'APIConf.edit.auth.token' | translate}}
                 </mat-label>
-                <input matInput formControlName="token" type='text' placeholder="Enter token for authentication" onfocus="this.value=''"/>
+                <input matInput formControlName="token" type='text'
+                [placeholder]="'APIConf.edit.auth.tokenPlaceholder' | translate" onfocus="this.value=''"/>
               </mat-form-field>
             </div>
           </ng-container>
         </div>
-        <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">Save changes</safe-button>
+        <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">
+          {{'APIConf.edit.save' | translate}}
+        </safe-button>
       </form>
 </ng-container>

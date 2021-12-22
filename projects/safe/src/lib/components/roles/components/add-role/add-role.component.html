@@ -1,13 +1,15 @@
-<h1 mat-dialog-title>New role</h1>
+<h1 mat-dialog-title>{{'roles.add.title' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="roleForm">
         <mat-form-field>
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="title" type="text" placeholder="Enter a title"/>
+            <mat-label>{{'roles.add.name' | translate}}</mat-label>
+            <input matInput formControlName="title" type="text" [placeholder]="'roles.add.namePlaceholder' | translate"/>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Create</button>
+    <button mat-button (click)="onClose()">{{'roles.add.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
+        {{'roles.add.create' | translate}}
+    </button>
 </div>

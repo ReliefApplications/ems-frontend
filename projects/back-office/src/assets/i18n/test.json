@@ -24,7 +24,8 @@
         "status": {
             "title": "******",
             "active": "******",
-            "pending": "******"
+            "pending": "******",
+            "archived": "******"
         },
         "core": {
             "title": "******",
@@ -115,5 +116,115 @@
             "close": "******",
             "update": "******"
         }
+    },
+
+    "roles": {
+        "createBtn": "******",
+        "table": {
+            "title": "******",
+            "users": "******",
+            "edit": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "title": "******",
+            "name": "******",
+            "permissions": "******",
+            "channels": "******",
+            "close": "******",
+            "update": "******"
+        },
+        "add": {
+            "title": "******",
+            "name": "******",
+            "namePlaceholder": "******",
+            "close": "******",
+            "create": "******"
+        }
+    },
+
+    "APIConf": {
+        "createBtn": "******",
+        "table": {
+            "name": "******",
+            "status": "******",
+            "auth": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "general": {
+                "title": "******",
+                "name": "******",
+                "namePlaceholder": "******",
+                "nameWarning": "******",
+                "status": "******",
+                "auth": "******"
+            },
+            "endpoint": {
+                "title": "******",
+                "main": "******",
+                "mainPlaceholder": "******",
+                "ping": "******",
+                "pingPlaceholder": "******",
+                "send": "******"
+            },
+            "auth": {
+                "title": "******",
+                "tokenURL": "******",
+                "tokenURLPlaceholder": "******",
+                "id": "******",
+                "idPlaceholder": "******",
+                "secret": "******",
+                "secretPlaceholder": "******",
+                "scope": "******",
+                "scopePlaceholder": "******",
+                "token": "******",
+                "tokenPlaceholder": "******"
+            },
+            "save": "******"
+        }
+    },
+
+    "pullJobs": {
+        "createBtn": "******",
+        "table": {
+            "name": "******",
+            "status": "******",
+            "API": "******",
+            "convert": "******",
+            "edit": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "titleNew": "******",
+            "titleEdit": "******",
+            "name": "******",
+            "namePlaceholder": "******",
+            "status": "******",
+            "schedule": "******",
+            "schedulePlaceholder": "******",
+            "API": "******",
+            "convert": "******",
+            "notify": "******",
+            "mapping": {
+                "title": "******",
+                "switch": "******",
+                "field": "******",
+                "value": "******",
+                "raw": "******"
+            },
+            "identifier": "******",
+            "close": "******",
+            "create": "******",
+            "update": "******"
+        }
+    },
+
+    "appSummary": {
+        "new": "******",
+        "created": "******",
+        "preview": "******",
+        "duplicate": "******",
+        "delete": "******"
     }
 }

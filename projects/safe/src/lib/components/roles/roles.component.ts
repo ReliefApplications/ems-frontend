@@ -19,6 +19,7 @@ import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { NOTIFICATIONS } from '../../const/notifications';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-roles',
@@ -50,7 +51,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {
