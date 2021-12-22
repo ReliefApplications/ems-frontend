@@ -15,17 +15,17 @@
       </div>
       <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
         <mat-form-field appearance="outline">
-          <mat-label>{{'filter.status.title' | translate}}</mat-label>
+          <mat-label>{{'filter.status' | translate}}</mat-label>
           <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
             <mat-option>-</mat-option>
             <mat-option value="active">
-              {{'filter.status.active' | translate}}
+              {{'status.active' | translate}}
             </mat-option>
             <mat-option value="pending">
-              {{'filter.status.pending' | translate}}
+              {{'status.pending' | translate}}
             </mat-option>
             <mat-option value="archived">
-              {{'filter.status.archived' | translate}}
+              {{'status.archived' | translate}}
             </mat-option>
           </mat-select>
         </mat-form-field>

@@ -5,6 +5,7 @@ import { Application, Channel, Subscription as ApplicationSubscription, SafeAppl
 import { Subscription } from 'rxjs';
 
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-subscriptions',
@@ -26,6 +27,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private apollo: Apollo,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {

@@ -1,17 +1,17 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
-  <h1>General</h1>
+  <h1>{{'settings.general.title' | translate}}</h1>
   <div class="app-status">
     <mat-form-field appearance="outline">
-      <mat-label>Status</mat-label>
+      <mat-label>{{'settings.general.status' | translate}}</mat-label>
       <mat-select formControlName="status">
         <mat-option value="active">
-          Active
+          {{'status.active' | translate}}
         </mat-option>
         <mat-option value="pending">
-          Pending
+          {{'status.pending' | translate}}
         </mat-option>
         <mat-option value="archived">
-          Archived
+          {{'status.archived' | translate}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -20,14 +20,14 @@
     <div class="form-group-row">
       <mat-form-field appearance="outline" style="flex: 2;">
         <mat-label>
-          Application Name
+          {{'settings.general.name' | translate}}
         </mat-label>
-        <input matInput formControlName="name" type='text' placeholder="Enter a name for the application" />
+        <input matInput formControlName="name" type='text' [placeholder]="'settings.general.namePlaceholder' | translate" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" style="flex: 1;">
         <mat-label>
-          Application ID
+          {{'settings.general.id' | translate}}
         </mat-label>
         <input matInput formControlName="id" type='text'/>
       </mat-form-field>
@@ -35,21 +35,23 @@
 
     <mat-form-field appearance="outline">
       <mat-label>
-        Description
+        {{'settings.general.description' | translate}}
       </mat-label>
-      <textarea matInput formControlName="description" placeholder="Please enter a description for the application"
+      <textarea matInput formControlName="description" [placeholder]="'settings.general.descriptionPlaceholder' | translate"
         [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5"></textarea>
     </mat-form-field>
   </div>
-  <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="settingsForm.invalid || !settingsForm.dirty">Save changes</safe-button>
+  <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="settingsForm.invalid || !settingsForm.dirty">
+    {{'settings.general.saveBtn' | translate}}
+  </safe-button>
 </form>
 
 <div class="action-list" *ngIf="application && (application.canUpdate || application.canDelete)">
-  <h1 class="header">Actions</h1>
+  <h1 class="header">{{'settings.actions.title' | translate}}</h1>
   <safe-button icon="file_copy" category="tertiary" variant="primary" (click)="onDuplicate()" *ngIf="application.canUpdate">
-    Duplicate Application
+    {{'settings.actions.duplicateBtn' | translate}}
   </safe-button>
   <safe-button icon="delete" category="tertiary" variant="danger" (click)="onDelete()" *ngIf="application.canDelete">
-    Delete Application
+    {{'settings.actions.deleteBtn' | translate}}
   </safe-button>
 </div>

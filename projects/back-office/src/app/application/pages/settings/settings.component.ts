@@ -10,6 +10,7 @@ import { DuplicateApplicationComponent } from '../../../components/duplicate-app
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -34,7 +35,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {

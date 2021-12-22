@@ -16,6 +16,12 @@
         "addPage": "Add a Page"
     },
 
+    "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "archived": "Archived"
+    },
+
     "filter": {
         "search": "Search...",
         "show": "Show Filter",
@@ -25,12 +31,7 @@
             "clear": "Clear Range",
             "apply": "Apply"
         },
-        "status": {
-            "title": "Status",
-            "active": "Active",
-            "pending": "Pending",
-            "archived": "Archived"
-        },
+        "status": "Status",
         "core": {
             "title": "Is Core",
             "yes": "Yes",
@@ -70,11 +71,6 @@
             "edit": "Edit",
             "view": "View",
             "delete": "Delete"
-        },
-        "status": {
-            "active": "Active",
-            "pending": "Pending",
-            "archived": "Archived"
         }
     },
 
@@ -246,7 +242,85 @@
         "role": "Role",
         "position": "Position attributes",
         "fav": "Set as favorite"
+    },
 
+    "settings": {
+        "general": {
+            "title": "General",
+            "name": "Application name",
+            "namePlaceholder": "Enter a name for the application",
+            "id": "Application ID",
+            "status": "Status",
+            "description": "Description",
+            "descriptionPlaceholder": "Please enter a description for the application",
+            "saveBtn": "Save changes"
+        },
+        "actions": {
+            "title": "Actions",
+            "duplicateBtn": "Duplicate Application",
+            "deleteBtn": "Delete Application"
+        }
+    },
+
+    "attributes": {
+        "createBtn": "Create a position category",
+        "table": {
+            "title": "Title",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "edit": {
+            "titleNew": "New position category",
+            "titleEdit": "Edit position category",
+            "title": "Title",
+            "titlePlaceholder": "Enter a title",
+            "close": "Close",
+            "confirm": "Confirm",
+            "create": "Create"
+        }
+    },
+
+    "channels": {
+        "createBtn": "Create a channel",
+        "table": {
+            "title": "Title",
+            "roles": "Roles subscribed",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "edit": {
+            "titleNew": "New channel",
+            "titleEdit": "Update channel",
+            "title": "Title",
+            "titlePlaceholder": "Enter a title",
+            "close": "Close",
+            "confirm": "Update channel",
+            "create": "Create"
+        }
+    },
+
+    "subscriptions": {
+        "createBtn": "Create a subscription",
+        "table": {
+            "title": "Subscription title",
+            "convert": "Conver to",
+            "notify": "Notify on",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "edit": {
+            "titleNew": "New subscription",
+            "titleEdit": "Edit subscription",
+            "title": "Title",
+            "titlePlaceholder": "Name your subscription",
+            "listen": "Listen to",
+            "listenPlaceholder": "Select a routing key",
+            "listenHint": "Message broker routing key",
+            "convert": "Conver to",
+            "notify": "Notify on",
+            "close": "Close",
+            "confirm": "Update",
+            "create": "Create"
+        }
     }
 }
-

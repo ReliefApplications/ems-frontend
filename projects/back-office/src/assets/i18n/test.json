@@ -16,6 +16,12 @@
         "addPage": "******"
     },
 
+    "status": {
+        "active": "******",
+        "pending": "******",
+        "archived": "******"
+    },
+
     "filter": {
         "search": "******",
         "show": "******",
@@ -25,12 +31,7 @@
             "clear": "******",
             "apply": "******"
         },
-        "status": {
-            "title": "******",
-            "active": "******",
-            "pending": "******",
-            "archived": "******"
-        },
+        "status": "******",
         "core": {
             "title": "******",
             "yes": "******",
@@ -241,6 +242,85 @@
         "role": "******",
         "position": "******",
         "fav": "******"
+    },
 
+    "settings": {
+        "general": {
+            "title": "******",
+            "name": "******",
+            "namePlaceholder": "******",
+            "id": "******",
+            "status": "******",
+            "description": "******",
+            "descriptionPlaceholder": "******",
+            "saveBtn": "******"
+        },
+        "actions": {
+            "title": "******",
+            "duplicateBtn": "******",
+            "deleteBtn": "******"
+        }
+    },
+
+    "attributes": {
+        "createBtn": "******",
+        "table": {
+            "title": "******",
+            "edit": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "titleNew": "******",
+            "titleEdit": "******",
+            "title": "******",
+            "titlePlaceholder": "******",
+            "close": "******",
+            "confirm": "******",
+            "create": "******"
+        }
+    },
+
+    "channels": {
+        "createBtn": "******",
+        "table": {
+            "title": "******",
+            "roles": "******",
+            "edit": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "titleNew": "******",
+            "titleEdit": "******",
+            "title": "******",
+            "titlePlaceholder": "******",
+            "close": "******",
+            "confirm": "******",
+            "create": "******"
+        }
+    },
+
+    "subscriptions": {
+        "createBtn": "******",
+        "table": {
+            "title": "******",
+            "convert": "******",
+            "notify": "******",
+            "edit": "******",
+            "delete": "******"
+        },
+        "edit": {
+            "titleNew": "******",
+            "titleEdit": "******",
+            "title": "******",
+            "titlePlaceholder": "******",
+            "listen": "******",
+            "listenPlaceholder": "******",
+            "listenHint": "******",
+            "convert": "******",
+            "notify": "******",
+            "close": "******",
+            "confirm": "******",
+            "create": "******"
+        }
     }
 }
