@@ -3,11 +3,12 @@
 }
 
 // === DASHBOARD WIDGETS===
-
 .grid-container {
     position: static;
     
-}.widget-options {
+}
+
+.widget-options {
     position: absolute;
     top: 0;
     right: 0;
@@ -30,6 +31,7 @@
 kendo-tilelayout {
     position: static;
     grid-auto-flow: row;
+    background-color: unset;
     
     kendo-tilelayout-item {
         border: none;

@@ -1,5 +1,6 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
+import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeWidgetGridComponent } from "./widget-grid.component";
 import { SafeWidgetGridModule } from "./widget-grid.module";
 
@@ -8,6 +9,7 @@ export default {
     decorators: [
         moduleMetadata({
             imports: [
+                BrowserAnimationsModule,
                 SafeWidgetGridModule
             ],
             providers: []
