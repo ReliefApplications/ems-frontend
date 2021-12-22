@@ -1,5 +1,4 @@
-import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
@@ -10,7 +9,7 @@ import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent 
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss']
 })
-export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
+export class SafeWidgetGridComponent implements OnInit {
 
   public widgetTypes: IWidgetType[] = WIDGET_TYPES as IWidgetType[];
 
@@ -18,8 +17,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   @Input() canUpdate = false;
 
   // === GRID ===
-  @ViewChildren(CdkDropList) dropsQuery?: QueryList<CdkDropList>;
-  drops: CdkDropList[] = [];
   colsNumber = 8;
 
   // === EVENT EMITTER ===
@@ -30,6 +27,15 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+ /**
+  * Changes display when windows size changes.
+  * @param event window resize event
+  */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any): void {
+    this.colsNumber = this.setColsNumber(event.target.innerWidth);
+  }
 
   get dashboardMenuRowSpan(): number {
     if (this.widgets && this.widgets.length > 0) {
@@ -48,19 +54,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-  }
-
-  /*  Material grid once template ready.
-  */
-  ngAfterViewInit(): void {
-    if (this.dropsQuery) {
-      this.dropsQuery.changes.subscribe(() => {
-        this.drops = this.dropsQuery?.toArray() || [];
-      });
-      Promise.resolve().then(() => {
-        this.drops = this.dropsQuery?.toArray() || [];
-      });
-    }
   }
 
   /*  Change the number of displayed columns.
