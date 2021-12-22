@@ -19,6 +19,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
     MatMenuModule,
     MatDividerModule,
     SafeButtonModule,
+    SafeIconModule,
     SafeWidgetChoiceModule,
     LayoutModule
   ],
