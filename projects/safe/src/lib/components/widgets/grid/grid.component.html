@@ -1,13 +1,13 @@
 <div class="widget-container">
     <kendo-tilelayout-item-header class="widget-header">
-        <h4 class="widget-title" [title]="settings.title">{{settings.title}}</h4>
-        <!-- <div class="floating-button">
+        <span class="widget-title" [title]="settings.title">{{settings.title}}</span>
+        <div class="floating-button">
             <ng-container *ngFor="let floatingButton of settings.floatingButtons">
                 <button mat-button color="primary" (click)="onQuickAction(floatingButton)" *ngIf="floatingButton.show">
                     {{floatingButton.name}}
                 </button>
             </ng-container>
-        </div> -->
+        </div>
     </kendo-tilelayout-item-header>
     <!-- GRID CONTENT -->
     <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"

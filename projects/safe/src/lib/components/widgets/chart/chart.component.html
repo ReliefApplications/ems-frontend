@@ -1,6 +1,6 @@
 <div class="widget-container">
     <kendo-tilelayout-item-header class="widget-header">
-        <h4 class="widget-title" [title]="settings.title">{{settings.title}}</h4>
+        <span class="widget-title" [title]="settings.title">{{settings.title}}</span>
     </kendo-tilelayout-item-header>
     <safe-button *ngIf="export" [isIcon]="true" icon="get_app" class="export-button" (click)="onExport()">
     </safe-button>
