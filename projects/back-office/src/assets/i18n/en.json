@@ -9,6 +9,10 @@
         "notification": {
             "read": "Mark all as read",
             "load": "Load more"
+        },
+        "toolbar": {
+            "close": "Close",
+            "publish": "Publish"
         }
     },
 

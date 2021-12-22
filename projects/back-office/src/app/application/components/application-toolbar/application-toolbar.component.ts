@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Application, NOTIFICATIONS, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -23,7 +24,8 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {
