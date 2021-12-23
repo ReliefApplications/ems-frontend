@@ -107,7 +107,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onEdit(user: User): void {
-    console.log(user);
     const dialogRef = this.dialog.open(SafeEditUserComponent, {
       data: {
         user,

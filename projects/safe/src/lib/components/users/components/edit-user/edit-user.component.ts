@@ -35,7 +35,6 @@ export class SafeEditUserComponent implements OnInit {
   /*  Load the roles and build the form.
   */
   ngOnInit(): void {
-    console.log(this.data);
     if (this.data.positionAttributeCategories) {
       this.positionAttributeCategories = this.data.positionAttributeCategories;
     }
