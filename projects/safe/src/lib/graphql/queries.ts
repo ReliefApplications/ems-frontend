@@ -443,6 +443,13 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           title
         }
+        positionAttributes {
+          value
+          category {
+            id
+            title
+          }
+        }
         oid
       }
       permissions {
