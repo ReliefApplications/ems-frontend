@@ -1,3 +1,6 @@
+/**
+ * Production environment file.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://safe-api.development.humanitarian.tech',

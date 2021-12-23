@@ -1,3 +1,6 @@
+/**
+ * Environment file of OORT production platform.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',

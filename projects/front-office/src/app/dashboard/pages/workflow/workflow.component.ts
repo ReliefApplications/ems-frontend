@@ -5,6 +5,9 @@ import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from 
 import { Subscription } from 'rxjs';
 import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
 
+/**
+ * Workflow page.
+ */
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -12,20 +15,27 @@ import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graph
 })
 export class WorkflowComponent implements OnInit, OnDestroy {
 
-  // === DATA ===
+  /** Loading state of the page */
   public loading = true;
-
-  // === WORKFLOW ===
+  /** Current workflow id */
   public id = '';
+  /** Current workflow */
   public workflow?: Workflow;
+  /** Current workflow steps */
   public steps: Step[] = [];
-
-  // === ACTIVE STEP ===
+  /** Current step */
   public activeStep = 0;
-
-  // === ROUTE ===
+  /** Subscribes to route */
   private routeSubscription?: Subscription;
 
+  /**
+   * Workflow page.
+   *
+   * @param apollo Apollo client
+   * @param route Angular current route
+   * @param snackBar Shared snackbar service
+   * @param router Angular router
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -33,6 +43,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
+  /**
+   * Subscribes to the route to load the workflow accordingly.
+   */
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
@@ -60,14 +73,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Removes the subscriptions of the component.
+   */
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
   }
 
-  /* Get data from within selected step
-  */
+  /**
+   * Gets data from within selected step
+   *
+   * @param elementRef Ref to the stepper
+   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
@@ -79,7 +98,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * On Open Step.
+   * Navigates to the clicked step.
    */
   public onOpenStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {

@@ -6,6 +6,9 @@ import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+/**
+ * Main component of Front-office.
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,18 +16,23 @@ import { filter, takeUntil } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  title = 'front-office';
-
-  // === MSAL ERROR HANDLING ===
-
+  /** Listens to self-destruction */
   private readonly destroying$ = new Subject<void>();
 
+  /**
+   * Main component of Front-office.
+   *
+   * @param broadcastService MSAL broadcast service
+   * @param msalService MSAL service
+   * @param router Angular router
+   * @param authService Shared authentication service
+   * @param formService Shared form service. We need to initialize the service there.
+   */
   constructor(
     private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
     private router: Router,
     private authService: SafeAuthService,
-    // We need to initialize the service there
     private formService: SafeFormService
   ) { }
 

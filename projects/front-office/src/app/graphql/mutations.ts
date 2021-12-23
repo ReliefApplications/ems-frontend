@@ -2,7 +2,9 @@ import {gql} from 'apollo-angular';
 
 import { Role, User } from '@safe/builder';
 
-// === ADD ROLE ===
+/**
+ * Add Role to application mutation.
+ */
 export const ADD_ROLE = gql`
 mutation addRole($title: String!, $application: ID) {
   addRole(title: $title, application: $application) {
@@ -16,12 +18,19 @@ mutation addRole($title: String!, $application: ID) {
   }
 }`;
 
+/**
+ * Interface of Add Role mutation response.
+ */
 export interface AddRoleMutationResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** New role */
   addRole: Role;
 }
 
-// === EDIT ROLE ===
+/**
+ * Edit application role mutation.
+ */
 export const EDIT_ROLE = gql`
 mutation editRole($id: ID!, $permissions: [ID]!) {
   editRole(id: $id, permissions: $permissions) {
@@ -31,12 +40,19 @@ mutation editRole($id: ID!, $permissions: [ID]!) {
   }
 }`;
 
+/**
+ * Interface of edit application role mutation response.
+ */
 export interface EditRoleMutationResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Edited role */
   editRole: Role;
 }
 
-// === EDIT USER ===
+/**
+ * Edit user of application mutation.
+ */
 export const EDIT_USER = gql`
 mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
   editUser(id: $id, roles: $roles, application: $application) {
@@ -54,7 +70,12 @@ mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
   }
 }`;
 
+/**
+ * Interface of edit user mutation response.
+ */
 export interface EditUserMutationResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Edited user */
   editUser: User;
 }

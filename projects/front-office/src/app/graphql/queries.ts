@@ -1,8 +1,9 @@
-import {gql} from 'apollo-angular';
-
+import { gql } from 'apollo-angular';
 import { Dashboard, Application, Form, User, Workflow, Permission, Step, Page} from '@safe/builder';
 
-// === GET USERS ===
+/**
+ * Application users query.
+ */
 export const GET_USERS = gql`
 {
   users {
@@ -17,12 +18,19 @@ export const GET_USERS = gql`
   }
 }`;
 
+/**
+ * Interface of application users query response.
+ */
 export interface GetUsersQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application users */
   users: User[];
 }
 
-// === GET DASHBOARD BY ID ===
+/**
+ * Dashboard query.
+ */
 export const GET_DASHBOARD_BY_ID = gql`
   query GetDashboardById($id: ID!){
     dashboard(id: $id){
@@ -50,12 +58,19 @@ export const GET_DASHBOARD_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface of dashboard query response.
+ */
 export interface GetDashboardByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application dashboard */
   dashboard: Dashboard;
 }
 
-// === GET APPLICATION BY ID ===
+/**
+ * Application query.
+ */
 export const GET_APPLICATION_BY_ID = gql`
   query GetApplicationById($id: ID!) {
     application(id: $id) {
@@ -90,13 +105,19 @@ export const GET_APPLICATION_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface of application query response.
+ */
 export interface GetApplicationByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** User accessible application */
   application: Application;
 }
 
-// === GET FORM BY ID ===
-
+/**
+ * Form query.
+ */
 export const GET_FORM_BY_ID = gql`
 query GetFormById($id: ID!) {
   form(id: $id) {
@@ -115,12 +136,19 @@ query GetFormById($id: ID!) {
   }
 }`;
 
+/**
+ * Interface of form query response.
+ */
 export interface GetFormByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application form */
   form: Form;
 }
 
-// === GET WORKFLOW BY ID ===
+/**
+ * Workflow query.
+ */
 export const GET_WORKFLOW_BY_ID = gql`
   query GetWorkflowById($id: ID!){
     workflow(id: $id){
@@ -158,12 +186,19 @@ export const GET_WORKFLOW_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface of workflow query response.
+ */
 export interface GetWorkflowByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application workflow */
   workflow: Workflow;
 }
 
-// === GET PERMISSIONS ===
+/**
+ * Application permissions query.
+ */
 export const GET_PERMISSIONS = gql`
 query GetPermissions($application: Boolean) {
   permissions(application: $application) {
@@ -173,12 +208,19 @@ query GetPermissions($application: Boolean) {
   }
 }`;
 
+/**
+ * Interface of application permissions query.
+ */
 export interface GetPermissionsQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** List of application permissions */
   permissions: Permission[];
 }
 
-// === GET STEP BY ID ===
+/**
+ * Workflow step query.
+ */
 export const GET_STEP_BY_ID = gql`
   query GetStepById($id: ID!){
     step(id: $id){
@@ -192,12 +234,19 @@ export const GET_STEP_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface of workflow step query response.
+ */
 export interface GetStepByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application step */
   step: Step;
 }
 
-// === GET PAGE BY ID ===
+/**
+ * Application page query.
+ */
 export const GET_PAGE_BY_ID = gql`
   query GetPageById($id: ID!){
     page(id: $id){
@@ -212,7 +261,12 @@ export const GET_PAGE_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface of application page query.
+ */
 export interface GetPageByIdQueryResponse {
+  /** Loading state of the query */
   loading: boolean;
+  /** Application page */
   page: Page;
 }

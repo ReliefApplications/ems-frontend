@@ -4,6 +4,9 @@ import { ProfileComponent } from './profile.component';
 import { ProfileRoutingModule } from './profile-routing.module';
 import { SafeProfileModule } from '@safe/builder';
 
+/**
+ * Profile page module.
+ */
 @NgModule({
   declarations: [ProfileComponent],
   imports: [

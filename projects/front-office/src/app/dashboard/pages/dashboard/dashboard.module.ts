@@ -5,6 +5,10 @@ import { DashboardComponent } from './dashboard.component';
 import { SafeWidgetGridModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+/**
+ * Dashboard page.
+ * Dashboard is one of the available content types of application pages.
+ */
 @NgModule({
   declarations: [DashboardComponent],
   imports: [

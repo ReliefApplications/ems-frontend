@@ -4,6 +4,9 @@ import { MsalGuard } from '@azure/msal-angular';
 import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
 
+/**
+ * List of top level routes of the Front-Office.
+ */
 const routes: Routes = [
   {
     path: '',
@@ -23,9 +26,10 @@ const routes: Routes = [
   }
 ];
 
-/*  Root module of Routing. Separate the front into two modules: 'auth' and 'dashboard'.
-    Use lazy loading for performance.
-*/
+/**
+ * Root module of Routing. Separate the front into two modules: 'auth' and 'dashboard'.
+ * Use lazy loading for performance.
+ */
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     relativeLinkResolution: 'legacy',
