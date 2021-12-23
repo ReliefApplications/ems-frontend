@@ -243,20 +243,20 @@ export class SafeGridWidgetComponent implements OnInit {
     for (const item of items) {
       const data = Object.assign({}, item);
       for (const modification of modifications) {
-        modificationFields.push(modification.field.name)
+        modificationFields.push(modification.field.name);
         if (['Date', 'DateTime'].includes(modification.field.type.name)) {
           data[modification.field.name] = this.getDateForFilter(modification.value);
         } else {
           data[modification.field.name] = modification.value;
         }
       }
-      modificationFields.push('canDelete', 'canUpdate')
+      modificationFields.push('canDelete', 'canUpdate');
       // remove all field except the modified one
       Object.keys(data).forEach(key => {
         if (!modificationFields.includes(key)) {
-          delete data[key]
+          delete data[key];
         }
-      })
+      });
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
