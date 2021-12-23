@@ -353,5 +353,20 @@
         "record": "New record",
         "cancel": "Cancel",
         "saveClose": "Save and close"
+    },
+
+    "workflow": {
+        "name": "Name",
+        "newStep": "New step",
+        "home": {
+            "step1":"Add steps",
+            "step2": "Customize each of the steps created"
+        },
+        "select": "Select which type of step you want to create"
+    },
+
+    "dashboard": {
+        "name": "Name",
+        "add": "Add a widget"
     }
 }

@@ -10,7 +10,7 @@
     <ng-container *ngIf="formActive">
         <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()" class="workflow-name-container">
             <mat-form-field>
-                <mat-label>Name</mat-label>
+                <mat-label>{{ 'workflow.name' | translate }}</mat-label>
                 <input matInput formControlName="workflowName" type="string">
             </mat-form-field>
             <safe-button type="submit" [isIcon]="true" icon="save" variant="primary"

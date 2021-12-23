@@ -1,6 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Step } from '../../models/step.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-workflow-stepper',
@@ -18,7 +19,7 @@ export class SafeWorkflowStepperComponent implements OnInit {
   @Output() reorderSteps = new EventEmitter<Step[]>();
   public dragging = false;
 
-  constructor() { }
+  constructor(public translate: TranslateService) { }
 
   ngOnInit(): void {
   }

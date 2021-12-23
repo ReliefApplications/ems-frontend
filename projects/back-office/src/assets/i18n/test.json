@@ -9,6 +9,10 @@
         "notification": {
             "read": "******",
             "load": "******"
+        },
+        "toolbar": {
+            "close": "******",
+            "publish": "******"
         }
     },
 
@@ -55,6 +59,11 @@
             "access": "******",
             "duplicate": "******",
             "delete": "******"
+        },
+        "home": {
+            "step1": "******",
+            "step2": "******",
+            "step3": "******"
         }
     },
 
@@ -344,5 +353,20 @@
         "record": "******",
         "cancel": "******",
         "saveClose": "******"
+    },
+
+    "workflow": {
+        "name": "******",
+        "newStep": "******",
+        "home": {
+            "step1": "******",
+            "step2": "******"
+        },
+        "select": "******"
+    },
+
+    "dashboard": {
+        "name": "******",
+        "add": "******"
     }
 }

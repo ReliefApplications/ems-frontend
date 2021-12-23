@@ -1,24 +1,24 @@
 <form [formGroup]="stepForm">
     <div class="form-group" [ngSwitch]="stage"  [ngClass]="{'content-choice-step': stage === 1 }">
         <ng-container *ngSwitchCase="1">
-            <h2>Select which type of step you want to create</h2>
+            <h2>{{'workflow.select' | translate}}</h2>
             <safe-content-choice formControlName="type" [contentTypes]="contentTypes"></safe-content-choice>
         </ng-container>
         <ng-container *ngSwitchCase="2">
-            <h2>Available forms</h2>
+            <h2>{{'addPage.form.title' | translate}}</h2>
             <mat-form-field appearance="outline">
-                <mat-label>Select a form</mat-label>
+                <mat-label>{{'addPage.form.select' | translate}}</mat-label>
                 <mat-select #formSelect formControlName="content" (openedChange)="onOpenSelect($event)">
                     <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" [disabled]=!canCreateForm>
-                Create a form
+                {{'addPage.form.createBtn' | translate}}
             </safe-button>
         </ng-container>
     </div>
 </form>
 <div class="add-step-stepper" *ngIf="stage !== 1">
-    <safe-button [disabled]="stage <= 1" (click)="onBack()">Back</safe-button>
-    <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">Next</safe-button>
+    <safe-button [disabled]="stage <= 1" (click)="onBack()">{{'addPage.back' | translate}}</safe-button>
+    <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStageValid(stage)">{{'addPage.next' | translate}}</safe-button>
 </div>

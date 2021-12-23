@@ -20,6 +20,7 @@ import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.c
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
     DragDropModule,
     MatDividerModule,
     SafeButtonModule,
-    SafeWidgetChoiceModule
+    SafeWidgetChoiceModule,
+    TranslateModule
   ],
   exports: [SafeWidgetGridComponent]
 })
