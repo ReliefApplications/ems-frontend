@@ -156,6 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /**
    * Drags and drops a widget to move it.
+   *
    * @param e move event.
    */
   onMove(e: any): void {

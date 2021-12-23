@@ -34,6 +34,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
  /**
   * Changes display when windows size changes.
+  *
   * @param event window resize event
   */
   @HostListener('window:resize', ['$event'])
@@ -49,10 +50,9 @@ export class SafeWidgetGridComponent implements OnInit {
     this.colsNumber = this.setColsNumber(window.innerWidth);
   }
 
-  /*  
-   */
   /**
    * Changes the number of displayed columns.
+   *
    * @param width width of the screen.
    * @returns new number of cols.
    */
@@ -74,6 +74,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Emits edition event.
+   *
    * @param e widget to edit.
    */
   onEditWidget(e: any): void {
@@ -82,6 +83,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Emits delete event.
+   *
    * @param e widget to delete.
    */
   onDeleteWidget(e: any): void {
@@ -90,6 +92,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Expands widget in a full size screen popup.
+   *
    * @param e widget to open.
    */
   onExpandWidget(e: any): void {
@@ -113,6 +116,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Emits addition event.
+   *
    * @param e new widget.
    */
   onAdd(e: any): void {
@@ -121,6 +125,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Emits reorder event.
+   *
    * @param e reorder event.
    */
   public onReorder(e: TileLayoutReorderEvent): void {
@@ -129,6 +134,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   /**
    * Handles resize widget event.
+   *
    * @param e resize event.
    */
   public onResize(e: TileLayoutResizeEvent) {
