@@ -26,6 +26,8 @@ import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
+import isNil from 'lodash/isNil';
+import omitBy from 'lodash/omitBy';
 
 /**
  * Interface of Dialog data.
@@ -127,8 +129,9 @@ export class SafeFormModalComponent implements OnInit {
         }
         if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
           this.storedMergedData = this.mergedData(this.data.prefillRecords);
-          const resourcesField = this.form.fields?.find(x => x.type === 'resources');
-          if (resourcesField && resourcesField.resource === this.data.prefillRecords[0].form?.resource?.id) {
+          const resId = this.data.prefillRecords[0].form?.resource?.id;
+          const resourcesField = this.form.fields?.find(x => (x.type === 'resources') && (x.resource === resId));
+          if (resourcesField) {
             this.storedMergedData[resourcesField.name] = this.data.prefillRecords.map(x => x.id);
           }
           else {
@@ -165,7 +168,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.showCompletedPage = false;
     }
     if (this.storedMergedData) {
-      this.survey.data = this.storedMergedData;
+      this.survey.data = { ...this.survey.data, ...omitBy(this.storedMergedData, isNil) };
     }
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
@@ -186,6 +189,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Creates the record, or update it if provided.
+   *
    * @param survey Survey instance.
    */
   public completeMySurvey = (survey: any) => {
@@ -230,10 +234,11 @@ export class SafeFormModalComponent implements OnInit {
     } else {
       this.onUpdate(survey);
     }
-  }
+  };
 
   /**
    * Handles update data event.
+   *
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
@@ -266,6 +271,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Updates a specific record.
+   *
    * @param id record id.
    * @param survey current survey.
    */
@@ -286,6 +292,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Updates multiple records.
+   *
    * @param ids list of record ids.
    * @param survey current survey.
    */
@@ -355,9 +362,7 @@ export class SafeFormModalComponent implements OnInit {
             }
           ]);
           if (content.length === options.files.length) {
-            options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
-            }));
+            options.callback('success', content.map((fileContent) => ({ file: fileContent.file, content: fileContent.content })));
           }
         };
         fileReader.readAsDataURL(file);
@@ -451,6 +456,7 @@ export class SafeFormModalComponent implements OnInit {
 
   /**
    * Add custom CSS classes to the survey elements.
+   *
    * @param survey current survey.
    * @param options survey options.
    */
@@ -490,6 +496,7 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {

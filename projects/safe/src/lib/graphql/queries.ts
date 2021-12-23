@@ -3,7 +3,7 @@ import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
 import { Role, User, Permission } from '../models/user.model';
 import { Record } from '../models/record.model';
-import { Notification } from '../models/notification.model';
+import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
@@ -224,7 +224,7 @@ export interface GetResourcesQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -390,7 +390,7 @@ export interface GetNotificationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -530,7 +530,7 @@ export interface GetApplicationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
@@ -650,6 +650,7 @@ query GetQueryTypes {
 // TODO: check type of __schema
 export interface GetQueryTypes {
   loading: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __schema: any;
 }
 
@@ -678,6 +679,7 @@ query GetType($name: String!) {
 
 export interface GetType {
   loading: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __type: any;
 }
 
@@ -856,6 +858,6 @@ export interface GetResourceRecordsQueryResponse {
         hasNextPage: boolean;
       };
       totalCount: number;
-    }
+    };
   };
 }

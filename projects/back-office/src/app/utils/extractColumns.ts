@@ -1,6 +1,6 @@
 /*  Get all fields from an object.
 */
-export function extractColumns(object: any, columns: any): void {
+export const extractColumns = (object: any, columns: any): void => {
     if (object.elements) {
         for (const element of object.elements) {
             if (element.type === 'panel') {
@@ -10,4 +10,4 @@ export function extractColumns(object: any, columns: any): void {
             }
         }
     }
-}
+};

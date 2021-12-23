@@ -2,7 +2,8 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
-import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse, GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
+import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse,
+  GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 
@@ -29,8 +30,8 @@ export class FormComponent implements OnInit, OnDestroy {
   public step?: Step;
 
   // === ROUTE ===
-  private routeSubscription?: Subscription;
   public isStep = false;
+  private routeSubscription?: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -98,7 +99,7 @@ export class FormComponent implements OnInit, OnDestroy {
     });
   }
 
-  onComplete(e: { completed: boolean, hideNewRecord?: boolean }): void {
+  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

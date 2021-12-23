@@ -8,13 +8,14 @@ import { GetRolesFromApplicationsQueryResponse, GET_ROLES_FROM_APPLICATIONS } fr
 
 /**
  * Inits the owner component.
- * @param Survey Survey class.
+ *
+ * @param survey Survey class.
  * @param domService Dom service.
  * @param apollo Apollo client.
  * @param dialog Dialog service.
  * @param formBuilder Form Builder service.
  */
-export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
+export const init = (survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void => {
 
     const component = {
         name: 'owner',
@@ -28,7 +29,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             choices: [] as any[],
         },
         onInit: (): void => {
-            Survey.Serializer.addProperty('owner', {
+            survey.Serializer.addProperty('owner', {
                 name: 'applications',
                 category: 'Owner properties',
                 type: 'applicationsDropdown',
@@ -43,9 +44,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                     const dropdown = domService.appendComponentToBody(SafeApplicationDropdownComponent, htmlElement);
                     const instance: SafeApplicationDropdownComponent = dropdown.instance;
                     instance.value = question.applications;
-                    instance.choice.subscribe(res => {
-                        return editor.onChanged(res);
-                    });
+                    instance.choice.subscribe(res => editor.onChanged(res));
                 }
             };
 
@@ -53,7 +52,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 .SurveyPropertyEditorFactory
                 .registerCustomEditor('applicationsDropdown', applicationEditor);
         },
-        onLoaded(question: any): void {
+        onLoaded: (question: any): void => {
             apollo.query<GetRolesFromApplicationsQueryResponse>({
                 query: GET_ROLES_FROM_APPLICATIONS,
                 variables: {
@@ -71,7 +70,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
                 }
             );
         },
-        onAfterRender(question: any, el: any): void {}
+        onAfterRender: (question: any, el: any): void => {}
     };
-    Survey.ComponentCollection.Instance.add(component);
-}
+    survey.ComponentCollection.Instance.add(component);
+};

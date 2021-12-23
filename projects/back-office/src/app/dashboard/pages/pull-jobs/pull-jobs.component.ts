@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, PullJob, SafeApplicationService, status, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { Application, Channel, PullJob, SafeApplicationService, status, SafeConfirmModalComponent,
+  SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 import { Apollo, Query, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { GetPullJobsQueryResponse, GET_API_CONFIGURATIONS, GET_PULL_JOBS } from '../../../graphql/queries';
@@ -65,6 +66,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
 
   /**
    * Handles page event.
+   *
    * @param e page event.
    */
   onPage(e: any): void {
@@ -105,8 +107,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe((value: {
-      name: string,
-      status: status,
+      name: string;
+      status: status;
       apiConfiguration: string;
       schedule?: string;
       convertTo?: string;
@@ -148,6 +150,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
 
   /**
    * Deletes a pull job.
+   *
    * @param element pull job to delete.
    */
   onDelete(element: any): void {
@@ -183,6 +186,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
 
   /**
    * Edits a pull job.
+   *
    * @param element pull job to edit.
    */
   onEdit(element: any): void {
@@ -194,8 +198,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       }
     });
     dialogRef.afterClosed().subscribe((value: {
-      name: string,
-      status: status,
+      name: string;
+      status: status;
       apiConfiguration: string;
       schedule?: string;
       convertTo?: string;

@@ -64,7 +64,7 @@ export class SubscriptionModalComponent implements OnInit {
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA) public data: {
       channels: Channel[];
-      subscription?: Subscription
+      subscription?: Subscription;
     }
   ) { }
 
@@ -125,6 +125,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
    onOpenFormSelect(e: any): void {
@@ -136,6 +137,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScrollForm(e: any): void {
@@ -176,6 +178,7 @@ export class SubscriptionModalComponent implements OnInit {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScrollApplication(e: any): void {

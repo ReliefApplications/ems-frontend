@@ -23,15 +23,16 @@ export class SafePreprocessorService {
 
   /**
    * Preprocess text to replace keyword with corresponding data
+   *
    * @param text text to preprocess.
    * @param dataset optional dataset settings.
    * @returns preprocessed string.
    */
   public async preprocess(text: string, dataset: {
-    settings: any,
-    ids: string[],
-    sortField?: string,
-    sortOrder?: string
+    settings: any;
+    ids: string[];
+    sortField?: string;
+    sortOrder?: string;
   } | null = null): Promise<string> {
     const promises: Promise<any>[] = [];
 
@@ -103,15 +104,18 @@ export class SafePreprocessorService {
 
   /**
    * Builds the body of the email to open.
+   *
    * @param items list of items to stringify
    * @param fields fields to use for query.
    * @returns body of the email.
    */
    private datasetToString(items: any[], fields: any): string {
     let body = '';
+    // eslint-disable-next-line max-len
     body += `--------------------------------------------------------------------------------------------------------------------------------\n`;
     for (const item of items) {
       body += this.datasetRowToString(item, fields);
+      // eslint-disable-next-line max-len
       body += '--------------------------------------------------------------------------------------------------------------------------------\n';
     }
     return body;
@@ -119,6 +123,7 @@ export class SafePreprocessorService {
 
   /**
    * Builds a row of the email to open.
+   *
    * @param item item to stringify.
    * @param fields fields to use for query.
    * @param tabs string indentation.
@@ -143,7 +148,7 @@ export class SafePreprocessorService {
           body += this.datasetRowToString(item ? item[field.name] : null, field.fields, tabs + '\t');
           break;
         default:
-          const rawValue = item ? item[field.name] : '';
+          const rawValue = get(item, field.name, '') || '';
           const value = rawValue && OPTION_QUESTIONS.includes(field.meta.type) ? this.getDisplayText(rawValue, field.meta) : rawValue;
           body += `${tabs}${field.label ? field.label : field.title ? field.title : field.name}:\t${value}\n`;
       }
@@ -153,6 +158,7 @@ export class SafePreprocessorService {
 
   /**
    * Populates questions with choices, with meta data.
+   *
    * @param metaFields list of meta fields.
    */
   private async populateMetaFields(metaFields: any): Promise<void> {
@@ -180,11 +186,12 @@ export class SafePreprocessorService {
 
   /**
    * Extracts choices using choicesByUrl properties
+   *
    * @param res Result of http request.
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string; value?: string; text?: string }): { value: string; text: string }[] {
     const choices = choicesByUrl.path ? [...get(res, choicesByUrl.path)] : [...res];
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? get(x, choicesByUrl.value) : x).toString(),
@@ -231,6 +238,7 @@ export class SafePreprocessorService {
 
   /**
    * Transforms stored dates into readable dates.
+   *
    * @param fields list of fields.
    * @param items list of items.
    */
@@ -247,11 +255,12 @@ export class SafePreprocessorService {
 
   /**
    * Displays text instead of values for questions with select.
+   *
    * @param meta meta data of the question.
    * @param value question value.
    * @returns text value of the question.
    */
-  private getDisplayText(value: string | string[], meta: { choices?: { value: string, text: string }[] }): string | string[] {
+  private getDisplayText(value: string | string[], meta: { choices?: { value: string; text: string }[] }): string | string[] {
     if (meta.choices) {
       if (Array.isArray(value)) {
         return meta.choices.reduce((acc: string[], x) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);

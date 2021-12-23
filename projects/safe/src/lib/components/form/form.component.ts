@@ -13,7 +13,8 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
 import { v4 as uuidv4 } from 'uuid';
-import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD, UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
+import { AddRecordMutationResponse, ADD_RECORD, EditRecordMutationResponse, EDIT_RECORD,
+  UploadFileMutationResponse, UPLOAD_FILE } from '../../graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -38,15 +39,15 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() form!: Form;
   @Input() record?: Record;
-  @Output() save: EventEmitter<{ completed: boolean, hideNewRecord?: boolean }> = new EventEmitter();
+  @Output() save: EventEmitter<{ completed: boolean; hideNewRecord?: boolean }> = new EventEmitter();
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage: { name: string, nativeName: string } = {
+  public surveyLanguage: { name: string; nativeName: string } = {
     name: 'English',
     nativeName: 'English'
   };
-  public usedLocales: Array<{ text: string, value: string }> = [];
+  public usedLocales: Array<{ text: string; value: string }> = [];
   public dropdownLocales: any[] = [];
   public surveyActive = true;
   public selectedTabIndex = 0;
@@ -208,6 +209,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Creates the record, or update it if provided.
+   *
    * @param survey Survey instance.
    */
   public complete = async () => {
@@ -296,7 +298,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         this.save.emit({ completed: true, hideNewRecord: res.data.addRecord && res.data.addRecord.form.uniqueRecord });
       }
     });
-  }
+  };
 
   /* Change language of the form.
   */
@@ -329,9 +331,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           ]);
           if (content.length === options.files.length) {
-            options.callback('success', content.map((fileContent) => {
-              return { file: fileContent.file, content: fileContent.content };
-            }));
+            options.callback('success', content.map((fileContent) => ({ file: fileContent.file, content: fileContent.content })));
           }
         };
         fileReader.readAsDataURL(file);
@@ -363,6 +363,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Add custom CSS classes to the survey elements.
+   *
    * @param survey current survey.
    * @param options survey options.
    */
@@ -403,6 +404,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {

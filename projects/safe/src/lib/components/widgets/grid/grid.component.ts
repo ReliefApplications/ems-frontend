@@ -103,6 +103,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
   /**
    * Executes sequentially actions enabled by settings for the floating button
+   *
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
@@ -173,7 +174,7 @@ export class SafeGridWidgetComponent implements OnInit {
         this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
           this.grid.selectedRows, sortField, sortOrder);
         if (options.export) {
-          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'all' });
+          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
         }
       }
 
@@ -231,6 +232,7 @@ export class SafeGridWidgetComponent implements OnInit {
   /**
    * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
    * Applies inline edition before applying modifications.
+   *
    * @param modifications list of modifications to apply.
    * @param rows rows to edit.
    * @returns Array of Promises to execute.
@@ -247,6 +249,7 @@ export class SafeGridWidgetComponent implements OnInit {
         }
       }
       delete data.id;
+      // eslint-disable-next-line no-underscore-dangle
       delete data.__typename;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -262,6 +265,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
   /**
    * Gets from input date value the three dates used for filtering.
+   *
    * @param value input date value
    * @returns calculated day, beginning of day, and ending of day
    */

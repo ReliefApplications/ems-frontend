@@ -20,7 +20,8 @@ import { SafeLayoutService } from '../../../services/layout.service';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
-import { ConvertRecordMutationResponse, CONVERT_RECORD, DELETE_RECORDS, EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
+import { ConvertRecordMutationResponse, CONVERT_RECORD, DELETE_RECORDS,
+  EditRecordMutationResponse, EDIT_RECORD } from '../../../graphql/mutations';
 import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
@@ -33,6 +34,7 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
+import { SafeGridComponent } from './grid/grid.component';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -47,7 +49,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
-  @Input() layout: GridLayout = {}; // Cached layout
+  @Input() defaultLayout: GridLayout = {}; // Cached layout
+  get layout(): any { // Current layout
+    return this.grid?.layout;
+  }
 
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
@@ -72,9 +77,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  // === TEMPLATE REFERENCE TO KENDO GRID ===
-  @ViewChild(KendoGridComponent)
-  private grid?: KendoGridComponent;
+  // === TEMPLATE REFERENCE TO GRID ===
+  @ViewChild(SafeGridComponent)
+  private grid?: SafeGridComponent;
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -110,11 +115,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
-    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query.sort?.order || '');
+    return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].dir : (this.settings.query?.sort?.order || '');
   }
 
   // === FILTERING ===
@@ -122,6 +127,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public showFilter = false;
   public search = '';
 
+  /**
+   * All active filters of the grid.
+   */
   get queryFilter(): CompositeFilterDescriptor {
     const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
@@ -129,13 +137,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.search) {
       const textFields = this.fields.filter(x => x.meta && x.meta.type === 'text');
-      const searchFilters = textFields.map(x => {
-        return {
+      const searchFilters = textFields.map(x => ({
           field: x.name,
           operator: 'contains',
           value: this.search
-        };
-      });
+        }));
       return {
         logic: 'and',
         filters: [
@@ -189,7 +195,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private safeAuthService: SafeAuthService,
     private gridService: SafeGridService
   ) {
-    this.apiUrl = environment.API_URL;
+    this.apiUrl = environment.apiUrl;
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
@@ -216,15 +222,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
-    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.layout, JSON.parse(this.settings.defaultLayout)) : true;
-    if (this.layout?.filter) {
-      this.filter = this.layout.filter;
+    this.hasLayoutChanges = this.settings.defaultLayout ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout)) : true;
+    if (this.defaultLayout?.filter) {
+      this.filter = this.defaultLayout.filter;
     }
-    if (this.layout?.sort) {
-      this.sort = this.layout.sort;
+    if (this.defaultLayout?.sort) {
+      this.sort = this.defaultLayout.sort;
     }
-    this.showFilter = !!this.layout?.showFilter;
-    // this.loadItems();
+    this.showFilter = !!this.defaultLayout?.showFilter;
     this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
@@ -235,7 +240,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
-      }
+      },
+      fetchPolicy: 'cache-and-network'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
@@ -246,8 +252,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = Object.assign({}, res.data[field]);
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
-            const layoutFields = this.layout.fields || {};
-            this.fields = this.gridService.getFields(fields, this.metaFields, layoutFields, '', { filter: true });
+            const defaultLayoutFields = this.defaultLayout.fields || {};
+            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
           }
         }
         this.getRecords();
@@ -274,6 +280,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Converts fields with date type into javascript dates.
+   *
    * @param items list of items to update.
    */
   private convertDateFields(items: any[]): void {
@@ -287,36 +294,16 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  // === INLINE EDITION ===
-  /**
-   * Cancels inline edition.
-   */
-  // public cancelHandler(): void {
-  //   this.closeEditor();
-  // }
-
-  /**
-   * Updates a record when inline edition completed.
-   */
-  // public updateCurrent(): void {
-  //   if (this.isNew) {
-  //   } else {
-  //     if (this.formGroup.dirty) {
-  //       this.update(this.editedRecordId, this.formGroup.value);
-  //     }
-  //   }
-  //   this.closeEditor();
-  // }
-
   /**
    * Finds item in data items and updates it with new values, from inline edition.
+   *
    * @param id Item id.
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
     let updatedItem = this.updatedItems.find(x => x.id === item.id);
     if (updatedItem) {
-      updatedItem = { ...updatedItem, ...value};
+      updatedItem = { ...updatedItem, ...value };
       const index = this.updatedItems.findIndex(x => x.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
@@ -347,6 +334,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Creates a list of promise to send for inline edition of records, once completed.
+   *
    * @returns List of promises to execute.
    */
   public promisedChanges(): Promise<any>[] {
@@ -424,6 +412,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Handles selection change event.
+   *
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
@@ -455,9 +444,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === GRID ACTIONS ===
   /**
    * Handles grid actions.
+   *
    * @param event Grid Action.
    */
-  public onAction(event: { action: string, item?: any, items?: any[], value?: any, field?: any }): void {
+  public onAction(event: { action: string; item?: any; items?: any[]; value?: any; field?: any }): void {
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -478,7 +468,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
       case 'details': {
-        console.log(event);
         if (event.items) {
           this.onShowDetails(event.items, event.field);
         }
@@ -554,12 +543,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the record on a read-only modal. If edit mode is enabled, can open edition modal.
+   *
    * @param item item to get details of.
    */
   public onShowDetails(items: any | any[], field?: any): void {
     const isArray = Array.isArray(items);
     if (isArray && items.length >= 2) {
-      const idsFilter = { field: 'ids', operator: 'in', value: items.map((x: { id: any; }) => x.id) };
+      const idsFilter = { field: 'ids', operator: 'in', value: items.map((x: { id: any }) => x.id) };
       // for resources, open it inside the SafeResourceGrid
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
@@ -582,7 +572,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          template: this.settings.query.template
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
@@ -598,6 +588,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the form corresponding to selected row in order to update it
+   *
    * @param items items to update.
    */
   public onUpdate(items: any[]): void {
@@ -618,6 +609,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a confirmation modal and deletes the selected records.
+   *
    * @param items items to delete.
    */
   public onDelete(items: any[]): void {
@@ -649,6 +641,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a dialog component which provide tools to convert the selected record
+   *
    * @param items items to convert to another form.
    */
   public onConvert(items: any[]): void {
@@ -659,7 +652,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         record: items[0].id ? items[0].id : items[0]
       },
     });
-    dialogRef.afterClosed().subscribe((value: { targetForm: Form, copyRecord: boolean }) => {
+    dialogRef.afterClosed().subscribe((value: { targetForm: Form; copyRecord: boolean }) => {
       if (value) {
         const promises: Promise<any>[] = [];
         for (const item of items) {
@@ -683,6 +676,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens the history of the record on the right side of the screen.
+   *
    * @param id id of record to get history of.
    */
   public onViewHistory(item: any): void {
@@ -707,10 +701,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Opens a modal to confirm reversion of a record.
+   *
    * @param record record to revert.
    * @param version id of the target version.
    */
   private confirmRevertDialog(record: any, version: any): void {
+    // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
     const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -742,6 +738,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === EXPORT ===
   /**
    * Exports selected records to excel / csv file.
+   *
    * @param items items to download.
    * @param type type of export file.
    */
@@ -757,18 +754,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       if (this.gridData.data.length > 0) {
         ids = [this.gridData.data[0].id];
       } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
+        this.snackBar.openSnackBar('Export failed: grid is empty.', { error: true });
         return;
       }
     }
+
     // Builds the request body with all the useful data
+    const currentLayout = this.layout;
     const body = {
       exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }]} : this.queryFilter,
+        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,
-      ...e.fields === 'visible' && { fields: this.fields.filter(x => !x.hidden).map(x => x.name) }
+      ...e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields)
+          .filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({ name: x.field, label: x.title }))
+      }
     };
 
     // Builds and make the request
@@ -784,6 +788,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   /**
    * Detects pagination events and update the items loaded.
+   *
    * @param event Page change event.
    */
   public onPageChange(event: PageChangeEvent): void {
@@ -807,7 +812,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             return Object.assign({}, prev, {
               [field]: {
                 edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount
+                totalCount: fetchMoreResult[field].totalCount,
               }
             });
           }
@@ -820,21 +825,21 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === FILTERING ===
   /**
    *  Toggles quick filter visibility.
+   *
    * @param showFilter Show filter event.
    */
   public onShowFilterChange(showFilter: boolean): void {
     this.showFilter = showFilter;
-    this.layout.showFilter = this.showFilter;
     this.saveLocalLayout();
   }
 
   /**
    * Detects filtering events and update the items loaded.
+   *
    * @param filter composite filter created by Kendo.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.layout.filter = this.filter;
     this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
@@ -842,6 +847,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Handles search event.
+   *
    * @param search Search event.
    */
   public onSearchChange(search: string): void {
@@ -854,11 +860,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects sort events and update the items loaded.
+   *
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
     this.sort = sort;
-    this.layout.sort = sort;
     this.saveLocalLayout();
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
@@ -867,10 +873,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === LAYOUT ===
   /**
    * Detects fields changes.
+   *
    * @param fields Fields event.
    */
-  onColumnChange(fields: any[]): void {
-    this.layout.fields = fields;
+  onColumnChange(): void {
     this.saveLocalLayout();
   }
 
@@ -895,7 +901,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Reset the currently cached layout to the default one
    */
-   resetDefaultLayout(): void {
+  resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
 }

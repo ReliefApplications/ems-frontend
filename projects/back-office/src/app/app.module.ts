@@ -19,21 +19,32 @@ import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 
 // MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+import {
+  MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService,
+  MsalInterceptorConfiguration, MSAL_INTERCEPTOR_CONFIG, MSAL_INSTANCE, MsalGuardConfiguration,
+  MSAL_GUARD_CONFIG, MsalModule
+} from '@azure/msal-angular';
+import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { BehaviorSubject } from 'rxjs';
+import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+localStorage.setItem('loaded', 'false');
 
-export const SCHEMA_UPDATE = new BehaviorSubject<boolean>(false);
+const REFRESH = new BehaviorSubject<boolean>(false);
 
-/*  Configuration of the Apollo client.
-*/
-export function provideApollo(httpLink: HttpLink): any {
+/**
+ * Configuration of the Apollo client.
+ *
+ * @param httpLink Apollo http link
+ * @returns void
+ */
+export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'charset=utf-8'
     }
   }));
@@ -44,24 +55,28 @@ export function provideApollo(httpLink: HttpLink): any {
     const token = localStorage.getItem('msal.idtoken');
     return {
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: `Bearer ${token}`
       }
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
         authToken: localStorage.getItem('msal.idtoken')
       },
       connectionCallback: (error) => {
-        if (!error) {
-          SCHEMA_UPDATE.next(true);
+        if (localStorage.getItem('loaded') === 'true') {
+          // location.reload();
+          REFRESH.next(true);
+          localStorage.setItem('loaded', 'false');
         }
+        localStorage.setItem('loaded', 'true');
       }
     }
   });
@@ -102,7 +117,72 @@ export function provideApollo(httpLink: HttpLink): any {
       }
     }
   };
-}
+};
+
+const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+/**
+ * Logger for dev purpose.
+ *
+ * @param logLevel MSAL log level.
+ * @param message MSAL message.
+ */
+export const loggerCallback = (logLevel: LogLevel, message: string): void => {
+  console.log(message);
+};
+
+/**
+ * Configures MSAL instance.
+ *
+ * @returns MSAL Client Application.
+ */
+export const msalInstanceFactory = (): IPublicClientApplication => new PublicClientApplication({
+  auth: {
+    clientId: environment.clientId,
+    authority: environment.authority,
+    redirectUri: environment.redirectUrl,
+    postLogoutRedirectUri: environment.postLogoutRedirectUri
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+  },
+  system: {
+    loggerOptions: {
+      // Can be enabled for dev purpose
+      // loggerCallback,
+      logLevel: LogLevel.Info,
+      piiLoggingEnabled: false
+    }
+  }
+});
+
+/**
+ * Configures MSAL interceptor.
+ *
+ * @returns MSAL interceptor configuration.
+ */
+export const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  protectedResourceMap.set(`${environment.apiUrl}/*`, [`${environment.clientId}/.default`]);
+  return {
+    interactionType: InteractionType.Redirect,
+    protectedResourceMap
+  };
+};
+
+/**
+ * Configures MSAL guard.
+ *
+ * @returns MSAL guard configuration.
+ */
+export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
+  interactionType: InteractionType.Redirect,
+  authRequest: {
+    scopes: ['user.read', 'openid', 'profile']
+  },
+  loginFailedRoute: '/auth'
+});
 
 @NgModule({
   declarations: [
@@ -116,36 +196,10 @@ export function provideApollo(httpLink: HttpLink): any {
     ReactiveFormsModule,
     MatSnackBarModule,
     BrowserAnimationsModule,
-    // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-      {
-        popUp: false,
-        consentScopes: [
-          'user.read',
-          'openid',
-          'profile',
-        ],
-        protectedResourceMap: [
-          ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-        ],
-        extraQueryParameters: {}
-      }),
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatDialogModule,
+    MsalModule
   ],
   providers: [
     {
@@ -162,17 +216,33 @@ export function provideApollo(httpLink: HttpLink): any {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true
-    }
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: msalInstanceFactory
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: msalGuardConfigFactory
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: msalInterceptorConfigFactory
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {
-    SCHEMA_UPDATE.asObservable().subscribe((refresh) => {
-      if (refresh) {
-        this.apollo.client.cache.reset();
-        SCHEMA_UPDATE.next(false);
-      }
-    });
+  constructor(
+    private apollo: Apollo
+  ) {
+    // REFRESH.asObservable().subscribe((res) => {
+    //   console.log('Schema generated without cache reloading.');
+    // });
   }
 }

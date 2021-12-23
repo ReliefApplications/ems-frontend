@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
@@ -17,7 +17,9 @@ import { SafeGridService } from '../../../../services/grid.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
+import { GridLayout } from '../models/grid-layout.model';
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
@@ -40,7 +42,7 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
   ]
 })
-export class SafeGridComponent implements OnInit {
+export class SafeGridComponent implements OnInit, AfterViewInit {
 
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -80,7 +82,7 @@ export class SafeGridComponent implements OnInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
-  get columnMenu(): { columnChooser: boolean, filter: boolean } {
+  get columnMenu(): { columnChooser: boolean; filter: boolean } {
     return {
       columnChooser: false,
       filter: !this.showFilter
@@ -141,9 +143,15 @@ export class SafeGridComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    // Wait for columns to be reordered before updating the layout
+    this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
+  }
+
   // === DATA ===
   /**
    * Returns property value in object from path.
+   *
    * @param item Item to get property of.
    * @param path Path of the property.
    * @returns Value of the property.
@@ -165,6 +173,7 @@ export class SafeGridComponent implements OnInit {
   // === FILTER ===
   /**
    * Handles filter change event.
+   *
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
@@ -187,6 +196,7 @@ export class SafeGridComponent implements OnInit {
 
   /**
    * Searchs through all text columns.
+   *
    * @param search text input value.
    */
   public onSearch(search: any): void {
@@ -196,6 +206,7 @@ export class SafeGridComponent implements OnInit {
   // === SORT ===
   /**
    * Handles sort change event.
+   *
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
@@ -208,6 +219,7 @@ export class SafeGridComponent implements OnInit {
   // === PAGINATION ===
   /**
    * Handles page change event.
+   *
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
@@ -221,6 +233,7 @@ export class SafeGridComponent implements OnInit {
   // === SELECT ===
   /**
    * Handles selection change event.
+   *
    * @param selection Selection event.
    */
   public onSelectionChange(selection: SelectionEvent): void {
@@ -237,6 +250,7 @@ export class SafeGridComponent implements OnInit {
 
   /**
    * Returns selected status of a row.
+   *
    * @param row Row to test.
    * @returns selected status of the row.
    */
@@ -245,79 +259,61 @@ export class SafeGridComponent implements OnInit {
   // === LAYOUT ===
   /**
    * Set and emit new grid configuration after column reorder event.
+   *
    * @param e ColumnReorderEvent
    */
   onColumnReorder(e: ColumnReorderEvent): void {
-    if ((e.oldIndex !== e.newIndex)) {
-      this.columnsOrder = this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-        .map((x: any) => x.field) || [];
-      const tempFields: any[] = [];
-      let j = 0;
-      const oldIndex = e.oldIndex;
-      const newIndex = e.newIndex;
-      for (let i = 0; i < this.columnsOrder.length; i++) {
-        if (i === newIndex) {
-          if (oldIndex < newIndex) {
-            tempFields[j] = this.columnsOrder[i];
-            j++;
-            tempFields[j] = this.columnsOrder[oldIndex];
-          }
-          if (oldIndex > newIndex) {
-            tempFields[j] = this.columnsOrder[oldIndex];
-            j++;
-            tempFields[j] = this.columnsOrder[i];
-          }
-          j++;
-        }
-        else if (i !== oldIndex) {
-          tempFields[j] = this.columnsOrder[i];
-          j++;
-        }
-      }
-      this.columnsOrder = tempFields.filter(x => x !== undefined);
-      this.setColumnsConfig();
-    }
+    this.columnChange.emit();
   }
 
   /**
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.setColumnsConfig();
+    this.columnChange.emit();
   }
 
   /**
-   * Generates the cached fields config from the grid columns.
+   * Returns the visible columns of the grid.
    */
-  private setColumnsConfig(): void {
-    if (this.admin) {
-      const fields = this.grid?.columns.toArray().filter((x: any) => x.field).reduce((obj, c: any) => {
-        return {
+  get visibleFields(): any {
+    return this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).
+      filter((x: any) => x.field).reduce((obj, c: any) => ({
           ...obj,
           [c.field]: {
             field: c.field,
             title: c.title,
             width: c.width,
             hidden: c.hidden,
-            order: this.columnsOrder.findIndex((x) => x === c.field)
+            order: c.orderIndex
           }
-        };
-      }, {});
-      this.columnChange.emit(fields);
-    }
+        }), {});
+  }
+
+  /**
+   * Returns the current grid layout.
+   */
+  get layout(): GridLayout {
+    return {
+      fields: this.visibleFields,
+      sort: this.sort,
+      filter: this.filter,
+      showFilter: this.showFilter
+    };
   }
 
   // === INLINE EDITION ===
 
   /**
    * Detects cell click event and opens row form if user is authorized.
+   *
    * @param param0 click event.
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
@@ -342,10 +338,11 @@ export class SafeGridComponent implements OnInit {
 
   /**
    * Detects document click to save record if outside the inline edition form.
+   *
    * @param e click event.
    */
   private onDocumentClick(e: any): void {
-    if (this.formGroup && this.formGroup.valid &&
+    if (!this.editing && this.formGroup && this.formGroup.valid &&
       !matches(e.target, '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container')) {
       if (this.formGroup.dirty) {
         this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
@@ -370,6 +367,10 @@ export class SafeGridComponent implements OnInit {
    * Saves edition.
    */
   public onSave(): void {
+    // Closes the editor, and saves the value locally
+    if (this.formGroup.dirty) {
+      this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
@@ -385,6 +386,7 @@ export class SafeGridComponent implements OnInit {
   // === EXPORT ===
   /**
    * Downloads file of record.
+   *
    * @param file File to download.
    */
   public onDownload(file: any): void {
@@ -413,6 +415,7 @@ export class SafeGridComponent implements OnInit {
   // === UTILITIES ===
   /**
    * Checks if element overflows
+   *
    * @param e Component resizing event.
    * @returns True if overflows.
    */
@@ -422,6 +425,7 @@ export class SafeGridComponent implements OnInit {
 
   /**
    * Expands text in a full window modal.
+   *
    * @param item Item to display data of.
    * @param rowTitle field name.
    */

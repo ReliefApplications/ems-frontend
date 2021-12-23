@@ -11,7 +11,7 @@ export interface Channel {
 
 export interface ChannelDisplay extends Channel {
     subscribedApplications?: {
-        name: string,
-        roles: Role[]
+        name: string;
+        roles: Role[];
     }[];
 }

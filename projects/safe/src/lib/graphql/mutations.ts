@@ -575,8 +575,10 @@ export interface AddSubscriptionMutationResponse {
 
 // === EDIT SUBSCRIPTION ===
 export const EDIT_SUBSCRIPTION = gql`
-mutation editSubscription($applicationId: ID!, $routingKey: String!, $title: String!, $convertTo: String!, $channel: String!,  $previousSubscription: String!, ) {
-  editSubscription(applicationId: $applicationId, routingKey: $routingKey, title: $title, convertTo: $convertTo, channel: $channel, previousSubscription: $previousSubscription) {
+mutation editSubscription($applicationId: ID!, $routingKey: String!, $title: String!,
+  $convertTo: String!, $channel: String!,  $previousSubscription: String!, ) {
+  editSubscription(applicationId: $applicationId, routingKey: $routingKey, title: $title,
+    convertTo: $convertTo, channel: $channel, previousSubscription: $previousSubscription) {
     routingKey
     title
     convertTo {

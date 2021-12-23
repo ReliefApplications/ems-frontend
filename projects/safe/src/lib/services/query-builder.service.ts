@@ -30,11 +30,14 @@ export class QueryBuilderService {
     private apollo: Apollo,
     private formBuilder: FormBuilder
   ) {
-    this.apollo.watchQuery<GetQueryTypes>({
+    this.apollo.query<GetQueryTypes>({
       query: GET_QUERY_TYPES,
-    }).valueChanges.subscribe((res) => {
+    }).subscribe((res) => {
+      // eslint-disable-next-line no-underscore-dangle
       this.availableQueries.next(res.data.__schema.queryType.fields.filter((x: any) => x.name.startsWith('all')));
+      // eslint-disable-next-line no-underscore-dangle
       this.availableTypes.next(res.data.__schema.types);
+      // eslint-disable-next-line no-underscore-dangle
       this.userFields = res.data.__schema.types.find((x: any) => x.name === 'User').fields.filter((x: any) => USER_FIELDS.includes(x.name));
     });
   }
@@ -166,7 +169,8 @@ export class QueryBuilderService {
       `;
       return this.apollo.query<any>({
         query,
-        variables: {}
+        variables: {},
+        fetchPolicy: 'cache-first'
       });
     } else {
       return null;

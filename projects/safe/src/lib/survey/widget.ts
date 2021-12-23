@@ -12,28 +12,24 @@ import { SafeRecordDropdownComponent } from '../components/record-dropdown/recor
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
 
 
-function addZero(i: any): string {
+const addZero = (i: any): string => {
   if (i < 10) {
     i = '0' + i;
   }
   return i;
-}
+};
 
-export function init(Survey: any, domService: DomService, dialog: MatDialog, environment: any): void {
+export const init = (survey: any, domService: DomService, dialog: MatDialog, environment: any): void => {
   const widget = {
     name: 'custom-widget',
-    widgetIsLoaded(): boolean {
-      return true;
-    },
-    isFit(question: any): any {
-      return true;
-    },
-    init(): void {
-      Survey.Serializer.addProperty('question', {
+    widgetIsLoaded: (): boolean => true,
+    isFit: (question: any): any => true,
+    init: (): void => {
+      survey.Serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general'
       });
-      Survey.Serializer.addProperty('comment', {
+      survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
         dependsOn: ['readOnly'],
@@ -47,8 +43,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           }
         }
       });
-      Survey.Serializer.removeProperty('expression', 'readOnly');
-      Survey.Serializer.addProperty('expression', {
+      survey.Serializer.removeProperty('expression', 'readOnly');
+      survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
         visibleIndex: 6,
@@ -57,13 +53,13 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         required: true,
       });
       // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-      Survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
-        if (sender.url.includes(environment.API_URL)) {
+      survey.ChoicesRestfull.onBeforeSendRequest = (sender: ChoicesRestful, options: { request: XMLHttpRequest }) => {
+        if (sender.url.includes(environment.apiUrl)) {
           const token = localStorage.getItem('msal.idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
       };
-      Survey.Serializer.addProperty('survey', {
+      survey.Serializer.addProperty('survey', {
         name: 'onCompleteExpression:expression',
         type: 'expression',
         visibleIndex: 350,
@@ -71,7 +67,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       });
     },
     isDefaultRender: true,
-    afterRender(question: any, el: any): void {
+    afterRender: (question: any, el: any): void => {
       // Correction of date inputs
       if (question.value && ['date', 'datetime', 'datetime-local', 'time'].includes(question.inputType)) {
         const date = new Date(question.value);
@@ -157,7 +153,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
 
           el.parentElement.insertBefore(actionsButtons, el);
 
-          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -169,11 +165,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('canAddNew',
+          question.registerFunctionOnPropertyValueChanged('addRecord',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -195,7 +191,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
-          // actionsButtons.style.display = ((!question.canAddNew || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 
           question.registerFunctionOnPropertyValueChanged('gridFieldsSettings',
             () => {
@@ -207,11 +203,11 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
             });
           question.registerFunctionOnPropertyValueChanged('addTemplate',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
-          question.registerFunctionOnPropertyValueChanged('canAddNew',
+          question.registerFunctionOnPropertyValueChanged('addRecord',
             () => {
-              addBtn.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+              addBtn.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
             });
         }
       }
@@ -219,9 +215,8 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       if (question.inputType === 'url') {
 
         // Generate the dynamic component with its parameters
-        let instance: SafeButtonComponent;
         const button = domService.appendComponentToBody(SafeButtonComponent, el.parentElement);
-        instance = button.instance;
+        const instance: SafeButtonComponent = button.instance;
         instance.isIcon = true;
         instance.icon = 'open_in_new';
         instance.size = ButtonSize.SMALL;
@@ -242,20 +237,22 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         el.parentElement.title = 'The URL should start with "http://" or "https://"';
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
-        const URLtester = document.createElement('a');
-        URLtester.href = el.value;
-        (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+        const urlTester = document.createElement('a');
+        urlTester.href = el.value;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        (urlTester.host && urlTester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
 
-        question.survey.onValueChanged.add((survey: any, options: any) => {
+        question.survey.onValueChanged.add((_: any, options: any) => {
           if (options.question.name === question.name) {
-            URLtester.href = el.value;
-            (URLtester.host && URLtester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
+            urlTester.href = el.value;
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            (urlTester.host && urlTester.host !== window.location.host) ? instance.disabled = false : instance.disabled = true;
           }
         });
 
         button.instance.emittedEventSubject.subscribe((eventType: string) => {
-          if (eventType === 'click' && URLtester.host && URLtester.host !== window.location.host) {
-            window.open(URLtester.href, '_blank', 'noopener,noreferrer');
+          if (eventType === 'click' && urlTester.host && urlTester.host !== window.location.host) {
+            window.open(urlTester.href, '_blank', 'noopener,noreferrer');
           }
         });
       }
@@ -298,7 +295,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
   const buildAddButton = (question: any, multiselect: boolean, gridComponent?: SafeCoreGridComponent): any => {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new record';
-    if (question.canAddNew && question.addTemplate) {
+    if (question.addRecord && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
           data: {
@@ -337,20 +334,19 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
         });
       };
     }
-    addButton.style.display = (question.canAddNew && question.addTemplate) ? '' : 'none';
+    addButton.style.display = (question.addRecord && question.addTemplate) ? '' : 'none';
     return addButton;
   };
 
   const buildRecordDropdown = (question: any, el: any): any => {
-    let instance: SafeRecordDropdownComponent;
     const dropdown = domService.appendComponentToBody(SafeRecordDropdownComponent, el.parentElement);
-    instance = dropdown.instance;
+    const instance: SafeRecordDropdownComponent = dropdown.instance;
     instance.resourceId = question.resource;
     instance.filter = question.filters;
     instance.field = question.displayField;
     instance.placeholder = question.placeholder;
     instance.record = question.value;
-    question.survey.onValueChanged.add((survey: any, options: any) => {
+    question.survey.onValueChanged.add((_: any, options: any) => {
       if (options.name === question.name) {
         instance.record = question.value;
       }
@@ -365,7 +361,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
       const grid = domService.appendComponentToBody(SafeCoreGridComponent, el.parentElement);
       instance = grid.instance;
       setGridInputs(instance, question);
-      question.survey.onValueChanged.add((survey: any, options: any) => {
+      question.survey.onValueChanged.add((_: any, options: any) => {
         if (options.name === question.name) {
           setGridInputs(instance, question);
         }
@@ -377,6 +373,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
 
   /**
    * Sets the inputs of the grid.
+   *
    * @param instance grid instance.
    * @param question survey question.
    */
@@ -398,7 +395,7 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     if (!question.readOnlyGrid) {
       Object.assign(settings, {
         actions: {
-          delete: question.delete,
+          delete: question.canDelete,
           history: question.history,
           convert: question.convert,
           update: question.update,
@@ -410,5 +407,5 @@ export function init(Survey: any, domService: DomService, dialog: MatDialog, env
     instance.ngOnChanges();
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
-}
+  survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
+};

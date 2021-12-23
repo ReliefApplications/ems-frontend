@@ -5,17 +5,18 @@ import {
 } from '../../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
-import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
+import { ConfigDisplayGridFieldsModalComponent }
+  from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom.service';
 
-export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
+export const init = (survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void => {
 
   const getResourceById = (data: {
-    id: string, filters?:
-      { field: string, operator: string, value: string }[]
+    id: string; filters?:
+      { field: string; operator: string; value: string }[];
   }) => apollo.query<GetResourceByIdQueryResponse>({
     query: GET_RESOURCE_BY_ID,
     variables: {
@@ -24,7 +25,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
     }
   });
 
-  let filters: { field: string, operator: string, value: string }[] = [{
+  let filters: { field: string; operator: string; value: string }[] = [{
     field: '',
     operator: '',
     value: ''
@@ -47,7 +48,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
     filters: [] as any[],
     resourceFieldsName: [] as any[],
     onInit(): void {
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
         type: 'resourceDropdown',
@@ -61,9 +62,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           const dropdown = domService.appendComponentToBody(SafeResourceDropdownComponent, htmlElement);
           const instance: SafeResourceDropdownComponent = dropdown.instance;
           instance.resource = question.resource;
-          instance.choice.subscribe(res => {
-            return editor.onChanged(res);
-          });
+          instance.choice.subscribe(res => editor.onChanged(res));
         }
       };
 
@@ -71,7 +70,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         .SurveyPropertyEditorFactory
         .registerCustomEditor('resourceDropdown', resourceEditor);
 
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'displayField',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -101,7 +100,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
       });
 
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'relatedName',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -118,7 +117,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       });
 
       // Build set available grid fields button
-      Survey
+      survey
         .JsonObject
         .metaData
         .addProperty('resource', {
@@ -167,7 +166,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         .SurveyPropertyEditorFactory
         .registerCustomEditor('resourceFields', availableFieldsEditor);
 
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'test service',
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
@@ -194,8 +193,8 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         }
       });
-      Survey.Serializer.addProperty('resource', {
-        name: 'canAddNew:boolean',
+      survey.Serializer.addProperty('resource', {
+        name: 'addRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: (obj: any) => {
@@ -208,7 +207,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
@@ -223,12 +222,12 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj || !obj.canAddNew) {
+          if (!obj || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -237,7 +236,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource && obj.canAddNew) {
+          if (obj.resource && obj.addRecord) {
             getResourceById({id: obj.resource}).subscribe(response => {
               const serverRes = response.data.resource.forms || [];
               const res: any[] = [];
@@ -250,16 +249,16 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         },
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'placeholder',
         category: 'Custom Questions'
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
-        dependsOn: ['canAddNew', 'resource'],
+        dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.canAddNew) {
+          if (!obj.resource || !obj.addRecord) {
             return false;
           } else {
             return true;
@@ -267,7 +266,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 8
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
@@ -292,7 +291,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           }
         },
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
@@ -300,7 +299,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         visibleIf: (obj: any) => obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
@@ -320,7 +319,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
@@ -337,7 +336,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         },
         visibleIndex: 3
       });
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
           category: 'Filter by Questions',
           type: 'selectResourceText',
           name: 'selectResourceText',
@@ -346,7 +345,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
           visibleIf: (obj: any) => !obj.resource || !obj.displayField,
           visibleIndex: 3
         },
-        Survey.Serializer.addProperty('resource', {
+        survey.Serializer.addProperty('resource', {
             name: 'gridFieldsSettings',
             dependsOn: ['resource'],
             visibleIf: (obj: any) => {
@@ -366,7 +365,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       };
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor('selectResourceText', selectResourceText);
 
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
           category: 'Filter by Questions',
           type: 'customFilter',
           name: 'customFilterEl',
@@ -401,7 +400,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
 
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor('customFilter', customFilterElements);
 
-      Survey.Serializer.addProperty('resource', {
+      survey.Serializer.addProperty('resource', {
           category: 'Filter by Questions',
           type: 'text',
           name: 'customFilter',
@@ -450,7 +449,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
-            question.survey.onValueChanged.add((survey: any, options: any) => {
+            question.survey.onValueChanged.add((_: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (!!options.value || options.question.customQuestion && options.question.customQuestion.name) {
                   setAdvanceFilter(options.value, question);
@@ -467,7 +466,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
                 const quest = objElement.value.substr(1, objElement.value.length - 2);
                 objElement.value = '';
-                question.survey.onValueChanged.add((survey: any, options: any) => {
+                question.survey.onValueChanged.add((_: any, options: any) => {
                   if (options.question.name === quest) {
                     if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
@@ -488,12 +487,12 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
-        question.canAddNew = false;
+        question.addRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
     },
-    populateChoices(question: any): void {
+    populateChoices: (question: any): void => {
       if (question.resource) {
         getResourceById({id: question.resource, filters}).subscribe((response) => {
           const serverRes = response.data.resource.records?.edges?.map(x => x.node) || [];
@@ -507,11 +506,11 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
         question.contentQuestion.choices = [];
       }
     },
-    onAfterRender(question: any, el: any): void {
+    onAfterRender: (question: any, el: any): void => {
       // const element = el.getElementsByClassName('sv_select_wrapper')[0];
       // element.style.display = 'none';
     },
-    convertFromRawToFormGroup(gridSettingsRaw: any): FormGroup | null {
+    convertFromRawToFormGroup: (gridSettingsRaw: any): FormGroup | null => {
       if (!gridSettingsRaw.fields) {
         return null;
       }
@@ -520,7 +519,7 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       return auxForm;
     }
   };
-  Survey.ComponentCollection.Instance.add(component);
+  survey.ComponentCollection.Instance.add(component);
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
@@ -534,4 +533,4 @@ export function init(Survey: any, domService: DomService, apollo: Apollo, dialog
       });
     }
   };
-}
+};

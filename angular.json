@@ -19,7 +19,8 @@
             "production": {
               "tsConfig": "projects/safe/tsconfig.lib.prod.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -30,14 +31,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/safe/tsconfig.lib.json",
-              "projects/safe/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/safe/**/*.ts",
+              "projects/safe/**/*.html"
             ]
           }
         }
@@ -115,7 +113,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -142,7 +140,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -169,7 +167,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -198,7 +196,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -227,7 +225,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -235,19 +233,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "back-office:build"
+            "browserTarget": "back-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "back-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -280,29 +288,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/back-office/tsconfig.app.json",
-              "projects/back-office/tsconfig.spec.json",
-              "projects/back-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/back-office/**/*.ts",
+              "projects/back-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/back-office/e2e/protractor.conf.js",
-            "devServerTarget": "back-office:serve"
+            "protractorConfig": "projects/back-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "back-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "back-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -378,7 +385,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -405,7 +412,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -432,7 +439,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -459,7 +466,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -486,7 +493,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -494,19 +501,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "front-office:build"
+            "browserTarget": "front-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "front-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -535,29 +552,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/front-office/tsconfig.app.json",
-              "projects/front-office/tsconfig.spec.json",
-              "projects/front-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/front-office/**/*.ts",
+              "projects/front-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/front-office/e2e/protractor.conf.js",
-            "devServerTarget": "front-office:serve"
+            "protractorConfig": "projects/front-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "front-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "front-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -631,7 +647,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -639,19 +655,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "web-element:build"
+            "browserTarget": "web-element:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "web-element:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -679,29 +705,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/web-element/tsconfig.app.json",
-              "projects/web-element/tsconfig.spec.json",
-              "projects/web-element/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/web-element/**/*.ts",
+              "projects/web-element/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/web-element/e2e/protractor.conf.js",
-            "devServerTarget": "web-element:serve"
+            "protractorConfig": "projects/web-element/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "web-element:serve:production"
+            },
+            "development": {
+              "devServerTarget": "web-element:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }

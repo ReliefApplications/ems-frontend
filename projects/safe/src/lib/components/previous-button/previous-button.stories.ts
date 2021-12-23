@@ -18,11 +18,11 @@ export default {
 } as Meta;
 
 
-const Template: Story<SafePreviousButtonComponent> = args => ({
+const TEMPLATE: Story<SafePreviousButtonComponent> = args => ({
   props: {
     ...args
   }
 });
 
-export const Default = Template.bind({});
-Default.args = {};
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {};
