@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
 import { GetFormByIdQueryResponse, GetPageByIdQueryResponse, GetStepByIdQueryResponse,
-  GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from '../../../graphql/queries';
+  GET_FORM_BY_ID, GET_PAGE_BY_ID, GET_STEP_BY_ID } from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
 

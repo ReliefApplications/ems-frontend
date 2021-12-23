@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../../graphql/queries';
+import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from './graphql/queries';
 
 /**
  * Workflow page.
