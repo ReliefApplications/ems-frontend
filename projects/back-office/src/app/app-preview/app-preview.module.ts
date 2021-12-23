@@ -5,6 +5,10 @@ import { AppPreviewComponent } from './app-preview.component';
 import { PreviewToolbarModule } from './components/preview-toolbar/preview-toolbar.module';
 import { SafeLayoutModule } from '@safe/builder';
 
+/**
+ * Main Module of Application preview capacity.
+ * Duplicates most features of the front-office when executed.
+ */
 @NgModule({
   declarations: [AppPreviewComponent],
   imports: [

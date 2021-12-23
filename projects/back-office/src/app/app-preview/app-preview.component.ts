@@ -4,6 +4,9 @@ import { Application, ContentType, Permissions, SafeApplicationService } from '@
 import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 
+/**
+ * Main component of Application preview capacity.
+ */
 @Component({
   selector: 'app-app-preview',
   templateUrl: './app-preview.component.html',
@@ -11,19 +14,35 @@ import { PreviewService } from '../services/preview.service';
 })
 export class AppPreviewComponent implements OnInit, OnDestroy {
 
-  // === HEADER TITLE ===
+  /**
+   * Title of application.
+   */
   public title = '';
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
+  /**
+   * Nav Groups of the application.
+   */
   public navGroups: any[] = [];
-
-  // === APPLICATION ===
+  /**
+   * Current application.
+   */
   public application: Application | null = null;
+  /**
+   * Role to preview with.
+   */
+  public role = '';
+  /**
+   * Subscription to application service.
+   */
   private applicationSubscription?: Subscription;
 
-  // === PREVIEWED ROLE ID ===
-  public role = '';
-
+  /**
+   * Main component of Application preview capacity.
+   *
+   * @param route Current route
+   * @param applicationService Shared application service
+   * @param previewService Custom preview service
+   * @param router Angular Router
+   */
   constructor(
     private route: ActivatedRoute,
     private applicationService: SafeApplicationService,
@@ -66,10 +85,10 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
           {
             name: 'Pages',
             navItems: application.pages?.filter(x => x.content).map(x => ({
-                name: x.name,
-                path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type || '')
-              }))
+              name: x.name,
+              path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
+              icon: this.getNavIcon(x.type || '')
+            }))
           },
           {
             name: 'Administration',
@@ -81,7 +100,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
           if (this.router.url.endsWith('/') || (this.application && (application.id !== this.application?.id)) || !firstPage) {
             if (firstPage) {
               this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
-              { relativeTo: this.route });
+                { relativeTo: this.route });
             } else {
               this.router.navigate([`./`], { relativeTo: this.route });
             }
@@ -111,6 +130,9 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Deletes all subscriptions of the component.
+   */
   ngOnDestroy(): void {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
