@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { Application } from '../../models/application.model';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-applications-summary',
@@ -18,7 +17,7 @@ export class SafeApplicationsSummaryComponent implements OnInit {
   @Output() clone = new EventEmitter<Application>();
   @Output() editAccess = new EventEmitter<Application>();
 
-  constructor(public translate: TranslateService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

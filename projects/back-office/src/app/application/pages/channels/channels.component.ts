@@ -4,7 +4,6 @@ import { Application, Channel, ChannelDisplay, Role, SafeApplicationService, Saf
 import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-channels',
@@ -24,8 +23,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationService: SafeApplicationService,
-    public dialog: MatDialog,
-    public translate: TranslateService
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {

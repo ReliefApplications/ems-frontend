@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Application, SafeApplicationService, PositionAttributeCategory, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-position',
@@ -20,8 +19,7 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    private applicationService: SafeApplicationService,
-    public translate: TranslateService
+    private applicationService: SafeApplicationService
   ) { }
 
   ngOnInit(): void {

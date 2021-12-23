@@ -29,7 +29,6 @@ import { SafeLayoutService } from '../../services/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-form',
@@ -82,8 +81,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
-    private formBuilderService: SafeFormBuilderService,
-    public translate: TranslateService
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
   }

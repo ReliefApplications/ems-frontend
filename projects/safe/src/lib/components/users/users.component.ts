@@ -19,7 +19,6 @@ import { SafeInviteUsersComponent } from './components/invite-users/invite-users
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-users',
@@ -53,8 +52,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService,
-    public translate: TranslateService
+    private downloadService: SafeDownloadService
   ) { }
 
   ngOnInit(): void {

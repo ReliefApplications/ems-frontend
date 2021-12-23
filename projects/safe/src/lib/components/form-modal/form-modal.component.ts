@@ -28,7 +28,6 @@ import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Interface of Dialog data.
@@ -82,8 +81,7 @@ export class SafeFormModalComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
-    private formBuilderService: SafeFormBuilderService,
-    public translate: TranslateService
+    private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
   }
