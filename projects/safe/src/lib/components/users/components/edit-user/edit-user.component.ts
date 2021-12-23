@@ -7,7 +7,6 @@ import { Role, User } from '../../../../models/user.model';
 interface DialogData {
   user: User;
   availableRoles: Role[];
-  multiple: boolean;
   positionAttributeCategories?: PositionAttributeCategory[];
 }
 
@@ -25,6 +24,8 @@ export class SafeEditUserComponent implements OnInit {
     return this.userForm.get('positionAttributes') ? this.userForm.get('positionAttributes') as FormArray : null;
   }
 
+  public positionAttributeCategories?: PositionAttributeCategory[];
+
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditUserComponent>,
@@ -34,22 +35,20 @@ export class SafeEditUserComponent implements OnInit {
   /*  Load the roles and build the form.
   */
   ngOnInit(): void {
-    if (this.data.multiple) {
-      this.userForm = this.formBuilder.group({
-        roles: [this.data.user.roles ? this.data.user.roles.map(x => x.id) : null]
-      });
-    } else {
-      this.userForm = this.formBuilder.group({
-        role: this.data.user?.roles ? this.data.user.roles[0].id : '',
-        ...this.data.positionAttributeCategories &&
-        {
-          positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => this.formBuilder.group({
-              value: [''],
-              category: [x.id, Validators.required]
-            })))
-        }
-      });
+    console.log(this.data);
+    if (this.data.positionAttributeCategories) {
+      this.positionAttributeCategories = this.data.positionAttributeCategories;
     }
+    this.userForm = this.formBuilder.group({
+      roles: [this.data.user.roles ? this.data.user.roles.map(x => x.id) : null],
+      ...this.data.positionAttributeCategories &&
+      {
+        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map(x => this.formBuilder.group({
+            value: [this.data.user.positionAttributes?.find(y => y.category?.id === x.id)?.value || ''],
+            category: [x.id, Validators.required]
+          })))
+      }
+    });
   }
 
   /*  Close the modal without sending any data.

@@ -475,7 +475,8 @@ export class SafeApplicationService {
         variables: {
           id: user.id,
           roles: value.roles,
-          application: application.id
+          application: application.id,
+          ...value.positionAttributes && { positionAttributes: value.positionAttributes }
         }
       }).subscribe(res => {
         if (res.data) {

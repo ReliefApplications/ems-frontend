@@ -19,6 +19,11 @@ import { SafeInviteUsersComponent } from './components/invite-users/invite-users
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
+import { SafeApplicationService } from '../../services/application.service';
+
+const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
+
+const APPLICATION_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'attributes', 'actions'];
 
 @Component({
   selector: 'safe-users',
@@ -31,10 +36,10 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
-  @Input() applicationService: any;
+  @Input() applicationService?: SafeApplicationService;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
+  public displayedColumns: string[] = [];
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -56,6 +61,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    if (this.applicationService) {
+      this.displayedColumns = APPLICATION_COLUMNS;
+    } else {
+      this.displayedColumns = ADMIN_COLUMNS;
+    }
     this.users.filterPredicate = (data: any) => (
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 && !!data.name && data.name.toLowerCase().includes(this.searchText.trim()))) &&
@@ -97,11 +107,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onEdit(user: User): void {
+    console.log(user);
     const dialogRef = this.dialog.open(SafeEditUserComponent, {
       data: {
         user,
         availableRoles: this.roles,
-        multiple: true,
         ...this.positionAttributeCategories && { positionAttributeCategories: this.positionAttributeCategories }
       }
     });
@@ -121,7 +131,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.snackBar.openSnackBar(NOTIFICATIONS.userRolesUpdated(user.username));
               this.users.data = this.users.data.map(x => {
                 if (x.id === user.id) {
-                  x = { ...x, roles: res.data?.editUser?.roles?.filter(role => !role.application)};
+                  x = { ...x, roles: res.data?.editUser?.roles?.filter(role => !role.application)};
                 }
                 return x;
               });
@@ -213,9 +223,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   onExport(type: string): void {
     // if we are in the Users page of an application
     if (this.applicationService) {
-      this.applicationService.application$.subscribe((value: Application) => {
-        const fileName = `users_${value.name}.${type}`;
-        const path = `download/application/${value.id}/users`;
+      this.applicationService.application$.subscribe((value: Application | null) => {
+        const fileName = `users_${value?.name}.${type}`;
+        const path = `download/application/${value?.id}/users`;
         const queryString = new URLSearchParams({ type }).toString();
         this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
       });
