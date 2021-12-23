@@ -17,28 +17,30 @@ import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    TextFieldModule,
-    SafeQueryBuilderModule,
-    MatSlideToggleModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-    MatTabsModule,
-    MatChipsModule,
-    SafeButtonModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatIconModule,
+        TextFieldModule,
+        SafeQueryBuilderModule,
+        MatSlideToggleModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatTabsModule,
+        MatChipsModule,
+        SafeButtonModule,
+        DragDropModule
+    ],
   exports: [SafeGridSettingsComponent]
 })
 export class SafeGridSettingsModule { }

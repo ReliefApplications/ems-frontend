@@ -70,35 +70,6 @@ export class SafeDashboardService {
     return localStorage.setItem(`widget:${dashboardId}:${id}`, layoutIndex);
   }
 
-  /**
-   * Saves in DB the new default layout.
-   * @param id dashboard id.
-   * @param layout layout to save.
-   */
-  saveWidgetDefaultLayout(id: number, layout: any): void {
-    const dashboardId = this.dashboard.getValue()?.id;
-    const dashboardStructure = this.dashboard.getValue()?.structure;
-    const defaultLayout = { ...layout, timestamp: + new Date() };
-    const index = dashboardStructure.findIndex((v: any) => v.id === id);
-    const widgetTemp = {
-      ...dashboardStructure[index],
-      settings: {
-        ...dashboardStructure[index].settings,
-        defaultLayout: JSON.stringify(defaultLayout)
-      }
-    };
-    const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
-    updatedDashboardStructure[index] = widgetTemp;
-    this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: dashboardId,
-        structure: updatedDashboardStructure,
-      }
-    }).subscribe(res => {
-    }, error => console.log(error));
-  }
-
  /**
   * Finds the settings component from the widget passed as 'tile'.
   * @param tile tile to get settings of.
@@ -151,6 +122,69 @@ export class SafeDashboardService {
       newDashboard.structure = updatedDashboardStructure;
       this.openDashboard(newDashboard);
       return newDashboard.structure[index].settings.layoutList;
+    }));
+  }
+
+  // updateLayout(id: number, layoutList: any): void {
+  //   const dashboardId = this.dashboard.getValue()?.id;
+  //   const dashboardStructure = this.dashboard.getValue()?.structure;
+  //   const index = dashboardStructure.findIndex((v: any) => v.id === id);
+  //   const widgetTemp = {
+  //     ...dashboardStructure[index],
+  //     settings: {
+  //       ...dashboardStructure[index].settings,
+  //       layoutList
+  //     }
+  //   };
+  //   const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
+  //   updatedDashboardStructure[index] = widgetTemp;
+  //   this.apollo.mutate<EditDashboardMutationResponse>({
+  //     mutation: EDIT_DASHBOARD,
+  //     variables: {
+  //       id: dashboardId,
+  //       structure: updatedDashboardStructure,
+  //     }
+  //   }).subscribe();
+  // }
+
+  /**
+   * Saves in DB a new layout.
+   * @param id dashboard id.
+   * @param layout layout to save.
+   */
+  updateLayoutName(id: number, indexLayout: number, layoutName: string): Observable<any> {
+    const dashboardId = this.dashboard.getValue()?.id;
+    const dashboardStructure = this.dashboard.getValue()?.structure;
+    const indexGrid = dashboardStructure.findIndex((v: any) => v.id === id);
+    const currentLayout = {...dashboardStructure[indexGrid].settings.layoutList[indexLayout], name: layoutName};
+    const layoutList = [...dashboardStructure[indexGrid].settings.layoutList];
+    layoutList[indexLayout] = currentLayout;
+    // if (!dashboardStructure[indexGrid].settings.layoutList) {
+    //   layoutList = [currentLayout];
+    // } else {
+    //   layoutList = [...dashboardStructure[indexGrid].settings.layoutList, currentLayout];
+    // }
+    console.log(layoutList);
+    const widgetTemp = {
+      ...dashboardStructure[indexGrid],
+      settings: {
+        ...dashboardStructure[indexGrid].settings,
+        layoutList
+      }
+    };
+    const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
+    updatedDashboardStructure[indexGrid] = widgetTemp;
+    return this.apollo.mutate<EditDashboardMutationResponse>({
+      mutation: EDIT_DASHBOARD,
+      variables: {
+        id: dashboardId,
+        structure: updatedDashboardStructure,
+      }
+    }).pipe(map(res => {
+      const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
+      newDashboard.structure = updatedDashboardStructure;
+      this.openDashboard(newDashboard);
+      return newDashboard.structure[indexGrid].settings.layoutList;
     }));
   }
 

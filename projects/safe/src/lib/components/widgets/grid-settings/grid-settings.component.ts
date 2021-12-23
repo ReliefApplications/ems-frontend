@@ -12,6 +12,8 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
 import { Form } from '../../../models/form.model';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {SafeDashboardService} from '../../../services/dashboard.service';
 
 @Component({
   selector: 'safe-grid-settings',
@@ -44,6 +46,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
   public templates: Form[] = [];
 
+  public isEditing = false;
+  public editingIndex = 0;
+
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
   }
@@ -52,13 +57,17 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private dashboardService: SafeDashboardService,
   ) {
   }
 
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
+    console.log('this.tile');
+    console.log(this.tile);
+    console.log(this.tile.settings.layoutList);
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
     this.tileForm = this.formBuilder.group({
@@ -208,5 +217,39 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
+  }
+
+  drop(event: CdkDragDrop<any[]>): void {
+    console.log('e');
+    console.log(event);
+    console.log(this.tile.settings.layoutList);
+  }
+
+  onEdit(index: number): void {
+    // this.dahsboardService.updateLayout(this.tile.id, this.tile.settings.layoutList);
+    this.isEditing = true;
+    this.editingIndex = index;
+    console.log(index);
+  }
+
+  EditingBoxKeyPress(e: any): void {
+    console.log(e);
+    console.log(this.tile.settings.layoutList);
+    if (e.key === 'Enter') {
+      console.log(e.target);
+      console.log(e.target.value);
+      // const newLayoutList = [...this.tile.settings.layoutList];
+      // console.log(newLayoutList);
+      // newLayoutList[this.editingIndex].name = e.target.value;
+      // this.dashboardService.updateLayout(this.tile.id, e.target.value);
+      this.dashboardService.updateLayoutName(this.tile.id, this.editingIndex, e.target.value).subscribe((res) => {
+        // this.layoutList = res;
+        console.log(res);
+      });
+    }
+  }
+
+  onDelete(index: number): void {
+    console.log(index);
   }
 }
