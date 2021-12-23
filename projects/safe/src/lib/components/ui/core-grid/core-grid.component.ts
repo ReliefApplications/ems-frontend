@@ -12,7 +12,7 @@ import {
   SelectionEvent
 } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeDownloadService } from '../../../services/download.service';
@@ -90,7 +90,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public fields: any[] = [];
   private metaFields: any;
   public detailsField?: any;
-  private dataQuery: any;
+  private dataQuery!: QueryRef<any>;
   private metaQuery: any;
   private dataSubscription?: Subscription;
   private columnsOrder: any[] = [];
@@ -242,7 +242,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         sortField: this.sortField,
         sortOrder: this.sortOrder
       },
-      fetchPolicy: 'cache-first'
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-first'
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
