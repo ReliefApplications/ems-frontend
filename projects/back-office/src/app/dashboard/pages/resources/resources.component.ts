@@ -6,7 +6,6 @@ import { Resource, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -41,8 +40,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
-    public translate: TranslateService
+    private snackBar: SafeSnackBarService
   ) { }
 
   /*  Load the resources.

@@ -15,7 +15,6 @@ import {
   DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -57,8 +56,7 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private router: Router,
-    public translate: TranslateService
+    private router: Router
   ) { }
 
   /**

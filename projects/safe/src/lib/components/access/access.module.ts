@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeAccessComponent, SafeEditAccessComponent],
@@ -25,7 +26,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatSelectModule,
     MatMenuModule,
     MatTooltipModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [SafeAccessComponent]
 })

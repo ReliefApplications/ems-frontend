@@ -12,7 +12,6 @@ import {
 } from '../../../graphql/mutations';
 import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -44,8 +43,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
-    public translate: TranslateService
+    private snackBar: SafeSnackBarService
   ) { }
 
   ngOnInit(): void {
