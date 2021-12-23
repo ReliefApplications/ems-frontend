@@ -2,24 +2,24 @@
 <ng-container *ngIf="!loading">
     <div class="actions">
         <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-          {{'pullJobs.createBtn' | translate}}
+          {{'pullJobs.create' | translate}}
         </safe-button>
     </div>
     <table mat-table [dataSource]="pullJobs">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>{{'pullJobs.table.name' | translate}}</th>
+          <th mat-header-cell *matHeaderCellDef>{{'global.name' | translate}}</th>
           <td mat-cell *matCellDef="let element">{{ element.name }}</td>
         </ng-container>
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>{{'pullJobs.table.status' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{'global.status' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.status }}</td>
         </ng-container>
         <ng-container matColumnDef="apiConfiguration">
-            <th mat-header-cell *matHeaderCellDef>{{'pullJobs.table.API' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{'table.APIConf' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="convertTo">
-            <th mat-header-cell *matHeaderCellDef>{{'pullJobs.table.convert' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{'global.convert' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.convertTo ? element.convertTo.name : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="actions">
@@ -30,12 +30,12 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onEdit(element)">
                   <mat-icon>edit</mat-icon>
-                  {{'pullJobs.table.edit' | translate}}
+                  {{'action.edit' | translate}}
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item color="warn" (click)="onDelete(element)">
                   <mat-icon>delete</mat-icon>
-                  {{'pullJobs.table.delete' | translate}}
+                  {{'action.delete' | translate}}
                 </button>
               </mat-menu>
             </td>

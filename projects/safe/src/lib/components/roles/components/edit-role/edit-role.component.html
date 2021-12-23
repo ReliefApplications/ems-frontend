@@ -1,13 +1,13 @@
-<h1 mat-dialog-title>{{'roles.edit.title' | translate}}</h1>
+<h1 mat-dialog-title>{{'roles.edit' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="roleForm">
         <div class="form-group">
             <mat-form-field>
-                <mat-label>{{'roles.edit.name' | translate}}</mat-label>
+                <mat-label>{{'global.title' | translate}}</mat-label>
                 <input matInput formControlName="title" type='text' />
             </mat-form-field>
             <mat-form-field>
-                <mat-label>{{'roles.edit.permissions' | translate}}</mat-label>
+                <mat-label>{{'roles.permissions' | translate}}</mat-label>
                 <mat-select formControlName="permissions" multiple>
                     <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                         {{permission.type}}
@@ -15,7 +15,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-label>{{'roles.edit.channels' | translate}}</mat-label>
+                <mat-label>{{'global.channels' | translate}}</mat-label>
                 <mat-select matNativeControl multiple formControlName="channels">
                     <mat-optgroup *ngFor="let application of applications" [label]="application.name || ''">
                         <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
@@ -28,8 +28,8 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'roles.edit.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
-        {{'roles.edit.update' | translate}}
+        {{'action.update' | translate}}
     </button>
 </div>

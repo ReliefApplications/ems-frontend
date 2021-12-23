@@ -1,19 +1,19 @@
-<h1 mat-dialog-title>{{'users.add.title' | translate}}</h1>
+<h1 mat-dialog-title>{{'users.add' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="form">
         <div class="form-group">
             <mat-form-field appearance="outline">
-                <mat-label>{{'users.add.email' | translate}}</mat-label>
-                <input matInput [placeholder]="'users.add.emailPlaceholder' | translate" #emailInput formControlName="email" [matAutocomplete]="auto">
+                <mat-label>{{'global.email' | translate}}</mat-label>
+                <input matInput [placeholder]="'global.emailPlaceholder' | translate" #emailInput formControlName="email" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
                         {{user.username}}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
-            <label class="invite-label">{{'users.add.roleDescription' | translate}}</label>
+            <label class="invite-label">{{'users.roleDescription' | translate}}</label>
             <mat-form-field appearance="outline">
-                <mat-label>{{'users.add.role' | translate}}</mat-label>
+                <mat-label>{{'global.role' | translate}}</mat-label>
                 <mat-select formControlName="role">
                     <mat-option *ngFor="let role of data.roles" [value]="role.id">{{ role.title }}</mat-option>
                 </mat-select>
@@ -35,7 +35,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'users.add.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button type="submit" mat-flat-button [mat-dialog-close]="form.value" color="primary"
-        [disabled]="!form.valid">{{'users.add.invite' | translate}}</button>
+        [disabled]="!form.valid">{{'action.invite' | translate}}</button>
 </div>

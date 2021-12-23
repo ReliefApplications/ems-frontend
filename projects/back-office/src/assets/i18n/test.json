@@ -368,5 +368,46 @@
     "dashboard": {
         "name": "******",
         "add": "******"
+    },
+
+    "widgets": {
+        "map": {
+            "title": "******",
+            "general": "******",
+            "name": "******",
+            "data": "******",
+            "lat": "******",
+            "long": "******",
+            "default": "******",
+            "zoom": "******"
+        },
+        "query": {
+            "select": "******",
+            "field": {
+                "description": "******",
+                "available": "******",
+                "selected": "******",
+                "name": "******",
+                "label": "******"
+            },
+            "sort": {
+                "field": "******",
+                "order": "******",
+                "ascending": "******",
+                "descending": "******"
+            },
+            "filter": {
+                "logic": "******",
+                "or": "******",
+                "and": "******",
+                "add": "******",
+                "addGroup": "******",
+                "field": "******",
+                "operator": "******",
+                "value": "******",
+                "true": "******",
+                "false": "******"
+            }
+        }
     }
 }

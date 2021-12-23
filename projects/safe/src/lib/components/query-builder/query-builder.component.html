@@ -4,7 +4,7 @@
     </safe-button>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>Select a data set</mat-label>
+      <mat-label>{{'widgets.query.select' | translate}}</mat-label>
       <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
         <mat-option *ngFor="let option of filteredQueries" [value]="option">

@@ -15,7 +15,7 @@
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            {{'apps.table.name' | translate}}
+            {{'global.name' | translate}}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -24,7 +24,7 @@
       <ng-container matColumnDef="createdAt">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            {{'apps.table.date' | translate}}
+            {{'table.date' | translate}}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
@@ -33,7 +33,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            {{'apps.table.status' | translate}}
+            {{'global.status' | translate}}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
@@ -54,7 +54,7 @@
       <ng-container matColumnDef="usersCount">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            {{'apps.table.users' | translate}}
+            {{'global.users' | translate}}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
@@ -68,19 +68,19 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onPreview(element)">
               <mat-icon>preview</mat-icon>
-              {{'apps.table.preview' | translate}}
+              {{'action.preview' | translate}}
             </button>
             <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
               *ngIf="element.canUpdate"></safe-access>
             <button mat-menu-item (click)="onClone(element)" *ngIf="element.canDelete">
               <mat-icon>file_copy</mat-icon>
-              {{'apps.table.duplicate' | translate}}
+              {{'action.duplicate' | translate}}
             </button>
             <ng-container *ngIf="element.canDelete">
               <mat-divider></mat-divider>
               <button mat-menu-item (click)="onDelete(element, $event)">
                 <mat-icon>delete</mat-icon>
-                {{'apps.table.delete' | translate}}
+                {{'action.delete' | translate}}
               </button>
             </ng-container>
           </mat-menu>

@@ -1,16 +1,16 @@
-<h1 mat-dialog-title>{{(data.pullJob ? 'pullJobs.edit.titleEdit' : 'pullJobs.edit.titleNew') | translate}}</h1>
+<h1 mat-dialog-title>{{(data.pullJob ? 'pullJobs.edit' : 'pullJobs.new') | translate}}</h1>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <div mat-dialog-content *ngIf="!loading">
     <form [formGroup]="pullJobForm">
         <div class="form-group">
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'pullJobs.edit.name' | translate}}</mat-label>
-                    <input type="text" [placeholder]="'pullJobs.edit.namePlaceholder' | translate"
+                    <mat-label>{{'global.name' | translate}}</mat-label>
+                    <input type="text" [placeholder]="'global.namePlaceholder' | translate"
                     matInput formControlName="name">
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'pullJobs.edit.status' | translate}}</mat-label>
+                    <mat-label>{{'global.status' | translate}}</mat-label>
                     <mat-select formControlName="status">
                       <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{ statusChoice }}</mat-option>
                     </mat-select>
@@ -18,12 +18,12 @@
             </div>
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'pullJobs.edit.schedule' | translate}}</mat-label>
-                    <input type="text" [placeholder]="'pullJobs.edit.schedulePlaceholder' | translate"
+                    <mat-label>{{'global.schedule' | translate}}</mat-label>
+                    <input type="text" [placeholder]="'pullJobs.schedulePlaceholder' | translate"
                     matInput formControlName="schedule">
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'pullJobs.edit.API' | translate}}</mat-label>
+                    <mat-label>{{'table.APIConf' | translate}}</mat-label>
                     <mat-select #apiSelect formControlName="apiConfiguration" (openedChange)="onOpenApiSelect($event)">
                         <mat-option *ngFor="let apiConfiguration of apiConfigurations$ | async" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
                     </mat-select>
@@ -31,14 +31,14 @@
             </div>
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'pullJobs.edit.convert' | translate}}</mat-label>
+                    <mat-label>{{'global.convert' | translate}}</mat-label>
                     <mat-select #formSelect formControlName="convertTo" (openedChange)="onOpenFormsSelect($event)">
                         <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'pullJobs.edit.notify' | translate}}</mat-label>
+                    <mat-label>{{'global.notify' | translate}}</mat-label>
                     <mat-select #channelSelect formControlName="channel" placeholder="Select a channel" (opened)="onOpenApplicationSelect()">
                         <mat-optgroup *ngFor="let application of applications | async" [label]="application.name || ''">
                             <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
@@ -52,17 +52,17 @@
             <mat-expansion-panel [expanded]="false" [disabled]="!pullJobForm.value.convertTo" class="input-list">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        {{'pullJobs.edit.mapping.title' | translate}}
+                        {{'pullJobs.mapping' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="actions">
                     <safe-button icon="edit_note" category="secondary" variant="primary" (click)="toggleRawJSON()">
-                        {{'pullJobs.edit.mapping.switch' | translate}}
+                        {{'pullJobs.switch' | translate}}
                     </safe-button>
                 </div>
                 <ng-container *ngIf="openRawJSON">
                     <mat-form-field appearance="outline" style="width: 100%;">
-                        <mat-label>{{'pullJobs.edit.mapping.raw' | translate}}</mat-label>
+                        <mat-label>{{'pullJobs.raw' | translate}}</mat-label>
                         <textarea matInput formControlName="rawMapping" placeholder="Please enter a JSON for the data mapping between the API and the Form."
                         [matTextareaAutosize]="true" [matAutosizeMinRows]="2"></textarea>
                     </mat-form-field>
@@ -70,13 +70,13 @@
                 <ng-container *ngIf="!openRawJSON">
                     <form [formGroup]="$any(element)" *ngFor="let element of mappingArray.controls; index as i">
                         <mat-form-field appearance="outline" style=" margin-bottom: -1.25em">
-                            <mat-label>{{'pullJobs.edit.mapping.field' | translate}}</mat-label>
+                            <mat-label>{{'global.field' | translate}}</mat-label>
                             <mat-select formControlName="name">
                                 <mat-option *ngFor="let field of filteredFields(element.value.name)" [value]="field.name">{{field.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline" *ngIf="element.value.name" style=" margin-bottom: -1.25em">
-                            <mat-label>{{'pullJobs.edit.mapping.value' | translate}}</mat-label>
+                            <mat-label>{{'global.value' | translate}}</mat-label>
                             <input matInput formControlName="value" type="string" />
                         </mat-form-field>
                         <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteElement(i)">
@@ -87,7 +87,7 @@
                 </ng-container>
             </mat-expansion-panel>
             <mat-form-field *ngIf="mappingArray.controls.length > 0" appearance="outline">
-                <mat-label>{{'pullJobs.edit.identifier' | translate}}</mat-label>
+                <mat-label>{{'pullJobs.identifier' | translate}}</mat-label>
                 <mat-select formControlName="uniqueIdentifiers" multiple>
                     <mat-option *ngFor="let element of mappingArray.controls" [value]="element.value.value">
                         {{element.value.value}}
@@ -98,7 +98,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'pullJobs.edit.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="returnFormValue()" cdkFocusInitial color="primary"
-        [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{(data.pullJob ? 'pullJobs.edit.update' : 'pullJobs.edit.create') | translate}}</button>
+        [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{(data.pullJob ? 'action.update' : 'action.create') | translate}}</button>
 </div>

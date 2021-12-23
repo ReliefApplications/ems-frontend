@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>{{'users.edit.title' | translate}}</h1>
+<h1 mat-dialog-title>{{'users.edit' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="userForm">
         <mat-form-field>
-            <mat-label>{{'users.edit.roles' | translate}}</mat-label>
+            <mat-label>{{'global.roles' | translate}}</mat-label>
             <mat-select formControlName="roles" *ngIf="data.multiple" multiple>
                 <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
                     {{role.title}}
@@ -17,6 +17,6 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'users.edit.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="userForm.value" cdkFocusInitial color="primary" [disabled]="!userForm.valid">{{'users.edit.update' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="userForm.value" cdkFocusInitial color="primary" [disabled]="!userForm.valid">{{'action.update' | translate}}</button>
 </div>

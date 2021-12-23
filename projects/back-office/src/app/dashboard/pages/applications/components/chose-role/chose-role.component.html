@@ -3,7 +3,7 @@
     <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
     <form [formGroup]="roleForm" class="form-group" *ngIf="!loading">
         <mat-form-field>
-            <mat-label>Role</mat-label>
+            <mat-label>{{'global.role' | translate}}</mat-label>
             <mat-select formControlName="role">
                 <mat-option *ngFor="let role of roles" [value]="role.id">
                     {{role.title}}
@@ -13,6 +13,6 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">See preview</button>
 </div>

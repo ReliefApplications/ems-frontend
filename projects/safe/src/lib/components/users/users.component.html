@@ -25,21 +25,21 @@
   </div>
   <div class="actions">
     <safe-button class="export-users" icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-      {{'users.exportBtn' | translate}}
+      {{'users.export' | translate}}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onExport('csv')">.csv</button>
       <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
     </mat-menu>
     <safe-button icon="send" category="secondary" variant="primary" (click)="onInvite()">
-      {{'users.inviteBtn' | translate}}
+      {{'users.invite' | translate}}
     </safe-button>
   </div>
 </div>
 <div>
   <div class="actions" *ngIf="selection.selected.length > 0">
     <safe-button icon="delete" category="secondary" variant="danger" (click)="onDelete(selection.selected)">
-      {{'users.table.deleteSelected' | translate}}
+      {{'users.delete' | translate}}
     </safe-button>
   </div>
 </div>
@@ -65,7 +65,7 @@
   <ng-container matColumnDef="username">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{'users.table.username' | translate}}
+        {{'global.username' | translate}}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.username }}</td>
@@ -74,7 +74,7 @@
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{'users.table.name' | translate}}
+        {{'global.name' | translate}}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -83,7 +83,7 @@
   <ng-container matColumnDef="roles">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{'users.table.role' | translate}}
+        {{'global.role' | translate}}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">
@@ -94,7 +94,7 @@
   <ng-container matColumnDef="oid">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{'users.table.azure' | translate}}
+        {{'table.azure' | translate}}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
@@ -108,12 +108,12 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onEdit(element)">
           <mat-icon>edit</mat-icon>
-          {{'users.table.edit' | translate}}
+          {{'action.edit' | translate}}
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onDelete([element])">
           <mat-icon>delete</mat-icon>
-          {{'users.table.delete' | translate}}
+          {{'action.delete' | translate}}
         </button>
       </mat-menu>
     </td>

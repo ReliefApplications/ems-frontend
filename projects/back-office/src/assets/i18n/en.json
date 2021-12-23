@@ -1,23 +1,46 @@
 {
-    "header": {
-        "title": "Back-Office",
-        "menu": {
-            "profile": "Profile",
-            "switch": "Switch to",
-            "logout": "Logout"
-        },
-        "notification": {
-            "read": "Mark all as read",
-            "load": "Load more"
-        },
-        "toolbar": {
-            "close": "Close",
-            "publish": "Publish"
-        }
+    "global": {
+        "status": "Status",
+        "name": "Name",
+        "namePlaceholder": "Enter a name",
+        "title": "Title",
+        "titlePlaceholder": "Enter a title",
+        "role": "Role",
+        "roles": "Roles",
+        "email": "Email",
+        "emailPlaceholder": "Enter user's email",
+        "users": "Users",
+        "core": "Core",
+        "yes": "Yes",
+        "no": "No",
+        "schedule": "Schedule",
+        "field": "Field",
+        "value": "Value",
+        "notify": "Notify on",
+        "convert": "Conver to",
+        "general": "General",
+        "username": "Username",
+        "channels": "Channels"
     },
 
-    "sidenav": {
-        "addPage": "Add a Page"
+    "action": {
+        "edit": "Edit",
+        "view": "View",
+        "delete": "Delete",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "save": "Save",
+        "saveChg": "Save changes",
+        "preview": "Preview",
+        "duplicate": "Duplicate",
+        "publish": "Publish",
+        "access": "Access",
+        "clear": "Clear",
+        "apply": "Apply",
+        "create": "Create",
+        "update": "Update",
+        "invite": "Invite"
     },
 
     "status": {
@@ -26,212 +49,100 @@
         "archived": "Archived"
     },
 
+    "table": {
+        "date": "Created on",
+        "history": "History",
+        "records": "Records",
+        "core": "Is core",
+        "parent": "Parent form",
+        "APIConf": "API Configuration",
+        "authType": "Authentication type"
+    },
+
+    "nav": {
+        "title": "Back-Office",
+        "addPage": "Add a Page",
+        "profile": "Profile",
+        "switch": "Switch to",
+        "logout": "Logout",
+        "readAll": "Mark all as read",
+        "load": "Load more"
+    },
+
     "filter": {
         "search": "Search...",
         "show": "Show Filter",
         "hide": "Hide Filter",
-        "date" : {
-            "title": "Date Range",
-            "clear": "Clear Range",
-            "apply": "Apply"
-        },
-        "status": "Status",
-        "core": {
-            "title": "Is Core",
-            "yes": "Yes",
-            "no": "No"
-        },
-        "role": {
-            "title": "Role"
-        },
+        "date" : "Date Range",
         "clear": "Clear Filters"
     },
 
     "apps": {
         "recent": "Recent applications",
         "all": "All applications",
-        "table": {
-            "name": "Name",
-            "date": "Created on",
-            "status": "Status",
-            "users": "Users",
-            "preview": "Preview",
-            "access": "Access",
-            "duplicate": "Duplicate",
-            "delete": "Delete"
-        },
-        "home": {
-            "step1": "Add a page",
-            "step2": "Customize each of the pages created",
-            "step3": "Click on create to finish the process"
+        "steps": {
+            "1": "Add a page",
+            "2": "Customize each of the pages created",
+            "3": "Click on create to finish the process"
         }
     },
 
     "forms": {
-        "createBtn": "Create a form",
-        "table": {
-            "name": "Name",
-            "date": "Created on",
-            "status": "Status",
-            "history": "History",
-            "records": "Records",
-            "core": "Is core",
-            "parent": "Parent form",
-            "edit": "Edit",
-            "view": "View",
-            "delete": "Delete"
-        }
-    },
-
-    "resources": {
-        "table": {
-            "name": "Name",
-            "date": "Created on",
-            "records": "Records",
-            "delete": "Delete"
-        }
+        "create": "Create a form"
     },
 
     "users": {
-        "exportBtn": "Export users",
-        "inviteBtn": "Invite users",
-        "table": {
-            "name": "Name",
-            "username": "Username",
-            "azure": "Azure",
-            "role": "Role",
-            "edit": "Edit",
-            "delete": "Delete",
-            "deleteSelected": "Delete selected users"
-        },
-        "invite": {
-            "title": "Invite users",
-            "description": "Select existing users, invite new users or import from Excel file",
-            "getTemplate": "Get template",
-            "inviteNew": "Invite new user",
-            "email": "Email",
-            "role": "Role",
-            "close": "Close",
-            "invite": "Invite users"
-        },
-        "add":
-        {
-            "title": "Add user",
-            "email": "Email",
-            "emailPlaceholder": "Enter user's email",
-            "role": "Role",
-            "roleDescription": "Select the role to assign",
-            "close": "Close",
-            "invite": "Invite"
-        },
-        "edit": {
-            "title": "Update user roles",
-            "roles": "Roles",
-            "close": "Close",
-            "update": "Update"
-        }
+        "export": "Export users",
+        "invite": "Invite users",
+        "delete": "Delete selected users",
+        "description": "Select existing users, invite new users or import from Excel file",
+        "getTemplate": "Get template",
+        "inviteNew": "Invite new user",
+        "add": "Add user",
+        "roleDescription": "Select the role to assign",
+        "edit": "Update user roles"
     },
 
     "roles": {
-        "createBtn": "Create a role",
-        "table": {
-            "title": "Title",
-            "users": "Users",
-            "edit": "Edit",
-            "delete": "Delete"
-        },
-        "edit": {
-            "title": "Update role permissions and channels",
-            "name": "Title",
-            "permissions": "Permissions",
-            "channels": "Channels",
-            "close": "Close",
-            "update": "Update role"
-        },
-        "add": {
-            "title": "New role",
-            "name": "Title",
-            "namePlaceholder": "Enter a title",
-            "close": "Close",
-            "create": "Create"
-        }
+        "create": "Create a role",
+        "edit": "Update role permissions and channels",
+        "permissions": "Permissions",
+        "add": "New role"
     },
 
     "APIConf": {
-        "createBtn": "Create an API Configuration",
-        "table": {
-            "name": "Name",
-            "status": "Status",
-            "auth": "Authentication type",
-            "delete": "Delete"
-        },
-        "edit": {
-            "general": {
-                "title": "General",
-                "name": "API Configuration name",
-                "namePlaceholder": "Enter a name for the API Configuration",
-                "nameWarning": "Only letters, hypens or underscores are accepted",
-                "status": "Status",
-                "auth": "Authentication type"
-            },
-            "endpoint": {
-                "title": "Endpoint",
-                "main": "Main endpoint",
-                "mainPlaceholder": "Base URL for the API",
-                "ping": "Ping extension",
-                "pingPlaceholder": "Ping extension URL",
-                "send": "Send ping request"
-            },
-            "auth": {
-                "title": "API authentication settings",
-                "tokenURL": "Access token URL",
-                "tokenURLPlaceholder": "Enter acces token URL",
-                "id": "Client ID",
-                "idPlaceholder": "Enter client ID",
-                "secret": "Client secret",
-                "secretPlaceholder": "Enter client secret",
-                "scope": "Scope",
-                "scopePlaceholder": "Enter scope",
-                "token": "Token",
-                "tokenPlaceholder": "Enter token for authentication"
-            },
-            "save": "Save changes"
-        }
+        "create": "Create an API Configuration",
+        "new": "New API Configuration",
+        "warning": "Only letters, hypens or underscores are accepted",
+        "endpoint": "Endpoint",
+        "main": "Main endpoint",
+        "mainPlaceholder": "Base URL for the API",
+        "ping": "Ping extension",
+        "pingPlaceholder": "Ping extension URL",
+        "send": "Send ping request",
+        "auth": "API authentication settings",
+        "tokenURL": "Access token URL",
+        "tokenURLPlaceholder": "Enter acces token URL",
+        "id": "Client ID",
+        "idPlaceholder": "Enter client ID",
+        "secret": "Client secret",
+        "secretPlaceholder": "Enter client secret",
+        "scope": "Scope",
+        "scopePlaceholder": "Enter scope",
+        "token": "Token",
+        "tokenPlaceholder": "Enter token for authentication"
     },
 
     "pullJobs": {
-        "createBtn": "Create a pull job",
-        "table": {
-            "name": "Pull job name",
-            "status": "Status",
-            "API": "API Configuration",
-            "convert": "Conver to",
-            "edit": "Edit",
-            "delete": "Delete"
-        },
-        "edit": {
-            "titleNew": "New Pull job",
-            "titleEdit": "Edit Pull job",
-            "name": "Name",
-            "namePlaceholder": "Name your Pull job",
-            "status": "Status",
-            "schedule": "Schedule",
-            "schedulePlaceholder": "Enter the schedule time for this Pull job",
-            "API": "API Configuration used",
-            "convert": "Conver to",
-            "notify": "Notify on",
-            "mapping": {
-                "title": "Mapping",
-                "switch": "Switch mode",
-                "field": "Field",
-                "value": "Value",
-                "raw": "Raw JSON"
-            },
-            "identifier": "Unique identifiers",
-            "close": "Close",
-            "create": "Create",
-            "update": "Update"
-        }
+        "create": "Create a pull job",
+        "new": "New Pull job",
+        "edit": "Edit Pull job",
+        "namePlaceholder": "Name your Pull job",
+        "schedulePlaceholder": "Enter the schedule time for this Pull job",
+        "mapping": "Mapping",
+        "switch": "Switch mode",
+        "raw": "Raw JSON",
+        "identifier": "Unique identifiers"
     },
 
     "appSummary": {
@@ -368,5 +279,46 @@
     "dashboard": {
         "name": "Name",
         "add": "Add a widget"
+    },
+
+    "widgets": {
+        "map": {
+            "title": "New Map",
+            "general": "General",
+            "name": "Title",
+            "data": "Data set selection",
+            "lat": "Latitude",
+            "long": "Longitude",
+            "default": "Default display",
+            "zoom": "Zoom"
+        },
+        "query": {
+            "select": "Select a data set",
+            "field": {
+                "description": "Select data points below and drag them to 'selected fields' on the right",
+                "available": "Available fields",
+                "selected": "Selected fields",
+                "name": "Field name",
+                "label": "Label"
+            },
+            "sort": {
+                "field": "Sort field",
+                "order": "Sort order",
+                "ascending": "Ascending",
+                "descending": "Descending"
+            },
+            "filter": {
+                "logic": "Filter logic",
+                "or": "Or",
+                "and": "And",
+                "add": "Add new fiter",
+                "addGroup": "Add new filter group",
+                "field": "Field",
+                "operator": "Operator",
+                "value": "Value",
+                "true": "True",
+                "false": "False"
+            }
+        }
     }
 }
