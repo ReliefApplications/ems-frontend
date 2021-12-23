@@ -240,22 +240,20 @@ export class SafeGridWidgetComponent implements OnInit {
   private promisedRowsModifications(modifications: any[], items: any[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
     for (const item of items) {
-      const data = Object.assign({}, item);
+      const update: any = {};
       for (const modification of modifications) {
+        // modificationFields.push(modification.field.name);
         if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-          data[modification.field.name] = this.getDateForFilter(modification.value);
+          update[modification.field.name] = this.getDateForFilter(modification.value);
         } else {
-          data[modification.field.name] = modification.value;
+          update[modification.field.name] = modification.value;
         }
       }
-      delete data.id;
-      // eslint-disable-next-line no-underscore-dangle
-      delete data.__typename;
       promises.push(this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data,
+          data: update,
           template: this.settings.query.template
         }
       }).toPromise());
