@@ -29,7 +29,10 @@
         "template": "Template",
         "label": "Label",
         "true": "True",
-        "false": "False"
+        "false": "False",
+        "events": "Events",
+        "data": "Data",
+        "dataSrc": "Data source"
     },
 
     "action": {
@@ -124,7 +127,8 @@
         "create": "Create a role",
         "edit": "Update role permissions and channels",
         "permissions": "Permissions",
-        "add": "New role"
+        "add": "New role",
+        "choose": "Choose role to simulate"
     },
 
     "APIConf": {
@@ -228,6 +232,15 @@
             "long": "Longitude",
             "default": "Default display",
             "zoom": "Zoom"
+        },
+        "scheduler": {
+            "useRecords": "Use resource records",
+            "useForm": "Use form records",
+            "title": "Title field",
+            "description": "Description field",
+            "start": "Start field",
+            "end": "End field",
+            "noDate": "No end date"
         },
         "query": {
             "select": "Select a data set",

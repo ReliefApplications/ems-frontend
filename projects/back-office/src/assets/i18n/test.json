@@ -29,7 +29,10 @@
         "template": "******",
         "label": "******",
         "true": "******",
-        "false": "******"
+        "false": "******",
+        "events": "******",
+        "data": "******",
+        "dataSrc": "******"
     },
 
     "action": {
@@ -86,7 +89,7 @@
         "search": "******",
         "show": "******",
         "hide": "******",
-        "date" : "Date Range",
+        "date" : "******",
         "clear": "******"
     },
 
@@ -124,7 +127,8 @@
         "create": "******",
         "edit": "******",
         "permissions": "******",
-        "add": "******"
+        "add": "******",
+        "choose": "******"
     },
 
     "APIConf": {
@@ -228,6 +232,15 @@
             "long": "******",
             "default": "******",
             "zoom": "******"
+        },
+        "scheduler": {
+            "useRecords": "******",
+            "useForm": "******",
+            "title": "******",
+            "description": "******",
+            "start": "******",
+            "end": "******",
+            "noDate": "******"
         },
         "query": {
             "select": "******",

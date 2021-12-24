@@ -1,9 +1,9 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
     <div class="form-group">
-      <div class="form-group-title">General</div>
+      <div class="form-group-title">{{'global.general' | translate}}</div>
       <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
+        <mat-label>{{'global.title' | translate}}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
