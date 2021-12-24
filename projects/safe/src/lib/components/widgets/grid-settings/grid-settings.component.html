@@ -33,29 +33,9 @@
     </div>
     <div class="form-group">
       <div class="form-group-title">Pre-defined layouts</div>
-<!--      <div class="field-list-wrapper">-->
-<!--        <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">-->
-<!--          <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>-->
-<!--            <div>-->
-<!--              <span>{{ field.name }}</span>-->
-<!--              <safe-button [isIcon]="true" icon="error" class="field-error" (click)="onEdit(index)"-->
-<!--                           *ngIf="form.at(index)?.invalid && field.type">-->
-<!--              </safe-button>-->
-<!--              <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"-->
-<!--                           matTooltip="Invalid field. Please click to remove.">-->
-<!--              </safe-button>-->
-<!--            </div>-->
-<!--            <div *ngIf="field.type">-->
-<!--              <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>-->
-<!--              <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">-->
-<!--              </safe-button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--    </div>-->
-        <div class="field-list-wrapper">
-          <div cdkDropList [cdkDropListData]="this.tile.settings.layoutList" class="field-list" (cdkDropListDropped)="drop($event)">
-            <div class="field-box" *ngFor="let layout of this.tile.settings.layoutList; let index = index" cdkDrag>
+        <div class="field-list-wrapper" *ngIf="layoutList">
+          <div cdkDropList [cdkDropListData]="layoutList" class="field-list" (cdkDropListDropped)="drop($event)">
+            <div class="field-box" *ngFor="let layout of layoutList; let index = index" cdkDrag>
               <span *ngIf="!this.isEditing" class="field-name">{{ layout.name }}</span>
               <input *ngIf="this.isEditing" (keypress)="EditingBoxKeyPress($event)" type="text" class="field-name" value="{{ layout.name }}"/>
               <div>

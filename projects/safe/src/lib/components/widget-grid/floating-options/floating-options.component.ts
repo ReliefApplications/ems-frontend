@@ -19,6 +19,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() nameUpdated: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() expand: EventEmitter<any> = new EventEmitter();
 
@@ -81,9 +82,16 @@ export class SafeFloatingOptionsComponent implements OnInit {
         panelClass: 'tile-settings-dialog'
       });
       dialogRef.afterClosed().subscribe(res => {
+        console.log('CLOSE');
+        console.log(res);
         if (res) {
+          console.log('DIALOG CLOSE: res');
+          // console.log(res);
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }
+        // else {
+        //   this.edit.emit({ type: 'data', id: this.widget.id, options: {} });
+        // }
       });
     }
     if (item.name === 'Expand') {

@@ -20,6 +20,8 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm?: FormGroup;
 
+  // layoutList: any;
+
   // === TEMPLATE REFERENCE ===
   @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
 
@@ -38,11 +40,16 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
     const componentRef = this.settingsContainer.createComponent(factory);
     componentRef.instance.tile = this.data.tile;
     componentRef.instance.change.subscribe((e: any) => { this.tileForm = e; });
+    // componentRef.instance.layoutListChange.subscribe((l: any) => { this.layoutList = l; });
   }
 
   /*  Close the modal without sending any data.
   */
   onClose(): void {
+    console.log('test: close!!!');
+    // console.log('this.layoutList');
+    // console.log(this.layoutList);
+    // this.dialogRef.close(this.layoutList);
     this.dialogRef.close();
   }
 

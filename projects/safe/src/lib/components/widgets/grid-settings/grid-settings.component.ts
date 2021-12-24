@@ -33,6 +33,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === EMIT THE CHANGES APPLIED ===
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() layoutListChange: EventEmitter<any> = new EventEmitter();
 
   // === NOTIFICATIONS ===
   public channels: Channel[] = [];
@@ -46,6 +47,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
   public templates: Form[] = [];
 
+  public layoutList: any;
   public isEditing = false;
   public editingIndex = 0;
 
@@ -65,9 +67,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
-    console.log('this.tile');
-    console.log(this.tile);
-    console.log(this.tile.settings.layoutList);
+    if (this.tile.settings.layoutList) {
+      this.layoutList = [...this.tile.settings.layoutList];
+    }
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
     this.tileForm = this.formBuilder.group({
@@ -236,16 +238,15 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     console.log(e);
     console.log(this.tile.settings.layoutList);
     if (e.key === 'Enter') {
-      console.log(e.target);
-      console.log(e.target.value);
-      // const newLayoutList = [...this.tile.settings.layoutList];
-      // console.log(newLayoutList);
-      // newLayoutList[this.editingIndex].name = e.target.value;
-      // this.dashboardService.updateLayout(this.tile.id, e.target.value);
       this.dashboardService.updateLayoutName(this.tile.id, this.editingIndex, e.target.value).subscribe((res) => {
         // this.layoutList = res;
         console.log(res);
+        console.log(this.tile.settings.layoutList);
+        this.layoutList = res;
+        this.layoutListChange.emit(this.layoutList);
+        console.log(this.layoutList);
       });
+      this.isEditing = false;
     }
   }
 

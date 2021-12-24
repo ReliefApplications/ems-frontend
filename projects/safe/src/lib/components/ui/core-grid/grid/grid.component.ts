@@ -153,7 +153,7 @@ export class SafeGridComponent implements OnInit, OnChanges {
       this.searchChange.emit(value);
     });
     if (this.layoutList){
-      if (this.currentLayoutIndex) {
+      if (this.currentLayoutIndex || this.currentLayoutIndex === 0) {
         this.selectedLayout = this.layoutList[this.currentLayoutIndex];
         this.updateLayout.emit(this.selectedLayout);
       }
