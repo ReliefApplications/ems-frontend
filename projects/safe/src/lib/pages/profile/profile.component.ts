@@ -9,7 +9,10 @@ import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 
-
+/**
+ * Shared profile page.
+ * Displays information of the logged user.
+ */
 @Component({
   selector: 'safe-profile',
   templateUrl: './profile.component.html',
@@ -17,13 +20,26 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 })
 export class SafeProfileComponent implements OnInit, OnDestroy {
 
+  /** Table data */
   dataSource = new MatTableDataSource<User>();
-
+  /** Subscription to authentication service */
   private authSubscription?: Subscription;
+  /** Current user */
   public user: any;
+  /** Form to edit the user */
   public userForm?: FormGroup;
+  /** Displayed columns of table */
   public displayedColumnsApps = ['name', 'role', 'positionAttributes', 'actions'];
 
+  /**
+   * Shared profile page.
+   * Displays information of the logged user.
+   *
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param formBuilder Angular form builder
+   */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -31,6 +47,10 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder
   ) { }
 
+  /**
+   * Subscribes to authenticated user.
+   * Creates user form.
+   */
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
@@ -45,6 +65,9 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Submits new profile.
+   */
   onSubmit(): void {
     const roles: any[] = [];
     this.user?.roles?.forEach((e: any) => {
@@ -65,8 +88,13 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectFavorite(element: any): void {
-    if (element) {
+  /**
+   * Selects a new favorite application.
+   *
+   * @param application new favorite application
+   */
+  onSelectFavorite(application: any): void {
+    if (application) {
       const roles: any[] = [];
       this.user?.roles?.forEach((e: any) => {
         roles.push(e.id);
@@ -75,7 +103,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         mutation: EDIT_USER_PROFILE,
         variables: {
           profile: {
-            favoriteApp: element.id
+            favoriteApp: application.id
           }
         }
       }).subscribe(res => {
@@ -87,6 +115,9 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Removes all subscriptions of the component.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();

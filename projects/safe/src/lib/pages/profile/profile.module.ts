@@ -10,6 +10,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 
+/**
+ * Shared profile page module.
+ */
 @NgModule({
   declarations: [SafeProfileComponent],
   imports: [
