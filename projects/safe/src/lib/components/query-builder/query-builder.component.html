@@ -14,20 +14,20 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet && (templates.length > 0)">
-      <mat-label>Template</mat-label>
+      <mat-label>{{'global.template' | translate}}</mat-label>
       <mat-select formControlName="template">
-        <mat-option>-- Default --</mat-option>
+        <mat-option>-</mat-option>
         <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <ng-container *ngIf="isField">
       <mat-form-field appearance="outline">
-        <mat-label>Field name</mat-label>
+        <mat-label>{{'widgets.query.field.name' | translate}}</mat-label>
         <input matInput formControlName="name" type="text" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Label</mat-label>
+        <mat-label>{{'global.label' | translate}}</mat-label>
         <input matInput formControlName="label" type="text" />
       </mat-form-field>
     </ng-container>

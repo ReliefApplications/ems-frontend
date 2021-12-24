@@ -2,20 +2,20 @@
 <ng-container *ngIf="!loading">
     <div class="actions">
         <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-          {{'subscriptions.createBtn' | translate}}
+          {{'subscriptions.create' | translate}}
         </safe-button>
     </div>
     <table mat-table [dataSource]="subscriptions">
         <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>{{'subscriptions.table.title' | translate}}</th>
+          <th mat-header-cell *matHeaderCellDef>{{'global.title' | translate}}</th>
           <td mat-cell *matCellDef="let element">{{ element.title }}</td>
         </ng-container>
         <ng-container matColumnDef="convertTo">
-            <th mat-header-cell *matHeaderCellDef>{{'subscriptions.table.convert' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{'global.convert' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.convertTo ? element.convertTo.name : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="channel">
-            <th mat-header-cell *matHeaderCellDef>{{'subscriptions.table.notify' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{'global.notify' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.channel ? element.channel.title : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="actions">
@@ -26,12 +26,12 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onEdit(element)">
                   <mat-icon>edit</mat-icon>
-                  {{'subscriptions.table.edit' | translate}}
+                  {{'action.edit' | translate}}
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item color="warn" (click)="onDelete(element)">
                   <mat-icon>delete</mat-icon>
-                  {{'subscriptions.table.delete' | translate}}
+                  {{'action.delete' | translate}}
                 </button>
               </mat-menu>
             </td>

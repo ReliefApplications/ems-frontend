@@ -9,6 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
 import { PositionAttributesComponent } from './position-attributes.component';
 import { SafePreviousButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SafePreviousButtonModule } from '@safe/builder';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    SafePreviousButtonModule
+    SafePreviousButtonModule,
+    TranslateModule
   ],
   exports: [PositionAttributesComponent]
 })

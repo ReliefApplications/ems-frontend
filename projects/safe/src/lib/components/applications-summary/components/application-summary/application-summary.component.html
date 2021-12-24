@@ -15,17 +15,17 @@
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="preview.emit()">
                 <mat-icon>preview</mat-icon>
-                {{'appSummary.preview' | translate}}
+                {{'action.preview' | translate}}
             </button>
             <button mat-menu-item (click)="clone.emit()" *ngIf="application.canUpdate">
                 <mat-icon>file_copy</mat-icon>
-                {{'appSummary.duplicate' | translate}}
+                {{'action.duplicate' | translate}}
             </button>
             <ng-container *ngIf="application.canDelete">
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="delete.emit()">
                     <mat-icon>delete</mat-icon>
-                    {{'appSummary.delete' | translate}}
+                    {{'action.delete' | translate}}
                 </button>
             </ng-container>
         </mat-menu>

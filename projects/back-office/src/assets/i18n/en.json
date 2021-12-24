@@ -20,7 +20,16 @@
         "convert": "Conver to",
         "general": "General",
         "username": "Username",
-        "channels": "Channels"
+        "channels": "Channels",
+        "apps": "Applications",
+        "description": "Description",
+        "actions": "Actions",
+        "settings": "Settings",
+        "search": "Search",
+        "template": "Template",
+        "label": "Label",
+        "true": "True",
+        "false": "False"
     },
 
     "action": {
@@ -40,7 +49,10 @@
         "apply": "Apply",
         "create": "Create",
         "update": "Update",
-        "invite": "Invite"
+        "invite": "Invite",
+        "saveClose": "Save and close",
+        "cancel": "Cancel",
+        "previous": "Previous"
     },
 
     "status": {
@@ -56,7 +68,8 @@
         "core": "Is core",
         "parent": "Parent form",
         "APIConf": "API Configuration",
-        "authType": "Authentication type"
+        "authType": "Authentication type",
+        "rolesSub": "Roles subscribed"
     },
 
     "nav": {
@@ -77,14 +90,18 @@
         "clear": "Clear Filters"
     },
 
+    "access": {
+        "description": "Update access permissions",
+        "canSee": "Can see",
+        "canUpdate": "Can update",
+        "canDelete": "Can delete"
+    },
+
     "apps": {
         "recent": "Recent applications",
         "all": "All applications",
-        "steps": {
-            "1": "Add a page",
-            "2": "Customize each of the pages created",
-            "3": "Click on create to finish the process"
-        }
+        "step2": "Customize each of the pages created",
+        "step3": "Click on create to finish the process"
     },
 
     "forms": {
@@ -137,7 +154,6 @@
         "create": "Create a pull job",
         "new": "New Pull job",
         "edit": "Edit Pull job",
-        "namePlaceholder": "Name your Pull job",
         "schedulePlaceholder": "Enter the schedule time for this Pull job",
         "mapping": "Mapping",
         "switch": "Switch mode",
@@ -147,145 +163,66 @@
 
     "appSummary": {
         "new": "New Application",
-        "created": "Created",
-        "preview": "Preview",
-        "duplicate": "Duplicate",
-        "delete": "Delete"
+        "created": "Created"
     },
 
     "profile": {
         "title": "Your profile",
-        "name": "Name",
-        "username": "Username",
-        "saveBtn": "Save changes",
-        "apps": "Applications",
-        "role": "Role",
         "position": "Position attributes",
         "fav": "Set as favorite"
     },
 
     "settings": {
-        "general": {
-            "title": "General",
-            "name": "Application name",
-            "namePlaceholder": "Enter a name for the application",
-            "id": "Application ID",
-            "status": "Status",
-            "description": "Description",
-            "descriptionPlaceholder": "Please enter a description for the application",
-            "saveBtn": "Save changes"
-        },
-        "actions": {
-            "title": "Actions",
-            "duplicateBtn": "Duplicate Application",
-            "deleteBtn": "Delete Application"
-        }
+        "id": "Application ID",
+        "description": "Please enter a description for the application"
     },
 
     "attributes": {
-        "createBtn": "Create a position category",
-        "table": {
-            "title": "Title",
-            "edit": "Edit",
-            "delete": "Delete"
-        },
-        "edit": {
-            "titleNew": "New position category",
-            "titleEdit": "Edit position category",
-            "title": "Title",
-            "titlePlaceholder": "Enter a title",
-            "close": "Close",
-            "confirm": "Confirm",
-            "create": "Create"
-        }
+        "create": "Create a position category",
+        "new": "New position category",
+        "edit": "Edit position category"
     },
 
     "channels": {
-        "createBtn": "Create a channel",
-        "table": {
-            "title": "Title",
-            "roles": "Roles subscribed",
-            "edit": "Edit",
-            "delete": "Delete"
-        },
-        "edit": {
-            "titleNew": "New channel",
-            "titleEdit": "Update channel",
-            "title": "Title",
-            "titlePlaceholder": "Enter a title",
-            "close": "Close",
-            "confirm": "Update channel",
-            "create": "Create"
-        }
+        "create": "Create a channel",
+        "new": "New channel",
+        "edit": "Edit channel"
     },
 
     "subscriptions": {
-        "createBtn": "Create a subscription",
-        "table": {
-            "title": "Subscription title",
-            "convert": "Conver to",
-            "notify": "Notify on",
-            "edit": "Edit",
-            "delete": "Delete"
-        },
-        "edit": {
-            "titleNew": "New subscription",
-            "titleEdit": "Edit subscription",
-            "title": "Title",
-            "titlePlaceholder": "Name your subscription",
-            "listen": "Listen to",
-            "listenPlaceholder": "Select a routing key",
-            "listenHint": "Message broker routing key",
-            "convert": "Conver to",
-            "notify": "Notify on",
-            "close": "Close",
-            "confirm": "Update",
-            "create": "Create"
-        }
+        "create": "Create a subscription",
+        "new": "New subscription",
+        "edit": "Edit subscription",
+        "listen": "Listen to",
+        "listenPlaceholder": "Select a routing key",
+        "listenHint": "Message broker routing key"
     },
 
     "addPage": {
-        "title": "Select what type of page you want to create",
-        "form": {
-            "title": "Available forms",
-            "select": "Select a form",
-            "createBtn": "Create a form"
-        },
-        "back": "Back",
-        "next": "Next"
+        "description": "Select what type of page you want to create"
     },
 
     "form": {
+        "title": "Available forms",
+        "select": "Select a form",
+        "create": "Create a form",
         "edit": "Edit form",
-        "previous": "Previous",
-        "next": "Next",
-        "save": "Save",
-        "name": "Name",
-        "record": "New record",
-        "cancel": "Cancel",
-        "saveClose": "Save and close"
+        "record": "New record"
     },
 
     "workflow": {
-        "name": "Name",
-        "newStep": "New step",
-        "home": {
-            "step1":"Add steps",
-            "step2": "Customize each of the steps created"
-        },
+        "new": "New step",
+        "step1":"Add steps",
+        "step2": "Customize each of the steps created",
         "select": "Select which type of step you want to create"
     },
 
-    "dashboard": {
-        "name": "Name",
-        "add": "Add a widget"
-    },
-
     "widgets": {
+        "add": "Add a widget",
+        "cols": "Cols",
+        "rows": "Rows",
         "map": {
-            "title": "New Map",
-            "general": "General",
-            "name": "Title",
+            "new": "New Map",
             "data": "Data set selection",
             "lat": "Latitude",
             "long": "Longitude",
@@ -297,9 +234,7 @@
             "field": {
                 "description": "Select data points below and drag them to 'selected fields' on the right",
                 "available": "Available fields",
-                "selected": "Selected fields",
-                "name": "Field name",
-                "label": "Label"
+                "selected": "Selected fields"
             },
             "sort": {
                 "field": "Sort field",
@@ -311,13 +246,9 @@
                 "logic": "Filter logic",
                 "or": "Or",
                 "and": "And",
-                "add": "Add new fiter",
-                "addGroup": "Add new filter group",
-                "field": "Field",
-                "operator": "Operator",
-                "value": "Value",
-                "true": "True",
-                "false": "False"
+                "new": "Add new fiter",
+                "newGroup": "Add new filter group",
+                "operator": "Operator"
             }
         }
     }

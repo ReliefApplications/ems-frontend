@@ -1,6 +1,6 @@
 <div class="grid-container">
     <div class="widget-choice-wrapper" *ngIf="canUpdate" [ngClass]="{'floating-widget-choice-wrapper': widgets.length > 0}">
-        <h2 *ngIf="widgets.length === 0">{{'dashboard.add' | translate}}</h2>
+        <h2 *ngIf="widgets.length === 0">{{'widgets.add' | translate}}</h2>
         <safe-widget-choice [floating]="widgets.length > 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)"></safe-widget-choice>
     </div>
     <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">

@@ -1,23 +1,58 @@
 {
-    "header": {
+    "global": {
+        "status": "******",
+        "name": "******",
+        "namePlaceholder": "******",
         "title": "******",
-        "menu": {
-            "profile": "******",
-            "switch": "******",
-            "logout": "******"
-        },
-        "notification": {
-            "read": "******",
-            "load": "******"
-        },
-        "toolbar": {
-            "close": "******",
-            "publish": "******"
-        }
+        "titlePlaceholder": "******",
+        "role": "******",
+        "roles": "******",
+        "email": "******",
+        "emailPlaceholder": "******",
+        "users": "******",
+        "core": "******",
+        "yes": "******",
+        "no": "******",
+        "schedule": "******",
+        "field": "******",
+        "value": "******",
+        "notify": "******",
+        "convert": "******",
+        "general": "******",
+        "username": "******",
+        "channels": "******",
+        "apps": "******",
+        "description": "******",
+        "actions": "******",
+        "settings": "******",
+        "search": "******",
+        "template": "******",
+        "label": "******",
+        "true": "******",
+        "false": "******"
     },
 
-    "sidenav": {
-        "addPage": "******"
+    "action": {
+        "edit": "******",
+        "view": "******",
+        "delete": "******",
+        "close": "******",
+        "back": "******",
+        "next": "******",
+        "save": "******",
+        "saveChg": "******",
+        "preview": "******",
+        "duplicate": "******",
+        "publish": "******",
+        "access": "******",
+        "clear": "******",
+        "apply": "******",
+        "create": "******",
+        "update": "******",
+        "invite": "******",
+        "saveClose": "******",
+        "cancel": "******",
+        "previous": "******"
     },
 
     "status": {
@@ -26,355 +61,168 @@
         "archived": "******"
     },
 
+    "table": {
+        "date": "******",
+        "history": "******",
+        "records": "******",
+        "core": "******",
+        "parent": "******",
+        "APIConf": "******",
+        "authType": "******",
+        "rolesSub": "******"
+    },
+
+    "nav": {
+        "title": "******",
+        "addPage": "******",
+        "profile": "******",
+        "switch": "******",
+        "logout": "******",
+        "readAll": "******",
+        "load": "******"
+    },
+
     "filter": {
         "search": "******",
         "show": "******",
         "hide": "******",
-        "date" : {
-            "title": "******",
-            "clear": "******",
-            "apply": "******"
-        },
-        "status": "******",
-        "core": {
-            "title": "******",
-            "yes": "******",
-            "no": "******"
-        },
-        "role": {
-            "title": "******"
-        },
+        "date" : "Date Range",
         "clear": "******"
+    },
+
+    "access": {
+        "description": "******",
+        "canSee": "******",
+        "canUpdate": "******",
+        "canDelete": "******"
     },
 
     "apps": {
         "recent": "******",
         "all": "******",
-        "table": {
-            "name": "******",
-            "date": "******",
-            "status": "******",
-            "users": "******",
-            "preview": "******",
-            "access": "******",
-            "duplicate": "******",
-            "delete": "******"
-        },
-        "home": {
-            "step1": "******",
-            "step2": "******",
-            "step3": "******"
-        }
+        "step2": "******",
+        "step3": "******"
     },
 
     "forms": {
-        "createBtn": "******",
-        "table": {
-            "name": "******",
-            "date": "******",
-            "status": "******",
-            "history": "******",
-            "records": "******",
-            "core": "******",
-            "parent": "******",
-            "edit": "******",
-            "view": "******",
-            "delete": "******"
-        }
-    },
-
-    "resources": {
-        "table": {
-            "name": "******",
-            "date": "******",
-            "records": "******",
-            "delete": "******"
-        }
+        "create": "******"
     },
 
     "users": {
-        "exportBtn": "******",
-        "inviteBtn": "******",
-        "table": {
-            "name": "******",
-            "username": "******",
-            "azure": "******",
-            "role": "******",
-            "edit": "******",
-            "delete": "******",
-            "deleteSelected": "******"
-        },
-        "invite": {
-            "title": "******",
-            "description": "******",
-            "getTemplate": "******",
-            "inviteNew": "******",
-            "email": "******",
-            "role": "******",
-            "close": "******",
-            "invite": "******"
-        },
-        "add":
-        {
-            "title": "******",
-            "email": "******",
-            "emailPlaceholder": "******",
-            "role": "******",
-            "roleDescription": "******",
-            "close": "******",
-            "invite": "******"
-        },
-        "edit": {
-            "title": "******",
-            "roles": "******",
-            "close": "******",
-            "update": "******"
-        }
+        "export": "******",
+        "invite": "******",
+        "delete": "******",
+        "description": "******",
+        "getTemplate": "******",
+        "inviteNew": "******",
+        "add": "******",
+        "roleDescription": "******",
+        "edit": "******"
     },
 
     "roles": {
-        "createBtn": "******",
-        "table": {
-            "title": "******",
-            "users": "******",
-            "edit": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "title": "******",
-            "name": "******",
-            "permissions": "******",
-            "channels": "******",
-            "close": "******",
-            "update": "******"
-        },
-        "add": {
-            "title": "******",
-            "name": "******",
-            "namePlaceholder": "******",
-            "close": "******",
-            "create": "******"
-        }
+        "create": "******",
+        "edit": "******",
+        "permissions": "******",
+        "add": "******"
     },
 
     "APIConf": {
-        "createBtn": "******",
-        "table": {
-            "name": "******",
-            "status": "******",
-            "auth": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "general": {
-                "title": "******",
-                "name": "******",
-                "namePlaceholder": "******",
-                "nameWarning": "******",
-                "status": "******",
-                "auth": "******"
-            },
-            "endpoint": {
-                "title": "******",
-                "main": "******",
-                "mainPlaceholder": "******",
-                "ping": "******",
-                "pingPlaceholder": "******",
-                "send": "******"
-            },
-            "auth": {
-                "title": "******",
-                "tokenURL": "******",
-                "tokenURLPlaceholder": "******",
-                "id": "******",
-                "idPlaceholder": "******",
-                "secret": "******",
-                "secretPlaceholder": "******",
-                "scope": "******",
-                "scopePlaceholder": "******",
-                "token": "******",
-                "tokenPlaceholder": "******"
-            },
-            "save": "******"
-        }
+        "create": "******",
+        "new": "******",
+        "warning": "******",
+        "endpoint": "******",
+        "main": "******",
+        "mainPlaceholder": "******",
+        "ping": "******",
+        "pingPlaceholder": "******",
+        "send": "******",
+        "auth": "******",
+        "tokenURL": "******",
+        "tokenURLPlaceholder": "******",
+        "id": "******",
+        "idPlaceholder": "******",
+        "secret": "******",
+        "secretPlaceholder": "******",
+        "scope": "******",
+        "scopePlaceholder": "******",
+        "token": "******",
+        "tokenPlaceholder": "******"
     },
 
     "pullJobs": {
-        "createBtn": "******",
-        "table": {
-            "name": "******",
-            "status": "******",
-            "API": "******",
-            "convert": "******",
-            "edit": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "titleNew": "******",
-            "titleEdit": "******",
-            "name": "******",
-            "namePlaceholder": "******",
-            "status": "******",
-            "schedule": "******",
-            "schedulePlaceholder": "******",
-            "API": "******",
-            "convert": "******",
-            "notify": "******",
-            "mapping": {
-                "title": "******",
-                "switch": "******",
-                "field": "******",
-                "value": "******",
-                "raw": "******"
-            },
-            "identifier": "******",
-            "close": "******",
-            "create": "******",
-            "update": "******"
-        }
+        "create": "******",
+        "new": "******",
+        "edit": "******",
+        "schedulePlaceholder": "******",
+        "mapping": "******",
+        "switch": "******",
+        "raw": "******",
+        "identifier": "******"
     },
 
     "appSummary": {
         "new": "******",
-        "created": "******",
-        "preview": "******",
-        "duplicate": "******",
-        "delete": "******"
+        "created": "******"
     },
 
     "profile": {
         "title": "******",
-        "name": "******",
-        "username": "******",
-        "saveBtn": "******",
-        "apps": "******",
-        "role": "******",
         "position": "******",
         "fav": "******"
     },
 
     "settings": {
-        "general": {
-            "title": "******",
-            "name": "******",
-            "namePlaceholder": "******",
-            "id": "******",
-            "status": "******",
-            "description": "******",
-            "descriptionPlaceholder": "******",
-            "saveBtn": "******"
-        },
-        "actions": {
-            "title": "******",
-            "duplicateBtn": "******",
-            "deleteBtn": "******"
-        }
+        "id": "******",
+        "description": "******"
     },
 
     "attributes": {
-        "createBtn": "******",
-        "table": {
-            "title": "******",
-            "edit": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "titleNew": "******",
-            "titleEdit": "******",
-            "title": "******",
-            "titlePlaceholder": "******",
-            "close": "******",
-            "confirm": "******",
-            "create": "******"
-        }
+        "create": "******",
+        "new": "******",
+        "edit": "******"
     },
 
     "channels": {
-        "createBtn": "******",
-        "table": {
-            "title": "******",
-            "roles": "******",
-            "edit": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "titleNew": "******",
-            "titleEdit": "******",
-            "title": "******",
-            "titlePlaceholder": "******",
-            "close": "******",
-            "confirm": "******",
-            "create": "******"
-        }
+        "create": "******",
+        "new": "******",
+        "edit": "******"
     },
 
     "subscriptions": {
-        "createBtn": "******",
-        "table": {
-            "title": "******",
-            "convert": "******",
-            "notify": "******",
-            "edit": "******",
-            "delete": "******"
-        },
-        "edit": {
-            "titleNew": "******",
-            "titleEdit": "******",
-            "title": "******",
-            "titlePlaceholder": "******",
-            "listen": "******",
-            "listenPlaceholder": "******",
-            "listenHint": "******",
-            "convert": "******",
-            "notify": "******",
-            "close": "******",
-            "confirm": "******",
-            "create": "******"
-        }
+        "create": "******",
+        "new": "******",
+        "edit": "******",
+        "listen": "******",
+        "listenPlaceholder": "******",
+        "listenHint": "******"
     },
 
     "addPage": {
-        "title": "******",
-        "form": {
-            "title": "******",
-            "select": "******",
-            "createBtn": "******"
-        },
-        "back": "******",
-        "next": "******"
+        "description": "******"
     },
 
     "form": {
+        "title": "******",
+        "select": "******",
+        "create": "******",
         "edit": "******",
-        "previous": "******",
-        "next": "******",
-        "save": "******",
-        "name": "******",
-        "record": "******",
-        "cancel": "******",
-        "saveClose": "******"
+        "record": "******"
     },
 
     "workflow": {
-        "name": "******",
-        "newStep": "******",
-        "home": {
-            "step1": "******",
-            "step2": "******"
-        },
+        "new": "******",
+        "step1":"Add steps",
+        "step2": "******",
         "select": "******"
     },
 
-    "dashboard": {
-        "name": "******",
-        "add": "******"
-    },
-
     "widgets": {
+        "add": "******",
+        "cols": "******",
+        "rows": "******",
         "map": {
-            "title": "******",
-            "general": "******",
-            "name": "******",
+            "new": "******",
             "data": "******",
             "lat": "******",
             "long": "******",
@@ -386,9 +234,7 @@
             "field": {
                 "description": "******",
                 "available": "******",
-                "selected": "******",
-                "name": "******",
-                "label": "******"
+                "selected": "******"
             },
             "sort": {
                 "field": "******",
@@ -400,13 +246,9 @@
                 "logic": "******",
                 "or": "******",
                 "and": "******",
-                "add": "******",
-                "addGroup": "******",
-                "field": "******",
-                "operator": "******",
-                "value": "******",
-                "true": "******",
-                "false": "******"
+                "new": "******",
+                "newGroup": "******",
+                "operator": "******"
             }
         }
     }

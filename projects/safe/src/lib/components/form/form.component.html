@@ -18,7 +18,7 @@
 </mat-tab-group>
 <div [id]="containerId"></div>
 <div *ngIf="surveyActive" class="survey-navigation">
-  <safe-button [disabled]="survey.isFirstPage" variant="primary" (click)="survey.prevPage()">{{ 'form.previous' | translate }}</safe-button>
-  <safe-button [disabled]="survey.isLastPage" variant="primary" (click)="survey.nextPage()">{{ 'form.next' | translate }}</safe-button>
-  <safe-button variant="primary" category="secondary" (click)="submit()">{{ 'form.save' | translate }}</safe-button>
+  <safe-button [disabled]="survey.isFirstPage" variant="primary" (click)="survey.prevPage()">{{ 'action.previous' | translate }}</safe-button>
+  <safe-button [disabled]="survey.isLastPage" variant="primary" (click)="survey.nextPage()">{{ 'action.next' | translate }}</safe-button>
+  <safe-button variant="primary" category="secondary" (click)="submit()">{{ 'action.save' | translate }}</safe-button>
 </div>

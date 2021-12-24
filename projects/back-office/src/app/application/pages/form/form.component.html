@@ -13,7 +13,7 @@
     <ng-container *ngIf="formActive">
       <form [formGroup]="tabNameForm" (ngSubmit)="saveName()">
         <mat-form-field>
-          <mat-label>{{'form.name' | translate}}</mat-label>
+          <mat-label>{{'global.name' | translate}}</mat-label>
           <input matInput formControlName="tabName" type="string">
         </mat-form-field>
         <safe-button type="submit" [isIcon]="true" icon="save" variant="primary" [disabled]="!tabNameForm.valid">

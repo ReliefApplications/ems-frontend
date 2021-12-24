@@ -1,17 +1,17 @@
-<h1 mat-dialog-title>{{'channels.edit.titleNew' | translate}}</h1>
+<h1 mat-dialog-title>{{'channels.new' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="channelForm">
         <mat-form-field>
-            <mat-label>{{'channels.edit.title' | translate}}</mat-label>
+            <mat-label>{{'global.title' | translate}}</mat-label>
             <input matInput formControlName="title" type="text"
-            [placeholder]="'channels.edit.titlePlaceholder' | translate"/>
+            [placeholder]="'global.titlePlaceholder' | translate"/>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'channels.edit.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="channelForm.value"
     cdkFocusInitial color="primary" [disabled]="!channelForm.valid">
-        {{'channels.edit.create' | translate}}
+        {{'action.create' | translate}}
     </button>
 </div>

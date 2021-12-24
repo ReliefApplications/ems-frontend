@@ -1,19 +1,19 @@
 <h1 mat-dialog-title>
-    {{(data.add ? 'attributes.edit.titleNew' : 'attributes.edit.titleEdit') | translate}}
+    {{(data.add ? 'attributes.new' : 'attributes.edit') | translate}}
 </h1>
 <div mat-dialog-content>
     <form [formGroup]="positionForm">
         <mat-form-field>
-            <mat-label>{{'attributes.edit.title' | translate}}</mat-label>
+            <mat-label>{{'global.title' | translate}}</mat-label>
             <input matInput formControlName="title" type="text"
-            [placeholder]="data.add ? ('attributes.edit.titlePlaceholder' | translate) : data.title"/>
+            [placeholder]="data.add ? ('global.titlePlaceholder' | translate) : data.title"/>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'attributes.edit.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="positionForm.value"
     cdkFocusInitial color="primary" [disabled]="!positionForm.valid">
-        {{(data.add ? 'attributes.edit.create' : 'attributes.edit.confirm') | translate}}
+        {{(data.add ? 'action.create' : 'action.update') | translate}}
     </button>
 </div>

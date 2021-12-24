@@ -19,7 +19,7 @@
             <ng-container *ngIf="!filters.at(i).value.logic">
                 <div [formGroup]="$any(filters.at(i))" class="filter-row">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{'widgets.query.filter.field' | translate}}</mat-label>
+                        <mat-label>{{'global.field' | translate}}</mat-label>
                         <mat-select formControlName="field" (selectionChange)="onSetField($event, i)">
                             <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
                         </mat-select>
@@ -33,14 +33,14 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
-                            <mat-label>{{'widgets.query.filter.value' | translate}}</mat-label>
+                            <mat-label>{{'global.value' | translate}}</mat-label>
                             <ng-container *ngIf="selectedFields[i].type === 'Int'">
                                 <input matInput formControlName="value" type="number" />
                             </ng-container>
                             <ng-container *ngIf="selectedFields[i].type === 'Boolean'">
                                 <mat-select formControlName="value">
-                                    <mat-option [value]="true">{{'widgets.query.filter.true' | translate}}</mat-option>
-                                    <mat-option [value]="false">{{'widgets.query.filter.false' | translate}}</mat-option>
+                                    <mat-option [value]="true">{{'global.true' | translate}}</mat-option>
+                                    <mat-option [value]="false">{{'global.false' | translate}}</mat-option>
                                 </mat-select>
                             </ng-container>
                             <ng-container *ngIf="['String', 'Time'].includes(selectedFields[i].type)">
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="filter-buttons">
-        <safe-button (click)="onAddFilter()" category="tertiary">{{'widgets.query.filter.add' | translate}}</safe-button>
-        <safe-button (click)="onAddFilterGroup()" category="tertiary">{{'widgets.query.filter.addGroup' | translate}}</safe-button>
+        <safe-button (click)="onAddFilter()" category="tertiary">{{'widgets.query.filter.new' | translate}}</safe-button>
+        <safe-button (click)="onAddFilterGroup()" category="tertiary">{{'widgets.query.filter.newGroup' | translate}}</safe-button>
     </div>
 </form>
