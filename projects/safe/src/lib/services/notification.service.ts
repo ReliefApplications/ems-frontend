@@ -7,39 +7,45 @@ import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/que
 import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../graphql/subscriptions';
 import { Notification } from '../models/notification.model';
 
+/** Pagination: number of items per query */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Shared notification service. Subscribes to Apollo to automatically fetch new notifications.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeNotificationService {
 
+  /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
+  /** Current notifications as observable */
+  get notifications$(): Observable<Notification[]> {
+    return this.notifications.asObservable();
+  }
+  /** Notifications query */
   public notificationsQuery!: QueryRef<GetNotificationsQueryResponse>;
-
+  /** Is there more notifications to load */
   private hasNextPage = new BehaviorSubject<boolean>(true);
-
+  /** Is there more notifcations to load as observable */
+  get hasNextPage$(): Observable<boolean> {
+    return this.hasNextPage.asObservable();
+  }
+  /** Stores if notifications where loaded previously */
   private firstLoad = true;
+  /** Stores previous id */
   private previousNotificationId: any;
-
+  /** Current page info */
   public pageInfo = {
     endCursor: ''
   };
 
   /**
-   * Returns the notification list as an Observable.
+   * Shared notification service. Subscribes to Apollo to automatically fetch new notifications.
+   *
+   * @param apollo Apollo client
    */
-  get notifications$(): Observable<Notification[]> {
-    return this.notifications.asObservable();
-  }
-
-  /**
-   * Returns has next page indicator.
-   */
-  get hasNextPage$(): Observable<boolean> {
-    return this.hasNextPage.asObservable();
-  }
-
   constructor(
     private apollo: Apollo,
   ) { }
@@ -84,7 +90,7 @@ export class SafeNotificationService {
   }
 
   /**
-   * Mark the given notification as seen and remove it from the array of notifications.
+   * Marks the given notification as seen and remove it from the array of notifications.
    *
    * @param notification Notification to mark as seen.
    */
@@ -104,7 +110,7 @@ export class SafeNotificationService {
   }
 
   /**
-   * Mark all notifications as seen and remove it from the array of notifications.
+   * Marks all notifications as seen and remove it from the array of notifications.
    */
   public markAllAsSeen(): void {
     const notificationsIds = this.notifications.getValue().map(x => x.id);
@@ -118,6 +124,9 @@ export class SafeNotificationService {
     });
   }
 
+  /**
+   * Loads more notifications.
+   */
   public fetchMore(): void {
     this.notificationsQuery.fetchMore({
       variables: {

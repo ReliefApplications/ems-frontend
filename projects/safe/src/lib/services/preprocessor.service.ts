@@ -6,15 +6,28 @@ import { mergeMap, map, take } from 'rxjs/operators';
 import { from } from 'rxjs';
 import get from 'lodash/get';
 
+/** Clones an array of data */
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
-
+/** List of question types with choices */
 const OPTION_QUESTIONS = ['dropdown', 'radiogroup', 'tagbox', 'checkbox', 'owner'];
 
+/**
+ * Shared preprocessor service.
+ * The preprocessor service is used by email service in order to transform the parameters of the email into text.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafePreprocessorService {
 
+  /**
+   * Shared preprocessor service.
+   * The preprocessor service is used by email service in order to transform the parameters of the email into text.
+   *
+   * @param queryBuilder Shared query builder service
+   * @param apollo Apollo client
+   * @param apiProxyService Shared API proxy service
+   */
   constructor(
     private queryBuilder: QueryBuilderService,
     private apollo: Apollo,
@@ -22,7 +35,7 @@ export class SafePreprocessorService {
   ) { }
 
   /**
-   * Preprocess text to replace keyword with corresponding data
+   * Preprocesses text to replace keyword with corresponding data
    *
    * @param text text to preprocess.
    * @param dataset optional dataset settings.

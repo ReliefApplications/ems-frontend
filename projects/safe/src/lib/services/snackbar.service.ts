@@ -1,23 +1,35 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 
+/** Default snackbar definition */
 const DEFAULT_SNACKBAR = {
   error: false,
   duration: 5000,
   action: 'Dismiss'
 };
 
+/** Snackbar interface */
 interface SnackBar {
   duration?: number;
   error?: boolean;
   action?: string;
 }
 
+/**
+ * Shared snackbar service.
+ * Snackbar is a brief notification that appears for a short time as a popup.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeSnackBarService {
 
+  /**
+   * Shared snackbar service.
+   * Snackbar is a brief notification that appears for a short time as a popup.
+   *
+   * @param snackBar Material snackbar service
+   */
   constructor(
     private snackBar: MatSnackBar
   ) { }

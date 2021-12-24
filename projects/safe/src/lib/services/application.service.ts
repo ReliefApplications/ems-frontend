@@ -54,35 +54,39 @@ import { ApplicationEditedSubscriptionResponse, ApplicationUnlockedSubscriptionR
   APPLICATION_EDITED_SUBSCRIPTION, APPLICATION_UNLOCKED_SUBSCRIPTION } from '../graphql/subscriptions';
 import { SafeAuthService } from './auth.service';
 
+/**
+ * Shared application service. Handles events of opened application.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeApplicationService {
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  /** Current application */
   private application = new BehaviorSubject<Application | null>(null);
-  private applicationSubscription?: Subscription;
-  private notificationSubscription?: Subscription;
-  private lockSubscription?: Subscription;
-  private environment: any;
-
-  /**
-   * Return the application as an Observable.
-   */
+  /** Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
   }
-
+  /** Application query subscription */
+  private applicationSubscription?: Subscription;
+  /** Notifications query subscription */
+  private notificationSubscription?: Subscription;
+  /** Edit right subscription */
+  private lockSubscription?: Subscription;
+  /** Current environment */
+  private environment: any;
+  /** Path to download application users */
   get usersDownloadPath(): string {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
-
+  /** Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
     return `upload/application/${id}/invite`;
   }
-
+  /** Edit status of the application */
   get isUnlocked(): boolean {
     const application = this.application.getValue();
     if (application) {
@@ -94,6 +98,15 @@ export class SafeApplicationService {
     return true;
   }
 
+  /**
+   * Shared application service. Handles events of opened application.
+   *
+   * @param environment Current environment
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -104,8 +117,12 @@ export class SafeApplicationService {
     this.environment = environment;
   }
 
-  /*  Get the application from the database, using GraphQL.
-  */
+  /**
+   * Gets the application from the database, using GraphQL.
+   *
+   * @param id application id
+   * @param asRole Role to use to preview
+   */
   loadApplication(id: string, asRole?: string): void {
     this.applicationSubscription = this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
@@ -151,9 +168,9 @@ export class SafeApplicationService {
     });
   }
 
-  /*
-    Leave application and unsubscribe to application changes.
-  */
+  /**
+   * Leaves application and unsubscribe to application changes.
+   */
   leaveApplication(): void {
     const application = this.application.getValue();
     this.application.next(null);
@@ -169,9 +186,9 @@ export class SafeApplicationService {
     }).subscribe();
   }
 
-  /*
-    Lock application edition.
-  */
+  /**
+   * Locks application edition.
+   */
   lockApplication(): void {
     const application = this.application.getValue();
     this.apollo.mutate<ToggleApplicationLockMutationResponse>({
@@ -193,9 +210,11 @@ export class SafeApplicationService {
     });
   }
 
-  /*
-    Edit Application
-  */
+  /**
+   * Edits current application.
+   *
+   * @param value New application value.
+   */
   editApplication(value: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -225,8 +244,9 @@ export class SafeApplicationService {
     }
   }
 
-  /* Change the application's status and navigate to the applications list
-  */
+  /**
+   * Updates the application status to published.
+   */
   publish(): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -245,8 +265,11 @@ export class SafeApplicationService {
     }
   }
 
-  /* Delete a page and the associated content.
-  */
+  /**
+   * Deletes a page and the associated content.
+   *
+   * @param id id of the page
+   */
   deletePage(id: string): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -271,8 +294,11 @@ export class SafeApplicationService {
     }
   }
 
-  /* Reorder the pages, using material Drag n Drop.
-  */
+  /**
+   * Reorders the pages.
+   *
+   * @param pages new pages order
+   */
   reorderPages(pages: string[]): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -289,8 +315,11 @@ export class SafeApplicationService {
     }
   }
 
-  /* Update a specific page name in the opened application.
-  */
+  /**
+   * Updates a specific page name in the opened application.
+   *
+   * @param page updated page
+   */
   updatePageName(page: Page): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -306,16 +335,19 @@ export class SafeApplicationService {
     }
   }
 
-  /* Add a new page to the opened application.
-  */
-  addPage(value: any): void {
+  /**
+   * Adds a new page to the opened application.
+   *
+   * @param page new page
+   */
+  addPage(page: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddPageMutationResponse>({
         mutation: ADD_PAGE,
         variables: {
-          type: value.type,
-          content: value.content,
+          type: page.type,
+          content: page.content,
           application: application.id
         }
       }).subscribe(res => {
@@ -324,9 +356,9 @@ export class SafeApplicationService {
           const content = res.data.addPage.content;
           const newApplication = { ...application, pages: application.pages?.concat([res.data.addPage]) };
           this.application.next(newApplication);
-          this.router.navigate([(value.type === ContentType.form) ?
-            `/applications/${application.id}/${value.type}/${res.data.addPage.id}` :
-            `/applications/${application.id}/${value.type}/${content}`]);
+          this.router.navigate([(page.type === ContentType.form) ?
+            `/applications/${application.id}/${page.type}/${res.data.addPage.id}` :
+            `/applications/${application.id}/${page.type}/${content}`]);
         } else {
           this.snackBar.openSnackBar(NOTIFICATIONS.objectNotCreated('page', res.errors ? res.errors[0].message : ''), { error: true });
         }
@@ -334,20 +366,23 @@ export class SafeApplicationService {
     }
   }
 
-  /* Add a new role to the opened application.
-  */
-  addRole(value: any): void {
+  /**
+   * Adds a new role to the opened application.
+   *
+   * @param role new role
+   */
+  addRole(role: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddRoleMutationResponse>({
         mutation: ADD_ROLE,
         variables: {
-          title: value.title,
+          title: role.title,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'role'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(role.title, 'role'));
           const newApplication = { ...application, roles: application.roles?.concat([res.data.addRole]) };
           this.application.next(newApplication);
         }
@@ -355,8 +390,12 @@ export class SafeApplicationService {
     }
   }
 
-  /* Edit an existing role.
-  */
+  /**
+   * Edits an existing role.
+   *
+   * @param role role to edit
+   * @param value new value
+   */
   editRole(role: Role, value: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -398,8 +437,11 @@ export class SafeApplicationService {
     }
   }
 
-  /* Delete an existing role.
-  */
+  /**
+   * Deletes an existing role.
+   *
+   * @param role Role to delete.
+   */
   deleteRole(role: Role): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -416,8 +458,12 @@ export class SafeApplicationService {
     }
   }
 
-  /* Delete users to the opened application.
-  */
+  /**
+   * Deletes users of the opened application. Users are only removed from the application, but are still active.
+   *
+   * @param ids user ids to remove
+   * @param resolved status of the request
+   */
   deleteUsersFromApplication(ids: any[], resolved: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -441,17 +487,20 @@ export class SafeApplicationService {
     }
   }
 
-  /* Invite an user to the opened application.
-  */
-  inviteUser(value: any): void {
+  /**
+   * Invites an user to the application.
+   *
+   * @param user new user
+   */
+  inviteUser(user: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddRoleToUsersMutationResponse>({
         mutation: ADD_ROLE_TO_USERS,
         variables: {
-          usernames: value.email,
-          role: value.role,
-          ...value.positionAttributes && { positionAttributes: value.positionAttributes.filter((x: any) => x.value) }
+          usernames: user.email,
+          role: user.role,
+          ...user.positionAttributes && { positionAttributes: user.positionAttributes.filter((x: any) => x.value) }
         }
       }).subscribe((res: any) => {
         if (res.data) {
@@ -465,8 +514,12 @@ export class SafeApplicationService {
     }
   }
 
-  /* Edit an user that has access to the application.
-  */
+  /**
+   * Edits an user that has access to the application.
+   *
+   * @param user user to edit
+   * @param value new value
+   */
   editUser(user: User, value: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -496,20 +549,23 @@ export class SafeApplicationService {
     }
   }
 
-  /* Add a new position to the opened application.
-  */
-  addPositionAttributeCategory(value: any): void {
+  /**
+   * Adds a new position to the opened application.
+   *
+   * @param category new category
+   */
+  addPositionAttributeCategory(category: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddPositionAttributeCategoryMutationResponse>({
         mutation: ADD_POSITION_ATTRIBUTE_CATEGORY,
         variables: {
-          title: value.title,
+          title: category.title,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(value.title, 'position category'));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated(category.title, 'position category'));
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.concat([res.data.addPositionAttributeCategory])
@@ -520,20 +576,23 @@ export class SafeApplicationService {
     }
   }
 
-  /* Remove a position from the opened application
-  */
-  deletePositionAttributeCategory(positionCategory: PositionAttributeCategory): void {
+  /**
+   * Removes a position from the opened application.
+   *
+   * @param category category to remove
+   */
+  deletePositionAttributeCategory(category: PositionAttributeCategory): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeletePositionAttributeCategoryMutationResponse>({
         mutation: DELETE_POSITION_ATTRIBUTE_CATEGORY,
         variables: {
-          id: positionCategory.id,
+          id: category.id,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(positionCategory.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(category.title));
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.filter(x =>
@@ -545,15 +604,19 @@ export class SafeApplicationService {
     }
   }
 
-  /* Edit a position's name from the opened application
-  */
-  editPositionAttributeCategory(value: any, positionCategory: PositionAttributeCategory): void {
+  /**
+   * Edits a position's name from the opened application.
+   *
+   * @param value new value
+   * @param category category to edit
+   */
+  editPositionAttributeCategory(value: any, category: PositionAttributeCategory): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<EditPositionAttributeCategoryMutationResponse>({
         mutation: EDIT_POSITION_ATTRIBUTE_CATEGORY,
         variables: {
-          id: positionCategory.id,
+          id: category.id,
           application: application.id,
           title: value.title
         }
@@ -565,7 +628,7 @@ export class SafeApplicationService {
           const newApplication: Application = {
             ...application,
             positionAttributeCategories: application.positionAttributeCategories?.map(pos => {
-              if (pos.title === positionCategory.title) {
+              if (pos.title === category.title) {
                 pos = { ...pos, title: res.data?.editPositionAttributeCategory.title };
               }
               return pos;
@@ -577,28 +640,36 @@ export class SafeApplicationService {
     }
   }
 
-  /* Add a new channel to the application.
-  */
-  addChannel(value: { title: string }): void {
+  /**
+   * Adds a new channel to the application.
+   *
+   * @param channel new channel
+   */
+  addChannel(channel: { title: string }): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddChannelMutationResponse>({
         mutation: ADD_CHANNEL,
         variables: {
-          title: value.title,
+          title: channel.title,
           application: application.id
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('channel', channel.title));
           const newApplication: Application = { ...application, channels: application.channels?.concat([res.data.addChannel]) };
           this.application.next(newApplication);
         }
       });
     }
   }
-  /* Edit a channel's title
-    */
+
+  /**
+   * Edits a channel's title.
+   *
+   * @param channel channel to edit
+   * @param title new title
+   */
   editChannel(channel: Channel, title: string): void {
     const application = this.application.getValue();
     this.apollo.mutate<EditChannelMutationResponse>({
@@ -623,8 +694,11 @@ export class SafeApplicationService {
       });
   }
 
-  /* Remove a channel from the system with all notifications linked to it
-  */
+  /**
+   * Removes a channel from the system with all notifications linked to it.
+   *
+   * @param channel channel to delete
+   */
   deleteChannel(channel: Channel): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -646,23 +720,26 @@ export class SafeApplicationService {
     }
   }
 
-  /* Add a new subscription to the application.
-  */
-  addSubscription(value: { routingKey: string; title: string; convertTo: string; channel: string }): void {
+  /**
+   * Adds a new subscription to the application.
+   *
+   * @param subscription new subscription
+   */
+  addSubscription(subscription: { routingKey: string; title: string; convertTo: string; channel: string }): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<AddSubscriptionMutationResponse>({
         mutation: ADD_SUBSCRIPTION,
         variables: {
           application: application.id,
-          routingKey: value.routingKey,
-          title: value.title,
-          convertTo: value.convertTo,
-          channel: value.channel
+          routingKey: subscription.routingKey,
+          title: subscription.title,
+          convertTo: subscription.convertTo,
+          channel: subscription.channel
         }
       }).subscribe(res => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', value.title));
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('subscription', subscription.title));
           const newApplication: Application = {
             ...application,
             subscriptions: application.subscriptions?.concat([res.data.addSubscription])
@@ -674,27 +751,34 @@ export class SafeApplicationService {
   }
 
 
-  /* Delete subscription from application.
-  */
-  deleteSubscription(value: any): void {
+  /**
+   * Deletes subscription from application.
+   *
+   * @param subscription subscription to delete
+   */
+  deleteSubscription(subscription: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo.mutate<DeleteSubscriptionMutationResponse>({
         mutation: DELETE_SUBSCRIPTION,
         variables: {
           applicationId: application.id,
-          routingKey: value
+          routingKey: subscription
         }
       }).subscribe(res => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Subscription'));
-        const newApplication = { ...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== value) };
+        const newApplication = { ...application, subscriptions: application.subscriptions?.filter(sub => sub.routingKey !== subscription) };
         this.application.next(newApplication);
       });
     }
   }
 
-  /* Edit existing subscription
-  */
+  /**
+   * Edits existing subscription.
+   *
+   * @param value new value
+   * @param previousSubscription previous subscription
+   */
   editSubscription(value: any, previousSubscription: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {

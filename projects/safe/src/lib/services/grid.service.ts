@@ -4,25 +4,33 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 
+/** List of multi select question types */
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
+/** List of disabled fields */
 const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
-
+/** Transforms a list with nested lists into a flat list */
 const flatDeep = (arr: any[]): any[] => arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
 
+/**
+ * Shared grid service for the dashboards.
+ * Exposes the available tiles, and find the settings from a widget.
+ */
 @Injectable({
   providedIn: 'root',
 })
-/*  Grid service for the dashboards.
-  Expose the available tiles, and find the settings from a widget.
-*/
 export class SafeGridService {
 
+  /**
+   * Shared grid service for the dashboards.
+   * Exposes the available tiles, and find the settings from a widget.
+   *
+   * @param formBuilder Angular form builder
+   * @param apiProxyService Shared API proxy service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private apiProxyService: SafeApiProxyService,
   ) { }
-
-  // === FIELDS ===
 
   /**
    * Generates list of fields for the grid, based on grid parameters.
@@ -30,6 +38,7 @@ export class SafeGridService {
    * @param fields list of fields saved in settings.
    * @param prefix prefix of the field.
    * @param disabled disabled status of the field, can overwrite the meta one.
+   * @param options additional options ( disable / filter )
    * @returns List of fields for the grid.
    */
   public getFields(
@@ -214,8 +223,6 @@ export class SafeGridService {
       text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
     })) : [];
   }
-
-  // === EDITION ===
 
   /**
    * Creates form group for inline edition.

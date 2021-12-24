@@ -12,6 +12,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom.service';
 
+/**
+ * Inits the resource question component of for survey.
+ *
+ * @param survey Survey instance
+ * @param domService Shared DOM service
+ * @param apollo Apollo client
+ * @param dialog Material dom service
+ * @param formBuilder Angular form service
+ */
 export const init = (survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void => {
 
   const getResourceById = (data: {

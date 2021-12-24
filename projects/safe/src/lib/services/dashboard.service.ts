@@ -4,20 +4,30 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
 
+/**
+ * Shared dashboard service. Handles dashboard events.
+ * TODO: rename all tiles into widgets
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeDashboardService {
 
-  // === LIST OF DEFAULT WIDGETS AVAILABLE ===
-  public availableTiles = WIDGET_TYPES;
-
+  /** List of available widgets */
+  public availableWidgets = WIDGET_TYPES;
+  /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
-
+  /** Current dashboard as observable */
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();
   }
 
+  /**
+   * Shared dashboard service. Handles dashboard events.
+   * TODO: rename all tiles into widgets
+   *
+   * @param apollo Apollo client
+   */
   constructor(private apollo: Apollo) {}
 
   /**
@@ -124,7 +134,7 @@ export class SafeDashboardService {
   * @returns Tile settings template.
   */
   public findSettingsTemplate(tile: any): any {
-    const availableTile = this.availableTiles.find(x => x.component === tile.component);
+    const availableTile = this.availableWidgets.find(x => x.component === tile.component);
     return availableTile && availableTile.settingsTemplate ? availableTile.settingsTemplate : null;
   }
 }

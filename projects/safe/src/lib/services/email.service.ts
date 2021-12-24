@@ -4,11 +4,23 @@ import { NOTIFICATIONS } from '../const/notifications';
 import { SafePreprocessorService } from './preprocessor.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 
+/**
+ * Shared email service.
+ * Used by widgets to open email clients and creates email text.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeEmailService {
 
+  /**
+   * Shared email service.
+   * Used by widgets to open email clients and creates email text.
+   *
+   * @param snackBar Shared snackbar service
+   * @param preprocessor Shared preprocessor service
+   * @param clipboard Angular CDK clipboard service
+   */
   constructor(
     private snackBar: SafeSnackBarService,
     private preprocessor: SafePreprocessorService,

@@ -7,21 +7,35 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AccountInfo } from '@azure/msal-common';
 import { ApolloQueryResult } from '@apollo/client';
 
+/**
+ * Shared authentication service.
+ */
 @Injectable({
   providedIn: 'root'
 })
-/*  Auth service, using Msal service for Azure AD.
-  Authentication and Authorization methods.
-*/
 export class SafeAuthService {
 
-  // === LOGGED USER ===
+  /** Current user */
   public user = new BehaviorSubject<User | null>(null);
+  /** Current user as observable */
+  get user$(): Observable<User | null> {
+    return this.user.asObservable();
+  }
+  /** Current account info */
   public account: AccountInfo | null = null;
-
-  // if we have the modal confirmation open on form builder we cannot logout until close modal
+  /** Current user value */
+  get userValue(): User | null {
+    return this.user.getValue();
+  }
+  /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
+  /**
+   * Shared authentication service.
+   *
+   * @param msalService MSAL service
+   * @param apollo Apollo client
+   */
   constructor(
     private msalService: MsalService,
     private apollo: Apollo
@@ -29,9 +43,14 @@ export class SafeAuthService {
     this.checkAccount();
   }
 
-  /*  Check if user has permission.
-    If user profile is empty, try to get it.
-  */
+  /**
+   * Checkes if user has permission.
+   * If user profile is empty, tries to get it.
+   *
+   * @param permission permission.s required
+   * @param global is the permission global or not
+   * @returns Does the user have access
+   */
   userHasClaim(permission: string | string[], global: boolean = true): boolean {
     const user = this.user.getValue();
     if (user) {
@@ -50,9 +69,10 @@ export class SafeAuthService {
     }
   }
 
-  /*  Check if user is admin.
-    If user profile is empty, try to get it.
-  */
+  /**
+   * Checkes if user is admin.
+   * If user profile is empty, tries to get it.
+   */
   get userIsAdmin(): boolean {
     const user = this.user.getValue();
     if (user) {
@@ -62,39 +82,32 @@ export class SafeAuthService {
     }
   }
 
-  /*  Clean user profile, and logout.
-  */
+  /**
+   * Cleans user profile, and logout.
+   */
   logout(): void {
     this.msalService.logoutRedirect();
     this.account = null;
     this.user.next(null);
   }
 
-  /*  Get the Azure AD profile.
-  */
+  /**
+   * Gets the Azure AD profile.
+   */
   checkAccount(): void {
     this.account = this.msalService.instance.getActiveAccount();
   }
 
-  /*  Get the profile from the database, using GraphQL.
-  */
+  /**
+   * Gets the profile from the database, using GraphQL.
+   *
+   * @returns Apollo query of profile
+   */
   getProfile(): Observable<ApolloQueryResult<GetProfileQueryResponse>> {
     return this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all'
     });
-  }
-
-  /*  Return the user as an Observable.
-  */
-  get user$(): Observable<User | null> {
-    return this.user.asObservable();
-  }
-
-  /* Return the logged user value.
-  */
-  get userValue(): User | null {
-    return this.user.getValue();
   }
 }
