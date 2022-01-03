@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     MatDialogModule,
     MatRadioModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslateModule
   ],
   exports: [
     SafeExportComponent

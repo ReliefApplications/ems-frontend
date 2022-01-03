@@ -17,7 +17,7 @@
         "field": "Field",
         "value": "Value",
         "notify": "Notify on",
-        "convert": "Conver to",
+        "convert": "Convert to",
         "general": "General",
         "username": "Username",
         "channels": "Channels",
@@ -57,7 +57,9 @@
         "cancel": "Cancel",
         "previous": "Previous",
         "previewRevert": "Preview and revert",
-        "showMore": "Show more"
+        "showMore": "Show more",
+        "export": "Export",
+        "convert": "Convert"
     },
 
     "status": {
@@ -288,5 +290,15 @@
         "pastVersion": "Past version",
         "currentVersion": "Current version",
         "fromResource": "From resource"
+    },
+
+    "export": {
+        "records": "Select records to export",
+        "allRecords": "All records in view",
+        "selectedRecords": "Only selected records",
+        "columns": "Select columns to export",
+        "allColumns": "All available columns",
+        "visibleColumns": "Only visible columns",
+        "format": "Select export format"
     }
 }
