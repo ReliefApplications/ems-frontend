@@ -32,7 +32,13 @@
         "false": "False",
         "events": "Events",
         "data": "Data",
-        "dataSrc": "Data source"
+        "dataSrc": "Data source",
+        "display": "Display",
+        "position": "Position",
+        "text": "Text",
+        "legend": "Legend",
+        "orientation": "Orientation",
+        "aggregation": "Aggregation"
     },
 
     "action": {
@@ -59,7 +65,8 @@
         "previewRevert": "Preview and revert",
         "showMore": "Show more",
         "export": "Export",
-        "convert": "Convert"
+        "convert": "Convert",
+        "add": "Add"
     },
 
     "status": {
@@ -82,7 +89,8 @@
         "parent": "Parent form",
         "APIConf": "API Configuration",
         "authType": "Authentication type",
-        "rolesSub": "Roles subscribed"
+        "rolesSub": "Roles subscribed",
+        "azure": "Azure"
     },
 
     "nav": {
@@ -93,6 +101,18 @@
         "logout": "Logout",
         "readAll": "Mark all as read",
         "load": "Load more"
+    },
+
+    "sidenav": {
+        "builder": "Site builder",
+        "apps": "My applications",
+        "advanced": "Advanced settings",
+        "forms": "Forms",
+        "resources": "Resources",
+        "administration": "Administration",
+        "subscriptions": "Subscriptions",
+        "Attributes": "Attributes",
+        "pullJobs": "Pull jobs"
     },
 
     "filter": {
@@ -244,6 +264,7 @@
             "zoom": "Zoom"
         },
         "scheduler": {
+            "new": "New scheduler",
             "useRecords": "Use resource records",
             "useForm": "Use form records",
             "title": "Title field",
@@ -273,6 +294,17 @@
                 "newGroup": "Add new filter group",
                 "operator": "Operator"
             }
+        },
+        "grid": {
+            "save": "Save Layout as default",
+            "reset": "Reset default Layout",
+            "invalid": "Invalid grid configuration",
+            "noRecord": "No record detected",
+            "item": "{{number}} item",
+            "items": "{{number}} items"
+        },
+        "chart": {
+            "type": "Type"
         }
     },
 

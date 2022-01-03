@@ -32,7 +32,13 @@
         "false": "******",
         "events": "******",
         "data": "******",
-        "dataSrc": "******"
+        "dataSrc": "******",
+        "display": "******",
+        "position": "******",
+        "text": "******",
+        "legend": "******",
+        "orientation": "******",
+        "aggregation": "******"
     },
 
     "action": {
@@ -57,7 +63,10 @@
         "cancel": "******",
         "previous": "******",
         "previewRevert": "******",
-        "showMore": "******"
+        "showMore": "******",
+        "export": "******",
+        "convert": "******",
+        "add": "******"
     },
 
     "status": {
@@ -80,7 +89,8 @@
         "parent": "******",
         "APIConf": "******",
         "authType": "******",
-        "rolesSub": "******"
+        "rolesSub": "******",
+        "azure": "******"
     },
 
     "nav": {
@@ -91,6 +101,18 @@
         "logout": "******",
         "readAll": "******",
         "load": "******"
+    },
+
+    "sidenav": {
+        "builder": "******",
+        "apps": "******",
+        "advanced": "******",
+        "forms": "******",
+        "resources": "******",
+        "administration": "******",
+        "subscriptions": "******",
+        "Attributes": "******",
+        "pullJobs": "******"
     },
 
     "filter": {
@@ -242,6 +264,7 @@
             "zoom": "******"
         },
         "scheduler": {
+            "new": "******",
             "useRecords": "******",
             "useForm": "******",
             "title": "******",
@@ -271,6 +294,17 @@
                 "newGroup": "******",
                 "operator": "******"
             }
+        },
+        "grid": {
+            "save": "******",
+            "reset": "******",
+            "invalid": "******",
+            "noRecord": "******",
+            "item": "******",
+            "items": "******"
+        },
+        "chart": {
+            "type": "******"
         }
     },
 
@@ -288,5 +322,15 @@
         "pastVersion": "******",
         "currentVersion": "******",
         "fromResource": "******"
+    },
+
+    "export": {
+        "records": "******",
+        "allRecords": "******",
+        "selectedRecords": "******",
+        "columns": "******",
+        "allColumns": "******",
+        "visibleColumns": "******",
+        "format": "******"
     }
 }

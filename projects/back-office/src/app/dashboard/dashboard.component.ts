@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -70,7 +71,21 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor(translate: TranslateService) {
+    translate.stream('ID').subscribe(() => {
+      this.navGroups[0].name = translate.instant('sidenav.builder');
+      this.navGroups[0].navItems[0].name = translate.instant('sidenav.apps');
+      this.navGroups[1].name = translate.instant('sidenav.advanced');
+      this.navGroups[1].navItems[0].name = translate.instant('sidenav.forms');
+      this.navGroups[1].navItems[1].name = translate.instant('sidenav.resources');
+      this.navGroups[2].name = translate.instant('sidenav.administration');
+      this.navGroups[2].navItems[0].name = translate.instant('global.users');
+      this.navGroups[2].navItems[1].name = translate.instant('global.roles');
+      this.navGroups[2].navItems[2].name = translate.instant('table.APIConf');
+      this.navGroups[2].navItems[3].name = translate.instant('sidenav.pullJobs');
+      console.log(this.navGroups);
+    })
+  }
 
   ngOnInit(): void {}
 }

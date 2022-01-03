@@ -11,23 +11,23 @@
     <ng-template kendoGridToolbarTemplate position="top">
         <input placeholder="Search in text fields..." kendoTextBox [formControl]="search" class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">Add</button>
-        <button *ngIf="exportable" kendoButton (click)="onExport()">Export</button>
+        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' | translate}}</button>
+        <button *ngIf="exportable" kendoButton (click)="onExport()">{{'action.export' | translate}}</button>
         <ng-container *ngIf="editable">
-            <button kendoButton (click)="onSave()" [disabled]="!hasChanges">Save</button>
-            <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">Cancel</button>
+            <button kendoButton (click)="onSave()" [disabled]="!hasChanges">{{'action.save' | translate}}</button>
+            <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">{{'action.cancel' | translate}}</button>
         </ng-container>
         <button *ngIf="filterable" matTooltip="Click to toggle visibility of filter" kendoButton icon="eye"
-            (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
+            (click)="onToggleFilter()">{{(showFilter ? 'filter.hide' : 'filter.hide') | translate}}</button>
         <!-- ADMIN FEATURES -->
         <ng-container *ngIf="admin">
             <span kendotooltip>
                 <button title="This will save this layout as the default one for all users" class='k-button'
-                    (click)="action.emit({ action: 'saveLayout' })">Save Layout as default</button>
+                    (click)="action.emit({ action: 'saveLayout' })">{{'widgets.grid.save' | translate}}</button>
             </span>
             <span kendotooltip>
                 <button title="This will erase current layout with default layout" class='k-button'
-                    (click)="action.emit({ action: 'resetLayout' })">Reset default Layout</button>
+                    (click)="action.emit({ action: 'resetLayout' })">{{'widgets.grid.reset' | translate}}</button>
             </span>
         </ng-container>
         <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">
@@ -106,8 +106,9 @@
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
                                 matTooltip="Open detail"
                                 (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
-                                {{dataItem[field.name].length}} item<span
-                                    *ngIf="dataItem[field.name].length > 1">s</span>
+                                {{(dataItem[field.name].length > 1 ? 'widgets.grid.items' : 'widgets.grid.item') | translate : {
+                                    number: dataItem[field.name].length
+                                } }}
                             </div>
                         </div>
                     </ng-template>
@@ -324,6 +325,6 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ error ? 'Invalid grid configuration' : 'No record detected' }}
+        {{ (error ? 'widgets.grid.invalid' : 'widgets.grid.noRecord') | translate }}
     </ng-template>
 </kendo-grid>
