@@ -83,7 +83,6 @@ export class DashboardComponent implements OnInit {
       this.navGroups[2].navItems[1].name = translate.instant('global.roles');
       this.navGroups[2].navItems[2].name = translate.instant('table.APIConf');
       this.navGroups[2].navItems[3].name = translate.instant('sidenav.pullJobs');
-      console.log(this.navGroups);
     })
   }
 

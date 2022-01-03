@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Application, SafeConfirmModalComponent, ContentType, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
@@ -29,7 +30,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -65,32 +67,32 @@ export class ApplicationComponent implements OnInit, OnDestroy {
           );
           adminNavItems = adminNavItems.concat([
             {
-              name: 'Settings',
+              name: this.translate.instant('global.settings'),
               path: './settings/edit',
               icon: 'settings'
             },
             {
-              name: 'Users',
+              name: this.translate.instant('global.users'),
               path: './settings/users',
               icon: 'supervisor_account'
             },
             {
-              name: 'Roles',
+              name: this.translate.instant('global.roles'),
               path: './settings/roles',
               icon: 'admin_panel_settings'
             },
             {
-              name: 'Attributes',
+              name: this.translate.instant('sidenav.attributes'),
               path: './settings/position',
               icon: 'manage_accounts'
             },
             {
-              name: 'Channels',
+              name: this.translate.instant('global.channels'),
               path: './settings/channels',
               icon: 'edit_notifications'
             },
             {
-              name: 'Subscriptions',
+              name: this.translate.instant('sidenav.subscriptions'),
               path: './settings/subscriptions',
               icon: 'move_to_inbox'
             }
@@ -98,11 +100,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         }
         this.navGroups = [
           {
-            name: 'Display',
+            name: this.translate.instant('global.display'),
             navItems: displayNavItems
           },
           {
-            name: 'Administration',
+            name: this.translate.instant('sidenav.administration'),
             navItems: adminNavItems
           }
         ];
