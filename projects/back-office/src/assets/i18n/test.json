@@ -55,13 +55,21 @@
         "invite": "******",
         "saveClose": "******",
         "cancel": "******",
-        "previous": "******"
+        "previous": "******",
+        "previewRevert": "******",
+        "showMore": "******"
     },
 
     "status": {
         "active": "******",
         "pending": "******",
         "archived": "******"
+    },
+
+    "date": {
+        "loadFromCache": "******",
+        "created": "******",
+        "modified": "******"
     },
 
     "table": {
@@ -264,5 +272,21 @@
                 "operator": "******"
             }
         }
+    },
+
+    "history": {
+        "download": "******"
+    },
+
+    "record": {
+        "edit": "******",
+        "download": "******",
+        "upload": "******",
+        "archived": "******",
+        "active": "******",
+        "revert": "******",
+        "pastVersion": "******",
+        "currentVersion": "******",
+        "fromResource": "******"
     }
 }

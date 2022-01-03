@@ -55,13 +55,21 @@
         "invite": "Invite",
         "saveClose": "Save and close",
         "cancel": "Cancel",
-        "previous": "Previous"
+        "previous": "Previous",
+        "previewRevert": "Preview and revert",
+        "showMore": "Show more"
     },
 
     "status": {
         "active": "Active",
         "pending": "Pending",
         "archived": "Archived"
+    },
+
+    "date": {
+        "loadFromCache": "Loaded from cache {{date}}",
+        "created": "Created by {{name}} at {{date}}",
+        "modified": "Last modified by {{name}} on {{date}}"
     },
 
     "table": {
@@ -264,5 +272,21 @@
                 "operator": "Operator"
             }
         }
+    },
+
+    "history": {
+        "download": "Download history"
+    },
+
+    "record": {
+        "edit": "Edit records",
+        "download": "Download records",
+        "upload": "Upload records",
+        "archived": "Show archived records",
+        "active": "Show active records",
+        "revert": "Revert to past record",
+        "pastVersion": "Past version",
+        "currentVersion": "Current version",
+        "fromResource": "From resource"
     }
 }

@@ -10,10 +10,10 @@
 </mat-tab-group>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
 <div mat-dialog-actions align="end" *ngIf="survey">
-    <button mat-button color="warn" (click)="onClose()">{{ 'form.cancel' | translate }}</button>
+    <button mat-button color="warn" (click)="onClose()">{{ 'action.cancel' | translate }}</button>
     <button [disabled]="survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">
-        {{ 'form.previous' | translate }}</button>
+        {{ 'action.previous' | translate }}</button>
     <button [disabled]="survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">
-        {{ 'form.next' | translate }}</button>
-    <button mat-flat-button color="primary" (click)="submit()">{{ 'form.saveClose' | translate }}</button>
+        {{ 'action.next' | translate }}</button>
+    <button mat-flat-button color="primary" (click)="submit()">{{ 'action.saveClose' | translate }}</button>
 </div>

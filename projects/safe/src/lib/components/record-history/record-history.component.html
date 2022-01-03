@@ -1,6 +1,6 @@
 <div class="history-header">
   <div>
-    <h2>History</h2>
+    <h2>{{'table.history' | translate}}</h2>
     <safe-button [isIcon]="true" icon="close" style="float: right" (click)="onCancel()">
     </safe-button>
   </div>
@@ -14,15 +14,15 @@
       <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</safe-button>
-          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">Apply</safe-button>
+          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">{{'action.clear' | translate}}</safe-button>
+          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">{{'action.apply' | translate}}</safe-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
   </div>
   <div class="actions">
     <safe-button category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-      Download history
+      {{'history.download' | translate}}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -46,10 +46,10 @@
           [innerHTML]="value"></div>
         <div class="full-history">
           <safe-button variant="primary" *ngIf="!showMore && item.changes.length > 4"
-            (click)="showMore = true">Show more ({{item.changes.length - 4}})</safe-button>
+            (click)="showMore = true">{{'action.showMore' | translate}} ({{item.changes.length - 4}})</safe-button>
         </div>
         <safe-button icon="update" class="revert-icon" (click)="onRevert(item)" *ngIf="index > 0">
-          Preview and revert
+          {{'action.previewRevert' | translate}}
         </safe-button>
       </ng-template>
     </mat-expansion-panel>
