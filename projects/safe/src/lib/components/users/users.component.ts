@@ -66,6 +66,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onInvite(): void {
+    console.log("ça invite")
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       panelClass: 'add-dialog',
       data: {
