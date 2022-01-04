@@ -17,6 +17,7 @@ import { DeleteFormMutationResponse, DELETE_FORM, AddFormMutationResponse, ADD_F
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -57,7 +58,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -180,9 +182,10 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete form',
-        content: `Do you confirm the deletion of the form ${form.name} ? ${form.core ? warning : ''}`,
-        confirmText: 'Delete',
+        title: this.translate.instant('forms.delete'),
+        content: this.translate.instant('forms.deleteDesc', {name: form.name}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

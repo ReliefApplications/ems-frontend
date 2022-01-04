@@ -43,8 +43,10 @@
 
     "action": {
         "edit": "Edit",
+        "editAs": "Edit as",
         "view": "View",
         "delete": "Delete",
+        "deletePerm": "Delete premanently",
         "close": "Close",
         "back": "Back",
         "next": "Next",
@@ -66,7 +68,8 @@
         "showMore": "Show more",
         "export": "Export",
         "convert": "Convert",
-        "add": "Add"
+        "add": "Add",
+        "restore": "Restore"
     },
 
     "status": {
@@ -138,7 +141,14 @@
     },
 
     "forms": {
-        "create": "Create a form"
+        "create": "Create a form",
+        "delete": "Delete form",
+        "deleteDesc": "Do you confirm the deletion of the form {{name}}?"
+    },
+
+    "resources": {
+        "delete": "Delete resource",
+        "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
     },
 
     "users": {
@@ -330,7 +340,9 @@
         "revert": "Revert to past record",
         "pastVersion": "Past version",
         "currentVersion": "Current version",
-        "fromResource": "From resource"
+        "fromResource": "From resource",
+        "delete": "Delete record",
+        "deleteDesc": "Do you confirm the deletion of the reord {{name}}?"
     },
 
     "export": {

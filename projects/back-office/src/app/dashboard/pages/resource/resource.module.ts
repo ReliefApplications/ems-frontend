@@ -11,6 +11,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { SafeAccessModule, SafePreviousButtonModule, SafeButtonModule } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -27,7 +28,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafePreviousButtonModule,
     SafeButtonModule,
     MatTooltipModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule
   ],
   exports: [ResourceComponent]
 })

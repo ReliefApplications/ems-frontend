@@ -6,6 +6,7 @@ import { Resource, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -40,7 +41,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) { }
 
   /*  Load the resources.
@@ -143,9 +145,10 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   onDelete(resource: Resource): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete Resource',
-        content: `Are you sure you want to delete this resource?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('resources.delete'),
+        content: this.translate.instant('resources.deleteDesc', {name: resource.name}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

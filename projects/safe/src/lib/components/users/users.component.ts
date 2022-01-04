@@ -144,8 +144,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: title,
-        content: content,
+        title,
+        content,
         confirmText: this.translate.instant('action.delete'),
         cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
