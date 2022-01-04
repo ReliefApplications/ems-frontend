@@ -43,8 +43,10 @@
 
     "action": {
         "edit": "******",
+        "editAs": "******",
         "view": "******",
         "delete": "******",
+        "deletePerm": "******",
         "close": "******",
         "back": "******",
         "next": "******",
@@ -66,7 +68,8 @@
         "showMore": "******",
         "export": "******",
         "convert": "******",
-        "add": "******"
+        "add": "******",
+        "restore": "******"
     },
 
     "status": {
@@ -138,19 +141,29 @@
     },
 
     "forms": {
-        "create": "******"
+        "create": "******",
+        "delete": "******",
+        "deleteDesc": "******"
+    },
+
+    "resources": {
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "users": {
         "export": "******",
         "invite": "******",
-        "delete": "******",
         "description": "******",
         "getTemplate": "******",
         "inviteNew": "******",
         "add": "******",
         "roleDescription": "******",
-        "edit": "******"
+        "edit": "******",
+        "delete": "******",
+        "deleteDesc": "******",
+        "deleteSelected": "******",
+        "deleteSelectedDesc": "******"
     },
 
     "roles": {
@@ -158,7 +171,9 @@
         "edit": "******",
         "permissions": "******",
         "add": "******",
-        "choose": "******"
+        "choose": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "APIConf": {
@@ -181,7 +196,9 @@
         "scope": "******",
         "scopePlaceholder": "******",
         "token": "******",
-        "tokenPlaceholder": "******"
+        "tokenPlaceholder": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "pullJobs": {
@@ -192,7 +209,9 @@
         "mapping": "******",
         "switch": "******",
         "raw": "******",
-        "identifier": "******"
+        "identifier": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "appSummary": {
@@ -321,7 +340,9 @@
         "revert": "******",
         "pastVersion": "******",
         "currentVersion": "******",
-        "fromResource": "******"
+        "fromResource": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "export": {

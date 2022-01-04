@@ -10,6 +10,7 @@ import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent }
 import { Observable } from 'rxjs';
 import {  map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form-builder',
@@ -55,8 +56,15 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
-    private authService: SafeAuthService
-  ) { }
+    private authService: SafeAuthService,
+    private translate: TranslateService
+  ) {
+    translate.stream("status").subscribe((status: any) => {
+      this.statuses[0].text = status.active,
+      this.statuses[1].text = status.pending,
+      this.statuses[2].text = status.archived
+    })
+  }
 
   /* Shows modal confirmation before leave the page if has changes on form
   */
@@ -64,9 +72,10 @@ export class FormBuilderComponent implements OnInit {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to exit?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('forms.exit'),
+          content: this.translate.instant('forms.exitDesc'),
+          confirmText: this.translate.instant('action.confirm'),
+          cancelText: this.translate.instant('action.cancel'),
           confirmColor: 'primary'
         }
       });

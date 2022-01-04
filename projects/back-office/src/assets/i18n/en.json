@@ -38,7 +38,8 @@
         "text": "Text",
         "legend": "Legend",
         "orientation": "Orientation",
-        "aggregation": "Aggregation"
+        "aggregation": "Aggregation",
+        "id": "Id"
     },
 
     "action": {
@@ -69,7 +70,8 @@
         "export": "Export",
         "convert": "Convert",
         "add": "Add",
-        "restore": "Restore"
+        "restore": "Restore",
+        "confirm": "Confirm"
     },
 
     "status": {
@@ -143,7 +145,9 @@
     "forms": {
         "create": "Create a form",
         "delete": "Delete form",
-        "deleteDesc": "Do you confirm the deletion of the form {{name}}?"
+        "deleteDesc": "Do you confirm the deletion of the form {{name}}?",
+        "exit": "Exit without saving changes",
+        "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?"
     },
 
     "resources": {
