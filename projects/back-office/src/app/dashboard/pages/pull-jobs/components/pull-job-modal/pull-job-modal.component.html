@@ -12,7 +12,15 @@
                 <mat-form-field appearance="outline" style="flex: 1;">
                     <mat-label>{{'global.status' | translate}}</mat-label>
                     <mat-select formControlName="status">
-                      <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{ statusChoice }}</mat-option>
+                        <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{
+                            ((statusChoice === "active") ?
+                                'status.active' :
+                                ((statusChoice === "pending") ?
+                                    'status.pending' :
+                                    'status.archived'))
+                            | translate
+                            }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>

@@ -12,7 +12,7 @@
     </div>
     <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
       <mat-form-field appearance="outline">
-        <mat-label>{{'filter.role.title' | translate}}</mat-label>
+        <mat-label>{{'global.title' | translate}}</mat-label>
         <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter('role', $event)">
           <mat-option>-</mat-option>
           <mat-option [value]="role.title" *ngFor="let role of roles">

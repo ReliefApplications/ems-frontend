@@ -192,7 +192,9 @@
         "mapping": "Mapping",
         "switch": "Switch mode",
         "raw": "Raw JSON",
-        "identifier": "Unique identifiers"
+        "identifier": "Unique identifiers",
+        "delete": "Delete pull job",
+        "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"
     },
 
     "appSummary": {
