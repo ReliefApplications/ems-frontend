@@ -59,11 +59,11 @@ export class FormBuilderComponent implements OnInit {
     private authService: SafeAuthService,
     private translate: TranslateService
   ) {
-    translate.stream("status").subscribe((status: any) => {
-      this.statuses[0].text = status.active,
-      this.statuses[1].text = status.pending,
-      this.statuses[2].text = status.archived
-    })
+    translate.stream('status').subscribe((status: any) => {
+      this.statuses[0].text = status.active;
+      this.statuses[1].text = status.pending;
+      this.statuses[2].text = status.archived;
+    });
   }
 
   /* Shows modal confirmation before leave the page if has changes on form
