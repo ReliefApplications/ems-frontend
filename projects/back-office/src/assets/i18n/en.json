@@ -147,7 +147,18 @@
         "delete": "Delete form",
         "deleteDesc": "Do you confirm the deletion of the form {{name}}?",
         "exit": "Exit without saving changes",
-        "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?"
+        "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?",
+        "title": "Available forms",
+        "select": "Select a form",
+        "edit": "Edit form",
+        "record": "New record",
+        "new": "New form",
+        "createBlank": "Create a blank form",
+        "createNew": "Create a new resource",
+        "copy": "Copy existing resource template",
+        "fromTemplate": "From template",
+        "startFrom": "Start from existing template",
+        "tooltip": "If no template is selected, core structure will be loaded"
     },
 
     "resources": {
@@ -220,7 +231,8 @@
 
     "appSummary": {
         "new": "New Application",
-        "created": "Created"
+        "created": "Created",
+        "description": "Please enter a name for the application"
     },
 
     "profile": {
@@ -257,14 +269,6 @@
 
     "addPage": {
         "description": "Select what type of page you want to create"
-    },
-
-    "form": {
-        "title": "Available forms",
-        "select": "Select a form",
-        "create": "Create a form",
-        "edit": "Edit form",
-        "record": "New record"
     },
 
     "workflow": {
