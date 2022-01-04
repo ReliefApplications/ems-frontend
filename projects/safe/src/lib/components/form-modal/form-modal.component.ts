@@ -199,6 +199,7 @@ export class SafeFormModalComponent implements OnInit {
     */
     const questions = survey.getAllQuestions();
     const data = survey.data;
+    const oldSurvey = survey.data;
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -227,7 +228,8 @@ export class SafeFormModalComponent implements OnInit {
         if (value) {
           await this.onUpdate(survey);
         } else {
-          this.dialogRef.close();
+          // Go back to the survey if confirmation is cancelled
+          this.survey?.clear(false);
         }
       });
     // Updates the data directly.
