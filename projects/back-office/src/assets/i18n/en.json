@@ -144,13 +144,16 @@
     "users": {
         "export": "Export users",
         "invite": "Invite users",
-        "delete": "Delete selected users",
         "description": "Select existing users, invite new users or import from Excel file",
         "getTemplate": "Get template",
         "inviteNew": "Invite new user",
         "add": "Add user",
         "roleDescription": "Select the role to assign",
-        "edit": "Update user roles"
+        "edit": "Update user roles",
+        "delete": "Delete user",
+        "deleteDesc": "Do you confirm the deletion of the user {{name}}?",
+        "deleteSelected": "Delete selected users",
+        "deleteSelectedDesc": "Do you confirm the deletion of the selected users"
     },
 
     "roles": {
@@ -158,7 +161,9 @@
         "edit": "Update role permissions and channels",
         "permissions": "Permissions",
         "add": "New role",
-        "choose": "Choose role to simulate"
+        "choose": "Choose role to simulate",
+        "delete": "Delete role",
+        "deleteDesc": "Do you confirm the deletion of the role {{name}}?"
     },
 
     "APIConf": {
@@ -181,7 +186,9 @@
         "scope": "Scope",
         "scopePlaceholder": "Enter scope",
         "token": "Token",
-        "tokenPlaceholder": "Enter token for authentication"
+        "tokenPlaceholder": "Enter token for authentication",
+        "delete": "Delete API configuration",
+        "deleteDesc": "Do you confirm the deletion of the API Configuration {{name}}?"
     },
 
     "pullJobs": {
