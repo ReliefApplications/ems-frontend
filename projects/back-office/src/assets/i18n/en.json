@@ -20,6 +20,7 @@
         "convert": "Convert to",
         "general": "General",
         "username": "Username",
+        "channel": "Channel",
         "channels": "Channels",
         "apps": "Applications",
         "description": "Description",
@@ -71,7 +72,9 @@
         "convert": "Convert",
         "add": "Add",
         "restore": "Restore",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "attach": "Attach",
+        "expand": "Expand"
     },
 
     "status": {
@@ -139,7 +142,10 @@
         "recent": "Recent applications",
         "all": "All applications",
         "step2": "Customize each of the pages created",
-        "step3": "Click on create to finish the process"
+        "step3": "Click on create to finish the process",
+        "from": "From applications",
+        "delete": "Delete application",
+        "deleteDesc": "Do you confirm the deletion of this application?"
     },
 
     "forms": {
@@ -249,13 +255,17 @@
     "attributes": {
         "create": "Create a position category",
         "new": "New position category",
-        "edit": "Edit position category"
+        "edit": "Edit position category",
+        "delete": "Delete position attribute",
+        "deleteDesc": "Do you confirm the deletion of the position attribute {{name}}?"
     },
 
     "channels": {
         "create": "Create a channel",
         "new": "New channel",
-        "edit": "Edit channel"
+        "edit": "Edit channel",
+        "delete": "Delete channel",
+        "deleteDesc": "Do you confirm the deletion of the channel {{name}}?"
     },
 
     "subscriptions": {
@@ -303,17 +313,20 @@
         "query": {
             "select": "Select a data set",
             "field": {
+                "title": "Fields",
                 "description": "Select data points below and drag them to 'selected fields' on the right",
                 "available": "Available fields",
                 "selected": "Selected fields"
             },
             "sort": {
+                "title": "Sort",
                 "field": "Sort field",
                 "order": "Sort order",
                 "ascending": "Ascending",
                 "descending": "Descending"
             },
             "filter": {
+                "title": "Filter",
                 "logic": "Filter logic",
                 "or": "Or",
                 "and": "And",
@@ -328,7 +341,40 @@
             "invalid": "Invalid grid configuration",
             "noRecord": "No record detected",
             "item": "{{number}} item",
-            "items": "{{number}} items"
+            "items": "{{number}} items",
+            "selectDisplay": "Select displayed fields",
+            "enabled": "Enabled actions",
+            "actions": {
+                "delete": "Delete records",
+                "show": "Show history",
+                "convert": "Convert records",
+                "update": "Update records",
+                "inline": "Inline edition",
+                "add": "Add new records"
+            },
+            "quickBtn": "Quick action buttons",
+            "quickBtnDesc": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
+            "addBtn": "Add a button",
+            "enable": "Enable",
+            "selectAll": "Select all records",
+            "prefill": "Pre-fill form with selected data",
+            "nextStep": "Go to next step",
+            "closeWorkflow": "Close workflow",
+            "confirmation": "Confirmation message",
+            "autoSave": "Auto-save",
+            "autoModify": "Auto-modify selected rows",
+            "field": "Field to update",
+            "valueAttribute": "Value to attribute",
+            "attachRecord": "Attach to record",
+            "targetForm": "Target form",
+            "displayField": "Display field",
+            "message": "Message",
+            "sendMail": "Send mail",
+            "distribution": "Distribution list",
+            "subject": "Subject",
+            "body": "Body",
+            "export": "Export selected dataset",
+            "selectFields": "Select fields to write in body"
         },
         "chart": {
             "type": "Type"
@@ -350,7 +396,10 @@
         "currentVersion": "Current version",
         "fromResource": "From resource",
         "delete": "Delete record",
-        "deleteDesc": "Do you confirm the deletion of the reord {{name}}?"
+        "deleteDesc": "Do you confirm the deletion of the reord {{name}}?",
+        "select": "Select {{name}} target",
+        "placeholder": "Select record"
+
     },
 
     "export": {
@@ -361,5 +410,19 @@
         "allColumns": "All available columns",
         "visibleColumns": "Only visible columns",
         "format": "Select export format"
+    },
+
+    "convert": {
+        "target": "Target",
+        "copy": "Copy source record",
+        "overwrite": "Overwrite source record",
+        "ignored": "Following fields will be ignored:",
+        "ok": "Conversion OK"
+    },
+
+    "tooltip": {
+        "backApps": "Go to application list",
+        "changeAccess": "Change access",
+        "clearCache": "Clear cache"
     }
 }

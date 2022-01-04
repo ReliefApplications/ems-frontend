@@ -20,6 +20,7 @@
         "convert": "******",
         "general": "******",
         "username": "******",
+        "channel": "******",
         "channels": "******",
         "apps": "******",
         "description": "******",
@@ -38,7 +39,8 @@
         "text": "******",
         "legend": "******",
         "orientation": "******",
-        "aggregation": "******"
+        "aggregation": "******",
+        "id": "******"
     },
 
     "action": {
@@ -69,7 +71,10 @@
         "export": "******",
         "convert": "******",
         "add": "******",
-        "restore": "******"
+        "restore": "******",
+        "confirm": "******",
+        "attach": "******",
+        "expand": "******"
     },
 
     "status": {
@@ -137,13 +142,29 @@
         "recent": "******",
         "all": "******",
         "step2": "******",
-        "step3": "******"
+        "step3": "******",
+        "from": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "forms": {
         "create": "******",
         "delete": "******",
-        "deleteDesc": "******"
+        "deleteDesc": "******",
+        "exit": "******",
+        "exitDesc": "******",
+        "title": "******",
+        "select": "******",
+        "edit": "******",
+        "record": "******",
+        "new": "******",
+        "createBlank": "******",
+        "createNew": "******",
+        "copy": "******",
+        "fromTemplate": "******",
+        "startFrom": "******",
+        "tooltip": "******"
     },
 
     "resources": {
@@ -216,7 +237,8 @@
 
     "appSummary": {
         "new": "******",
-        "created": "******"
+        "created": "******",
+        "description": "******"
     },
 
     "profile": {
@@ -233,13 +255,17 @@
     "attributes": {
         "create": "******",
         "new": "******",
-        "edit": "******"
+        "edit": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "channels": {
         "create": "******",
         "new": "******",
-        "edit": "******"
+        "edit": "******",
+        "delete": "******",
+        "deleteDesc": "******"
     },
 
     "subscriptions": {
@@ -255,17 +281,9 @@
         "description": "******"
     },
 
-    "form": {
-        "title": "******",
-        "select": "******",
-        "create": "******",
-        "edit": "******",
-        "record": "******"
-    },
-
     "workflow": {
         "new": "******",
-        "step1":"Add steps",
+        "step1": "******",
         "step2": "******",
         "select": "******"
     },
@@ -295,17 +313,20 @@
         "query": {
             "select": "******",
             "field": {
+                "title": "******",
                 "description": "******",
                 "available": "******",
                 "selected": "******"
             },
             "sort": {
+                "title": "******",
                 "field": "******",
                 "order": "******",
                 "ascending": "******",
                 "descending": "******"
             },
             "filter": {
+                "title": "******",
                 "logic": "******",
                 "or": "******",
                 "and": "******",
@@ -320,7 +341,40 @@
             "invalid": "******",
             "noRecord": "******",
             "item": "******",
-            "items": "******"
+            "items": "******",
+            "selectDisplay": "******",
+            "enabled": "******",
+            "actions": {
+                "delete": "******",
+                "show": "******",
+                "convert": "******",
+                "update": "******",
+                "inline": "******",
+                "add": "******"
+            },
+            "quickBtn": "******",
+            "quickBtnDesc": "******",
+            "addBtn": "******",
+            "enable": "******",
+            "selectAll": "******",
+            "prefill": "******",
+            "nextStep": "******",
+            "closeWorkflow": "******",
+            "confirmation": "******",
+            "autoSave": "******",
+            "autoModify": "******",
+            "field": "******",
+            "valueAttribute": "******",
+            "attachRecord": "******",
+            "targetForm": "******",
+            "displayField": "******",
+            "message": "******",
+            "sendMail": "******",
+            "distribution": "******",
+            "subject": "******",
+            "body": "******",
+            "export": "******",
+            "selectFields": "******"
         },
         "chart": {
             "type": "******"
@@ -342,7 +396,10 @@
         "currentVersion": "******",
         "fromResource": "******",
         "delete": "******",
-        "deleteDesc": "******"
+        "deleteDesc": "******",
+        "select": "******",
+        "placeholder": "******"
+
     },
 
     "export": {
@@ -353,5 +410,19 @@
         "allColumns": "******",
         "visibleColumns": "******",
         "format": "******"
+    },
+
+    "convert": {
+        "target": "******",
+        "copy": "******",
+        "overwrite": "******",
+        "ignored": "******",
+        "ok": "******"
+    },
+
+    "tooltip": {
+        "backApps": "******",
+        "changeAccess": "******",
+        "clearCache": "******"
     }
 }

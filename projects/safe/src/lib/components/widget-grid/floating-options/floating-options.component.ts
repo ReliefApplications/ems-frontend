@@ -4,6 +4,7 @@ import { SafeTileDisplayComponent } from './menu/tile-display/tile-display.compo
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-floating-options',
@@ -27,7 +28,8 @@ export class SafeFloatingOptionsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private translate: TranslateService
   ) { }
 
   /*  Set the list of available actions.
@@ -36,19 +38,23 @@ export class SafeFloatingOptionsComponent implements OnInit {
     this.items = [
       {
         name: 'Display',
+        text: this.translate.instant('global.display'),
         icon: 'settings'
       },
       {
         name: 'Settings',
+        text: this.translate.instant('global.settings'),
         icon: 'insert_chart',
         disabled: !this.widget || !this.widget.settings
       },
       {
         name: 'Expand',
+        text: this.translate.instant('action.expand'),
         icon: 'open_in_full'
       },
       {
         name: 'Delete',
+        text: this.translate.instant('action.delete'),
         icon: 'delete'
       }
     ];

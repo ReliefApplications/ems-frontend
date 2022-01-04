@@ -23,7 +23,7 @@
         <div formGroupName="chart" class="chart-form-container" *ngIf="chartForm">
             <div class="chart-form">
                 <mat-tab-group class="chart-settings" animationDuration="0ms">
-                    <mat-tab label="Data source">
+                    <mat-tab [label]="'global.dataSrc' | translate">
                         <safe-button icon="refresh" category="secondary" variant="primary" (click)="refreshPipeline()"
                             [disabled]="!pipelineChanged">
                             {{'action.apply' | translate}}
@@ -35,7 +35,7 @@
                             </mat-form-field>
                         </div>
                     </mat-tab>
-                    <mat-tab label="Display">
+                    <mat-tab [label]="'global.display' | translate">
                         <mat-accordion>
                             <mat-expansion-panel formGroupName="legend">
                                 <mat-expansion-panel-header>
