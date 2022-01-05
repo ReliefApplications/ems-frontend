@@ -374,7 +374,10 @@
             "subject": "******",
             "body": "******",
             "export": "******",
-            "selectFields": "******"
+            "selectFields": "******",
+            "tooltip1": "******",
+            "tooltip2": "******",
+            "tooltip3": "******"
         },
         "chart": {
             "type": "******"
@@ -423,6 +426,7 @@
     "tooltip": {
         "backApps": "******",
         "changeAccess": "******",
-        "clearCache": "******"
+        "clearCache": "******",
+        "filterVisibility": "******"
     }
 }
