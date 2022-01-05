@@ -374,7 +374,10 @@
             "subject": "Subject",
             "body": "Body",
             "export": "Export selected dataset",
-            "selectFields": "Select fields to write in body"
+            "selectFields": "Select fields to write in body",
+            "tooltip1": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
+            "tooltip2": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
+            "tooltip3": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
         },
         "chart": {
             "type": "Type"
@@ -423,6 +426,7 @@
     "tooltip": {
         "backApps": "Go to application list",
         "changeAccess": "Change access",
-        "clearCache": "Clear cache"
+        "clearCache": "Clear cache",
+        "filterVisibility": "Click to toggle visibility of filter"
     }
 }
