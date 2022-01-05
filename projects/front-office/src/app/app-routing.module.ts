@@ -4,6 +4,15 @@ import { MsalGuard } from '@azure/msal-angular';
 import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
 
+import { config, AuthenticationType } from '@safe/builder';
+
+const canActivate: any[] = [AccessGuard];
+let initialNavigation: any;
+if (config.authenticationType === AuthenticationType.azureAD) {
+  canActivate.push(MsalGuard);
+  initialNavigation = !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled';
+}
+
 /**
  * List of top level routes of the Front-Office.
  */
@@ -12,7 +21,7 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./dashboard/dashboard.module')
     .then(m => m.DashboardModule),
-    canActivate: [MsalGuard, AccessGuard]
+    canActivate
   },
   {
     path: 'auth',
@@ -33,7 +42,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     relativeLinkResolution: 'legacy',
-    initialNavigation: !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled'
+    initialNavigation
   })],
   exports: [RouterModule]
 })

@@ -33,7 +33,7 @@ export class SafeApiProxyService {
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {
       const url = `${this.baseUrl}/${name}${pingUrl}`;
-      const token = localStorage.getItem('msal.idtoken');
+      const token = localStorage.getItem('idtoken');
       const headers = new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export class SafeApiProxyService {
    * @returns http request
    */
   public promisedRequestWithHeaders(url: string): Promise<any> {
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',

@@ -345,7 +345,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('idtoken')}`);
       xhr.onloadstart = () => {
         xhr.responseType = 'blob';
       };

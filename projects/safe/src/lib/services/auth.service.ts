@@ -1,11 +1,17 @@
 import {Apollo} from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { User } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AccountInfo } from '@azure/msal-common';
 import { ApolloQueryResult } from '@apollo/client';
+import { config, AuthenticationType } from '../config/oort.config';
+import { KeycloakService } from 'keycloak-angular';
+
+export interface Account {
+  name: string;
+  username: string;
+}
 
 /**
  * Shared authentication service.
@@ -22,7 +28,7 @@ export class SafeAuthService {
     return this.user.asObservable();
   }
   /** Current account info */
-  public account: AccountInfo | null = null;
+  public account: Account | null = null;
   /** Current user value */
   get userValue(): User | null {
     return this.user.getValue();
@@ -37,8 +43,9 @@ export class SafeAuthService {
    * @param apollo Apollo client
    */
   constructor(
-    private msalService: MsalService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    @Optional() private msalService: MsalService,
+    @Optional() private keycloakService: KeycloakService
   ) {
     this.checkAccount();
   }
@@ -85,17 +92,38 @@ export class SafeAuthService {
   /**
    * Cleans user profile, and logout.
    */
-  logout(): void {
-    this.msalService.logoutRedirect();
+  logout(redirectUri?: string): void {
+    if (config.authenticationType === AuthenticationType.azureAD) {
+      this.msalService.logoutRedirect();
+    } else {
+      this.keycloakService.logout(redirectUri);
+    }
     this.account = null;
     this.user.next(null);
+    localStorage.removeItem('idtoken');
   }
 
   /**
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
-    this.account = this.msalService.instance.getActiveAccount();
+    if (config.authenticationType === AuthenticationType.azureAD) {
+      const acc = this.msalService.instance.getActiveAccount();
+      this.account = {
+        name: acc?.name || 'Unknown',
+        username: acc?.username || 'Unknown',
+      };
+    } else {
+      this.keycloakService.loadUserProfile().then(value => {
+        this.account = {
+          name: value?.firstName + ' ' + value?.lastName || 'Unknown',
+          username: value?.email || 'Unknown',
+        };
+      },
+      err => {
+        this.account = null;
+      });
+    }
   }
 
   /**

@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 /**
  * Guard to check if user is authenticated or not.
@@ -41,7 +42,7 @@ export class AccessGuard implements CanActivate {
           return true;
         } else {
           if (this.authService.account) {
-            this.authService.logout();
+            this.authService.logout(environment.postLogoutRedirectUri);
           } else {
             this.router.navigate(['/auth']);
           }

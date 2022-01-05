@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,6 +18,9 @@ import { setContext } from '@apollo/client/link/context';
 // Env
 import { environment } from '../environments/environment';
 
+// Config
+import { config, AuthenticationType } from '@safe/builder';
+
 // MSAL
 import {
   MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService,
@@ -29,6 +32,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MatDialogModule } from '@angular/material/dialog';
+
+// Keycloak
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 
 localStorage.setItem('loaded', 'false');
@@ -52,7 +58,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
 
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     return {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -68,7 +74,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     options: {
       reconnect: true,
       connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
+        authToken: localStorage.getItem('idtoken')
       },
       connectionCallback: (error) => {
         if (localStorage.getItem('loaded') === 'true') {
@@ -162,7 +168,7 @@ export const msalInstanceFactory = (): IPublicClientApplication => new PublicCli
  *
  * @returns MSAL interceptor configuration.
  */
-export const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
+const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set(`${environment.apiUrl}/*`, [`${environment.clientId}/.default`]);
   return {
@@ -176,7 +182,7 @@ export const msalInterceptorConfigFactory = (): MsalInterceptorConfiguration => 
  *
  * @returns MSAL guard configuration.
  */
-export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
+const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
   interactionType: InteractionType.Redirect,
   authRequest: {
     scopes: ['user.read', 'openid', 'profile']
@@ -184,38 +190,58 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
   loginFailedRoute: '/auth'
 });
 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSnackBarModule,
-    BrowserAnimationsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatDialogModule,
-    MsalModule
-  ],
-  providers: [
-    {
-      provide: 'environment',
-      useValue: environment
+const initializeKeycloak = (keycloak: KeycloakService): any =>
+  () => keycloak.init({
+    config: {
+      url: 'http://localhost:8080/auth',
+      realm: 'Oort',
+      clientId: 'myclient'
     },
+    initOptions: {
+      onLoad: 'check-sso',
+      silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+      redirectUri: environment.redirectUrl,
+    }
+  }).then((res) => {
+    keycloak.getToken().then((token) => {
+      localStorage.setItem('idtoken', token);
+    });
+  });
+
+const imports: any[] = [
+  BrowserModule,
+  AppRoutingModule,
+  HttpClientModule,
+  FormsModule,
+  ReactiveFormsModule,
+  MatSnackBarModule,
+  BrowserAnimationsModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatDialogModule,
+];
+
+let providers: any[] = [
+  {
+    provide: 'environment',
+    useValue: environment
+  },
+  {
+    // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
+    provide: APOLLO_OPTIONS,
+    useFactory: provideApollo,
+    deps: [HttpLink]
+  }
+];
+
+if (config.authenticationType === AuthenticationType.azureAD) {
+  // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
+  imports.push(MsalModule);
+  providers = providers.concat([
     {
-      // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
-      provide: APOLLO_OPTIONS,
-      useFactory: provideApollo,
-      deps: [HttpLink]
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
+    provide: HTTP_INTERCEPTORS,
+    useClass: MsalInterceptor,
+    multi: true
     },
     {
       provide: MSAL_INSTANCE,
@@ -231,12 +257,29 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
     },
     MsalService,
     MsalGuard,
-    MsalBroadcastService
+    MsalBroadcastService,
+  ]);
+} else {
+  imports.push(KeycloakAngularModule);
+  providers.push({
+    provide: APP_INITIALIZER,
+    useFactory: initializeKeycloak,
+    multi: true,
+    deps: [KeycloakService]
+  });
+}
+@NgModule({
+  declarations: [
+    AppComponent
   ],
+  imports,
+  providers,
   bootstrap: [
     AppComponent
   ]
 })
+
+
 export class AppModule {
   constructor(
     private apollo: Apollo

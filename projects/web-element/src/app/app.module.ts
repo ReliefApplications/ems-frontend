@@ -51,7 +51,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
 
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     return {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -67,7 +67,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     options: {
       reconnect: true,
       connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
+        authToken: localStorage.getItem('idtoken')
       }
     }
   });
