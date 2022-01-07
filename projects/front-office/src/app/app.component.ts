@@ -5,6 +5,7 @@ import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { config } from 'projects/safe/src/public-api';
 
 /**
  * Main component of Front-office.
@@ -28,13 +29,24 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param authService Shared authentication service
    * @param formService Shared form service. We need to initialize the service there.
    */
+
+  favIcon: HTMLLinkElement | null = document.querySelector('#appIcon');
+  appTitle: HTMLLinkElement | null = document.querySelector('#appTitle');
+
   constructor(
     private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
     private router: Router,
     private authService: SafeAuthService,
     private formService: SafeFormService
-  ) { }
+  ) {
+    if (this.favIcon && config.favicon) {
+      this.favIcon.href = './assets/favicons/' + config.favicon;
+    }
+    if (this.appTitle && config.title) {
+      this.appTitle.innerHTML = config.title + ' - ' + this.appTitle.innerHTML;
+    }
+  }
 
   /**
    * Configuration of the MSAL behavior.
