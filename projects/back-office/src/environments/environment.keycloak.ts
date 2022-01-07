@@ -1,5 +1,5 @@
 /**
- * Environment file for local development.
+ * Environment file for local development with keycloak auth.
  */
 export const environment = {
   production: false,

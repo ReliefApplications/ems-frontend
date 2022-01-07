@@ -1,7 +1,7 @@
 /**
- * Environment file for local development.
+ * Environment file for local development with keycloak auth.
  */
-export const environment = {
+ export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
@@ -12,5 +12,5 @@ export const environment = {
   postLogoutRedirectUri: 'http://localhost:4200/auth',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'backoffice'
+  module: 'frontoffice'
 };

@@ -180,9 +180,9 @@ const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
 const initializeKeycloak = (keycloak: KeycloakService): any =>
   () => keycloak.init({
     config: {
-      url: 'http://localhost:8080/auth',
-      realm: 'Oort',
-      clientId: 'myclient'
+      url: environment.authority,
+      realm: environment.realm,
+      clientId: environment.clientId
     },
     initOptions: {
       onLoad: 'check-sso',
