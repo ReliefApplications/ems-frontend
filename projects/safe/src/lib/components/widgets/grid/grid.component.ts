@@ -130,78 +130,76 @@ export class SafeGridWidgetComponent implements OnInit {
       await Promise.all(this.promisedRowsModifications(options.modifications, this.grid.selectedItems));
     }
 
-    if (this.grid.selectedRows.length > 0) {
-      // Attaches the records to another one.
-      if (options.attachToRecord) {
-        await this.promisedAttachToRecord(this.grid.selectedItems, options.targetForm, options.targetFormField, options.targetFormQuery);
+    // Attaches the records to another one.
+    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      await this.promisedAttachToRecord(this.grid.selectedItems, options.targetForm, options.targetFormField, options.targetFormQuery);
+    }
+    const promises: Promise<any>[] = [];
+    // Notifies on a channel.
+    if (options.notify && this.grid.selectedRows.length > 0) {
+      promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
+        mutation: PUBLISH_NOTIFICATION,
+        variables: {
+          action: options.notificationMessage ? options.notificationMessage : 'Records update',
+          content: this.grid.selectedItems,
+          channel: options.notificationChannel
+        }
+      }).toPromise());
+    }
+    // Publishes on a channel.
+    if (options.publish && this.grid.selectedRows.length > 0) {
+      promises.push(this.apollo.mutate<PublishMutationResponse>({
+        mutation: PUBLISH,
+        variables: {
+          ids: this.grid.selectedRows,
+          channel: options.publicationChannel
+        }
+      }).toPromise());
+    }
+    if (promises.length > 0) {
+      await Promise.all(promises);
+    }
+    // Opens email client of user.
+    if (options.sendMail) {
+      const emailSettings = {
+        query: {
+          name: this.settings.query.name,
+          fields: options.bodyFields
+        }
+      };
+      const sortField = this.grid.sortField || '';
+      const sortOrder = this.grid.sortOrder || '';
+      this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+        this.grid.selectedRows, sortField, sortOrder);
+      if (options.export && this.grid.selectedRows.length > 0) {
+        this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
       }
-      const promises: Promise<any>[] = [];
-      // Notifies on a channel.
-      if (options.notify) {
-        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-          mutation: PUBLISH_NOTIFICATION,
+    }
+
+    // Opens a form with selected records.
+    if (options.prefillForm && this.grid.selectedRows.length > 0) {
+      const promisedRecords: Promise<any>[] = [];
+      // Fetches the record object for each selected record.
+      for (const record of this.grid.selectedItems) {
+        promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
+          query: GET_RECORD_DETAILS,
           variables: {
-            action: options.notificationMessage ? options.notificationMessage : 'Records update',
-            content: this.grid.selectedItems,
-            channel: options.notificationChannel
+            id: record.id
           }
         }).toPromise());
       }
-      // Publishes on a channel.
-      if (options.publish) {
-        promises.push(this.apollo.mutate<PublishMutationResponse>({
-          mutation: PUBLISH,
-          variables: {
-            ids: this.grid.selectedRows,
-            channel: options.publicationChannel
-          }
-        }).toPromise());
-      }
-      if (promises.length > 0) {
-        await Promise.all(promises);
-      }
-      // Opens email client of user.
-      if (options.sendMail) {
-        const emailSettings = {
-          query: {
-            name: this.settings.query.name,
-            fields: options.bodyFields
-          }
-        };
-        const sortField = this.grid.sortField || '';
-        const sortOrder = this.grid.sortOrder || '';
-        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
-          this.grid.selectedRows, sortField, sortOrder);
-        if (options.export) {
-          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
-        }
-      }
+      const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
 
-      // Opens a form with selected records.
-      if (options.prefillForm) {
-        const promisedRecords: Promise<any>[] = [];
-        // Fetches the record object for each selected record.
-        for (const record of this.grid.selectedItems) {
-          promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
-            query: GET_RECORD_DETAILS,
-            variables: {
-              id: record.id
-            }
-          }).toPromise());
-        }
-        const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
-
-        // Opens a modal containing the prefilled form.
-        this.dialog.open(SafeFormModalComponent, {
-          data: {
-            template: options.prefillTargetForm,
-            locale: 'en',
-            prefillRecords: records,
-            askForConfirm: false
-          },
-          autoFocus: false
-        });
-      }
+      // Opens a modal containing the prefilled form.
+      this.dialog.open(SafeFormModalComponent, {
+        data: {
+          template: options.prefillTargetForm,
+          locale: 'en',
+          prefillRecords: records,
+          askForConfirm: false
+        },
+        autoFocus: false
+      });
     }
 
     // Workflow only: goes to next step, or closes the workflow.
