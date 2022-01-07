@@ -17,6 +17,9 @@ import { config } from 'projects/safe/src/public-api';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  private favIcon: HTMLLinkElement | null = document.querySelector('#appIcon');
+  private appTitle: HTMLLinkElement | null = document.querySelector('#appTitle');
+
   /** Listens to self-destruction */
   private readonly destroying$ = new Subject<void>();
 
@@ -29,9 +32,6 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param authService Shared authentication service
    * @param formService Shared form service. We need to initialize the service there.
    */
-
-  favIcon: HTMLLinkElement | null = document.querySelector('#appIcon');
-  appTitle: HTMLLinkElement | null = document.querySelector('#appTitle');
 
   constructor(
     private broadcastService: MsalBroadcastService,
