@@ -5,6 +5,7 @@ import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { config } from 'projects/safe/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,8 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
 
   title = 'back-office';
+  favIcon: HTMLLinkElement | null = document.querySelector('#appIcon');
+  appTitle: HTMLLinkElement | null = document.querySelector('#appTitle');
 
   private readonly destroying$ = new Subject<void>();
 
@@ -24,7 +27,14 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     // We need to initialize the service there
     private formService: SafeFormService
-  ) { }
+  ) {
+    if (this.favIcon && config.favicon) {
+      this.favIcon.href = './assets/favicons/' + config.favicon;
+    }
+    if (this.appTitle && config.title) {
+      this.appTitle.innerHTML = config.title + ' - ' + this.appTitle.innerHTML;
+    }
+  }
 
   /**
    * Configuration of the MSAL behavior.

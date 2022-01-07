@@ -15,6 +15,9 @@ export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 
+// === CONFIG ===
+export * from './lib/config/oort.config';
+
 // === CONST ===
 export * from './lib/const/notifications';
 
