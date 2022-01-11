@@ -40,6 +40,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * Configuration of the MSAL behavior.
    */
   ngOnInit(): void {
+    console.log('test');
+    console.log('this.router.url');
+    console.log(this.router.url);
     this.msalService.instance.enableAccountStorageEvents();
     this.broadcastService.msalSubject$
       .pipe(
@@ -72,10 +75,12 @@ export class AppComponent implements OnInit, OnDestroy {
       next: (result: AuthenticationResult) => {
         this.checkAndSetActiveAccount();
         if (window.location.pathname.endsWith('/auth')) {
+          console.log('here');
           this.router.navigate(['/']);
         }
       }
     });
+    console.log(this.router.url);
   }
 
   /**

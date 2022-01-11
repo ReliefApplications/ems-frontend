@@ -57,6 +57,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('this.router');
     console.log(this.router);
+    console.log(this.router.url);
+    console.log(this.route);
+    console.log(this.router.routerState);
+    console.log(this.router.config);
     this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
       if (user) {
         const applications = user.applications || [];

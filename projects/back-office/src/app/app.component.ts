@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * Configuration of the MSAL behavior.
    */
   ngOnInit(): void {
+    console.log(this.router);
     this.msalService.instance.enableAccountStorageEvents();
     this.broadcastService.msalSubject$
       .pipe(
