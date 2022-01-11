@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
     MatProgressSpinnerModule,
     SafeButtonModule,
-    SafeWorkflowStepperModule
+    SafeWorkflowStepperModule,
+    TranslateModule
   ],
   exports: [WorkflowComponent]
 })

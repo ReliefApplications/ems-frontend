@@ -4,8 +4,8 @@
     </safe-button>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>Select a data set</mat-label>
-      <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+      <mat-label>{{'widgets.query.select' | translate}}</mat-label>
+      <input type="text" [placeholder]="'widgets.query.select' | translate" matInput formControlName="name" [matAutocomplete]="auto">
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
         <mat-option *ngFor="let option of filteredQueries" [value]="option">
           {{option}}
@@ -14,20 +14,20 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet && (templates.length > 0)">
-      <mat-label>Template</mat-label>
+      <mat-label>{{'global.template' | translate}}</mat-label>
       <mat-select formControlName="template">
-        <mat-option>-- Default --</mat-option>
+        <mat-option>-</mat-option>
         <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <ng-container *ngIf="isField">
       <mat-form-field appearance="outline">
-        <mat-label>Field name</mat-label>
+        <mat-label>{{'widgets.query.field.name' | translate}}</mat-label>
         <input matInput formControlName="name" type="text" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Label</mat-label>
+        <mat-label>{{'global.label' | translate}}</mat-label>
         <input matInput formControlName="label" type="text" />
       </mat-form-field>
     </ng-container>
@@ -35,18 +35,18 @@
       <mat-icon>error</mat-icon>
     </button>
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
-      <mat-tab label="Fields">
+      <mat-tab [label]="'widgets.query.field.title' | translate">
         <ng-template matTabContent>
           <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)"
             [fields]="availableFields" [factory]="factory"></safe-tab-fields>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Sort" *ngIf="form.get('sort')">
+      <mat-tab [label]="'widgets.query.sort.title' | translate" *ngIf="form.get('sort')">
         <ng-template matTabContent>
           <safe-tab-sort [form]="$any(form.controls.sort)" [fields]="availableScalarFields"></safe-tab-sort>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Filter" *ngIf="form.get('filter')">
+      <mat-tab [label]="'widgets.query.filter.title' | translate" *ngIf="form.get('filter')">
         <ng-template matTabContent>
           <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [settings]="settings">
           </safe-tab-filter>

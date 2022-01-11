@@ -19,6 +19,7 @@ import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { NOTIFICATIONS } from '../../const/notifications';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-roles',
@@ -50,7 +51,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -156,9 +158,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete role',
-        content: `Do you confirm the deletion of the role ${item.title} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('roles.delete'),
+        content: this.translate.instant('roles.deleteDesc', {name: item.title}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

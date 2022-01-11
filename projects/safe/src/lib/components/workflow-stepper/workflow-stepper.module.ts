@@ -9,6 +9,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeButtonModule } from '../ui/button/public-api';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTooltipModule,
     DragDropModule,
     SafeIconModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [
     SafeWorkflowStepperComponent,

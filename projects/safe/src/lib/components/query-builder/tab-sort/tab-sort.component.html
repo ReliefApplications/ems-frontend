@@ -1,6 +1,6 @@
 <form [formGroup]="form">
     <mat-form-field appearance="outline">
-        <mat-label>Sort field</mat-label>
+        <mat-label>{{'widgets.query.sort.field' | translate}}</mat-label>
         <mat-select formControlName="field">
             <mat-option>-- None --</mat-option>
             <mat-option *ngFor="let field of fields" [value]="field.name">
@@ -9,10 +9,10 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline" *ngIf="form.value.field">
-        <mat-label>Sort order</mat-label>
+        <mat-label>{{'widgets.query.sort.order' | translate}}</mat-label>
         <mat-select formControlName="order">
-            <mat-option value="asc">ascending</mat-option>
-            <mat-option value="desc">descending</mat-option>
+            <mat-option value="asc">{{'widgets.query.sort.ascending' | translate}}</mat-option>
+            <mat-option value="desc">{{'widgets.query.sort.descending' | translate}}</mat-option>
         </mat-select>
     </mat-form-field>
 </form>

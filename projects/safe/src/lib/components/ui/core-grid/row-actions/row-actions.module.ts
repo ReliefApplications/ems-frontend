@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeGridRowActionsComponent } from './row-actions.component';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { MatMenuModule } from '@angular/material/menu';
   imports: [
     CommonModule,
     ButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    TranslateModule
   ],
   exports: [
     SafeGridRowActionsComponent

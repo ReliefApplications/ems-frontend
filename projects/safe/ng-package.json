@@ -30,7 +30,8 @@
       "lodash/isNil": "lodash/isNil",
       "lodash/omitBy": "lodash/omitBy",
       "@progress/kendo-angular-common": "@progress/kendo-angular-common",
-      "@progress/kendo-angular-layout": "@progress/kendo-angular-layout"
+      "@progress/kendo-angular-layout": "@progress/kendo-angular-layout",
+      "@ngx-translate/core": "@ngx-translate/core"
     }
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     SafeButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   exports: [
     SafeRecordSummaryComponent

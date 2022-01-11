@@ -11,5 +11,6 @@ export const environment = {
     postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
     frontOfficeUri: 'https://ems-safe-test.who.int/',
     backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
-    module: 'frontoffice'
+    module: 'frontoffice',
+    availableLanguages: ['en']
 };

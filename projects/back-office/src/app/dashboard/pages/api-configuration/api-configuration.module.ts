@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { SafeButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SafeButtonModule } from '@safe/builder';
     ReactiveFormsModule,
     MatSelectModule,
     MatOptionModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ]
 })
 export class ApiConfigurationModule { }

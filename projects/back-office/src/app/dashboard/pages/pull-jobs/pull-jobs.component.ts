@@ -12,6 +12,7 @@ import {
 } from '../../../graphql/mutations';
 import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -43,7 +44,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -157,9 +159,10 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     if (element) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete pull job',
-          content: `Do you confirm the deletion of the pull job ${element.name} ?`,
-          confirmText: 'Delete',
+          title: this.translate.instant('pullJobs.delete'),
+          content: this.translate.instant('pullJobs.deleteDesc', {name: element.name}),
+          confirmText: this.translate.instant('action.delete'),
+          cancelText: this.translate.instant('action.cancel'),
           confirmColor: 'warn'
         }
       });

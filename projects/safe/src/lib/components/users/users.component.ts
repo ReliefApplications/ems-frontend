@@ -19,6 +19,7 @@ import { SafeInviteUsersComponent } from './components/invite-users/invite-users
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
+import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
 
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
@@ -57,7 +58,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -143,12 +145,18 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(users: User[]): void {
+    let title = this.translate.instant('users.delete');
+    let content = this.translate.instant('users.deleteDesc', {name: users[0].username});
+    if (users.length > 1) {
+      title = this.translate.instant('users.deleteSelected');
+      content = this.translate.instant('users.deleteSelectedDesc');
+    }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete user',
-        content: `Do you confirm the deletion of ${users.length > 1 ? 'the selected users' : users[0].username}
-          ${Boolean(!this.applicationService) ? '' : 'from the application'} ?`,
-        confirmText: 'Delete',
+        title,
+        content,
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

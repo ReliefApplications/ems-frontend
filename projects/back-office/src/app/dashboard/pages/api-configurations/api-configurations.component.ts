@@ -15,6 +15,7 @@ import {
   DeleteApiConfigurationMutationResponse, DELETE_API_CONFIGURATIION
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -56,7 +57,8 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) { }
 
   /**
@@ -197,9 +199,10 @@ export class ApiConfigurationsComponent implements OnInit, OnDestroy, AfterViewI
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete API Configuration',
-        content: `Do you confirm the deletion of the API Configuration ${element.name} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('APIConf.delete'),
+        content: this.translate.instant('APIConf.deleteDesc', {name: element.name}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

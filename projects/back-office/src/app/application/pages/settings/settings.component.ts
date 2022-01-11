@@ -10,6 +10,7 @@ import { DuplicateApplicationComponent } from '../../../components/duplicate-app
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -34,7 +35,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -79,9 +81,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete application',
-          content: `Do you confirm the deletion of this application ?`,
-          confirmText: 'Delete',
+          title: this.translate.instant('apps.delete'),
+          content: this.translate.instant('apps.deleteDesc'),
+          confirmText: this.translate.instant('action.delete'),
+          cancelText: this.translate.instant('action.cancel'),
           confirmColor: 'warn'
         }
       });
