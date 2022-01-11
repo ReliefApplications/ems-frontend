@@ -102,6 +102,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
   };
 };
 
+/** Tells if the navigator is IE */
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 /**
@@ -167,6 +168,9 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
     loginFailedRoute: '/auth'
   });
 
+/**
+ * Front-Office main module. Bootstraps the application.
+ */
 @NgModule({
   declarations: [
     AppComponent

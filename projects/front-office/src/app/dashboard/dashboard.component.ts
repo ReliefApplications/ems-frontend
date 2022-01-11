@@ -4,6 +4,9 @@ import { Application, User, Role, SafeAuthService, SafeSnackBarService, SafeAppl
   Permission, Permissions, ContentType, NOTIFICATIONS } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
+/**
+ * Main component of Front-Office navigation.
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -11,17 +14,34 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
+  /** Application title */
   public title = '';
+  /** List of accessible applications */
   public applications: Application[] = [];
+  /** List of application pages */
   public navGroups: any[] = [];
+  /** Current application */
   public application: Application | null = null;
+  /** User subscription */
   private authSubscription?: Subscription;
+  /** Application service subscription */
   private applicationSubscription?: Subscription;
+  /** Permissions of the user */
   private permissions: Permission[] = [];
+  /** Roles of the user */
   private roles: Role[] = [];
-
+  /** Stores if an application has been loaded */
   private firstLoad = true;
 
+  /**
+   * Main component of Front-Office navigation.
+   *
+   * @param authService Shared authentication service
+   * @param applicationService Shared application service
+   * @param route Angular current route
+   * @param snackBar Shared snackbar service
+   * @param router Angular router
+   */
   constructor(
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
@@ -30,6 +50,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
+  /**
+   * Subscribes to current user change, and application change.
+   * On load, try to open the first application accessible to the user.
+   */
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
       if (user) {
@@ -105,6 +129,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Destroys all subscriptions made by the component.
+   */
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
@@ -114,10 +141,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Opens an application, contacting the application service.
+   *
+   * @param application Application to open
+   */
   onOpenApplication(application: Application): void {
     this.applicationService.loadApplication(application.id || '');
   }
 
+  /**
+   * Gets nav icon from page content type.
+   *
+   * @param type content type of the page
+   * @returns icon
+   */
   private getNavIcon(type: string): string {
     switch (type) {
       case 'workflow':

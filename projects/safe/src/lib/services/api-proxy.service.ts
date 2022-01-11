@@ -1,13 +1,25 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
+/**
+ * Shared API Proxy service.
+ * The API proxy service contacts the back-end generated proxy, based on the API definitions.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeApiProxyService {
 
+  /** API url */
   public baseUrl: string;
 
+  /**
+   * Shared API Proxy service.
+   * The API proxy service contacts the back-end generated proxy, based on the API definitions.
+   *
+   * @param environment Current environment
+   * @param http Http client
+   */
   constructor(
     @Inject('environment') environment: any,
     private http: HttpClient
@@ -16,7 +28,7 @@ export class SafeApiProxyService {
   }
 
   /**
-   * Send a ping request using the passed arguments
+   * Sends a ping request using the passed arguments
    */
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {
@@ -33,6 +45,12 @@ export class SafeApiProxyService {
     return null;
   }
 
+  /**
+   * Builds a http request
+   *
+   * @param url URL string
+   * @returns http request
+   */
   public promisedRequestWithHeaders(url: string): Promise<any> {
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({

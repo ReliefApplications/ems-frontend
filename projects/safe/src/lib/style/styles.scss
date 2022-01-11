@@ -319,7 +319,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include custom-theme($safe-theme);
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: hidden; }
 
 .widget-container {
   width: 100%;
@@ -329,6 +329,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .widget-header {
+  box-sizing: border-box;
   height: 40px;
   position: relative;
   z-index: 1001;
@@ -336,8 +337,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: black;
   text-align: left;
   line-height: 40px;
-  padding: 0 40px;
-  border-bottom: 1px solid #d8d8d8;
+  padding: 0 40px !important;
+  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -347,6 +348,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     white-space: nowrap;
     text-overflow: ellipsis;
     flex: 1;
+    margin: unset;
   }
 }
 

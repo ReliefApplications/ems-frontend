@@ -2,13 +2,25 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+/**
+ * Shared download service. Handles export and upload events.
+ * TODO: rename in file service
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeDownloadService {
 
+  /** API base url */
   public baseUrl: string;
 
+  /**
+   * Shared download service. Handles export and upload events.
+   * TODO: rename in file service
+   *
+   * @param environment Current environment
+   * @param http Http client
+   */
   constructor(
     @Inject('environment') environment: any,
     private http: HttpClient
@@ -17,7 +29,7 @@ export class SafeDownloadService {
   }
 
   /**
-   * Download file from the server
+   * Downloads file from the server
    *
    * @param path download path to append to base url
    * @param type type of the file
@@ -62,6 +74,12 @@ export class SafeDownloadService {
     });
   }
 
+  /**
+   * Saves file from blob
+   *
+   * @param fileName name of the file
+   * @param blob File blob
+   */
   private saveFile(fileName: string, blob: Blob): void {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -71,6 +89,13 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
+  /**
+   * Uploads a file
+   *
+   * @param path request path
+   * @param file file to upload
+   * @returns http upload request
+   */
   uploadFile(path: string, file: any): Observable<any> {
     const url = this.buildURL(path);
     const token = localStorage.getItem('msal.idtoken');
@@ -81,12 +106,16 @@ export class SafeDownloadService {
       Authorization: `Bearer ${token}`
     });
     const formData = new FormData();
-
     formData.append('excelFile', file, file.name);
-
     return this.http.post(url, formData, {headers});
   }
 
+  /**
+   * Builds url from path.
+   *
+   * @param path Request path
+   * @returns full url
+   */
   private buildURL(path: string): string {
     return path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
   }

@@ -11,6 +11,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Shared profile page module.
+ */
 @NgModule({
   declarations: [SafeProfileComponent],
   imports: [

@@ -12,22 +12,28 @@ import { NOTIFICATIONS } from '../const/notifications';
 import { SafeApplicationService } from './application.service';
 
 /**
- * SAFE workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
+ * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SafeWorkflowService {
 
+  /** Current workflow */
   private workflow = new BehaviorSubject<Workflow | null>(null);
-
-  /**
-   * Return the workflow as an Observable.
-   */
+  /** Current workflow as observable */
   get workflow$(): Observable<Workflow | null> {
     return this.workflow.asObservable();
   }
 
+  /**
+   * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
+   *
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param router Angular router
+   * @param applicationService Shared application service
+   */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,

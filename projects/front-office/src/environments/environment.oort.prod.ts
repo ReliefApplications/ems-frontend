@@ -1,3 +1,6 @@
+/**
+ * Environment file of OORT production platform.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',
@@ -6,7 +9,7 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/common',
   redirectUrl: 'https://dms.oortcloud.tech/',
   postLogoutRedirectUri: 'https://dms.oortcloud.tech/auth',
-  frontOfficeUri: 'https://dms/oortcloud.tech',
+  frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'frontoffice'
 };

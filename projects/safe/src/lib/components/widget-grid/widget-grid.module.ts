@@ -2,12 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeWidgetGridComponent } from './widget-grid.component';
 import { SafeWidgetModule } from '../widget/widget.module';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,6 +19,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -41,15 +41,15 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatSelectModule,
     MatDialogModule,
-    MatGridListModule,
     MatTooltipModule,
     MatDialogModule,
     MatMenuModule,
-    DragDropModule,
     MatDividerModule,
     SafeButtonModule,
+    TranslateModule,
+    SafeIconModule,
     SafeWidgetChoiceModule,
-    TranslateModule
+    LayoutModule
   ],
   exports: [SafeWidgetGridComponent]
 })

@@ -1,15 +1,19 @@
-import { CdkDragEnter, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent } from '@progress/kendo-angular-layout';
+
+const MAX_ROW_SPAN = 4;
+
+const MAX_COL_SPAN = 8;
 
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss']
 })
-export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
+export class SafeWidgetGridComponent implements OnInit {
 
   public widgetTypes: IWidgetType[] = WIDGET_TYPES as IWidgetType[];
 
@@ -17,9 +21,7 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   @Input() canUpdate = false;
 
   // === GRID ===
-  @ViewChildren(CdkDropList) dropsQuery?: QueryList<CdkDropList>;
-  drops: CdkDropList[] = [];
-  colsNumber = 8;
+  colsNumber = MAX_COL_SPAN;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
@@ -30,15 +32,14 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  get dashboardMenuRowSpan(): number {
-    if (this.widgets && this.widgets.length > 0) {
-      const defaultRows = (this.widgets[this.widgets.length - 1].defaultRows === 4 &&
-        this.widgets[this.widgets.length - 1].defaultCols === 8) ? 1 :
-        this.widgets[this.widgets.length - 1].defaultRows;
-      return (defaultRows > this.colsNumber) ? this.colsNumber : defaultRows;
-    } else {
-      return 1;
-    }
+ /**
+  * Changes display when windows size changes.
+  *
+  * @param event window resize event
+  */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any): void {
+    this.colsNumber = this.setColsNumber(event.target.innerWidth);
   }
 
   constructor(
@@ -49,27 +50,11 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     this.colsNumber = this.setColsNumber(window.innerWidth);
   }
 
-  /*  Material grid once template ready.
-  */
-  ngAfterViewInit(): void {
-    if (this.dropsQuery) {
-      this.dropsQuery.changes.subscribe(() => {
-        this.drops = this.dropsQuery?.toArray() || [];
-      });
-      Promise.resolve().then(() => {
-        this.drops = this.dropsQuery?.toArray() || [];
-      });
-    }
-  }
-
-  /*  Change display when windows size changes.
-  */
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
-
-  /*  Change the number of displayed columns.
+  /**
+   * Changes the number of displayed columns.
+   *
+   * @param width width of the screen.
+   * @returns new number of cols.
    */
   private setColsNumber(width: number): number {
     if (width <= 480) {
@@ -84,24 +69,32 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     if (width <= 1024) {
       return 6;
     }
-    return 8;
+    return MAX_COL_SPAN;
   }
 
-  /*  Drag and drop a widget to move it.
-  */
-  onMove($event: CdkDragEnter): void {
-    moveItemInArray(this.widgets, $event.item.data, $event.container.data);
-    this.move.emit();
-  }
-
+  /**
+   * Emits edition event.
+   *
+   * @param e widget to edit.
+   */
   onEditWidget(e: any): void {
     this.edit.emit(e);
   }
 
+  /**
+   * Emits delete event.
+   *
+   * @param e widget to delete.
+   */
   onDeleteWidget(e: any): void {
     this.delete.emit(e);
   }
 
+  /**
+   * Expands widget in a full size screen popup.
+   *
+   * @param e widget to open.
+   */
   onExpandWidget(e: any): void {
     const widget = this.widgets.find(x => x.id === e.id);
     const dialogRef = this.dialog.open(SafeExpandedWidgetComponent, {
@@ -121,7 +114,43 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Emits addition event.
+   *
+   * @param e new widget.
+   */
   onAdd(e: any): void {
     this.add.emit(e);
+  }
+
+  /**
+   * Emits reorder event.
+   *
+   * @param e reorder event.
+   */
+  public onReorder(e: TileLayoutReorderEvent): void {
+    this.move.emit(e);
+  }
+
+  /**
+   * Handles resize widget event.
+   *
+   * @param e resize event.
+   */
+  public onResize(e: TileLayoutResizeEvent) {
+    if (e.newRowSpan > MAX_ROW_SPAN) {
+      e.newRowSpan = MAX_ROW_SPAN;
+    }
+    if (e.newColSpan > MAX_COL_SPAN) {
+      e.newColSpan = MAX_COL_SPAN;
+    }
+    this.edit.emit({
+      type: 'display',
+      id: this.widgets[e.item.order].id,
+      options: {
+        id: this.widgets[e.item.order].id,
+        cols: e.newColSpan,
+        rows: e.newRowSpan
+      }});
   }
 }

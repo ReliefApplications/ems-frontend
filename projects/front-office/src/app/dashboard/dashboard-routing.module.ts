@@ -2,12 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 
-/*  Divide the dashboard module into three modules:
-    * forms and resources
-    * dashboards
-    * users
-    Use lazy loading for performance.
-*/
+/**
+ * List of routes of the dashboard.
+ * Uses lazy loading for performance.
+ */
 export const routes = [
   {
     path: '',
@@ -53,6 +51,10 @@ export const routes = [
     ]
   }
 ];
+
+/**
+ * Routing module of the Front-Office main navigation.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

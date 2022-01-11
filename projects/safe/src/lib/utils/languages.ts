@@ -1,3 +1,6 @@
+/**
+ * List of languages for form.
+ */
 export const LANGUAGES = {
   ab: {
     name: 'Abkhaz',

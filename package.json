@@ -1,5 +1,5 @@
 {
-  "name": "safe-front",
+  "name": "oort-front",
   "version": "1.1.0",
   "scripts": {
     "ng": "ng",
@@ -172,7 +172,7 @@
         "hidden": true
       }
     ],
-    "commitUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/commits/{{hash}}",
-    "compareUrlFormat": "https://github.com/ReliefApplications/emrs-safe-frontend/compare/{{previousTag}}...{{currentTag}}"
+    "commitUrlFormat": "https://github.com/ReliefApplications/oort-frontend/commits/{{hash}}",
+    "compareUrlFormat": "https://github.com/ReliefApplications/oort-frontend/compare/{{previousTag}}...{{currentTag}}"
   }
 }

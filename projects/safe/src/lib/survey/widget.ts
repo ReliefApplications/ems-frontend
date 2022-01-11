@@ -11,14 +11,28 @@ import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
 
-
-const addZero = (i: any): string => {
+/**
+ * Adds zero to number if < 10.
+ *
+ * @param i number
+ * @returns number prefixed with 0 if needed
+ */
+const addZero = (i: number): string => {
   if (i < 10) {
-    i = '0' + i;
+    return '0' + i;
+  } else {
+    return i.toString();
   }
-  return i;
 };
 
+/**
+ * Custom definition for survey. Definition of all additional code built on the default logic.
+ *
+ * @param survey Survey instance
+ * @param domService Shared DOM service
+ * @param dialog Material dialog service
+ * @param environment Current environment
+ */
 export const init = (survey: any, domService: DomService, dialog: MatDialog, environment: any): void => {
   const widget = {
     name: 'custom-widget',

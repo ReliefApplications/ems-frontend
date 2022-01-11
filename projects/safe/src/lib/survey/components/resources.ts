@@ -25,6 +25,15 @@ export const resourceConditions = [
   { value: '<=', text: 'less or equals' }
 ];
 
+/**
+ * Inits the resources question component for survey.
+ *
+ * @param survey Survey instance
+ * @param domService Shared DOM service
+ * @param apollo Apollo client
+ * @param dialog Material dialog service
+ * @param formBuilder Angular form service
+ */
 export const init = (survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void => {
 
   const getResourceById = (data: {

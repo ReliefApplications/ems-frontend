@@ -15,7 +15,7 @@ export default {
             providers: []
         })
     ],
-    title: 'UI/Dashboard/Widget Choice',
+    title: 'Dashboard/Widget Choice',
     argsTypes: {
         floating: {
             defaultValue: false,

@@ -1,3 +1,6 @@
+/**
+ * Environment file of uat platform.
+ */
 export const environment = {
     production: true,
     apiUrl: 'https://ems-safe-test.who.int/api',

@@ -41,6 +41,9 @@ const routes: Routes = [
   }
 ];
 
+/**
+ * Routing Module of Application Preview toolbar.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

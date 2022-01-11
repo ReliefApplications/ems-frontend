@@ -5,6 +5,11 @@
   "projects": {
     "safe": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/safe",
       "sourceRoot": "projects/safe/src",
       "prefix": "safe",

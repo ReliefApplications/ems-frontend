@@ -19,7 +19,7 @@ import { SafeAuthService } from '../services/auth.service';
  * Executes all init methods of custom SurveyJS.
  *
  * @param survey surveyjs or surveyjs creator
- * @param domService Angular DOM service, used to inject components on the go
+ * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
  * @param formBuilder form builder service

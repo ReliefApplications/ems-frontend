@@ -6,26 +6,42 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
 import { ApolloQueryResult } from '@apollo/client';
 
-const DISABLED_FIELDS = ['canUpdate', 'canDelete'];
+/** List of fields part of the schema but not selectable */
+const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
+/** List of user fields */
 const USER_FIELDS = ['id', 'name', 'username'];
 
+/**
+ * Shared query builder service. The query builder service is used by the widgets, that creates the query based on their settings.
+ * Query builder service only performs query on the schema generated on the go from the forms / resources definitions.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class QueryBuilderService {
 
+  /** Available forms / resources queries */
   private availableQueries = new BehaviorSubject<any[]>([]);
-  private availableTypes = new BehaviorSubject<any[]>([]);
-  private userFields = [];
-
+  /** Available forms / resources queries as observalbe */
   get availableQueries$(): Observable<any> {
     return this.availableQueries.asObservable();
   }
-
+  /** Available forms / resources types */
+  private availableTypes = new BehaviorSubject<any[]>([]);
+  /** Available forms / resources types as observable */
   get availableTypes$(): Observable<any> {
     return this.availableTypes.asObservable();
   }
+  /** User fields */
+  private userFields = [];
 
+  /**
+   * Shared query builder service. The query builder service is used by the widgets, that creates the query based on their settings.
+   * Query builder service only performs query on the schema generated on the go from the forms / resources definitions.
+   *
+   * @param apollo Apollo client
+   * @param formBuilder Angular form builder
+   */
   constructor(
     private apollo: Apollo,
     private formBuilder: FormBuilder
@@ -42,23 +58,41 @@ export class QueryBuilderService {
     });
   }
 
+  /**
+   * Gets list of fields from a query name.
+   *
+   * @param queryName Form / Resource query name.
+   * @returns List of fields of this structure.
+   */
   public getFields(queryName: string): any[] {
     const query = this.availableQueries.getValue().find(x => x.name === queryName);
     const typeName = query?.type?.name.replace('Connection', '') || '';
     const type = this.availableTypes.getValue().find(x => x.name === typeName);
-    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    return type ? type.fields.filter((x: any) => !NON_SELECTABLE_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
+  /**
+   * Gets list of fields from a type.
+   *
+   * @param typeName Form / Resource type.
+   * @returns List of fields of this structure.
+   */
   public getFieldsFromType(typeName: string): any[] {
     if (typeName === 'User') {
       return this.userFields;
     }
     const type = this.availableTypes.getValue().find(x => x.name === typeName);
-    return type ? type.fields.filter((x: any) => !DISABLED_FIELDS.includes(x.name))
+    return type ? type.fields.filter((x: any) => !NON_SELECTABLE_FIELDS.includes(x.name))
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
+  /**
+   * Gets list of LIST fields from a query name.
+   *
+   * @param queryName Form / Resource query name.
+   * @returns List of LIST fields of this structure.
+   */
   public getListFields(queryName: string): any[] {
     const query = this.availableQueries.getValue().find(x => x.name === queryName);
     const typeName = query?.type?.name.replace('Connection', '') || '';
@@ -67,6 +101,12 @@ export class QueryBuilderService {
       .sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
   }
 
+  /**
+   * Builds the fields part of the GraphQL query.
+   *
+   * @param fields List of fields to query.
+   * @returns QL document to build the query.
+   */
   private buildFields(fields: any[]): any {
     return ['id\n'].concat(fields.map(x => {
       switch (x.kind) {
@@ -94,6 +134,12 @@ export class QueryBuilderService {
     }));
   }
 
+  /**
+   * Builds parsable GraphQL string from the filter definition.
+   *
+   * @param filter Filter definition
+   * @returns GraphQL parsable strinf for the filter.
+   */
   private filterToString(filter: any): string {
     if (filter.filters) {
       return `{ logic: "${filter.logic}", filters: [${filter.filters.map((x: any) => this.filterToString(x))}]}`;
@@ -102,6 +148,12 @@ export class QueryBuilderService {
     }
   }
 
+  /**
+   * Builds the fields part of the GraphQL meta query.
+   *
+   * @param fields List of fields to query.
+   * @returns QL document to build the query.
+   */
   private buildMetaFields(fields: any[]): any {
     if (!fields) {
       return '';
@@ -128,6 +180,13 @@ export class QueryBuilderService {
     }));
   }
 
+  /**
+   * Builds a form / resource query from widget settings.
+   * TODO: we should pass directly the query definition, instead of the settings.
+   *
+   * @param settings Widget settings.
+   * @returns GraphQL query.
+   */
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
@@ -156,6 +215,12 @@ export class QueryBuilderService {
     }
   }
 
+  /**
+   * Builds a GraphQL meta query of a form / resource from widget settings.
+   *
+   * @param settings Widget settings.
+   * @returns GraphQL meta query.
+   */
   public buildMetaQuery(settings: any): Observable<ApolloQueryResult<any>> | null {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
@@ -177,33 +242,24 @@ export class QueryBuilderService {
     }
   }
 
-  public getMetaFields(queryName: string, fields: any): any {
-    const metaFields = this.buildMetaFields(fields);
-    const query = gql`
-      query GetCustomMetaQuery {
-        _${queryName}Meta {
-          ${metaFields}
-        }
-      }
-    `;
-    this.apollo.query<any>({
-      query
-    });
-  }
-
+  /**
+   * Returns the query name from a resource name.
+   *
+   * @param resourceName Resource name
+   * @returns Query name
+   */
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
     return this.availableQueries.getValue().find(x => x.type.name.toLowerCase() === nameTrimmed + 'connection')?.name || '';
   }
 
-  private arrayToString(array: any): string {
-    let str = '[';
-    for (const item of array) {
-      str += (typeof item === 'string' ? `"${item}"` : item) + ',\n';
-    }
-    return str + ']';
-  }
-
+  /**
+   * Builds a query form.
+   *
+   * @param value Initial value
+   * @param validators Enables or not the validators of the form
+   * @returns Query form
+   */
   public createQueryForm(value: any, validators = true): FormGroup {
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
@@ -218,6 +274,13 @@ export class QueryBuilderService {
     });
   }
 
+  /**
+   * Builds a filter form
+   *
+   * @param filter Initial filter
+   * @param fields List of fields
+   * @returns Filter form
+   */
   public createFilterGroup(filter: any, fields: any): FormGroup {
     if (filter) {
       if (filter.filters) {
@@ -242,6 +305,13 @@ export class QueryBuilderService {
     });
   }
 
+  /**
+   * Adds a field to the query
+   *
+   * @param field Field definition
+   * @param newField Is the field new ?
+   * @returns Field form
+   */
   public addNewField(field: any, newField?: boolean): FormGroup {
     switch (newField ? field.type.kind : field.kind) {
       case 'LIST': {
@@ -279,6 +349,13 @@ export class QueryBuilderService {
     }
   }
 
+  /**
+   * Finds the source of a query.
+   * Used in order to find related forms.
+   *
+   * @param queryName Query name
+   * @returns Apollo query.
+   */
   public sourceQuery(queryName: string): any {
     const queries = this.availableQueries.getValue().map(x => x.name);
     if (queries.includes(queryName)) {

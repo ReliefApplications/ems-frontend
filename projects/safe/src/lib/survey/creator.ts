@@ -1,5 +1,8 @@
-/*  Edit general settings of SurveyJS
-*/
+/**
+ * Edits general settings of the survey builder.
+ *
+ * @param survey Survey instance
+ */
 export const initCreatorSettings = (survey: any): void => {
     survey.Serializer.findProperty('question', 'name').readOnly = true;
     survey.Serializer.findProperty('question', 'name').dependsOn = 'valueName';

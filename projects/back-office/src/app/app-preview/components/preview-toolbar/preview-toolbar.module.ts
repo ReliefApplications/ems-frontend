@@ -5,6 +5,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Toolbar displayed on top of application preview.
+ */
 @NgModule({
   declarations: [PreviewToolbarComponent],
   imports: [
