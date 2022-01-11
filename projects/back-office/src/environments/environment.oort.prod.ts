@@ -8,5 +8,6 @@ export const environment = {
   postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth',
   frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
-  module: 'backoffice'
+  module: 'backoffice',
+  availableLanguages: ['en']
 };

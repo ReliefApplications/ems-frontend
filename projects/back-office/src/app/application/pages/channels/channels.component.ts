@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { Application, Channel, ChannelDisplay, Role, SafeApplicationService, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
@@ -24,6 +25,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -82,9 +84,10 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   onDelete(channel: Channel): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete channel',
-        content: `Do you confirm the deletion of the channel ${channel.title} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('channels.delete'),
+        content: this.translate.instant('channels.deleteDesc', {name: channel.title}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

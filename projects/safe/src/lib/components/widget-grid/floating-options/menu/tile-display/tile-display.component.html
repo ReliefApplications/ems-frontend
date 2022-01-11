@@ -1,17 +1,17 @@
-<h1 mat-dialog-title>Display</h1>
+<h1 mat-dialog-title>{{'global.display' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="tileForm">
         <mat-form-field>
-            <mat-label>Cols</mat-label>
+            <mat-label>{{'widgets.cols' | translate}}</mat-label>
             <input matInput formControlName="cols" type="number"/>
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Rows</mat-label>
+            <mat-label>{{'widgets.rows' | translate}}</mat-label>
             <input matInput formControlName="rows" type="number"/>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-flat-button [mat-dialog-close]="tileForm.value" cdkFocusInitial color="primary" [disabled]="!tileForm.valid">Save</button>
+    <button mat-button mat-dialog-close>{{'action.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="tileForm.value" cdkFocusInitial color="primary" [disabled]="!tileForm.valid">{{'action.save' | translate}}</button>
 </div>

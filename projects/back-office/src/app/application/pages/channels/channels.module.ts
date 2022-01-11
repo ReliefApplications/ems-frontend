@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ChannelsComponent, AddChannelComponent, EditChannelComponent],
@@ -36,7 +37,8 @@ import {MatButtonModule} from '@angular/material/button';
         SafeConfirmModalModule,
         MatDividerModule,
         SafeButtonModule,
-        MatButtonModule
+        MatButtonModule,
+        TranslateModule
     ]
 })
 export class ChannelsModule { }

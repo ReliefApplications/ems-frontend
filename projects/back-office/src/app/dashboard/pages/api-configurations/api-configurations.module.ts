@@ -17,6 +17,7 @@ import { SafeButtonModule } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         SafeButtonModule,
         MatIconModule,
         MatButtonModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        TranslateModule
     ],
   exports: [ApiConfigurationsComponent]
 })

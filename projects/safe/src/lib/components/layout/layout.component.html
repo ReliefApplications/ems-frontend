@@ -1,10 +1,20 @@
 <mat-toolbar color="primary">
-  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'">
+  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()"
+    [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'">
   </safe-button>
-  <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
+  <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route"
+    [matTooltip]="'tooltip.backApps' | translate">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">{{title}}</h1>
+    <h1 class="application-title">{{(route) ? (title) : ('nav.title' | translate)}}</h1>
+    <!-- Temporal language changer -->
+    <span class="form-inline" style="margin-left: 1em;" *ngIf="languages.length > 1">
+      <select class="form-control" #selectedLang (change)="setLanguage(selectedLang.value)" [(ngModel)]="currentLanguage">
+        <option *ngFor="let language of languages" [value]="language">
+          {{ language }}
+        </option>
+      </select>
+    </span>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
@@ -31,24 +41,27 @@
     </mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
+    <button mat-menu-item (click)="onOpenProfile()">{{'nav.profile' | translate}}</button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+      <button mat-menu-item (click)="onSwitchOffice()">{{'nav.switch' | translate}} {{ otherOffice }}</button>
     </ng-container>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="logout()" class="warn">Logout</button>
+    <button mat-menu-item (click)="logout()" class="warn">{{'nav.logout' | translate}}</button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline
+      <a (click)="onMarkAllNotificationsAsRead()">{{'nav.readAll' | translate}}<mat-icon [inline]="true">
+          check_circle_outline
         </mat-icon></a>
       <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{
         notification.action }} -
         {{ notification.createdAt | date }}</button>
     </div>
     <safe-button *ngIf="hasMoreNotifications" category="primary" variant="primary" [block]="true"
-      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">Load more</safe-button>
+      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">
+      {{'nav.load' | translate}}
+    </safe-button>
   </mat-menu>
 </mat-toolbar>
 
@@ -70,14 +83,15 @@
                   <ng-container *ngIf="item.isAddPage">
                     <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
                       [class]="item.class ? item.class : ''">
-                      Add a Page
+                      {{'nav.addPage' | translate}}
                     </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
-                    <div mat-line class="nav-text" [matTooltip]="item.name" [matTooltipShowDelay]="1000">{{ item.name }}</div>
+                    <div mat-line class="nav-text" [matTooltip]="item.name" [matTooltipShowDelay]="1000">{{ item.name }}
+                    </div>
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">

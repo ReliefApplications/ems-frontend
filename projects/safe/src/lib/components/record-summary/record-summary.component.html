@@ -1,11 +1,19 @@
 <div class="record-history" *ngIf="cacheDate">
-    <safe-button *ngIf="!record" [isIcon]="true" icon="restart_alt" matTooltip="Clear cache" (click)="clear.emit()"></safe-button>
-    <span>Loaded from cache {{ cacheDate | date:'dd/MM/yy, h:mm a'}}</span>
+    <safe-button *ngIf="!record" [isIcon]="true" icon="restart_alt" [matTooltip]="'tooltip.clearCache' | translate" (click)="clear.emit()"></safe-button>
+    <span>{{'date.loadFromCache' | translate : {
+        date: (cacheDate | date:'dd/MM/yy, h:mm a')
+    } }}</span>
 </div>
 <div class="record-history" *ngIf="record">
     <safe-button [isIcon]="true" icon="history" matTooltip="Display history" (click)="showHistory.emit()"></safe-button>
     <div>
-        <span>Created by {{ record.createdBy?.name || 'unknown' }} at {{ record.createdAt | date:'dd/MM/yy, h:mm a'}}</span>
-        <span *ngIf="record.modifiedAt">Last modified by {{ record.modifiedBy?.name || 'unknown' }} on {{ record.modifiedAt | date:'dd/MM/yy, h:mm a'}}</span>
+        <span>{{'date.created' | translate : {
+            name: (record.createdBy?.name || 'unknown'),
+            date: (record.createdAt | date:'dd/MM/yy, h:mm a')
+        } }}</span>
+        <span *ngIf="record.modifiedAt">{{'date.modified' | translate : {
+            name: (record.modifiedBy?.name || 'unknown'),
+            date: (record.modifiedAt | date:'dd/MM/yy, h:mm a')
+        } }}</span>
     </div>
 </div>

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { Application, SafeApplicationService, PositionAttributeCategory, SafeConfirmModalComponent } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
@@ -19,7 +20,8 @@ export class PositionComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -64,9 +66,10 @@ export class PositionComponent implements OnInit, OnDestroy {
   onDelete(positionCategory: PositionAttributeCategory): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete position attribute',
-        content: `Do you confirm the deletion of the position attribute ${positionCategory.title} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('attributes.delete'),
+        content: this.translate.instant('attributes.deleteDesc', {name: positionCategory.title}),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
         confirmColor: 'warn'
       }
     });

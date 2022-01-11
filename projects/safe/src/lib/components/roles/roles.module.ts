@@ -18,6 +18,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeRolesComponent, SafeAddRoleComponent, SafeEditRoleComponent],
@@ -38,7 +39,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatSortModule,
     MatAutocompleteModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [SafeRolesComponent]
 })

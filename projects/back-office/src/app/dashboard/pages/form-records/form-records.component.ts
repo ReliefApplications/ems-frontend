@@ -22,6 +22,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -70,6 +71,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {
   }
 
@@ -187,24 +189,25 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param id Id of record to delete.
    * @param e click envent.
    */
-  public onDeleteRecord(id: string, e: any): void {
+  public onDeleteRecord(element: any, e: any): void {
     e.stopPropagation();
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete record permanently',
-          content: `Do you confirm the hard deletion of this record ?`,
-          confirmText: 'Delete',
+          title: this.translate.instant('record.delete'),
+          content: this.translate.instant('record.deleteDesc', {name: element.name}),
+          confirmText: this.translate.instant('action.delete'),
+          cancelText: this.translate.instant('action.cancel'),
           confirmColor: 'warn'
         }
       });
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
-          this.deleteRecord(id);
+          this.deleteRecord(element.id);
         }
       });
     } else {
-      this.deleteRecord(id);
+      this.deleteRecord(element.id);
     }
   }
 

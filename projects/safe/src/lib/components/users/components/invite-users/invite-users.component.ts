@@ -8,6 +8,7 @@ import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { NOTIFICATIONS } from '../../../../const/notifications';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   roles: Role[];
@@ -46,6 +47,7 @@ export class SafeInviteUsersComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
+    public translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 

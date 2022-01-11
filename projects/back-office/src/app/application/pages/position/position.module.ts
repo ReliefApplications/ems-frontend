@@ -14,6 +14,7 @@ import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {MatButtonModule} from '@angular/material/button';
         MatMenuModule,
         SafeConfirmModalModule,
         SafeButtonModule,
-        MatButtonModule
+        MatButtonModule,
+        TranslateModule
     ],
   exports: [PositionComponent]
 })

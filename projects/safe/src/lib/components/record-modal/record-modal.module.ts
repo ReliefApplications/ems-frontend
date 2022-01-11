@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeRecordModalComponent],
@@ -21,7 +22,8 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
     MatButtonModule,
     SafeButtonModule,
     SafeRecordHistoryModalModule,
-    SafeRecordSummaryModule
+    SafeRecordSummaryModule,
+    TranslateModule
   ],
   exports: [SafeRecordModalComponent]
 })

@@ -25,7 +25,7 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   constructor(
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
-    private apollo: Apollo,
+    private apollo: Apollo
   ) { }
 
   ngOnInit(): void {

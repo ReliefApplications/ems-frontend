@@ -22,6 +22,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
@@ -49,7 +51,8 @@ import { FilterComponent } from './components/filter/filter.component';
       SafeButtonModule,
       MatButtonModule,
       MatPaginatorModule,
-      SafeApplicationsSummaryModule
+      SafeApplicationsSummaryModule,
+      TranslateModule
     ],
   exports: [ApplicationsComponent]
 })
