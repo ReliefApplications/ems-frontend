@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" *ngIf="!largeDevice">
+  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'">
   </safe-button>
   <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
   </safe-button>
@@ -57,7 +57,7 @@
 </ng-container>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav class="sidenav" #nav [mode]="largeDevice ? 'side' : 'over'" [opened]="largeDevice">
+  <mat-sidenav class="sidenav" #nav [mode]="largeDevice && nav.opened ? 'side' : 'over'" [opened]="largeDevice">
     <mat-nav-list>
       <ng-container *ngFor="let group of filteredNavGroups; let i = index">
         <div mat-subheader>{{ group.name }}</div>
