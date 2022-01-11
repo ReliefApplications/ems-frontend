@@ -9,11 +9,26 @@ import { AccessGuard } from './guards/access.guard';
  */
 const routes: Routes = [
   {
+    // path: '',
+    // loadChildren: () => import('./dashboard/dashboard.module')
+    // .then(m => m.DashboardModule),
+    // canActivate: [MsalGuard, AccessGuard]
     path: '',
-    loadChildren: () => import('./dashboard/dashboard.module')
-    .then(m => m.DashboardModule),
-    canActivate: [MsalGuard, AccessGuard]
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
+      },
+      {
+        path: ':id',
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
+      }
+    ],
+    canActivate: [MsalGuard, AccessGuard],
   },
+
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module')

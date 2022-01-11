@@ -33,6 +33,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Stores if an application has been loaded */
   private firstLoad = true;
 
+  // === ROUTE ===
+  private routeSubscription?: Subscription;
+
   /**
    * Main component of Front-Office navigation.
    *
@@ -61,27 +64,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log(this.route);
     console.log(this.router.routerState);
     console.log(this.router.config);
-    this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
-      if (user) {
-        const applications = user.applications || [];
-        console.log(applications);
-        console.log(user.favoriteApp);
-        if (applications.length > 0) {
-          this.applications = applications;
-          if (this.firstLoad) {
-            this.firstLoad = false;
-            if (user.favoriteApp) {
-              this.applicationService.loadApplication(user.favoriteApp);
-            } else {
-              this.applicationService.loadApplication(applications[0].id || '');
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      // this.applicationService.loadApplication(params.id);
+      this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
+        console.log(user?.applications);
+        const applications = user?.applications || [];
+        this.applications = applications;
+        this.roles = user?.roles || [];
+        this.permissions = user?.permissions || [];
+        if (params.id) {
+          console.log('ID!');
+          console.log(params.id);
+          this.applicationService.loadApplication(params.id);
+        } else {
+          console.log('no ID...');
+          if (user?.favoriteApp) {
+            console.log('user.favoriteApp');
+            console.log(user.favoriteApp);
+            // this.applicationService.loadApplication(user.favoriteApp);
+            this.router.navigate([`./${user.favoriteApp}`]);
+          } else {
+            if (applications.length > 0) {
+              // this.applicationService.loadApplication(applications[0].id || '');
+              this.router.navigate([`./${applications[0].id || ''}`]);
+            }
+            else {
+              this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
             }
           }
-          this.roles = user.roles || [];
-          this.permissions = user.permissions || [];
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
         }
-      }
+        // if (user) {
+        //   const applications = user.applications || [];
+        //   console.log(applications);
+        //   console.log(user.favoriteApp);
+        //   if (applications.length > 0) {
+        //     this.applications = applications;
+        //     console.log(this.applications);
+        //     if (this.firstLoad) {
+        //       this.firstLoad = false;
+        //       if (user.favoriteApp) {
+        //         this.applicationService.loadApplication(user.favoriteApp);
+        //       } else {
+        //         this.applicationService.loadApplication(applications[0].id || '');
+        //       }
+        //     }
+        //     this.roles = user.roles || [];
+        //     this.permissions = user.permissions || [];
+        //   } else {
+        //     this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
+        //   }
+        // }
+      });
     });
     this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {

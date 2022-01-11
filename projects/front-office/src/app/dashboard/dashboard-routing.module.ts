@@ -12,10 +12,6 @@ export const routes = [
     component: DashboardComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'testredirectto'
-      },
-      {
         path: 'profile',
         loadChildren: () => import('./pages/profile/profile.module')
           .then(m => m.ProfileModule),
