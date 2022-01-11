@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()">
+  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'">
   </safe-button>
   <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
   </safe-button>
