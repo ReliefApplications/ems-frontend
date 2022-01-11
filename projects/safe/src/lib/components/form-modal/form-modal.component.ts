@@ -193,13 +193,13 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey Survey instance.
    */
   public completeMySurvey = (survey: any) => {
+    this.survey?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId) ? this.data.recordId.length : 1;
 
     /* we can send to backend empty data if they are not required
     */
     const questions = survey.getAllQuestions();
     const data = survey.data;
-    const oldSurvey = survey.data;
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -227,9 +227,6 @@ export class SafeFormModalComponent implements OnInit {
       dialogRef.afterClosed().subscribe(async value => {
         if (value) {
           await this.onUpdate(survey);
-        } else {
-          // Go back to the survey if confirmation is cancelled
-          this.survey?.clear(false);
         }
       });
     // Updates the data directly.
