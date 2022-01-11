@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
 // Apollo
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
@@ -28,6 +28,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { IPublicClientApplication, PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { LogLevel } from '@azure/msal-common';
+
+// TRANSLATOR
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 /**
  * Configuration of the Apollo client.
@@ -169,6 +173,14 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
   });
 
 /**
+ * Sets up translator.
+ *
+ * @param http http client
+ * @returns Translator.
+ */
+export const httpTranslateLoader = (http: HttpClient) => new TranslateHttpLoader(http);
+
+/**
  * Front-Office main module. Bootstraps the application.
  */
 @NgModule({
@@ -185,7 +197,14 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     {

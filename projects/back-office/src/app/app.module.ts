@@ -187,9 +187,12 @@ export const msalGuardConfigFactory = (): MsalGuardConfiguration => ({
   loginFailedRoute: '/auth'
 });
 
-
-
-  // AOT compilation support
+/**
+ * Sets up translator.
+ *
+ * @param http http client
+ * @returns Translator.
+ */
 export const httpTranslateLoader = (http: HttpClient) => new TranslateHttpLoader(http);
 
 @NgModule({

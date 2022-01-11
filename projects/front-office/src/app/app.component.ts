@@ -2,9 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+import { TranslateService } from '@ngx-translate/core';
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 /**
  * Main component of Front-office.
@@ -27,14 +29,19 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param authService Shared authentication service
    * @param formService Shared form service. We need to initialize the service there.
+   * @param translate Angular translate service
    */
   constructor(
     private broadcastService: MsalBroadcastService,
     private msalService: MsalService,
     private router: Router,
     private authService: SafeAuthService,
-    private formService: SafeFormService
-  ) { }
+    private formService: SafeFormService,
+    private translate: TranslateService
+  ) {
+    translate.addLangs(environment.availableLanguages);
+    translate.setDefaultLang('en');
+  }
 
   /**
    * Configuration of the MSAL behavior.

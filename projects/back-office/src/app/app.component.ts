@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     // We need to initialize the service there
     private formService: SafeFormService,
-    public translate: TranslateService
+    private translate: TranslateService
   ) {
     translate.addLangs(environment.availableLanguages);
     translate.setDefaultLang('en');

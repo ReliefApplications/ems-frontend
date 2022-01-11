@@ -11,5 +11,6 @@ export const environment = {
     postLogoutRedirectUri: 'https://oort-dev.oortcloud.tech/auth',
     frontOfficeUri: 'https://oort-dev.oortcloud.tech',
     backOfficeUri: 'https://oort-dev.oortcloud.tech/admin/',
-    module: 'frontoffice'
+    module: 'frontoffice',
+    availableLanguages: ['en', 'test']
 };
