@@ -9,6 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [SafeFormModalComponent],
@@ -21,7 +22,8 @@ import { SafeRecordHistoryModalModule } from '../record-history-modal/record-his
     SafeButtonModule,
     SafeIconModule,
     SafeRecordHistoryModalModule,
-    SafeRecordSummaryModule
+    SafeRecordSummaryModule,
+    MatProgressSpinnerModule
   ],
   exports: [SafeFormModalComponent]
 })
