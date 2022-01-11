@@ -9,6 +9,5 @@ export const environment = {
     frontOfficeUri: 'https://oort-dev.oortcloud.tech',
     backOfficeUri: 'https://oort-dev.oortcloud.tech/admin/',
     module: 'backoffice',
-    availableLanguages: ['en', 'test'],
-    defaultLanguage: 'en'
+    availableLanguages: ['en', 'test']
 };

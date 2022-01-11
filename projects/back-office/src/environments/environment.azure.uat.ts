@@ -9,6 +9,5 @@ export const environment = {
     frontOfficeUri: 'https://ems-safe-test.who.int/',
     backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
     module: 'backoffice',
-    availableLanguages: ['en', 'test'],
-    defaultLanguage: 'en'
+    availableLanguages: ['en']
 };

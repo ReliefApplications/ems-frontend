@@ -41,6 +41,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   filteredNavGroups: any[] = [];
 
+  currentLanguage = '';
+  languages: string[] = [];
+
   // === NOTIFICATIONS ===
   public notifications: Notification[] = [];
   private notificationsSubscription?: Subscription;
@@ -69,11 +72,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
-    public translate: TranslateService
+    private translate: TranslateService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
     this.environment = environment;
+    this.currentLanguage = this.translate.defaultLang;
+    this.languages = this.translate.getLangs();
   }
 
   ngOnInit(): void {
@@ -247,7 +252,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.notificationService.markAsSeen(notification);
   }
 
-  switchLang(lang: string) {
-    this.translate.use(lang);
+  /**
+   * Changes current active language.
+   *
+   * @param language id of the language.
+   */
+  setLanguage(language: string) {
+    this.translate.use(language);
+    this.currentLanguage = language;
   }
 }

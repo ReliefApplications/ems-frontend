@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public translate: TranslateService
   ) {
     translate.addLangs(environment.availableLanguages);
-    translate.setDefaultLang(environment.defaultLanguage);
+    translate.setDefaultLang('en');
   }
 
   /**

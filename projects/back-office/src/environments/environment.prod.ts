@@ -9,6 +9,5 @@ export const environment = {
   frontOfficeUri: 'https://safe.development.humanitarian.tech/',
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
   module: 'backoffice',
-  availableLanguages: ['en'],
-  defaultLanguage: 'en'
+  availableLanguages: ['en']
 };

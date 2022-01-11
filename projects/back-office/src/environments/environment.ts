@@ -9,6 +9,5 @@ export const environment = {
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en', 'test'],
-  defaultLanguage: 'en'
+  availableLanguages: ['en', 'test']
 };
