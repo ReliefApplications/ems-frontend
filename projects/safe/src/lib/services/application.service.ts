@@ -814,18 +814,18 @@ export class SafeApplicationService {
    * Moves to the first page of the application.
    */
   goToFirstPage(): void {
+    console.log('hello');
     const application = this.application.getValue();
     if (application?.pages && application.pages.length > 0) {
       const page = application.pages[0];
-      if (this.environment.module === 'backoffice') {
-        this.router.navigate([(page.type === ContentType.form) ?
-          `applications/${application.id}/${page.type}/${page.id}` :
-          `applications/${application.id}/${page.type}/${page.content}`]);
-      } else {
-        this.router.navigate([(page.type === ContentType.form) ?
-          `/${page.type}/${page.id}` :
-          `/${page.type}/${page.content}`]);
-      }
+      this.router.navigate([(page.type === ContentType.form) ?
+        `applications/${application.id}/${page.type}/${page.id}` :
+        `applications/${application.id}/${page.type}/${page.content}`]);
+      // else {
+      //   this.router.navigate([(page.type === ContentType.form) ?
+      //     `/${page.type}/${page.id}` :
+      //     `/${page.type}/${page.content}`]);
+      // }
     }
   }
 }

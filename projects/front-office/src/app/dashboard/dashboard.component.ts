@@ -55,9 +55,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
+    console.log('this.router');
+    console.log(this.router);
     this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
       if (user) {
         const applications = user.applications || [];
+        console.log(applications);
+        console.log(user.favoriteApp);
         if (applications.length > 0) {
           this.applications = applications;
           if (this.firstLoad) {
@@ -115,9 +119,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           const [firstPage, ..._] = application.pages || [];
           if (this.router.url.endsWith('/') || (application.id !== this.application?.id) || !firstPage) {
             if (firstPage) {
+              console.log('--- firstpage');
               this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
             } else {
+              console.log('--- else');
               this.router.navigate([`./`], { relativeTo: this.route });
             }
           }
