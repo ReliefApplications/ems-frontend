@@ -42,7 +42,6 @@
         "aggregation": "Aggregation",
         "id": "Id"
     },
-
     "action": {
         "edit": "Edit",
         "editAs": "Edit as",
@@ -76,19 +75,16 @@
         "attach": "Attach",
         "expand": "Expand"
     },
-
     "status": {
         "active": "Active",
         "pending": "Pending",
         "archived": "Archived"
     },
-
     "date": {
         "loadFromCache": "Loaded from cache {{date}}",
         "created": "Created by {{name}} at {{date}}",
         "modified": "Last modified by {{name}} on {{date}}"
     },
-
     "table": {
         "date": "Created on",
         "history": "History",
@@ -100,7 +96,6 @@
         "rolesSub": "Roles subscribed",
         "azure": "Azure"
     },
-
     "nav": {
         "title": "Back-Office",
         "addPage": "Add a Page",
@@ -110,7 +105,6 @@
         "readAll": "Mark all as read",
         "load": "Load more"
     },
-
     "sidenav": {
         "builder": "Site builder",
         "apps": "My applications",
@@ -122,22 +116,19 @@
         "attributes": "Attributes",
         "pullJobs": "Pull jobs"
     },
-
     "filter": {
         "search": "Search...",
         "show": "Show Filter",
         "hide": "Hide Filter",
-        "date" : "Date Range",
+        "date": "Date Range",
         "clear": "Clear Filters"
     },
-
     "access": {
         "description": "Update access permissions",
         "canSee": "Can see",
         "canUpdate": "Can update",
         "canDelete": "Can delete"
     },
-
     "apps": {
         "recent": "Recent applications",
         "all": "All applications",
@@ -147,7 +138,6 @@
         "delete": "Delete application",
         "deleteDesc": "Do you confirm the deletion of this application?"
     },
-
     "forms": {
         "create": "Create a form",
         "delete": "Delete form",
@@ -166,12 +156,10 @@
         "startFrom": "Start from existing template",
         "tooltip": "If no template is selected, core structure will be loaded"
     },
-
     "resources": {
         "delete": "Delete resource",
         "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
     },
-
     "users": {
         "export": "Export users",
         "invite": "Invite users",
@@ -186,7 +174,6 @@
         "deleteSelected": "Delete selected users",
         "deleteSelectedDesc": "Do you confirm the deletion of the selected users"
     },
-
     "roles": {
         "create": "Create a role",
         "edit": "Update role permissions and channels",
@@ -196,7 +183,6 @@
         "delete": "Delete role",
         "deleteDesc": "Do you confirm the deletion of the role {{name}}?"
     },
-
     "APIConf": {
         "create": "Create an API Configuration",
         "new": "New API Configuration",
@@ -221,7 +207,6 @@
         "delete": "Delete API configuration",
         "deleteDesc": "Do you confirm the deletion of the API Configuration {{name}}?"
     },
-
     "pullJobs": {
         "create": "Create a pull job",
         "new": "New Pull job",
@@ -234,24 +219,20 @@
         "delete": "Delete pull job",
         "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"
     },
-
     "appSummary": {
         "new": "New Application",
         "created": "Created",
         "description": "Please enter a name for the application"
     },
-
     "profile": {
         "title": "Your profile",
         "position": "Position attributes",
         "fav": "Set as favorite"
     },
-
     "settings": {
         "id": "Application ID",
         "description": "Please enter a description for the application"
     },
-
     "attributes": {
         "create": "Create a position category",
         "new": "New position category",
@@ -259,7 +240,6 @@
         "delete": "Delete position attribute",
         "deleteDesc": "Do you confirm the deletion of the position attribute {{name}}?"
     },
-
     "channels": {
         "create": "Create a channel",
         "new": "New channel",
@@ -267,7 +247,6 @@
         "delete": "Delete channel",
         "deleteDesc": "Do you confirm the deletion of the channel {{name}}?"
     },
-
     "subscriptions": {
         "create": "Create a subscription",
         "new": "New subscription",
@@ -276,18 +255,15 @@
         "listenPlaceholder": "Select a routing key",
         "listenHint": "Message broker routing key"
     },
-
     "addPage": {
         "description": "Select what type of page you want to create"
     },
-
     "workflow": {
         "new": "New step",
-        "step1":"Add steps",
+        "step1": "Add steps",
         "step2": "Customize each of the steps created",
         "select": "Select which type of step you want to create"
     },
-
     "widgets": {
         "add": "Add a widget",
         "cols": "Cols",
@@ -383,11 +359,9 @@
             "type": "Type"
         }
     },
-
     "history": {
         "download": "Download history"
     },
-
     "record": {
         "edit": "Edit records",
         "download": "Download records",
@@ -402,9 +376,7 @@
         "deleteDesc": "Do you confirm the deletion of the reord {{name}}?",
         "select": "Select {{name}} target",
         "placeholder": "Select record"
-
     },
-
     "export": {
         "records": "Select records to export",
         "allRecords": "All records in view",
@@ -414,7 +386,6 @@
         "visibleColumns": "Only visible columns",
         "format": "Select export format"
     },
-
     "convert": {
         "target": "Target",
         "copy": "Copy source record",
@@ -422,7 +393,6 @@
         "ignored": "Following fields will be ignored:",
         "ok": "Conversion OK"
     },
-
     "tooltip": {
         "backApps": "Go to application list",
         "changeAccess": "Change access",
