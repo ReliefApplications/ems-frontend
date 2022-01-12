@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.1.1...v1.2.0) (2022-01-12)
+
+
+### Features
+
+* add avatar ui ([bd794d2](https://github.com/ReliefApplications/oort-frontend/commits/bd794d287466b13a6035703c91d39451e325d220))
+* can edit position attributes ([4dfe89c](https://github.com/ReliefApplications/oort-frontend/commits/4dfe89c862948feebe01c4062aee4140daf0c79a))
+* update msal package and fix related bugs Now refreshs properly after token expiracy. Now sends token request only once and use cached one then. [#10687](https://github.com/ReliefApplications/oort-frontend/issues/10687) ([ea8a8c6](https://github.com/ReliefApplications/oort-frontend/commits/ea8a8c627423d19438d01ac063c8fc8836b04a28))
+
+
+### Bug Fixes
+
+* Bug whith protected resources scope [#10687](https://github.com/ReliefApplications/oort-frontend/issues/10687) ([40db481](https://github.com/ReliefApplications/oort-frontend/commits/40db4815f54123fd9e0282d62cc1da1018bc020d))
+* build size error ([8758a13](https://github.com/ReliefApplications/oort-frontend/commits/8758a13dcebbb8e0e5b9e9a6dc172d376a0e49b0))
+* form modal now looks like the record modal ([1ccaea2](https://github.com/ReliefApplications/oort-frontend/commits/1ccaea258e9fe0af6cd811b72ef96591830a4ad0))
+* issue where cache policy would prevent some updates to appear in the grids [#18827](https://github.com/ReliefApplications/oort-frontend/issues/18827) ([0ca3ede](https://github.com/ReliefApplications/oort-frontend/commits/0ca3edefc3f6f00dfe6f62416da3eb559ecd1d9c))
+* issue where closing modal about rows / cols of a widget without saving would leave them as 0 [#18403](https://github.com/ReliefApplications/oort-frontend/issues/18403) ([d68e5c7](https://github.com/ReliefApplications/oort-frontend/commits/d68e5c724968d6e5e3715a7451b2d344f1b7a986))
+* lint issues of web element project ([4c3a77c](https://github.com/ReliefApplications/oort-frontend/commits/4c3a77c11c9abe7f7169e4a7d1995ead78436e0d))
+* prevents current edited row in grid to be closed without saving changes [#11796](https://github.com/ReliefApplications/oort-frontend/issues/11796) ([307b98e](https://github.com/ReliefApplications/oort-frontend/commits/307b98ec90001e6debbd3440c1078067c0732480))
+
 ### [1.1.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1-alpha.0...v1.1.1) (2022-01-12)
 
 
