@@ -67,6 +67,11 @@
             "tsConfig": "projects/back-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -276,6 +281,11 @@
             "tsConfig": "projects/back-office/tsconfig.spec.json",
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -339,6 +349,11 @@
             "tsConfig": "projects/front-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -544,6 +559,11 @@
             "tsConfig": "projects/front-office/tsconfig.spec.json",
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -603,6 +623,11 @@
             "tsConfig": "projects/web-element/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],
@@ -698,6 +723,11 @@
             "tsConfig": "projects/web-element/tsconfig.spec.json",
             "karmaConfig": "projects/web-element/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/languages/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],
