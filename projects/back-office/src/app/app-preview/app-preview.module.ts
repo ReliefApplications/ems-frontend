@@ -15,7 +15,7 @@ import { SafeLayoutModule } from '@safe/builder';
     CommonModule,
     AppPreviewRoutingModule,
     SafeLayoutModule,
-    PreviewToolbarModule
-  ]
+    PreviewToolbarModule,
+  ],
 })
-export class AppPreviewModule { }
+export class AppPreviewModule {}

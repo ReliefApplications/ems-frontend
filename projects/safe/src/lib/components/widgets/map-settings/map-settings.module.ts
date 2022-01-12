@@ -26,8 +26,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeMapSettingsComponent]
+  exports: [SafeMapSettingsComponent],
 })
-export class SafeMapSettingsModule { }
+export class SafeMapSettingsModule {}

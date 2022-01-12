@@ -8,9 +8,8 @@ describe('WebWorkflowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WebWorkflowComponent ]
-    })
-    .compileComponents();
+      declarations: [WebWorkflowComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

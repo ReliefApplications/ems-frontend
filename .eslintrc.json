@@ -8,6 +8,9 @@
       "files": [
         "*.ts"
       ],
+      "plugins": [
+        "prettier"
+      ],
       "parserOptions": {
         "project": [
           "tsconfig.json",
@@ -18,9 +21,12 @@
       "extends": [
         "plugin:@angular-eslint/ng-cli-compat",
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "prettier"
       ],
-      "rules": {}
+      "rules": {
+        "prettier/prettier": 2
+      }
     },
     {
       "files": [

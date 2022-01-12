@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
@@ -11,10 +11,9 @@ import { ApolloQueryResult } from '@apollo/client';
  * Shared authentication service.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeAuthService {
-
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
   /** Current user as observable */
@@ -36,10 +35,7 @@ export class SafeAuthService {
    * @param msalService MSAL service
    * @param apollo Apollo client
    */
-  constructor(
-    private msalService: MsalService,
-    private apollo: Apollo
-  ) {
+  constructor(private msalService: MsalService, private apollo: Apollo) {
     this.checkAccount();
   }
 
@@ -54,13 +50,19 @@ export class SafeAuthService {
   userHasClaim(permission: string | string[], global: boolean = true): boolean {
     const user = this.user.getValue();
     if (user) {
-      if (user.permissions && (!permission || user.permissions.find(x => {
-        if (Array.isArray(permission)) {
-          return x.type && permission.includes(x.type) && x.global === global;
-        } else {
-          return x.type === permission && x.global === global;
-        }
-      }))) {
+      if (
+        user.permissions &&
+        (!permission ||
+          user.permissions.find((x) => {
+            if (Array.isArray(permission)) {
+              return (
+                x.type && permission.includes(x.type) && x.global === global
+              );
+            } else {
+              return x.type === permission && x.global === global;
+            }
+          }))
+      ) {
         return true;
       }
       return false;
@@ -107,7 +109,7 @@ export class SafeAuthService {
     return this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
-      errorPolicy: 'all'
+      errorPolicy: 'all',
     });
   }
 }

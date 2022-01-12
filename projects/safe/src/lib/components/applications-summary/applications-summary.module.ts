@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [
     SafeApplicationsSummaryComponent,
     SafeAddApplicationComponent,
-    SafeApplicationSummaryComponent
+    SafeApplicationSummaryComponent,
   ],
   imports: [
     CommonModule,
@@ -25,12 +25,12 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatDividerModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,
     SafeAddApplicationComponent,
-    SafeApplicationSummaryComponent
-  ]
+    SafeApplicationSummaryComponent,
+  ],
 })
-export class SafeApplicationsSummaryModule { }
+export class SafeApplicationsSummaryModule {}

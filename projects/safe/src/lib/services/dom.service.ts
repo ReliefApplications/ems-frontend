@@ -1,14 +1,20 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentFactoryResolver,
+  ComponentRef,
+  EmbeddedViewRef,
+  Injectable,
+  Injector,
+} from '@angular/core';
 
 /**
  * Shared DOM service. Dom service is used to inject component on the go ( meaning without putting them in template directly ).
  * TODO: prefix
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DomService {
-
   /**
    * Shared DOM service. Dom service is used to inject component on the go ( meaning without putting them in template directly ).
    * TODO: prefix
@@ -21,7 +27,7 @@ export class DomService {
     private componentFactoryResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
     private injector: Injector
-  ) { }
+  ) {}
 
   /**
    * Appends a component to html body.
@@ -32,14 +38,15 @@ export class DomService {
    */
   appendComponentToBody(component: any, parent: any): ComponentRef<any> {
     // create a component reference
-    const componentRef = this.componentFactoryResolver.resolveComponentFactory(component)
+    const componentRef = this.componentFactoryResolver
+      .resolveComponentFactory(component)
       .create(this.injector);
 
     // attach component to the appRef so that so that it will be dirty checked.
     this.applicationRef.attachView(componentRef.hostView);
 
     // get DOM element from component
-    const domElem = (componentRef.hostView as EmbeddedViewRef < any > )
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
       .rootNodes[0] as HTMLElement;
 
     parent.appendChild(domElem);

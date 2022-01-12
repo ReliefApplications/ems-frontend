@@ -8,9 +8,8 @@ describe('SafeLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeLayoutComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeLayoutComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

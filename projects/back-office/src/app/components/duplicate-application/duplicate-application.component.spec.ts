@@ -8,9 +8,8 @@ describe('DuplicateApplicationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DuplicateApplicationComponent ]
-    })
-    .compileComponents();
+      declarations: [DuplicateApplicationComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

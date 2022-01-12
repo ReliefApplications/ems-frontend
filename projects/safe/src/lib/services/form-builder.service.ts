@@ -6,10 +6,9 @@ import * as Survey from 'survey-angular';
  * Only used to add on complete expression to the survey.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeFormBuilderService {
-
   /**
    * Creates new survey from the structure and add on complete expression to it.
    *

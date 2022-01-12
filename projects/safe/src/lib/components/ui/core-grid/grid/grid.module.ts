@@ -21,9 +21,7 @@ import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeGridComponent
-  ],
+  declarations: [SafeGridComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -53,10 +51,8 @@ import { TranslateModule } from '@ngx-translate/core';
     // === EXPORT ===
     SafeExportModule,
     // === TRANSLATE ===
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [
-    SafeGridComponent
-  ]
+  exports: [SafeGridComponent],
 })
-export class SafeGridModule { }
+export class SafeGridModule {}

@@ -12,8 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
     FormRoutingModule,
     SafeFormModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [FormComponent]
+  exports: [FormComponent],
 })
-export class FormModule { }
+export class FormModule {}

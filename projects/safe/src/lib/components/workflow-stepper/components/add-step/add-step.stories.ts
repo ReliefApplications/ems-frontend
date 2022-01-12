@@ -3,23 +3,21 @@ import { SafeAddStepComponent } from './add-step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
 
 export default {
-    component: SafeAddStepComponent,
-    decorators: [
-        moduleMetadata({
-            imports: [
-                SafeWorkflowStepperModule
-            ],
-            providers: []
-        })
-    ],
-    title: 'UI/Workflow/Add Step',
-    argTypes: {}
+  component: SafeAddStepComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [SafeWorkflowStepperModule],
+      providers: [],
+    }),
+  ],
+  title: 'UI/Workflow/Add Step',
+  argTypes: {},
 } as Meta;
 
-const TEMPLATE: Story<SafeAddStepComponent> = args => ({
-    props: {
-        ...args
-    }
+const TEMPLATE: Story<SafeAddStepComponent> = (args) => ({
+  props: {
+    ...args,
+  },
 });
 
 export const DEFAULT = TEMPLATE.bind({});

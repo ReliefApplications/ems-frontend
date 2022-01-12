@@ -9,12 +9,7 @@ import { SafeFormModule, SafeButtonModule } from '@safe/builder';
  */
 @NgModule({
   declarations: [FormComponent],
-  imports: [
-    CommonModule,
-    FormRoutingModule,
-    SafeFormModule,
-    SafeButtonModule
-  ],
-  exports: [FormComponent]
+  imports: [CommonModule, FormRoutingModule, SafeFormModule, SafeButtonModule],
+  exports: [FormComponent],
 })
-export class FormModule { }
+export class FormModule {}

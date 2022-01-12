@@ -11,9 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeAddUserComponent
-  ],
+  declarations: [SafeAddUserComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,8 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatAutocompleteModule,
     MatInputModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeAddUserComponent]
+  exports: [SafeAddUserComponent],
 })
-export class SafeAddUserModule { }
+export class SafeAddUserModule {}

@@ -5,12 +5,12 @@ import { AddStepComponent } from './add-step.component';
 const routes: Routes = [
   {
     path: '',
-    component: AddStepComponent
-  }
+    component: AddStepComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AddStepRoutingModule { }
+export class AddStepRoutingModule {}

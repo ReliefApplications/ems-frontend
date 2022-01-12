@@ -5,10 +5,9 @@ import { Step } from '../../../../models/step.model';
 @Component({
   selector: 'safe-step',
   templateUrl: './step.component.html',
-  styleUrls: ['./step.component.scss']
+  styleUrls: ['./step.component.scss'],
 })
 export class SafeStepComponent implements OnInit {
-
   @Input() step!: Step;
   @Input() active = false;
   @Input() canUpdate = false;
@@ -16,13 +15,12 @@ export class SafeStepComponent implements OnInit {
   @Output() duplicate = new EventEmitter();
 
   get type(): IContentType | undefined {
-    return CONTENT_TYPES.find(x => x.name === this.step.type);
+    return CONTENT_TYPES.find((x) => x.name === this.step.type);
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Emits delete event.

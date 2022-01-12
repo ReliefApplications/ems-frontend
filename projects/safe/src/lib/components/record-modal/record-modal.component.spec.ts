@@ -8,9 +8,8 @@ describe('SafeRecordModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRecordModalComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeRecordModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

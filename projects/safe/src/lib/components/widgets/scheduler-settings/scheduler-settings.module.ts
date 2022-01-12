@@ -18,8 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     MatRadioModule,
     MatSelectModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeSchedulerSettingsComponent]
+  exports: [SafeSchedulerSettingsComponent],
 })
-export class SafeSchedulerSettingsModule { }
+export class SafeSchedulerSettingsModule {}

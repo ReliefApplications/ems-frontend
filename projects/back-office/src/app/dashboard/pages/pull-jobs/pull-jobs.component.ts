@@ -1,14 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Application, Channel, PullJob, SafeApplicationService, status, SafeConfirmModalComponent,
-  SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import {
+  Application,
+  Channel,
+  PullJob,
+  SafeApplicationService,
+  status,
+  SafeConfirmModalComponent,
+  SafeSnackBarService,
+  NOTIFICATIONS,
+} from '@safe/builder';
 import { Apollo, Query, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { GetPullJobsQueryResponse, GET_API_CONFIGURATIONS, GET_PULL_JOBS } from '../../../graphql/queries';
 import {
-  AddPullJobMutationResponse, ADD_PULL_JOB,
-  DeletePullJobMutationResponse, DELETE_PULL_JOB,
-  EditPullJobMutationResponse, EDIT_PULL_JOB
+  GetPullJobsQueryResponse,
+  GET_API_CONFIGURATIONS,
+  GET_PULL_JOBS,
+} from '../../../graphql/queries';
+import {
+  AddPullJobMutationResponse,
+  ADD_PULL_JOB,
+  DeletePullJobMutationResponse,
+  DELETE_PULL_JOB,
+  EditPullJobMutationResponse,
+  EDIT_PULL_JOB,
 } from '../../../graphql/mutations';
 import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -19,17 +34,22 @@ const ITEMS_PER_PAGE = 10;
 @Component({
   selector: 'app-pull-jobs',
   templateUrl: './pull-jobs.component.html',
-  styleUrls: ['./pull-jobs.component.scss']
+  styleUrls: ['./pull-jobs.component.scss'],
 })
 export class PullJobsComponent implements OnInit, OnDestroy {
-
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
   public pullJobs = new MatTableDataSource<PullJob>([]);
   public cachedPullJobs: PullJob[] = [];
 
-  public displayedColumns: string[] = ['name', 'status', 'apiConfiguration', 'convertTo', 'actions'];
+  public displayedColumns: string[] = [
+    'name',
+    'status',
+    'apiConfiguration',
+    'convertTo',
+    'actions',
+  ];
 
   // === SUBSCRIPTIONS ===
   private channels: Channel[] = [];
@@ -38,7 +58,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: ''
+    endCursor: '',
   };
 
   constructor(
@@ -46,20 +66,22 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.pullJobsQuery = this.apollo.watchQuery<GetPullJobsQueryResponse>({
       query: GET_PULL_JOBS,
       variables: {
-        first: ITEMS_PER_PAGE
-      }
+        first: ITEMS_PER_PAGE,
+      },
     });
 
-    this.pullJobsQuery.valueChanges.subscribe(res => {
-      this.cachedPullJobs = res.data.pullJobs.edges.map(x => x.node);
+    this.pullJobsQuery.valueChanges.subscribe((res) => {
+      this.cachedPullJobs = res.data.pullJobs.edges.map((x) => x.node);
       this.pullJobs.data = this.cachedPullJobs.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      );
       this.pageInfo.length = res.data.pullJobs.totalCount;
       this.pageInfo.endCursor = res.data.pullJobs.pageInfo.endCursor;
       this.loading = res.loading;
@@ -73,81 +95,106 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    */
   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedPullJobs.length) {
+    if (
+      e.pageIndex > e.previousPageIndex &&
+      e.length > this.cachedPullJobs.length
+    ) {
       this.pullJobsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) {
+            return prev;
+          }
           return Object.assign({}, prev, {
             pullJobs: {
-              edges: [...prev.pullJobs.edges, ...fetchMoreResult.pullJobs.edges],
+              edges: [
+                ...prev.pullJobs.edges,
+                ...fetchMoreResult.pullJobs.edges,
+              ],
               pageInfo: fetchMoreResult.pullJobs.pageInfo,
-              totalCount: fetchMoreResult.pullJobs.totalCount
-            }
+              totalCount: fetchMoreResult.pullJobs.totalCount,
+            },
           });
-        }
+        },
       });
     } else {
       this.pullJobs.data = this.cachedPullJobs.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      );
     }
   }
 
- /**
-  * Displays the AddSubscription modal.
-  * Creates the pull job on close.
-  */
+  /**
+   * Displays the AddSubscription modal.
+   * Creates the pull job on close.
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(PullJobModalComponent, {
       width: '600px',
       autoFocus: false,
       data: {
-        channels: this.channels
-      }
+        channels: this.channels,
+      },
     });
-    dialogRef.afterClosed().subscribe((value: {
-      name: string;
-      status: status;
-      apiConfiguration: string;
-      schedule?: string;
-      convertTo?: string;
-      channel?: string;
-      mapping?: any;
-      rawMapping?: any;
-      uniqueIdentifiers?: any;
-    }) => {
-      if (value) {
-        const variables = {
-          name: value.name,
-          status: value.status,
-          apiConfiguration: value.apiConfiguration
-        };
-        Object.assign(variables,
-          value.schedule && { schedule: value.schedule },
-          value.convertTo && { convertTo: value.convertTo },
-          value.channel && { channel: value.channel },
-          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
-          value.uniqueIdentifiers && { uniqueIdentifiers: value.uniqueIdentifiers }
-        );
-        this.apollo.mutate<AddPullJobMutationResponse>({
-          mutation: ADD_PULL_JOB,
-          variables
-        }).subscribe(res => {
-          if (res.data?.addPullJob) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('pull job', value.name));
-            if (this.cachedPullJobs.length === this.pageInfo.length) {
-              this.cachedPullJobs = this.cachedPullJobs.concat([res.data?.addPullJob]);
-              this.pullJobs.data = this.cachedPullJobs.slice(
-                ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-            }
-            this.pageInfo.length += 1;
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        (value: {
+          name: string;
+          status: status;
+          apiConfiguration: string;
+          schedule?: string;
+          convertTo?: string;
+          channel?: string;
+          mapping?: any;
+          rawMapping?: any;
+          uniqueIdentifiers?: any;
+        }) => {
+          if (value) {
+            const variables = {
+              name: value.name,
+              status: value.status,
+              apiConfiguration: value.apiConfiguration,
+            };
+            Object.assign(
+              variables,
+              value.schedule && { schedule: value.schedule },
+              value.convertTo && { convertTo: value.convertTo },
+              value.channel && { channel: value.channel },
+              value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+              value.uniqueIdentifiers && {
+                uniqueIdentifiers: value.uniqueIdentifiers,
+              }
+            );
+            this.apollo
+              .mutate<AddPullJobMutationResponse>({
+                mutation: ADD_PULL_JOB,
+                variables,
+              })
+              .subscribe((res) => {
+                if (res.data?.addPullJob) {
+                  this.snackBar.openSnackBar(
+                    NOTIFICATIONS.objectCreated('pull job', value.name)
+                  );
+                  if (this.cachedPullJobs.length === this.pageInfo.length) {
+                    this.cachedPullJobs = this.cachedPullJobs.concat([
+                      res.data?.addPullJob,
+                    ]);
+                    this.pullJobs.data = this.cachedPullJobs.slice(
+                      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+                    );
+                  }
+                  this.pageInfo.length += 1;
+                }
+              });
           }
-        });
-      }
-    });
+        }
+      );
   }
 
   /**
@@ -160,28 +207,38 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: this.translate.instant('pullJobs.delete'),
-          content: this.translate.instant('pullJobs.deleteDesc', {name: element.name}),
+          content: this.translate.instant('pullJobs.deleteDesc', {
+            name: element.name,
+          }),
           confirmText: this.translate.instant('action.delete'),
           cancelText: this.translate.instant('action.cancel'),
-          confirmColor: 'warn'
-        }
+          confirmColor: 'warn',
+        },
       });
-      dialogRef.afterClosed().subscribe(value => {
+      dialogRef.afterClosed().subscribe((value) => {
         if (value) {
-          this.apollo.mutate<DeletePullJobMutationResponse>({
-            mutation: DELETE_PULL_JOB,
-            variables: {
-              id: element.id
-            }
-          }).subscribe(res => {
-            if (res.data?.deletePullJob) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Pull job'));
-              this.cachedPullJobs = this.cachedPullJobs.filter(x => x.id !== res.data?.deletePullJob.id);
-              this.pageInfo.length -= 1;
-              this.pullJobs.data = this.cachedPullJobs.slice(
-                ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-            }
-          });
+          this.apollo
+            .mutate<DeletePullJobMutationResponse>({
+              mutation: DELETE_PULL_JOB,
+              variables: {
+                id: element.id,
+              },
+            })
+            .subscribe((res) => {
+              if (res.data?.deletePullJob) {
+                this.snackBar.openSnackBar(
+                  NOTIFICATIONS.objectDeleted('Pull job')
+                );
+                this.cachedPullJobs = this.cachedPullJobs.filter(
+                  (x) => x.id !== res.data?.deletePullJob.id
+                );
+                this.pageInfo.length -= 1;
+                this.pullJobs.data = this.cachedPullJobs.slice(
+                  ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                  ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+                );
+              }
+            });
         }
       });
     }
@@ -198,51 +255,68 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       data: {
         channels: this.channels,
         pullJob: element,
-      }
+      },
     });
-    dialogRef.afterClosed().subscribe((value: {
-      name: string;
-      status: status;
-      apiConfiguration: string;
-      schedule?: string;
-      convertTo?: string;
-      channel?: string;
-      mapping?: any;
-      rawMapping?: any;
-      uniqueIdentifiers?: any;
-    }) => {
-      if (value) {
-        const variables = {
-          id: element.id,
-        };
-        Object.assign(variables,
-          value.name && { name: value.name },
-          value.status && { status: value.status },
-          value.apiConfiguration && { apiConfiguration: value.apiConfiguration },
-          value.schedule && { schedule: value.schedule },
-          value.convertTo && { convertTo: value.convertTo },
-          value.channel && { channel: value.channel },
-          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
-          value.uniqueIdentifiers && { uniqueIdentifiers: value.uniqueIdentifiers }
-        );
-        this.apollo.mutate<EditPullJobMutationResponse>({
-          mutation: EDIT_PULL_JOB,
-          variables
-        }).subscribe(res => {
-          if (res.data?.editPullJob) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('pull job', value.name));
-            this.cachedPullJobs = this.cachedPullJobs.map((pullJob: PullJob) => {
-              if (pullJob.id === res.data?.editPullJob.id) {
-                pullJob = res.data?.editPullJob || pullJob;
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        (value: {
+          name: string;
+          status: status;
+          apiConfiguration: string;
+          schedule?: string;
+          convertTo?: string;
+          channel?: string;
+          mapping?: any;
+          rawMapping?: any;
+          uniqueIdentifiers?: any;
+        }) => {
+          if (value) {
+            const variables = {
+              id: element.id,
+            };
+            Object.assign(
+              variables,
+              value.name && { name: value.name },
+              value.status && { status: value.status },
+              value.apiConfiguration && {
+                apiConfiguration: value.apiConfiguration,
+              },
+              value.schedule && { schedule: value.schedule },
+              value.convertTo && { convertTo: value.convertTo },
+              value.channel && { channel: value.channel },
+              value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+              value.uniqueIdentifiers && {
+                uniqueIdentifiers: value.uniqueIdentifiers,
               }
-              return pullJob;
-            });
-            this.pullJobs.data = this.cachedPullJobs.slice(
-              ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+            );
+            this.apollo
+              .mutate<EditPullJobMutationResponse>({
+                mutation: EDIT_PULL_JOB,
+                variables,
+              })
+              .subscribe((res) => {
+                if (res.data?.editPullJob) {
+                  this.snackBar.openSnackBar(
+                    NOTIFICATIONS.objectEdited('pull job', value.name)
+                  );
+                  this.cachedPullJobs = this.cachedPullJobs.map(
+                    (pullJob: PullJob) => {
+                      if (pullJob.id === res.data?.editPullJob.id) {
+                        pullJob = res.data?.editPullJob || pullJob;
+                      }
+                      return pullJob;
+                    }
+                  );
+                  this.pullJobs.data = this.cachedPullJobs.slice(
+                    ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                    ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+                  );
+                }
+              });
           }
-        });
-      }
-    });
+        }
+      );
   }
 
   ngOnDestroy(): void {}

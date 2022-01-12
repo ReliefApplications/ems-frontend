@@ -10,20 +10,19 @@ import { AccessGuard } from './guards/access.guard';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./dashboard/dashboard.module')
-    .then(m => m.DashboardModule),
-    canActivate: [MsalGuard, AccessGuard]
+    loadChildren: () =>
+      import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+    canActivate: [MsalGuard, AccessGuard],
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module')
-      .then(m => m.AuthModule)
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',
     redirectTo: '',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 /**
@@ -31,10 +30,15 @@ const routes: Routes = [
  * Use lazy loading for performance.
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    relativeLinkResolution: 'legacy',
-    initialNavigation: !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled'
-  })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      relativeLinkResolution: 'legacy',
+      initialNavigation:
+        !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
+          ? 'enabled'
+          : 'disabled',
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

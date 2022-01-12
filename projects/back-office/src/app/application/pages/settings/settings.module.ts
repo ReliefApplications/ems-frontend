@@ -20,7 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatSelectModule,
     SafeButtonModule,
-    TranslateModule
-  ]
+    TranslateModule,
+  ],
 })
-export class SettingsModule { }
+export class SettingsModule {}

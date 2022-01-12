@@ -1,10 +1,20 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SeeNotificationMutationResponse, SEE_NOTIFICATION, SeeNotificationsMutationResponse,
-  SEE_NOTIFICATIONS } from '../graphql/mutations';
-import { GetNotificationsQueryResponse, GET_NOTIFICATIONS } from '../graphql/queries';
-import { NotificationSubscriptionResponse, NOTIFICATION_SUBSCRIPTION } from '../graphql/subscriptions';
+import {
+  SeeNotificationMutationResponse,
+  SEE_NOTIFICATION,
+  SeeNotificationsMutationResponse,
+  SEE_NOTIFICATIONS,
+} from '../graphql/mutations';
+import {
+  GetNotificationsQueryResponse,
+  GET_NOTIFICATIONS,
+} from '../graphql/queries';
+import {
+  NotificationSubscriptionResponse,
+  NOTIFICATION_SUBSCRIPTION,
+} from '../graphql/subscriptions';
 import { Notification } from '../models/notification.model';
 
 /** Pagination: number of items per query */
@@ -14,10 +24,9 @@ const ITEMS_PER_PAGE = 10;
  * Shared notification service. Subscribes to Apollo to automatically fetch new notifications.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeNotificationService {
-
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
   /** Current notifications as observable */
@@ -38,7 +47,7 @@ export class SafeNotificationService {
   private previousNotificationId: any;
   /** Current page info */
   public pageInfo = {
-    endCursor: ''
+    endCursor: '',
   };
 
   /**
@@ -46,9 +55,7 @@ export class SafeNotificationService {
    *
    * @param apollo Apollo client
    */
-  constructor(
-    private apollo: Apollo,
-  ) { }
+  constructor(private apollo: Apollo) {}
 
   /**
    * If notifications are empty, fetch all notifications and listen to new one.
@@ -56,36 +63,44 @@ export class SafeNotificationService {
    */
   public init(): void {
     if (this.firstLoad) {
-      this.notificationsQuery = this.apollo.watchQuery<GetNotificationsQueryResponse>({
-        query: GET_NOTIFICATIONS,
-        variables: {
-          first: ITEMS_PER_PAGE
-        }
-      });
+      this.notificationsQuery =
+        this.apollo.watchQuery<GetNotificationsQueryResponse>({
+          query: GET_NOTIFICATIONS,
+          variables: {
+            first: ITEMS_PER_PAGE,
+          },
+        });
 
-      this.notificationsQuery.valueChanges.subscribe(res => {
-        this.notifications.next(res.data.notifications.edges.map(x => x.node));
+      this.notificationsQuery.valueChanges.subscribe((res) => {
+        this.notifications.next(
+          res.data.notifications.edges.map((x) => x.node)
+        );
         this.pageInfo.endCursor = res.data.notifications.pageInfo.endCursor;
         this.hasNextPage.next(res.data.notifications.pageInfo.hasNextPage);
         this.firstLoad = false;
       });
 
-      this.apollo.subscribe<NotificationSubscriptionResponse>({
-        query: NOTIFICATION_SUBSCRIPTION
-      }).subscribe(res => {
-        if (res.data && res.data.notification) {
-          // prevent new notification duplication
-          if (this.previousNotificationId !== res.data.notification.id) {
-            const notifications = this.notifications.getValue();
-            if (notifications) {
-              this.notifications.next([res.data.notification, ...notifications]);
-            } else {
-              this.notifications.next([res.data.notification]);
+      this.apollo
+        .subscribe<NotificationSubscriptionResponse>({
+          query: NOTIFICATION_SUBSCRIPTION,
+        })
+        .subscribe((res) => {
+          if (res.data && res.data.notification) {
+            // prevent new notification duplication
+            if (this.previousNotificationId !== res.data.notification.id) {
+              const notifications = this.notifications.getValue();
+              if (notifications) {
+                this.notifications.next([
+                  res.data.notification,
+                  ...notifications,
+                ]);
+              } else {
+                this.notifications.next([res.data.notification]);
+              }
             }
+            this.previousNotificationId = res.data.notification.id;
           }
-          this.previousNotificationId = res.data.notification.id;
-        }
-      });
+        });
     }
   }
 
@@ -96,32 +111,38 @@ export class SafeNotificationService {
    */
   public markAsSeen(notification: Notification): void {
     const notifications = this.notifications.getValue();
-    this.apollo.mutate<SeeNotificationMutationResponse>({
-      mutation: SEE_NOTIFICATION,
-      variables: {
-        id: notification.id
-      }
-    }).subscribe(res => {
-      if (res.data && res.data.seeNotification) {
-        const seeNotification = res.data.seeNotification;
-        this.notifications.next(notifications.filter(x => x.id !== seeNotification.id));
-      }
-    });
+    this.apollo
+      .mutate<SeeNotificationMutationResponse>({
+        mutation: SEE_NOTIFICATION,
+        variables: {
+          id: notification.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data && res.data.seeNotification) {
+          const seeNotification = res.data.seeNotification;
+          this.notifications.next(
+            notifications.filter((x) => x.id !== seeNotification.id)
+          );
+        }
+      });
   }
 
   /**
    * Marks all notifications as seen and remove it from the array of notifications.
    */
   public markAllAsSeen(): void {
-    const notificationsIds = this.notifications.getValue().map(x => x.id);
-    this.apollo.mutate<SeeNotificationsMutationResponse>({
-      mutation: SEE_NOTIFICATIONS,
-      variables: {
-        ids: notificationsIds
-      }
-    }).subscribe(res => {
-      this.fetchMore();
-    });
+    const notificationsIds = this.notifications.getValue().map((x) => x.id);
+    this.apollo
+      .mutate<SeeNotificationsMutationResponse>({
+        mutation: SEE_NOTIFICATIONS,
+        variables: {
+          ids: notificationsIds,
+        },
+      })
+      .subscribe((res) => {
+        this.fetchMore();
+      });
   }
 
   /**
@@ -131,18 +152,23 @@ export class SafeNotificationService {
     this.notificationsQuery.fetchMore({
       variables: {
         first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor
+        afterCursor: this.pageInfo.endCursor,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) { return prev; }
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
         return Object.assign({}, prev, {
           notifications: {
-            edges: [ ...prev.notifications.edges, ...fetchMoreResult.notifications.edges ],
+            edges: [
+              ...prev.notifications.edges,
+              ...fetchMoreResult.notifications.edges,
+            ],
             pageInfo: fetchMoreResult.notifications.pageInfo,
-            totalCount: fetchMoreResult.notifications.totalCount
-          }
+            totalCount: fetchMoreResult.notifications.totalCount,
+          },
         });
-      }
+      },
     });
   }
 }

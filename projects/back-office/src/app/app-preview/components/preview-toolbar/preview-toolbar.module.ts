@@ -10,12 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
  */
 @NgModule({
   declarations: [PreviewToolbarComponent],
-  imports: [
-    CommonModule,
-    MatDividerModule,
-    SafeButtonModule,
-    TranslateModule
-  ],
-  exports: [PreviewToolbarComponent]
+  imports: [CommonModule, MatDividerModule, SafeButtonModule, TranslateModule],
+  exports: [PreviewToolbarComponent],
 })
-export class PreviewToolbarModule { }
+export class PreviewToolbarModule {}

@@ -8,9 +8,8 @@ describe('ChooseRecordModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChooseRecordModalComponent ]
-    })
-    .compileComponents();
+      declarations: [ChooseRecordModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

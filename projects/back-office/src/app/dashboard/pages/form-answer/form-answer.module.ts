@@ -19,8 +19,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     SafeFormModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [FormAnswerComponent]
+  exports: [FormAnswerComponent],
 })
-export class FormAnswerModule { }
+export class FormAnswerModule {}

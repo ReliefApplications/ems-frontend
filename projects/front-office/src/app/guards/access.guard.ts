@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  UrlTree,
+  Router,
+} from '@angular/router';
 import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,20 +14,16 @@ import { map } from 'rxjs/operators';
  * Guard to check if user is authenticated or not.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccessGuard implements CanActivate {
-
   /**
    * Guard to check if user is authenticated or not.
    *
    * @param authService Shared authentication service
    * @param router Angular router
    */
-  constructor(
-    private authService: SafeAuthService,
-    private router: Router
-  ) { }
+  constructor(private authService: SafeAuthService, private router: Router) {}
 
   /**
    * Defines the logic of the guard.
@@ -33,7 +35,12 @@ export class AccessGuard implements CanActivate {
    */
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    state: RouterStateSnapshot
+  ):
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree>
+    | boolean
+    | UrlTree {
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {

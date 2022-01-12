@@ -8,9 +8,8 @@ describe('SafeCoreGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeCoreGridComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeCoreGridComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

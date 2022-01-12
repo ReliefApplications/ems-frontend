@@ -8,9 +8,8 @@ describe('SafeBreadcrumbComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeBreadcrumbComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeBreadcrumbComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

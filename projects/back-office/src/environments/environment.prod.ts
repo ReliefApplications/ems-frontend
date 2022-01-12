@@ -5,9 +5,10 @@ export const environment = {
   clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
   authority: 'https://login.microsoftonline.com/common',
   redirectUrl: 'https://safe-backoffice.development.humanitarian.tech',
-  postLogoutRedirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth',
+  postLogoutRedirectUri:
+    'https://safe-backoffice.development.humanitarian.tech/auth',
   frontOfficeUri: 'https://safe.development.humanitarian.tech/',
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
   module: 'backoffice',
-  availableLanguages: ['en']
+  availableLanguages: ['en'],
 };

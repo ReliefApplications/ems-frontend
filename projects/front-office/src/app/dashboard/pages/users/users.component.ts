@@ -9,10 +9,9 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit, OnDestroy {
-
   /** Loading state of the page */
   public loading = true;
   /** List of users */
@@ -27,24 +26,25 @@ export class UsersComponent implements OnInit, OnDestroy {
    *
    * @param applicationService Shared application service
    */
-  constructor(
-    public applicationService: SafeApplicationService
-  ) { }
+  constructor(public applicationService: SafeApplicationService) {}
 
   /**
    * Subscribes to application service to load the roles and users.
    */
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
-      if (application) {
-        this.users.data = application.users || [];
-        this.roles = application.roles || [];
-      } else {
-        this.users.data = [];
-        this.roles = [];
-      }
-    });
+    this.applicationSubscription =
+      this.applicationService.application$.subscribe(
+        (application: Application | null) => {
+          if (application) {
+            this.users.data = application.users || [];
+            this.roles = application.roles || [];
+          } else {
+            this.users.data = [];
+            this.roles = [];
+          }
+        }
+      );
   }
 
   /**

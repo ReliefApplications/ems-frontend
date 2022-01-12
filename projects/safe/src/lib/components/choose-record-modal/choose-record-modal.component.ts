@@ -23,10 +23,9 @@ interface IRecord {
 @Component({
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',
-  styleUrls: ['./choose-record-modal.component.scss']
+  styleUrls: ['./choose-record-modal.component.scss'],
 })
 export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
-
   // === REACTIVE FORM ===
   chooseRecordForm: FormGroup = new FormGroup({});
 
@@ -41,7 +40,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   private dataSubscription?: Subscription;
   private pageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
 
   @ViewChild('recordSelect') recordSelect?: MatSelect;
@@ -57,43 +56,57 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
     this.filter = this.settings.query?.filter || {};
-    const builtQuery = this.queryBuilder.buildQuery({ ...this.settings, query: {
-      ...this.settings.query,
-      fields: [{ kind: 'SCALAR', name: this.data.targetFormField }]
-    }});
+    const builtQuery = this.queryBuilder.buildQuery({
+      ...this.settings,
+      query: {
+        ...this.settings.query,
+        fields: [{ kind: 'SCALAR', name: this.data.targetFormField }],
+      },
+    });
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
       variables: {
-        ...builtQuery.variables, ...{
+        ...builtQuery.variables,
+        ...{
           first: ITEMS_PER_PAGE,
           filter: this.filter,
-          sortField: this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-          sortOrder: this.settings.query?.sort?.order || ''
-        }
-      }
+          sortField:
+            this.settings.query?.sort && this.settings.query.sort.field
+              ? this.settings.query.sort.field
+              : null,
+          sortOrder: this.settings.query?.sort?.order || '',
+        },
+      },
     });
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            const nodes = res.data[field].edges.map((x: any) => ({ value: x.node.id, label: x.node[this.data.targetFormField] })) || [];
-            this.pageInfo = res.data[field].pageInfo;
-            this.records.next(nodes);
+      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+        (res: any) => {
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              const nodes =
+                res.data[field].edges.map((x: any) => ({
+                  value: x.node.id,
+                  label: x.node[this.data.targetFormField],
+                })) || [];
+              this.pageInfo = res.data[field].pageInfo;
+              this.records.next(nodes);
+            }
           }
-        }
-        this.loading = false;
-      }, () => this.loading = false);
+          this.loading = false;
+        },
+        () => (this.loading = false)
+      );
     } else {
       this.loading = false;
     }
     this.chooseRecordForm = this.formBuilder.group({
-      record: [null, Validators.required]
+      record: [null, Validators.required],
     });
     this.settings = {
       query: this.data.targetFormQuery,
@@ -102,8 +115,8 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
         history: false,
         convert: false,
         update: false,
-        inlineEdition: false
-      }
+        inlineEdition: false,
+      },
     };
   }
 
@@ -113,13 +126,15 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
 
   onSelectionChange(rows: any): void {
     if (rows.selectedRows && rows.selectedRows.length > 0) {
-      this.chooseRecordForm.get('record')?.setValue(rows.selectedRows[0].dataItem.id);
+      this.chooseRecordForm
+        .get('record')
+        ?.setValue(rows.selectedRows[0].dataItem.id);
     } else {
       this.chooseRecordForm.get('record')?.setValue(null);
     }
   }
   /*  Close the modal without sending data.
-  */
+   */
   onClose(): void {
     this.dialogRef.close();
   }
@@ -138,7 +153,9 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   onOpenSelect(e: any): void {
     if (e && this.recordSelect) {
       const panel = this.recordSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
   }
 
@@ -148,7 +165,10 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.dataQuery.fetchMore({
@@ -157,26 +177,36 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
             skip: this.records.getValue().length,
             afterCursor: this.pageInfo.endCursor,
             filter: this.filter,
-            sortField: this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null,
-            sortOrder: this.settings.query?.sort?.order || ''
+            sortField:
+              this.settings.query?.sort && this.settings.query.sort.field
+                ? this.settings.query.sort.field
+                : null,
+            sortOrder: this.settings.query?.sort?.order || '',
           },
           updateQuery: (prev: any, { fetchMoreResult }: any) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             for (const field in fetchMoreResult) {
-              if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+              if (
+                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
+              ) {
                 return Object.assign({}, prev, {
                   [field]: {
-                    edges: [...prev[field].edges, ...fetchMoreResult[field].edges],
+                    edges: [
+                      ...prev[field].edges,
+                      ...fetchMoreResult[field].edges,
+                    ],
                     pageInfo: fetchMoreResult[field].pageInfo,
-                    totalCount: fetchMoreResult[field].totalCount
-                  }
+                    totalCount: fetchMoreResult[field].totalCount,
+                  },
                 });
               } else {
                 return prev;
               }
             }
             return prev;
-          }
+          },
         });
       }
     }

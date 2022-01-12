@@ -1,13 +1,24 @@
-import {Apollo, QueryRef} from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, CONTENT_TYPES, Form, Permissions, SafeApplicationService,
-  SafeAuthService, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import {
+  ContentType,
+  CONTENT_TYPES,
+  Form,
+  Permissions,
+  SafeApplicationService,
+  SafeAuthService,
+  SafeSnackBarService,
+  NOTIFICATIONS,
+} from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../graphql/queries';
+import {
+  GET_FORM_NAMES,
+  GetFormsQueryResponse,
+} from '../../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
 
 const ITEMS_PER_PAGE = 10;
@@ -15,10 +26,9 @@ const ITEMS_PER_PAGE = 10;
 @Component({
   selector: 'app-add-page',
   templateUrl: './add-page.component.html',
-  styleUrls: ['./add-page.component.scss']
+  styleUrls: ['./add-page.component.scss'],
 })
 export class AddPageComponent implements OnInit, OnDestroy {
-
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
@@ -26,12 +36,11 @@ export class AddPageComponent implements OnInit, OnDestroy {
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   private pageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private loading = true;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
-
 
   // === REACTIVE FORM ===
   public pageForm: FormGroup = new FormGroup({});
@@ -54,21 +63,21 @@ export class AddPageComponent implements OnInit, OnDestroy {
     this.pageForm = this.formBuilder.group({
       type: ['', Validators.required],
       content: [''],
-      newForm: [false]
+      newForm: [false],
     });
-    this.pageForm.get('type')?.valueChanges.subscribe(type => {
+    this.pageForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
           query: GET_FORM_NAMES,
           variables: {
-            first: ITEMS_PER_PAGE
-          }
+            first: ITEMS_PER_PAGE,
+          },
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe(res => {
-          this.forms.next(res.data.forms.edges.map(x => x.node));
+        this.formsQuery.valueChanges.subscribe((res) => {
+          this.forms.next(res.data.forms.edges.map((x) => x.node));
           this.pageInfo = res.data.forms.pageInfo;
           this.loading = res.loading;
         });
@@ -82,7 +91,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
       this.onNext();
     });
     this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
+      this.canCreateForm = this.authService.userHasClaim(
+        Permissions.canManageForms
+      );
     });
   }
 
@@ -112,7 +123,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
     switch (this.step) {
       case 1: {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        this.pageForm.controls.type.value === ContentType.form ? this.step += 1 : this.onSubmit();
+        this.pageForm.controls.type.value === ContentType.form
+          ? (this.step += 1)
+          : this.onSubmit();
         break;
       }
       case 2: {
@@ -128,28 +141,38 @@ export class AddPageComponent implements OnInit, OnDestroy {
 
   onAdd(): void {
     const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog'
+      panelClass: 'add-dialog',
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(data,
+        Object.assign(
+          data,
           value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
-          (value.binding === 'fromResource' && value.template) && { template: value.template }
+          value.binding === 'fromResource' &&
+            value.resource && { resource: value.resource },
+          value.binding === 'fromResource' &&
+            value.template && { template: value.template }
         );
-        this.apollo.mutate<AddFormMutationResponse>({
-          mutation: ADD_FORM,
-          variables: data
-        }).subscribe(res => {
-          const id = res.data?.addForm.id || '';
-          this.pageForm.controls.content.setValue(id);
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectCreated('page', value.name));
+        this.apollo
+          .mutate<AddFormMutationResponse>({
+            mutation: ADD_FORM,
+            variables: data,
+          })
+          .subscribe(
+            (res) => {
+              const id = res.data?.addForm.id || '';
+              this.pageForm.controls.content.setValue(id);
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.objectCreated('page', value.name)
+              );
 
-          this.onSubmit();
-        }, (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        });
+              this.onSubmit();
+            },
+            (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            }
+          );
       }
     });
   }
@@ -159,10 +182,12 @@ export class AddPageComponent implements OnInit, OnDestroy {
    *
    * @param e open select event.
    */
-   onOpenSelect(e: any): void {
+  onOpenSelect(e: any): void {
     if (e && this.formSelect) {
       const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
   }
 
@@ -172,24 +197,29 @@ export class AddPageComponent implements OnInit, OnDestroy {
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor
+            afterCursor: this.pageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             return Object.assign({}, prev, {
               forms: {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount
-              }
+                totalCount: fetchMoreResult.forms.totalCount,
+              },
             });
-          }
+          },
         });
       }
     }
