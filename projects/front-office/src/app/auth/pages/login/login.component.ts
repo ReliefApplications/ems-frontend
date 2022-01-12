@@ -1,5 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService } from '@azure/msal-angular';
+import {
+  MSAL_GUARD_CONFIG,
+  MsalGuardConfiguration,
+  MsalService,
+} from '@azure/msal-angular';
 import { RedirectRequest } from '@azure/msal-browser';
 
 /**
@@ -8,10 +12,9 @@ import { RedirectRequest } from '@azure/msal-browser';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-
   /**
    * Login page.
    *
@@ -20,15 +23,17 @@ export class LoginComponent {
    */
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-    private msalService: MsalService,
-  ) { }
+    private msalService: MsalService
+  ) {}
 
   /**
    * Redirects to Azure authentication page.
    */
   onLogin(): void {
     if (this.msalGuardConfig.authRequest) {
-      this.msalService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
+      this.msalService.loginRedirect({
+        ...this.msalGuardConfig.authRequest,
+      } as RedirectRequest);
     } else {
       this.msalService.loginRedirect();
     }

@@ -1,9 +1,18 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentType, Step, SafeSnackBarService, Workflow, NOTIFICATIONS } from '@safe/builder';
+import {
+  ContentType,
+  Step,
+  SafeSnackBarService,
+  Workflow,
+  NOTIFICATIONS,
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from './graphql/queries';
+import {
+  GetWorkflowByIdQueryResponse,
+  GET_WORKFLOW_BY_ID,
+} from './graphql/queries';
 
 /**
  * Workflow page.
@@ -11,10 +20,9 @@ import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from './graphql/quer
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  styleUrls: ['./workflow.component.scss']
+  styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent implements OnInit, OnDestroy {
-
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */
@@ -41,7 +49,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router
-  ) { }
+  ) {}
 
   /**
    * Subscribes to the route to load the workflow accordingly.
@@ -49,27 +57,33 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
-      this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
-        query: GET_WORKFLOW_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.workflow) {
-          this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps || [];
-          this.loading = res.loading;
-          if (this.steps.length > 0) {
-            this.onOpenStep(0);
+      this.apollo
+        .watchQuery<GetWorkflowByIdQueryResponse>({
+          query: GET_WORKFLOW_BY_ID,
+          variables: {
+            id: this.id,
+          },
+        })
+        .valueChanges.subscribe(
+          (res) => {
+            if (res.data.workflow) {
+              this.workflow = res.data.workflow;
+              this.steps = res.data.workflow.steps || [];
+              this.loading = res.loading;
+              if (this.steps.length > 0) {
+                this.onOpenStep(0);
+              }
+            } else {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.accessNotProvided('workflow'),
+                { error: true }
+              );
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
           }
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('workflow'), { error: true });
-        }
-      },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        );
     });
   }
 
@@ -105,9 +119,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const step = this.steps[index];
       this.activeStep = index;
       if (step.type === ContentType.form) {
-        this.router.navigate(['./' + step.type + '/' + step.id], { relativeTo: this.route });
+        this.router.navigate(['./' + step.type + '/' + step.id], {
+          relativeTo: this.route,
+        });
       } else {
-        this.router.navigate(['./' + step.type + '/' + step.content], { relativeTo: this.route });
+        this.router.navigate(['./' + step.type + '/' + step.content], {
+          relativeTo: this.route,
+        });
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
@@ -124,7 +142,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, {
+        error: true,
+      });
     }
   }
 }

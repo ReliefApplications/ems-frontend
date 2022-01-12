@@ -27,8 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatNativeDateModule,
     MatMenuModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeRecordHistoryComponent]
+  exports: [SafeRecordHistoryComponent],
 })
-export class SafeRecordHistoryModule { }
+export class SafeRecordHistoryModule {}

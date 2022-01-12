@@ -6,17 +6,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeRecordSummaryComponent
-  ],
-  imports: [
-    CommonModule,
-    SafeButtonModule,
-    MatTooltipModule,
-    TranslateModule
-  ],
-  exports: [
-    SafeRecordSummaryComponent
-  ]
+  declarations: [SafeRecordSummaryComponent],
+  imports: [CommonModule, SafeButtonModule, MatTooltipModule, TranslateModule],
+  exports: [SafeRecordSummaryComponent],
 })
-export class SafeRecordSummaryModule { }
+export class SafeRecordSummaryModule {}

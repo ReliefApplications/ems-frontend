@@ -8,7 +8,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeAccessModule, SafePreviousButtonModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeAccessModule,
+  SafePreviousButtonModule,
+  SafeButtonModule,
+} from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,8 +33,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     MatTooltipModule,
     MatPaginatorModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [ResourceComponent]
+  exports: [ResourceComponent],
 })
-export class ResourceModule { }
+export class ResourceModule {}

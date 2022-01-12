@@ -18,8 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [DuplicateApplicationComponent]
+  exports: [DuplicateApplicationComponent],
 })
-export class DuplicateApplicationModule { }
+export class DuplicateApplicationModule {}

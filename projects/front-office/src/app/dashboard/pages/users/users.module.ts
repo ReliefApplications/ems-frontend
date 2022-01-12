@@ -14,8 +14,8 @@ import { SafeUsersModule } from '@safe/builder';
     CommonModule,
     UsersRoutingModule,
     MatProgressSpinnerModule,
-    SafeUsersModule
+    SafeUsersModule,
   ],
-  exports: [UsersComponent]
+  exports: [UsersComponent],
 })
-export class UsersModule { }
+export class UsersModule {}

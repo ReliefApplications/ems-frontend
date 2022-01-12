@@ -15,8 +15,8 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     MatButtonModule,
     MatIconModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeExpandedCommentComponent]
+  exports: [SafeExpandedCommentComponent],
 })
-export class SafeExpandedCommentModule { }
+export class SafeExpandedCommentModule {}

@@ -21,8 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
     SafeCoreGridModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeResourceGridModalComponent]
+  exports: [SafeResourceGridModalComponent],
 })
-export class SafeSearchResourceGridModalModule { }
+export class SafeSearchResourceGridModalModule {}

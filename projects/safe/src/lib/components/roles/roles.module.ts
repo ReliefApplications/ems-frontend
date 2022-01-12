@@ -21,7 +21,11 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [SafeRolesComponent, SafeAddRoleComponent, SafeEditRoleComponent],
+  declarations: [
+    SafeRolesComponent,
+    SafeAddRoleComponent,
+    SafeEditRoleComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -40,8 +44,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatAutocompleteModule,
     MatDividerModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeRolesComponent]
+  exports: [SafeRolesComponent],
 })
-export class SafeRolesModule { }
+export class SafeRolesModule {}

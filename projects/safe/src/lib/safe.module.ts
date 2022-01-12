@@ -61,7 +61,8 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
     SafeButtonModule,
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,
-    SafeApplicationsSummaryModule
+    SafeApplicationsSummaryModule,
   ],
-  declarations: []})
-export class SafeModule { }
+  declarations: [],
+})
+export class SafeModule {}

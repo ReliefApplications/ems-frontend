@@ -38,7 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatAutocompleteModule,
     MatDividerModule,
     SafeButtonModule,
-    TranslateModule
-  ]
+    TranslateModule,
+  ],
 })
-export class SubscriptionsModule { }
+export class SubscriptionsModule {}

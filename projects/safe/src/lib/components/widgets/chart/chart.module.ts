@@ -21,8 +21,8 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
     SafePieChartModule,
     SafeLineChartModule,
     SafeColumnChartModule,
-    SafeBarChartModule
+    SafeBarChartModule,
   ],
-  exports: [SafeChartComponent]
+  exports: [SafeChartComponent],
 })
-export class SafeChartModule { }
+export class SafeChartModule {}

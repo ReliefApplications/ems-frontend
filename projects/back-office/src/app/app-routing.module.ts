@@ -10,52 +10,60 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        loadChildren: () =>
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
       {
         path: 'applications',
         children: [
           {
             path: ':id',
-            loadChildren: () => import('./application/application.module')
-              .then(m => m.ApplicationModule),
-          }
-        ]
+            loadChildren: () =>
+              import('./application/application.module').then(
+                (m) => m.ApplicationModule
+              ),
+          },
+        ],
       },
       {
         path: 'app-preview',
         children: [
           {
             path: ':id',
-            loadChildren: () => import('./app-preview/app-preview.module')
-              .then(m => m.AppPreviewModule),
-          }
-        ]
-      }
+            loadChildren: () =>
+              import('./app-preview/app-preview.module').then(
+                (m) => m.AppPreviewModule
+              ),
+          },
+        ],
+      },
     ],
-    canActivate: [MsalGuard, AccessGuard]
+    canActivate: [MsalGuard, AccessGuard],
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module')
-      .then(m => m.AuthModule)
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',
     redirectTo: 'applications',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 /*  Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
     Use lazy loading for performance.
 */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    relativeLinkResolution: 'legacy',
-    initialNavigation: !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled'
-  })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      relativeLinkResolution: 'legacy',
+      initialNavigation:
+        !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
+          ? 'enabled'
+          : 'disabled',
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

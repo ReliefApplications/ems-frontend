@@ -19,8 +19,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     SafeIconModule,
     SafeRecordSummaryModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeFormComponent]
+  exports: [SafeFormComponent],
 })
-export class SafeFormModule { }
+export class SafeFormModule {}

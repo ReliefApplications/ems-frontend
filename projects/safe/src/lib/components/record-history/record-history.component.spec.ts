@@ -8,9 +8,8 @@ describe('SafeRecordHistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRecordHistoryComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeRecordHistoryComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

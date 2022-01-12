@@ -5,15 +5,8 @@ import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
 
 @NgModule({
-  declarations: [
-    SafeColumnChartComponent
-  ],
-  imports: [
-    CommonModule,
-    ChartsModule
-  ],
-  exports: [
-    SafeColumnChartComponent
-  ]
+  declarations: [SafeColumnChartComponent],
+  imports: [CommonModule, ChartsModule],
+  exports: [SafeColumnChartComponent],
 })
-export class SafeColumnChartModule { }
+export class SafeColumnChartModule {}

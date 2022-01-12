@@ -8,9 +8,8 @@ describe('SafeQueryBuilderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeQueryBuilderComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeQueryBuilderComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

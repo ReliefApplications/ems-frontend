@@ -30,8 +30,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     MatSlideToggleModule,
     MatChipsModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [AddFormComponent]
+  exports: [AddFormComponent],
 })
-export class AddFormModule { }
+export class AddFormModule {}

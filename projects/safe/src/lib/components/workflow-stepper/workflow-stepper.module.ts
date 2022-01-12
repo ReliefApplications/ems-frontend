@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [
     SafeWorkflowStepperComponent,
     SafeAddStepComponent,
-    SafeStepComponent
+    SafeStepComponent,
   ],
   imports: [
     CommonModule,
@@ -25,12 +25,12 @@ import { TranslateModule } from '@ngx-translate/core';
     DragDropModule,
     SafeIconModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
   exports: [
     SafeWorkflowStepperComponent,
     SafeAddStepComponent,
-    SafeStepComponent
-  ]
+    SafeStepComponent,
+  ],
 })
-export class SafeWorkflowStepperModule { }
+export class SafeWorkflowStepperModule {}

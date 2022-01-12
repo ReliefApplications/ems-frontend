@@ -5,14 +5,8 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-
-
 @NgModule({
   declarations: [HomeComponent],
-  imports: [
-    CommonModule,
-    HomeRoutingModule,
-    TranslateModule
-  ]
+  imports: [CommonModule, HomeRoutingModule, TranslateModule],
 })
-export class HomeModule { }
+export class HomeModule {}

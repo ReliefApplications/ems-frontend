@@ -6,17 +6,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeGridRowActionsComponent
-  ],
-  imports: [
-    CommonModule,
-    ButtonModule,
-    MatMenuModule,
-    TranslateModule
-  ],
-  exports: [
-    SafeGridRowActionsComponent
-  ]
+  declarations: [SafeGridRowActionsComponent],
+  imports: [CommonModule, ButtonModule, MatMenuModule, TranslateModule],
+  exports: [SafeGridRowActionsComponent],
 })
-export class SafeGridRowActionsModule { }
+export class SafeGridRowActionsModule {}

@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { SafeFormModule, SafeAccessModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeFormModule,
+  SafeAccessModule,
+  SafeButtonModule,
+} from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,8 +26,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatInputModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [FormComponent]
+  exports: [FormComponent],
 })
-export class FormModule { }
+export class FormModule {}

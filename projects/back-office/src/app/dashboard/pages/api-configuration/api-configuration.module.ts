@@ -13,9 +13,7 @@ import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    ApiConfigurationComponent
-  ],
+  declarations: [ApiConfigurationComponent],
   imports: [
     CommonModule,
     ApiConfigurationRoutingModule,
@@ -28,7 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatOptionModule,
     SafeButtonModule,
-    TranslateModule
-  ]
+    TranslateModule,
+  ],
 })
-export class ApiConfigurationModule { }
+export class ApiConfigurationModule {}

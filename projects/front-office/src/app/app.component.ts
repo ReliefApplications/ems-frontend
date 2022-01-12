@@ -1,7 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+import {
+  AuthenticationResult,
+  EventMessage,
+  EventType,
+  InteractionStatus,
+} from '@azure/msal-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
@@ -14,10 +19,9 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-
   /** Listens to self-destruction */
   private readonly destroying$ = new Subject<void>();
 
@@ -50,7 +54,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.msalService.instance.enableAccountStorageEvents();
     this.broadcastService.msalSubject$
       .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED),
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.ACCOUNT_ADDED ||
+            msg.eventType === EventType.ACCOUNT_REMOVED
+        )
       )
       .subscribe((result: EventMessage) => {
         if (this.msalService.instance.getAllAccounts().length === 0) {
@@ -60,7 +68,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.broadcastService.inProgress$
       .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None),
+        filter(
+          (status: InteractionStatus) => status === InteractionStatus.None
+        ),
         takeUntil(this.destroying$)
       )
       .subscribe(() => {
@@ -68,9 +78,13 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     this.broadcastService.msalSubject$
       .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS),
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS
+        ),
         takeUntil(this.destroying$)
-      ).subscribe((result: any) => {
+      )
+      .subscribe((result: any) => {
         if (result.payload) {
           localStorage.setItem('msal.idtoken', result.payload.accessToken);
         }
@@ -81,14 +95,14 @@ export class AppComponent implements OnInit, OnDestroy {
         if (window.location.pathname.endsWith('/auth')) {
           this.router.navigate(['/']);
         }
-      }
+      },
     });
   }
 
   /**
    * Confirms end of app.
    */
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.destroying$.next(undefined);
     this.destroying$.complete();
   }
@@ -98,7 +112,10 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private checkAndSetActiveAccount(): void {
     const activeAccount = this.msalService.instance.getActiveAccount();
-    if (!activeAccount && this.msalService.instance.getAllAccounts().length > 0) {
+    if (
+      !activeAccount &&
+      this.msalService.instance.getAllAccounts().length > 0
+    ) {
       const accounts = this.msalService.instance.getAllAccounts();
       this.msalService.instance.setActiveAccount(accounts[0]);
       this.authService.checkAccount();

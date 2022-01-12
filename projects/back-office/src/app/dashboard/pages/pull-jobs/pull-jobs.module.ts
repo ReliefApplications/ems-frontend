@@ -21,10 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
-  declarations: [
-    PullJobsComponent,
-    PullJobModalComponent
-  ],
+  declarations: [PullJobsComponent, PullJobModalComponent],
   imports: [
     CommonModule,
     PullJobsRoutingModule,
@@ -45,7 +42,7 @@ import { MatChipsModule } from '@angular/material/chips';
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
-    MatChipsModule
-  ]
+    MatChipsModule,
+  ],
 })
-export class PullJobsModule { }
+export class PullJobsModule {}

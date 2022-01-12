@@ -5,16 +5,8 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [
-    SafeWidgetChoiceComponent
-  ],
-  imports: [
-    CommonModule,
-    MatRippleModule,
-    MatTooltipModule
-  ],
-  exports: [
-    SafeWidgetChoiceComponent
-  ]
+  declarations: [SafeWidgetChoiceComponent],
+  imports: [CommonModule, MatRippleModule, MatTooltipModule],
+  exports: [SafeWidgetChoiceComponent],
 })
-export class SafeWidgetChoiceModule { }
+export class SafeWidgetChoiceModule {}

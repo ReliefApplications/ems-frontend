@@ -28,7 +28,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeFloatingOptionsComponent,
     SafeTileDataComponent,
     SafeTileDisplayComponent,
-    SafeExpandedWidgetComponent
+    SafeExpandedWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -49,9 +49,8 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     TranslateModule,
     SafeIconModule,
     SafeWidgetChoiceModule,
-    LayoutModule
+    LayoutModule,
   ],
-  exports: [SafeWidgetGridComponent]
+  exports: [SafeWidgetGridComponent],
 })
-export class SafeWidgetGridModule {
-}
+export class SafeWidgetGridModule {}

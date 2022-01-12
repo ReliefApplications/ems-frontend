@@ -6,11 +6,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 
 @NgModule({
   declarations: [SafeMapComponent],
-    imports: [
-      CommonModule,
-      TranslateModule,
-      LayoutModule
-    ],
-  exports: [SafeMapComponent]
+  imports: [CommonModule, TranslateModule, LayoutModule],
+  exports: [SafeMapComponent],
 })
-export class SafeMapModule { }
+export class SafeMapModule {}

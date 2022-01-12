@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 @NgModule({
   declarations: [ConfigDisplayGridFieldsModalComponent],
   imports: [
@@ -23,9 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeQueryBuilderModule,
     MatButtonModule,
     MatInputModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [ConfigDisplayGridFieldsModalComponent]
+  exports: [ConfigDisplayGridFieldsModalComponent],
 })
-export class ConfigDisplayGridFieldsModalModule {
-}
+export class ConfigDisplayGridFieldsModalModule {}

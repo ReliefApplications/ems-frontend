@@ -16,8 +16,8 @@ import 'hammerjs';
     SafeEditorModule,
     SafeGridWidgetModule,
     SafeMapModule,
-    SafeSchedulerModule
+    SafeSchedulerModule,
   ],
-  exports: [SafeWidgetComponent]
+  exports: [SafeWidgetComponent],
 })
-export class SafeWidgetModule { }
+export class SafeWidgetModule {}

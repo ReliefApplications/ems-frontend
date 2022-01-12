@@ -27,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatRippleModule,
     SafeButtonModule,
     SafeContentChoiceModule,
-    TranslateModule
-  ]
+    TranslateModule,
+  ],
 })
-export class AddPageModule { }
+export class AddPageModule {}

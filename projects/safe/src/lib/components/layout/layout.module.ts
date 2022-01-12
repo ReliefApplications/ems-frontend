@@ -35,8 +35,8 @@ import { FormsModule } from '@angular/forms';
     MatTooltipModule,
     SafeButtonModule,
     IndicatorsModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeLayoutComponent]
+  exports: [SafeLayoutComponent],
 })
-export class SafeLayoutModule { }
+export class SafeLayoutModule {}

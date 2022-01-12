@@ -6,10 +6,6 @@ import { SafeLayoutModule } from '@safe/builder';
 
 @NgModule({
   declarations: [DashboardComponent],
-  imports: [
-    CommonModule,
-    SafeLayoutModule,
-    DashboardRoutingModule
-  ]
+  imports: [CommonModule, SafeLayoutModule, DashboardRoutingModule],
 })
-export class DashboardModule { }
+export class DashboardModule {}

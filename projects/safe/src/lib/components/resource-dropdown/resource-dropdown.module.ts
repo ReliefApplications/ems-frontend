@@ -7,19 +7,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeResourceDropdownComponent
-  ],
+  declarations: [SafeResourceDropdownComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [
-    SafeResourceDropdownComponent
-  ]
+  exports: [SafeResourceDropdownComponent],
 })
-export class SafeResourceDropdownModule { }
+export class SafeResourceDropdownModule {}

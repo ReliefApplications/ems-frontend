@@ -6,11 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeSchedulerComponent],
-    imports: [
-      CommonModule,
-      SchedulerModule,
-      TranslateModule
-    ],
-  exports: [SafeSchedulerComponent]
+  imports: [CommonModule, SchedulerModule, TranslateModule],
+  exports: [SafeSchedulerComponent],
 })
-export class SafeSchedulerModule { }
+export class SafeSchedulerModule {}
