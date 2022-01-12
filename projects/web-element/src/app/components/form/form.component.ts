@@ -1,15 +1,17 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SafeFormComponent, Form, Page, Step } from '@safe/builder';
-import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../graphql/queries';
+import {
+  GetFormByIdQueryResponse,
+  GET_SHORT_FORM_BY_ID,
+} from '../../graphql/queries';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-
   @Input() id = '';
 
   @ViewChild(SafeFormComponent)
@@ -28,25 +30,25 @@ export class FormComponent implements OnInit {
   // === ROUTE ===
   public isStep = false;
 
-  constructor(
-    private apollo: Apollo
-  ) { }
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_SHORT_FORM_BY_ID,
-      variables: {
-        id: this.id
-      }
-    }).valueChanges.subscribe((res) => {
-      if (res.data) {
-        this.form = res.data.form;
-        this.loading = res.loading;
-      }
-    });
+    this.apollo
+      .watchQuery<GetFormByIdQueryResponse>({
+        query: GET_SHORT_FORM_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+      .valueChanges.subscribe((res) => {
+        if (res.data) {
+          this.form = res.data.form;
+          this.loading = res.loading;
+        }
+      });
   }
 
-  onComplete(e: {completed: boolean; hideNewRecord?: boolean}): void {
+  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
