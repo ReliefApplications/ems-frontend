@@ -20,6 +20,27 @@
   z-index: 1002;
 }
 
-mat-dialog-content {
-  width: 70vw;
+.container {
+  position: relative;
+  height: 92.5vh;
+}
+
+mat-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+
+}
+
+.content {
+  width: 77vw;
+}
+
+.buttons {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
