@@ -134,8 +134,8 @@ export class SafeApplicationService {
         console.log('===> res');
         console.log(res);
         if(res.errors) {
-        this.application.next(null);
-        this.snackBar.openSnackBar('error');
+          this.application.next(null);
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided(null, res.errors));
         } else if (res.data.application) {
           this.application.next(res.data.application);
           const application = this.application.getValue();
