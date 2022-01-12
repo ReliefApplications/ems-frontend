@@ -59,66 +59,75 @@ export class SafePreprocessorService {
 
     // === DATASET ===
     if (text.includes('{dataset}') && dataset) {
-      const builtQuery = this.queryBuilder.buildQuery(dataset.settings);
-      if (builtQuery) {
-        const dataQuery = this.apollo.watchQuery<any>({
-          query: builtQuery,
-          variables: {
-            first: dataset.ids.length,
-            sortField: dataset.sortField ?? null,
-            sortOrder: dataset.sortOrder || '',
-            filter: {
-              logic: 'and',
-              filters: [
-                {
-                  operator: 'eq',
-                  field: 'ids',
-                  value: dataset.ids,
-                },
-              ],
+      if (dataset.ids.length > 0) {
+        const builtQuery = this.queryBuilder.buildQuery(dataset.settings);
+        if (builtQuery) {
+          const dataQuery = this.apollo.watchQuery<any>({
+            query: builtQuery,
+            variables: {
+              first: dataset.ids.length,
+              sortField: dataset.sortField ?? null,
+              sortOrder: dataset.sortOrder || '',
+              filter: {
+                logic: 'and',
+                filters: [
+                  {
+                    operator: 'eq',
+                    field: 'ids',
+                    value: dataset.ids,
+                  },
+                ],
+              },
             },
-          },
-        });
-        const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings);
-        let metaFields: any = [];
-        if (metaQuery) {
-          promises.push(
-            metaQuery
-              .pipe(
-                mergeMap((res: any) => {
-                  for (const metaField in res.data) {
-                    if (
-                      Object.prototype.hasOwnProperty.call(res.data, metaField)
-                    ) {
-                      metaFields = Object.assign({}, res.data[metaField]);
+          });
+          const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings);
+          let metaFields: any = [];
+          if (metaQuery) {
+            promises.push(
+              metaQuery
+                .pipe(
+                  mergeMap((res: any) => {
+                    for (const metaField in res.data) {
+                      if (
+                        Object.prototype.hasOwnProperty.call(
+                          res.data,
+                          metaField
+                        )
+                      ) {
+                        metaFields = Object.assign({}, res.data[metaField]);
+                      }
                     }
-                  }
-                  return from(this.populateMetaFields(metaFields));
-                }),
-                mergeMap(() => dataQuery.valueChanges),
-                map((res2: any) => {
-                  let fields = dataset.settings.query.fields;
-                  let items: any = [];
-                  for (const field in res2.data) {
-                    if (
-                      Object.prototype.hasOwnProperty.call(res2.data, field)
-                    ) {
-                      fields = this.getFields(metaFields, fields);
-                      const nodes =
-                        res2.data[field].edges.map((x: any) => x.node) || [];
-                      items = cloneData(nodes);
-                      this.convertDateFields(fields, items);
+                    return from(this.populateMetaFields(metaFields));
+                  }),
+                  mergeMap(() => dataQuery.valueChanges),
+                  map((res2: any) => {
+                    let fields = dataset.settings.query.fields;
+                    let items: any = [];
+                    for (const field in res2.data) {
+                      if (
+                        Object.prototype.hasOwnProperty.call(res2.data, field)
+                      ) {
+                        fields = this.getFields(metaFields, fields);
+                        const nodes =
+                          res2.data[field].edges.map((x: any) => x.node) || [];
+                        items = cloneData(nodes);
+                        this.convertDateFields(fields, items);
+                      }
                     }
-                  }
-                  const datasetToString = this.datasetToString(items, fields);
-                  text = text.split('{dataset}').join(datasetToString);
-                  return;
-                }),
-                take(1)
-              )
-              .toPromise()
-          );
+                    const datasetToString = this.datasetToString(items, fields);
+                    text = text.split('{dataset}').join(datasetToString);
+                    return;
+                  }),
+                  take(1)
+                )
+                .toPromise()
+            );
+          }
+        } else {
+          text = text.split('{dataset}').join('');
         }
+      } else {
+        text = text.split('{dataset}').join('');
       }
     }
 
