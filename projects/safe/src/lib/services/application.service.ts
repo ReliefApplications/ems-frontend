@@ -124,7 +124,6 @@ export class SafeApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
-    console.log(this.router.url);
     this.applicationSubscription = this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
@@ -132,13 +131,20 @@ export class SafeApplicationService {
         asRole
       }
     }).subscribe(res => {
-      this.application.next(res.data.application);
-      const application = this.application.getValue();
-      if (res.data.application.locked) {
-        if (!application?.lockedByUser) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
+        console.log('===> res');
+        console.log(res);
+        if(res.errors) {
+        this.application.next(null);
+        this.snackBar.openSnackBar('error');
+        } else if (res.data.application) {
+          this.application.next(res.data.application);
+          const application = this.application.getValue();
+          if (res.data.application.locked) {
+            if (!application?.lockedByUser) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(res.data.application.name));
+            }
+          }
         }
-      }
     });
     this.notificationSubscription = this.apollo.subscribe<ApplicationEditedSubscriptionResponse>({
       query: APPLICATION_EDITED_SUBSCRIPTION,

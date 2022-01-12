@@ -58,15 +58,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
-    console.log('this.router');
-    console.log(this.router);
+    console.log('URL:');
     console.log(this.router.url);
-    console.log(this.route);
-    console.log(this.router.routerState);
-    console.log(this.router.config);
     this.routeSubscription = this.route.params.subscribe((params) => {
       // this.applicationService.loadApplication(params.id);
       this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
+        console.log('apps');
         console.log(user?.applications);
         const applications = user?.applications || [];
         this.applications = applications;
@@ -76,19 +73,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
           console.log('ID!');
           console.log(params.id);
           this.applicationService.loadApplication(params.id);
+          // console.log('%%%%    test    %%%%');
+          // console.log(test);
         } else {
-          console.log('no ID...');
           if (user?.favoriteApp) {
-            console.log('user.favoriteApp');
-            console.log(user.favoriteApp);
+            console.log('no ID + favorite');
             // this.applicationService.loadApplication(user.favoriteApp);
             this.router.navigate([`./${user.favoriteApp}`]);
           } else {
             if (applications.length > 0) {
+              console.log('no ID + first app');
               // this.applicationService.loadApplication(applications[0].id || '');
               this.router.navigate([`./${applications[0].id || ''}`]);
             }
             else {
+              console.log('no ID + no app accessible');
               this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
             }
           }
@@ -118,6 +117,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
       if (application) {
+        console.log('ID + accessible');
+        // it's here that I have to managed and verify if I have a rroute (for the pages, dashboard, worrkflow id) after the app id (the 2 first cases).
         this.title = application.name || '';
         const adminNavItems: any[] = [];
         if (this.permissions.some(x => (x.type === Permissions.canSeeUsers
@@ -156,18 +157,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
           const [firstPage, ..._] = application.pages || [];
           if (this.router.url.endsWith('/') || (application.id !== this.application?.id) || !firstPage) {
             if (firstPage) {
-              console.log('--- firstpage');
               this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
             } else {
-              console.log('--- else');
               this.router.navigate([`./`], { relativeTo: this.route });
             }
           }
         }
         this.application = application;
       } else {
-        this.navGroups = [];
+        this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
+          const applications = user?.applications || [];
+          if (user?.favoriteApp) {
+            console.log('ID + not accessible + favorite');
+            this.router.navigate([`./${user.favoriteApp}`]);
+          } else {
+            if (applications.length > 0) {
+              console.log('ID + not accessible + first app');
+              // this.applicationService.loadApplication(applications[0].id || '');
+              this.router.navigate([`./${applications[0].id || ''}`]);
+            }
+            else {
+              console.log('ID + not accessible + no app accessible');
+              this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('platform'), { error: true });
+            }
+          }
+          this.navGroups = [];
+        });
       }
     });
   }
@@ -191,6 +207,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   onOpenApplication(application: Application): void {
     this.applicationService.loadApplication(application.id || '');
+    this.router.navigate([`./${application.id || ''}`]);
   }
 
   /**
