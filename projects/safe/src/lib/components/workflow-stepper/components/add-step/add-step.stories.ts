@@ -1,13 +1,15 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeAddStepComponent } from './add-step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
+import { StorybookTranslateModule } from '../../../../components/storybook-translate/storybook-translate-module';
 
 export default {
     component: SafeAddStepComponent,
     decorators: [
         moduleMetadata({
             imports: [
-                SafeWorkflowStepperModule
+                SafeWorkflowStepperModule,
+                StorybookTranslateModule
             ],
             providers: []
         })
