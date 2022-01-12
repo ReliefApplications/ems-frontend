@@ -10,6 +10,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeFormModalComponent],
@@ -23,7 +24,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SafeIconModule,
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   exports: [SafeFormModalComponent]
 })

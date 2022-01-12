@@ -10,7 +10,7 @@
         <ng-container matColumnDef="value">
             <th mat-header-cell *matHeaderCellDef>
                 <span class="headerTitle" mat-sort-header>
-                    Name
+                    {{'global.name' | translate}}
                 </span>
             </th>
             <td mat-cell *matCellDef="let element">{{ element.value }}</td>
@@ -18,7 +18,7 @@
         <ng-container matColumnDef="usersCount">
             <th mat-header-cell *matHeaderCellDef>
                 <span class="headerTitle" mat-sort-header>
-                    Users
+                    {{'global.users' | translate}}
                 </span>
             </th>
             <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>

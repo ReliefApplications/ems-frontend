@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { AccountInfo } from '@azure/msal-common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-layout',
@@ -39,6 +40,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
 
   filteredNavGroups: any[] = [];
+
+  currentLanguage = '';
+  languages: string[] = [];
 
   // === NOTIFICATIONS ===
   public notifications: Notification[] = [];
@@ -68,10 +72,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
     this.environment = environment;
+    this.currentLanguage = this.translate.defaultLang;
+    this.languages = this.translate.getLangs();
   }
 
   ngOnInit(): void {
@@ -243,5 +250,15 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+  }
+
+  /**
+   * Changes current active language.
+   *
+   * @param language id of the language.
+   */
+  setLanguage(language: string) {
+    this.translate.use(language);
+    this.currentLanguage = language;
   }
 }

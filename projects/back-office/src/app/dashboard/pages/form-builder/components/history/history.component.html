@@ -1,11 +1,11 @@
 <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <th mat-header-cell *matHeaderCellDef> {{'global.id' | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
     <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef> Created on </th>
+        <th mat-header-cell *matHeaderCellDef> {{'table.date' | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{element.createdAt | date}} </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

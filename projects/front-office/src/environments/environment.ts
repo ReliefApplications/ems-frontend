@@ -11,5 +11,6 @@ export const environment = {
   postLogoutRedirectUri: 'http://localhost:4200/auth',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'frontoffice'
+  module: 'frontoffice',
+  availableLanguages: ['en', 'test']
 };

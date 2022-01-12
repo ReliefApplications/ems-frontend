@@ -9,6 +9,7 @@ import { GetResourceByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RESO
   GET_RESOURCE_RECORDS } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -56,7 +57,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -185,24 +187,24 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param id Id of record to delete.
    * @param e click event.
    */
-  public onDeleteRecord(id: string, e: any): void {
+  public onDeleteRecord(element: any, e: any): void {
     e.stopPropagation();
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete record permanently',
-          content: `Do you confirm the hard deletion of this record ?`,
-          confirmText: 'Delete',
-          confirmColor: 'warn'
+          title: this.translate.instant('record.delete'),
+          content: this.translate.instant('record.deleteDesc', {name: element.name}),
+          confirmText: this.translate.instant('action.delete'),
+          cancelText: this.translate.instant('action.cancel'),
         }
       });
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
-          this.deleteRecord(id);
+          this.deleteRecord(element.id);
         }
       });
     } else {
-      this.deleteRecord(id);
+      this.deleteRecord(element.id);
     }
   }
 

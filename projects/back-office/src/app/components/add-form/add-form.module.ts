@@ -12,6 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [AddFormComponent],
@@ -28,7 +29,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatRadioModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    MatChipsModule
+    MatChipsModule,
+    TranslateModule
   ],
   exports: [AddFormComponent]
 })

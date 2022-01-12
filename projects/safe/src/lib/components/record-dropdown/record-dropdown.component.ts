@@ -5,6 +5,7 @@ import { QueryRef, Apollo } from 'apollo-angular';
 import { GetRecordByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from '../../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Record } from '../../models/record.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 25;
 
@@ -27,7 +28,7 @@ export class SafeRecordDropdownComponent implements OnInit {
   @Input() record = '';
   @Input() resourceId = '';
   @Input() field = '';
-  @Input() placeholder = 'Select record';
+  @Input() placeholder = this.translate.instant('record.placeholder');
   @Input() filter: any = {};
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -43,7 +44,9 @@ export class SafeRecordDropdownComponent implements OnInit {
 
   @ViewChild('recordSelect') recordSelect?: MatSelect;
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo,
+    private translate: TranslateService
+    ) { }
 
   ngOnInit(): void {
     if (this.record) {

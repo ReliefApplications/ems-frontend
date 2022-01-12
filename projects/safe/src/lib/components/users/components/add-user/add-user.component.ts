@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import {GetUsersQueryResponse} from '../../../../graphql/queries';
 import { GET_USERS } from '../../../../graphql/queries';
 import { Apollo } from 'apollo-angular';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   roles: Role[];
@@ -34,7 +35,8 @@ export class SafeAddUserComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo
+    private apollo: Apollo,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {

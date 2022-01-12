@@ -17,6 +17,7 @@ import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
@@ -37,7 +38,8 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     MatTooltipModule,
     MatTabsModule,
     MatChipsModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [SafeGridSettingsComponent]
 })

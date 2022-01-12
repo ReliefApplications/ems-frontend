@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PreviewToolbarComponent } from './preview-toolbar.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Toolbar displayed on top of application preview.
@@ -12,7 +13,8 @@ import { SafeButtonModule } from '@safe/builder';
   imports: [
     CommonModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule
   ],
   exports: [PreviewToolbarComponent]
 })
