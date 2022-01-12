@@ -316,8 +316,11 @@ export const init = (survey: any, domService: DomService, dialog: MatDialog, env
             template: question.addTemplate,
             locale: question.resource.value,
             askForConfirm: false,
-            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
+            ...question.prefillWithCurrentRecord && { prefillData: question.survey.data }
           },
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
           autoFocus: false
         });
         dialogRef.afterClosed().subscribe(res => {

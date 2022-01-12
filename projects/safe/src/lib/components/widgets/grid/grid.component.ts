@@ -200,6 +200,9 @@ export class SafeGridWidgetComponent implements OnInit {
             prefillRecords: records,
             askForConfirm: false
           },
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
           autoFocus: false
         });
       }
@@ -338,6 +341,9 @@ export class SafeGridWidgetComponent implements OnInit {
                   recordId: record.id,
                   locale: 'en'
                 },
+                height: '98%',
+                width: '100vw',
+                panelClass: 'full-screen-modal',
                 autoFocus: false
               });
             }

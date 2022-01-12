@@ -531,6 +531,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           locale: 'en',
           askForConfirm: false
         },
+        height: '98%',
+        width: '100vw',
+        panelClass: 'full-screen-modal',
         autoFocus: false
       });
       dialogRef.afterClosed().subscribe(value => {
@@ -577,6 +580,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         height: '98%',
         width: '100vw',
         panelClass: 'full-screen-modal',
+        autoFocus: false
       });
       dialogRef.afterClosed().subscribe(value => {
         if (value) {
@@ -598,7 +602,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
         template: this.settings.query.template || null
-      }
+      },
+      height: '98%',
+      width: '100vw',
+      panelClass: 'full-screen-modal',
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
