@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1-alpha.0...v1.1.1) (2022-01-12)
+
+
+### Features
+
+* allow sending email with empty dataset [#21694](https://github.com/ReliefApplications/oort-frontend/issues/21694) ([041c309](https://github.com/ReliefApplications/emrs-safe-frontend/commits/041c3099e26b9efff709ad658b35b0174362a420))
+
+
+### Bug Fixes
+
+* fetch policy for pagination in core grid [#18827](https://github.com/ReliefApplications/oort-frontend/issues/18827) ([4197139](https://github.com/ReliefApplications/emrs-safe-frontend/commits/4197139bdae0a762c860d7beecdaf45becc1a441))
+
 ### [1.1.1-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.0...v1.1.1-alpha.0) (2021-12-22)
 
 ## [1.1.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.0.0...v1.1.0) (2021-12-09)
