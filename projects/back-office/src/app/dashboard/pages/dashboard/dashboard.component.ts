@@ -10,7 +10,6 @@ import {
   EditDashboardMutationResponse, EDIT_DASHBOARD,
   EditPageMutationResponse, EDIT_PAGE,
   EditStepMutationResponse, EDIT_STEP } from '../../../graphql/mutations';
-import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 
 
@@ -37,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
+  private dashboardSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -57,27 +57,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      this.apollo.query<GetDashboardByIdQueryResponse>({
-        query: GET_DASHBOARD_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).subscribe((res) => {
-        if (res.data.dashboard) {
-          console.log('res data dashboard = ', res.data.dashboard);
-          this.dashboard = res.data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
+      this.dashboardService.loadDashboard(this.id);
+    });
+
+    this.dashboardSubscription = this.dashboardService.dashboard$.subscribe((res: Dashboard | null) => {
+        if (res) {
+          this.dashboard = res;
           this.dashboardNameForm = new FormGroup({
             dashboardName: new FormControl(this.dashboard.name, Validators.required)
           });
-          this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
+          this.tiles = res.structure ? res.structure : [];
           this.generatedTiles = this.tiles.length === 0 ? 0 : Math.max(...this.tiles.map(x => x.id)) + 1;
           this.applicationId = this.dashboard.page ? this.dashboard.page.application?.id : this.dashboard.step ?
             this.dashboard.step.workflow?.page?.application?.id : '';
-          this.loading = res.loading;
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
-          this.router.navigate(['/applications']);
+          this.loading = false;
         }
       },
         (err) => {
@@ -85,10 +78,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.router.navigate(['/applications']);
         }
       );
-    });
   }
 
   ngOnDestroy(): void {
+    if (this.dashboardSubscription) {
+      this.dashboardSubscription.unsubscribe();
+      this.dashboardService.closeDashboard();
+    }
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
@@ -110,7 +106,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   * @param e widget to save.
   */
   onEditTile(e: any): void {
-    console.log('onEditTile = ', e);
     // make sure that we save the default layout.
     const index = this.tiles.findIndex((v: any) => v.id === e.id);
     const options = this.tiles[index]?.settings?.defaultLayout ?
@@ -163,7 +158,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Save the dashboard changes in the database.
   */
   private autoSaveChanges(): void {
-    console.log('autoSaveChanges()');
     this.loading = true;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,

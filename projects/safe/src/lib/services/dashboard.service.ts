@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Dashboard, WIDGET_TYPES } from '../models/dashboard.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
 import { map } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
+import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../graphql/queries';
+import { NOTIFICATIONS } from '../const/notifications';
+import { SafeSnackBarService } from './snackbar.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +18,39 @@ export class SafeDashboardService {
   // === LIST OF DEFAULT WIDGETS AVAILABLE ===
   public availableTiles = WIDGET_TYPES;
 
+  private dashboardSubcription?: Subscription;
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
 
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();
   }
 
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private router: Router,
+    private snackBar: SafeSnackBarService
+    ) {}
+
+  loadDashboard(id: any): void {
+    this.dashboardSubcription = this.apollo.query<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id
+        }
+      }).subscribe((res) => {
+        if (res.data.dashboard) {
+          this.openDashboard(res.data.dashboard);
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
+          this.router.navigate(['/applications']);
+        }
+      },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.router.navigate(['/applications']);
+        }
+      );
+  }
 
   /**
    * Opens a new dashboard.
@@ -34,6 +64,7 @@ export class SafeDashboardService {
    * Closes the dashboard.
    */
   closeDashboard(): void {
+    this.dashboardSubcription?.unsubscribe();
     this.dashboard.next(null);
   }
 
@@ -162,7 +193,7 @@ export class SafeDashboardService {
     }).pipe(map(res => {
       const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
       newDashboard.structure = updatedDashboardStructure;
-      this.openDashboard(newDashboard);
+      this.loadDashboard(dashboardId);
       return newDashboard.structure[index].settings.layoutList;
     }));
   }
