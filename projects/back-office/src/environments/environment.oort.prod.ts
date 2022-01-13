@@ -6,7 +6,7 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/common',
   redirectUrl: 'https://dms.oortcloud.tech/admin/',
   postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth',
-  frontOfficeUri: 'https://dms/oortcloud.tech',
+  frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'backoffice'
 };
