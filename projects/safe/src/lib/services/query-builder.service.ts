@@ -191,28 +191,38 @@ export class QueryBuilderService {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
-          ${builtQuery.name}(
-          first: $first,
-          skip: $skip,
-          sortField: $sortField,
-          sortOrder: $sortOrder,
-          filter: $filter
-          ) {
-            edges {
-              node {
-                ${fields}
-              }
-            }
-            totalCount
-        }
-        }
-      `;
-      return query;
+      return this.graphqlQuery(builtQuery.name, fields);
     } else {
       return null;
     }
+  }
+
+  /**
+   * Builds a graphQL query from name and fields strings.
+   *
+   * @param name name of the query.
+   * @param fields fields to fetch.
+   * @returns GraphQL query.
+   */
+  public graphqlQuery(name: string, fields: any) {
+    return gql`
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
+      ${name}(
+      first: $first,
+      skip: $skip,
+      sortField: $sortField,
+      sortOrder: $sortOrder,
+      filter: $filter
+      ) {
+        edges {
+          node {
+            ${fields}
+          }
+        }
+        totalCount
+      }
+    }
+  `;
   }
 
   /**

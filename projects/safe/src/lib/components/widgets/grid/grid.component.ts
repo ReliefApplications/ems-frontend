@@ -21,6 +21,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 
@@ -75,7 +76,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private queryBuilder: QueryBuilderService
   ) {
     this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -108,8 +110,20 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   public async onQuickAction(options: any): Promise<void> {
     this.loading = true;
-    // Select all the records in the core grid
     if (options.selectAll) {
+      const query = this.queryBuilder.graphqlQuery(this.grid.settings.query.name, 'id\n');
+      const records = (await this.apollo.query<any>({
+        query,
+        variables: {
+          first: this.grid.gridData.total,
+          filter: this.grid.queryFilter,
+        }
+      }).toPromise());
+      this.grid.selectedRows = records.data[this.grid.settings.query.name].edges.map((x: any) => x.node.id);
+      console.log('selectedRows', this.grid.selectedRows);
+    }
+    // Select all the records in the active page
+    if (options.selectPage) {
       this.grid.selectedRows = this.grid.gridData.data.map(x => x.id);
     }
     // let rowsIndexToModify = [...this.selectedRowsIndex];
@@ -171,10 +185,10 @@ export class SafeGridWidgetComponent implements OnInit {
         };
         const sortField = this.grid.sortField || '';
         const sortOrder = this.grid.sortOrder || '';
-        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+        await this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
           this.grid.selectedRows, sortField, sortOrder);
         if (options.export) {
-          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
+          this.grid.onExport({ records: 'selected', format: 'xlsx', fields: 'visible' }); // Export chosen fields ???
         }
       }
 
