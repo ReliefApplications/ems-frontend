@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    uses: ReliefApplications/oort-frontend/.github/workflows/deploy.yml@main
+    uses: ReliefApplications/oort-frontend/.github/workflows/deploy.yml@dev
     with:
       environment: OORT_DEV
       configuration: oort-dev
