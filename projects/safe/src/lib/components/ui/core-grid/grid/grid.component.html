@@ -325,6 +325,6 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ (error ? 'widgets.grid.invalid' : 'widgets.grid.noRecord') | translate }}
+        {{ (error ? 'widgets.grid.invalid' : (settings.query ? 'widgets.grid.noRecord' : 'widgets.grid.selectDataset')) | translate }}
     </ng-template>
 </kendo-grid>

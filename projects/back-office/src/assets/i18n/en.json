@@ -316,6 +316,7 @@
             "reset": "Reset default Layout",
             "invalid": "Invalid grid configuration",
             "noRecord": "No record detected",
+            "selectDataset": "Select a dataset from settings",
             "item": "{{number}} item",
             "items": "{{number}} items",
             "selectDisplay": "Select displayed fields",
