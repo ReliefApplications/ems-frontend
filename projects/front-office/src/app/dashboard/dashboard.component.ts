@@ -151,13 +151,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (firstPage) {
               console.log(application.pages);
               // application.pages.includes(this.urlRequested.split('/')[3]);
-              let index;
-              index = application.pages?.findIndex((v, i, o): any => {
-                // console.log(v.id);
-                if(v.id == this.urlRequested.split('/')[3]) {
-                  return i;
-                }
-              });
+              // let index;
+              // index = application.pages?.findIndex((v, i, o): any => {
+              //   // console.log(v.id);
+              //   if(v.id == this.urlRequested.split('/')[3]) {
+              //     return i;
+              //   }
+              // });
               // console.log(index);
               // if(application.pages && index)
               // console.log(application.pages[index]);
