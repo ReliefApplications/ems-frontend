@@ -47,7 +47,7 @@ jobs:
   deploy_back_office:
     name: Deploy Back-office 🚀
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     needs: build
     steps:
       - name: Checkout
@@ -72,7 +72,7 @@ jobs:
   deploy_front_office:
     name: Deploy Front-office 🚀
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     needs: build
     steps:
       - name: Checkout
