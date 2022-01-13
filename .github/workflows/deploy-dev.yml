@@ -58,11 +58,12 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
-      run: ./CI/deploy-back-office.sh
+      run: ./CI/deploy.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
         CONNECTION: ${{ secrets.CONNECTION }}
         REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
+        OUT: dist/back-office
 
   deploy_dev_front_office:
     name: Deploy DEV Front-office 🚀
@@ -82,8 +83,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
-      run: ./CI/deploy-front-office.sh
+      run: ./CI/deploy.sh
       env:
         SSH_PASS: ${{ secrets.SSH_PASS }}
         CONNECTION: ${{ secrets.CONNECTION }}
         REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}
+        OUT: dist/front-office

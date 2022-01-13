@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Remove files
-OUT=dist/front-office
-
 set -e
 
 echo -e "Creating destination ..."
