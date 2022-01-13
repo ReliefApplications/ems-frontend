@@ -18,23 +18,8 @@ const routes: Routes = [
       },
       {
         path: ':appId',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('./dashboard/dashboard.module')
-              .then(m => m.DashboardModule),
-          },
-          {
-            path: ':typePage',
-            children: [
-              {
-                path: ':idPage',
-                loadChildren: () => import('./dashboard/dashboard.module')
-                  .then(m => m.DashboardModule),
-              }
-            ],
-          },
-        ],
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(m => m.DashboardModule),
       }
     ],
     canActivate: [MsalGuard, AccessGuard],

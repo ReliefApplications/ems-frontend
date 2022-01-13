@@ -124,6 +124,7 @@ export class SafeApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
+    console.log('****** loadApplication');
     this.applicationSubscription = this.apollo.query<GetApplicationByIdQueryResponse>({
       query: GET_APPLICATION_BY_ID,
       variables: {
@@ -131,12 +132,14 @@ export class SafeApplicationService {
         asRole
       }
     }).subscribe(res => {
-        console.log('===> res');
+        console.log('===> res <===');
         console.log(res);
         if(res.errors) {
           this.application.next(null);
           this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided(null, res.errors));
         } else if (res.data.application) {
+          console.log('res.data.application');
+          console.log(res.data.application);
           this.application.next(res.data.application);
           const application = this.application.getValue();
           if (res.data.application.locked) {
@@ -165,6 +168,7 @@ export class SafeApplicationService {
       }
     }).subscribe((res) => {
       if (res.data?.applicationUnlocked) {
+        console.log('lockSubscription');
         const application = this.application.getValue();
         const newApplication = { ...application,
           locked: res.data?.applicationUnlocked.locked,

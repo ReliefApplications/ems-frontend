@@ -32,6 +32,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private roles: Role[] = [];
   /** Stores if an application has been loaded */
   private firstLoad = true;
+  /** The URL requested by the user*/
+  private urlRequested = '';
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
@@ -60,21 +62,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('URL:');
     console.log(this.router.url);
+    this.urlRequested = this.router.url;
     this.routeSubscription = this.route.params.subscribe((params) => {
       // this.applicationService.loadApplication(params.id);
       this.authSubscription = this.authService.user$.subscribe((user: User | null) => {
-        console.log('apps');
-        console.log(user?.applications);
+        // console.log('apps');
+        // console.log(user?.applications);
         const applications = user?.applications || [];
         this.applications = applications;
         this.roles = user?.roles || [];
         this.permissions = user?.permissions || [];
-        console.log('params');
-        console.log(params);
         if (params.appId) {
           console.log('ID!');
           console.log(params.appId);
           this.applicationService.loadApplication(params.appId);
+          console.log('after app loading: this.router.url');
+          console.log(this.router.url);
         } else {
           if (user?.favoriteApp) {
             console.log('no ID + favorite');
@@ -93,10 +96,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
     });
     this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
+      console.log('PASSSSSSSS');
+      console.log('this.router.url');
+      console.log(this.router.url);
+      console.log(application);
       if (application) {
         console.log('ID + accessible');
-        console.log('this.router.url');
-        console.log(this.router.url);
+        // console.log(this.urlRequested);
         this.title = application.name || '';
         const adminNavItems: any[] = [];
         if (this.permissions.some(x => (x.type === Permissions.canSeeUsers
@@ -133,12 +139,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
         ];
         if (!this.application || application.id !== this.application.id) {
           const [firstPage, ..._] = application.pages || [];
-          if (this.router.url.endsWith('/') || (application.id !== this.application?.id) || !firstPage) {
+          // console.log('firstPage');
+          // console.log(firstPage);
+          // console.log('--------------- this.route');
+          // console.log(this.route);
+          // console.log(this.urlRequested.split('/')[0]);
+          // console.log(this.urlRequested.split('/')[1]);
+          // console.log(this.urlRequested.split('/')[3]);
+          if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            // console.log('in');
             if (firstPage) {
+              console.log(application.pages);
+              // application.pages.includes(this.urlRequested.split('/')[3]);
+              let index;
+              index = application.pages?.findIndex((v, i, o): any => {
+                // console.log(v.id);
+                if(v.id == this.urlRequested.split('/')[3]) {
+                  return i;
+                }
+              });
+              // console.log(index);
+              // if(application.pages && index)
+              // console.log(application.pages[index]);
               console.log('ID + accessible + first page');
-              console.log('this.navGroups');
-              console.log(this.navGroups);
-              console.log(this.router.url + `/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`);
+              // console.log('this.navGroups');
+              // console.log(this.navGroups);
+              // console.log(this.router.url + `/${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`);
               this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
             } else {

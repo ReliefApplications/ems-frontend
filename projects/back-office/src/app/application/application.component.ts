@@ -35,8 +35,12 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.applicationService.loadApplication(params.id);
+      console.log('LOAD');
     });
     this.applicationSubscription = this.applicationService.application$.subscribe((application: Application | null) => {
+      console.log('PASSSSSSSS');
+      console.log('this.router.url');
+      console.log(this.router.url);
       if (application) {
         this.title = application.name || '';
         let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => ({
@@ -108,8 +112,10 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         ];
         if (!this.application || application.id !== this.application.id) {
           const [firstPage, ..._] = application.pages || [];
+          console.log(this.router.url);
           if (this.router.url.endsWith(application?.id || '') || !firstPage) {
             if (firstPage) {
+              console.log('hi');
               this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
               { relativeTo: this.route });
             } else {
