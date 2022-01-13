@@ -1,20 +1,17 @@
 name: Front-end CD
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
+        type: environment
         required: true
-        type: string
-      configuration:
-        required: true
-        type: string
 
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     strategy:
       matrix:
         node-version: [15.x]
@@ -31,9 +28,9 @@ jobs:
       - name: Build Shared Library
         run: npm run build -- --prod safe
       - name: Build Back-office
-        run: npm run build -- --configuration=${{ secrets.configuration }} --project=back-office
+        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
       - name: Build Front-office
-        run: npm run build -- --configuration=${{ secrets.configuration }} --project=front-office
+        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v2
