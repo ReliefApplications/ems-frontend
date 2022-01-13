@@ -33,12 +33,9 @@ export interface EditRecordMutationResponse {
 
 // === EDIT RECORDS ===
 export const EDIT_RECORDS = gql`
-mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID, $display: Boolean) {
+mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID) {
   editRecords(ids: $ids, data: $data, template: $template) {
     id
-    data(display: $display)
-    createdAt
-    modifiedAt
   }
 }`;
 

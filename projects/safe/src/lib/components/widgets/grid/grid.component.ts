@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { EDIT_RECORD, EditRecordMutationResponse,
+import { EDIT_RECORD, EditRecordMutationResponse, EDIT_RECORDS, EditRecordsMutationResponse,
   PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
@@ -142,13 +142,13 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
-      await Promise.all(this.promisedRowsModifications(options.modifications, this.grid.selectedItems));
+      await this.promisedRowsModifications(options.modifications, this.grid.selectedRows);
     }
 
     if (this.grid.selectedRows.length > 0) {
       // Attaches the records to another one.
       if (options.attachToRecord) {
-        await this.promisedAttachToRecord(this.grid.selectedItems, options.targetForm, options.targetFormField, options.targetFormQuery);
+        await this.promisedAttachToRecord(this.grid.selectedRows, options.targetForm, options.targetFormField, options.targetFormQuery);
       }
       const promises: Promise<any>[] = [];
       // Notifies on a channel.
@@ -157,7 +157,7 @@ export class SafeGridWidgetComponent implements OnInit {
           mutation: PUBLISH_NOTIFICATION,
           variables: {
             action: options.notificationMessage ? options.notificationMessage : 'Records update',
-            content: this.grid.selectedItems,
+            content: this.grid.selectedRows,
             channel: options.notificationChannel
           }
         }).toPromise());
@@ -248,31 +248,26 @@ export class SafeGridWidgetComponent implements OnInit {
    * Applies inline edition before applying modifications.
    *
    * @param modifications list of modifications to apply.
-   * @param rows rows to edit.
+   * @param ids records to edit.
    * @returns Array of Promises to execute.
    */
-  private promisedRowsModifications(modifications: any[], items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const update: any = {};
-      for (const modification of modifications) {
-        // modificationFields.push(modification.field.name);
-        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-          update[modification.field.name] = this.getDateForFilter(modification.value);
-        } else {
-          update[modification.field.name] = modification.value;
-        }
+  private promisedRowsModifications(modifications: any[], ids: any[]): Promise<any> {
+    const update: any = {};
+    for (const modification of modifications) {
+      // modificationFields.push(modification.field.name);
+      if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getDateForFilter(modification.value);
+      } else {
+        update[modification.field.name] = modification.value;
       }
-      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: item.id,
-          data: update,
-          template: this.settings.query.template
-        }
-      }).toPromise());
     }
-    return promises;
+    return this.apollo.mutate<EditRecordsMutationResponse>({
+      mutation: EDIT_RECORDS,
+      variables: {
+        ids,
+        data: update
+      }
+    }).toPromise();
   }
 
   /**
@@ -307,7 +302,7 @@ export class SafeGridWidgetComponent implements OnInit {
   */
   private async promisedAttachToRecord(
     // come from 'attach to record' button from grid component
-    selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
+    selectedRecords: string[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
         targetForm,
@@ -327,13 +322,12 @@ export class SafeGridWidgetComponent implements OnInit {
         let data = res.data.record.data;
         const key = resourceField.name;
         if (resourceField.type === 'resource') {
-          data = { ...data, [key]: selectedRecords[0].id };
+          data = { ...data, [key]: selectedRecords[0] };
         } else {
           if (data[key]) {
-            const ids = selectedRecords.map(x => x.id);
-            data = { ...data, [key]: data[key].concat(ids) };
+            data = { ...data, [key]: data[key].concat(selectedRecords) };
           } else {
-            data = { ...data, [key]: selectedRecords.map(x => x.id) };
+            data = { ...data, [key]: selectedRecords };
           }
         }
         this.apollo.mutate<EditRecordMutationResponse>({
