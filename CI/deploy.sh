@@ -11,6 +11,6 @@ ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'
 # ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Synchronizing files ..."
-rsync -e "ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes" -avzr --exclude-from="exclude-file.txt" --delete $OUT/* $CONNECTION:$REMOTE_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes" -avzr --exclude-from="CI/exclude-file.txt" --delete $OUT/* $CONNECTION:$REMOTE_PATH
 
 echo -e "Deployed !!"
