@@ -193,13 +193,15 @@ export class SafePreprocessorService {
           break;
         default:
           const rawValue = get(item, field.name, '') || '';
-          const value =
-            rawValue && OPTION_QUESTIONS.includes(field.meta.type)
-              ? this.getDisplayText(rawValue, field.meta)
-              : rawValue;
-          body += `${tabs}${
-            field.label ? field.label : field.title ? field.title : field.name
-          }:\t${value}\n`;
+          if (rawValue) {
+            const value =
+              rawValue && OPTION_QUESTIONS.includes(field.meta.type)
+                ? this.getDisplayText(rawValue, field.meta)
+                : rawValue;
+            body += `${tabs}${
+              field.label ? field.label : field.title ? field.title : field.name
+            }:\t${value}\n`;
+          }
       }
     }
     return body;
