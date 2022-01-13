@@ -1,6 +1,6 @@
 import {
   Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
-  Inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild
+  Inject, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,7 +31,7 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
-import {SafeGridComponent} from './grid/grid.component';
+import { SafeGridComponent } from './grid/grid.component';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
@@ -242,7 +242,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       query: builtQuery,
       variables: {
         first: this.pageSize,
-        filter: this.queryFilter,
+        filter: layout?.filter ? this.filter : this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder
       },
@@ -257,7 +257,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = Object.assign({}, res.data[field]);
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
-            const defaultLayoutFields = layout.fields || {};
+            const defaultLayoutFields = layout?.fields || {};
             this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
           }
         }
@@ -872,6 +872,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   addLayoutToList(): void {
     this.layoutListChanged.emit(this.layout);
+    const layoutListTemp = [...this.layoutList];
+    layoutListTemp.push(this.layout);
+    this.layoutList = layoutListTemp;
     this.hasLayoutChanges = false;
   }
 

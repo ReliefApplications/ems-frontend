@@ -3,7 +3,8 @@ import { Dashboard, WIDGET_TYPES } from '../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, EditDashboardMutationResponse } from '../graphql/mutations';
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -88,13 +89,15 @@ export class SafeDashboardService {
   saveWidgetLayoutToList(id: number, layout: any): Observable<any> {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
+    const dashb = localStorage.getItem(`widget:${dashboardId}:${id}`);
+
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     let currentLayout;
     if (dashboardStructure[index].settings.layoutList) {
-      currentLayout = {...layout, timestamp: +new Date(), name: 'layout ' + dashboardStructure[index].settings.layoutList.length};
+      currentLayout = {...layout, id: uuidv4(), name: 'layout ' + dashboardStructure[index].settings.layoutList.length};
     }
     else {
-      currentLayout = {...layout, timestamp: +new Date(), name: 'layout 0'};
+      currentLayout = {...layout, id: uuidv4(), name: 'layout 0'};
     }
     let layoutList;
     if (!dashboardStructure[index].settings.layoutList) {
@@ -122,69 +125,6 @@ export class SafeDashboardService {
       newDashboard.structure = updatedDashboardStructure;
       this.openDashboard(newDashboard);
       return newDashboard.structure[index].settings.layoutList;
-    }));
-  }
-
-  // updateLayout(id: number, layoutList: any): void {
-  //   const dashboardId = this.dashboard.getValue()?.id;
-  //   const dashboardStructure = this.dashboard.getValue()?.structure;
-  //   const index = dashboardStructure.findIndex((v: any) => v.id === id);
-  //   const widgetTemp = {
-  //     ...dashboardStructure[index],
-  //     settings: {
-  //       ...dashboardStructure[index].settings,
-  //       layoutList
-  //     }
-  //   };
-  //   const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
-  //   updatedDashboardStructure[index] = widgetTemp;
-  //   this.apollo.mutate<EditDashboardMutationResponse>({
-  //     mutation: EDIT_DASHBOARD,
-  //     variables: {
-  //       id: dashboardId,
-  //       structure: updatedDashboardStructure,
-  //     }
-  //   }).subscribe();
-  // }
-
-  /**
-   * Saves in DB a new layout.
-   * @param id dashboard id.
-   * @param layout layout to save.
-   */
-  updateLayoutName(id: number, indexLayout: number, layoutName: string): Observable<any> {
-    const dashboardId = this.dashboard.getValue()?.id;
-    const dashboardStructure = this.dashboard.getValue()?.structure;
-    const indexGrid = dashboardStructure.findIndex((v: any) => v.id === id);
-    const currentLayout = {...dashboardStructure[indexGrid].settings.layoutList[indexLayout], name: layoutName};
-    const layoutList = [...dashboardStructure[indexGrid].settings.layoutList];
-    layoutList[indexLayout] = currentLayout;
-    // if (!dashboardStructure[indexGrid].settings.layoutList) {
-    //   layoutList = [currentLayout];
-    // } else {
-    //   layoutList = [...dashboardStructure[indexGrid].settings.layoutList, currentLayout];
-    // }
-    console.log(layoutList);
-    const widgetTemp = {
-      ...dashboardStructure[indexGrid],
-      settings: {
-        ...dashboardStructure[indexGrid].settings,
-        layoutList
-      }
-    };
-    const updatedDashboardStructure = JSON.parse(JSON.stringify(dashboardStructure));
-    updatedDashboardStructure[indexGrid] = widgetTemp;
-    return this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: dashboardId,
-        structure: updatedDashboardStructure,
-      }
-    }).pipe(map(res => {
-      const newDashboard = JSON.parse(JSON.stringify(this.dashboard.getValue()));
-      newDashboard.structure = updatedDashboardStructure;
-      this.openDashboard(newDashboard);
-      return newDashboard.structure[indexGrid].settings.layoutList;
     }));
   }
 

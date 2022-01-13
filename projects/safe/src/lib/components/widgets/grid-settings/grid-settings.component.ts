@@ -1,5 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild,
+   ComponentFactory, ViewContainerRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
@@ -12,8 +13,7 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
 import { Form } from '../../../models/form.model';
-import {CdkDragDrop} from '@angular/cdk/drag-drop';
-import {SafeDashboardService} from '../../../services/dashboard.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'safe-grid-settings',
@@ -33,7 +33,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === EMIT THE CHANGES APPLIED ===
   // tslint:disable-next-line: no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-  @Output() layoutListChange: EventEmitter<any> = new EventEmitter();
+  @Input() factory?: ComponentFactory<any>;
+  @ViewChild('childTemplate', { read: ViewContainerRef }) childTemplate?: ViewContainerRef;
 
   // === NOTIFICATIONS ===
   public channels: Channel[] = [];
@@ -43,16 +44,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public queryName = '';
   public relatedForms: Form[] = [];
   public tabIndex = 0;
+  public layouts: any[] = [];
 
   // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
   public templates: Form[] = [];
 
-  public layoutList: any;
-  public isEditing = false;
-  public editingIndex = 0;
+  public fieldForm: FormGroup | null = null;
 
   get floatingButtons(): FormArray {
     return this.tileForm?.controls.floatingButtons as FormArray || null;
+  }
+
+  get layoutList(): FormArray {
+    return this.tileForm?.controls.layoutList as FormArray || null;
   }
 
   constructor(
@@ -60,16 +64,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private queryBuilder: QueryBuilderService,
-    private dashboardService: SafeDashboardService,
   ) {
   }
 
   /*  Build the settings form, using the widget saved parameters.
   */
   ngOnInit(): void {
-    if (this.tile.settings.layoutList) {
-      this.layoutList = [...this.tile.settings.layoutList];
-    }
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;
     this.tileForm = this.formBuilder.group({
@@ -85,9 +85,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
         addRecord: [hasActions ? tileSettings.actions.addRecord : false],
       }),
+      layoutList: this.formBuilder.array(tileSettings && tileSettings.layoutList
+        ? tileSettings.layoutList.map((x: any) => this.createLayoutForm(x)) : [this.createLayoutForm(null)]),
       floatingButtons: this.formBuilder.array(tileSettings.floatingButtons && tileSettings.floatingButtons.length ?
         tileSettings.floatingButtons.map((x: any) => this.createFloatingButtonForm(x)) : [this.createFloatingButtonForm(null)])
     });
+    this.layouts = tileSettings && tileSettings.layoutList ? tileSettings.layoutList : [];
     this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe(res => {
@@ -164,6 +167,18 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private createLayoutForm(value: any): FormGroup {
+    const layoutForm = this.formBuilder.group({
+      fields: [value && value.fields ? value.fields : []],
+      filter: [value && value.filter ? value.filter : []],
+      name: [value && value.name ? value.name : '', Validators.required],
+      showFilter: [value && value.showFilter ? value.showFilter : []],
+      sort: [value && value.sort ? value.sort : []],
+      id: [value && value.id ? value.id : null],
+    });
+    return layoutForm;
+  }
+
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
@@ -211,46 +226,44 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   }
 
   public addFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.push(this.createFloatingButtonForm({show: true}));
+    this.floatingButtons.push(this.createFloatingButtonForm({show: true}));
   }
 
   public deleteFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.removeAt(this.tabIndex);
+    this.floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
   }
 
-  drop(event: CdkDragDrop<any[]>): void {
-    console.log('e');
-    console.log(event);
-    console.log(this.tile.settings.layoutList);
+  public dropLayout(event: CdkDragDrop<any>): void {
+    const layoutsSorts = [...this.layouts];
+    moveItemInArray(layoutsSorts, event.previousIndex, event.currentIndex);
+    this.layouts = layoutsSorts;
+    const layoutToMove = this.layoutList.at(event.previousIndex);
+    this.layoutList.removeAt(event.previousIndex);
+    this.layoutList.insert(event.currentIndex, layoutToMove);
   }
 
-  onEdit(index: number): void {
-    // this.dahsboardService.updateLayout(this.tile.id, this.tile.settings.layoutList);
-    this.isEditing = true;
-    this.editingIndex = index;
-    console.log(index);
+  public onCloseField(): void {
+    this.fieldForm = null;
   }
 
-  EditingBoxKeyPress(e: any): void {
-    console.log(e);
-    console.log(this.tile.settings.layoutList);
-    if (e.key === 'Enter') {
-      this.dashboardService.updateLayoutName(this.tile.id, this.editingIndex, e.target.value).subscribe((res) => {
-        // this.layoutList = res;
-        console.log(res);
-        console.log(this.tile.settings.layoutList);
-        this.layoutList = res;
-        this.layoutListChange.emit(this.layoutList);
-        console.log(this.layoutList);
+  public onEditLayout(index: number): void {
+    this.fieldForm = this.layoutList.at(index) as FormGroup;
+    if (this.childTemplate && this.factory) {
+      const componentRef = this.childTemplate.createComponent(this.factory);
+      componentRef.instance.setForm(this.fieldForm);
+      componentRef.instance.canExpand = false;
+      componentRef.instance.closeField.subscribe(() => {
+        this.onCloseField();
+        componentRef.destroy();
       });
-      this.isEditing = false;
     }
   }
 
-  onDelete(index: number): void {
-    console.log(index);
+  public onDeleteLayout(index: number): void {
+    this.layoutList.removeAt(index);
+    const layoutsTemp = [...this.layouts];
+    layoutsTemp.splice(index, 1);
+    this.layouts = layoutsTemp;
   }
 }

@@ -31,21 +31,34 @@
         Add new records
       </mat-slide-toggle>
     </div>
-    <div class="form-group">
+    
+    <!-- TODO : Find a way to display all layout using formControlName or else -->
+    <div class="form-group" *ngIf="layoutList.length > 0">
       <div class="form-group-title">Pre-defined layouts</div>
-        <div class="field-list-wrapper" *ngIf="layoutList">
-          <div cdkDropList [cdkDropListData]="layoutList" class="field-list" (cdkDropListDropped)="drop($event)">
-            <div class="field-box" *ngFor="let layout of layoutList; let index = index" cdkDrag>
-              <span *ngIf="!this.isEditing" class="field-name">{{ layout.name }}</span>
-              <input *ngIf="this.isEditing" (keypress)="EditingBoxKeyPress($event)" type="text" class="field-name" value="{{ layout.name }}"/>
-              <div>
-                <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)"></safe-button>
-                <safe-button [isIcon]="true" icon="delete" (click)="onDelete(index)"></safe-button>
-              </div>
+      <div class="field-list-wrapper" *ngIf="!fieldForm">
+        <div cdkDropList [cdkDropListData]="layouts" class="field-list" (cdkDropListDropped)="dropLayout($event)">
+          <div class="field-box" *ngFor="let layout of layouts; let index = index" cdkDrag>
+            <span class="field-type">{{ layout.name }}</span>
+            <div>
+              <safe-button [isIcon]="true" icon="edit" (click)="onEditLayout(index)"></safe-button>
+              <safe-button [isIcon]="true" icon="delete" (click)="onDeleteLayout(index)"></safe-button>
             </div>
           </div>
         </div>
+      </div> 
+      <div class="field-container" *ngIf="fieldForm">
+        <ng-container>
+            <form [formGroup]="fieldForm" class="field-form">
+                <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+                </safe-button>
+                <mat-form-field appearance="outline">
+                    <mat-label>Layout Name</mat-label>
+                    <input matInput formControlName="name" type="text"/>
+                </mat-form-field>
+            </form>
+        </ng-container>
       </div>
+    </div>
     <div class="form-group">
       <div class="form-group-title">Quick action buttons</div>
       <div class="info-text">Quick action buttons will appear on the widget and allow you to complete any of the actions

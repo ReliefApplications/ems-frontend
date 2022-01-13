@@ -46,10 +46,6 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   /*  Close the modal without sending any data.
   */
   onClose(): void {
-    console.log('test: close!!!');
-    // console.log('this.layoutList');
-    // console.log(this.layoutList);
-    // this.dialogRef.close(this.layoutList);
     this.dialogRef.close();
   }
 

@@ -21,14 +21,14 @@
             (click)="onToggleFilter()">{{ showFilter ? 'Hide' : 'Show' }} filter</button>
         <!-- ADMIN FEATURES -->
         <ng-container *ngIf="admin">
-            <span kendotooltip>
-                  <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)" style="height: 49%; background-color: #1e2021; color: #beb9b0;">
+            <span kendotooltip class="select-layout">
+                  <select [(ngModel)]="selectedLayout" (change)="onSelectLayout($event)" class="k-button">
                     <option *ngFor="let layout of layoutList; let index = index;" [ngValue]="layout">{{layout.name}}</option>
                   </select>
             </span>
             <span kendotooltip>
                 <button title="This will add this layout to your layout list" class='k-button'
-                        (click)="action.emit({ action: 'saveLayoutToList' })">Add new</button>
+                        (click)="action.emit({ action: 'saveLayoutToList' })">Add layout</button>
             </span>
         </ng-container>
         <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">

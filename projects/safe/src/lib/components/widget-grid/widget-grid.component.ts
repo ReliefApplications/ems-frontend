@@ -95,7 +95,6 @@ export class SafeWidgetGridComponent implements OnInit, AfterViewInit {
   }
 
   onEditWidget(e: any): void {
-    console.log('WIDGET GRID');
     this.edit.emit(e);
   }
 

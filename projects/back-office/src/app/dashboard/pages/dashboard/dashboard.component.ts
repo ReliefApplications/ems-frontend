@@ -64,6 +64,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }).subscribe((res) => {
         if (res.data.dashboard) {
+          console.log('res data dashboard = ', res.data.dashboard);
           this.dashboard = res.data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
           this.dashboardNameForm = new FormGroup({
@@ -109,6 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   * @param e widget to save.
   */
   onEditTile(e: any): void {
+    console.log('onEditTile = ', e);
     // make sure that we save the default layout.
     const index = this.tiles.findIndex((v: any) => v.id === e.id);
     const options = this.tiles[index]?.settings?.defaultLayout ?
@@ -161,6 +163,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /*  Save the dashboard changes in the database.
   */
   private autoSaveChanges(): void {
+    console.log('autoSaveChanges()');
     this.loading = true;
     this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
