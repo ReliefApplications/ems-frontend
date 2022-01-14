@@ -23,7 +23,7 @@ import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 
 // Config
-import { config, AuthenticationType } from '@safe/builder';
+import { AuthenticationType } from '@safe/builder';
 
 // MSAL
 import {

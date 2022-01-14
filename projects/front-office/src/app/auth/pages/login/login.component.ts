@@ -6,7 +6,7 @@ import {
 } from '@azure/msal-angular';
 import { RedirectRequest } from '@azure/msal-browser';
 import { KeycloakService } from 'keycloak-angular';
-import { config, AuthenticationType } from '@safe/builder';
+import { AuthenticationType } from '@safe/builder';
 import { environment } from '../../../../environments/environment';
 
 @Component({

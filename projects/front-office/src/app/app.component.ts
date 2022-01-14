@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeAuthService, SafeFormService } from '@safe/builder';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { config, AuthenticationType } from '@safe/builder';
+import { AuthenticationType } from '@safe/builder';
 import { KeycloakEventType, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
 

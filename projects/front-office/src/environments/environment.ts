@@ -17,5 +17,5 @@ export const environment = {
   backOfficeUri: 'http://localhost:4200/',
   module: 'frontoffice',
   availableLanguages: ['en', 'test'],
-  authenticationType: AuthenticationType.azureAD,
+  authenticationType: AuthenticationType.keycloak,
 };

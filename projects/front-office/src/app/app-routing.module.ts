@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
-import { config, AuthenticationType } from '@safe/builder';
+import { AuthenticationType } from '@safe/builder';
 import { environment } from '../environments/environment';
 
 // Common navigation parameters

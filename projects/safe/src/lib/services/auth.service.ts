@@ -5,7 +5,7 @@ import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
-import { config, AuthenticationType } from '../config/oort.config';
+import { AuthenticationType } from '../config/oort.config';
 import { KeycloakService } from 'keycloak-angular';
 
 export interface Account {
@@ -49,8 +49,8 @@ export class SafeAuthService {
     @Optional() private msalService: MsalService,
     @Optional() private keycloakService: KeycloakService
   ) {
-    this.checkAccount();
     this.environment = environment;
+    this.checkAccount();
   }
 
   /**
