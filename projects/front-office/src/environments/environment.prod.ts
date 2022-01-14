@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 /**
  * Production environment file.
  */
@@ -13,4 +15,5 @@ export const environment = {
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
   module: 'frontoffice',
   availableLanguages: ['en'],
+  authenticationType: AuthenticationType.azureAD,
 };

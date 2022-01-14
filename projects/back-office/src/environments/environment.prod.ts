@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 export const environment = {
   production: true,
   apiUrl: 'https://safe-api.development.humanitarian.tech',
@@ -11,4 +13,5 @@ export const environment = {
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
   module: 'backoffice',
   availableLanguages: ['en'],
+  authenticationType: AuthenticationType.azureAD,
 };

@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 /**
  * Environment file of production platform.
  */
@@ -14,4 +16,5 @@ export const environment = {
   backOfficeUri: 'https://ems-safe.who.int/backoffice/',
   module: 'frontoffice',
   availableLanguages: ['en'],
+  authenticationType: AuthenticationType.azureAD,
 };

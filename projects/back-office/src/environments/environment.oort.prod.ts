@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 export const environment = {
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',
@@ -10,4 +12,5 @@ export const environment = {
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en'],
+  authenticationType: AuthenticationType.azureAD,
 };

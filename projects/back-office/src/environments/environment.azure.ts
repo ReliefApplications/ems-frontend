@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 /**
  * Environment file for local development with azure auth.
  */
@@ -11,5 +13,6 @@ export const environment = {
   postLogoutRedirectUri: 'http://localhost:4200/auth',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'backoffice'
+  module: 'backoffice',
+  authenticationType: AuthenticationType.azureAD,
 };
