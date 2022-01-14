@@ -397,7 +397,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       );
       xhr.setRequestHeader(
         'Authorization',
-        `Bearer ${localStorage.getItem('msal.idtoken')}`
+        `Bearer ${localStorage.getItem('idtoken')}`
       );
       xhr.onloadstart = () => {
         xhr.responseType = 'blob';

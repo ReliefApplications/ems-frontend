@@ -473,7 +473,7 @@ export class SafeFormModalComponent implements OnInit {
       );
       xhr.setRequestHeader(
         'Authorization',
-        `Bearer ${localStorage.getItem('msal.idtoken')}`
+        `Bearer ${localStorage.getItem('idtoken')}`
       );
       xhr.onloadstart = () => {
         xhr.responseType = 'blob';
