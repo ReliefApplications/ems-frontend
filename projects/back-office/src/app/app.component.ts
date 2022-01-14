@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * Configuration of the Authentication behavior
    */
   ngOnInit(): void {
-    if (config.authenticationType === AuthenticationType.azureAD) {
+    if (environment.authenticationType === AuthenticationType.azureAD) {
       this.msalService.instance.enableAccountStorageEvents();
       this.broadcastService.msalSubject$
         .pipe(

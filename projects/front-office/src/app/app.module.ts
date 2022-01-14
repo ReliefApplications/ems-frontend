@@ -276,7 +276,7 @@ let providers: any[] = [
   },
 ];
 
-if (config.authenticationType === AuthenticationType.azureAD) {
+if (environment.authenticationType === AuthenticationType.azureAD) {
   // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
   imports.push(MsalModule);
   providers = providers.concat([

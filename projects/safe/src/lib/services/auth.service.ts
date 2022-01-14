@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable, Optional } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { User } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
@@ -35,6 +35,8 @@ export class SafeAuthService {
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
+  private environment: any;
+
   /**
    * Shared authentication service.
    *
@@ -42,11 +44,13 @@ export class SafeAuthService {
    * @param apollo Apollo client
    */
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     @Optional() private msalService: MsalService,
     @Optional() private keycloakService: KeycloakService
   ) {
     this.checkAccount();
+    this.environment = environment;
   }
 
   /**
@@ -98,7 +102,7 @@ export class SafeAuthService {
    * Cleans user profile, and logout.
    */
   logout(redirectUri?: string): void {
-    if (config.authenticationType === AuthenticationType.azureAD) {
+    if (this.environment.authenticationType === AuthenticationType.azureAD) {
       this.msalService.logoutRedirect();
     } else {
       this.keycloakService.logout(redirectUri);
@@ -112,7 +116,7 @@ export class SafeAuthService {
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
-    if (config.authenticationType === AuthenticationType.azureAD) {
+    if (this.environment.authenticationType === AuthenticationType.azureAD) {
       const acc = this.msalService.instance.getActiveAccount();
       this.account = {
         name: acc?.name || 'Unknown',

@@ -7,6 +7,7 @@ import {
 import { RedirectRequest } from '@azure/msal-browser';
 import { KeycloakService } from 'keycloak-angular';
 import { config, AuthenticationType } from '@safe/builder';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,7 @@ export class LoginComponent {
    * Redirects to Azure authentication page.
    */
   onLogin(): void {
-    if (config.authenticationType === AuthenticationType.azureAD) {
+    if (environment.authenticationType === AuthenticationType.azureAD) {
       if (this.msalGuardConfig.authRequest) {
         this.msalService.loginRedirect({
           ...this.msalGuardConfig.authRequest,
