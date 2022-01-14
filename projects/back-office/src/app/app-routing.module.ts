@@ -5,11 +5,17 @@ import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
 import { config, AuthenticationType } from '@safe/builder';
 
+// Common navigation parameters
 const canActivate: any[] = [AccessGuard];
 let initialNavigation: any;
+
+// if Azure authentication, add more parameters to the navigation
 if (config.authenticationType === AuthenticationType.azureAD) {
   canActivate.push(MsalGuard);
-  initialNavigation = !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled';
+  initialNavigation =
+    !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
+      ? 'enabled'
+      : 'disabled';
 }
 
 const routes: Routes = [
@@ -18,52 +24,57 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        loadChildren: () =>
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
       {
         path: 'applications',
         children: [
           {
             path: ':id',
-            loadChildren: () => import('./application/application.module')
-              .then(m => m.ApplicationModule),
-          }
-        ]
+            loadChildren: () =>
+              import('./application/application.module').then(
+                (m) => m.ApplicationModule
+              ),
+          },
+        ],
       },
       {
         path: 'app-preview',
         children: [
           {
             path: ':id',
-            loadChildren: () => import('./app-preview/app-preview.module')
-              .then(m => m.AppPreviewModule),
-          }
-        ]
-      }
+            loadChildren: () =>
+              import('./app-preview/app-preview.module').then(
+                (m) => m.AppPreviewModule
+              ),
+          },
+        ],
+      },
     ],
-    canActivate
+    canActivate,
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module')
-      .then(m => m.AuthModule)
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',
     redirectTo: 'applications',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 /*  Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
     Use lazy loading for performance.
 */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    relativeLinkResolution: 'legacy',
-    initialNavigation
-  })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      relativeLinkResolution: 'legacy',
+      initialNavigation,
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

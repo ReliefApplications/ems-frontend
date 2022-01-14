@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ConfigDisplayGridFieldsModalComponent],
@@ -20,9 +21,9 @@ import { MatInputModule } from '@angular/material/input';
     MatProgressSpinnerModule,
     SafeQueryBuilderModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    TranslateModule,
   ],
-  exports: [ConfigDisplayGridFieldsModalComponent]
+  exports: [ConfigDisplayGridFieldsModalComponent],
 })
-export class ConfigDisplayGridFieldsModalModule {
-}
+export class ConfigDisplayGridFieldsModalModule {}

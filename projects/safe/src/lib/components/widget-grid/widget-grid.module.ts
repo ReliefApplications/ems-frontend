@@ -18,6 +18,7 @@ import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.c
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
@@ -27,7 +28,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeFloatingOptionsComponent,
     SafeTileDataComponent,
     SafeTileDisplayComponent,
-    SafeExpandedWidgetComponent
+    SafeExpandedWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -45,11 +46,11 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatMenuModule,
     MatDividerModule,
     SafeButtonModule,
+    TranslateModule,
     SafeIconModule,
     SafeWidgetChoiceModule,
-    LayoutModule
+    LayoutModule,
   ],
-  exports: [SafeWidgetGridComponent]
+  exports: [SafeWidgetGridComponent],
 })
-export class SafeWidgetGridModule {
-}
+export class SafeWidgetGridModule {}

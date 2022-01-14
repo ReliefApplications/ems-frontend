@@ -14,12 +14,15 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -31,8 +34,9 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
-    IndicatorsModule
+    IndicatorsModule,
+    TranslateModule,
   ],
-  exports: [SafeLayoutComponent]
+  exports: [SafeLayoutComponent],
 })
-export class SafeLayoutModule { }
+export class SafeLayoutModule {}

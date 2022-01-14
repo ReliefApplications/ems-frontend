@@ -1,6 +1,6 @@
 /*
  * Public API Surface of @safe/builder
-*/
+ */
 
 // === SERVICES ===
 export * from './lib/services/auth.service';

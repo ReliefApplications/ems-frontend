@@ -1,18 +1,31 @@
-import {Apollo} from 'apollo-angular';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from '../../../graphql/queries';
-import { Dashboard, SafeSnackBarService, NOTIFICATIONS, SafeDashboardService } from '@safe/builder';
+import {
+  GetDashboardByIdQueryResponse,
+  GET_DASHBOARD_BY_ID,
+} from '../../../graphql/queries';
+import {
+  Dashboard,
+  SafeSnackBarService,
+  NOTIFICATIONS,
+  SafeDashboardService,
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-
   // === DATA ===
   public id = '';
   public loading = true;
@@ -32,7 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService
-  ) { }
+  ) {}
 
   /**
    * Gets the dashboard from the page parameters.
@@ -40,27 +53,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
-      this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
-        query: GET_DASHBOARD_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.dashboard) {
-          this.dashboard = res.data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
-          this.tiles = res.data.dashboard.structure ? res.data.dashboard.structure : [];
-          this.loading = res.loading;
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
-          this.router.navigate(['/dashboards']);
-        }
-      },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.router.navigate(['/dashboards']);
-        }
-      );
+      this.apollo
+        .watchQuery<GetDashboardByIdQueryResponse>({
+          query: GET_DASHBOARD_BY_ID,
+          variables: {
+            id: this.id,
+          },
+        })
+        .valueChanges.subscribe(
+          (res) => {
+            if (res.data.dashboard) {
+              this.dashboard = res.data.dashboard;
+              this.dashboardService.openDashboard(this.dashboard);
+              this.tiles = res.data.dashboard.structure
+                ? res.data.dashboard.structure
+                : [];
+              this.loading = res.loading;
+            } else {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.accessNotProvided('dashboard'),
+                { error: true }
+              );
+              this.router.navigate(['/dashboards']);
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.router.navigate(['/dashboards']);
+          }
+        );
     });
   }
 

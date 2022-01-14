@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -46,6 +46,8 @@
     "@apollo/client": "^3.0.0",
     "@azure/msal-angular": "^2.0.6",
     "@azure/msal-browser": "^2.20.0",
+    "@ngx-translate/core": "^13.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@progress/kendo-angular-buttons": "^6.3.1",
     "@progress/kendo-angular-charts": "^5.3.1",
     "@progress/kendo-angular-common": "^2.0.1",
@@ -124,6 +126,11 @@
     "chromatic": "^5.9.2",
     "codelyzer": "^6.0.0",
     "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-jsdoc": "latest",
+    "eslint-plugin-prefer-arrow": "latest",
+    "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.1",
     "jasmine-core": "~3.8.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -133,13 +140,11 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.7.0",
     "ng-packagr": "^12.2.5",
+    "prettier": "^2.5.1",
     "protractor": "~7.0.0",
     "standard-version": "^9.3.1",
     "ts-node": "~8.3.0",
-    "typescript": "~4.3.5",
-    "eslint-plugin-import": "latest",
-    "eslint-plugin-jsdoc": "latest",
-    "eslint-plugin-prefer-arrow": "latest"
+    "typescript": "~4.3.5"
   },
   "standard-version": {
     "types": [

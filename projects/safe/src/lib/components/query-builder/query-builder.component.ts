@@ -5,7 +5,7 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -25,11 +25,14 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss'],
   providers: [
-    { provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
-  ]
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeQueryBuilderComponent implements OnInit {
-
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
   public availableFields: any[] = [];
@@ -39,7 +42,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   public filteredQueries: any[] = [];
 
   get availableScalarFields(): any[] {
-    return this.availableFields.filter(x => x.type.kind === 'SCALAR');
+    return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
   @Input() form?: FormGroup;
@@ -59,47 +62,83 @@ export class SafeQueryBuilderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.factory = this.componentFactoryResolver.resolveComponentFactory(SafeQueryBuilderComponent);
+    this.factory = this.componentFactoryResolver.resolveComponentFactory(
+      SafeQueryBuilderComponent
+    );
     this.buildSettings();
   }
 
   buildSettings(): void {
     if (this.form?.value.type) {
       this.isField = true;
-      this.availableFields = this.queryBuilder.getFieldsFromType(this.form?.value.type)
-        .filter(x => this.canExpand || x.type.kind !== 'LIST');
+      this.availableFields = this.queryBuilder
+        .getFieldsFromType(this.form?.value.type)
+        .filter((x) => this.canExpand || x.type.kind !== 'LIST');
       if (this.form?.get('filter')) {
-        this.form?.setControl('filter',
-          this.queryBuilder.createFilterGroup(this.form?.value.filter, this.availableScalarFields));
+        this.form?.setControl(
+          'filter',
+          this.queryBuilder.createFilterGroup(
+            this.form?.value.filter,
+            this.availableScalarFields
+          )
+        );
       }
     } else {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          this.allQueries = res.map(x => x.name);
+          this.allQueries = res.map((x) => x.name);
           this.filteredQueries = this.filterQueries(this.form?.value.name);
-          this.availableFields = this.queryBuilder.getFields(this.form?.value.name);
-          this.form?.setControl('filter',
-          this.queryBuilder.createFilterGroup(this.form?.value.filter, this.availableScalarFields));
+          this.availableFields = this.queryBuilder.getFields(
+            this.form?.value.name
+          );
+          this.form?.setControl(
+            'filter',
+            this.queryBuilder.createFilterGroup(
+              this.form?.value.filter,
+              this.availableScalarFields
+            )
+          );
         }
       });
       this.form?.controls.name.valueChanges.subscribe((res) => {
-        if (this.allQueries.find(x => x === res)) {
+        if (this.allQueries.find((x) => x === res)) {
           this.availableFields = this.queryBuilder.getFields(res);
-          this.form?.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableScalarFields));
-          this.form?.setControl('fields', this.formBuilder.array([], Validators.required));
-          this.form?.setControl('sort', this.formBuilder.group({
-            field: [''],
-            order: ['asc']
-          }));
+          this.form?.setControl(
+            'filter',
+            this.queryBuilder.createFilterGroup(
+              null,
+              this.availableScalarFields
+            )
+          );
+          this.form?.setControl(
+            'fields',
+            this.formBuilder.array([], Validators.required)
+          );
+          this.form?.setControl(
+            'sort',
+            this.formBuilder.group({
+              field: [''],
+              order: ['asc'],
+            })
+          );
         } else {
           this.availableFields = [];
-          this.form?.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableScalarFields));
+          this.form?.setControl(
+            'filter',
+            this.queryBuilder.createFilterGroup(
+              null,
+              this.availableScalarFields
+            )
+          );
           this.form?.setControl('fields', this.formBuilder.array([]));
-          this.form?.setControl('sort', this.formBuilder.group({
-            field: [''],
-            order: ['asc']
-          }));
+          this.form?.setControl(
+            'sort',
+            this.formBuilder.group({
+              field: [''],
+              order: ['asc'],
+            })
+          );
         }
         this.filteredQueries = this.filterQueries(res);
       });
@@ -117,6 +156,6 @@ export class SafeQueryBuilderComponent implements OnInit {
 
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allQueries.filter(x => x.toLowerCase().includes(filterValue));
+    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
   }
 }

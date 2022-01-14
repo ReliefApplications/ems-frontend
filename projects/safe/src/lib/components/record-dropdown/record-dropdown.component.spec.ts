@@ -8,9 +8,8 @@ describe('SafeRecordDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRecordDropdownComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeRecordDropdownComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

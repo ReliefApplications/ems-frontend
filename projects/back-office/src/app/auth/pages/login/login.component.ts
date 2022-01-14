@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService } from '@azure/msal-angular';
+import {
+  MSAL_GUARD_CONFIG,
+  MsalGuardConfiguration,
+  MsalService,
+} from '@azure/msal-angular';
 import { RedirectRequest } from '@azure/msal-browser';
 import { KeycloakService } from 'keycloak-angular';
 import { config, AuthenticationType } from '@safe/builder';
@@ -7,15 +11,16 @@ import { config, AuthenticationType } from '@safe/builder';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-
   constructor(
-    @Optional() @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
+    @Optional()
+    @Inject(MSAL_GUARD_CONFIG)
+    private msalGuardConfig: MsalGuardConfiguration,
     @Optional() private msalService: MsalService,
-    @Optional() private keycloakService: KeycloakService,
-  ) { }
+    @Optional() private keycloakService: KeycloakService
+  ) {}
 
   /**
    * Redirects to Azure authentication page.
@@ -23,7 +28,9 @@ export class LoginComponent {
   onLogin(): void {
     if (config.authenticationType === AuthenticationType.azureAD) {
       if (this.msalGuardConfig.authRequest) {
-        this.msalService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
+        this.msalService.loginRedirect({
+          ...this.msalGuardConfig.authRequest,
+        } as RedirectRequest);
       } else {
         this.msalService.loginRedirect();
       }

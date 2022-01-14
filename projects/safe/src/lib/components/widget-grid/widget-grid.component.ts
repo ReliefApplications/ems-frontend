@@ -1,8 +1,19 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { TileLayoutReorderEvent, TileLayoutResizeEvent, TileLayoutItemComponent } from '@progress/kendo-angular-layout';
+import {
+  TileLayoutReorderEvent,
+  TileLayoutResizeEvent,
+  TileLayoutItemComponent,
+} from '@progress/kendo-angular-layout';
 
 const MAX_ROW_SPAN = 4;
 
@@ -11,10 +22,9 @@ const MAX_COL_SPAN = 8;
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
-  styleUrls: ['./widget-grid.component.scss']
+  styleUrls: ['./widget-grid.component.scss'],
 })
 export class SafeWidgetGridComponent implements OnInit {
-
   public widgetTypes: IWidgetType[] = WIDGET_TYPES as IWidgetType[];
 
   @Input() widgets: any[] = [];
@@ -32,19 +42,17 @@ export class SafeWidgetGridComponent implements OnInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
- /**
-  * Changes display when windows size changes.
-  *
-  * @param event window resize event
-  */
+  /**
+   * Changes display when windows size changes.
+   *
+   * @param event window resize event
+   */
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: any): void {
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
   }
 
-  constructor(
-    public dialog: MatDialog
-  ) { }
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -96,17 +104,17 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param e widget to open.
    */
   onExpandWidget(e: any): void {
-    const widget = this.widgets.find(x => x.id === e.id);
+    const widget = this.widgets.find((x) => x.id === e.id);
     const dialogRef = this.dialog.open(SafeExpandedWidgetComponent, {
       data: {
-        widget
+        widget,
       },
       autoFocus: false,
       position: {
         bottom: '0',
-        right: '0'
+        right: '0',
       },
-      panelClass: 'expanded-widget-dialog'
+      panelClass: 'expanded-widget-dialog',
     });
     dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
       this.goToNextStep.emit(event);
@@ -150,7 +158,8 @@ export class SafeWidgetGridComponent implements OnInit {
       options: {
         id: this.widgets[e.item.order].id,
         cols: e.newColSpan,
-        rows: e.newRowSpan
-      }});
+        rows: e.newRowSpan,
+      },
+    });
   }
 }

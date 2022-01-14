@@ -7,10 +7,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
  * The layout service handles the display of the right sidenav.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeLayoutService {
-
   /** Current right sidenav */
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private rightSidenav = new BehaviorSubject<any>(null);

@@ -12,10 +12,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   selector: 'safe-content-choice',
   templateUrl: './content-choice.component.html',
   styleUrls: ['./content-choice.component.scss'],
-  providers: [CONTROL_VALUE_ACCESSOR]
+  providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class SafeContentChoiceComponent implements OnInit, ControlValueAccessor {
-
+export class SafeContentChoiceComponent
+  implements OnInit, ControlValueAccessor
+{
   @Input() contentTypes?: IContentType[];
 
   selected!: string;
@@ -23,7 +24,7 @@ export class SafeContentChoiceComponent implements OnInit, ControlValueAccessor 
   private onTouched!: any;
   private onChanged!: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {}
 

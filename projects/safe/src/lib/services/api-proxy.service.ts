@@ -6,10 +6,9 @@ import { Inject, Injectable } from '@angular/core';
  * The API proxy service contacts the back-end generated proxy, based on the API definitions.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeApiProxyService {
-
   /** API url */
   public baseUrl: string;
 
@@ -38,7 +37,7 @@ export class SafeApiProxyService {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
       return this.http.get(url, { headers });
     }
@@ -57,7 +56,7 @@ export class SafeApiProxyService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
     return this.http.get(url, { headers }).toPromise();
   }

@@ -1,4 +1,4 @@
-import {Apollo, gql} from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 /**
@@ -7,10 +7,9 @@ import { Injectable } from '@angular/core';
  * The aggregation is flexible.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AggregationBuilderService {
-
   /**
    * Shared aggregation service.
    * Aggregation are used by chart widgets, to get the data.
@@ -18,7 +17,7 @@ export class AggregationBuilderService {
    *
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo) {}
 
   /**
    * Builds the aggregation query from pipeline definition
@@ -36,8 +35,8 @@ export class AggregationBuilderService {
       return this.apollo.watchQuery<any>({
         query,
         variables: {
-          pipeline: JSON.parse(pipeline)
-        }
+          pipeline: JSON.parse(pipeline),
+        },
       });
     } else {
       return null;

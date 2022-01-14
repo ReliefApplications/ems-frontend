@@ -3,14 +3,19 @@ import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
-
 import { config, AuthenticationType } from '@safe/builder';
 
+// Common navigation parameters
 const canActivate: any[] = [AccessGuard];
 let initialNavigation: any;
+
+// If Azure authentication, additional navigation parameters are added
 if (config.authenticationType === AuthenticationType.azureAD) {
   canActivate.push(MsalGuard);
-  initialNavigation = !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup() ? 'enabled' : 'disabled';
+  initialNavigation =
+    !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
+      ? 'enabled'
+      : 'disabled';
 }
 
 /**
@@ -19,20 +24,19 @@ if (config.authenticationType === AuthenticationType.azureAD) {
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./dashboard/dashboard.module')
-    .then(m => m.DashboardModule),
-    canActivate
+    loadChildren: () =>
+      import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+    canActivate,
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module')
-      .then(m => m.AuthModule)
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',
     redirectTo: '',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 /**
@@ -40,10 +44,12 @@ const routes: Routes = [
  * Use lazy loading for performance.
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    relativeLinkResolution: 'legacy',
-    initialNavigation
-  })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      relativeLinkResolution: 'legacy',
+      initialNavigation,
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

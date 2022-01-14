@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [DuplicateApplicationComponent],
@@ -16,8 +17,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatInputModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule,
   ],
-  exports: [DuplicateApplicationComponent]
+  exports: [DuplicateApplicationComponent],
 })
-export class DuplicateApplicationModule { }
+export class DuplicateApplicationModule {}

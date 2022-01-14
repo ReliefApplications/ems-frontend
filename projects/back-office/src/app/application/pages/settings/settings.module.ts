@@ -7,6 +7,7 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SettingsComponent],
@@ -18,7 +19,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatInputModule,
     ReactiveFormsModule,
     MatSelectModule,
-    SafeButtonModule
-  ]
+    SafeButtonModule,
+    TranslateModule,
+  ],
 })
-export class SettingsModule { }
+export class SettingsModule {}

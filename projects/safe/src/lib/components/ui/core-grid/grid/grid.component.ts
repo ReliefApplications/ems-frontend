@@ -1,16 +1,45 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { ColumnReorderEvent, GridComponent, GridDataResult, PageChangeEvent, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+import {
+  ColumnReorderEvent,
+  GridComponent,
+  GridDataResult,
+  PageChangeEvent,
+  RowArgs,
+  SelectionEvent,
+} from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
-import { EXPORT_SETTINGS, GRADIENT_SETTINGS, MULTISELECT_TYPES, PAGER_SETTINGS, SELECTABLE_SETTINGS } from './grid.constants';
-import { CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
+import {
+  EXPORT_SETTINGS,
+  GRADIENT_SETTINGS,
+  MULTISELECT_TYPES,
+  PAGER_SETTINGS,
+  SELECTABLE_SETTINGS,
+} from './grid.constants';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
+import {
+  CalendarDOMService,
+  MonthViewService,
+  WeekNamesService,
+} from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid.service';
@@ -25,7 +54,8 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return block;
 }
 
-const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector).call(el, selector);
+const matches = (el: any, selector: any) =>
+  (el.matches || el.msMatchesSelector).call(el, selector);
 
 @Component({
   selector: 'safe-grid',
@@ -37,13 +67,24 @@ const matches = (el: any, selector: any) => (el.matches || el.msMatchesSelector)
     CalendarDOMService,
     MonthViewService,
     WeekNamesService,
-    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_MENU_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-  ]
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    {
+      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    {
+      provide: MAT_MENU_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeGridComponent implements OnInit, AfterViewInit {
-
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === DATA ===
@@ -72,7 +113,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     update: false,
     delete: false,
     history: false,
-    convert: false
+    convert: false,
   };
   @Output() action = new EventEmitter();
   get hasEnabledActions(): boolean {
@@ -85,7 +126,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
     return {
       columnChooser: false,
-      filter: !this.showFilter
+      filter: !this.showFilter,
     };
   }
 
@@ -130,22 +171,23 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
-    this.search.valueChanges.pipe(
-      debounceTime(2000),
-      distinctUntilChanged()
-    ).subscribe((value) => {
-      this.searchChange.emit(value);
-    });
+    this.search.valueChanges
+      .pipe(debounceTime(2000), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchChange.emit(value);
+      });
   }
 
   ngAfterViewInit(): void {
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe((res) => setTimeout(() => this.columnChange.emit(), 500));
+    this.grid?.columnReorder.subscribe((res) =>
+      setTimeout(() => this.columnChange.emit(), 500)
+    );
   }
 
   // === DATA ===
@@ -157,11 +199,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find(x => x.name === path).meta;
+    const meta = this.fields.find((x) => x.name === path).meta;
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce((acc: string[], x: any) => value.includes(x.value) ? acc.concat([x.text]) : acc, []);
+        return meta.choices.reduce(
+          (acc: string[], x: any) =>
+            value.includes(x.value) ? acc.concat([x.text]) : acc,
+          []
+        );
       } else {
         return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
@@ -240,10 +286,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     const deselectedRows = selection.deselectedRows || [];
     const selectedRows = selection.selectedRows || [];
     if (deselectedRows.length > 0) {
-      this.selectedRows = [...this.selectedRows.filter(x => !deselectedRows.some(y => x === y.dataItem.id))];
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
     }
     if (selectedRows.length > 0) {
-      this.selectedRows = this.selectedRows.concat(selectedRows.map(x => x.dataItem.id));
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
     }
     this.selectionChange.emit(selection);
   }
@@ -254,7 +306,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param row Row to test.
    * @returns selected status of the row.
    */
-  public isRowSelected = (row: RowArgs) => this.selectedRows.includes(row.dataItem.id);
+  public isRowSelected = (row: RowArgs) =>
+    this.selectedRows.includes(row.dataItem.id);
 
   // === LAYOUT ===
   /**
@@ -284,17 +337,23 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Returns the visible columns of the grid.
    */
   get visibleFields(): any {
-    return this.grid?.columns.toArray().sort((a: any, b: any) => a.orderIndex - b.orderIndex).
-      filter((x: any) => x.field).reduce((obj, c: any) => ({
+    return this.grid?.columns
+      .toArray()
+      .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
+      .filter((x: any) => x.field)
+      .reduce(
+        (obj, c: any) => ({
           ...obj,
           [c.field]: {
             field: c.field,
             title: c.title,
             width: c.width,
             hidden: c.hidden,
-            order: c.orderIndex
-          }
-        }), {});
+            order: c.orderIndex,
+          },
+        }),
+        {}
+      );
   }
 
   /**
@@ -305,7 +364,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       fields: this.visibleFields,
       sort: this.sort,
       filter: this.filter,
-      showFilter: this.showFilter
+      showFilter: this.showFilter,
     };
   }
 
@@ -318,14 +377,22 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     // Parameters that prevent the inline edition.
-    if (!this.data.data[rowIndex - this.skip].canUpdate || !this.editable ||
-      isEdited || (this.formGroup && !this.formGroup.valid)) {
+    if (
+      !this.data.data[rowIndex - this.skip].canUpdate ||
+      !this.editable ||
+      isEdited ||
+      (this.formGroup && !this.formGroup.valid)
+    ) {
       return;
     }
     // Closes current inline edition.
     if (this.currentEditedItem) {
       if (this.formGroup.dirty) {
-        this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+        this.action.emit({
+          action: 'edit',
+          item: this.currentEditedItem,
+          value: this.formGroup.value,
+        });
       }
       this.closeEditor();
     }
@@ -342,10 +409,21 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param e click event.
    */
   private onDocumentClick(e: any): void {
-    if (!this.editing && this.formGroup && this.formGroup.valid &&
-      !matches(e.target, '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container')) {
+    if (
+      !this.editing &&
+      this.formGroup &&
+      this.formGroup.valid &&
+      !matches(
+        e.target,
+        '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container'
+      )
+    ) {
       if (this.formGroup.dirty) {
-        this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+        this.action.emit({
+          action: 'edit',
+          item: this.currentEditedItem,
+          value: this.formGroup.value,
+        });
       }
       this.closeEditor();
     }
@@ -369,7 +447,11 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public onSave(): void {
     // Closes the editor, and saves the value locally
     if (this.formGroup.dirty) {
-      this.action.emit({ action: 'edit', item: this.currentEditedItem, value: this.formGroup.value });
+      this.action.emit({
+        action: 'edit',
+        item: this.currentEditedItem,
+        value: this.formGroup.value,
+      });
     }
     this.closeEditor();
     this.action.emit({ action: 'save' });
@@ -400,11 +482,11 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public onExport(): void {
     const dialogRef = this.dialog.open(SafeExportComponent, {
       data: {
-        export: this.exportSettings
+        export: this.exportSettings,
       },
-      autoFocus: false
+      autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.exportSettings = res;
         this.export.emit(this.exportSettings);
@@ -420,7 +502,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns True if overflows.
    */
   isEllipsisActive(e: any): boolean {
-    return (e.offsetWidth < e.scrollWidth);
+    return e.offsetWidth < e.scrollWidth;
   }
 
   /**
@@ -434,16 +516,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       data: {
         title: field.title,
         comment: get(item, field),
-        readonly: !this.actions.update
+        readonly: !this.actions.update,
       },
       autoFocus: false,
       position: {
         bottom: '0',
-        right: '0'
+        right: '0',
       },
-      panelClass: 'expanded-widget-dialog'
+      panelClass: 'expanded-widget-dialog',
     });
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (res && res !== get(item, field)) {
         const value = { field: res };
         this.action.emit({ action: 'edit', item, value });

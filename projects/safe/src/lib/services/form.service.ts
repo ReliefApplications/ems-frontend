@@ -15,10 +15,9 @@ import { SafeAuthService } from './auth.service';
  * Must be initialized at some point in the applications.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeFormService {
-
   /**
    * Shared survey service.
    * Initializes the additional code we made on top of the default logic of the library.
@@ -40,10 +39,26 @@ export class SafeFormService {
     public authService: SafeAuthService
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(SurveyKo, domService, dialog, apollo, formBuilder, authService, environment);
+    initCustomWidgets(
+      SurveyKo,
+      domService,
+      dialog,
+      apollo,
+      formBuilder,
+      authService,
+      environment
+    );
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(Survey, domService, dialog, apollo, formBuilder, authService, environment);
+    initCustomWidgets(
+      Survey,
+      domService,
+      dialog,
+      apollo,
+      formBuilder,
+      authService,
+      environment
+    );
   }
 }

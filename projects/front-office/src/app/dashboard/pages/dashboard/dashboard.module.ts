@@ -15,8 +15,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     DashboardRoutingModule,
     SafeWidgetGridModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
-  exports: [DashboardComponent]
+  exports: [DashboardComponent],
 })
-export class DashboardModule { }
+export class DashboardModule {}

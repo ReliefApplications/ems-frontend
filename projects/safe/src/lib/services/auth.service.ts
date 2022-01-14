@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable, Optional } from '@angular/core';
 import { User } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
@@ -17,10 +17,9 @@ export interface Account {
  * Shared authentication service.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeAuthService {
-
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
   /** Current user as observable */
@@ -61,13 +60,19 @@ export class SafeAuthService {
   userHasClaim(permission: string | string[], global: boolean = true): boolean {
     const user = this.user.getValue();
     if (user) {
-      if (user.permissions && (!permission || user.permissions.find(x => {
-        if (Array.isArray(permission)) {
-          return x.type && permission.includes(x.type) && x.global === global;
-        } else {
-          return x.type === permission && x.global === global;
-        }
-      }))) {
+      if (
+        user.permissions &&
+        (!permission ||
+          user.permissions.find((x) => {
+            if (Array.isArray(permission)) {
+              return (
+                x.type && permission.includes(x.type) && x.global === global
+              );
+            } else {
+              return x.type === permission && x.global === global;
+            }
+          }))
+      ) {
         return true;
       }
       return false;
@@ -114,15 +119,17 @@ export class SafeAuthService {
         username: acc?.username || 'Unknown',
       };
     } else {
-      this.keycloakService.loadUserProfile().then(value => {
-        this.account = {
-          name: value?.firstName + ' ' + value?.lastName || 'Unknown',
-          username: value?.email || 'Unknown',
-        };
-      },
-      err => {
-        this.account = null;
-      });
+      this.keycloakService.loadUserProfile().then(
+        (value) => {
+          this.account = {
+            name: value?.firstName + ' ' + value?.lastName || 'Unknown',
+            username: value?.email || 'Unknown',
+          };
+        },
+        (err) => {
+          this.account = null;
+        }
+      );
     }
   }
 
@@ -135,7 +142,7 @@ export class SafeAuthService {
     return this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
-      errorPolicy: 'all'
+      errorPolicy: 'all',
     });
   }
 }
