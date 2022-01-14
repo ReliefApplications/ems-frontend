@@ -7,7 +7,7 @@
         <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
     </ng-container>
     <!-- GRID CONTENT -->
-    <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
+    <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout" [widgetHeight]="widgetHeight"
         (defaultLayoutChanged)="defaultLayoutChanged.emit($event)" (layoutChanged)="layoutChanged.emit($event)"
         (defaultLayoutReset)="defaultLayoutReset.emit($event)"></safe-core-grid>
 </div>

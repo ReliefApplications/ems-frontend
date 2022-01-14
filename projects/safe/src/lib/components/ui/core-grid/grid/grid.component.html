@@ -6,7 +6,7 @@
     (sortChange)="onSortChange($event)" [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected"
     (selectionChange)="onSelectionChange($event)"
     (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
-    (cellClick)="cellClickHandler($event)">
+    (cellClick)="cellClickHandler($event)" [class.pager]="((241 * (this.widgetHeight - 1)) / 54) < this.data.total">
     <!-- ACTIONS -->
     <ng-template kendoGridToolbarTemplate position="top">
         <input [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />

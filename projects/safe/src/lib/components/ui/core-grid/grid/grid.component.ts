@@ -92,6 +92,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loading = false;
   @Input() error = false;
+  @Input() widgetHeight = 0;
 
   // === EXPORT ===
   @Input() exportable = true;

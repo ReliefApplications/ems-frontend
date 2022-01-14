@@ -5,7 +5,7 @@
     <safe-scheduler class="widget-content" [header]="header" [settings]="widget.settings"></safe-scheduler>
 </ng-container>
 <ng-container *ngIf="widget.component === 'grid'">
-    <safe-grid-widget class="widget-content" [header]="header" [layout]="layout" [settings]="widget.settings"
+    <safe-grid-widget class="widget-content" [header]="header" [layout]="layout" [settings]="widget.settings" [widgetHeight]="widget.defaultRows"
         (goToNextStep)="goToNextStep.emit($event)" (defaultLayoutChanged)="onDefaultLayoutChanged($event)" (layoutChanged)="onLayoutChanged($event)" (defaultLayoutReset)="onDefaultLayoutReset($event)" ></safe-grid-widget>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
