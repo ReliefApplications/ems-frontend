@@ -31,6 +31,10 @@ export class SafeDashboardService {
     private snackBar: SafeSnackBarService
     ) {}
 
+  /**
+   * gets the dashboard.
+   * @param id dashboard id to open.
+   */
   loadDashboard(id: any): void {
     this.dashboardSubcription = this.apollo.query<GetDashboardByIdQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
@@ -120,7 +124,6 @@ export class SafeDashboardService {
   saveWidgetLayoutToList(id: number, layout: any): Observable<any> {
     const dashboardId = this.dashboard.getValue()?.id;
     const dashboardStructure = this.dashboard.getValue()?.structure;
-    const dashb = localStorage.getItem(`widget:${dashboardId}:${id}`);
 
     const index = dashboardStructure.findIndex((v: any) => v.id === id);
     let currentLayout;
