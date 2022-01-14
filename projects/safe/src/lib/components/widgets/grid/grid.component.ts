@@ -56,6 +56,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
   // === DATA ===
   public loading = true;
+  @Input() pageSize: any;
 
   // === CACHED CONFIGURATION ===
   @Input() layout: GridLayout = {};

@@ -16,6 +16,8 @@ import { SafeDashboardService } from '../../services/dashboard.service';
 export class SafeWidgetComponent implements OnInit, OnChanges {
   @Input() widget: any;
   @Input() header = true;
+
+  public pageSize = 1;
   public layout: any;
 
   // === STEP CHANGE FOR WORKFLOW ===
@@ -25,6 +27,7 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);
+    this.pageSize = (this.widget.defaultRows - 1) * 4;
   }
 
   ngOnChanges(): void {

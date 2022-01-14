@@ -117,7 +117,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private columnsOrder: any[] = [];
 
   // === PAGINATION ===
-  public pageSize = 10;
+  @Input() pageSize = 4;
   public skip = 0;
 
   // === INLINE EDITION ===
