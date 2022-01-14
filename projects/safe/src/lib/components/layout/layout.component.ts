@@ -82,6 +82,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private environment: any;
   private inApplication = false;
 
+  // === APP SEARCH ===
+  public search = '';
+  public searchResults: Application[] = [];
+
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -144,6 +148,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
           this.rightSidenav.clear();
         }
       }
+    });
+    this.applications.map((value: any) => {
+      this.searchResults.push(value);
     });
   }
 
@@ -288,5 +295,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   setLanguage(language: string) {
     this.translate.use(language);
     this.currentLanguage = language;
+  }
+
+  searchApps() {
+    this.searchResults = [];
+    this.applications.map((value) => {
+      if (value.name?.toLowerCase().includes(this.search.toLowerCase())) {
+        this.searchResults.push(value);
+      }
+    });
   }
 }
