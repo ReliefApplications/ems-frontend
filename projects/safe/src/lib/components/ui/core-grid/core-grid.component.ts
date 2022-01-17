@@ -67,7 +67,6 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 })
 export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INPUTS ===
-  @Input() widgetHeight = 0;
   @Input() settings: GridSettings | any = {};
   @Input() defaultLayout: GridLayout = {}; // Cached layout
   get layout(): any {

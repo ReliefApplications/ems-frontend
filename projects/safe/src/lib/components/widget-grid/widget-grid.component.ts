@@ -25,7 +25,7 @@ const MAX_COL_SPAN = 8;
   styleUrls: ['./widget-grid.component.scss'],
 })
 export class SafeWidgetGridComponent implements OnInit {
-  public widgetTypes: IWidgetType[] = WIDGET_TYPES as IWidgetType[];
+  public widgetTypes: any[] = WIDGET_TYPES;
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
@@ -146,8 +146,11 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param e resize event.
    */
   public onResize(e: TileLayoutResizeEvent) {
-    if (e.newRowSpan === 1 && this.widgets[e.item.order].component === 'grid') {
-      e.newRowSpan = 2;
+    const widgetDefinition = this.widgetTypes.find(
+      (x) => x.component === this.widgets[e.item.order].component
+    );
+    if (e.newRowSpan < widgetDefinition.minRow) {
+      e.newRowSpan = widgetDefinition.minRow;
     }
     if (e.newRowSpan > MAX_ROW_SPAN) {
       e.newRowSpan = MAX_ROW_SPAN;
