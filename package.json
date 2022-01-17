@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:az:dev:front": "ng build --configuration=azure-dev --sourceMap=false --project=front-office",
+    "build:az:dev:back": "ng build --configuration=azure-dev --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:az:uat:front": "ng build --configuration=azure-uat --sourceMap=false --project=front-office",
     "build:az:uat:back": "ng build --configuration=azure-uat --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:az:prod:front": "ng build --configuration=azure-prod --sourceMap=false --project=front-office",
