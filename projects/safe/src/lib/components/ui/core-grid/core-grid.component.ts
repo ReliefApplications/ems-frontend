@@ -123,10 +123,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  private editedRowIndex = 0;
-  private editedRecordId = '';
   public formGroup: FormGroup = new FormGroup({});
-  private isNew = false;
   public loading = false;
   public error = false;
 
