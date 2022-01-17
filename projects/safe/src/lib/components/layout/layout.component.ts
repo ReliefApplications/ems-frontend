@@ -14,7 +14,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { SafeAuthService } from '../../services/auth.service';
+import { Account, SafeAuthService } from '../../services/auth.service';
 import { SafeLayoutService } from '../../services/layout.service';
 import {
   PermissionsManagement,
@@ -69,7 +69,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public loadingNotifications = false;
 
   // === USER INFO ===
-  account: AccountInfo | null;
+  public account: Account | null;
   public user?: User;
   private userSubscription?: Subscription;
 
@@ -246,11 +246,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         if (value) {
           this.authService.canLogout.next(true);
           localStorage.clear();
-          this.authService.logout();
+          this.authService.logout(this.environment.postLogoutRedirectUri);
         }
       });
     } else {
-      this.authService.logout();
+      this.authService.logout(this.environment.postLogoutRedirectUri);
     }
   }
 
