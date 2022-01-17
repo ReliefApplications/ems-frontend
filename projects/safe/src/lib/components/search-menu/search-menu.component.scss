@@ -1,0 +1,34 @@
+
+
+.container {
+    background-color: white;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 4px;
+    position: fixed;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    min-width: 200px;
+}
+
+input {
+    display: block;
+    width: 85%;
+    padding: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-bottom: 8px;
+}
+
+button {
+    width: 100%;
+    height: 42px;
+    padding: 1em;
+    border: none;
+    background-color: white;
+    text-align: left;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}

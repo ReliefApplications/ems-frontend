@@ -1,0 +1,6 @@
+<div class="container">
+    <input matInput placeholder="Search" [(ngModel)]="search" (ngModelChange)="onSearch()">
+    <div *ngFor="let item of searchResults; index as i">
+        <button *ngIf="i < 5">{{item.name}}</button>
+    </div>
+</div>

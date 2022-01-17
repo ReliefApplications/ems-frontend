@@ -83,6 +83,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private inApplication = false;
 
   // === APP SEARCH ===
+  public searchBtn = false;
   public search = '';
   public searchResults: Application[] = [];
 

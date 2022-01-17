@@ -17,18 +17,19 @@
     </span>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <button mat-button [matMenuTriggerFor]="applicationMenu">
+    <button mat-button (click)="searchBtn = !searchBtn">
       {{title}}
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    <mat-menu #applicationMenu="matMenu">
+    <safe-search-menu *ngIf="searchBtn" [data]="this.applications" (closeMenu)="searchBtn = false"></safe-search-menu>
+    <!-- <mat-menu #applicationMenu="matMenu">
       <input matInput placeholder="Search" [(ngModel)]="search" (ngModelChange)="searchApps()"
       (click)="$event.stopPropagation()">
       <div *ngFor="let application of searchResults; index as i">
         <button mat-menu-item *ngIf="i < 5"
           (click)="onOpenApplication(application)">{{application.name}}</button>
       </div>
-    </mat-menu>
+    </mat-menu> -->
   </ng-container>
   <div class="account-container">
     <div class="account-property">{{account ? account.name : ''}}</div>
