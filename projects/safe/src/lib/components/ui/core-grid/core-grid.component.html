@@ -23,5 +23,6 @@
   (columnChange)="onColumnChange()"
   (searchChange)="onSearchChange($event)"
   (export)="onExport($event)"
+  [blank]="!settings.query"
 >
 </safe-grid>
