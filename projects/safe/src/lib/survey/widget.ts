@@ -77,7 +77,7 @@ export const init = (
         options: { request: XMLHttpRequest }
       ) => {
         if (sender.url.includes(environment.apiUrl)) {
-          const token = localStorage.getItem('msal.idtoken');
+          const token = localStorage.getItem('idtoken');
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
       };
