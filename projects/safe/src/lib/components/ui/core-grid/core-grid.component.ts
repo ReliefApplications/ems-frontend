@@ -127,7 +127,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private editedRecordId = '';
   public formGroup: FormGroup = new FormGroup({});
   private isNew = false;
-  public loading = true;
+  public loading = false;
   public error = false;
 
   // === SORTING ===
@@ -280,6 +280,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
+      this.loading = true;
       this.metaQuery.subscribe(
         async (res: any) => {
           this.error = false;
