@@ -93,6 +93,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() loading = false;
   @Input() error = false;
   @Input() widgetHeight = 0;
+  @Input() blank = false;
 
   // === EXPORT ===
   @Input() exportable = true;

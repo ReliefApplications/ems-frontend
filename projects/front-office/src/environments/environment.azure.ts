@@ -1,7 +1,7 @@
 import { AuthenticationType } from '@safe/builder';
 
 /**
- * Environment file for local development.
+ * Environment file for local development with azure auth.
  */
 export const environment = {
   production: false,
@@ -16,6 +16,5 @@ export const environment = {
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'frontoffice',
-  availableLanguages: ['en', 'test'],
-  authenticationType: AuthenticationType.keycloak,
+  authenticationType: AuthenticationType.azureAD,
 };
