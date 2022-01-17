@@ -146,6 +146,9 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param e resize event.
    */
   public onResize(e: TileLayoutResizeEvent) {
+    if (e.newRowSpan === 1 && this.widgets[e.item.order].component === "grid") {
+      e.newRowSpan = 2;
+    }
     if (e.newRowSpan > MAX_ROW_SPAN) {
       e.newRowSpan = MAX_ROW_SPAN;
     }
