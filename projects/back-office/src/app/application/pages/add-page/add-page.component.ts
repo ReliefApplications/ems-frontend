@@ -161,13 +161,20 @@ export class AddPageComponent implements OnInit, OnDestroy {
           })
           .subscribe(
             (res) => {
-              const id = res.data?.addForm.id || '';
-              this.pageForm.controls.content.setValue(id);
-              this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectCreated('page', value.name)
-              );
+              if (res.errors) {
+                this.snackBar.openSnackBar(
+                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  { error: true }
+                );
+              } else {
+                const id = res.data?.addForm.id || '';
+                this.pageForm.controls.content.setValue(id);
+                this.snackBar.openSnackBar(
+                  NOTIFICATIONS.objectCreated('page', value.name)
+                );
 
-              this.onSubmit();
+                this.onSubmit();
+              }
             },
             (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
