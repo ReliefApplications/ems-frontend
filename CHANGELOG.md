@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file. See [standa
 * lint issues of web element project ([4c3a77c](https://github.com/ReliefApplications/oort-frontend/commits/4c3a77c11c9abe7f7169e4a7d1995ead78436e0d))
 * prevents current edited row in grid to be closed without saving changes [#11796](https://github.com/ReliefApplications/oort-frontend/issues/11796) ([307b98e](https://github.com/ReliefApplications/oort-frontend/commits/307b98ec90001e6debbd3440c1078067c0732480))
 
+### [1.1.2-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1...v1.1.2-alpha.0) (2022-01-12)
+
 ### [1.1.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1-alpha.0...v1.1.1) (2022-01-12)
 
 

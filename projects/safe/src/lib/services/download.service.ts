@@ -37,7 +37,7 @@ export class SafeDownloadService {
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export class SafeDownloadService {
     body?: any
   ): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ export class SafeDownloadService {
    */
   uploadFile(path: string, file: any): Observable<any> {
     const url = this.buildURL(path);
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',

@@ -1,3 +1,5 @@
+import { AuthenticationType } from '@safe/builder';
+
 /**
  * Environment file of uat platform.
  */
@@ -8,10 +10,12 @@ export const environment = {
   clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
   authority:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590',
+  realm: '',
   redirectUrl: 'https://ems-safe-test.who.int',
   postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
   frontOfficeUri: 'https://ems-safe-test.who.int/',
   backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
   module: 'frontoffice',
   availableLanguages: ['en'],
+  authenticationType: AuthenticationType.azureAD,
 };
