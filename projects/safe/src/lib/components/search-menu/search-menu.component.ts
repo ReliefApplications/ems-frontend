@@ -8,6 +8,9 @@ import {
   ElementRef,
 } from '@angular/core';
 
+/**
+ * Applications Menu, visible in Front-Office
+ */
 @Component({
   selector: 'safe-search-menu',
   templateUrl: './search-menu.component.html',
@@ -17,8 +20,8 @@ export class SafeSearchMenuComponent implements OnInit {
   @Input() data: any[] = [];
   private show = true;
 
-  @Output() openApp: EventEmitter<any> = new EventEmitter<any>();
-  @Output() closeMenu: EventEmitter<null> = new EventEmitter();
+  @Output() open: EventEmitter<any> = new EventEmitter<any>();
+  @Output() close: EventEmitter<null> = new EventEmitter();
 
   public searchResults: any = [];
   public search = '';
@@ -31,7 +34,7 @@ export class SafeSearchMenuComponent implements OnInit {
   @HostListener('document:click')
   clickout() {
     if (!this.show) {
-      this.closeMenu.emit();
+      this.close.emit();
     }
     this.show = false;
   }
@@ -39,22 +42,17 @@ export class SafeSearchMenuComponent implements OnInit {
   constructor(private eRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.data.map((value: any) => {
-      this.searchResults.push(value);
-    });
+    this.searchResults = this.data.slice(0, 5);
   }
 
   onSearch() {
     this.searchResults = [];
-    this.data.map((value) => {
-      if (value.name?.toLowerCase().includes(this.search.toLowerCase())) {
-        this.searchResults.push(value);
-      }
-    });
+    const search = this.search.toLowerCase();
+    this.searchResults = this.data.filter(x => x.name?.toLowerCase().includes(search)).slice(0, 5);
   }
 
   onClick(app: any) {
-    this.openApp.emit(app);
-    this.closeMenu.emit();
+    this.open.emit(app);
+    this.close.emit();
   }
 }

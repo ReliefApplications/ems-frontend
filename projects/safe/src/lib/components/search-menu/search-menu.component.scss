@@ -1,62 +1,21 @@
 
 
-.container {
+:host {
     background-color: white;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding: 0 4px 8px;
     border-radius: 4px;
-    position: fixed;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     width: 200px;
-
-    .searchBar {
-        position: relative;
-
-        input {
-            display: block;
-            width: 74%;
-            padding: 0.5em;
-            padding-right: 2.15em;
-            margin-left: auto;
-            margin-right: auto;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        mat-icon {
-            position: absolute;
-            color: rgba(0, 0, 0, 0.3);
-            top: 0;
-            bottom: 0;
-            right: 0.5em;
-            margin: auto;
-        }
-    }
+    display: flex;
+    flex-direction: column;
 }
 
-
-button {
-    width: 100%;
-    height: 42px;
-    padding: 1em;
-    border: none;
-    background-color: white;
-    text-align: left;
-    font-size: 14px;
-}
-
-button:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    cursor: pointer;
+.application-list {
+    display: flex;
+    flex-direction: column;
 }
 
 p {
-    line-height: 14px;
-    padding: 1em;
-    text-align: left;
-    font-size: 14px;
-    font-weight: normal;
-    color: rgba(0, 0, 0, 0.3);
-    margin: 0;
+    text-align: center;
+    opacity: 0.5;
 }

@@ -83,9 +83,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private inApplication = false;
 
   // === APP SEARCH ===
-  public searchBtn = false;
-  public search = '';
-  public searchResults: Application[] = [];
+  public showAppMenu = false;
 
   constructor(
     @Inject('environment') environment: any,
@@ -149,9 +147,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
           this.rightSidenav.clear();
         }
       }
-    });
-    this.applications.map((value: any) => {
-      this.searchResults.push(value);
     });
   }
 
@@ -296,14 +291,5 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   setLanguage(language: string) {
     this.translate.use(language);
     this.currentLanguage = language;
-  }
-
-  searchApps() {
-    this.searchResults = [];
-    this.applications.map((value) => {
-      if (value.name?.toLowerCase().includes(this.search.toLowerCase())) {
-        this.searchResults.push(value);
-      }
-    });
   }
 }
