@@ -82,6 +82,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   private environment: any;
   private inApplication = false;
 
+  // === APP SEARCH ===
+  public showAppMenu = false;
+
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
