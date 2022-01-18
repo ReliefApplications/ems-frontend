@@ -1,30 +1,42 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, ElementRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  ElementRef,
+} from '@angular/core';
 
 @Component({
   selector: 'safe-search-menu',
   templateUrl: './search-menu.component.html',
-  styleUrls: ['./search-menu.component.scss']
+  styleUrls: ['./search-menu.component.scss'],
 })
 export class SafeSearchMenuComponent implements OnInit {
-
   @Input() data: any[] = [];
-  @Input() show: boolean = true;
+  private show = true;
 
-  @Output() openApplication: EventEmitter<any> = new EventEmitter();
+  @Output() openApp: EventEmitter<any> = new EventEmitter<any>();
   @Output() closeMenu: EventEmitter<null> = new EventEmitter();
 
   public searchResults: any = [];
-  public search = ""; 
-  
-  @HostListener('document:click', ['$event'])
-  clickout(event: any) {
-    if(!this.eRef.nativeElement.contains(event.target) && this.show) {
-      console.log('outside')
-      this.closeMenu.emit();
-    }
+  public search = '';
+
+  @HostListener('click')
+  clickInside() {
+    this.show = true;
   }
 
-  constructor(private eRef: ElementRef) { }
+  @HostListener('document:click')
+  clickout() {
+    if (!this.show) {
+      this.closeMenu.emit();
+    }
+    this.show = false;
+  }
+
+  constructor(private eRef: ElementRef) {}
 
   ngOnInit(): void {
     this.data.map((value: any) => {
@@ -41,4 +53,8 @@ export class SafeSearchMenuComponent implements OnInit {
     });
   }
 
+  onClick(app: any) {
+    this.openApp.emit(app);
+    this.closeMenu.emit();
+  }
 }

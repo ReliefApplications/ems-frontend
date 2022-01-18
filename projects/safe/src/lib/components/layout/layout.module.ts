@@ -37,7 +37,7 @@ import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
     SafeButtonModule,
     IndicatorsModule,
     TranslateModule,
-    SafeSearchMenuModule
+    SafeSearchMenuModule,
   ],
   exports: [SafeLayoutComponent],
 })

@@ -21,7 +21,7 @@
       {{title}}
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    <safe-search-menu *ngIf="searchBtn" [data]="this.applications" (closeMenu)="searchBtn = false"></safe-search-menu>
+    <safe-search-menu *ngIf="searchBtn" [data]="this.applications" (closeMenu)="searchBtn = false" (openApp)="onOpenApplication($event)"></safe-search-menu>
     <!-- <mat-menu #applicationMenu="matMenu">
       <input matInput placeholder="Search" [(ngModel)]="search" (ngModelChange)="searchApps()"
       (click)="$event.stopPropagation()">

@@ -8,9 +8,8 @@ describe('SearchMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [SearchMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

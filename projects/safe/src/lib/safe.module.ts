@@ -63,9 +63,8 @@ import { SafeSearchMenuModule } from './components/search-menu/search-menu.modul
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,
     SafeApplicationsSummaryModule,
-    SafeSearchMenuModule
+    SafeSearchMenuModule,
   ],
-  declarations: [
-  ],
+  declarations: [],
 })
 export class SafeModule {}
