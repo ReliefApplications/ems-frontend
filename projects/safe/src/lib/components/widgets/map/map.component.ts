@@ -209,7 +209,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    // Add custom marker categories for each 
+    // Add custom marker categories for each
     this.categoryNames.map((name: string) => {
       this.overlays[name] = L.featureGroup.subGroup(
         this.markersLayer,
