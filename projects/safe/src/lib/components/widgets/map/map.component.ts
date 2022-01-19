@@ -5,7 +5,6 @@ import 'leaflet.markercluster';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { template } from 'lodash';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -55,7 +54,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     Nova: 'ArcGIS:Nova',
     Midcentury: 'ArcGIS:Midcentury',
     OSM: 'OSM:Standard',
-    'OSM:Streets': 'OSM:Street'
+    'OSM:Streets': 'OSM:Streets'
   };
 
   private apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
@@ -106,7 +105,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
     this.drawMap();
-    console.log(this.settings);
     // Gets the settings from the DB.
     if (this.settings.query){
       const builtQuery =  this.queryBuilder.buildQuery(this.settings);
@@ -164,7 +162,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .addTo(this.map);
     });
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
   }
+
   /* Load the data, using widget parameters.
   */
   private getData(): void {
@@ -182,24 +182,72 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.markersCategories = [];
       this.selectedItem = null;
       this.markersLayer.clearLayers();
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].edges.map((x: any) => {
-          // Gets all markers categories
-            if (!this.categoryNames.includes(x.node[this.settings.category])) {
-              this.categoryNames.push(x.node[this.settings.category]);
-            }
-            this.drawMarkers(myIcon, x.node);
-          });
-        }
-      }
-      this.setMarkers();
+      this.setLayers(res);
     });
   }
 
+  /* Adds each layer to the map.
+  */
+  private setLayers(res: any): void
+  {
+    // Removes map layers
+    if (this.layerControl) {
+      this.layerControl.remove();
+    }
+
+    // Loops throught fields to get all custom markers
+    for (const field in res.data) {
+      if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+        res.data[field].edges.map((x: any) => {
+          // Gets all markers categories
+          if (!this.categoryNames.includes(x.node[this.settings.category])) {
+            this.categoryNames.push(x.node[this.settings.category]);
+          }
+          // Draws all markers
+          this.drawMarkers(x.node);
+        });
+      }
+    }
+
+    // Add custom marker categories for each 
+    this.categoryNames.map((name: string) => {
+      this.overlays[name] = L.featureGroup.subGroup(
+        this.markersLayer,
+        this.markersCategories[name]
+      ).addTo(this.map);
+    });
+
+    // Loops throught online layers and add them to the map
+    if (this.settings.onlineLayers) {
+      this.settings.onlineLayers.map((layer: any) => {
+        this.overlays[layer.title] = L.esri.featureLayer({
+          url: layer.url + '/0',
+          simplifyFactor: 1,
+          apikey: this.apiKey
+        });
+        this.overlays[layer.title].metadata((error: any) => {
+          if (!error) {
+            this.overlays[layer.title].addTo(this.map);
+          }
+          else {
+            console.log('Error at loadind "' + layer.title + '"');
+            console.log(error);
+          }
+        });
+      });
+    }
+
+    // Set ups layer control if more that one layer is added
+    if (this.categoryNames[1] || this.settings.onlineLayers) {
+      this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
+    }
+
+  }
+
+
   /*  Draw markers on the map if the record has coordinates
   */
-  private drawMarkers(icon: any, item: any): void {
+  private drawMarkers(item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
@@ -220,8 +268,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             longitude
           ],
           options);
-        if (!this.markersCategories[item[this.settings.category]])
-        {
+        if (!this.markersCategories[item[this.settings.category]]) {
           this.markersCategories[item[this.settings.category]] = [];
         }
         this.markersCategories[item[this.settings.category]].push(marker);
@@ -230,49 +277,30 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private setMarkers(): void
-  {
-    if (this.layerControl) {
-      this.layerControl.remove();
-    }
-
-    if (this.settings.onlineLayers) {
-      this.settings.onlineLayers.map((layer: any) => {
-        this.overlays[layer.title] = L.esri.featureLayer({
-          url: layer.url + '/0',
-          simplifyFactor: 1,
-          apikey: this.apiKey
-        });
-        this.overlays[layer.title].metadata((error: any) => {
-          if (!error) {
-            this.overlays[layer.title].addTo(this.map);
-          }
-          else {
-            console.log('Error at loadind "' + layer.title + '"');
-          }
-        });
-      });
-    }
-
-    console.log(this.overlays);
-
-    this.categoryNames.map((name: string) => {
-      this.overlays[name] = L.featureGroup.subGroup(
-        this.markersLayer,
-        this.markersCategories[name]
-      ).addTo(this.map);
-    });
-
-    console.log(this.overlays);
-    if (this.categoryNames[1] || this.settings.onlineLayers) {
-      this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
-    }
-  }
-
   public ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
   }
+
+  private clorophletStyle(feature: any) {
+    const d = feature.properties.density;
+    const color = d > 1000 ? '#800026' :
+      d > 500  ? '#BD0026' :
+      d > 200  ? '#E31A1C' :
+      d > 100  ? '#FC4E2A' :
+      d > 50   ? '#FD8D3C' :
+      d > 20   ? '#FEB24C' :
+      d > 10   ? '#FED976' :
+                '#FFEDA0';
+    return {
+        fillColor: color,
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
 
 }
