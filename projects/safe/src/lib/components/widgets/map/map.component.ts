@@ -283,7 +283,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private clorophletStyle(feature: any) {
+  private clorophletStyle(feature: any): any {
     const d = feature.properties.density;
     const color = d > 1000 ? '#800026' :
       d > 500  ? '#BD0026' :
