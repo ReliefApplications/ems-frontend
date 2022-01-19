@@ -105,9 +105,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
     defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
-    Survey.StylesManager.applyTheme();
+    Survey.StylesManager.applyTheme('default');
 
-    Survey.StylesManager.findSheet('default');
+    // Survey.StylesManager.findSheet('default');
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
@@ -115,16 +115,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure)
     );
-    this.survey.onClearFiles.add((survey, options) =>
+    this.survey.onClearFiles.add((survey: any, options: any) =>
       this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey, options) =>
+    this.survey.onUploadFiles.add((survey: any, options: any) =>
       this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: any, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add((_, options) =>
+    this.survey.onUpdateQuestionCssClasses.add((_: any, options: any) =>
       this.onSetCustomCss(options)
     );
     // Unset readOnly fields if it's the record creation
@@ -189,14 +189,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add((survey, options) => {
+    this.survey.onCurrentPageChanged.add((survey: any, options: any) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       this.selectedTabIndex = survey.currentPageNo;
     });
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add((survey, options) => {
+    this.survey.onSettingQuestionErrors.add((survey: any, options: any) => {
       this.setPages();
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
@@ -443,9 +443,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    if (this.survey.compareTo) {
-      this.survey.currentPageNo = i;
-    }
+    // if (this.survey.compareTo) {
+    //   this.survey.currentPageNo = i;
+    // }
     this.selectedTabIndex = i;
   }
 

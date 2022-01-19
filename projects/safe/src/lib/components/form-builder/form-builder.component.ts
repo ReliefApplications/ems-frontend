@@ -126,8 +126,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add((_, opt) =>
-      this.onSetCustomCss(opt)
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+      (_: any, opt: any) => this.onSetCustomCss(opt)
     );
     this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
@@ -197,11 +197,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add((_, options: any) => {
-      if (coreFields.includes(options.question.valueName)) {
-        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      (_: any, options: any) => {
+        if (coreFields.includes(options.question.valueName)) {
+          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+        }
       }
-    });
+    );
   }
 
   setCustomTheme(): void {

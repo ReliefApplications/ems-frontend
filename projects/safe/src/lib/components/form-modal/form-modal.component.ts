@@ -177,26 +177,26 @@ export class SafeFormModalComponent implements OnInit {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || ''
     );
-    this.survey.onClearFiles.add((survey, options) =>
+    this.survey.onClearFiles.add((survey: any, options: any) =>
       this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey, options) =>
+    this.survey.onUploadFiles.add((survey: any, options: any) =>
       this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: any, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add((_, options) =>
+    this.survey.onUpdateQuestionCssClasses.add((_: any, options: any) =>
       this.onSetCustomCss(options)
     );
-    this.survey.onCurrentPageChanged.add((survey, _) => {
+    this.survey.onCurrentPageChanged.add((survey: any, _: any) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       this.selectedTabIndex = survey.currentPageNo;
     });
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add((survey, options) => {
+    this.survey.onSettingQuestionErrors.add(() => {
       this.setPages();
     });
     this.survey.locale = this.data.locale ? this.data.locale : 'en';

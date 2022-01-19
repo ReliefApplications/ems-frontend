@@ -132,10 +132,10 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || ''
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: any, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
+    this.survey.onCurrentPageChanged.add((surveyModel: any, options: any) => {
       this.selectedTabIndex = surveyModel.currentPageNo;
     });
     this.survey.data = this.record.data;
@@ -149,7 +149,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || ''
       );
-      this.survey.onDownloadFile.add((survey, options) =>
+      this.survey.onDownloadFile.add((survey: any, options: any) =>
         this.onDownloadFile(survey, options)
       );
       this.surveyNext.data = this.data.compareTo.data;
@@ -174,16 +174,20 @@ export class SafeRecordModalComponent implements OnInit {
           }
         }
       }
-      this.survey.onAfterRenderQuestion.add((survey, options): void => {
-        if (updatedQuestions.includes(options.question.valueName)) {
-          options.htmlElement.style.background = '#b2ebbf';
+      this.survey.onAfterRenderQuestion.add(
+        (survey: any, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
         }
-      });
-      this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
-        if (updatedQuestions.includes(options.question.valueName)) {
-          options.htmlElement.style.background = '#EBB2B2';
+      );
+      this.surveyNext.onAfterRenderQuestion.add(
+        (survey: any, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#EBB2B2';
+          }
         }
-      });
+      );
       this.surveyNext.render(this.containerNextId);
     }
     this.loading = false;
