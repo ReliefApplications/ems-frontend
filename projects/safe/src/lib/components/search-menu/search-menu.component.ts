@@ -20,7 +20,9 @@ export class SafeSearchMenuComponent implements OnInit {
   @Input() data: any[] = [];
   private show = true;
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter<any>();
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<null> = new EventEmitter();
 
   public searchResults: any = [];
@@ -48,7 +50,9 @@ export class SafeSearchMenuComponent implements OnInit {
   onSearch() {
     this.searchResults = [];
     const search = this.search.toLowerCase();
-    this.searchResults = this.data.filter(x => x.name?.toLowerCase().includes(search)).slice(0, 5);
+    this.searchResults = this.data
+      .filter((x) => x.name?.toLowerCase().includes(search))
+      .slice(0, 5);
   }
 
   onClick(app: any) {
