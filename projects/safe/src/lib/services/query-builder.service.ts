@@ -2,7 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
 import { ApolloQueryResult } from '@apollo/client';
 
@@ -200,7 +200,20 @@ export class QueryBuilderService {
     return str + ']';
   }
 
-  public createQueryForm(value: any, validators = true): FormGroup {
+  public createQueryForm(value: any, validators = true, widget: string = ''): FormGroup {
+    if (widget === 'map') {
+      return this.formBuilder.group({
+        name: [value ? value.name : '', validators ? Validators.required : null],
+        template: [value ? value.template : '', null],
+        fields: this.formBuilder.array((value && value.fields) ? value.fields.map((x: any) => this.addNewField(x)) : [],
+          validators ? Validators.required : null),
+        sort: this.formBuilder.group({
+          field: [(value && value.sort) ? value.sort.field : ''],
+          order: [(value && value.sort) ? value.sort.order : 'asc']
+        }),
+        filter: this.createFilterGroup(value && value.filter ? value.filter : {}, null),
+        clorophlet: this.formBuilder.array((value && value.clorophlet) ? value.clorophlet : [])});
+    }
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
       template: [value ? value.template : '', null],

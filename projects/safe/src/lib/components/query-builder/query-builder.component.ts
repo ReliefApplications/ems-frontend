@@ -46,6 +46,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canSelectDataSet = true;
   @Input() settings: any;
   @Input() templates: Form[] = [];
+  @Input() type = '';
 
   // === FIELD EDITION ===
   public isField = false;
@@ -91,6 +92,9 @@ export class SafeQueryBuilderComponent implements OnInit {
             field: [''],
             order: ['asc']
           }));
+          if (this.form?.get('clorophlet')) {
+            this.form?.setControl('clorophlet', this.formBuilder.array([]));
+          }
         } else {
           this.availableFields = [];
           this.form?.setControl('filter', this.queryBuilder.createFilterGroup(null, this.availableScalarFields));
@@ -99,6 +103,9 @@ export class SafeQueryBuilderComponent implements OnInit {
             field: [''],
             order: ['asc']
           }));
+          if (this.form?.get('clorophlet')) {
+            this.form?.setControl('clorophlet', this.formBuilder.array([]));
+          }
         }
         this.filteredQueries = this.filterQueries(res);
       });

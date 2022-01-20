@@ -1,0 +1,13 @@
+
+<div class="filter-list" *ngFor="let item of form.controls, index as i">
+    <form [formGroup]="$any(item)">
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input type="text" placeholder="Set a new name" matInput formControlName="name">
+        </mat-form-field>
+        <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+    </form>
+</div>
+<div class="filter-buttons">
+    <safe-button category="tertiary" (click)="newClorophlet()">Add new clorophlet</safe-button>
+</div>

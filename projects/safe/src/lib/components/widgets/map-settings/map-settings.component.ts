@@ -55,7 +55,7 @@ export class SafeMapSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
-      query: this.queryBuilder.createQueryForm(tileSettings.query),
+      query: this.queryBuilder.createQueryForm(tileSettings.query, undefined, 'map'),
       latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
       longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
       category: [(tileSettings && tileSettings.category) ? tileSettings.category : null],

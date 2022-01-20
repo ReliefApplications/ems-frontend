@@ -15,13 +15,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
 
 @NgModule({
   declarations: [
     SafeQueryBuilderComponent,
     SafeTabFieldsComponent,
     SafeTabSortComponent,
-    SafeTabFilterComponent
+    SafeTabFilterComponent,
+    TabClorophletComponent
   ],
   imports: [
     CommonModule,
