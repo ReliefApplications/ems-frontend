@@ -6,7 +6,7 @@ import { SafeStepComponent } from './components/step/step.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { SafeButtonModule } from '../ui/button/public-api';
+import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';

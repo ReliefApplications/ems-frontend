@@ -31,8 +31,7 @@
       "lodash/omitBy": "lodash/omitBy",
       "@progress/kendo-angular-common": "@progress/kendo-angular-common",
       "@progress/kendo-angular-layout": "@progress/kendo-angular-layout",
-      "@ngx-translate/core": "@ngx-translate/core",
-      "keycloak-angular": "keycloak-angular"
+      "@ngx-translate/core": "@ngx-translate/core"
     }
   }
 }
