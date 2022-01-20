@@ -752,6 +752,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const currentLayout = this.layout;
     const body = {
       ids,
+      query: this.queryBuilder.buildQueryString(this.settings.query),
+      sortField: this.sortField,
+      sortOrder: this.sortOrder,
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       format: e.format,

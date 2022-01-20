@@ -128,30 +128,32 @@ export class QueryBuilderService {
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
     if (builtQuery && builtQuery.fields.length > 0) {
-      const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(builtQuery.fields));
-      const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean) {
-          ${builtQuery.name}(
-          first: $first,
-          skip: $skip,
-          sortField: $sortField,
-          sortOrder: $sortOrder,
-          filter: $filter,
-          display: $display
-          ) {
-            edges {
-              node {
-                ${fields}
-              }
-            }
-            totalCount
-        }
-        }
-      `;
-      return query;
+      return gql`${this.buildQueryString(builtQuery)}`;
     } else {
       return null;
     }
+  }
+
+  public buildQueryString(query: any): string {
+    const fields = ['canUpdate\ncanDelete\n'].concat(this.buildFields(query.fields));
+    return `query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean) {
+        ${query.name}(
+        first: $first,
+        skip: $skip,
+        sortField: $sortField,
+        sortOrder: $sortOrder,
+        filter: $filter,
+        display: $display
+        ) {
+          edges {
+            node {
+              ${fields}
+            }
+          }
+          totalCount
+      }
+      }
+    `;
   }
 
   public buildMetaQuery(settings: any): Observable<ApolloQueryResult<any>> | null {
