@@ -38,7 +38,6 @@ export class SafeAuthService {
   /**
    * Shared authentication service.
    *
-   * @param msalService MSAL service
    * @param apollo Apollo client
    */
   constructor(
