@@ -1,12 +1,10 @@
 import { Apollo } from 'apollo-angular';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
-import { AuthenticationType } from '../config/oort.config';
-import { KeycloakService } from 'keycloak-angular';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 export interface Account {
   name: string;
@@ -40,14 +38,12 @@ export class SafeAuthService {
   /**
    * Shared authentication service.
    *
-   * @param msalService MSAL service
    * @param apollo Apollo client
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    @Optional() private msalService: MsalService,
-    @Optional() private keycloakService: KeycloakService
+    private oauthService: OAuthService
   ) {
     this.environment = environment;
     this.checkAccount();
@@ -101,12 +97,8 @@ export class SafeAuthService {
   /**
    * Cleans user profile, and logout.
    */
-  logout(redirectUri?: string): void {
-    if (this.environment.authenticationType === AuthenticationType.azureAD) {
-      this.msalService.logoutRedirect();
-    } else {
-      this.keycloakService.logout(redirectUri);
-    }
+  logout(): void {
+    this.oauthService.logOut();
     this.account = null;
     this.user.next(null);
     localStorage.removeItem('idtoken');
@@ -116,25 +108,14 @@ export class SafeAuthService {
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
-    if (this.environment.authenticationType === AuthenticationType.azureAD) {
-      const acc = this.msalService.instance.getActiveAccount();
-      this.account = {
-        name: acc?.name || 'Unknown',
-        username: acc?.username || 'Unknown',
-      };
-    } else {
-      this.keycloakService.loadUserProfile().then(
-        (value) => {
-          this.account = {
-            name: value?.firstName + ' ' + value?.lastName || 'Unknown',
-            username: value?.email || 'Unknown',
-          };
-        },
-        (err) => {
-          this.account = null;
-        }
-      );
+    const claims: any = this.oauthService.getIdentityClaims();
+    if (!claims) {
+      return;
     }
+    this.account = {
+      name: claims.name,
+      username: claims.preferred_username,
+    };
   }
 
   /**
