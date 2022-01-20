@@ -15,6 +15,7 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'http://localhost:4200/admin/',
+  postLogoutRedirectUri: 'http://localhost:4200/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -34,12 +35,3 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
 };
-
-// const authConfig: AuthConfig = {
-//   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
-//   redirectUri: 'http://localhost:4200/admin/',
-//   clientId: 'oort-client',
-//   scope: 'openid profile email offline_access',
-//   responseType: 'code',
-//   showDebugInformation: true,
-// };
