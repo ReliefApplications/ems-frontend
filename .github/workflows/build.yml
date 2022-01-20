@@ -6,6 +6,10 @@ on:
       - 'dev'
       - 'release-*'
       - 'hotfix-*'
+  pull_request:
+    branches:
+      - 'release-*'
+      - 'hotfix-*'
 
 jobs:
   build:
