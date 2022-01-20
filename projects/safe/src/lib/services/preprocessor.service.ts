@@ -30,6 +30,12 @@ export class SafePreprocessorService {
   } | null = null): Promise<string> {
     const promises: Promise<any>[] = [];
 
+    // === TODAY ===
+    if (text.includes('{today}')) {
+      const todayToString = (new Date()).toDateString();
+      text = text.split('{today}').join(todayToString);
+    }
+
     // === DATASET ===
     if (text.includes('{dataset}') && dataset) {
       if (dataset.ids.length > 0) {
@@ -75,12 +81,6 @@ export class SafePreprocessorService {
       } else {
         text = text.split('{dataset}').join('');
       }
-    }
-
-    // === TODAY ===
-    if (text.includes('{today}')) {
-      const todayToString = (new Date()).toDateString();
-      text = text.split('{today}').join(todayToString);
     }
 
     await Promise.all(promises);
