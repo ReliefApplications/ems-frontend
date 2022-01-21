@@ -33,19 +33,12 @@ export class SafeAuthService {
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
-  private environment: any;
-
   /**
    * Shared authentication service.
    *
    * @param apollo Apollo client
    */
-  constructor(
-    @Inject('environment') environment: any,
-    private apollo: Apollo,
-    private oauthService: OAuthService
-  ) {
-    this.environment = environment;
+  constructor(private apollo: Apollo, private oauthService: OAuthService) {
     this.checkAccount();
   }
 
@@ -98,10 +91,10 @@ export class SafeAuthService {
    * Cleans user profile, and logout.
    */
   logout(): void {
-    this.oauthService.logOut();
     this.account = null;
     this.user.next(null);
     localStorage.removeItem('idtoken');
+    this.oauthService.logOut();
   }
 
   /**

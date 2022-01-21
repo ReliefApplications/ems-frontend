@@ -125,6 +125,7 @@ const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
     oauth.configure(environment.authConfig);
+    // oauth.loadDiscoveryDocument();
     oauth.loadDiscoveryDocumentAndLogin();
     oauth.events
       .pipe(filter((e) => e.type === 'token_received'))

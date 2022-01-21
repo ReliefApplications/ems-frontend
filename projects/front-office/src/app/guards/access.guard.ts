@@ -7,9 +7,9 @@ import {
   Router,
 } from '@angular/router';
 import { SafeAuthService } from '@safe/builder';
+import { OAuthService } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 
 /**
  * Guard to check if user is authenticated or not.
@@ -24,7 +24,11 @@ export class AccessGuard implements CanActivate {
    * @param authService Shared authentication service
    * @param router Angular router
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(
+    private oauthService: OAuthService,
+    private authService: SafeAuthService,
+    private router: Router
+  ) {}
 
   /**
    * Defines the logic of the guard.
@@ -42,20 +46,33 @@ export class AccessGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.getProfile().pipe(
-      map((res) => {
-        if (res.data.me) {
-          this.authService.user.next(res.data.me);
-          return true;
-        } else {
-          if (this.authService.account) {
-            this.authService.logout();
+    if (
+      this.oauthService.hasValidAccessToken() &&
+      this.oauthService.hasValidIdToken
+    ) {
+      localStorage.setItem('idtoken', this.oauthService.getIdToken());
+      return this.authService.getProfile().pipe(
+        map((res) => {
+          if (res.data.me) {
+            console.log('it is me');
+            this.authService.user.next(res.data.me);
+            return true;
           } else {
-            this.router.navigate(['/auth']);
+            if (this.authService.account) {
+              console.log('my account');
+              this.authService.logout();
+            } else {
+              console.log('no account');
+              this.router.navigate(['/auth']);
+            }
+            return false;
           }
-          return false;
-        }
-      })
-    );
+        })
+      );
+    } else {
+      console.log('no token');
+      this.router.navigate(['/auth']);
+      return false;
+    }
   }
 }
