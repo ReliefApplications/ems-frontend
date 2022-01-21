@@ -18,5 +18,5 @@ export const environment = {
   backOfficeUri: 'https://oort-dev.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en', 'test'],
-  authenticationType: authConfig,
+  authConfig,
 };

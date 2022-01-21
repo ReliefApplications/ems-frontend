@@ -1,4 +1,16 @@
-import { AuthenticationType } from '@safe/builder';
+import { AuthConfig } from 'angular-oauth2-oidc';
+
+const authConfig: AuthConfig = {
+  issuer:
+    'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
+  redirectUri: 'https://ems-safe-test.who.int/',
+  postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
+  clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
+  scope: 'openid profile email offline_access',
+  responseType: 'code',
+  showDebugInformation: true,
+  strictDiscoveryDocumentValidation: false,
+};
 
 /**
  * Environment file of uat platform.
@@ -17,5 +29,5 @@ export const environment = {
   backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
   module: 'frontoffice',
   availableLanguages: ['en'],
-  authenticationType: AuthenticationType.azureAD,
+  authConfig,
 };
