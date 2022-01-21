@@ -42,7 +42,6 @@ import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.compo
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
-import { MsalModule } from '@azure/msal-angular';
 
 /*  Configuration of the Apollo client.
  */
@@ -148,7 +147,6 @@ export const provideApollo = (httpLink: HttpLink): any => {
     SafeFormModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
-    MsalModule,
   ],
   providers: [
     {

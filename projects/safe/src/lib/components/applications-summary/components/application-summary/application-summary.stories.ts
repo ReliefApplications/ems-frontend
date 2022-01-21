@@ -2,12 +2,13 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeApplicationSummaryComponent } from './application-summary.component';
 import { SafeApplicationsSummaryModule } from '../../applications-summary.module';
 import { status } from '../../../../models/form.model';
+import { StorybookTranslateModule } from '../../../../components/storybook-translate/storybook-translate-module';
 
 export default {
   component: SafeApplicationSummaryComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeApplicationsSummaryModule],
+      imports: [SafeApplicationsSummaryModule, StorybookTranslateModule],
       providers: [],
     }),
   ],
