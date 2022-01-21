@@ -27,8 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatTooltipModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeAccessComponent]
+  exports: [SafeAccessComponent],
 })
-export class SafeAccessModule { }
+export class SafeAccessModule {}

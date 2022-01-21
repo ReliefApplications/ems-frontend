@@ -5,12 +5,12 @@ import { FormRecordsComponent } from './form-records.component';
 const routes: Routes = [
   {
     path: '',
-    component: FormRecordsComponent
-  }
+    component: FormRecordsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class FormRecordsRoutingModule { }
+export class FormRecordsRoutingModule {}

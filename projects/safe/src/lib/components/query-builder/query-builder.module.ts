@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeQueryBuilderComponent,
     SafeTabFieldsComponent,
     SafeTabSortComponent,
-    SafeTabFilterComponent
+    SafeTabFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -38,11 +38,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     MatAutocompleteModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [
-    SafeQueryBuilderComponent,
-    SafeTabFieldsComponent
-  ]
+  exports: [SafeQueryBuilderComponent, SafeTabFieldsComponent],
 })
-export class SafeQueryBuilderModule { }
+export class SafeQueryBuilderModule {}

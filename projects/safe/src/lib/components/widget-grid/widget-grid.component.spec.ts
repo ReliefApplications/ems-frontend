@@ -8,9 +8,8 @@ describe('SafeWidgetGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeWidgetGridComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeWidgetGridComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

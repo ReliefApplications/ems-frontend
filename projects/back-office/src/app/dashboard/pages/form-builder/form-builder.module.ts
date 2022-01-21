@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilderRoutingModule } from './form-builder-routing.module';
 import { FormBuilderComponent } from './form-builder.component';
-import { SafeAccessModule, SafeFormBuilderModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeAccessModule,
+  SafeFormBuilderModule,
+  SafeButtonModule,
+} from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HistoryComponent } from './components/history/history.component';
 import { MatTableModule } from '@angular/material/table';
@@ -11,7 +15,6 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
-
 
 @NgModule({
   declarations: [FormBuilderComponent, HistoryComponent],
@@ -28,8 +31,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormBuilderModule,
     SafeAccessModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [FormBuilderComponent]
+  exports: [FormBuilderComponent],
 })
-export class FormBuilderModule { }
+export class FormBuilderModule {}

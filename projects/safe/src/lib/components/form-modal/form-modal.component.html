@@ -1,19 +1,23 @@
 <safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
-<safe-record-summary *ngIf="record" [record]="record" (showHistory)="onShowHistory()"></safe-record-summary>
-<mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
-    <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name">
-        <ng-template mat-tab-label>
-            {{ page.title ? page.title : page.name }}
-            <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<ng-container *ngIf="!loading">
+    <safe-record-summary *ngIf="record" [record]="record" (showHistory)="onShowHistory()"></safe-record-summary>
+    <div mat-dialog-title>
+        <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onShowPage($event)">
+            <mat-tab *ngFor="let page of pages$ | async" [label]="page.title ? page.title : page.name">
+                <ng-template mat-tab-label>
+                    {{ page.title ? page.title : page.name }}
+                    <safe-icon *ngIf="page.containsErrors" icon="error" variant="danger" [inline]="true"></safe-icon>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</ng-container>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
-<div mat-dialog-actions align="end" *ngIf="survey">
+<mat-dialog-actions align="end">
     <button mat-button color="warn" (click)="onClose()">{{ 'action.cancel' | translate }}</button>
-    <button [disabled]="survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">
+    <button [disabled]="!survey || survey.isFirstPage" mat-button color="primary" (click)="survey && survey.prevPage()">
         {{ 'action.previous' | translate }}</button>
-    <button [disabled]="survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">
+    <button [disabled]="!survey || survey.isLastPage" mat-button color="primary" (click)="survey && survey.nextPage()">
         {{ 'action.next' | translate }}</button>
     <button mat-flat-button color="primary" (click)="submit()">{{ 'action.saveClose' | translate }}</button>
-</div>
+</mat-dialog-actions>

@@ -8,9 +8,8 @@ describe('SafeTabSortComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeTabSortComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeTabSortComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

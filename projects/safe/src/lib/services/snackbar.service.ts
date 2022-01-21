@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import {
+  MatSnackBar,
+  MatSnackBarRef,
+  TextOnlySnackBar,
+} from '@angular/material/snack-bar';
 
 /** Default snackbar definition */
 const DEFAULT_SNACKBAR = {
   error: false,
   duration: 5000,
-  action: 'Dismiss'
+  action: 'Dismiss',
 };
 
 /** Snackbar interface */
@@ -20,19 +24,16 @@ interface SnackBar {
  * Snackbar is a brief notification that appears for a short time as a popup.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeSnackBarService {
-
   /**
    * Shared snackbar service.
    * Snackbar is a brief notification that appears for a short time as a popup.
    *
    * @param snackBar Material snackbar service
    */
-  constructor(
-    private snackBar: MatSnackBar
-  ) { }
+  constructor(private snackBar: MatSnackBar) {}
 
   /**
    * Creates a snackbar message on top of the layout.
@@ -43,13 +44,14 @@ export class SafeSnackBarService {
    */
   openSnackBar(
     message: string,
-    config?: SnackBar): MatSnackBarRef<TextOnlySnackBar> {
+    config?: SnackBar
+  ): MatSnackBarRef<TextOnlySnackBar> {
     config = { ...DEFAULT_SNACKBAR, ...config };
     const snackBar = this.snackBar.open(message, config.action, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
       verticalPosition: 'top',
-      panelClass: (config && config.error) ? 'snack-error' : ''
+      panelClass: config && config.error ? 'snack-error' : '',
     });
     return snackBar;
   }

@@ -1,7 +1,13 @@
 import { DoBootstrap, ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeButtonModule, SafeFormModule, SafeFormService, SafeWidgetGridModule, SafeWorkflowStepperModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeFormModule,
+  SafeFormService,
+  SafeWidgetGridModule,
+  SafeWorkflowStepperModule,
+} from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -39,24 +45,23 @@ import { WebApplicationComponent } from './elements/web-application/web-applicat
 import { MsalModule } from '@azure/msal-angular';
 
 /*  Configuration of the Apollo client.
-*/
+ */
 export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'charset=utf-8'
-    }
+      Accept: 'charset=utf-8',
+    },
   }));
-
 
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     return {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     };
   });
 
@@ -67,9 +72,9 @@ export const provideApollo = (httpLink: HttpLink): any => {
     options: {
       reconnect: true,
       connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
-      }
-    }
+        authToken: localStorage.getItem('idtoken'),
+      },
+    },
   });
 
   interface Definition {
@@ -77,14 +82,18 @@ export const provideApollo = (httpLink: HttpLink): any => {
     operation?: string;
   }
 
-  const link = ApolloLink.from([basic, auth, split(
-    ({ query }) => {
-      const { kind, operation }: Definition = getMainDefinition(query);
-      return kind === 'OperationDefinition' && operation === 'subscription';
-    },
-    ws,
-    http,
-  )]);
+  const link = ApolloLink.from([
+    basic,
+    auth,
+    split(
+      ({ query }) => {
+        const { kind, operation }: Definition = getMainDefinition(query);
+        return kind === 'OperationDefinition' && operation === 'subscription';
+      },
+      ws,
+      http
+    ),
+  ]);
 
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
@@ -105,8 +114,8 @@ export const provideApollo = (httpLink: HttpLink): any => {
       },
       mutate: {
         errorPolicy: 'all',
-      }
-    }
+      },
+    },
   };
 };
 
@@ -120,7 +129,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     WebWorkflowComponent,
     WebFormComponent,
     WebDashboardComponent,
-    WebApplicationComponent
+    WebApplicationComponent,
   ],
   imports: [
     BrowserModule,
@@ -139,48 +148,51 @@ export const provideApollo = (httpLink: HttpLink): any => {
     SafeFormModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
-    MsalModule
+    MsalModule,
   ],
   providers: [
     {
       provide: 'environment',
-      useValue: environment
+      useValue: environment,
     },
     {
       // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
       provide: APOLLO_OPTIONS,
       useFactory: provideApollo,
-      deps: [HttpLink]
+      deps: [HttpLink],
     },
     {
       provide: POPUP_CONTAINER,
       useFactory: () =>
         // return the container ElementRef, where the popup will be injected
-         ({ nativeElement: document.body } as ElementRef)
-
-    }
+        ({ nativeElement: document.body } as ElementRef),
+    },
   ],
-  bootstrap: [
-    AppComponent
-  ]
+  bootstrap: [AppComponent],
 })
 export class AppModule implements DoBootstrap {
   constructor(
     private injector: Injector,
     private formService: SafeFormService
-  ) { }
+  ) {}
 
   ngDoBootstrap(): void {
     // Dashboard web element
-    const safeDashboard = createCustomElement(DashboardComponent, { injector: this.injector });
+    const safeDashboard = createCustomElement(DashboardComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-dashboard', safeDashboard);
 
     // Form web element
-    const safeForm = createCustomElement(FormComponent, { injector: this.injector });
+    const safeForm = createCustomElement(FormComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-form', safeForm);
 
     // Workflow web element
-    const safeWorkflow = createCustomElement(WorkflowComponent, { injector: this.injector });
+    const safeWorkflow = createCustomElement(WorkflowComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-workflow', safeWorkflow);
   }
 }

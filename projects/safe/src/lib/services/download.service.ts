@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
  * TODO: rename in file service
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeDownloadService {
-
   /** API base url */
   public baseUrl: string;
 
@@ -36,19 +35,21 @@ export class SafeDownloadService {
    * @param fileName name of the file
    * @param options (optional) request options
    */
-   getFile(path: string, type: string, fileName: string, options?: any): void {
+  getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
-    this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
-      const blob = new Blob([res], {type});
-      this.saveFile(fileName, blob);
-    });
+    this.http
+      .get(url, { ...options, responseType: 'blob', headers })
+      .subscribe((res) => {
+        const blob = new Blob([res], { type });
+        this.saveFile(fileName, blob);
+      });
   }
 
   /**
@@ -59,19 +60,26 @@ export class SafeDownloadService {
    * @param fileName name of the file
    * @param body (optional) request body
    */
-  getRecordsExport(path: string, type: string, fileName: string, body?: any): void {
+  getRecordsExport(
+    path: string,
+    type: string,
+    fileName: string,
+    body?: any
+  ): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
-    this.http.post(url, body, {responseType: 'blob', headers}).subscribe((res) => {
-      const blob = new Blob([res], {type});
-      this.saveFile(fileName, blob);
-    });
+    this.http
+      .post(url, body, { responseType: 'blob', headers })
+      .subscribe((res) => {
+        const blob = new Blob([res], { type });
+        this.saveFile(fileName, blob);
+      });
   }
 
   /**
@@ -98,16 +106,16 @@ export class SafeDownloadService {
    */
   uploadFile(path: string, file: any): Observable<any> {
     const url = this.buildURL(path);
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
-    return this.http.post(url, formData, {headers});
+    return this.http.post(url, formData, { headers });
   }
 
   /**

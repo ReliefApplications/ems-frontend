@@ -6,12 +6,13 @@ describe('SafeChartSettingsComponent', () => {
   let component: SafeChartSettingsComponent;
   let fixture: ComponentFixture<SafeChartSettingsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SafeChartSettingsComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeChartSettingsComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeChartSettingsComponent);

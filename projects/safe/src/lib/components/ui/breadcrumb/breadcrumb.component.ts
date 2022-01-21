@@ -9,15 +9,12 @@ interface Breadcrumb {
 @Component({
   selector: 'safe-breadcrumb',
   templateUrl: './breadcrumb.component.html',
-  styleUrls: ['./breadcrumb.component.scss']
+  styleUrls: ['./breadcrumb.component.scss'],
 })
 export class SafeBreadcrumbComponent implements OnInit {
-
   @Input() items: Breadcrumb[] = [];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

@@ -6,10 +6,9 @@ import { Inject, Injectable } from '@angular/core';
  * The API proxy service contacts the back-end generated proxy, based on the API definitions.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeApiProxyService {
-
   /** API url */
   public baseUrl: string;
 
@@ -33,12 +32,12 @@ export class SafeApiProxyService {
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {
       const url = `${this.baseUrl}/${name}${pingUrl}`;
-      const token = localStorage.getItem('msal.idtoken');
+      const token = localStorage.getItem('idtoken');
       const headers = new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
       return this.http.get(url, { headers });
     }
@@ -52,12 +51,12 @@ export class SafeApiProxyService {
    * @returns http request
    */
   public promisedRequestWithHeaders(url: string): Promise<any> {
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
     return this.http.get(url, { headers }).toPromise();
   }

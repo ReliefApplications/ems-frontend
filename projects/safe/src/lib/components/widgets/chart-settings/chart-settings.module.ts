@@ -36,8 +36,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSlideToggleModule,
     MatTabsModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeChartSettingsComponent]
+  exports: [SafeChartSettingsComponent],
 })
-export class SafeChartSettingsModule { }
+export class SafeChartSettingsModule {}

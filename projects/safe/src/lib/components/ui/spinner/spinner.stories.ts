@@ -5,42 +5,40 @@ import { SafeSpinnerComponent } from './spinner.component';
 import { SafeSpinnerModule } from './spinner.module';
 
 export default {
-    component: SafeSpinnerComponent,
-    decorators: [
-        moduleMetadata({
-            imports: [
-                SafeSpinnerModule
-            ],
-            providers: []
-        })
-    ],
-    title: 'UI/Spinner',
-    argTypes: {
-        size: {
-            options: [SpinnerSize.SMALL, SpinnerSize.MEDIUM],
-            control: { type: 'select' }
-        },
-        variant: {
-            options: [
-                SpinnerVariant.DEFAULT,
-                SpinnerVariant.PRIMARY,
-                SpinnerVariant.SUCCESS,
-                SpinnerVariant.DANGER,
-                SpinnerVariant.LIGHT
-            ],
-            control: { type: 'select' }
-        }
-    }
+  component: SafeSpinnerComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [SafeSpinnerModule],
+      providers: [],
+    }),
+  ],
+  title: 'UI/Spinner',
+  argTypes: {
+    size: {
+      options: [SpinnerSize.SMALL, SpinnerSize.MEDIUM],
+      control: { type: 'select' },
+    },
+    variant: {
+      options: [
+        SpinnerVariant.DEFAULT,
+        SpinnerVariant.PRIMARY,
+        SpinnerVariant.SUCCESS,
+        SpinnerVariant.DANGER,
+        SpinnerVariant.LIGHT,
+      ],
+      control: { type: 'select' },
+    },
+  },
 } as Meta;
 
-const TEMPLATE: Story<SafeSpinnerComponent> = args => ({
-    props: {
-        ...args
-    }
+const TEMPLATE: Story<SafeSpinnerComponent> = (args) => ({
+  props: {
+    ...args,
+  },
 });
 
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
-    size: SpinnerSize.MEDIUM,
-    variant: SpinnerVariant.DEFAULT
+  size: SpinnerSize.MEDIUM,
+  variant: SpinnerVariant.DEFAULT,
 };

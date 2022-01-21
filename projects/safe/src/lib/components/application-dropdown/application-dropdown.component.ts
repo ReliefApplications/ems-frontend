@@ -1,9 +1,22 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
-import { GetApplicationsQueryResponse, GET_APPLICATIONS } from '../../graphql/queries';
+import {
+  MAT_SELECT_SCROLL_STRATEGY,
+  MatSelect,
+} from '@angular/material/select';
+import {
+  GetApplicationsQueryResponse,
+  GET_APPLICATIONS,
+} from '../../graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
@@ -19,11 +32,14 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   templateUrl: './application-dropdown.component.html',
   styleUrls: ['./application-dropdown.component.scss'],
   providers: [
-    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-  ]
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeApplicationDropdownComponent implements OnInit {
-
   @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -33,43 +49,50 @@ export class SafeApplicationDropdownComponent implements OnInit {
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private pageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private loading = true;
 
   @ViewChild('applicationSelect') applicationSelect?: MatSelect;
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     if (Array.isArray(this.value) && this.value.length > 0) {
-      this.apollo.query<GetApplicationsQueryResponse>({
-        query: GET_APPLICATIONS,
-        variables: {
-          filter: {
-            logic: 'and',
-            filters: [{ field: 'ids', operator: 'in', value: this.value}]
-            // ids: this.value
-          }
-        }
-      }).subscribe(res => {
-        this.selectedApplications = res.data.applications.edges.map(x => x.node);
-      });
+      this.apollo
+        .query<GetApplicationsQueryResponse>({
+          query: GET_APPLICATIONS,
+          variables: {
+            filter: {
+              logic: 'and',
+              filters: [{ field: 'ids', operator: 'in', value: this.value }],
+              // ids: this.value
+            },
+          },
+        })
+        .subscribe((res) => {
+          this.selectedApplications = res.data.applications.edges.map(
+            (x) => x.node
+          );
+        });
     }
 
-    this.applicationsQuery = this.apollo.watchQuery<GetApplicationsQueryResponse>({
-      query: GET_APPLICATIONS,
-      variables: {
-        first: ITEMS_PER_PAGE
-      }
-    });
+    this.applicationsQuery =
+      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+        },
+      });
 
     this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe(res => {
-      this.applications.next(res.data.applications.edges.map(x => x.node));
+    this.applicationsQuery.valueChanges.subscribe((res) => {
+      this.applications.next(res.data.applications.edges.map((x) => x.node));
       if (this.selectedApplications.length > 0) {
-        const applicationsIds = this.applications.getValue().map(x => x.id);
-        this.selectedApplications = this.selectedApplications.filter(x => applicationsIds.indexOf(x.id) < 0);
+        const applicationsIds = this.applications.getValue().map((x) => x.id);
+        this.selectedApplications = this.selectedApplications.filter(
+          (x) => applicationsIds.indexOf(x.id) < 0
+        );
       }
       this.pageInfo = res.data.applications.pageInfo;
       this.loading = res.loading;
@@ -93,7 +116,9 @@ export class SafeApplicationDropdownComponent implements OnInit {
   onOpenSelect(e: any): void {
     if (e && this.applicationSelect) {
       const panel = this.applicationSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
   }
 
@@ -103,24 +128,32 @@ export class SafeApplicationDropdownComponent implements OnInit {
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.applicationsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor
+            afterCursor: this.pageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             return Object.assign({}, prev, {
               applications: {
-                edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
+                edges: [
+                  ...prev.applications.edges,
+                  ...fetchMoreResult.applications.edges,
+                ],
                 pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount
-              }
+                totalCount: fetchMoreResult.applications.totalCount,
+              },
             });
-          }
+          },
         });
       }
     }

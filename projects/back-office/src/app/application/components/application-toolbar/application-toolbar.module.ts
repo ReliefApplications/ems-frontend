@@ -5,7 +5,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 @NgModule({
   declarations: [ApplicationToolbarComponent],
   imports: [
@@ -13,8 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDividerModule,
     SafeConfirmModalModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [ApplicationToolbarComponent]
+  exports: [ApplicationToolbarComponent],
 })
-export class ApplicationToolbarModule { }
+export class ApplicationToolbarModule {}

@@ -16,8 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatInputModule,
     EditorModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeEditorSettingsComponent]
+  exports: [SafeEditorSettingsComponent],
 })
-export class SafeEditorSettingsModule { }
+export class SafeEditorSettingsModule {}

@@ -6,8 +6,8 @@ import { UsersComponent } from './users.component';
 const routes: Routes = [
   {
     path: '',
-    component: UsersComponent
-  }
+    component: UsersComponent,
+  },
 ];
 
 /**
@@ -15,6 +15,6 @@ const routes: Routes = [
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class UsersRoutingModule { }
+export class UsersRoutingModule {}

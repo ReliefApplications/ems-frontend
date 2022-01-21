@@ -8,9 +8,8 @@ describe('SafePreviousButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafePreviousButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [SafePreviousButtonComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

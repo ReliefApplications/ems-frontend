@@ -13,43 +13,47 @@ export const routes = [
     children: [
       {
         path: 'profile',
-        loadChildren: () => import('./pages/profile/profile.module')
-          .then(m => m.ProfileModule),
+        loadChildren: () =>
+          import('./pages/profile/profile.module').then((m) => m.ProfileModule),
       },
       {
         path: 'dashboard/:id',
-        loadChildren: () => import('./pages/dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        loadChildren: () =>
+          import('./pages/dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: 'form/:id',
-        loadChildren: () => import('./pages/form/form.module')
-          .then(m => m.FormModule),
+        loadChildren: () =>
+          import('./pages/form/form.module').then((m) => m.FormModule),
       },
       {
         path: 'workflow/:id',
-        loadChildren: () => import('./pages/workflow/workflow.module')
-          .then(m => m.WorkflowModule),
+        loadChildren: () =>
+          import('./pages/workflow/workflow.module').then(
+            (m) => m.WorkflowModule
+          ),
       },
       {
         path: 'settings',
         children: [
           {
             path: 'roles',
-            loadChildren: () => import('./pages/roles/roles.module')
-              .then(m => m.RolesModule),
+            loadChildren: () =>
+              import('./pages/roles/roles.module').then((m) => m.RolesModule),
             // canActivate: [WhoPermissionGuard]
           },
           {
             path: 'users',
-            loadChildren: () => import('./pages/users/users.module')
-              .then(m => m.UsersModule),
+            loadChildren: () =>
+              import('./pages/users/users.module').then((m) => m.UsersModule),
             // canActivate: [WhoPermissionGuard]
           },
-        ]
-      }
-    ]
-  }
+        ],
+      },
+    ],
+  },
 ];
 
 /**
@@ -57,6 +61,6 @@ export const routes = [
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

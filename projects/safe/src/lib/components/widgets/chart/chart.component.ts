@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
 import { Subscription } from 'rxjs';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
@@ -13,12 +20,11 @@ const DEFAULT_FILE_NAME = 'chart.png';
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss']
+  styleUrls: ['./chart.component.scss'],
 })
 /*  Chart widget using KendoUI.
-*/
+ */
 export class SafeChartComponent implements OnChanges, OnDestroy {
-
   // === DATA ===
   public loading = true;
   public series: any[] = [];
@@ -32,19 +38,27 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   // === CHART ===
   @ViewChild('chartWrapper')
-  private chartWrapper?: SafeLineChartComponent | SafePieChartComponent | SafeDonutChartComponent |
-    SafeBarChartComponent | SafeColumnChartComponent;
+  private chartWrapper?:
+    | SafeLineChartComponent
+    | SafePieChartComponent
+    | SafeDonutChartComponent
+    | SafeBarChartComponent
+    | SafeColumnChartComponent;
 
-  constructor(
-    private aggregationBuilder: AggregationBuilderService
-  ) { }
+  constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   /*  Detect changes of the settings to reload the data.
-  */
+   */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.settings?.firstChange || changes.settings.currentValue.chart.pipeline !== changes.settings.previousValue.chart.pipeline) {
+    if (
+      changes.settings?.firstChange ||
+      changes.settings.currentValue.chart.pipeline !==
+        changes.settings.previousValue.chart.pipeline
+    ) {
       this.loading = true;
-      this.dataQuery = this.aggregationBuilder.buildAggregation(this.settings.chart.pipeline);
+      this.dataQuery = this.aggregationBuilder.buildAggregation(
+        this.settings.chart.pipeline
+      );
       if (this.dataQuery) {
         this.getData();
       } else {
@@ -54,30 +68,41 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   }
 
   public onExport(): void {
-    this.chartWrapper?.chart?.exportImage({
-      width: 1200,
-      height: 800
-    }).then((dataURI: string) => {
-      saveAs(dataURI, this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME);
-    });
+    this.chartWrapper?.chart
+      ?.exportImage({
+        width: 1200,
+        height: 800,
+      })
+      .then((dataURI: string) => {
+        saveAs(
+          dataURI,
+          this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME
+        );
+      });
   }
 
   /*  Load the data, using widget parameters.
-  */
+   */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-      if (['pie', 'donut', 'line', 'bar', 'column'].includes(this.settings.chart.type)) {
-        this.series = [
-          {
-            data: JSON.parse(JSON.stringify(res.data.recordsAggregation))
-          }
-        ];
-      } else {
-        this.series = res.data.recordsAggregation;
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+      (res: any) => {
+        if (
+          ['pie', 'donut', 'line', 'bar', 'column'].includes(
+            this.settings.chart.type
+          )
+        ) {
+          this.series = [
+            {
+              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
+            },
+          ];
+        } else {
+          this.series = res.data.recordsAggregation;
+        }
+        this.loading = res.loading;
+        this.dataSubscription?.unsubscribe();
       }
-      this.loading = res.loading;
-      this.dataSubscription?.unsubscribe();
-    });
+    );
   }
 
   ngOnDestroy(): void {

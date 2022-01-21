@@ -26,8 +26,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [FormRecordsComponent]
+  exports: [FormRecordsComponent],
 })
-export class FormRecordsModule { }
+export class FormRecordsModule {}

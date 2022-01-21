@@ -10,7 +10,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule as AngularFormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormsModule as AngularFormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeButtonModule } from '@safe/builder';
@@ -20,30 +23,27 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    ApiConfigurationsComponent,
-    AddApiConfigurationComponent,
+  declarations: [ApiConfigurationsComponent, AddApiConfigurationComponent],
+  imports: [
+    CommonModule,
+    ApiConfigurationsRoutingModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatChipsModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    AngularFormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    SafeButtonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatPaginatorModule,
+    TranslateModule,
   ],
-    imports: [
-        CommonModule,
-        ApiConfigurationsRoutingModule,
-        MatMenuModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatChipsModule,
-        MatSortModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        AngularFormsModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        SafeButtonModule,
-        MatIconModule,
-        MatButtonModule,
-        MatPaginatorModule,
-        TranslateModule
-    ],
-  exports: [ApiConfigurationsComponent]
+  exports: [ApiConfigurationsComponent],
 })
-export class ApiConfigurationsModule { }
+export class ApiConfigurationsModule {}

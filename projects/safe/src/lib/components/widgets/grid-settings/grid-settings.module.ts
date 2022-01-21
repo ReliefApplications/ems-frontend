@@ -20,7 +20,10 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
+  declarations: [
+    SafeGridSettingsComponent,
+    SafeFloatingButtonSettingsComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,8 +42,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTabsModule,
     MatChipsModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeGridSettingsComponent]
+  exports: [SafeGridSettingsComponent],
 })
-export class SafeGridSettingsModule { }
+export class SafeGridSettingsModule {}

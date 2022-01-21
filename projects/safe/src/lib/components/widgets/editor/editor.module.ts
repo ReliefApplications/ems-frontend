@@ -5,10 +5,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 
 @NgModule({
   declarations: [SafeEditorComponent],
-    imports: [
-      CommonModule,
-      LayoutModule
-    ],
-  exports: [SafeEditorComponent]
+  imports: [CommonModule, LayoutModule],
+  exports: [SafeEditorComponent],
 })
-export class SafeEditorModule { }
+export class SafeEditorModule {}

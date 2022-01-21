@@ -1,30 +1,18 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService } from '@azure/msal-angular';
-import { RedirectRequest } from '@azure/msal-browser';
+import { Component } from '@angular/core';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
-
-  constructor(
-    @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-    private msalService: MsalService,
-  ) { }
-
-  ngOnInit(): void {
-  }
+export class LoginComponent {
+  constructor(private oauthService: OAuthService) {}
 
   /**
    * Redirects to Azure authentication page.
    */
   onLogin(): void {
-    if (this.msalGuardConfig.authRequest) {
-      this.msalService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
-    } else {
-      this.msalService.loginRedirect();
-    }
+    this.oauthService.initLoginFlow();
   }
 }

@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { SafeAccessModule, SafeRecordHistoryModule, SafeWidgetGridModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeAccessModule,
+  SafeRecordHistoryModule,
+  SafeWidgetGridModule,
+  SafeButtonModule,
+} from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,10 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    DashboardComponent,
-    ShareUrlComponent
-  ],
+  declarations: [DashboardComponent, ShareUrlComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,
@@ -41,8 +43,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ClipboardModule,
     SafeRecordHistoryModule,
     SafeButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [DashboardComponent]
+  exports: [DashboardComponent],
 })
-export class DashboardModule { }
+export class DashboardModule {}

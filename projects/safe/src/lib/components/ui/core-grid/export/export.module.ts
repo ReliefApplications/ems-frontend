@@ -8,19 +8,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeExportComponent
-  ],
+  declarations: [SafeExportComponent],
   imports: [
     CommonModule,
     FormsModule,
     MatDialogModule,
     MatRadioModule,
     MatButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [
-    SafeExportComponent
-  ]
+  exports: [SafeExportComponent],
 })
-export class SafeExportModule { }
+export class SafeExportModule {}

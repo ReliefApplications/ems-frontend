@@ -16,6 +16,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -35,8 +37,10 @@ import { FormsModule } from '@angular/forms';
     MatTooltipModule,
     SafeButtonModule,
     IndicatorsModule,
-    TranslateModule
+    TranslateModule,
+    SafeSearchMenuModule,
+    OverlayModule
   ],
-  exports: [SafeLayoutComponent]
+  exports: [SafeLayoutComponent],
 })
-export class SafeLayoutModule { }
+export class SafeLayoutModule {}

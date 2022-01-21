@@ -47,8 +47,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     MatTooltipModule,
     SafeInviteUsersModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeUsersComponent]
+  exports: [SafeUsersComponent],
 })
-export class SafeUsersModule { }
+export class SafeUsersModule {}

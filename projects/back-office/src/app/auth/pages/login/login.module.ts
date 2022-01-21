@@ -13,8 +13,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatFormFieldModule,
     LoginRoutingModule,
     MatGridListModule,
-    SafeButtonModule
+    SafeButtonModule,
   ],
-  exports: [LoginComponent]
+  exports: [LoginComponent],
 })
-export class LoginModule { }
+export class LoginModule {}

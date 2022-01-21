@@ -12,9 +12,7 @@ import { SafePreviousButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    PositionAttributesComponent,
-  ],
+  declarations: [PositionAttributesComponent],
   imports: [
     CommonModule,
     PositionAttributesRoutingModule,
@@ -24,8 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatIconModule,
     SafePreviousButtonModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [PositionAttributesComponent]
+  exports: [PositionAttributesComponent],
 })
-export class PositionAttributesModule { }
+export class PositionAttributesModule {}

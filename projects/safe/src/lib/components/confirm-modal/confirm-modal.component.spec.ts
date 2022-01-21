@@ -8,9 +8,8 @@ describe('SafeConfirmModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeConfirmModalComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeConfirmModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

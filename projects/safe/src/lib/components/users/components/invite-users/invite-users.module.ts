@@ -11,9 +11,7 @@ import { SafeAddUserModule } from '../add-user/add-user.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeInviteUsersComponent
-  ],
+  declarations: [SafeInviteUsersComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,8 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonModule,
     ButtonsModule,
     SafeAddUserModule,
-    TranslateModule
+    TranslateModule,
   ],
-  exports: [SafeInviteUsersComponent]
+  exports: [SafeInviteUsersComponent],
 })
-export class SafeInviteUsersModule { }
+export class SafeInviteUsersModule {}

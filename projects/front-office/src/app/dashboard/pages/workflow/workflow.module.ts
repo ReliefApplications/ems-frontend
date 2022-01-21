@@ -14,8 +14,8 @@ import { SafeWorkflowStepperModule } from '@safe/builder';
     CommonModule,
     WorkflowRoutingModule,
     MatProgressSpinnerModule,
-    SafeWorkflowStepperModule
+    SafeWorkflowStepperModule,
   ],
-  exports: [WorkflowComponent]
+  exports: [WorkflowComponent],
 })
-export class WorkflowModule { }
+export class WorkflowModule {}

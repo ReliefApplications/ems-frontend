@@ -8,9 +8,8 @@ describe('SafeStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeStepComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeStepComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

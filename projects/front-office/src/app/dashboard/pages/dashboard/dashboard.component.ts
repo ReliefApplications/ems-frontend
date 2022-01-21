@@ -1,9 +1,23 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from './graphql/queries';
-import { Dashboard, SafeSnackBarService, SafeDashboardService, NOTIFICATIONS } from '@safe/builder';
+import {
+  GetDashboardByIdQueryResponse,
+  GET_DASHBOARD_BY_ID,
+} from './graphql/queries';
+import {
+  Dashboard,
+  SafeSnackBarService,
+  SafeDashboardService,
+  NOTIFICATIONS,
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 /**
@@ -12,10 +26,9 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
@@ -47,7 +60,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService
-  ) { }
+  ) {}
 
   /**
    * Subscribes to the route to load the dashboard accordingly.
@@ -55,27 +68,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
-      this.apollo.watchQuery<GetDashboardByIdQueryResponse>({
-        query: GET_DASHBOARD_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.dashboard) {
-          this.dashboard = res.data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = res.data.dashboard.structure ? res.data.dashboard.structure : [];
-          this.loading = res.loading;
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('dashboard'), { error: true });
-          this.router.navigate(['/applications']);
-        }
-      },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.router.navigate(['/applications']);
-        }
-      );
+      this.apollo
+        .watchQuery<GetDashboardByIdQueryResponse>({
+          query: GET_DASHBOARD_BY_ID,
+          variables: {
+            id: this.id,
+          },
+        })
+        .valueChanges.subscribe(
+          (res) => {
+            if (res.data.dashboard) {
+              this.dashboard = res.data.dashboard;
+              this.dashboardService.openDashboard(this.dashboard);
+              this.widgets = res.data.dashboard.structure
+                ? res.data.dashboard.structure
+                : [];
+              this.loading = res.loading;
+            } else {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.accessNotProvided('dashboard'),
+                { error: true }
+              );
+              this.router.navigate(['/applications']);
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.router.navigate(['/applications']);
+          }
+        );
     });
   }
 
