@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    SafeButtonModule
+    SafeButtonModule,
   ],
   exports: [SafeSearchMenuComponent],
 })
