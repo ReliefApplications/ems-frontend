@@ -126,6 +126,7 @@ const initializeAuth =
   () => {
     oauth.configure(environment.authConfig);
     oauth.loadDiscoveryDocumentAndLogin();
+    oauth.setupAutomaticSilentRefresh();
     oauth.events
       .pipe(filter((e) => e.type === 'token_received'))
       .subscribe((token) => {
