@@ -212,7 +212,7 @@ export class QueryBuilderService {
           order: [(value && value.sort) ? value.sort.order : 'asc']
         }),
         filter: this.createFilterGroup(value && value.filter ? value.filter : {}, null),
-        clorophlet: this.formBuilder.array((value && value.clorophlet) ? value.clorophlet : [])});
+        clorophlet: this.formBuilder.array((value && value.clorophlet) ? this.createClorophletArray(value.clorophlet) : [])});
     }
     return this.formBuilder.group({
       name: [value ? value.name : '', validators ? Validators.required : null],
@@ -227,10 +227,33 @@ export class QueryBuilderService {
     });
   }
 
+  private createClorophletArray(clorophlet: any): any[] {
+    const res: any[] = [];
+    clorophlet.map((value: any) => {
+      res.push(this.formBuilder.group({
+        name: value.name,
+        place: value.place,
+        divisions: this.formBuilder.array(this.createDivisionsArray(value.divisions ? value.divisions : []))
+      }));
+    });
+    return res;
+  }
+
+  private createDivisionsArray(divisions: any): any[] {
+    const res: any[] = [];
+    divisions.map((value: any) => {
+      res.push(this.formBuilder.group({
+        color: value.color
+      }));
+    });
+    return res;
+  }
+
   public createFilterGroup(filter: any, fields: any): FormGroup {
     if (filter) {
       if (filter.filters) {
         const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
+        console.log(filters);
         return this.formBuilder.group({
           logic: filter.logic || 'and',
           filters: this.formBuilder.array(filters)

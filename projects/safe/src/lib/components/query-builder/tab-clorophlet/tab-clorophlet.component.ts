@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'safe-tab-clorophlet',
@@ -10,21 +10,37 @@ export class TabClorophletComponent implements OnInit {
 
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
-
-  test = this.formBuilder.group({name: ['']});
+  @Input() settings: any;
 
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    console.log(this.form);
   }
 
   public newClorophlet(): void {
-    this.form.push(this.formBuilder.group({name: ['', [Validators.required]]}));
+    this.form.push(this.formBuilder.group({
+      name: ['', [Validators.required]],
+      place: ['', [Validators.required]],
+      divisions: [this.formBuilder.array([])]
+    }));
   }
 
   public removeClorophlet(index: number): void {
     this.form.removeAt(index);
+  }
+
+  public newDivision(form: any): void {
+    form.controls.divisions.push(this.formBuilder.group({
+      color: [''],
+      filters: [this.formBuilder.group({
+        logic: 'and',
+        filters: this.formBuilder.array([])})]
+    }));
+    console.log(this.form);
+  }
+
+  public removeDivision(form: any, index: number): void {
+    form.controls.divisions.removeAt(index);
   }
 
 }

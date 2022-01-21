@@ -1,11 +1,37 @@
-
 <div class="filter-list" *ngFor="let item of form.controls, index as i">
     <form [formGroup]="$any(item)">
-        <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input type="text" placeholder="Set a new name" matInput formControlName="name">
-        </mat-form-field>
-        <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input type="text" placeholder="Set a new name" matInput formControlName="name">
+            </mat-form-field>
+            <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+        </div>
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Place</mat-label>
+                <mat-select formControlName="place">
+                    <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div *ngIf="item.value.place">
+            <div formArrayName="divisions">
+                <div *ngFor="let division of $any(form.controls[i]).controls.divisions.controls; let f = index;"
+                class="filter-list" [formGroupName]="f">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Color</mat-label>
+                        <input type="text" placeholder="#FFFFFF" matInput formControlName="color">
+                    </mat-form-field>
+                    <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
+                    <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.value[f].filters"
+                    [fields]="fields" [settings]="settings"></safe-tab-filter>
+                </div>
+            </div>
+            <div>
+                <safe-button category="tertiary" (click)="newDivision(item)">Add new division</safe-button>
+            </div>
+        </div>
     </form>
 </div>
 <div class="filter-buttons">
