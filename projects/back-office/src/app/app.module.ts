@@ -27,7 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { OAuthModule, OAuthService, AuthConfig } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
 
 localStorage.setItem('loaded', 'false');
