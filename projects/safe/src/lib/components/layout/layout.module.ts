@@ -39,7 +39,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     IndicatorsModule,
     TranslateModule,
     SafeSearchMenuModule,
-    OverlayModule
+    OverlayModule,
   ],
   exports: [SafeLayoutComponent],
 })

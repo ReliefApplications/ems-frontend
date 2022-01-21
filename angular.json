@@ -69,7 +69,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/back-office/src/favicon.ico",
@@ -283,7 +283,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/back-office/src/favicon.ico",
@@ -351,7 +351,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/front-office/src/favicon.ico",
@@ -561,7 +561,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/front-office/src/favicon.ico",
@@ -625,7 +625,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/web-element/src/favicon.ico",
@@ -725,7 +725,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/languages/",
+                "input": "projects/safe/src/i18n/",
                 "output": "/assets/i18n/"
               },
               "projects/web-element/src/favicon.ico",
