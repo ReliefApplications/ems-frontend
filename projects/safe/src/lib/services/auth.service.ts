@@ -1,10 +1,16 @@
 import { Apollo } from 'apollo-angular';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { filter, map } from 'rxjs/operators';
 
 export interface Account {
   name: string;
@@ -33,12 +39,33 @@ export class SafeAuthService {
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
+  private isAuthenticated = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$ = this.isAuthenticated.asObservable();
+
+  private isDoneLoading = new ReplaySubject<boolean>();
+  public isDoneLoading$ = this.isDoneLoading.asObservable();
+
+  public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([
+    this.isAuthenticated$,
+    this.isDoneLoading$,
+  ]).pipe(map((values) => values.every((x) => x)));
+
   /**
    * Shared authentication service.
    *
    * @param apollo Apollo client
    */
   constructor(private apollo: Apollo, private oauthService: OAuthService) {
+    this.oauthService.events.subscribe(() =>
+      this.isAuthenticated.next(this.oauthService.hasValidAccessToken())
+    );
+    this.oauthService.events
+      .pipe(filter((e) => ['token_received'].includes(e.type)))
+      .subscribe(() => {
+        localStorage.setItem('idtoken', this.oauthService.getIdToken());
+        this.oauthService.loadUserProfile();
+      });
+    this.oauthService.setupAutomaticSilentRefresh();
     this.checkAccount();
   }
 
@@ -85,6 +112,13 @@ export class SafeAuthService {
     } else {
       return false;
     }
+  }
+
+  public initLoginSequence(): Promise<void> {
+    return this.oauthService
+      .loadDiscoveryDocumentAndLogin()
+      .then(() => this.isDoneLoading.next(true))
+      .catch(() => this.isDoneLoading.next(true));
   }
 
   /**
