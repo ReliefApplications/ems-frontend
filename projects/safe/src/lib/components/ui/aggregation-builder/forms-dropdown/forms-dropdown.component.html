@@ -1,0 +1,10 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{'aggregation.dataSource' | translate}}</mat-label>
+  <input type="text" [placeholder]="'filter.search' | translate" matInput [formControl]="sourceFormControl" [matAutocomplete]="auto">
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName" (opened)="onOpen($event)" (closed)="onClose($event)">
+    <mat-option *ngFor="let form of filteredForms" [value]="form">
+      {{form.name}}
+      <safe-icon *ngIf="form.core" icon="storage" variant="primary" [size]="20"></safe-icon>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

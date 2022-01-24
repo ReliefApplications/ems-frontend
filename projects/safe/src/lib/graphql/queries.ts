@@ -181,26 +181,41 @@ export interface GetResourceByIdQueryResponse {
 // === GET FORMS ===
 
 export const GET_FORMS = gql`
-  {
-    forms {
-      id
-      name
-      createdAt
-      status
-      versions {
-        id
+  query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
+    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          core
+          resource {
+            id
+          }
+        }
+        cursor
       }
-      recordsCount
-      core
-      canUpdate
-      canDelete
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
-  forms: Form[];
+  forms: {
+    edges: {
+      node: Form;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
 }
 
 // === GET RESOURCES ===

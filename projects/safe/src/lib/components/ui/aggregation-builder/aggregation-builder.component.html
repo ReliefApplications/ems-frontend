@@ -1,0 +1,7 @@
+<h2>{{ 'aggregation.builderTitle' | translate }}</h2>
+<safe-forms-dropdown
+  [forms$]="forms$"
+  [sourceControl]="aggregationForm.controls.dataSource"
+  (filter)="onFilterDataSource($event)"
+  (scrolled)="fetchMoreDataSources($event)"
+></safe-forms-dropdown>

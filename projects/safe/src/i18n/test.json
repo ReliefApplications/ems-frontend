@@ -429,5 +429,9 @@
         "changeAccess": "******",
         "clearCache": "******",
         "filterVisibility": "******"
-    }
+    },
+    "aggregation": {
+        "builderTitle": "******",
+        "dataSource": "******"
+    } 
 }

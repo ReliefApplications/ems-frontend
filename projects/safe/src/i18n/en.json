@@ -399,5 +399,9 @@
         "changeAccess": "Change access",
         "clearCache": "Clear cache",
         "filterVisibility": "Click to toggle visibility of filter"
-    }
+    },
+    "aggregation": {
+        "builderTitle": "Aggregation builder",
+        "dataSource": "Select the data source"
+    } 
 }
