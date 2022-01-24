@@ -332,6 +332,10 @@ export class QueryBuilderService {
         value && value.filter ? value.filter : {},
         null
       ),
+      style: this.formBuilder.array(
+        value.style && value.style.length ? value.style.map((x: any) => 
+        this.createStyleForm(x)) : [this.createStyleForm(null)]
+      )
     });
   }
 
@@ -451,5 +455,17 @@ export class QueryBuilderService {
     } else {
       return null;
     }
+  }
+
+  private createStyleForm(value: any): FormGroup {
+    const styleForm = this.formBuilder.group({
+      title: [value && value.name ? value.name : 'New style', Validators.required],
+      backgroundColor: [value && value.backgroundColor ? value.backgroundColor : null],
+      textColor: [value && value.textColor ? value.textColor : null],
+      textStyle: [value && value.textStyle ? value.textStyle : null],
+      styleAppliedTo: [value && value.styleAppliedTo ? value.styleAppliedTo : null],
+      preview: [value && value.preview ? value.preview : null],
+    });
+    return styleForm;
   }
 }

@@ -1,0 +1,18 @@
+<div class="info-text">{{'widgets.query.style.description' | translate}}</div>
+<form [formGroup]="form">
+    <div class="filter-buttons">
+        <safe-button (click)="onAddStyle()" category="tertiary">{{'widgets.query.style.new' | translate}}</safe-button>
+    </div>
+    <div *ngFor="let style of styleControlsArray; let i=index">
+        <ng-container [formGroup]="style">
+            <mat-form-field appearance="outline">
+                <mat-label>Rule Name</mat-label>
+                <input matInput type="text" formControlName="title" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Preview</mat-label>
+                <input matInput type="text" formControlName="preview" />
+            </mat-form-field>
+        </ng-container>
+    </div>
+</form>

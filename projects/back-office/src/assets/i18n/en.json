@@ -309,6 +309,15 @@
                 "new": "Add new fiter",
                 "newGroup": "Add new filter group",
                 "operator": "Operator"
+            },
+            "style": {
+                "title": "Style",
+                "logic": "Style filter",
+                "description": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used.",
+                "or": "Or",
+                "and": "And",
+                "new": "Add styling rule",
+                "operator": "Operator"
             }
         },
         "grid": {

@@ -103,6 +103,7 @@ export class SafeQueryBuilderComponent implements OnInit {
       });
       this.form?.controls.name.valueChanges.subscribe((res) => {
         if (this.allQueries.find((x) => x === res)) {
+          console.log(" res=  ", res);
           this.availableFields = this.queryBuilder.getFields(res);
           this.form?.setControl(
             'filter',
@@ -143,6 +144,7 @@ export class SafeQueryBuilderComponent implements OnInit {
         this.filteredQueries = this.filterQueries(res);
       });
     }
+    console.log("this form = ", this.form);
   }
 
   onCloseField(): void {
