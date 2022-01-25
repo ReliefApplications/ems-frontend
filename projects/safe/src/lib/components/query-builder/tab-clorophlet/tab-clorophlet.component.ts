@@ -15,13 +15,14 @@ export class TabClorophletComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    console.log(this.form);
   }
 
   public newClorophlet(): void {
     this.form.push(this.formBuilder.group({
       name: ['', [Validators.required]],
       place: ['', [Validators.required]],
-      divisions: [this.formBuilder.array([])]
+      divisions: this.formBuilder.array([])
     }));
   }
 
@@ -32,9 +33,10 @@ export class TabClorophletComponent implements OnInit {
   public newDivision(form: any): void {
     form.controls.divisions.push(this.formBuilder.group({
       color: [''],
-      filters: [this.formBuilder.group({
-        logic: 'and',
-        filters: this.formBuilder.array([])})]
+      filter: this.formBuilder.group({
+        logic: ['and'],
+        filters: this.formBuilder.array([])
+      })
     }));
     console.log(this.form);
   }

@@ -6,6 +6,9 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
+import { statesData } from './geojson';
+import { applyFilters } from './filter';
+
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
 
@@ -74,6 +77,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private dataQuery: any;
   private dataSubscription?: Subscription;
   private displayFields: string[] = [];
+
+  // === CLOROPHLETS ===
+  private clorophletSettings: any;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -163,6 +169,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     });
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
 
+
   }
 
   /* Load the data, using widget parameters.
@@ -210,12 +217,48 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Add custom marker categories for each
-    this.categoryNames.map((name: string) => {
-      this.overlays[name] = L.featureGroup.subGroup(
-        this.markersLayer,
-        this.markersCategories[name]
-      ).addTo(this.map);
-    });
+    if (this.categoryNames.length !== 0) {
+      this.categoryNames.map((name: string) => {
+        this.overlays[name] = L.featureGroup.subGroup(
+          this.markersLayer,
+          this.markersCategories[name]
+        ).addTo(this.map);
+      });
+    }
+    else {
+        this.overlays.markers = L.featureGroup(
+          this.markersLayer
+        ).addTo(this.map);
+    }
+
+    // Loops throught clorophlets and add them to the map
+    if (this.settings.query.clorophlet) {
+      this.settings.query.clorophlet.map((value: any) => {
+        this.overlays[value.name] = L.geoJson(statesData, {style(feature: any): any {
+          let color = 'transparent';
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              res.data[field].edges.map((entry: any) => {
+                if (entry.node[value.place] === feature.properties.name) {
+                  value.divisions.map((div: any) => {
+                    if (applyFilters(entry.node, div.filter)) {
+                      color = div.color;
+                    }
+                  });
+                }
+              });
+            }
+          }
+
+          // if (filter(this.settings))
+          return {
+              fillColor: color,
+              stroke: false,
+              fillOpacity: 1
+          };
+        }}).addTo(this.map);
+      });
+    }
 
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
@@ -238,7 +281,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Set ups layer control if more that one layer is added
-    if (this.categoryNames[1] || this.settings.onlineLayers) {
+    if (this.categoryNames.length !== 0 || this.settings.onlineLayers.length !== 0) {
       this.layerControl = L.control.layers(null, this.overlays, {collapsed: true}).addTo(this.map);
     }
 
@@ -283,7 +326,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private clorophletStyle(feature: any): any {
+  private clorophletStyle(feature: any, value: any): any {
+    console.log(feature);
     const d = feature.properties.density;
     const color = d > 1000 ? '#800026' :
       d > 500  ? '#BD0026' :

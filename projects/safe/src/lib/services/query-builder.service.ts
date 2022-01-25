@@ -243,7 +243,8 @@ export class QueryBuilderService {
     const res: any[] = [];
     divisions.map((value: any) => {
       res.push(this.formBuilder.group({
-        color: value.color
+        color: value.color,
+        filter: this.createFilterGroup(value.filter, null)
       }));
     });
     return res;
@@ -253,7 +254,6 @@ export class QueryBuilderService {
     if (filter) {
       if (filter.filters) {
         const filters = filter.filters.map((x: any) => this.createFilterGroup(x, fields));
-        console.log(filters);
         return this.formBuilder.group({
           logic: filter.logic || 'and',
           filters: this.formBuilder.array(filters)

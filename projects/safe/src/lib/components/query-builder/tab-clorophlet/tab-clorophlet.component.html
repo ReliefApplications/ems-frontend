@@ -21,10 +21,12 @@
                 class="filter-list" [formGroupName]="f">
                     <mat-form-field appearance="outline">
                         <mat-label>Color</mat-label>
-                        <input type="text" placeholder="#FFFFFF" matInput formControlName="color">
+                        <div class="placeholder"></div>
+                        <input type="color" matInput formControlName="color">
+                        <!-- <input type="text" placeholder="#FFFFFF" matInput formControlName="color"> -->
                     </mat-form-field>
                     <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
-                    <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.value[f].filters"
+                    <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.controls[f].controls.filter"
                     [fields]="fields" [settings]="settings"></safe-tab-filter>
                 </div>
             </div>
