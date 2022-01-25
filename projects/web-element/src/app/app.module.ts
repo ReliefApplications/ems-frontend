@@ -1,4 +1,10 @@
-import { DoBootstrap, ElementRef, Injector, NgModule } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  DoBootstrap,
+  ElementRef,
+  Injector,
+  NgModule,
+} from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import {
@@ -13,7 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
@@ -42,6 +48,10 @@ import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.compo
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
+import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { filter } from 'rxjs/operators';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 /*  Configuration of the Apollo client.
  */
@@ -118,6 +128,30 @@ export const provideApollo = (httpLink: HttpLink): any => {
   };
 };
 
+const initializeAuth =
+  (oauth: OAuthService): any =>
+  () => {
+    oauth.configure(environment.authConfig);
+    // oauth.loadDiscoveryDocumentAndLogin();
+    // oauth.setupAutomaticSilentRefresh();
+    // oauth.events
+    //   .pipe(filter((e) => e.type === 'token_received'))
+    //   .subscribe((token) => {
+    //     console.log('new token');
+    //     localStorage.setItem('idtoken', oauth.getIdToken());
+    //     oauth.loadUserProfile();
+    //   });
+  };
+
+/**
+ * Sets up translator.
+ *
+ * @param http http client
+ * @returns Translator.
+ */
+export const httpTranslateLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http);
+
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -147,6 +181,19 @@ export const provideApollo = (httpLink: HttpLink): any => {
     SafeFormModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['http://localhost:9090/api'],
+        sendAccessToken: true,
+      },
+    }),
   ],
   providers: [
     {
@@ -158,6 +205,12 @@ export const provideApollo = (httpLink: HttpLink): any => {
       provide: APOLLO_OPTIONS,
       useFactory: provideApollo,
       deps: [HttpLink],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      multi: true,
+      deps: [OAuthService],
     },
     {
       provide: POPUP_CONTAINER,
