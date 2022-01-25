@@ -9,7 +9,7 @@
     "build:az:uat:back": "ng build --configuration=azure-uat --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
     "build:az:prod:front": "ng build --configuration=azure-prod --sourceMap=false --project=front-office",
     "build:az:prod:back": "ng build --configuration=azure-prod --sourceMap=false --deploy-url /backoffice/ --base-href /backoffice --project=back-office",
-    "bundle:elem": "cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js > dist/web-element.js",
+    "bundle:elem": "cat dist/web-element/runtime.js dist/web-element/polyfills.js dist/web-element/main.js dist/web-element/scripts.js > dist/web-element.js",
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
     "compodoc:back": "npx compodoc -p tsconfig.json projects/back-office/src -d documentation/back-office",
     "compodoc:safe": "npx compodoc -p tsconfig.json projects/safe/src -d documentation/safe",
