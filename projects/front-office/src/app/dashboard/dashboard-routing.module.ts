@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AccessGuard } from '../guards/access.guard';
 import { DashboardComponent } from './dashboard.component';
 
 /**
@@ -53,6 +54,7 @@ export const routes = [
         ],
       },
     ],
+    canActivate: [AccessGuard],
   },
 ];
 

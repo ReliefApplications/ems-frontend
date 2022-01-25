@@ -20,8 +20,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private formService: SafeFormService,
     private translate: TranslateService
   ) {
-    translate.addLangs(environment.availableLanguages);
-    translate.setDefaultLang('en');
+    this.translate.addLangs(environment.availableLanguages);
+    this.translate.setDefaultLang('en');
   }
 
   /**

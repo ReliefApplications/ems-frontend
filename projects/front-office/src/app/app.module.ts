@@ -125,15 +125,6 @@ const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
     oauth.configure(environment.authConfig);
-    oauth.loadDiscoveryDocumentAndLogin();
-    oauth.setupAutomaticSilentRefresh();
-    oauth.events
-      .pipe(filter((e) => e.type === 'token_received'))
-      .subscribe((token) => {
-        console.log('new token');
-        localStorage.setItem('idtoken', oauth.getIdToken());
-        oauth.loadUserProfile();
-      });
   };
 
 /**
