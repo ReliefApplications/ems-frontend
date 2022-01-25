@@ -232,6 +232,9 @@ export class QueryBuilderService {
     clorophlet.map((value: any) => {
       res.push(this.formBuilder.group({
         name: value.name,
+        geoJSON: value.geoJSON,
+        geoJSONname: value.geoJSONname,
+        geoJSONfield: value.geoJSONfield,
         place: value.place,
         divisions: this.formBuilder.array(this.createDivisionsArray(value.divisions ? value.divisions : []))
       }));

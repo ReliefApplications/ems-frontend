@@ -6,7 +6,6 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
-import { statesData } from './geojson';
 import { applyFilters } from './filter';
 
 // Declares L to be able to use Leaflet from CDN
@@ -234,12 +233,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Loops throught clorophlets and add them to the map
     if (this.settings.query.clorophlet) {
       this.settings.query.clorophlet.map((value: any) => {
-        this.overlays[value.name] = L.geoJson(statesData, {style(feature: any): any {
+        this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {style(feature: any): any {
           let color = 'transparent';
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               res.data[field].edges.map((entry: any) => {
-                if (entry.node[value.place] === feature.properties.name) {
+                if (entry.node[value.place] === feature.properties[value.geoJSONfield]) {
                   value.divisions.map((div: any) => {
                     if (applyFilters(entry.node, div.filter)) {
                       color = div.color;
@@ -325,26 +324,5 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
-
-  private clorophletStyle(feature: any, value: any): any {
-    console.log(feature);
-    const d = feature.properties.density;
-    const color = d > 1000 ? '#800026' :
-      d > 500  ? '#BD0026' :
-      d > 200  ? '#E31A1C' :
-      d > 100  ? '#FC4E2A' :
-      d > 50   ? '#FD8D3C' :
-      d > 20   ? '#FEB24C' :
-      d > 10   ? '#FED976' :
-                '#FFEDA0';
-    return {
-        fillColor: color,
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity: 0.7
-    };
-}
 
 }
