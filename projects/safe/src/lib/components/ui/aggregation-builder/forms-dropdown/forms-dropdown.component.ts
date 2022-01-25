@@ -11,6 +11,7 @@ import {
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
 
 @Component({
@@ -50,15 +51,15 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
       this.filteredForms = this.filterForms(this.sourceFilter);
       this.loading = false;
     });
-    this.sourceControl.valueChanges.subscribe((value: any) => {
-      if (typeof value === 'string') {
-        this.sourceFilter = value;
-        this.filter.emit(value);
-        this.filteredForms = this.filterForms(value);
-      } else {
-        console.log('VALUE', value);
-      }
-    });
+    this.sourceControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') {
+          this.sourceFilter = value;
+          this.filter.emit(value);
+          this.filteredForms = this.filterForms(value);
+        }
+      });
   }
 
   get sourceFormControl(): FormControl {
@@ -82,8 +83,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    * @param form Form to display.
    */
   public displayName(form: any): string {
-    console.log('FORM', form);
-    return form && form.name ? form.name : '';
+    return form && form.name ? form.name : form;
   }
 
   /**
@@ -138,7 +138,6 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
     ) {
       this.loading = true;
       this.scrolled.emit(true);
-      console.log('scrolled');
     }
   }
 }

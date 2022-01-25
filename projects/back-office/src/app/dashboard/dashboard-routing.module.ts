@@ -111,6 +111,13 @@ export const routes = [
         ],
       },
       {
+        path: 'aggregation-builder',
+        loadChildren: () =>
+          import('./pages/aggregation-builder/aggregation-builder.module').then(
+            (m) => m.AggregationBuilderModule
+          ),
+      },
+      {
         path: 'dashboards',
         children: [
           {

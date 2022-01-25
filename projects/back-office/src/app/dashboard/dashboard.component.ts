@@ -41,6 +41,11 @@ export class DashboardComponent implements OnInit {
           path: '/resources',
           icon: 'storage',
         },
+        {
+          name: 'Aggregation builder',
+          path: './aggregation-builder',
+          icon: 'scatter_plot',
+        },
       ],
     },
     {

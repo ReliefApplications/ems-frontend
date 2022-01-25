@@ -3,5 +3,5 @@
   [forms$]="forms$"
   [sourceControl]="aggregationForm.controls.dataSource"
   (filter)="onFilterDataSource($event)"
-  (scrolled)="fetchMoreDataSources($event)"
+  (scrolled)="onScrollDataSource($event)"
 ></safe-forms-dropdown>

@@ -23,7 +23,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
     endCursor: '',
     hasNextPage: true,
   };
-  private formFilter = '';
 
   // === REACTIVE FORM ===
   aggregationForm: FormGroup = new FormGroup({});
@@ -59,8 +58,22 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * @param value string used to filter.
    */
   public onFilterDataSource(value: string): void {
-    this.formFilter = value;
-    this.fetchMoreDataSources();
+    if (!this.loading) {
+      this.loading = true;
+      this.fetchMoreDataSources(false, value);
+    }
+  }
+
+  /**
+   * Fetch next page of data source to add to list.
+   *
+   * @param value string used to filter.
+   */
+  public onScrollDataSource(value: boolean): void {
+    if (!this.loading && this.pageInfo.hasNextPage) {
+      this.loading = true;
+      this.fetchMoreDataSources(value);
+    }
   }
 
   /**
@@ -68,18 +81,20 @@ export class SafeAggregationBuilderComponent implements OnInit {
    *
    * @param nextPage boolean to indicate if we must fetch the next page.
    */
-  public fetchMoreDataSources(nextPage: boolean = false) {
+  public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
     const variables: any = {
       first: ITEMS_PER_PAGE,
     };
-    if (this.formFilter) {
+    if (filter) {
       variables.filter = {
         logic: 'and',
-        filters: {
-          field: 'name',
-          operator: 'contains',
-          value: this.formFilter,
-        },
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: filter,
+          },
+        ],
       };
     }
     if (nextPage) {
@@ -93,7 +108,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
         }
         return Object.assign({}, prev, {
           forms: {
-            edges: fetchMoreResult.forms.edges,
+            edges: prev.forms.edges.concat(
+              fetchMoreResult.forms.edges.filter(
+                (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
+              )
+            ),
             pageInfo: fetchMoreResult.forms.pageInfo,
             totalCount: fetchMoreResult.forms.totalCount,
           },
