@@ -861,7 +861,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
-      exportOptions: e,
       ids,
       filter:
         e.records === 'selected'
@@ -871,11 +870,18 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           : this.queryFilter,
       format: e.format,
+      // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, label: x.title })),
+          .map((x: any) => ({ name: x.field, title: x.title })),
+      }),
+      // we export ALL fields of the grid ( including hidden columns )
+      ...(e.fields === 'all' && {
+        fields: Object.values(currentLayout.fields)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({ name: x.field, title: x.title })),
       }),
     };
 

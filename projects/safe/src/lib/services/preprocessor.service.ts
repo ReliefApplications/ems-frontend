@@ -1,26 +1,11 @@
 import { Injectable } from '@angular/core';
 import { QueryBuilderService } from './query-builder.service';
-import { SafeApiProxyService } from './api-proxy.service';
 import { Apollo } from 'apollo-angular';
-import { mergeMap, map, take } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import get from 'lodash/get';
 
-/** Clones an array of data */
 const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
-/** List of question types with choices */
-const OPTION_QUESTIONS = [
-  'dropdown',
-  'radiogroup',
-  'tagbox',
-  'checkbox',
-  'owner',
-];
 
-/**
- * Shared preprocessor service.
- * The preprocessor service is used by email service in order to transform the parameters of the email into text.
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -35,8 +20,7 @@ export class SafePreprocessorService {
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private apollo: Apollo,
-    private apiProxyService: SafeApiProxyService
+    private apollo: Apollo
   ) {}
 
   /**
@@ -57,12 +41,18 @@ export class SafePreprocessorService {
   ): Promise<string> {
     const promises: Promise<any>[] = [];
 
+    // === TODAY ===
+    if (text.includes('{today}')) {
+      const todayToString = new Date().toDateString();
+      text = text.split('{today}').join(todayToString);
+    }
+
     // === DATASET ===
     if (text.includes('{dataset}') && dataset) {
       if (dataset.ids.length > 0) {
         const builtQuery = this.queryBuilder.buildQuery(dataset.settings);
         if (builtQuery) {
-          const dataQuery = this.apollo.watchQuery<any>({
+          const dataQuery = this.apollo.query<any>({
             query: builtQuery,
             variables: {
               first: dataset.ids.length,
@@ -78,63 +68,35 @@ export class SafePreprocessorService {
                   },
                 ],
               },
+              display: true,
             },
           });
-          const metaQuery = this.queryBuilder.buildMetaQuery(dataset.settings);
-          let metaFields: any = [];
-          if (metaQuery) {
-            promises.push(
-              metaQuery
-                .pipe(
-                  mergeMap((res: any) => {
-                    for (const metaField in res.data) {
-                      if (
-                        Object.prototype.hasOwnProperty.call(
-                          res.data,
-                          metaField
-                        )
-                      ) {
-                        metaFields = Object.assign({}, res.data[metaField]);
-                      }
+          promises.push(
+            dataQuery
+              .pipe(
+                map((res: any) => {
+                  const fields = dataset.settings.query.fields;
+                  let items: any = [];
+                  for (const field in res.data) {
+                    if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                      const nodes =
+                        res.data[field].edges.map((x: any) => x.node) || [];
+                      items = cloneData(nodes);
+                      this.convertDateFields(fields, items);
                     }
-                    return from(this.populateMetaFields(metaFields));
-                  }),
-                  mergeMap(() => dataQuery.valueChanges),
-                  map((res2: any) => {
-                    let fields = dataset.settings.query.fields;
-                    let items: any = [];
-                    for (const field in res2.data) {
-                      if (
-                        Object.prototype.hasOwnProperty.call(res2.data, field)
-                      ) {
-                        fields = this.getFields(metaFields, fields);
-                        const nodes =
-                          res2.data[field].edges.map((x: any) => x.node) || [];
-                        items = cloneData(nodes);
-                        this.convertDateFields(fields, items);
-                      }
-                    }
-                    const datasetToString = this.datasetToString(items, fields);
-                    text = text.split('{dataset}').join(datasetToString);
-                    return;
-                  }),
-                  take(1)
-                )
-                .toPromise()
-            );
-          }
-        } else {
-          text = text.split('{dataset}').join('');
+                  }
+                  const datasetToString = this.datasetToString(items, fields);
+                  text = text.split('{dataset}').join(datasetToString);
+                  return;
+                }),
+                take(1)
+              )
+              .toPromise()
+          );
         }
       } else {
         text = text.split('{dataset}').join('');
       }
-    }
-
-    // === TODAY ===
-    if (text.includes('{today}')) {
-      const todayToString = new Date().toDateString();
-      text = text.split('{today}').join(todayToString);
     }
 
     await Promise.all(promises);
@@ -192,12 +154,8 @@ export class SafePreprocessorService {
           );
           break;
         default:
-          const rawValue = get(item, field.name, '') || '';
-          if (rawValue) {
-            const value =
-              rawValue && OPTION_QUESTIONS.includes(field.meta.type)
-                ? this.getDisplayText(rawValue, field.meta)
-                : rawValue;
+          const value = get(item, field.name, '') || '';
+          if (value) {
             body += `${tabs}${
               field.label ? field.label : field.title ? field.title : field.name
             }:\t${value}\n`;
@@ -205,114 +163,6 @@ export class SafePreprocessorService {
       }
     }
     return body;
-  }
-
-  /**
-   * Populates questions with choices, with meta data.
-   *
-   * @param metaFields list of meta fields.
-   */
-  private async populateMetaFields(metaFields: any): Promise<void> {
-    for (const fieldName of Object.keys(metaFields)) {
-      const meta = metaFields[fieldName];
-      if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(
-              JSON.parse(localRes),
-              meta.choicesByUrl
-            ),
-          };
-        } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-          };
-        }
-      }
-    }
-  }
-
-  /**
-   * Extracts choices using choicesByUrl properties
-   *
-   * @param res Result of http request.
-   * @param choicesByUrl Choices By Url property.
-   * @returns list of choices.
-   */
-  private extractChoices(
-    res: any,
-    choicesByUrl: { path?: string; value?: string; text?: string }
-  ): { value: string; text: string }[] {
-    const choices = choicesByUrl.path
-      ? [...get(res, choicesByUrl.path)]
-      : [...res];
-    return choices
-      ? choices.map((x: any) => ({
-          value: (choicesByUrl.value
-            ? get(x, choicesByUrl.value)
-            : x
-          ).toString(),
-          text: choicesByUrl.text
-            ? get(x, choicesByUrl.text)
-            : choicesByUrl.value
-            ? get(x, choicesByUrl.value)
-            : x,
-        }))
-      : [];
-  }
-
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
-  }
-
-  private getFields(
-    metaFields: any,
-    fields: any[],
-    prefix?: string,
-    disabled?: boolean
-  ): any[] {
-    return this.flatDeep(
-      fields.map((f) => {
-        const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-        switch (f.kind) {
-          case 'OBJECT': {
-            return {
-              name: f.name,
-              title: f.label ? f.label : f.name,
-              kind: 'OBJECT',
-              fields: this.getFields(metaFields, f.fields, fullName, true),
-            };
-          }
-          case 'LIST': {
-            return {
-              name: f.name,
-              title: f.label ? f.label : f.name,
-              kind: 'LIST',
-              fields: this.getFields(metaFields, f.fields, fullName, true),
-            };
-          }
-          default: {
-            const metaData = get(metaFields, fullName);
-            return {
-              name: f.name,
-              title: f.label ? f.label : f.name,
-              type: f.type,
-              meta: metaData,
-            };
-          }
-        }
-      })
-    ).sort((a, b) => a.order - b.order);
   }
 
   /**
@@ -332,31 +182,5 @@ export class SafePreprocessorService {
         }
       }
     });
-  }
-
-  /**
-   * Displays text instead of values for questions with select.
-   *
-   * @param meta meta data of the question.
-   * @param value question value.
-   * @returns text value of the question.
-   */
-  private getDisplayText(
-    value: string | string[],
-    meta: { choices?: { value: string; text: string }[] }
-  ): string | string[] {
-    if (meta.choices) {
-      if (Array.isArray(value)) {
-        return meta.choices.reduce(
-          (acc: string[], x) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-      } else {
-        return meta.choices.find((x) => x.value === value)?.text || '';
-      }
-    } else {
-      return value;
-    }
   }
 }
