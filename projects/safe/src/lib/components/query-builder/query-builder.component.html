@@ -54,7 +54,8 @@
       </mat-tab>
       <mat-tab [label]="'widgets.query.style.title' | translate" *ngIf="form.get('style')">
         <ng-template matTabContent>
-          <safe-tab-style [form]="$any(form)" [fields]="availableFields" [settings]="settings" [factory]="factory">
+          <safe-tab-style [form]="$any(form)" [styleForm]="$any(form.controls.style)" [scalarFields]="availableScalarFields"
+          [fields]="availableFields" [settings]="settings" [factory]="factory">
           </safe-tab-style>
         </ng-template>
       </mat-tab>

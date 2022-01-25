@@ -161,9 +161,9 @@ export class SafeTabFilterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log("this form = ", this.form);
-    console.log("this filter = ", this.filters);
     // TODO: move somewhere else
+    console.log("this tab filter form = ", this.form);
+    console.log("this tab filter filters = ", this.filters);
     if (this.settings) {
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
       if (this.metaQuery) {

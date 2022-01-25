@@ -1,18 +1,66 @@
 <div class="info-text">{{'widgets.query.style.description' | translate}}</div>
 <form [formGroup]="form">
     <div class="filter-buttons">
-        <safe-button (click)="onAddStyle()" category="tertiary">{{'widgets.query.style.new' | translate}}</safe-button>
+        <safe-button icon="add" (click)="onAddStyle()" category="tertiary">{{'widgets.query.style.new' | translate}}</safe-button>
     </div>
-    <div *ngFor="let style of styleControlsArray; let i=index">
-        <ng-container [formGroup]="style">
-            <mat-form-field appearance="outline">
-                <mat-label>Rule Name</mat-label>
-                <input matInput type="text" formControlName="title" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Preview</mat-label>
-                <input matInput type="text" formControlName="preview" />
-            </mat-form-field>
+
+    <div class="field-list-wrapper" *ngIf="!fieldForm">
+        <div class="field-list">
+          <div class="field-box" *ngFor="let style of stylesList; let index = index" cdkDrag>
+            <span class="field-type">{{ style.title }}</span>
+            <span class="field-type">Title</span>
+            <div>
+              <safe-button [isIcon]="true" icon="edit" (click)="onEditStyle(index)"></safe-button>
+              <safe-button [isIcon]="true" icon="delete" (click)="onDeleteStyle(index)"></safe-button>
+            </div>
+          </div>
+        </div>
+      </div> 
+      <div class="field-container" *ngIf="fieldForm">
+        <ng-container>
+            <form [formGroup]="fieldForm" class="field-form">
+                <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+                </safe-button>
+                <mat-form-field appearance="outline">
+                    <mat-label>Rule Name</mat-label>
+                    <input matInput formControlName="title" type="text"/>
+                </mat-form-field>
+                
+                <!-- doesn't work  -->
+
+                <!-- <ng-container>
+                    <safe-tab-filter [form]="$any(styleForm?.controls?.filter)" [fields]="scalarFields" [settings]="settings">
+                    </safe-tab-filter>
+                </ng-container> -->
+
+
+                <!-- to add inside another component -->
+                <!-- <ng-container>
+                    <kendo-colorpicker [value]="color" (valueChange)="onChange($event)">
+                    </kendo-colorpicker>
+                </ng-container> -->
+                
+                <!-- <mat-form-field appearance="outline">
+                    <mat-label>Cell background color</mat-label>
+                    <input matInput formControlName="backgroundColor" type="text"/>
+                </mat-form-field> -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Text color</mat-label>
+                    <input matInput formControlName="textColor" type="text"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Text style</mat-label>
+                    <input matInput formControlName="textStyle" type="text"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Apply style to</mat-label>
+                    <input matInput formControlName="styleAppliedTo" type="text"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Fields</mat-label>
+                    <input matInput formControlName="styleAppliedTo" type="text"/>
+                </mat-form-field>
+            </form>
         </ng-container>
-    </div>
+      </div>
 </form>

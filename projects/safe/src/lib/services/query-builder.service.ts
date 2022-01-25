@@ -459,12 +459,17 @@ export class QueryBuilderService {
 
   private createStyleForm(value: any): FormGroup {
     const styleForm = this.formBuilder.group({
-      title: [value && value.name ? value.name : 'New style', Validators.required],
+      title: [value && value.name ? value.name : 'New rule', Validators.required],
       backgroundColor: [value && value.backgroundColor ? value.backgroundColor : null],
       textColor: [value && value.textColor ? value.textColor : null],
       textStyle: [value && value.textStyle ? value.textStyle : null],
       styleAppliedTo: [value && value.styleAppliedTo ? value.styleAppliedTo : null],
       preview: [value && value.preview ? value.preview : null],
+      fields: [value && value.fields ? value.fields : null],
+      filter: this.createFilterGroup(
+        value && value.filter ? value.filter : {},
+        null
+      ),
     });
     return styleForm;
   }
