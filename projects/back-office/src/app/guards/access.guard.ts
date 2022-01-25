@@ -14,6 +14,9 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+/**
+ * Access Guard. Checks that the user is admin.
+ */
 @Injectable({
   providedIn: 'root',
 })

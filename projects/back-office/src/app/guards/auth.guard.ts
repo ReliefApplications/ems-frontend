@@ -10,6 +10,9 @@ import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+/**
+ * Auth Guard. Checks that the user is authenticated.
+ */
 @Injectable({
   providedIn: 'root',
 })
