@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -10,6 +11,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+        canActivate: [AccessGuard],
       },
       {
         path: 'applications',
@@ -22,6 +24,7 @@ const routes: Routes = [
               ),
           },
         ],
+        canActivate: [AccessGuard],
       },
       {
         path: 'app-preview',
@@ -34,9 +37,10 @@ const routes: Routes = [
               ),
           },
         ],
+        canActivate: [AccessGuard],
       },
     ],
-    canActivate: [AccessGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'auth',
