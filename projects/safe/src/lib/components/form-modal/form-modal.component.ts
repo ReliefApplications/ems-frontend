@@ -77,6 +77,7 @@ export class SafeFormModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    public confirmationDialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
@@ -466,7 +467,21 @@ export class SafeFormModalComponent implements OnInit {
    * Closes the modal without sending any data.
    */
   onClose(): void {
-    this.dialogRef.close();
+    console.log('onClose()');
+    // close the modal even if we put nothing in this metthode (weird)
+    // const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
+    //   data: {
+    //     title: 'Close without saving changes?',
+    //     content: 'Do you confirm that you want to exit the record adding and loose your changes',
+    //     confirmText: 'Confirm',
+    //     confirmColor: 'primary'
+    //   }
+    // });
+    // confirmationDialog.afterClosed().subscribe((value) => {
+    //   console.log('DIALOG CLOSE');
+    //   this.dialogRef.close();
+    // })
+    // this.dialogRef.close();
   }
 
   /**
