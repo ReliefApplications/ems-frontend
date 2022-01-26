@@ -188,7 +188,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    public confirmationDialog: MatDialog,
     private resolver: ComponentFactoryResolver,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
