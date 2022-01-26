@@ -44,11 +44,7 @@
                 <mat-label>
                     Add new layer
                 </mat-label>
-                <input type="text" matInput
-                [(ngModel)]="search"
-                [ngModelOptions]="{standalone: true}"
-                (input)="getContent()"
-                autocomplete="off">
+                <input type="text" matInput [(ngModel)]="search" [ngModelOptions]="{standalone: true}" (ngModelChange)='getContent($event)' autocomplete="off">
                 <div *ngIf="suggestions.length > 0" class="suggestions">
                     <button *ngFor="let suggestion of suggestions" mat-button (click)="addOnlineLayer(suggestion)">
                         {{suggestion.title}}

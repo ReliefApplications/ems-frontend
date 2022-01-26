@@ -294,6 +294,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
+        console.log(layer);
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
           simplifyFactor: 1,

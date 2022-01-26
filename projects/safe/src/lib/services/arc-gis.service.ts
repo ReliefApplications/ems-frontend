@@ -25,17 +25,17 @@ export class SafeArcGISService {
 
   public getSuggestions(searchTerm: string): void
   {
-    request('https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' + searchTerm, {
-      authentication: this.authentication
-    })
-      .then((response: any) => {
-        this.suggestionsSource.next(response.results);
-      });
-  }
-
-  public clearSuggestions(): void
-  {
-    this.suggestionsSource.next([]);
+    if (searchTerm === '') {
+      this.suggestionsSource.next([]);
+    }
+    else {
+      request('https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' + searchTerm, {
+        authentication: this.authentication
+      })
+        .then((response: any) => {
+          this.suggestionsSource.next(response.results);
+        });
+    }
   }
 
   public getItem(id: string): void

@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
@@ -40,6 +42,7 @@ export class SafeMapSettingsComponent implements OnInit {
   ];
 
   public search = '';
+  private searchChanged: Subject<string> = new Subject<string>();
   public suggestions: any[] = [];
 
   constructor(
@@ -86,6 +89,7 @@ export class SafeMapSettingsComponent implements OnInit {
     });
 
     this.arcGisService.clearItem();
+    this.arcGisService.getSuggestions('');
 
     this.arcGisService.suggestions$.subscribe(suggestions => {
       this.suggestions = suggestions;
@@ -101,6 +105,13 @@ export class SafeMapSettingsComponent implements OnInit {
         this.tileForm?.controls.onlineLayers.setValue(temp);
       }
     });
+
+    this.searchChanged.pipe(
+        debounceTime(300), // wait 300ms after the last event before emitting last event
+        distinctUntilChanged()) // only emit if value is different from previous value
+        .subscribe((search) => {
+            this.arcGisService.getSuggestions(search);
+        });
   }
 
   private flatDeep(arr: any[]): any[] {
@@ -120,21 +131,16 @@ export class SafeMapSettingsComponent implements OnInit {
     }));
   }
 
-  public getContent(): void
+  public getContent(search: string): void
   {
-    if (this.search === '') {
-      setTimeout(() => { this.arcGisService.clearSuggestions(); }, 400);
-    }
-    else {
-      this.arcGisService.getSuggestions(this.search);
-    }
+    this.searchChanged.next(search);
   }
 
   public addOnlineLayer(layer: any): void
   {
     this.search = '';
+    this.arcGisService.getSuggestions('');
     this.arcGisService.getItem(layer.id);
-    this.arcGisService.clearSuggestions();
   }
 
   public removeOnlineLayer(id: any): void
