@@ -37,8 +37,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
   private map: any;
-  private southWest = L.latLng(-89.98155760646617, -180);
-  private northEast = L.latLng(89.99346179538875, 180);
+  private southWest = L.latLng(-89.98155760646617, -1000);
+  private northEast = L.latLng(89.99346179538875, 1000);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
 
   // === BASEMAPS ===
@@ -138,7 +138,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.map = L.map(this.mapId, {
       zoomControl: false,
       minZoom: 2,
-      maxZoom: 18
+      maxZoom: 18,
+      worldCopyJump: true
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     // Adds a zoom control
@@ -163,7 +164,41 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
     });
+
+    // Adds layer contorl
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
+    // Adds searchbar
+
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [L.esri.Geocoding.arcgisOnlineProvider({
+        apikey: apiKey,
+        nearby: {
+          lat: -33.8688,
+          lng: 151.2093
+        },
+      })]
+    }).addTo(this.map);
+
+    const results = L.layerGroup().addTo(this.map);
+
+    searchControl.on('results', (data: any) => {
+      results.clearLayers();
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
+        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
+        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
+        marker.bindPopup(`
+          <p>${data.results[i].properties.ShortLabel}</br>
+          <b>${'latitude: '}</b>${lat}</br>
+          <b>${'longitude: '}</b>${lng}</p>`);
+        results.addLayer(marker);
+        marker.openPopup();
+      }
+    });
 
 
   }
