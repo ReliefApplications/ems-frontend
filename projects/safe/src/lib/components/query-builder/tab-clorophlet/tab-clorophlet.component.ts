@@ -23,11 +23,12 @@ export class TabClorophletComponent implements OnInit {
     console.log(this.selectedFields);
     this.selectedFields.map((selectedField: any) => {
       this.fields.map((field: any) => {
-        if (selectedField.label.toLowerCase() === field.name.toLowerCase())
+        if (selectedField.label.toLowerCase() === field.name.toLowerCase()) {
           this.selectableFields.push(field);
-      })
-    })
-    console.log(this.selectableFields)
+        }
+      });
+    });
+    console.log(this.selectableFields);
     for (let i = 0; this.form.controls[i]; i++) {
       this.updateGeoJSONfields((this.form.controls[i] as any).controls.geoJSON.value, i);
     }
