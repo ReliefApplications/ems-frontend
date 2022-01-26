@@ -28,6 +28,7 @@ import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Interface of Dialog data.
@@ -77,7 +78,6 @@ export class SafeFormModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
-    public confirmationDialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
@@ -467,19 +467,25 @@ export class SafeFormModalComponent implements OnInit {
    * Closes the modal without sending any data.
    */
   onClose(): void {
-    const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: 'Close without saving changes',
-        content: 'Do you confirm that you want to exit and loose your changes?',
-        confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
-    });
-    confirmationDialog.afterClosed().subscribe((value) => {
-      if(value){
-        this.dialogRef.close();
-      }
-    });
+    // TODO: we should compare the data with init data to display a confirm modal
+    // if (!isEqual(this.survey?.data, this.initData)) {
+    //   const closeDialogRef = this.dialog.open(SafeConfirmModalComponent, {
+    //     data: {
+    //       title: 'Confirm',
+    //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
+    //       confirmText: 'Discard changes',
+    //       confirmColor: 'primary'
+    //     }
+    //   });
+    //   closeDialogRef.afterClosed().subscribe((value) => {
+    //     if(value){
+    //       this.dialogRef.close();
+    //     }
+    //   });
+    // } else {
+    //   this.dialogRef.close();
+    // }
+    this.dialogRef.close();
   }
 
   /**
