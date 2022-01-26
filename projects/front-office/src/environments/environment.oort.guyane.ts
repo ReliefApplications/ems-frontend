@@ -12,8 +12,8 @@ const authConfig: AuthConfig = {
 
 export const environment = {
   production: true,
-  API_URL: 'https://aide-alimentaire-guyane.oortcloud.tech/api',
-  SUBSCRIPTION_API_URL: 'wss://aide-alimentaire-guyane.oortcloud.tech/api',
+  apiUrl: 'https://aide-alimentaire-guyane.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://aide-alimentaire-guyane.oortcloud.tech/api',
   frontOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech',
   backOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
   module: 'frontoffice',
