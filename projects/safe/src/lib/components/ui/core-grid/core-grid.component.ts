@@ -534,22 +534,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         },
         autoFocus: false
       });
-      
-      dialogRef.beforeClosed().subscribe(value => {
-        console.log('beforeClosed()');
-        console.log(value);
-        // const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
-        //   data: {
-        //     title: 'Close without saving changes?',
-        //     content: 'Do you confirm that you want to exit the record adding and loose your changes',
-        //     confirmText: 'Confirm',
-        //     confirmColor: 'primary'
-        //   }
-        // });
-      });
       dialogRef.afterClosed().subscribe(value => {
-        console.log('afterClosed()');
-        console.log(value);
         if (value) {
           this.reloadData();
         }

@@ -467,8 +467,6 @@ export class SafeFormModalComponent implements OnInit {
    * Closes the modal without sending any data.
    */
   onClose(): void {
-    console.log('onClose()');
-    // close the modal even if we put nothing in this metthode (weird)
     const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
       data: {
         title: 'Close without saving changes?',
@@ -478,14 +476,10 @@ export class SafeFormModalComponent implements OnInit {
       }
     });
     confirmationDialog.afterClosed().subscribe((value) => {
-      console.log('DIALOG CLOSE');
-      console.log(value);
       if(value){
-        console.log('TRUE');
         this.dialogRef.close();
       }
     });
-    // this.dialogRef.close();
   }
 
   /**
