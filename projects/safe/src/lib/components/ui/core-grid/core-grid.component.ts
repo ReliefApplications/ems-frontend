@@ -25,7 +25,6 @@ import { GetRecordDetailsQueryResponse, GET_RECORD_DETAILS } from '../../../grap
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
-import { SafeStatusModalComponent } from '../../status-modal/status-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { NOTIFICATIONS } from '../../../const/notifications';
@@ -35,7 +34,6 @@ import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
-import { values } from 'lodash';
 
 const DEFAULT_FILE_NAME = 'grid.xlsx';
 
