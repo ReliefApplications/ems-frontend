@@ -469,18 +469,22 @@ export class SafeFormModalComponent implements OnInit {
   onClose(): void {
     console.log('onClose()');
     // close the modal even if we put nothing in this metthode (weird)
-    // const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
-    //   data: {
-    //     title: 'Close without saving changes?',
-    //     content: 'Do you confirm that you want to exit the record adding and loose your changes',
-    //     confirmText: 'Confirm',
-    //     confirmColor: 'primary'
-    //   }
-    // });
-    // confirmationDialog.afterClosed().subscribe((value) => {
-    //   console.log('DIALOG CLOSE');
-    //   this.dialogRef.close();
-    // })
+    const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: 'Close without saving changes?',
+        content: 'Do you confirm that you want to exit the record adding and loose your changes',
+        confirmText: 'Confirm',
+        confirmColor: 'primary'
+      }
+    });
+    confirmationDialog.afterClosed().subscribe((value) => {
+      console.log('DIALOG CLOSE');
+      console.log(value);
+      if(value){
+        console.log('TRUE');
+        this.dialogRef.close();
+      }
+    });
     // this.dialogRef.close();
   }
 
