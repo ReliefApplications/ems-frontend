@@ -77,9 +77,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private dataSubscription?: Subscription;
   private displayFields: string[] = [];
 
-  // === CLOROPHLETS ===
-  private clorophletSettings: any;
-
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
@@ -218,7 +215,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Add custom marker categories for each
     if (this.categoryNames.length !== 0) {
       this.categoryNames.map((name: string) => {
-        this.overlays[name] = L.featureGroup.subGroup(
+        this.overlays[name ? name : 'Markers'] = L.featureGroup.subGroup(
           this.markersLayer,
           this.markersCategories[name]
         ).addTo(this.map);
