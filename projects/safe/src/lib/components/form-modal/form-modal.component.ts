@@ -28,7 +28,6 @@ import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
-import isEqual from 'lodash/isEqual';
 
 /**
  * Interface of Dialog data.
