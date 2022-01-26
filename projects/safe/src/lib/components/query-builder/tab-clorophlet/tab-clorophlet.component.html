@@ -21,7 +21,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>Identifier</mat-label>
                 <mat-select formControlName="place">
-                    <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
+                    <mat-option *ngFor="let field of selectableFields" [value]="field.name">{{ field.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" class="extraInput">
@@ -45,7 +45,7 @@
                         <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
                     </div>
                     <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.controls[f].controls.filter"
-                    [fields]="fields" [settings]="settings"></safe-tab-filter>
+                    [fields]="selectableFields" [settings]="settings"></safe-tab-filter>
                 </div>
             </div>
             <div>

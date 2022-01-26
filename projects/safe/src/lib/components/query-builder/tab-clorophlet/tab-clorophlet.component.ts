@@ -10,13 +10,24 @@ export class TabClorophletComponent implements OnInit {
 
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
+  @Input() selectedFields: any[] = [];
   @Input() settings: any;
 
   geoJSONfields: any[] = [];
+  selectableFields: any[] = [];
 
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    console.log(this.fields);
+    console.log(this.selectedFields);
+    this.selectedFields.map((selectedField: any) => {
+      this.fields.map((field: any) => {
+        if (selectedField.label.toLowerCase() === field.name.toLowerCase())
+          this.selectableFields.push(field);
+      })
+    })
+    console.log(this.selectableFields)
     for (let i = 0; this.form.controls[i]; i++) {
       this.updateGeoJSONfields((this.form.controls[i] as any).controls.geoJSON.value, i);
     }
