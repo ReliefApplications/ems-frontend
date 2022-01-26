@@ -13,14 +13,10 @@ export class TabClorophletComponent implements OnInit {
   @Input() settings: any;
 
   geoJSONfields: any[] = [];
-  formatedFields: any[] = [];
 
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    for (let i = 0; this.fields[i]; i++) {
-      this.formatedFields.push({name: this.fields[i].label[0].toLowerCase() + this.fields[i].label.slice(1)});
-    }
     for (let i = 0; this.form.controls[i]; i++) {
       this.updateGeoJSONfields((this.form.controls[i] as any).controls.geoJSON.value, i);
     }
@@ -72,10 +68,8 @@ export class TabClorophletComponent implements OnInit {
   private updateGeoJSONfields(geoJSON: string, i: number): void {
     const parsed = JSON.parse(geoJSON);
     this.geoJSONfields[i] = [];
-    for (const property in parsed.features[0].properties) {
-      if (parsed.features[0].hasOwnProperty(property)) {
-        this.geoJSONfields[i].push(property);
-      }
+    for (const property of Object.keys(parsed.features[0].properties)) {
+      this.geoJSONfields[i].push(property);
     }
   }
 }

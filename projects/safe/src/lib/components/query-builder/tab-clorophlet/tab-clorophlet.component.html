@@ -5,7 +5,9 @@
                 <mat-label>Name</mat-label>
                 <input type="text" placeholder="Set a new name" matInput formControlName="name">
             </mat-form-field>
-            <safe-button icon="delete" class="deleteBtn" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+            <div class="deleteBtn">
+                <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+            </div>
         </div>
         <div class="filter-buttons" *ngIf="item.value.name">
             <safe-button category="tertiary" (click)="fileInput.click()">{{
@@ -19,7 +21,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>Identifier</mat-label>
                 <mat-select formControlName="place">
-                    <mat-option *ngFor="let field of formatedFields" [value]="field.name">{{ field.name }}</mat-option>
+                    <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" class="extraInput">
@@ -35,13 +37,15 @@
                 class="filter-list" [formGroupName]="f">
                     <mat-form-field appearance="outline">
                         <mat-label>Color</mat-label>
-                        <div class="placeholder"></div>
+                        <h4></h4>
                         <input type="color" matInput formControlName="color">
                         <!-- <input type="text" placeholder="#FFFFFF" matInput formControlName="color"> -->
                     </mat-form-field>
-                    <safe-button icon="delete" class="deleteBtn" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
+                    <div class="deleteBtn">
+                        <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
+                    </div>
                     <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.controls[f].controls.filter"
-                    [fields]="formatedFields" [settings]="settings"></safe-tab-filter>
+                    [fields]="fields" [settings]="settings"></safe-tab-filter>
                 </div>
             </div>
             <div>

@@ -54,7 +54,7 @@
       </mat-tab>
       <mat-tab label="Clorophlets" *ngIf="form.get('clorophlet')">
         <ng-template matTabContent>
-          <safe-tab-clorophlet [form]="$any(form.controls.clorophlet)" [fields]="form.value.fields" [settings]="settings">
+          <safe-tab-clorophlet [form]="$any(form.controls.clorophlet)" [fields]="availableScalarFields" [settings]="settings">
           </safe-tab-clorophlet>
         </ng-template>
       </mat-tab>
