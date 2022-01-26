@@ -469,8 +469,8 @@ export class SafeFormModalComponent implements OnInit {
   onClose(): void {
     const confirmationDialog = this.confirmationDialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Close without saving changes?',
-        content: 'Do you confirm that you want to exit the record adding and loose your changes',
+        title: 'Close without saving changes',
+        content: 'Do you confirm that you want to exit and loose your changes?',
         confirmText: 'Confirm',
         confirmColor: 'primary'
       }
