@@ -74,6 +74,7 @@ export * from './lib/components/applications-summary/public-api';
 // === UI ===
 export * from './lib/components/ui/button/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
+export * from './lib/components/ui/tagbox/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

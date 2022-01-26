@@ -402,6 +402,7 @@
     },
     "aggregation": {
         "builderTitle": "Aggregation builder",
-        "dataSource": "Select the data source"
+        "dataSource": "Select the data source",
+        "sourceFields": "Select fields"
     } 
 }

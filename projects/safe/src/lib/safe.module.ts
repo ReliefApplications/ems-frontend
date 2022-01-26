@@ -31,6 +31,7 @@ import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflo
 import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
 import { SafeSearchMenuModule } from './components/search-menu/search-menu.module';
 import { SafeAggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
+import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
 
 @NgModule({
   exports: [
@@ -66,6 +67,7 @@ import { SafeAggregationBuilderModule } from './components/ui/aggregation-builde
     SafeApplicationsSummaryModule,
     SafeSearchMenuModule,
     SafeAggregationBuilderModule,
+    SafeTagboxModule,
   ],
   declarations: [],
 })

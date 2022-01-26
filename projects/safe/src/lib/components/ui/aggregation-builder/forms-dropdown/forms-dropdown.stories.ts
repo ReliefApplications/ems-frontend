@@ -6,6 +6,7 @@ import { SafeFormsDropdownModule } from './forms-dropdown.module';
 import { Form } from '../../../../models/form.model';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
 import { FormControl } from '@angular/forms';
+import { delay } from 'rxjs/operators';
 
 export default {
   component: SafeFormsDropdownComponent,
@@ -19,7 +20,10 @@ export default {
     }),
   ],
   title: 'UI/Aggregation builder/Forms dropdown',
-  argTypes: {},
+  args: {
+    currentForms: [],
+    filteredForms: [],
+  },
 } as Meta;
 
 const TEMPLATE: Story<SafeFormsDropdownComponent> = (args) => ({
@@ -95,13 +99,15 @@ const DEFAULT_FORMS = [
 
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
-  forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS).asObservable(),
+  forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
+    .asObservable()
+    .pipe(delay(500)),
   sourceControl: new FormControl(''),
 };
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.args = {
-  forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS).asObservable(),
+  ...DEFAULT.args,
   sourceControl: new FormControl({
     id: '613b6c052921406adbfb54bd',
     name: 'T Advanced feature',
