@@ -5,20 +5,3 @@
   z-index: 1;
   color: #aeaeaf;
 }
-
-.widget-container {
-
-  .lastUpdate {
-    visibility: hidden;
-    position: absolute;
-    right: 40px;
-    bottom: 0;
-    opacity: 60%;
-  }
-}
-
-.widget-container:hover {
-  .lastUpdate {
-    visibility: visible;
-  }
-}

@@ -3,7 +3,6 @@
     <span class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : ('widgets.map.new' | translate)}}</span>
   </kendo-tilelayout-item-header>
   <div [id]="mapId" class="widget-content">
-    <p class="lastUpdate" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
+    <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
   </div>
-  
 </div>
