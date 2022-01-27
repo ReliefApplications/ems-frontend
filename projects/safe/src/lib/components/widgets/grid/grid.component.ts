@@ -80,7 +80,7 @@ export class SafeGridWidgetComponent implements OnInit {
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
-  public lastUpdate = "test";
+  public lastUpdate = 'test';
 
   constructor(
     @Inject('environment') environment: any,
@@ -385,7 +385,7 @@ export class SafeGridWidgetComponent implements OnInit {
         })
         .subscribe((res) => {
           const today = new Date();
-          this.lastUpdate = today.getHours() + ':' + today.getMinutes(); 
+          this.lastUpdate = today.getHours() + ':' + today.getMinutes();
           const resourceField = targetForm.fields?.find(
             (field) =>
               field.resource && field.resource === this.settings.resource

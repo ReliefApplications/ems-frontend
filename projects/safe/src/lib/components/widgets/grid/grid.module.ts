@@ -17,7 +17,7 @@ import { SafeBadgeModule } from '../../ui/badge/badge.module';
     SafeChooseRecordModalModule,
     SafeCoreGridModule,
     LayoutModule,
-    SafeBadgeModule
+    SafeBadgeModule,
   ],
   exports: [SafeGridWidgetComponent],
 })

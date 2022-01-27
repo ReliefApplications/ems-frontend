@@ -49,7 +49,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   // === QUERY UPDATE INFO ===
-  public lastUpdate = "";
+  public lastUpdate = '';
 
   constructor(
     private apollo: Apollo,
@@ -149,7 +149,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(
       (res: any) => {
         const today = new Date();
-        this.lastUpdate = ("0" + today.getHours()).slice(-2); + ':' + ("0" + today.getMinutes()).slice(-2); 
+        this.lastUpdate = today.getHours() + ':' + today.getMinutes();
         this.data = [];
         this.selectedItem = null;
         this.markersLayer.clearLayers();
