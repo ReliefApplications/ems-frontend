@@ -18,9 +18,9 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build --prod safe
-    npm run build:az:dev:front
-    npm run build:az:dev:back
+    ng build --configuration=prod safe
+    ng build --configuration=azure-dev front-office
+    ng build --configuration=azure-dev back-office
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
