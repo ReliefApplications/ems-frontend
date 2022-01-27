@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
+import { SafeBadgeModule } from '../../ui/badge/badge.module';
 
 @NgModule({
   declarations: [SafeGridWidgetComponent],
@@ -16,6 +17,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
     SafeChooseRecordModalModule,
     SafeCoreGridModule,
     LayoutModule,
+    SafeBadgeModule
   ],
   exports: [SafeGridWidgetComponent],
 })
