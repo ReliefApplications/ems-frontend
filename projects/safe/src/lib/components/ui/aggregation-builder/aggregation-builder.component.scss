@@ -1,0 +1,28 @@
+.data-source {
+  display: flex;
+}
+
+.forms-dropdown {
+  display: flex;
+  flex: 30%;
+}
+
+.tagbox {
+  width: 100%;
+  display: flex;
+  flex: 70%;
+  height: 100%;
+}
+
+.builder-form {
+  flex: 60%
+}
+
+.preview {
+  flex: 40%;
+}
+
+.layout {
+  display: flex;
+  flex-direction: row;
+}

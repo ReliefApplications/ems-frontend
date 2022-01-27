@@ -4,6 +4,7 @@ import { SafeAggregationBuilderComponent } from './aggregation-builder.component
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormsDropdownModule } from './forms-dropdown/forms-dropdown.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SafeTagboxModule } from '../tagbox/tagbox.module';
 
 @NgModule({
   declarations: [SafeAggregationBuilderComponent],
@@ -13,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     SafeFormsDropdownModule,
+    SafeTagboxModule,
   ],
   exports: [SafeAggregationBuilderComponent],
 })

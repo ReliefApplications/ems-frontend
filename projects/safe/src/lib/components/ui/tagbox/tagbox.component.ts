@@ -31,6 +31,7 @@ export class SafeTagboxComponent implements OnInit {
   private autoTrigger?: MatAutocompleteTrigger;
   public inputControl: AbstractControl = new FormControl();
   public showInput = true;
+  public choicesEmpty = false;
 
   // === OUTPUT CONTROL ===
   @Input() parentControl!: AbstractControl;
@@ -39,14 +40,9 @@ export class SafeTagboxComponent implements OnInit {
 
   ngOnInit(): void {
     this.choices$.subscribe((choices) => {
-      this.availableChoices.next(
-        choices.filter(
-          (choice) =>
-            !this.selectedChoices.some(
-              (x) => x[this.valueKey] === choice[this.valueKey]
-            )
-        )
-      );
+      this.choicesEmpty = choices.length === 0;
+      this.availableChoices.next([...choices]);
+      this.selectedChoices = this.parentControl.value;
       // Set up filtered choices for the autocomplete
       this.filteredChoices = merge(
         this.inputControl.valueChanges,
@@ -78,18 +74,26 @@ export class SafeTagboxComponent implements OnInit {
       );
       // Focus test input when it reappears after removing a selected choice.
       this.availableChoices.subscribe((value) => {
-        if (!this.showInput && value.length > 0) {
-          this.showInput = true;
-          window.requestAnimationFrame(() =>
-            this.textInput?.nativeElement.focus()
-          );
-        } else {
-          this.showInput = value.length > 0;
+        if (!this.choicesEmpty) {
+          if (!this.showInput && value.length > 0) {
+            this.showInput = true;
+            window.requestAnimationFrame(() =>
+              this.textInput?.nativeElement.focus()
+            );
+          } else {
+            this.showInput = value.length > 0;
+          }
         }
       });
     });
   }
 
+  /**
+   * Filter passed choices by displayKeys using passed string.
+   *
+   * @param choices array to filter.
+   * @param value string used to filter.
+   */
   private filterChoices(choices: any, value: string): any[] {
     return choices.filter((choice: any) =>
       choice[this.displayKey].toLowerCase().includes(value.toLowerCase())
@@ -113,6 +117,11 @@ export class SafeTagboxComponent implements OnInit {
     return choice && choice[this.displayKey] ? choice[this.displayKey] : choice;
   }
 
+  /**
+   * Add a new selected choice if possible from text input.
+   *
+   * @param event Chip event with the text input.
+   */
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
@@ -133,6 +142,11 @@ export class SafeTagboxComponent implements OnInit {
     this.inputControl.setValue('');
   }
 
+  /**
+   * Remove a selected choice from the chip list.
+   *
+   * @param choice Choice to remove.
+   */
   remove(choice: any): void {
     const index = this.selectedChoices.findIndex(
       (x) => x[this.valueKey] === choice[this.valueKey]
@@ -148,6 +162,11 @@ export class SafeTagboxComponent implements OnInit {
     }
   }
 
+  /**
+   * Add a new selected choice if possible from autocompletion selection.
+   *
+   * @param event Autocomplete event with the selected choice.
+   */
   selected(event: MatAutocompleteSelectedEvent): void {
     window.requestAnimationFrame(() => this.autoTrigger?.openPanel());
     this.selectedChoices.push(

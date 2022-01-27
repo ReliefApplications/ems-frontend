@@ -2,7 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
+import { debounceTime } from 'rxjs/operators'; 
+import {
+  GET_FORMS,
+  GetFormsQueryResponse,
+  GetFormByIdQueryResponse,
+  GET_FORM_BY_ID,
+} from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
 
 const ITEMS_PER_PAGE = 10;
@@ -15,6 +21,7 @@ const ITEMS_PER_PAGE = 10;
 export class SafeAggregationBuilderComponent implements OnInit {
   // === DATA ===
   @Input() settings: any;
+  // Data sources
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -23,6 +30,9 @@ export class SafeAggregationBuilderComponent implements OnInit {
     endCursor: '',
     hasNextPage: true,
   };
+  // Fields
+  private fields = new BehaviorSubject<any[]>([]);
+  public fields$!: Observable<any[]>;
 
   // === REACTIVE FORM ===
   aggregationForm: FormGroup = new FormGroup({});
@@ -34,10 +44,17 @@ export class SafeAggregationBuilderComponent implements OnInit {
       dataSource: [
         this.settings && this.settings.dataSource
           ? this.settings.dataSource
+          : null,
+        Validators.required,
+      ],
+      sourceFields: [
+        this.settings && this.settings.sourceFields
+          ? this.settings.sourceFields
           : [],
         Validators.required,
       ],
     });
+
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS,
       variables: {
@@ -50,6 +67,26 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.pageInfo = res.data.forms.pageInfo;
       this.loading = res.loading;
     });
+
+    this.fields$ = this.fields.asObservable();
+    this.aggregationForm
+      .get('dataSource')
+      ?.valueChanges.pipe(debounceTime(300))
+      .subscribe((form) => {
+        if (form && form.id) {
+          this.aggregationForm.get('sourceFields')?.setValue([]);
+          this.apollo
+            .query<GetFormByIdQueryResponse>({
+              query: GET_FORM_BY_ID,
+              variables: {
+                id: form.id,
+              },
+            })
+            .subscribe((res) => {
+              this.fields.next(res.data.form.fields || []);
+            });
+        }
+      });
   }
 
   /**

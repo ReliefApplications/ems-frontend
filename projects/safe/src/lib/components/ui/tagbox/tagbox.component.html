@@ -4,7 +4,7 @@
     <mat-chip
       *ngFor="let choice of selectedChoices"
       (removed)="remove(choice)" [value]="choice">
-      {{choice[displayKey]}}
+      <div class="chip-text">{{choice[displayKey]}}</div>
       <button matChipRemove>
         <safe-icon icon="cancel" variant="danger" [size]="14" [inline]="true"></safe-icon>
       </button>
@@ -19,6 +19,7 @@
       [matChipInputFor]="chipList"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="add($event)"
+      [disabled]="choicesEmpty"
       *ngIf="showInput">
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)" [displayWith]="displayName">
