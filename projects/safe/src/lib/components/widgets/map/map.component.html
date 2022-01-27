@@ -1,7 +1,9 @@
 <div class="widget-container">
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : ('widgets.map.new' | translate)}}</span>
-    <safe-badge *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</safe-badge>
   </kendo-tilelayout-item-header>
-  <div [id]="mapId" class="widget-content"></div>
+  <div [id]="mapId" class="widget-content">
+    <p class="lastUpdate" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
+  </div>
+  
 </div>
