@@ -333,9 +333,10 @@ export class QueryBuilderService {
         null
       ),
       style: this.formBuilder.array(
-        value.style && value.style.length ? value.style.map((x: any) => 
-        this.createStyleForm(x)) : [this.createStyleForm(null)]
-      )
+        value && value.style && value.style.length
+          ? value.style.map((x: any) => this.createStyleForm(x))
+          : [this.createStyleForm(null)]
+      ),
     });
   }
 
@@ -459,16 +460,28 @@ export class QueryBuilderService {
 
   private createStyleForm(value: any): FormGroup {
     const styleForm = this.formBuilder.group({
-      title: [value && value.name ? value.name : 'New rule', Validators.required],
-      backgroundColor: [value && value.backgroundColor ? value.backgroundColor : null],
-      textColor: [value && value.textColor ? value.textColor : null],
-      textStyle: [value && value.textStyle ? value.textStyle : null],
-      styleAppliedTo: [value && value.styleAppliedTo ? value.styleAppliedTo : null],
-      preview: [value && value.preview ? value.preview : null],
-      fields: [value && value.fields ? value.fields : null],
+      title: [
+        value && value.name ? value.name : 'New rule',
+        Validators.required,
+      ],
+      backgroundColor: [
+        value && value.backgroundColor ? value.backgroundColor : '',
+      ],
+      textColor: [value && value.textColor ? value.textColor : ''],
+      textStyle: [value && value.textStyle ? value.textStyle : 'default'],
+      styleAppliedTo: [
+        value && value.styleAppliedTo ? value.styleAppliedTo : 'selected-row',
+        Validators.required,
+      ],
+      fields: this.formBuilder.array(
+        value && value.fields
+          ? value.fields.map((x: any) => this.addNewField(x))
+          : [],
+        Validators.required
+      ),
       filter: this.createFilterGroup(
         value && value.filter ? value.filter : {},
-        null
+        Validators.required
       ),
     });
     return styleForm;

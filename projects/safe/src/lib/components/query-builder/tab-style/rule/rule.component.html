@@ -1,0 +1,80 @@
+<div class="field-list-wrapper" *ngIf="!styleForm">
+    <div class="field-list">
+      <div class="field-box" *ngFor="let style of stylesList; let index = index" cdkDrag>
+        <span class="field-type">{{ style.title }}</span>
+        <span class="field-type field-preview" [style.background]="style.backgroundColor"
+        [style.color]="style.textColor" [style.font-weight]="style.textStyle === 'bold' ? 'bold' : 'normal'"
+        [style.text-decoration]="style.textStyle === 'underline' ? 'underline' : 'none'"
+        [style.font-style]="style.textStyle === 'italic' ? 'italic' : 'normal'">Preview</span>
+        <div>
+          <safe-button [isIcon]="true" icon="edit" (click)="onEditStyle(index)"></safe-button>
+          <safe-button [isIcon]="true" icon="delete" (click)="onDeleteStyle(index)"></safe-button>
+        </div>
+      </div>
+    </div>
+</div> 
+
+<div class="field-container" *ngIf="styleForm">
+    <ng-container>
+        <form [formGroup]="styleForm" class="style-form">
+            <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+            </safe-button>
+
+            <div class="field-form">
+                <span class="field-name">Rule name</span>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="title" type="text"/>
+                </mat-form-field>
+            </div>
+
+            <div class="field-form">
+                <span class="field-name">Rule criteria</span>
+                <safe-tab-filter [form]="$any(styleForm?.controls?.filter)" [fields]="scalarFields" [settings]="settings">
+                </safe-tab-filter>
+            </div>
+
+            <div class="field-form">
+                <span class="field-name">Cell background color</span>
+                <kendo-colorpicker formControlName="backgroundColor"></kendo-colorpicker>
+            </div>
+
+            <div class="field-form">
+                <span class="field-name">Text color</span>
+                <kendo-colorpicker formControlName="textColor"></kendo-colorpicker>
+            </div>
+
+            <div class="field-form">
+                <span class="field-name">Text style</span>
+                <mat-button-toggle-group formControlName="textStyle" aria-label="Text Style">
+                    <mat-button-toggle value="default">
+                        <safe-button [isIcon]="true" icon="format_color_text"></safe-button>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="bold">
+                        <safe-button [isIcon]="true" icon="format_bold"></safe-button>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="italic">
+                        <safe-button [isIcon]="true" icon="format_italic"></safe-button>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="underline">
+                        <safe-button [isIcon]="true" icon="format_underlined"></safe-button>
+                    </mat-button-toggle>
+                  </mat-button-toggle-group>
+            </div>
+
+            <div class="field-form">
+                <span class="field-name">Apply style to</span>
+                <mat-radio-group formControlName="styleAppliedTo" aria-label="Apply style to">
+                    <mat-radio-button (click)="onStyleAppliedTo(false)" value="whole-row">whole row</mat-radio-button>
+                    <mat-radio-button (click)="onStyleAppliedTo(true)" value="selected-columns">selected columns</mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+            <div class="field-form" *ngIf="stylesList[styleIndex].styleAppliedTo === 'selected-columns' || selectedColumns">
+                <span class="field-name"></span>
+                <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(styleForm?.controls?.fields)"
+                  [fields]="availableFields" [factory]="factory">
+                </safe-tab-fields>
+            </div>
+        </form>
+    </ng-container>
+</div>

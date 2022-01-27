@@ -15,8 +15,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatRadioModule } from '@angular/material/radio';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeRuleComponent } from './tab-style/rule/rule.component';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { LabelModule } from '@progress/kendo-angular-label';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -25,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeTabSortComponent,
     SafeTabFilterComponent,
     SafeTabStyleComponent,
+    SafeRuleComponent,
   ],
   imports: [
     CommonModule,
@@ -32,6 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatRadioModule,
     MatTabsModule,
     DragDropModule,
     MatButtonModule,
@@ -39,8 +46,11 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    MatButtonToggleModule,
     SafeButtonModule,
     TranslateModule,
+    InputsModule,
+    LabelModule,
   ],
   exports: [SafeQueryBuilderComponent, SafeTabFieldsComponent],
 })

@@ -92,7 +92,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           : [this.createFloatingButtonForm(null)]
       ),
     });
-    console.log("this.tileform = ", this.tileForm);
     this.queryName = this.tileForm.get('query')?.value.name;
 
     this.tileForm.get('query')?.valueChanges.subscribe((res) => {
