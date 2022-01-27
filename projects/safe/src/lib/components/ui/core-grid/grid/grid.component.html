@@ -67,7 +67,7 @@
                     <!-- DISPLAY ( text / comment ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'text'">
-                        <div translate="yes" class="textbox-container">
+                        <div class="translate textbox-container">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
@@ -240,7 +240,7 @@
                             </ng-container>
                             <!-- DISPLAY ( multipletext ) -->
                             <ng-container *ngIf="field.meta.type === 'multipletext' && dataItem[field.name]">
-                                <span translate="yes">{{ dataItem[field.name][column.name] }}</span>
+                                <span class="translate">{{ dataItem[field.name][column.name] }}</span>
                             </ng-container>
                         </ng-template>
                         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
@@ -325,6 +325,6 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ (error ? 'widgets.grid.invalid' : 'widgets.grid.noRecord') | translate }}
+        {{ (error ? 'widgets.grid.invalid' : (blank ? 'widgets.grid.selectDataset' : 'widgets.grid.noRecord')) | translate }}
     </ng-template>
 </kendo-grid>

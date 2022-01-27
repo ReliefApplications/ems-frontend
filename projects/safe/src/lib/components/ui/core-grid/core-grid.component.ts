@@ -123,11 +123,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  private editedRowIndex = 0;
-  private editedRecordId = '';
   public formGroup: FormGroup = new FormGroup({});
-  private isNew = false;
-  public loading = true;
+  public loading = false;
   public error = false;
 
   // === SORTING ===
@@ -280,6 +277,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
     if (this.metaQuery) {
+      this.loading = true;
       this.metaQuery.subscribe(
         async (res: any) => {
           this.error = false;
@@ -593,6 +591,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private onAdd(): void {
     if (this.settings.query.template) {
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
+        disableClose: true,
         data: {
           template: this.settings.query.template,
           locale: 'en',
@@ -672,6 +671,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdate(items: any[]): void {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
@@ -863,7 +863,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
-      exportOptions: e,
       ids,
       filter:
         e.records === 'selected'
@@ -873,11 +872,18 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           : this.queryFilter,
       format: e.format,
+      // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, label: x.title })),
+          .map((x: any) => ({ name: x.field, title: x.title })),
+      }),
+      // we export ALL fields of the grid ( including hidden columns )
+      ...(e.fields === 'all' && {
+        fields: Object.values(currentLayout.fields)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({ name: x.field, title: x.title })),
       }),
     };
 

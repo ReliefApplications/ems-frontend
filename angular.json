@@ -67,6 +67,11 @@
             "tsConfig": "projects/back-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -127,6 +132,35 @@
                 }
               ]
             },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.azure.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
             "azure-uat": {
               "fileReplacements": [
                 {
@@ -141,6 +175,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
@@ -168,6 +204,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
@@ -186,6 +224,35 @@
                 {
                   "replace": "projects/back-office/src/environments/environment.ts",
                   "with": "projects/back-office/src/environments/environment.oort.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.guyane.ts"
                 }
               ],
               "optimization": true,
@@ -276,6 +343,11 @@
             "tsConfig": "projects/back-office/tsconfig.spec.json",
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -339,6 +411,11 @@
             "tsConfig": "projects/front-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -377,6 +454,33 @@
                 {
                   "replace": "projects/front-office/src/environments/environment.ts",
                   "with": "projects/front-office/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.dev.ts"
                 }
               ],
               "optimization": true,
@@ -480,6 +584,33 @@
                 }
               ]
             },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.guyane.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
             "oort-prod": {
               "fileReplacements": [
                 {
@@ -516,7 +647,7 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -544,6 +675,11 @@
             "tsConfig": "projects/front-office/tsconfig.spec.json",
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -603,6 +739,11 @@
             "tsConfig": "projects/web-element/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],
@@ -698,6 +839,11 @@
             "tsConfig": "projects/web-element/tsconfig.spec.json",
             "karmaConfig": "projects/web-element/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],

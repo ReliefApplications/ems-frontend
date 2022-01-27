@@ -29,7 +29,6 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { AccountInfo } from '@azure/msal-common';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -81,6 +80,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public otherOffice = '';
   private environment: any;
   private inApplication = false;
+
+  // === APP SEARCH ===
+  public showAppMenu = false;
 
   constructor(
     @Inject('environment') environment: any,
@@ -154,6 +156,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.userSubscription.unsubscribe();
     }
     this.userSubscription = this.authService.user$.subscribe((user) => {
+      console.log(user);
       if (user) {
         this.user = { ...user };
       }
@@ -246,11 +249,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         if (value) {
           this.authService.canLogout.next(true);
           localStorage.clear();
-          this.authService.logout(this.environment.postLogoutRedirectUri);
+          this.authService.logout();
         }
       });
     } else {
-      this.authService.logout(this.environment.postLogoutRedirectUri);
+      this.authService.logout();
     }
   }
 

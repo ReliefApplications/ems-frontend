@@ -11,7 +11,7 @@
         (reorder)="onReorder($event)" (resize)="onResize($event)">
         <kendo-tilelayout-item *ngFor="let widget of widgets; let i = index; "
             [colSpan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
-            [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows">
+            [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : widget.defaultRows">
             <safe-floating-options *ngIf="canUpdate" class="widget-options" [widget]="widget"
                 (edit)="onEditWidget($event)" (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)">
             </safe-floating-options>
