@@ -591,6 +591,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private onAdd(): void {
     if (this.settings.query.template) {
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
+        disableClose: true,
         data: {
           template: this.settings.query.template,
           locale: 'en',
@@ -670,6 +671,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdate(items: any[]): void {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',

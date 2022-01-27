@@ -362,6 +362,7 @@ export const init = (
     if (question.addRecord && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
+          disableClose: true,
           data: {
             template: question.addTemplate,
             locale: question.resource.value,
