@@ -8,13 +8,14 @@
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">{{(route) ? (title) : ('nav.title' | translate)}}</h1>
     <!-- Temporal language changer -->
-    <span class="form-inline" style="margin-left: 1em;" *ngIf="languages.length > 1">
+    <!-- <span class="form-inline" style="margin-left: 1em;" *ngIf="languages.length > 1">
       <select class="form-control" #selectedLang (change)="setLanguage(selectedLang.value)" [(ngModel)]="currentLanguage">
         <option *ngFor="let language of languages" [value]="language">
           {{ language }}
         </option>
       </select>
-    </span>
+    </span> -->
+    <safe-breadcrumb [items]="[{name: 'test', href: ''}, {name: 'test', href: ''}]"></safe-breadcrumb>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button (click)="showAppMenu = !showAppMenu" cdkOverlayOrigin #appMenuTrigger="cdkOverlayOrigin">

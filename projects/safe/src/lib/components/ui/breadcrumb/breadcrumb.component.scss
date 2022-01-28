@@ -1,7 +1,16 @@
 .breadcrumb {
     display: flex;
+    padding: 0.5em;
 }
 
 .breadcrumb-item {
     display: flex;
+    opacity: 60%;
+    font-size: 0.8em;
+    font-weight: lighter;
+
+    div {
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
 }
