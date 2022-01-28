@@ -48,6 +48,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === QUERY UPDATE INFO ===
+  public lastUpdate = '';
+
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
@@ -145,6 +148,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(
       (res: any) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
         this.data = [];
         this.selectedItem = null;
         this.markersLayer.clearLayers();
