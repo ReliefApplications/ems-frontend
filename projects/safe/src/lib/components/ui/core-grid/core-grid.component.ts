@@ -758,7 +758,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
       query: this.settings.query,
-      filename: fileName,
       format: e.format,
       // we only export visible fields ( not hidden )
       ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
