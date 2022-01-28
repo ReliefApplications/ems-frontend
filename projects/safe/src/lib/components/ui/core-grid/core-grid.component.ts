@@ -751,11 +751,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
+    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
+      query: this.settings.query,
       format: e.format,
       // we only export visible fields ( not hidden )
       ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
@@ -766,7 +768,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     // Builds and make the request
-    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
