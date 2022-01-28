@@ -138,11 +138,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -165,11 +167,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -192,11 +196,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
