@@ -8,6 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Modal to add a new resource
+ */
 @NgModule({
   declarations: [AddResourceComponent],
   imports: [
