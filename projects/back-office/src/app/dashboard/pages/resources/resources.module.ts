@@ -17,6 +17,7 @@ import { SafeButtonModule } from '@safe/builder';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AddResourceModule } from '../../../components/add-resource/add-resource.module';
 
 @NgModule({
   declarations: [ResourcesComponent, FilterComponent],
@@ -38,6 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
+    AddResourceModule,
   ],
   exports: [ResourcesComponent],
 })
