@@ -3,6 +3,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
+  AddFormMutationResponse,
+  ADD_FORM,
 } from '../../../graphql/mutations';
 import {
   GetResourcesQueryResponse,
@@ -15,9 +17,11 @@ import {
   NOTIFICATIONS,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -52,7 +56,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
   ) {}
 
   /*  Load the resources.
@@ -206,6 +211,48 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
               );
             }
           });
+      }
+    });
+  }
+
+  /**
+   * Displays the AddForm modal.
+   * Creates a new form on closed if result.
+   */
+  onAdd(): void {
+    const dialogRef = this.dialog.open(AddResourceComponent, {
+      panelClass: 'add-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        const data = { name: value.name };
+        Object.assign(
+          data,
+          value.binding === 'newResource' && { newResource: true }
+        );
+        this.apollo
+          .mutate<AddFormMutationResponse>({
+            mutation: ADD_FORM,
+            variables: data,
+          })
+          .subscribe(
+            (res) => {
+              if (res.errors) {
+                this.snackBar.openSnackBar(
+                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  { error: true }
+                );
+              } else {
+                if (res.data) {
+                  const { id } = res.data.addForm;
+                  this.router.navigate(['/forms/builder', id]);
+                }
+              }
+            },
+            (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            }
+          );
       }
     });
   }
