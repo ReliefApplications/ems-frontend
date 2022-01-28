@@ -300,6 +300,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
       display: flex;
       flex-direction: column;
       margin-bottom: 1.25em;
+      gap: 4px;
     }
     .form-slide-toggle {
       margin-bottom: 1.25em;
