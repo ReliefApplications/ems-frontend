@@ -1,16 +1,21 @@
 .breadcrumb {
     display: flex;
     padding: 0.5em;
+    cursor: default;
 }
 
 .breadcrumb-item {
     display: flex;
     opacity: 60%;
     font-size: 0.8em;
-    font-weight: lighter;
 
     div {
         padding-left: 0.5em;
         padding-right: 0.5em;
+    }
+
+    div:hover {
+        cursor: pointer;
+        text-decoration: underline;
     }
 }

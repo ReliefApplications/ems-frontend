@@ -3,7 +3,8 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/auth',
+  postLogoutRedirectUri:
+    'https://aide-alimentaire-guyane.oortcloud.tech/admin/auth',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 interface Breadcrumb {
   name: string;
-  href: string;
+  route: string;
   queryParams?: any;
 }
 
@@ -16,5 +16,7 @@ export class SafeBreadcrumbComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.items);
+  }
 }

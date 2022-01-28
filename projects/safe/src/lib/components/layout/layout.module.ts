@@ -41,7 +41,7 @@ import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
     TranslateModule,
     SafeSearchMenuModule,
     OverlayModule,
-    SafeBreadcrumbModule
+    SafeBreadcrumbModule,
   ],
   exports: [SafeLayoutComponent],
 })

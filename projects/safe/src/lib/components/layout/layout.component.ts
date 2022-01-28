@@ -23,7 +23,12 @@ import {
 } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  NavigationEnd,
+  NavigationStart,
+} from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -84,6 +89,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === APP SEARCH ===
   public showAppMenu = false;
 
+  // === BREADCRUMB ===
+  private oldRoute = '';
+  public routePath: any[] = [];
+
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -98,6 +107,29 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.environment = environment;
     this.currentLanguage = this.translate.defaultLang;
     this.languages = this.translate.getLangs();
+
+    router.events.subscribe((val: any) => {
+      if (
+        val instanceof NavigationEnd &&
+        this.oldRoute !== val.urlAfterRedirects
+      ) {
+        this.oldRoute = val.urlAfterRedirects;
+        const paths = this.oldRoute.split('/');
+        let route = '';
+
+        console.log(paths);
+        this.routePath = [];
+        for (let i = 1; paths[i]; i += 2) {
+          route += '/' + paths[i] + '/' + paths[i + 1];
+          this.routePath.push({
+            name: paths[i],
+            route,
+          });
+        }
+
+        console.log(this.routePath);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -156,7 +188,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.userSubscription.unsubscribe();
     }
     this.userSubscription = this.authService.user$.subscribe((user) => {
-      console.log(user);
       if (user) {
         this.user = { ...user };
       }

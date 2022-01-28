@@ -15,7 +15,7 @@
         </option>
       </select>
     </span> -->
-    <safe-breadcrumb [items]="[{name: 'test', href: ''}, {name: 'test', href: ''}]"></safe-breadcrumb>
+    <safe-breadcrumb *ngIf="route" [items]="routePath"></safe-breadcrumb>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button (click)="showAppMenu = !showAppMenu" cdkOverlayOrigin #appMenuTrigger="cdkOverlayOrigin">
