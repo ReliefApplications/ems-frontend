@@ -114,20 +114,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.oldRoute !== val.urlAfterRedirects
       ) {
         this.oldRoute = val.urlAfterRedirects;
-        const paths = this.oldRoute.split('/');
-        let route = '';
-
-        console.log(paths);
-        this.routePath = [];
-        for (let i = 1; paths[i]; i += 2) {
-          route += '/' + paths[i] + '/' + paths[i + 1];
-          this.routePath.push({
-            name: paths[i],
-            route,
-          });
-        }
-
-        console.log(this.routePath);
+        this.setBreadCrumb();
       }
     });
   }
@@ -220,6 +207,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.loadUserAndUpdateLayout();
+    console.log(this.filteredNavGroups);
+    this.setBreadCrumb();
   }
 
   ngOnDestroy(): void {
@@ -322,5 +311,50 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   setLanguage(language: string) {
     this.translate.use(language);
     this.currentLanguage = language;
+  }
+
+  private setBreadCrumb() {
+    const paths = this.oldRoute.split('/');
+    let route = '';
+    let name = '';
+
+    this.routePath = [];
+    if (route) {
+      for (let i = 1; paths[i]; i += 2) {
+        route += '/' + paths[i] + '/' + paths[i + 1];
+        name = paths[i];
+        if (this.filteredNavGroups.length > 0) {
+          this.filteredNavGroups.map((navGroup: any) => {
+            navGroup.navItems.map((item: any) => {
+              if ('./' + paths[i] + '/' + paths[i + 1] === item.path) {
+                name = item.name;
+              }
+            });
+          });
+        }
+        this.routePath.push({
+          name,
+          route,
+        });
+      }
+    } else {
+      for (let i = 1; paths[i]; i++) {
+        route += '/' + paths[i];
+        name = paths[i];
+        if (this.filteredNavGroups.length > 0) {
+          this.filteredNavGroups.map((navGroup: any) => {
+            navGroup.navItems.map((item: any) => {
+              if ('/' + paths[i] === item.path) {
+                name = item.name;
+              }
+            });
+          });
+        }
+        this.routePath.push({
+          name,
+          route,
+        });
+      }
+    }
   }
 }
