@@ -52,6 +52,7 @@ import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { WebTestComponent } from './elements/web-test/web-test.component';
 
 /*  Configuration of the Apollo client.
  */
@@ -154,8 +155,8 @@ export const httpTranslateLoader = (http: HttpClient) =>
 
 @NgModule({
   declarations: [
-    DashboardComponent,
     AppComponent,
+    DashboardComponent,
     FormComponent,
     WorkflowComponent,
     ApplicationComponent,
@@ -163,6 +164,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     WebFormComponent,
     WebDashboardComponent,
     WebApplicationComponent,
+    WebTestComponent,
   ],
   imports: [
     BrowserModule,
@@ -228,22 +230,26 @@ export class AppModule implements DoBootstrap {
   ) {}
 
   ngDoBootstrap(): void {
-    // Dashboard web element
-    const safeDashboard = createCustomElement(DashboardComponent, {
+    const safeTest = createCustomElement(WebTestComponent, {
       injector: this.injector,
     });
-    customElements.define('safe-dashboard', safeDashboard);
+    customElements.define('safe-test', safeTest);
+    // Dashboard web element
+    // const safeDashboard = createCustomElement(DashboardComponent, {
+    //   injector: this.injector,
+    // });
+    // customElements.define('safe-dashboard', safeDashboard);
 
     // Form web element
-    const safeForm = createCustomElement(FormComponent, {
-      injector: this.injector,
-    });
-    customElements.define('safe-form', safeForm);
+    // const safeForm = createCustomElement(FormComponent, {
+    //   injector: this.injector,
+    // });
+    // customElements.define('safe-form', safeForm);
 
     // Workflow web element
-    const safeWorkflow = createCustomElement(WorkflowComponent, {
-      injector: this.injector,
-    });
-    customElements.define('safe-workflow', safeWorkflow);
+    // const safeWorkflow = createCustomElement(WorkflowComponent, {
+    //   injector: this.injector,
+    // });
+    // customElements.define('safe-workflow', safeWorkflow);
   }
 }
