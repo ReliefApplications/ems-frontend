@@ -35,6 +35,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { BreadCrumbService } from '../../services/bread-crumb.service';
 
 @Component({
   selector: 'safe-layout',
@@ -100,7 +101,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadCrumbService: BreadCrumbService
   ) {
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
@@ -318,7 +320,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     let route = '';
     let name: string;
 
-    this.routePath = [];
+    this.breadCrumbService.clearBreadCrumb();
 
     for (let i = 1; paths[i]; i++) {
       name = '';
@@ -346,10 +348,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (name === '') {
         name = paths[i];
-        route += '/' + paths[i] + '/' + paths[++i];
+        console.log(route);
+        route += '/' + paths[i];
+        console.log(route);
       }
 
-      this.routePath.push({
+      this.breadCrumbService.addBreadCrumb({
         name,
         route,
       });

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { BreadCrumbService } from '../../../services/bread-crumb.service';
 
 interface Breadcrumb {
   name: string;
@@ -12,11 +13,13 @@ interface Breadcrumb {
   styleUrls: ['./breadcrumb.component.scss'],
 })
 export class SafeBreadcrumbComponent implements OnInit {
-  @Input() items: Breadcrumb[] = [];
+  items: Breadcrumb[] = [];
 
-  constructor() {}
+  constructor(private breadCrumbService: BreadCrumbService) {}
 
   ngOnInit(): void {
-    console.log(this.items);
+    this.breadCrumbService.breadCrumb$.subscribe((breadCrumb: any) => {
+      this.items = breadCrumb;
+    });
   }
 }
