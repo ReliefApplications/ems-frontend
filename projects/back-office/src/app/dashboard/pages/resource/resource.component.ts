@@ -52,16 +52,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
   displayedColumnsRecords: string[] = [];
   dataSourceRecords: any[] = [];
 
-  // === FORMS ASSOCIATED ===
-  displayedColumnsForms: string[] = [
-    'name',
-    'createdAt',
-    'status',
-    'recordsCount',
-    'core',
-    '_actions',
-  ];
-  dataSourceForms: any[] = [];
+  // === FORMS ===
+  forms: any[] = [];
+
+  // === LAYOUTS ===
+  layouts: any[] = [];
 
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
@@ -144,7 +139,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.data.resource) {
             this.resource = res.data.resource;
-            this.dataSourceForms = this.resource.forms;
+            this.forms = this.resource.forms;
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {
@@ -295,7 +290,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
-        this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);
+        this.forms = this.forms.filter((x) => x.id !== id);
       });
   }
 

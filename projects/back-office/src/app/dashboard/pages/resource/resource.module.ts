@@ -16,6 +16,9 @@ import {
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
+import { ResourceRecordsModule } from './resource-records/resource-records.module';
+import { ResourceFormsModule } from './resource-forms/resource-forms.module';
+import { ResourceLayoutsModule } from './resource-layouts/resource-layouts.module';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -34,6 +37,9 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
+    ResourceRecordsModule,
+    ResourceFormsModule,
+    ResourceLayoutsModule,
   ],
   exports: [ResourceComponent],
 })

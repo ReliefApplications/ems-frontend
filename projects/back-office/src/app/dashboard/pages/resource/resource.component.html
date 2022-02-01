@@ -37,9 +37,29 @@
     <mat-tab-group dynamicHeight>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{'table.records' | translate}} ( {{pageInfo.length}} )
+                Records
             </ng-template>
-            <div class="table-container">
+            <ng-template matTabContent>
+                <app-resource-records></app-resource-records>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                Forms ({{forms.length}})
+            </ng-template>
+            <ng-template matTabContent>
+                <app-resource-forms [forms]="forms"></app-resource-forms>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                Layouts ({{layouts.length}})
+            </ng-template>
+            <ng-template matTabContent>
+                <app-resource-layouts></app-resource-layouts>
+            </ng-template>
+        </mat-tab>
+            <!-- <div class="table-container">
                 <table mat-table [dataSource]="dataSourceRecords">
                     <ng-container *ngFor="let column of displayedColumnsRecords" [matColumnDef]="column"
                         [stickyEnd]="column === '_actions'">
@@ -182,6 +202,6 @@
                     </tr>
                 </table>
             </ng-container>
-        </mat-tab>
+        </mat-tab> -->
     </mat-tab-group>
 </ng-container>
