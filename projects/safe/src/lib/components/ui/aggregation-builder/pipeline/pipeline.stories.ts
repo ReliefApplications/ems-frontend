@@ -40,100 +40,83 @@ export default {
 
 const DEFAULT_FIELDS = [
   {
-    type: 'tagbox',
-    name: 'affected_countriees',
-    isRequired: false,
-    readOnly: false,
-    isCore: true,
-    choicesByUrl: {
-      url: 'http://localhost:3000/EMRS/referenceData/items/Country',
-      path: 'value',
-      value: 'Iso2Code',
-      text: 'ShortName',
+    name: 'date',
+    args: [],
+    type: {
+      name: 'Date',
+      kind: 'SCALAR',
+      ofType: null,
     },
   },
   {
-    type: 'tagbox',
-    name: 'regions',
-    isRequired: false,
-    readOnly: false,
-    isCore: true,
-    choices: ['AFR', 'AMR', 'WMR', 'EUR', 'SEAR', 'WPR'],
+    name: 'description',
+    args: [],
+    type: {
+      name: 'String',
+      kind: 'SCALAR',
+      ofType: null,
+    },
   },
   {
-    type: 'resources',
-    name: 'sources',
-    isRequired: false,
-    readOnly: false,
-    isCore: true,
-    resource: '60acfa403e02d700376560be',
-    displayField: 'title',
-    relatedName: 'signal',
-    displayAsGrid: true,
-    addTemplate: '60acfa403e02d700376560bf',
-    gridFieldsSettings: {
-      name: 'allInformation',
-      template: null,
-      fields: [
-        {
-          name: 'title',
-          type: 'String',
+    name: 'status',
+    args: [
+      {
+        name: 'display',
+        type: {
+          name: 'Boolean',
           kind: 'SCALAR',
-          label: 'Title',
+          inputFields: null,
         },
-        {
-          name: 'date',
-          type: 'Date',
-          kind: 'SCALAR',
-          label: 'Date',
-        },
-        {
-          name: 'description',
-          type: 'String',
-          kind: 'SCALAR',
-          label: 'Description',
-        },
-        {
-          name: 'disease',
-          type: 'String',
-          kind: 'SCALAR',
-          label: 'Disease',
-        },
-      ],
-      filter: {
-        logic: 'and',
-        filters: [],
       },
+    ],
+    type: {
+      name: 'String',
+      kind: 'SCALAR',
+      ofType: null,
     },
   },
-  {
+];
+
+const DEFAULT_META = {
+  date: {
     type: 'date',
     name: 'date',
     isRequired: false,
     readOnly: false,
     isCore: true,
   },
-  {
+  description: {
     type: 'text',
-    name: 'follow_comment',
-    isCore: true,
-    generated: true,
-  },
-  {
-    type: 'radiogroup',
-    name: 'follow',
+    name: 'description',
     isRequired: false,
     readOnly: false,
     isCore: true,
-    choices: ['item1', 'item2', 'item3'],
   },
-];
+  status: {
+    type: 'radiogroup',
+    name: 'status',
+    isRequired: false,
+    readOnly: false,
+    isCore: true,
+    defaultValue: 'Unprocessed',
+    choices: [
+      {
+        text: 'Processed',
+        value: 'Processed',
+      },
+      {
+        text: 'Unprocessed',
+        value: 'Unprocessed',
+      },
+    ],
+  },
+};
 
 const fb = new FormBuilder();
 
 const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
   template:
-    '<safe-pipeline [fields$]=fields$ [pipelineForm]="pipelineForm"></safe-pipeline>',
+    '<safe-pipeline [fields$]=fields$ [metaFields$]=metaFields$ [pipelineForm]="pipelineForm"></safe-pipeline>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
     pipelineForm: new FormArray([
@@ -146,10 +129,16 @@ const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
       }),
       fb.group({
         type: new FormControl(StageType.SORT),
-        value: new FormControl('Sort'),
+        form: fb.group({
+          field: [''],
+          order: ['asc'],
+        }),
       }),
     ]),
     fields$: new BehaviorSubject(DEFAULT_FIELDS)
+      .asObservable()
+      .pipe(delay(500)),
+    metaFields$: new BehaviorSubject(DEFAULT_META)
       .asObservable()
       .pipe(delay(500)),
   },

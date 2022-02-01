@@ -30,6 +30,7 @@ export class SafePipelineComponent implements OnInit {
     });
     this.metaFields$.subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
+      console.log('META', meta);
     });
   }
 
