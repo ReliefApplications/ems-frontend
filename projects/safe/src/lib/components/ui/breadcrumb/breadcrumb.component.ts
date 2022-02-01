@@ -1,11 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BreadCrumbService } from '../../../services/bread-crumb.service';
-
-interface Breadcrumb {
-  name: string;
-  route: string;
-  queryParams?: any;
-}
+import { BreadCrumbService, Breadcrumb } from '../../../services/bread-crumb.service';
 
 @Component({
   selector: 'safe-breadcrumb',
@@ -13,7 +7,7 @@ interface Breadcrumb {
   styleUrls: ['./breadcrumb.component.scss'],
 })
 export class SafeBreadcrumbComponent implements OnInit {
-  items: Breadcrumb[] = [];
+  public items: Breadcrumb[] = [];
 
   constructor(private breadCrumbService: BreadCrumbService) {}
 
