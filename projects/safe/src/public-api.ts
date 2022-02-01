@@ -15,9 +15,6 @@ export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 
-// === CONFIG ===
-export * from './lib/config/oort.config';
-
 // === CONST ===
 export * from './lib/const/notifications';
 
@@ -67,6 +64,7 @@ export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
+export * from './lib/components/search-menu/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
 export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';

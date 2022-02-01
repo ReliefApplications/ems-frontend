@@ -1,23 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MsalGuard } from '@azure/msal-angular';
-import { BrowserUtils } from '@azure/msal-browser';
 import { AccessGuard } from './guards/access.guard';
-import { AuthenticationType } from '@safe/builder';
-import { environment } from '../environments/environment';
-
-// Common navigation parameters
-const canActivate: any[] = [AccessGuard];
-let initialNavigation: any;
-
-// if Azure authentication, add more parameters to the navigation
-if (environment.authenticationType === AuthenticationType.azureAD) {
-  canActivate.push(MsalGuard);
-  initialNavigation =
-    !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
-      ? 'enabled'
-      : 'disabled';
-}
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -27,6 +11,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+        canActivate: [AccessGuard],
       },
       {
         path: 'applications',
@@ -39,6 +24,7 @@ const routes: Routes = [
               ),
           },
         ],
+        canActivate: [AccessGuard],
       },
       {
         path: 'app-preview',
@@ -51,9 +37,10 @@ const routes: Routes = [
               ),
           },
         ],
+        canActivate: [AccessGuard],
       },
     ],
-    canActivate,
+    canActivate: [AuthGuard],
   },
   {
     path: 'auth',
@@ -73,7 +60,6 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       relativeLinkResolution: 'legacy',
-      initialNavigation,
     }),
   ],
   exports: [RouterModule],

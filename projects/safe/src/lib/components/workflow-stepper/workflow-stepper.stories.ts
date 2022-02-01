@@ -3,12 +3,17 @@ import { SafeWorkflowStepperComponent } from './workflow-stepper.component';
 import { SafeWorkflowStepperModule } from './workflow-stepper.module';
 import { ContentType } from '../../models/page.model';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StorybookTranslateModule } from '../../components/storybook-translate/storybook-translate-module';
 
 export default {
   component: SafeWorkflowStepperComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeWorkflowStepperModule, BrowserAnimationsModule],
+      imports: [
+        SafeWorkflowStepperModule,
+        BrowserAnimationsModule,
+        StorybookTranslateModule,
+      ],
       providers: [],
     }),
   ],

@@ -9,7 +9,6 @@ import {
 import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 
 /**
  * Guard to check if user is authenticated or not.
@@ -45,12 +44,15 @@ export class AccessGuard implements CanActivate {
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {
+          console.log('it is me');
           this.authService.user.next(res.data.me);
           return true;
         } else {
           if (this.authService.account) {
-            this.authService.logout(environment.postLogoutRedirectUri);
+            console.log('my account');
+            this.authService.logout();
           } else {
+            console.log('no account');
             this.router.navigate(['/auth']);
           }
           return false;

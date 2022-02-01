@@ -250,6 +250,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
       // Opens a modal containing the prefilled form.
       this.dialog.open(SafeFormModalComponent, {
+        disableClose: true,
         data: {
           template: options.prefillTargetForm,
           locale: 'en',
@@ -418,6 +419,7 @@ export class SafeGridWidgetComponent implements OnInit {
                     )
                   );
                   this.dialog.open(SafeFormModalComponent, {
+                    disableClose: true,
                     data: {
                       recordId: record.id,
                       locale: 'en',

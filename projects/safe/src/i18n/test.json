@@ -42,7 +42,6 @@
         "aggregation": "******",
         "id": "******"
     },
-
     "action": {
         "edit": "******",
         "editAs": "******",
@@ -76,19 +75,16 @@
         "attach": "******",
         "expand": "******"
     },
-
     "status": {
         "active": "******",
         "pending": "******",
         "archived": "******"
     },
-
     "date": {
         "loadFromCache": "******",
         "created": "******",
         "modified": "******"
     },
-
     "table": {
         "date": "******",
         "history": "******",
@@ -100,7 +96,6 @@
         "rolesSub": "******",
         "azure": "******"
     },
-
     "nav": {
         "title": "******",
         "addPage": "******",
@@ -110,7 +105,6 @@
         "readAll": "******",
         "load": "******"
     },
-
     "sidenav": {
         "builder": "******",
         "apps": "******",
@@ -122,22 +116,19 @@
         "attributes": "******",
         "pullJobs": "******"
     },
-
     "filter": {
         "search": "******",
         "show": "******",
         "hide": "******",
-        "date" : "******",
+        "date": "******",
         "clear": "******"
     },
-
     "access": {
         "description": "******",
         "canSee": "******",
         "canUpdate": "******",
         "canDelete": "******"
     },
-
     "apps": {
         "recent": "******",
         "all": "******",
@@ -147,7 +138,6 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "forms": {
         "create": "******",
         "delete": "******",
@@ -166,12 +156,11 @@
         "startFrom": "******",
         "tooltip": "******"
     },
-
     "resources": {
+        "create": "******",
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "users": {
         "export": "******",
         "invite": "******",
@@ -186,7 +175,6 @@
         "deleteSelected": "******",
         "deleteSelectedDesc": "******"
     },
-
     "roles": {
         "create": "******",
         "edit": "******",
@@ -196,7 +184,6 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "APIConf": {
         "create": "******",
         "new": "******",
@@ -221,7 +208,6 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "pullJobs": {
         "create": "******",
         "new": "******",
@@ -234,24 +220,20 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "appSummary": {
         "new": "******",
         "created": "******",
         "description": "******"
     },
-
     "profile": {
         "title": "******",
         "position": "******",
         "fav": "******"
     },
-
     "settings": {
         "id": "******",
         "description": "******"
     },
-
     "attributes": {
         "create": "******",
         "new": "******",
@@ -259,7 +241,6 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "channels": {
         "create": "******",
         "new": "******",
@@ -267,7 +248,6 @@
         "delete": "******",
         "deleteDesc": "******"
     },
-
     "subscriptions": {
         "create": "******",
         "new": "******",
@@ -276,18 +256,15 @@
         "listenPlaceholder": "******",
         "listenHint": "******"
     },
-
     "addPage": {
         "description": "******"
     },
-
     "workflow": {
         "new": "******",
         "step1": "******",
         "step2": "******",
         "select": "******"
     },
-
     "widgets": {
         "add": "******",
         "cols": "******",
@@ -384,11 +361,9 @@
             "type": "******"
         }
     },
-
     "history": {
         "download": "******"
     },
-
     "record": {
         "edit": "******",
         "download": "******",
@@ -403,9 +378,7 @@
         "deleteDesc": "******",
         "select": "******",
         "placeholder": "******"
-
     },
-
     "export": {
         "records": "******",
         "allRecords": "******",
@@ -415,7 +388,6 @@
         "visibleColumns": "******",
         "format": "******"
     },
-
     "convert": {
         "target": "******",
         "copy": "******",
@@ -423,7 +395,6 @@
         "ignored": "******",
         "ok": "******"
     },
-
     "tooltip": {
         "backApps": "******",
         "changeAccess": "******",
