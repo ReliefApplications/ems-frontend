@@ -7,5 +7,6 @@
 
     <safe-rule [stylesList]="stylesList" [styleForm]="fieldForm" [styleIndex]="styleIndex" 
     [scalarFields]="scalarFields" [settings]="settings" [availableFields]="availableFields" [factory]="factory"
-    (editRule)="onEditStyle($event)" (deleteRule)="onDeleteStyle($event)" (closeRule)="onCloseField()"></safe-rule>
+    (editRule)="onEditStyle($event)" (deleteRule)="onDeleteStyle($event)" (closeRule)="onCloseField()"
+    (changeApplyTo)="onApplyTo($event)"></safe-rule>
 </form>

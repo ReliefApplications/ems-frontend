@@ -28,6 +28,7 @@ export class SafeRuleComponent implements OnInit {
   @Output() editRule = new EventEmitter<any>();
   @Output() deleteRule = new EventEmitter<any>();
   @Output() closeRule = new EventEmitter<any>();
+  @Output() changeApplyTo = new EventEmitter<any>();
 
   constructor() {}
 
@@ -48,6 +49,6 @@ export class SafeRuleComponent implements OnInit {
 
   onStyleAppliedTo(value: boolean) {
     this.selectedColumns = value;
-    // make logic so if !selectedColumns --> validators null and vice-versa
+    this.changeApplyTo.emit(value);
   }
 }

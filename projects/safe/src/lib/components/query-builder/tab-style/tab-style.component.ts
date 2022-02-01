@@ -74,13 +74,12 @@ export class SafeTabStyleComponent implements OnInit {
       backgroundColor: '',
       textColor: '',
       textStyle: 'default',
-      styleAppliedTo: 'selected-row',
-      fields: this.formBuilder.array([], Validators.required),
-      filters: this.formBuilder.group({
-        field: '',
-        operator: 'and',
-        value: null,
-      }),
+      styleAppliedTo: 'whole-row',
+      fields: this.formBuilder.array([]),
+      filter: this.formBuilder.group({
+        logic: 'and',
+        filters: this.formBuilder.array([]),
+      })
     });
     this.styles$.push(style);
     this.updateStylesList();
@@ -96,5 +95,14 @@ export class SafeTabStyleComponent implements OnInit {
     this.isEdited = false;
     this.styleIndex = null;
     this.updateStylesList();
+  }
+
+  public onApplyTo(value: boolean): void {
+      if (value) {
+        this.fieldForm?.get('fields')?.setValidators(Validators.required);
+      } else {
+        this.fieldForm?.get('fields')?.clearValidators();
+      }
+      this.fieldForm?.get('fields')?.updateValueAndValidity();
   }
 }

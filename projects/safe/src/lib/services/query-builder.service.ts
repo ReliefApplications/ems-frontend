@@ -470,7 +470,7 @@ export class QueryBuilderService {
       textColor: [value && value.textColor ? value.textColor : ''],
       textStyle: [value && value.textStyle ? value.textStyle : 'default'],
       styleAppliedTo: [
-        value && value.styleAppliedTo ? value.styleAppliedTo : 'selected-row',
+        value && value.styleAppliedTo ? value.styleAppliedTo : 'whole-row',
         Validators.required,
       ],
       fields: this.formBuilder.array(
