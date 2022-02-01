@@ -403,6 +403,15 @@
     "aggregation": {
         "builderTitle": "Aggregation builder",
         "dataSource": "Select the data source",
-        "sourceFields": "Select fields"
+        "sourceFields": "Select fields",
+        "addStage": "Add stage",
+        "stages": {
+            "filter": "Filter",
+            "sort": "Sort",
+            "group": "Group",
+            "addFields": "Add fields",
+            "unwind": "Unwind",
+            "custom": "Custom"
+        }
     } 
 }

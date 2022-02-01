@@ -432,6 +432,16 @@
     },
     "aggregation": {
         "builderTitle": "******",
-        "dataSource": "******"
+        "dataSource": "******",
+        "sourceFields": "******",
+        "addStage":  "******",
+        "stages": {
+            "filter": "******",
+            "sort": "******",
+            "group": "******",
+            "addFields": "******",
+            "unwind": "******",
+            "custom": "******"
+        }
     } 
 }

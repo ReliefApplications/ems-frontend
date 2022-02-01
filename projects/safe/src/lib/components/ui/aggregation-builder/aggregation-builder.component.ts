@@ -1,15 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators'; 
-import {
-  GET_FORMS,
-  GetFormsQueryResponse,
-  GetFormByIdQueryResponse,
-  GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+import { debounceTime } from 'rxjs/operators';
+import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -31,15 +28,26 @@ export class SafeAggregationBuilderComponent implements OnInit {
     hasNextPage: true,
   };
   // Fields
+  private queryName = '';
   private fields = new BehaviorSubject<any[]>([]);
   public fields$!: Observable<any[]>;
+  private selectedFields = new BehaviorSubject<any[]>([]);
+  public selectedFields$!: Observable<any[]>;
+  private metaFields = new BehaviorSubject<any[]>([]);
+  public metaFields$!: Observable<any[]>;
 
   // === REACTIVE FORM ===
   aggregationForm: FormGroup = new FormGroup({});
 
-  constructor(private apollo: Apollo, private formBuilder: FormBuilder) {}
+  constructor(
+    private apollo: Apollo,
+    private formBuilder: FormBuilder,
+    private queryBuilder: QueryBuilderService,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   ngOnInit(): void {
+    // Initialize the FormGroup
     this.aggregationForm = this.formBuilder.group({
       dataSource: [
         this.settings && this.settings.dataSource
@@ -53,8 +61,16 @@ export class SafeAggregationBuilderComponent implements OnInit {
           : [],
         Validators.required,
       ],
+      pipeline: this.formBuilder.array(
+        this.settings && this.settings.pipeline && this.settings.pipeline.length
+          ? this.settings.pipeline.map((x: any) =>
+              this.aggregationBuilder.stageForm(x)
+            )
+          : []
+      ),
     });
 
+    // Data source query
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS,
       variables: {
@@ -68,6 +84,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.loading = res.loading;
     });
 
+    // Fields query
     this.fields$ = this.fields.asObservable();
     this.aggregationForm
       .get('dataSource')
@@ -75,18 +92,43 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .subscribe((form) => {
         if (form && form.id) {
           this.aggregationForm.get('sourceFields')?.setValue([]);
-          this.apollo
-            .query<GetFormByIdQueryResponse>({
-              query: GET_FORM_BY_ID,
-              variables: {
-                id: form.id,
-              },
-            })
-            .subscribe((res) => {
-              this.fields.next(res.data.form.fields || []);
-            });
+          this.queryName = form.name
+            ? this.queryBuilder.getQueryNameFromResourceName(form.name)
+            : '';
+          const fields = this.queryBuilder.getFields(this.queryName);
+          console.log('FIELDS', fields);
+          this.fields.next(fields.filter((x) => x.type.kind === 'SCALAR'));
         }
       });
+
+    this.selectedFields$ = this.selectedFields.asObservable();
+    this.metaFields$ = this.metaFields.asObservable();
+    this.aggregationForm
+      .get('sourceFields')
+      ?.valueChanges.pipe(debounceTime(1000))
+      .subscribe((fields) => {
+        const formattedFields = fields.map((field: any) => {
+          const formattedForm = this.queryBuilder.addNewField(field, true);
+          formattedForm.enable();
+          return formattedForm.value;
+        });
+        this.selectedFields.next(fields);
+        this.queryBuilder
+          .buildMetaQuery({
+            query: { name: this.queryName, fields: formattedFields },
+          })
+          ?.subscribe((res) => {
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                this.metaFields.next(res.data[field]);
+              }
+            }
+          });
+      });
+  }
+
+  get pipelineForm(): FormArray {
+    return this.aggregationForm.get('pipeline') as FormArray;
   }
 
   /**

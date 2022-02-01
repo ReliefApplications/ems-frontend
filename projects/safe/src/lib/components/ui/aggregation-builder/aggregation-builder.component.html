@@ -1,22 +1,21 @@
 <h2>{{ 'aggregation.builderTitle' | translate }}</h2>
+<div class="data-source">
+  <safe-forms-dropdown
+    class="forms-dropdown"
+    [forms$]="forms$"
+    [sourceControl]="aggregationForm.controls.dataSource"
+    (filter)="onFilterDataSource($event)"
+    (scrolled)="onScrollDataSource($event)"
+  ></safe-forms-dropdown>
+  <safe-tagbox
+    class="tagbox"
+    [choices$]="fields$"
+    [parentControl]="aggregationForm.controls.sourceFields"
+    [label]="'aggregation.sourceFields' | translate"
+  ></safe-tagbox>
+</div>
 <div class="layout">
-  <div class="builder-form">
-    <div class="data-source">
-      <safe-forms-dropdown
-        class="forms-dropdown"
-        [forms$]="forms$"
-        [sourceControl]="aggregationForm.controls.dataSource"
-        (filter)="onFilterDataSource($event)"
-        (scrolled)="onScrollDataSource($event)"
-      ></safe-forms-dropdown>
-      <safe-tagbox
-        class="tagbox"
-        [choices$]="fields$"
-        [parentControl]="aggregationForm.controls.sourceFields"
-        [label]="'aggregation.sourceFields' | translate"
-      ></safe-tagbox>
-    </div>
-  </div>
+  <safe-pipeline class="builder-form" [fields$]="selectedFields$" [metaFields$]="metaFields$" [pipelineForm]="pipelineForm"></safe-pipeline>
   <div class="preview">
     <span>Preview</span>
   </div>
