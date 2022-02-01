@@ -348,9 +348,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (name === '') {
         name = paths[i];
-        console.log(route);
-        route += '/' + paths[i];
-        console.log(route);
+        route += '/' + paths[i] + '/' + paths[++i];
       }
 
       this.breadCrumbService.addBreadCrumb({
@@ -358,25 +356,5 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         route,
       });
     }
-    //   if (route) {
-    //     for (let i = 1; paths[i]; i += 2) {
-    //       route += '/' + paths[i] + '/' + paths[i + 1];
-    //       name = paths[i];
-    //       if (this.filteredNavGroups.length > 0) {
-    //         this.filteredNavGroups.map((navGroup: any) => {
-    //           navGroup.navItems.map((item: any) => {
-    //             if ('./' + paths[i] + '/' + paths[i + 1] === item.path) {
-    //               name = item.name;
-    //             }
-    //           });
-    //         });
-    //       }
-    //       this.routePath.push({
-    //         name,
-    //         route,
-    //       });
-    //     }
-    //   }
-    console.log(this.routePath);
   }
 }

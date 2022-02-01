@@ -31,6 +31,7 @@ import {
   SafeConfirmModalComponent,
   NOTIFICATIONS,
   SafeSnackBarService,
+  BreadCrumbService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
@@ -83,7 +84,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadCrumb: BreadCrumbService
   ) {}
 
   /*  Load the records, using the form id passed as a parameter.
@@ -144,6 +146,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       })
       .valueChanges.subscribe((res) => {
         if (res.data.form) {
+          // Update BreadCrumb route
+          this.breadCrumb.changeLast({ name: res.data.form.name + ' records' });
           this.form = res.data.form;
           this.setDisplayedColumns();
           this.loading = res.loading;

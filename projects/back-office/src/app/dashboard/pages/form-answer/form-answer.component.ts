@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Form, SafeFormComponent } from '@safe/builder';
+import { Form, SafeFormComponent, BreadCrumbService } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
@@ -23,7 +23,11 @@ export class FormAnswerComponent implements OnInit {
   public form?: Form;
   public completed = false;
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {}
+  constructor(
+    private apollo: Apollo,
+    private route: ActivatedRoute,
+    private breadCrumb: BreadCrumbService
+  ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -38,6 +42,12 @@ export class FormAnswerComponent implements OnInit {
         .valueChanges.subscribe((res) => {
           this.loading = res.loading;
           this.form = res.data.form;
+          if (res.data.form) {
+            // Update BreadCrumb route
+            this.breadCrumb.changeLast({
+              name: res.data.form.name + ' answer',
+            });
+          }
         });
     }
   }

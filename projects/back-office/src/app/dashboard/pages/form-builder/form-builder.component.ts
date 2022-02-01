@@ -22,7 +22,11 @@ import {
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
+import {
+  SafeStatusModalComponent,
+  NOTIFICATIONS,
+  BreadCrumbService,
+} from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -69,7 +73,8 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadCrumb: BreadCrumbService
   ) {
     translate.stream('status').subscribe((status: any) => {
       this.statuses[0].text = status.active;
@@ -118,7 +123,12 @@ export class FormBuilderComponent implements OnInit {
         })
         .valueChanges.subscribe(
           (res) => {
+            console.log(res.data);
             if (res.data.form) {
+              // Update BreadCrumb route
+              this.breadCrumb.changeLast({
+                name: res.data.form.name + ' builder',
+              });
               this.loading = res.loading;
               this.form = res.data.form;
               this.nameForm = new FormGroup({

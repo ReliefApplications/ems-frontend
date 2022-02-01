@@ -14,6 +14,7 @@ export * from './lib/services/form.service';
 export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
+export * from './lib/services/bread-crumb.service';
 
 // === CONST ===
 export * from './lib/const/notifications';

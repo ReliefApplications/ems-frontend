@@ -8,6 +8,7 @@ import {
   SafeConfirmModalComponent,
   Record,
   Form,
+  BreadCrumbService,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -82,7 +83,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadCrumb: BreadCrumbService
   ) {}
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -143,6 +145,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe(
         (res) => {
           if (res.data.resource) {
+            // Update BreadCrumb route
+            this.breadCrumb.changeLast({ name: res.data.resource.name });
             this.resource = res.data.resource;
             this.dataSourceForms = this.resource.forms;
             this.setDisplayedColumns(false);
