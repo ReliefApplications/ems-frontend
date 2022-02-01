@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BreadCrumbService, Breadcrumb } from '../../../services/bread-crumb.service';
+import {
+  BreadCrumbService,
+  Breadcrumb,
+} from '../../../services/bread-crumb.service';
 
 @Component({
   selector: 'safe-breadcrumb',
