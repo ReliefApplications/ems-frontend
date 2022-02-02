@@ -6,6 +6,11 @@ const routes: Routes = [
   {
     path: '',
     component: ApplicationComponent,
+    data: {
+      breadcrumb: {
+        name: '<appid>',
+      },
+    },
     children: [
       {
         path: '',
@@ -84,6 +89,11 @@ const routes: Routes = [
       },
       {
         path: 'dashboard/:id',
+        data: {
+          breadcrumb: {
+            name: '<dashid>',
+          },
+        },
         loadChildren: () =>
           import('../dashboard/pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule

@@ -6,6 +6,11 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    data: {
+      breadcrumb: {
+        skip: true,
+      },
+    },
   },
 ];
 

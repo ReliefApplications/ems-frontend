@@ -18,6 +18,11 @@ const routes: Routes = [
         children: [
           {
             path: ':id',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./application/application.module').then(
                 (m) => m.ApplicationModule
@@ -25,6 +30,11 @@ const routes: Routes = [
           },
         ],
         canActivate: [AccessGuard],
+        data: {
+          breadcrumb: {
+            name: 'Applications',
+          },
+        },
       },
       {
         path: 'app-preview',

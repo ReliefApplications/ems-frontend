@@ -36,7 +36,6 @@ export class SafeBreadcrumbService {
     }
 
     for (const child of children) {
-      console.log(child);
       const routeURL: string = child.snapshot.url
         .map((segment) => segment.path)
         .join('/');
@@ -46,8 +45,10 @@ export class SafeBreadcrumbService {
 
       const breadcrumb = child.snapshot.data?.breadcrumb;
       if (!(breadcrumb === null || breadcrumb === undefined)) {
-        console.log({ ...breadcrumb, ...{ url } });
-        breadcrumbs.push({ ...breadcrumb, ...{ url } });
+        if (!breadcrumb.skip) {
+          console.log({ ...breadcrumb, ...{ url } });
+          breadcrumbs.push({ ...breadcrumb, ...{ url } });
+        }
       }
 
       return this.createBreadcrumbs(child, url, breadcrumbs);
