@@ -22,6 +22,7 @@ import { SafeRuleComponent } from './tab-style/rule/rule.component';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     SafeTabFilterComponent,
     SafeTabStyleComponent,
     SafeRuleComponent,
+    SafeRuleListComponent
   ],
   imports: [
     CommonModule,

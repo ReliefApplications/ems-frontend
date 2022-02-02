@@ -3,10 +3,8 @@ import {
   ComponentFactory,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -43,8 +41,6 @@ export class SafeTabStyleComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateStylesList();
-    // selected columns to fix
-    // change validators when switching from whole row to selected columns
   }
 
   public updateStylesList(): void {
@@ -74,11 +70,11 @@ export class SafeTabStyleComponent implements OnInit {
       backgroundColor: '',
       textColor: '',
       textStyle: 'default',
-      styleAppliedTo: 'whole-row',
+      styleAppliedTo: ['whole-row', Validators.required],
       fields: this.formBuilder.array([]),
       filter: this.formBuilder.group({
         logic: 'and',
-        filters: this.formBuilder.array([]),
+        filters: this.formBuilder.array([], Validators.required),
       })
     });
     this.styles$.push(style);

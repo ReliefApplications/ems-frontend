@@ -478,7 +478,7 @@ export class QueryBuilderService {
         value && value.fields
           ? value.fields.map((x: any) => this.addNewField(x))
           : [],
-        Validators.required
+        null
       ),
       filter: this.createFilterGroup(
         value && value.filter ? value.filter : {},

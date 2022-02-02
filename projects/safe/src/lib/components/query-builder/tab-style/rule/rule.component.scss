@@ -1,42 +1,3 @@
-.field-list-wrapper {
-  flex: 1;
-  max-height: 400px;
-  overflow: auto;
-}
-
-.field-list {
-  border: solid 1px #ccc;
-  min-height: 400px;
-  background: #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-  box-sizing: border-box;
-  flex: 1;
-}
-
-.field-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
-}
-.field-type {
-  color: grey;
-}
-
-.field-preview {
-  padding: 10px;
-  width: 100px;
-}
-
 .field-container {
   min-width: 400px;
   margin-right: 25px;
@@ -48,10 +9,6 @@
   &:only-child {
     width: 100%;
   }
-}
-
-.field-error {
-  color: red;
 }
 
 .style-form {

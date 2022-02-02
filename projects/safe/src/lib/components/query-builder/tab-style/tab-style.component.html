@@ -5,8 +5,11 @@
         [disabled]="isEdited" category="tertiary">{{'widgets.query.style.new' | translate}}</safe-button>
     </div>
 
-    <safe-rule [stylesList]="stylesList" [styleForm]="fieldForm" [styleIndex]="styleIndex" 
+    <safe-rule-list *ngIf="!fieldForm" [stylesList]="stylesList"
+    (editRule)="onEditStyle($event)" (deleteRule)="onDeleteStyle($event)"></safe-rule-list>
+    
+    <safe-rule *ngIf="fieldForm" [stylesList]="stylesList" [styleForm]="fieldForm" [styleIndex]="styleIndex" 
     [scalarFields]="scalarFields" [settings]="settings" [availableFields]="availableFields" [factory]="factory"
-    (editRule)="onEditStyle($event)" (deleteRule)="onDeleteStyle($event)" (closeRule)="onCloseField()"
-    (changeApplyTo)="onApplyTo($event)"></safe-rule>
+     (closeRule)="onCloseField()" (changeApplyTo)="onApplyTo($event)"></safe-rule>
+
 </form>

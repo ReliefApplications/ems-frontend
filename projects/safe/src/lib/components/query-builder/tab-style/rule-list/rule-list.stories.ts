@@ -1,9 +1,9 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { SafeRuleComponent } from './rule.component';
+import { SafeRuleListComponent } from './rule-list.component';
 import { SafeQueryBuilderModule } from '../../query-builder.module';
 
 export default {
-  component: SafeRuleComponent,
+  component: SafeRuleListComponent,
   decorators: [
     moduleMetadata({
       imports: [SafeQueryBuilderModule],
@@ -12,7 +12,7 @@ export default {
   title: 'UI/Rule',
 } as Meta;
 
-const TEMPLATE_DEFAULT: Story<SafeRuleComponent> = (args) => ({
+const TEMPLATE_DEFAULT: Story<SafeRuleListComponent> = (args) => ({
   template: `<safe-rule [stylesList]="stylesList" [styleForm]="styleForm" [scalarFields]="scalarFields" [settings]="settings"
   [availableFields]="availableFields" [factory]="factory"></safe-rule>`,
   props: {

@@ -1,0 +1,15 @@
+<div class="field-list-wrapper" >
+    <div class="field-list">
+      <div class="field-box" *ngFor="let style of stylesList; let index = index" cdkDrag>
+        <span class="field-type">{{ style.title }}</span>
+        <span class="field-type field-preview" [style.background]="style.backgroundColor"
+        [style.color]="style.textColor" [style.font-weight]="style.textStyle === 'bold' ? 'bold' : 'normal'"
+        [style.text-decoration]="style.textStyle === 'underline' ? 'underline' : 'none'"
+        [style.font-style]="style.textStyle === 'italic' ? 'italic' : 'normal'">Preview</span>
+        <div>
+          <safe-button [isIcon]="true" icon="edit" (click)="onEditStyle(index)"></safe-button>
+          <safe-button [isIcon]="true" icon="delete" (click)="onDeleteStyle(index)"></safe-button>
+        </div>
+      </div>
+    </div>
+</div> 

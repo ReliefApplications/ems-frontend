@@ -24,23 +24,13 @@ export class SafeRuleComponent implements OnInit {
   @Input() settings: any;
 
   public selectedColumns: boolean = false;
-
-  @Output() editRule = new EventEmitter<any>();
-  @Output() deleteRule = new EventEmitter<any>();
+  
   @Output() closeRule = new EventEmitter<any>();
   @Output() changeApplyTo = new EventEmitter<any>();
 
   constructor() {}
 
   ngOnInit(): void {}
-
-  onEditStyle(index: any) {
-    this.editRule.emit(index);
-  }
-
-  onDeleteStyle(index: any) {
-    this.deleteRule.emit(index);
-  }
 
   onCloseField() {
     this.styleForm = null;
