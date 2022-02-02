@@ -188,6 +188,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       show: [value && value.show ? value.show : false, Validators.required],
       name: [value && value.name ? value.name : 'Next'],
       selectAll: [value && value.selectAll ? value.selectAll : false],
+      selectPage: [value && value.selectPage ? value.selectPage : false],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
       prefillForm: [value && value.prefillForm ? value.prefillForm : false],
       prefillTargetForm: [
