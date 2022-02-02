@@ -6,7 +6,7 @@ import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_FORM_STRUCTURE,
-  GET_RECORD_BY_ID
+  GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
 import { Record, Form } from '@safe/builder';
 

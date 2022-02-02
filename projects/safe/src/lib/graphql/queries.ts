@@ -897,7 +897,6 @@ export interface GetResourceRecordsQueryResponse {
   };
 }
 
-
 // === GET API CONFIGURATION ===
 export const GET_API_CONFIGURATION = gql`
   query GetApiConfiguration($id: ID!) {
@@ -934,4 +933,3 @@ export interface GetApiConfigurationQueryResponse {
   loading: boolean;
   apiConfiguration: ApiConfiguration;
 }
-

@@ -8,8 +8,8 @@ import {
   GetResourceByIdQueryResponse,
   GET_APPLICATION_BY_ID,
   GET_API_CONFIGURATION,
-  GET_RESOURCE_BY_ID
-} from '../graphql/queries'
+  GET_RESOURCE_BY_ID,
+} from '../graphql/queries';
 
 export interface Breadcrumb {
   name: string;
@@ -31,9 +31,7 @@ export class BreadCrumbService {
   private oldRoute = '';
   private layoutNames: LayoutNames[] = [];
 
-  constructor(
-    private router: Router, 
-    private apollo: Apollo) {
+  constructor(private router: Router, private apollo: Apollo) {
     router.events.subscribe((val: any) => {
       if (
         val instanceof NavigationEnd &&
@@ -94,27 +92,28 @@ export class BreadCrumbService {
     let route = '';
 
     this.clearItems();
-    for (let i=0; paths[i]; i++) {
+    for (let i = 0; paths[i]; i++) {
       let item = {
         name: paths[i],
-        route
-      }
+        route,
+      };
       switch (paths[i]) {
         case 'applications':
         case 'app-preview':
           if (/\d/.test(paths[i + 1])) {
             item.route += '/' + paths[i] + '/' + paths[++i];
-            this.apollo.watchQuery<GetApplicationByIdQueryResponse>({
-              query: GET_APPLICATION_BY_ID,
-              variables: {
-                id: paths[i],
-              },
-            })
-            .valueChanges.subscribe((res) => {
-              if (res.data.application.name) {
-                item.name = res.data.application.name;
-              }
-            })
+            this.apollo
+              .watchQuery<GetApplicationByIdQueryResponse>({
+                query: GET_APPLICATION_BY_ID,
+                variables: {
+                  id: paths[i],
+                },
+              })
+              .valueChanges.subscribe((res) => {
+                if (res.data.application.name) {
+                  item.name = res.data.application.name;
+                }
+              });
           } else {
             item.name = 'Main page';
             item.route += '/' + paths[i];
@@ -133,18 +132,19 @@ export class BreadCrumbService {
               item.name = 'API Configuration';
               if (paths[i + 1]) {
                 this.addItem(item);
-                item = {name: '', route: '/' + paths[++i]};
-                this.apollo.watchQuery<GetApiConfigurationQueryResponse>({
-                  query: GET_API_CONFIGURATION,
-                  variables: {
-                    id: paths[i],
-                  },
-                })
-                .valueChanges.subscribe((res) => {
-                  if (res.data.apiConfiguration.name) {
-                    item.name = res.data.apiConfiguration.name;
-                  }
-                })
+                item = { name: '', route: '/' + paths[++i] };
+                this.apollo
+                  .watchQuery<GetApiConfigurationQueryResponse>({
+                    query: GET_API_CONFIGURATION,
+                    variables: {
+                      id: paths[i],
+                    },
+                  })
+                  .valueChanges.subscribe((res) => {
+                    if (res.data.apiConfiguration.name) {
+                      item.name = res.data.apiConfiguration.name;
+                    }
+                  });
               }
               break;
             case 'pulljobs':
@@ -168,23 +168,24 @@ export class BreadCrumbService {
           item.name = 'Resources';
           if (paths[i + 1]) {
             this.addItem(item);
-            item = {name: '', route: '/' + paths[++i]};
-            this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-              query: GET_RESOURCE_BY_ID,
-              variables: {
-                id: paths[i],
-              },
-            })
-            .valueChanges.subscribe((res) => {
-              if (res.data.resource.name) {
-                item.name = res.data.resource.name;
-              }
-            })
+            item = { name: '', route: '/' + paths[++i] };
+            this.apollo
+              .watchQuery<GetResourceByIdQueryResponse>({
+                query: GET_RESOURCE_BY_ID,
+                variables: {
+                  id: paths[i],
+                },
+              })
+              .valueChanges.subscribe((res) => {
+                if (res.data.resource.name) {
+                  item.name = res.data.resource.name;
+                }
+              });
           }
           break;
         case 'update':
           item.name = 'Update record';
-          item = {name: '', route: '/' + paths[++i]};
+          item = { name: '', route: '/' + paths[++i] };
           break;
         default:
           item.route += '/' + paths[i];
@@ -229,7 +230,6 @@ export class BreadCrumbService {
     // this.layoutNames = names;
     // const temp = this.breadCrumbSource.value;
     // let layoutName: LayoutNames | undefined;
-
     // for (let i = 0; temp[i]; i++) {
     //   layoutName = this.layoutNames.find((val) => temp[i].route === val.route);
     //   if (layoutName) {
