@@ -5,12 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
-  GetResourceByIdQueryResponse,
   GET_FORM_STRUCTURE,
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_BY_ID,
+  GET_RECORD_BY_ID
 } from '../../../graphql/queries';
-import { Record, Form, BreadCrumbService } from '@safe/builder';
+import { Record, Form } from '@safe/builder';
 
 @Component({
   selector: 'app-update-record',
@@ -28,8 +26,7 @@ export class UpdateRecordComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router,
-    private breadCrumb: BreadCrumbService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -62,29 +59,6 @@ export class UpdateRecordComponent implements OnInit {
           if (!template) {
             this.form = this.record.form || {};
             this.loading = res.loading;
-          }
-        });
-    }
-
-    //Update BreadCrumb route
-    this.breadCrumb.changeLast({ name: 'Update record' });
-    if (this.route.parent && this.route.parent.parent) {
-      const id = (this.route.parent.parent.params as any).value.id;
-      console.log(id);
-      this.apollo
-        .watchQuery<GetResourceByIdQueryResponse>({
-          query: GET_RESOURCE_BY_ID,
-          variables: {
-            id,
-          },
-        })
-        .valueChanges.subscribe((res) => {
-          console.log(res.data);
-          if (res.data.resource) {
-            this.breadCrumb.changeItem(
-              { name: res.data.resource.name },
-              this.breadCrumb.getLength() - 2
-            );
           }
         });
     }

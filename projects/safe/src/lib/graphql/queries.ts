@@ -8,6 +8,7 @@ import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
+import { ApiConfiguration } from '../models/apiConfiguration.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -895,3 +896,42 @@ export interface GetResourceRecordsQueryResponse {
     };
   };
 }
+
+
+// === GET API CONFIGURATION ===
+export const GET_API_CONFIGURATION = gql`
+  query GetApiConfiguration($id: ID!) {
+    apiConfiguration(id: $id) {
+      id
+      name
+      status
+      authType
+      endpoint
+      pingUrl
+      settings
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface GetApiConfigurationQueryResponse {
+  loading: boolean;
+  apiConfiguration: ApiConfiguration;
+}
+
