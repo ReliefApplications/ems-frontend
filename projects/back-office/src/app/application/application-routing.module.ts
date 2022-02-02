@@ -8,7 +8,7 @@ const routes: Routes = [
     component: ApplicationComponent,
     data: {
       breadcrumb: {
-        name: '<appid>',
+        alias: '@application',
       },
     },
     children: [
@@ -91,7 +91,7 @@ const routes: Routes = [
         path: 'dashboard/:id',
         data: {
           breadcrumb: {
-            name: '<dashid>',
+            name: '@dashboard',
           },
         },
         loadChildren: () =>

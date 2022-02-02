@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 interface Breadcrumb {
+  alias?: string;
   name: string;
   href: string;
   queryParams?: any;
@@ -52,6 +53,17 @@ export class SafeBreadcrumbService {
       }
 
       return this.createBreadcrumbs(child, url, breadcrumbs);
+    }
+  }
+
+  public setBreadcrumb(alias: string, name: string) {
+    const breadcrumbs = this.breadcrumbs.getValue();
+    console.log(breadcrumbs);
+    const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
+    console.log(breadcrumb);
+    if (breadcrumb) {
+      breadcrumb.name = name;
+      this.breadcrumbs.next(breadcrumbs);
     }
   }
 }

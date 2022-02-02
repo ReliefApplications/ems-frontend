@@ -7,6 +7,7 @@ import {
   SafeConfirmModalComponent,
   ContentType,
   SafeApplicationService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
@@ -35,7 +36,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     public route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +49,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.title = application.name || '';
+            this.breadcrumbService.setBreadcrumb('@application', this.title);
             let displayNavItems: any[] =
               application.pages
                 ?.filter((x: any) => x.content && x.canSee)
