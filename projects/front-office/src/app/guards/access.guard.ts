@@ -44,15 +44,12 @@ export class AccessGuard implements CanActivate {
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {
-          console.log('it is me');
           this.authService.user.next(res.data.me);
           return true;
         } else {
           if (this.authService.account) {
-            console.log('my account');
             this.authService.logout();
           } else {
-            console.log('no account');
             this.router.navigate(['/auth']);
           }
           return false;

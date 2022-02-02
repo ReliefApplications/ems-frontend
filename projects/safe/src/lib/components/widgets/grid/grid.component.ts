@@ -150,7 +150,6 @@ export class SafeGridWidgetComponent implements OnInit {
       this.grid.selectedRows = records.data[
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
-      console.log('selectedRows', this.grid.selectedRows);
     }
     // Select all the records in the active page
     if (options.selectPage) {
@@ -410,6 +409,7 @@ export class SafeGridWidgetComponent implements OnInit {
               mutation: EDIT_RECORD,
               variables: {
                 id: value.record,
+                data
               },
             })
             .subscribe((res2) => {

@@ -156,7 +156,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.userSubscription.unsubscribe();
     }
     this.userSubscription = this.authService.user$.subscribe((user) => {
-      console.log(user);
       if (user) {
         this.user = { ...user };
       }
