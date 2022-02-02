@@ -47,10 +47,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
   public resource: any;
   public cachedRecords: Record[] = [];
 
-  // === RECORDS ASSOCIATED ===
-  recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
-  displayedColumnsRecords: string[] = [];
-  dataSourceRecords: any[] = [];
+  // === RECORDS ===
+  records: any[] = [];
+  resourceFields: string[] = [];
 
   // === FORMS ===
   forms: any[] = [];
@@ -118,7 +117,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
         this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
-        this.dataSourceRecords = this.cachedRecords.slice(
+        this.records = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
@@ -193,7 +192,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       });
     } else {
-      this.dataSourceRecords = this.cachedRecords.slice(
+      this.records = this.cachedRecords.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
@@ -219,7 +218,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       }
     }
     columns = columns.concat(RECORDS_DEFAULT_COLUMNS);
-    this.displayedColumnsRecords = columns;
+    this.resourceFields = columns;
   }
 
   public filterCore(event: any): void {
@@ -271,9 +270,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'));
-        this.dataSourceRecords = this.dataSourceRecords.filter(
-          (x) => x.id !== id
-        );
+        this.records = this.records.filter((x) => x.id !== id);
       });
   }
 
@@ -406,20 +403,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe((res) => {
-        this.dataSourceRecords = this.dataSourceRecords.filter(
-          (x) => x.id !== id
-        );
+        this.records = this.records.filter((x) => x.id !== id);
       });
-  }
-
-  /**
-   * Get list of forms filtering by record form.
-   *
-   * @param record Record to filter templates with.
-   * @returns list of different forms than the one used to create the record.
-   */
-  public filterTemplates(record: Record): Form[] {
-    return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
   }
 
   /**

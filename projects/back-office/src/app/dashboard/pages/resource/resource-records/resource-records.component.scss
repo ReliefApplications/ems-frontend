@@ -1,0 +1,15 @@
+.table-container {
+    overflow-x: auto;
+}
+
+.table-column {
+    padding: 0px 4px;
+
+    div {
+        max-height: 48px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 240px;
+    }
+}

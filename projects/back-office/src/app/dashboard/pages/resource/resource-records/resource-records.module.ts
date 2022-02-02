@@ -11,11 +11,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '@safe/builder';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [ResourceRecordsComponent],
   imports: [
     CommonModule,
+    RouterModule,
     MatProgressSpinnerModule,
     MatTabsModule,
     MatTableModule,
