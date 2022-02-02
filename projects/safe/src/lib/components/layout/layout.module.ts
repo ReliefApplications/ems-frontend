@@ -18,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -40,6 +41,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     TranslateModule,
     SafeSearchMenuModule,
     OverlayModule,
+    SafeBreadcrumbModule,
   ],
   exports: [SafeLayoutComponent],
 })

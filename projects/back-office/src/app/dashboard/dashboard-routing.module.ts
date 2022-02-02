@@ -133,6 +133,12 @@ export const routes = [
       },
       {
         path: 'applications',
+        data: {
+          breadcrumb: {
+            alias: 'applications',
+            name: 'Applications',
+          },
+        },
         children: [
           {
             path: '',
