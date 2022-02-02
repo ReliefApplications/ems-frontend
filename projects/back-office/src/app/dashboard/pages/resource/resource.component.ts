@@ -135,6 +135,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     );
 
     // get the resource and the form linked
+    console.log(this.id);
     this.resourceSubscription = this.apollo
       .watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,

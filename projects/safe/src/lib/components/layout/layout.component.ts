@@ -23,12 +23,7 @@ import {
 } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  ActivatedRoute,
-  Router,
-  NavigationEnd,
-  NavigationStart,
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -90,10 +85,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === APP SEARCH ===
   public showAppMenu = false;
 
-  // === BREADCRUMB ===
-  private oldRoute = '';
-  public routePath: any[] = [];
-
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -109,16 +100,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.environment = environment;
     this.currentLanguage = this.translate.defaultLang;
     this.languages = this.translate.getLangs();
-
-    router.events.subscribe((val: any) => {
-      if (
-        val instanceof NavigationEnd &&
-        this.oldRoute !== val.urlAfterRedirects
-      ) {
-        this.oldRoute = val.urlAfterRedirects;
-      }
-      this.setBreadCrumb();
-    });
   }
 
   ngOnInit(): void {
@@ -210,7 +191,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     this.loadUserAndUpdateLayout();
     this.setBreadCrumb();
-    console.log(this.filteredNavGroups);
   }
 
   ngOnDestroy(): void {
@@ -316,45 +296,26 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setBreadCrumb() {
-    const paths = this.oldRoute.split('/');
+    const temp: any[] = [];
     let route = '';
-    let name: string;
 
-    this.breadCrumbService.clearBreadCrumb();
-
-    for (let i = 1; paths[i]; i++) {
-      name = '';
-      if (this.route && i === 1) {
-        route += '/' + paths[i] + '/' + paths[++i];
-        name = this.title;
-      } else if (this.filteredNavGroups.length > 0) {
-        this.filteredNavGroups.map((navGroup: any) => {
-          navGroup.navItems.map((item: any) => {
-            if (
-              '/' + paths[i] + '/' + paths[i + 1] === item.path ||
-              './' + paths[i] + '/' + paths[i + 1] === item.path
-            ) {
-              name = item.name;
-              route += '/' + paths[i] + '/' + paths[++i];
-            } else if (
-              '/' + paths[i] === item.path ||
-              '/' + paths[i] === item.path[0]
-            ) {
-              name = item.name;
-              route += '/' + paths[i];
-            }
-          });
-        });
-      }
-      if (name === '') {
-        name = paths[i];
-        route += '/' + paths[i] + '/' + paths[++i];
-      }
-
-      this.breadCrumbService.addBreadCrumb({
-        name,
+    if (this.route) {
+      route = '/applications/' + (this.route.params as any).value.id;
+      temp.push({
+        name: this.title,
         route,
       });
     }
+
+    this.filteredNavGroups.map((group: any) => {
+      group.navItems.map((item: any) => {
+        temp.push({
+          name: item.name,
+          route: item.path[0] === '.' ? route + item.path.slice(1) : item.path,
+        });
+      });
+    });
+
+    this.breadCrumbService.setLayoutValues(temp);
   }
 }
