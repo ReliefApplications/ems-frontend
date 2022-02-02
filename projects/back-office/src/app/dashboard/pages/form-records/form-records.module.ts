@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -24,8 +25,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTooltipModule,
     SafeButtonModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule,
   ],
-  exports: [FormRecordsComponent]
+  exports: [FormRecordsComponent],
 })
-export class FormRecordsModule { }
+export class FormRecordsModule {}

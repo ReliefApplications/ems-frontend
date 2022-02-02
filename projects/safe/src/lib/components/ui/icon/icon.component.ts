@@ -4,10 +4,9 @@ import { IconVariant } from './icon-variant.enum';
 @Component({
   selector: 'safe-icon',
   templateUrl: './icon.component.html',
-  styleUrls: ['./icon.component.scss']
+  styleUrls: ['./icon.component.scss'],
 })
 export class SafeIconComponent implements OnInit {
-
   @Input() icon = '';
 
   @Input() inline = false;
@@ -34,7 +33,7 @@ export class SafeIconComponent implements OnInit {
     }
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 }

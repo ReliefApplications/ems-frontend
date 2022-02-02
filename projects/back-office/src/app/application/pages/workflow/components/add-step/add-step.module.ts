@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [AddStepComponent],
@@ -23,7 +24,8 @@ import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
     AddStepRoutingModule,
     MatRippleModule,
     SafeButtonModule,
-    SafeContentChoiceModule
-  ]
+    SafeContentChoiceModule,
+    TranslateModule,
+  ],
 })
-export class AddStepModule { }
+export class AddStepModule {}

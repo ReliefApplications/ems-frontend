@@ -3,10 +3,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
   selector: 'safe-grid-row-actions',
   templateUrl: './row-actions.component.html',
-  styleUrls: ['./row-actions.component.scss']
+  styleUrls: ['./row-actions.component.scss'],
 })
 export class SafeGridRowActionsComponent implements OnInit {
-
   // === DATA ===
   @Input() item: any;
 
@@ -15,18 +14,19 @@ export class SafeGridRowActionsComponent implements OnInit {
     update: false,
     delete: false,
     history: false,
-    convert: false
+    convert: false,
   };
   @Output() action = new EventEmitter();
 
   get display(): boolean {
-    return this.actions.history ||
-      ( this.item.canDelete && this.actions.delete ) ||
-      ( this.item.canUpdate && ( this.actions.update || this.actions.convert ) );
+    return (
+      this.actions.history ||
+      (this.item.canDelete && this.actions.delete) ||
+      (this.item.canUpdate && (this.actions.update || this.actions.convert))
+    );
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

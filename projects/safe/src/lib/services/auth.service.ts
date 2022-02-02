@@ -1,20 +1,29 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { MsalService } from '@azure/msal-angular';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { AccountInfo } from '@azure/msal-common';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { filter, map } from 'rxjs/operators';
+
+export interface Account {
+  name: string;
+  username: string;
+}
 
 /**
  * Shared authentication service.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeAuthService {
-
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
   /** Current user as observable */
@@ -22,7 +31,7 @@ export class SafeAuthService {
     return this.user.asObservable();
   }
   /** Current account info */
-  public account: AccountInfo | null = null;
+  public account: Account | null = null;
   /** Current user value */
   get userValue(): User | null {
     return this.user.getValue();
@@ -30,16 +39,33 @@ export class SafeAuthService {
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
+  private isAuthenticated = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$ = this.isAuthenticated.asObservable();
+
+  private isDoneLoading = new ReplaySubject<boolean>();
+  public isDoneLoading$ = this.isDoneLoading.asObservable();
+
+  public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([
+    this.isAuthenticated$,
+    this.isDoneLoading$,
+  ]).pipe(map((values) => values.every((x) => x)));
+
   /**
    * Shared authentication service.
    *
-   * @param msalService MSAL service
    * @param apollo Apollo client
    */
-  constructor(
-    private msalService: MsalService,
-    private apollo: Apollo
-  ) {
+  constructor(private apollo: Apollo, private oauthService: OAuthService) {
+    this.oauthService.events.subscribe(() =>
+      this.isAuthenticated.next(this.oauthService.hasValidAccessToken())
+    );
+    this.oauthService.events
+      .pipe(filter((e) => ['token_received'].includes(e.type)))
+      .subscribe(() => {
+        localStorage.setItem('idtoken', this.oauthService.getIdToken());
+        this.oauthService.loadUserProfile();
+      });
+    this.oauthService.setupAutomaticSilentRefresh();
     this.checkAccount();
   }
 
@@ -54,13 +80,19 @@ export class SafeAuthService {
   userHasClaim(permission: string | string[], global: boolean = true): boolean {
     const user = this.user.getValue();
     if (user) {
-      if (user.permissions && (!permission || user.permissions.find(x => {
-        if (Array.isArray(permission)) {
-          return x.type && permission.includes(x.type) && x.global === global;
-        } else {
-          return x.type === permission && x.global === global;
-        }
-      }))) {
+      if (
+        user.permissions &&
+        (!permission ||
+          user.permissions.find((x) => {
+            if (Array.isArray(permission)) {
+              return (
+                x.type && permission.includes(x.type) && x.global === global
+              );
+            } else {
+              return x.type === permission && x.global === global;
+            }
+          }))
+      ) {
         return true;
       }
       return false;
@@ -82,20 +114,35 @@ export class SafeAuthService {
     }
   }
 
+  public initLoginSequence(): Promise<void> {
+    return this.oauthService
+      .loadDiscoveryDocumentAndLogin()
+      .then(() => this.isDoneLoading.next(true))
+      .catch(() => this.isDoneLoading.next(true));
+  }
+
   /**
    * Cleans user profile, and logout.
    */
   logout(): void {
-    this.msalService.logoutRedirect();
     this.account = null;
     this.user.next(null);
+    localStorage.removeItem('idtoken');
+    this.oauthService.logOut();
   }
 
   /**
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
-    this.account = this.msalService.instance.getActiveAccount();
+    const claims: any = this.oauthService.getIdentityClaims();
+    if (!claims) {
+      return;
+    }
+    this.account = {
+      name: claims.name,
+      username: claims.preferred_username,
+    };
   }
 
   /**
@@ -107,7 +154,7 @@ export class SafeAuthService {
     return this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
-      errorPolicy: 'all'
+      errorPolicy: 'all',
     });
   }
 }

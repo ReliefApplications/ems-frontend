@@ -8,9 +8,8 @@ describe('SafeTabFieldsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeTabFieldsComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeTabFieldsComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -8,17 +8,15 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 
 @NgModule({
-  declarations: [
-    SafeGridWidgetComponent
-  ],
+  declarations: [SafeGridWidgetComponent],
   imports: [
     CommonModule,
     SafeFormModalModule,
     MatButtonModule,
     SafeChooseRecordModalModule,
     SafeCoreGridModule,
-    LayoutModule
+    LayoutModule,
   ],
-  exports: [SafeGridWidgetComponent]
+  exports: [SafeGridWidgetComponent],
 })
-export class SafeGridWidgetModule { }
+export class SafeGridWidgetModule {}

@@ -1,10 +1,10 @@
 <safe-button [isIcon]="true" icon="close" variant="danger" (click)="onClose()" class="close-settings">
 </safe-button>
-<h1 mat-dialog-title>Data settings</h1>
+<h1 mat-dialog-title>{{'global.settings' | translate}}</h1>
 <div mat-dialog-content class="mat-dialog-content">
     <template #settingsContainer></template>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button (click)="onSubmit()" cdkFocusInitial color="primary" [disabled]="!tileForm || !tileForm.valid">Save</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button (click)="onSubmit()" cdkFocusInitial color="primary" [disabled]="!tileForm || !tileForm.valid">{{'action.save' | translate}}</button>
 </div>

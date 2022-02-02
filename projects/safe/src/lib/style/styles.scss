@@ -300,6 +300,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
       display: flex;
       flex-direction: column;
       margin-bottom: 1.25em;
+      gap: 4px;
     }
     .form-slide-toggle {
       margin-bottom: 1.25em;
@@ -326,6 +327,23 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  .widget-last-update {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    font-size: 11px;
+    padding: 0 4px;
+    z-index: 1000;
+    margin: 0;
+    color: #a9a9a9;
+  }
+
+  &:hover {
+    .widget-last-update {
+      visibility: visible;
+    }
+  }
 }
 
 .widget-header {

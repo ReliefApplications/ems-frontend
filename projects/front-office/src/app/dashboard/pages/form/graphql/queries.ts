@@ -1,26 +1,27 @@
 import { gql } from 'apollo-angular';
-import { Form, Step, Page} from '@safe/builder';
+import { Form, Step, Page } from '@safe/builder';
 
 /**
  * Form query.
  */
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!) {
-  form(id: $id) {
-    id
-    name
-    structure
-    fields
-    status
-    canUpdate
-    canCreateRecords
-    uniqueRecord {
+  query GetFormById($id: ID!) {
+    form(id: $id) {
       id
-      modifiedAt
-      data
+      name
+      structure
+      fields
+      status
+      canUpdate
+      canCreateRecords
+      uniqueRecord {
+        id
+        modifiedAt
+        data
+      }
     }
   }
-}`;
+`;
 
 /**
  * Interface of form query response.
@@ -36,8 +37,8 @@ export interface GetFormByIdQueryResponse {
  * Workflow step query.
  */
 export const GET_STEP_BY_ID = gql`
-  query GetStepById($id: ID!){
-    step(id: $id){
+  query GetStepById($id: ID!) {
+    step(id: $id) {
       id
       name
       createdAt
@@ -62,8 +63,8 @@ export interface GetStepByIdQueryResponse {
  * Application page query.
  */
 export const GET_PAGE_BY_ID = gql`
-  query GetPageById($id: ID!){
-    page(id: $id){
+  query GetPageById($id: ID!) {
+    page(id: $id) {
       id
       name
       createdAt

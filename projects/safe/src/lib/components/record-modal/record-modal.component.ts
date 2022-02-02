@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialog,
+} from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,13 +14,17 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_STRUCTURE,
-  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS
+  GetRecordDetailsQueryResponse,
+  GET_RECORD_DETAILS,
 } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { EDIT_RECORD, EditRecordMutationResponse } from '../../graphql/mutations';
+import {
+  EDIT_RECORD,
+  EditRecordMutationResponse,
+} from '../../graphql/mutations';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
@@ -34,10 +42,9 @@ interface DialogData {
 @Component({
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
-  styleUrls: ['./record-modal.component.scss']
+  styleUrls: ['./record-modal.component.scss'],
 })
 export class SafeRecordModalComponent implements OnInit {
-
   // === DATA ===
   public loading = true;
   public form?: Form;
@@ -77,45 +84,57 @@ export class SafeRecordModalComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    const defaultThemeColorsSurvey = Survey
-      .StylesManager
-      .ThemeColors.default;
+    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
     defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
 
-    Survey
-      .StylesManager
-      .applyTheme();
-    const promises: Promise<GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void>[] = [];
+    Survey.StylesManager.applyTheme();
+    const promises: Promise<
+      GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void
+    >[] = [];
     // Fetch structure from template if needed
     if (this.data.template) {
-      promises.push(this.apollo.query<GetFormByIdQueryResponse>({
-        query: GET_FORM_STRUCTURE,
-        variables: {
-          id: this.data.template
-        }
-      }).toPromise().then(res => {
-        this.form = res.data.form;
-      }));
+      promises.push(
+        this.apollo
+          .query<GetFormByIdQueryResponse>({
+            query: GET_FORM_STRUCTURE,
+            variables: {
+              id: this.data.template,
+            },
+          })
+          .toPromise()
+          .then((res) => {
+            this.form = res.data.form;
+          })
+      );
     }
     // Fetch record data
-    promises.push(this.apollo.query<GetRecordByIdQueryResponse>({
-      query: GET_RECORD_BY_ID,
-      variables: {
-        id: this.data.recordId
-      }
-    }).toPromise().then(res => {
-      this.record = res.data.record;
-      this.modifiedAt = this.record.modifiedAt || null;
-      if (!this.data.template) {
-        this.form = this.record.form;
-      }
-    }));
+    promises.push(
+      this.apollo
+        .query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: this.data.recordId,
+          },
+        })
+        .toPromise()
+        .then((res) => {
+          this.record = res.data.record;
+          this.modifiedAt = this.record.modifiedAt || null;
+          if (!this.data.template) {
+            this.form = this.record.form;
+          }
+        })
+    );
     await Promise.all(promises);
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
-    this.survey = this.formBuilderService.createSurvey(this.form?.structure || '');
-    this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+    this.survey = this.formBuilderService.createSurvey(
+      this.form?.structure || ''
+    );
+    this.survey.onDownloadFile.add((survey, options) =>
+      this.onDownloadFile(survey, options)
+    );
     this.survey.onCurrentPageChanged.add((surveyModel, options) => {
       this.selectedTabIndex = surveyModel.currentPageNo;
     });
@@ -127,8 +146,12 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey.render(this.containerId);
     this.setPages();
     if (this.data.compareTo) {
-      this.surveyNext = this.formBuilderService.createSurvey(this.form?.structure || '');
-      this.survey.onDownloadFile.add((survey, options) => this.onDownloadFile(survey, options));
+      this.surveyNext = this.formBuilderService.createSurvey(
+        this.form?.structure || ''
+      );
+      this.survey.onDownloadFile.add((survey, options) =>
+        this.onDownloadFile(survey, options)
+      );
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
@@ -136,7 +159,10 @@ export class SafeRecordModalComponent implements OnInit {
       this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];
-      const allQuestions = [this.surveyNext.data, this.survey.data].reduce((keys, object) => keys.concat(Object.keys(object)), []);
+      const allQuestions = [this.surveyNext.data, this.survey.data].reduce(
+        (keys, object) => keys.concat(Object.keys(object)),
+        []
+      );
       for (const question of allQuestions) {
         const valueNext = this.surveyNext.data[question];
         const value = this.survey.data[question];
@@ -172,16 +198,24 @@ export class SafeRecordModalComponent implements OnInit {
   }
 
   /* Download the file.
-  */
+   */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${this.downloadService.baseUrl}/download/file/${options.content}`);
-    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('msal.idtoken')}`);
+    xhr.open(
+      'GET',
+      `${this.downloadService.baseUrl}/download/file/${options.content}`
+    );
+    xhr.setRequestHeader(
+      'Authorization',
+      `Bearer ${localStorage.getItem('idtoken')}`
+    );
     xhr.onloadstart = () => {
       xhr.responseType = 'blob';
     };
     xhr.onload = () => {
-      const file = new File([xhr.response], options.fileValue.name, { type: options.fileValue.type });
+      const file = new File([xhr.response], options.fileValue.name, {
+        type: options.fileValue.type,
+      });
       const reader = new FileReader();
       reader.onload = (e) => {
         options.callback('success', e.target?.result);
@@ -217,27 +251,31 @@ export class SafeRecordModalComponent implements OnInit {
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
-    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const formatDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: `Recovery data`,
         content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
         confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
+        confirmColor: 'primary',
+      },
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: record.id,
-            version: version.id
-          }
-        }).subscribe((res) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
-          this.dialogRef.close();
-        });
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: EDIT_RECORD,
+            variables: {
+              id: record.id,
+              version: version.id,
+            },
+          })
+          .subscribe((res) => {
+            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.dialogRef.close();
+          });
       }
     });
   }
@@ -246,22 +284,24 @@ export class SafeRecordModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo.query<GetRecordDetailsQueryResponse>({
-      query: GET_RECORD_DETAILS,
-      variables: {
-        id: this.record.id
-      }
-    }).subscribe(res => {
-      this.dialog.open(RecordHistoryModalComponent, {
-        data: {
-          record: res.data.record,
-          revert: (item: any, dialog: any) => {
-            this.confirmRevertDialog(res.data.record, item);
-          }
+    this.apollo
+      .query<GetRecordDetailsQueryResponse>({
+        query: GET_RECORD_DETAILS,
+        variables: {
+          id: this.record.id,
         },
-        panelClass: 'no-padding-dialog',
-        autoFocus: false
+      })
+      .subscribe((res) => {
+        this.dialog.open(RecordHistoryModalComponent, {
+          data: {
+            record: res.data.record,
+            revert: (item: any, dialog: any) => {
+              this.confirmRevertDialog(res.data.record, item);
+            },
+          },
+          panelClass: 'no-padding-dialog',
+          autoFocus: false,
+        });
       });
-    });
   }
 }

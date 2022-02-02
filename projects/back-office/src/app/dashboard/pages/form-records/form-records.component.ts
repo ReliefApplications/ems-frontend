@@ -1,10 +1,20 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, ComponentFactory, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
   GetFormRecordsQueryResponse,
-  GetRecordDetailsQueryResponse, GET_FORM_BY_ID, GET_FORM_RECORDS, GET_RECORD_DETAILS
+  GetRecordDetailsQueryResponse,
+  GET_FORM_BY_ID,
+  GET_FORM_RECORDS,
+  GET_RECORD_DETAILS,
 } from '../../../graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -12,16 +22,20 @@ import {
   DeleteRecordMutationResponse,
   DELETE_RECORD,
   RestoreRecordMutationResponse,
-  RESTORE_RECORD
+  RESTORE_RECORD,
 } from '../../../graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
 import {
-  SafeRecordHistoryComponent, SafeLayoutService, SafeConfirmModalComponent,
-  NOTIFICATIONS, SafeSnackBarService
+  SafeRecordHistoryComponent,
+  SafeLayoutService,
+  SafeConfirmModalComponent,
+  NOTIFICATIONS,
+  SafeSnackBarService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -29,10 +43,9 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 @Component({
   selector: 'app-form-records',
   templateUrl: './form-records.component.html',
-  styleUrls: ['./form-records.component.scss']
+  styleUrls: ['./form-records.component.scss'],
 })
 export class FormRecordsComponent implements OnInit, OnDestroy {
-
   // === DATA ===
   public loading = true;
   private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
@@ -57,7 +70,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: ''
+    endCursor: '',
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
@@ -70,13 +83,15 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-  ) {
-  }
+    private translate: TranslateService
+  ) {}
 
   /*  Load the records, using the form id passed as a parameter.
-  */
+   */
   ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+    this.factory = this.resolver.resolveComponentFactory(
+      SafeRecordHistoryComponent
+    );
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getFormData();
@@ -99,37 +114,48 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         id: this.id,
         first: ITEMS_PER_PAGE,
         display: false,
-        showDeletedRecords: this.showDeletedRecords
-      }
+        showDeletedRecords: this.showDeletedRecords,
+      },
     });
 
-    this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(res => {
-      this.cachedRecords = res.data.form.records.edges.map((x: any) => x.node);
-      this.dataSource = this.cachedRecords.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
-      this.pageInfo.length = res.data.form.records.totalCount;
-      this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
-    });
+    this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
+      (res) => {
+        this.cachedRecords = res.data.form.records.edges.map(
+          (x: any) => x.node
+        );
+        this.dataSource = this.cachedRecords.slice(
+          ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+          ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+        );
+        this.pageInfo.length = res.data.form.records.totalCount;
+        this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+      }
+    );
 
     // get the form detail
-    this.formSubscription = this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_FORM_BY_ID,
-      variables: {
-        id: this.id,
-        display: true,
-        showDeletedRecords: this.showDeletedRecords
-      }
-    }).valueChanges.subscribe(res => {
-      if (res.data.form) {
-        this.form = res.data.form;
-        this.setDisplayedColumns();
-        this.loading = res.loading;
-      }
-      if (res.errors) {
-        // TO-DO: Check why it's not working as intended.
-        this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('records', res.errors[0].message), { error: true });
-      }
-    });
+    this.formSubscription = this.apollo
+      .watchQuery<GetFormByIdQueryResponse>({
+        query: GET_FORM_BY_ID,
+        variables: {
+          id: this.id,
+          display: true,
+          showDeletedRecords: this.showDeletedRecords,
+        },
+      })
+      .valueChanges.subscribe((res) => {
+        if (res.data.form) {
+          this.form = res.data.form;
+          this.setDisplayedColumns();
+          this.loading = res.loading;
+        }
+        if (res.errors) {
+          // TO-DO: Check why it's not working as intended.
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.accessNotProvided('records', res.errors[0].message),
+            { error: true }
+          );
+        }
+      });
   }
 
   /**
@@ -139,32 +165,41 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
-    if (e.pageIndex > e.previousPageIndex && e.length > this.cachedRecords.length) {
+    if (
+      e.pageIndex > e.previousPageIndex &&
+      e.length > this.cachedRecords.length
+    ) {
       this.recordsQuery.fetchMore({
         variables: {
           id: this.id,
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor
+          afterCursor: this.pageInfo.endCursor,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) { return prev; }
+          if (!fetchMoreResult) {
+            return prev;
+          }
           return Object.assign({}, prev, {
             form: {
               records: {
-                edges: [...prev.form.records.edges, ...fetchMoreResult.form.records.edges],
+                edges: [
+                  ...prev.form.records.edges,
+                  ...fetchMoreResult.form.records.edges,
+                ],
                 pageInfo: fetchMoreResult.form.records.pageInfo,
-                totalCount: fetchMoreResult.form.records.totalCount
-              }
-            }
+                totalCount: fetchMoreResult.form.records.totalCount,
+              },
+            },
           });
-        }
+        },
       });
     } else {
       this.dataSource = this.cachedRecords.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex, ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1));
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      );
     }
   }
-
 
   /**
    * Modifies the list of columns.
@@ -187,24 +222,27 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param id Id of record to delete.
    * @param e click envent.
    */
-  public onDeleteRecord(id: string, e: any): void {
+  public onDeleteRecord(element: any, e: any): void {
     e.stopPropagation();
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete record permanently',
-          content: `Do you confirm the hard deletion of this record ?`,
-          confirmText: 'Delete',
-          confirmColor: 'warn'
-        }
+          title: this.translate.instant('record.delete'),
+          content: this.translate.instant('record.deleteDesc', {
+            name: element.name,
+          }),
+          confirmText: this.translate.instant('action.delete'),
+          cancelText: this.translate.instant('action.cancel'),
+          confirmColor: 'warn',
+        },
       });
-      dialogRef.afterClosed().subscribe(value => {
+      dialogRef.afterClosed().subscribe((value) => {
         if (value) {
-          this.deleteRecord(id);
+          this.deleteRecord(element.id);
         }
       });
     } else {
-      this.deleteRecord(id);
+      this.deleteRecord(element.id);
     }
   }
 
@@ -214,76 +252,87 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param id Id of record to delete.
    */
   private deleteRecord(id: string): void {
-    this.apollo.mutate<DeleteRecordMutationResponse>({
-      mutation: DELETE_RECORD,
-      variables: {
-        id,
-        hardDelete: this.showDeletedRecords
-      }
-    }).subscribe(res => {
-      this.dataSource = this.dataSource.filter(x => x.id !== id);
-      if (id === this.historyId) {
-        this.layoutService.setRightSidenav(null);
-      }
-    });
+    this.apollo
+      .mutate<DeleteRecordMutationResponse>({
+        mutation: DELETE_RECORD,
+        variables: {
+          id,
+          hardDelete: this.showDeletedRecords,
+        },
+      })
+      .subscribe((res) => {
+        this.dataSource = this.dataSource.filter((x) => x.id !== id);
+        if (id === this.historyId) {
+          this.layoutService.setRightSidenav(null);
+        }
+      });
   }
 
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
-    const formatDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const formatDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: `Recovery data`,
         content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
         confirmText: 'Confirm',
-        confirmColor: 'primary'
-      }
+        confirmColor: 'primary',
+      },
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: record.id,
-            version: version.id
-          }
-        }).subscribe((res) => {
-          this.layoutService.setRightSidenav(null);
-          this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
-        });
-
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: EDIT_RECORD,
+            variables: {
+              id: record.id,
+              version: version.id,
+            },
+          })
+          .subscribe((res) => {
+            this.layoutService.setRightSidenav(null);
+            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          });
       }
     });
   }
 
   /* Opens the history of the record on the right side of the screen.
- */
+   */
   public onViewHistory(id: string): void {
-    this.apollo.query<GetRecordDetailsQueryResponse>({
-      query: GET_RECORD_DETAILS,
-      variables: {
-        id
-      }
-    }).subscribe(res => {
-      this.historyId = id;
-      this.layoutService.setRightSidenav({
-        factory: this.factory,
-        inputs: {
-          record: res.data.record,
-          revert: (item: any, dialog: any) => {
-            this.confirmRevertDialog(res.data.record, item);
-          }
+    this.apollo
+      .query<GetRecordDetailsQueryResponse>({
+        query: GET_RECORD_DETAILS,
+        variables: {
+          id,
         },
+      })
+      .subscribe((res) => {
+        this.historyId = id;
+        this.layoutService.setRightSidenav({
+          factory: this.factory,
+          inputs: {
+            record: res.data.record,
+            revert: (item: any, dialog: any) => {
+              this.confirmRevertDialog(res.data.record, item);
+            },
+          },
+        });
       });
-    });
   }
 
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;
     const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/${type};charset=utf-8;`,
+      fileName
+    );
   }
 
   /**
@@ -291,8 +340,15 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   onDownloadTemplate(): void {
     const path = `download/form/records/${this.id}`;
-    const queryString = new URLSearchParams({ type: 'xlsx', template: 'true' }).toString();
-    this.downloadService.getFile(`${path}?${queryString}`, `text/xlsx;charset=utf-8;`, `${this.form.name}_template.xlsx`);
+    const queryString = new URLSearchParams({
+      type: 'xlsx',
+      template: 'true',
+    }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/xlsx;charset=utf-8;`,
+      `${this.form.name}_template.xlsx`
+    );
   }
 
   onFileChange(event: any): void {
@@ -302,16 +358,19 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
-    this.downloadService.uploadFile(path, file).subscribe(res => {
-      this.xlsxFile.nativeElement.value = '';
-      if (res.status === 'OK') {
-        this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
-        this.getFormData();
+    this.downloadService.uploadFile(path, file).subscribe(
+      (res) => {
+        this.xlsxFile.nativeElement.value = '';
+        if (res.status === 'OK') {
+          this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
+          this.getFormData();
+        }
+      },
+      (error: any) => {
+        this.snackBar.openSnackBar(error.error, { error: true });
+        this.xlsxFile.nativeElement.value = '';
       }
-    }, (error: any) => {
-      this.snackBar.openSnackBar(error.error, { error: true });
-      this.xlsxFile.nativeElement.value = '';
-    });
+    );
   }
 
   /**
@@ -333,17 +392,19 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   public onRestoreRecord(id: string, e: any): void {
     e.stopPropagation();
-    this.apollo.mutate<RestoreRecordMutationResponse>({
-      mutation: RESTORE_RECORD,
-      variables: {
-        id,
-      }
-    }).subscribe(res => {
-      this.dataSource = this.dataSource.filter(x => x.id !== id);
-      if (id === this.historyId) {
-        this.layoutService.setRightSidenav(null);
-      }
-    });
+    this.apollo
+      .mutate<RestoreRecordMutationResponse>({
+        mutation: RESTORE_RECORD,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        this.dataSource = this.dataSource.filter((x) => x.id !== id);
+        if (id === this.historyId) {
+          this.layoutService.setRightSidenav(null);
+        }
+      });
   }
 
   /**

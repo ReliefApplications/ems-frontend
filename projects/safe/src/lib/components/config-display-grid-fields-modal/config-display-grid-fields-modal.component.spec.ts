@@ -8,9 +8,8 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ConfigDisplayGridFieldsModalComponent ]
-    })
-    .compileComponents();
+      declarations: [ConfigDisplayGridFieldsModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

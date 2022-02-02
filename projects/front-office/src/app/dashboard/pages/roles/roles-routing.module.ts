@@ -6,8 +6,8 @@ import { RolesComponent } from './roles.component';
 const routes: Routes = [
   {
     path: '',
-    component: RolesComponent
-  }
+    component: RolesComponent,
+  },
 ];
 
 /**
@@ -15,6 +15,6 @@ const routes: Routes = [
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class RolesRoutingModule { }
+export class RolesRoutingModule {}

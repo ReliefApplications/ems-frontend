@@ -15,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeChartSettingsComponent],
@@ -34,8 +35,9 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     MatExpansionModule,
     MatSlideToggleModule,
     MatTabsModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
-  exports: [SafeChartSettingsComponent]
+  exports: [SafeChartSettingsComponent],
 })
-export class SafeChartSettingsModule { }
+export class SafeChartSettingsModule {}

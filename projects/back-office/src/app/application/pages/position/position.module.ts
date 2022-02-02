@@ -13,30 +13,29 @@ import { MatTableModule } from '@angular/material/table';
 import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { AddPositionComponent } from './components/position-modal/position-modal.component';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    PositionComponent,
-    AddPositionComponent
+  declarations: [PositionComponent, AddPositionComponent],
+  imports: [
+    CommonModule,
+    PositionRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatDialogModule,
+    MatIconModule,
+    MatMenuModule,
+    SafeConfirmModalModule,
+    SafeButtonModule,
+    MatButtonModule,
+    TranslateModule,
   ],
-    imports: [
-        CommonModule,
-        PositionRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatDialogModule,
-        MatIconModule,
-        MatMenuModule,
-        SafeConfirmModalModule,
-        SafeButtonModule,
-        MatButtonModule
-    ],
-  exports: [PositionComponent]
+  exports: [PositionComponent],
 })
-export class PositionModule { }
+export class PositionModule {}

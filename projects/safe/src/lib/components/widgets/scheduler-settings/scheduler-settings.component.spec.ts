@@ -6,12 +6,13 @@ describe('SafeSchedulerSettingsComponent', () => {
   let component: SafeSchedulerSettingsComponent;
   let fixture: ComponentFixture<SafeSchedulerSettingsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SafeSchedulerSettingsComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeSchedulerSettingsComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeSchedulerSettingsComponent);

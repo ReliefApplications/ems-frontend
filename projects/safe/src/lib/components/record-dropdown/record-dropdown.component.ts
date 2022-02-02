@@ -1,10 +1,26 @@
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MAT_SELECT_SCROLL_STRATEGY, MatSelect } from '@angular/material/select';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  MAT_SELECT_SCROLL_STRATEGY,
+  MatSelect,
+} from '@angular/material/select';
 import { QueryRef, Apollo } from 'apollo-angular';
-import { GetRecordByIdQueryResponse, GetResourceRecordsQueryResponse, GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from '../../graphql/queries';
+import {
+  GetRecordByIdQueryResponse,
+  GetResourceRecordsQueryResponse,
+  GET_RECORD_BY_ID,
+  GET_RESOURCE_RECORDS,
+} from '../../graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Record } from '../../models/record.model';
+import { Record } from '../../models/record.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 25;
 
@@ -19,15 +35,18 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   templateUrl: './record-dropdown.component.html',
   styleUrls: ['./record-dropdown.component.scss'],
   providers: [
-    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-  ]
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeRecordDropdownComponent implements OnInit {
-
   @Input() record = '';
   @Input() resourceId = '';
   @Input() field = '';
-  @Input() placeholder = 'Select record';
+  @Input() placeholder = this.translate.instant('record.placeholder');
   @Input() filter: any = {};
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -37,41 +56,44 @@ export class SafeRecordDropdownComponent implements OnInit {
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   private pageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private loading = true;
 
   @ViewChild('recordSelect') recordSelect?: MatSelect;
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo, private translate: TranslateService) {}
 
   ngOnInit(): void {
     if (this.record) {
-      this.apollo.query<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id: this.record
-        }
-      }).subscribe(res => {
-        if (res.data.record) {
-          this.selectedRecord = res.data.record;
-        }
-      });
+      this.apollo
+        .query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: this.record,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.record) {
+            this.selectedRecord = res.data.record;
+          }
+        });
     }
 
     if (this.resourceId) {
-      this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
-        query: GET_RESOURCE_RECORDS,
-        variables: {
-          id: this.resourceId,
-          first: ITEMS_PER_PAGE,
-          filter: this.filter
-        }
-      });
+      this.recordsQuery =
+        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+          query: GET_RESOURCE_RECORDS,
+          variables: {
+            id: this.resourceId,
+            first: ITEMS_PER_PAGE,
+            filter: this.filter,
+          },
+        });
 
       this.records$ = this.records.asObservable();
-      this.recordsQuery.valueChanges.subscribe(res => {
-        this.records.next(res.data.resource.records.edges.map(x => x.node));
+      this.recordsQuery.valueChanges.subscribe((res) => {
+        this.records.next(res.data.resource.records.edges.map((x) => x.node));
         this.pageInfo = res.data.resource.records.pageInfo;
         this.loading = res.loading;
       });
@@ -92,10 +114,12 @@ export class SafeRecordDropdownComponent implements OnInit {
    *
    * @param e open select event.
    */
-   onOpenSelect(e: any): void {
+  onOpenSelect(e: any): void {
     if (e && this.recordSelect) {
       const panel = this.recordSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
   }
 
@@ -105,7 +129,10 @@ export class SafeRecordDropdownComponent implements OnInit {
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
         this.loading = true;
         this.recordsQuery.fetchMore({
@@ -113,27 +140,35 @@ export class SafeRecordDropdownComponent implements OnInit {
             id: this.resourceId,
             first: ITEMS_PER_PAGE,
             afterCursor: this.pageInfo.endCursor,
-            filter: this.filter
+            filter: this.filter,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             if (this.selectedRecord) {
-              if (fetchMoreResult.resource.records.edges.find(x => x.node.id === this.selectedRecord?.id)) {
+              if (
+                fetchMoreResult.resource.records.edges.find(
+                  (x) => x.node.id === this.selectedRecord?.id
+                )
+              ) {
                 this.selectedRecord = null;
               }
             }
             return Object.assign({}, prev, {
               resource: {
                 records: {
-                  edges: [...prev.resource.records.edges, ...fetchMoreResult.resource.records.edges],
-                  pageInfo: fetchMoreResult.resource.records.pageInfo
-                }
-              }
+                  edges: [
+                    ...prev.resource.records.edges,
+                    ...fetchMoreResult.resource.records.edges,
+                  ],
+                  pageInfo: fetchMoreResult.resource.records.pageInfo,
+                },
+              },
             });
-          }
+          },
         });
       }
     }
   }
-
 }

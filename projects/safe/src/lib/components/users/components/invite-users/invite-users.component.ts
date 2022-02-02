@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
@@ -8,6 +12,7 @@ import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { NOTIFICATIONS } from '../../../../const/notifications';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   roles: Role[];
@@ -20,10 +25,9 @@ interface DialogData {
 @Component({
   selector: 'safe-invite-users',
   templateUrl: './invite-users.component.html',
-  styleUrls: ['./invite-users.component.scss']
+  styleUrls: ['./invite-users.component.scss'],
 })
 export class SafeInviteUsersComponent implements OnInit {
-
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup: FormGroup = new FormGroup({});
   private editedRowIndex = 0;
@@ -46,8 +50,9 @@ export class SafeInviteUsersComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
+    public translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) { }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -62,17 +67,21 @@ export class SafeInviteUsersComponent implements OnInit {
    * Opens a modal to invite a new user.
    */
   onAdd(): void {
-    const invitedUsers = this.gridData.data.map(x => x.email);
+    const invitedUsers = this.gridData.data.map((x) => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
       panelClass: 'add-dialog',
       data: {
         roles: this.data.roles,
-        users: this.data.users.filter(x => !invitedUsers.includes(x.username)),
-        ...this.data.positionAttributeCategories && { positionAttributeCategories: this.data.positionAttributeCategories }
+        users: this.data.users.filter(
+          (x) => !invitedUsers.includes(x.username)
+        ),
+        ...(this.data.positionAttributeCategories && {
+          positionAttributeCategories: this.data.positionAttributeCategories,
+        }),
       },
-      autoFocus: false
+      autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.gridData.data.push(value);
       }
@@ -96,12 +105,22 @@ export class SafeInviteUsersComponent implements OnInit {
   onUpload($event: any): void {
     const files = $event.target.files;
     if (files[0] && this.isValidFile(files[0])) {
-      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(res => {
-        this.gridData.data = this.gridData.data.concat(res);
-      });
+      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(
+        (res) => {
+          this.gridData.data = this.gridData.data.concat(res);
+        },
+        (err) => {
+          if (err.status === 400) {
+            this.snackBar.openSnackBar(err.error, { error: true });
+            this.resetFileInput();
+          }
+        }
+      );
     } else {
       if (files.length > 0) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {error: true});
+        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
+          error: true,
+        });
         this.resetFileInput();
       }
     }
@@ -111,7 +130,11 @@ export class SafeInviteUsersComponent implements OnInit {
    * Download template for users invite.
    */
   onDownload(): void {
-    this.downloadService.getFile(this.data.downloadPath, `text/xlsx;charset=utf-8;`, 'users.xlsx');
+    this.downloadService.getFile(
+      this.data.downloadPath,
+      `text/xlsx;charset=utf-8;`,
+      'users.xlsx'
+    );
   }
 
   /**
@@ -159,13 +182,16 @@ export class SafeInviteUsersComponent implements OnInit {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
-      ...this.data.positionAttributeCategories &&
-      {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map((x, index) => this.formBuilder.group({
-            value: [dataItem.positionAttributes[index].value || ''],
-            category: [x.id, Validators.required]
-          })))
-      }
+      ...(this.data.positionAttributeCategories && {
+        positionAttributes: this.formBuilder.array(
+          this.data.positionAttributeCategories.map((x, index) =>
+            this.formBuilder.group({
+              value: [dataItem.positionAttributes[index].value || ''],
+              category: [x.id, Validators.required],
+            })
+          )
+        ),
+      }),
     };
     return this.formBuilder.group(formGroup);
   }

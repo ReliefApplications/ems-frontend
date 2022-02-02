@@ -8,8 +8,8 @@ import { FormComponent } from './form.component';
 const routes: Routes = [
   {
     path: '',
-    component: FormComponent
-  }
+    component: FormComponent,
+  },
 ];
 
 /**
@@ -17,6 +17,6 @@ const routes: Routes = [
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class FormRoutingModule { }
+export class FormRoutingModule {}

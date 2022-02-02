@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { FormGroup } from '@angular/forms';
@@ -24,36 +30,47 @@ interface DialogData {
   styleUrls: ['./config-display-grid-fields-modal.component.css'],
   providers: [
     PopupService,
-    { provide: MAT_SELECT_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] },
-    { provide: MAT_TOOLTIP_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
-  ]
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    {
+      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
-
   public form: FormGroup = new FormGroup({});
   public loading = true;
 
-  @ViewChild('settingsContainer', { read: ViewContainerRef }) settingsContainer: any;
+  @ViewChild('settingsContainer', { read: ViewContainerRef })
+  settingsContainer: any;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private queryBuilder: QueryBuilderService) {
-  }
+    private queryBuilder: QueryBuilderService
+  ) {}
 
   ngOnInit(): void {
     this.queryBuilder.availableQueries$.subscribe((res) => {
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
-        const queryName = hasDataForm ? this.data.form.value.name : this.queryBuilder.getQueryNameFromResourceName(this.data.resourceName);
+        const queryName = hasDataForm
+          ? this.data.form.value.name
+          : this.queryBuilder.getQueryNameFromResourceName(
+              this.data.resourceName
+            );
         this.form = this.queryBuilder.createQueryForm({
           name: queryName,
           fields: hasDataForm ? this.data.form.value.fields : [],
           sort: hasDataForm ? this.data.form.value.sort : {},
-          filter: hasDataForm ? this.data.form.value.filter : {}
+          filter: hasDataForm ? this.data.form.value.filter : {},
         });
         this.loading = false;
       }
     });
   }
-
 }

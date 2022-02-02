@@ -15,10 +15,9 @@ interface DialogData {
 @Component({
   selector: 'safe-tile-display',
   templateUrl: './tile-display.component.html',
-  styleUrls: ['./tile-display.component.scss']
+  styleUrls: ['./tile-display.component.scss'],
 })
 export class SafeTileDisplayComponent implements OnInit {
-
   // === REACTIVE FORM ===
   tileForm: FormGroup = new FormGroup({});
 
@@ -26,7 +25,7 @@ export class SafeTileDisplayComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeTileDisplayComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) { }
+  ) {}
 
   /**
    * Builds the form.
@@ -35,7 +34,7 @@ export class SafeTileDisplayComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.data.tile.id,
       cols: [this.data.tile.defaultCols, Validators.required],
-      rows: [this.data.tile.defaultRows, Validators.required]
+      rows: [this.data.tile.defaultRows, Validators.required],
     });
   }
 }

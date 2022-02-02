@@ -1,3 +1,18 @@
+import { AuthConfig } from 'angular-oauth2-oidc';
+
+const authConfig: AuthConfig = {
+  issuer:
+    'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
+  redirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth/',
+  postLogoutRedirectUri:
+    'https://safe-backoffice.development.humanitarian.tech',
+  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
+  scope: 'openid profile email offline_access',
+  responseType: 'code',
+  showDebugInformation: true,
+  strictDiscoveryDocumentValidation: false,
+};
+
 /**
  * Production environment file.
  */
@@ -5,11 +20,9 @@ export const environment = {
   production: true,
   apiUrl: 'https://safe-api.development.humanitarian.tech',
   subscriptionApiUrl: 'wss://safe-api.development.humanitarian.tech',
-  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
-  authority: 'https://login.microsoftonline.com/common',
-  redirectUrl: 'https://safe.development.humanitarian.tech',
-  postLogoutRedirectUri: 'https://safe.development.humanitarian.tech/auth',
   frontOfficeUri: 'https://safe.development.humanitarian.tech/',
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
-  module: 'frontoffice'
+  module: 'frontoffice',
+  availableLanguages: ['en'],
+  authConfig,
 };

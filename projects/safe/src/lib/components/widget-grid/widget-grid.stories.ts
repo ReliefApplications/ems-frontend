@@ -5,75 +5,72 @@ import { SafeWidgetGridComponent } from './widget-grid.component';
 import { SafeWidgetGridModule } from './widget-grid.module';
 
 export default {
-    component: SafeWidgetGridComponent,
-    decorators: [
-        moduleMetadata({
-            imports: [
-                BrowserAnimationsModule,
-                SafeWidgetGridModule
-            ],
-            providers: []
-        })
-    ],
-    title: 'Dashboard/Widget Grid',
-    argTypes: {
-        widgetTypes: { table: { disable: true } }
-    }
+  component: SafeWidgetGridComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [BrowserAnimationsModule, SafeWidgetGridModule],
+      providers: [],
+    }),
+  ],
+  title: 'Dashboard/Widget Grid',
+  argTypes: {
+    widgetTypes: { table: { disable: true } },
+  },
 } as Meta;
 
-const TEMPLATE: Story<SafeWidgetGridComponent> = args => ({
-    props: {
-        ...args,
-        widgetTypes: WIDGET_TYPES
-    }
+const TEMPLATE: Story<SafeWidgetGridComponent> = (args) => ({
+  props: {
+    ...args,
+    widgetTypes: WIDGET_TYPES,
+  },
 });
 
 const defaultWidgets = [
-    {
-        id: 0,
-        settings: {
-            title: 'Widget 0',
-            chart: {
-                type: 'bar'
-            }
-        },
-        component: 'chart',
-        defaultCols: 3,
-        defaultRows: 1
+  {
+    id: 0,
+    settings: {
+      title: 'Widget 0',
+      chart: {
+        type: 'bar',
+      },
     },
-    {
-        id: 1,
-        settings: {
-            title: 'Widget 1',
-            chart: {
-                type: 'bar'
-            }
-        },
-        component: 'chart',
-        defaultCols: 3,
-        defaultRows: 1
+    component: 'chart',
+    defaultCols: 3,
+    defaultRows: 1,
+  },
+  {
+    id: 1,
+    settings: {
+      title: 'Widget 1',
+      chart: {
+        type: 'bar',
+      },
     },
-    {
-        id: 2,
-        settings: {
-            title: 'Widget 2',
-        },
-        component: 'map',
-        defaultCols: 2,
-        defaultRows: 1
-    }
+    component: 'chart',
+    defaultCols: 3,
+    defaultRows: 1,
+  },
+  {
+    id: 2,
+    settings: {
+      title: 'Widget 2',
+    },
+    component: 'map',
+    defaultCols: 2,
+    defaultRows: 1,
+  },
 ];
 
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
-    canUpdate: true,
-    widgets: defaultWidgets
+  canUpdate: true,
+  widgets: defaultWidgets,
 };
 
 export const EMPTY = TEMPLATE.bind({});
 EMPTY.storyName = 'Empty grid';
 EMPTY.args = {
-    canUpdate: true,
-    widgets: []
+  canUpdate: true,
+  widgets: [],
 };

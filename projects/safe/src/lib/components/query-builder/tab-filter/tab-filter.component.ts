@@ -6,109 +6,134 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 const OPERATORS: any = {
   eq: {
     value: 'eq',
-    label: 'Is equal to'
+    label: 'Is equal to',
   },
   neq: {
     value: 'neq',
-    label: 'Is not equal to'
+    label: 'Is not equal to',
   },
   gte: {
     value: 'gte',
-    label: 'Is greater than or equal to'
+    label: 'Is greater than or equal to',
   },
   gt: {
     value: 'gt',
-    label: 'Is greater than'
+    label: 'Is greater than',
   },
   lte: {
     value: 'lte',
-    label: 'Is less than or equal to'
+    label: 'Is less than or equal to',
   },
   lt: {
     value: 'lt',
-    label: 'Is less than'
+    label: 'Is less than',
   },
   isnull: {
     value: 'isnull',
-    label: 'Is null'
+    label: 'Is null',
   },
   isnotnull: {
     value: 'isnotnull',
-    label: 'Is not null'
+    label: 'Is not null',
   },
   isempty: {
     value: 'isempty',
-    label: 'Is empty'
+    label: 'Is empty',
   },
   isnotempty: {
     value: 'isnotempty',
-    label: 'Is not empty'
+    label: 'Is not empty',
   },
   contains: {
     value: 'contains',
-    label: 'Contains'
+    label: 'Contains',
   },
   doesnotcontain: {
     value: 'doesnotcontain',
-    label: 'Does not contain'
+    label: 'Does not contain',
   },
   startswith: {
     value: 'startswith',
-    label: 'Starts with'
+    label: 'Starts with',
   },
   endswith: {
     value: 'endswith',
-    label: 'Ends with'
-  }
+    label: 'Ends with',
+  },
 };
 
 const TYPES: any = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Int: {
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   String: {
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'startswith', 'endswith', 'isnull', 'isnotnull', 'isempty', 'isnotempty']
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'startswith',
+      'endswith',
+      'isnull',
+      'isnotnull',
+      'isempty',
+      'isnotempty',
+    ],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
     defaultOperator: 'eq',
-    operators: ['eq']
+    operators: ['eq'],
   },
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Date: {
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },
   // eslint-disable-next-line @typescript-eslint/naming-convention
   DateTime: {
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Time: {
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull']
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },
   // eslint-disable-next-line @typescript-eslint/naming-convention
   JSON: {
     defaultOperator: 'contains',
-    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'isempty', 'isnotempty']
-  }
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'isempty',
+      'isnotempty',
+    ],
+  },
 };
 
-const AVAILABLE_TYPES = ['Int', 'String', 'Boolean', 'Date', 'DateTime', 'Time', 'JSON'];
+const AVAILABLE_TYPES = [
+  'Int',
+  'String',
+  'Boolean',
+  'Date',
+  'DateTime',
+  'Time',
+  'JSON',
+];
 
 @Component({
   selector: 'safe-tab-filter',
   templateUrl: './tab-filter.component.html',
-  styleUrls: ['./tab-filter.component.scss']
+  styleUrls: ['./tab-filter.component.scss'],
 })
 export class SafeTabFilterComponent implements OnInit {
-
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
   @Input() settings: any;
@@ -132,8 +157,8 @@ export class SafeTabFilterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
-    private apiProxyService: SafeApiProxyService,
-    ) { }
+    private apiProxyService: SafeApiProxyService
+  ) {}
 
   ngOnInit(): void {
     // TODO: move somewhere else
@@ -152,12 +177,12 @@ export class SafeTabFilterComponent implements OnInit {
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
-        const field = this.fields.find(y => y.name === x.field);
+        const field = this.fields.find((y) => y.name === x.field);
         if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
           const type = field.type.name;
           this.selectedFields.splice(index, 1, {
             name: field.name,
-            type
+            type,
           });
         } else {
           this.selectedFields.splice(index, 1, {});
@@ -171,8 +196,8 @@ export class SafeTabFilterComponent implements OnInit {
   /**
    * Fetch choices from URL if needed
    */
-   private async populateMetaFields(): Promise<void> {
-    for (const fieldName of  Object.keys(this.metaFields)) {
+  private async populateMetaFields(): Promise<void> {
+    for (const fieldName of Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
@@ -180,14 +205,18 @@ export class SafeTabFilterComponent implements OnInit {
         if (localRes) {
           this.metaFields[fieldName] = {
             ...meta,
-            choices: this.extractChoices(JSON.parse(localRes), meta.choicesByUrl)
+            choices: this.extractChoices(
+              JSON.parse(localRes),
+              meta.choicesByUrl
+            ),
           };
         } else {
-          const res: any = await this.apiProxyService.promisedRequestWithHeaders(url);
+          const res: any =
+            await this.apiProxyService.promisedRequestWithHeaders(url);
           localStorage.setItem(url, JSON.stringify(res));
           this.metaFields[fieldName] = {
             ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl)
+            choices: this.extractChoices(res, meta.choicesByUrl),
           };
         }
       }
@@ -201,12 +230,21 @@ export class SafeTabFilterComponent implements OnInit {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-   private extractChoices(res: any, choicesByUrl: { path?: string; value?: string; text?: string}): {value: string; text: string}[] {
+  private extractChoices(
+    res: any,
+    choicesByUrl: { path?: string; value?: string; text?: string }
+  ): { value: string; text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    return choices ? choices.map((x: any) => ({
-      value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-      text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
-    })) : [];
+    return choices
+      ? choices.map((x: any) => ({
+          value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
+          text: choicesByUrl.text
+            ? x[choicesByUrl.text]
+            : choicesByUrl.value
+            ? x[choicesByUrl.value]
+            : x,
+        }))
+      : [];
   }
 
   setCurrentDate(filterName: string): void {
@@ -214,7 +252,9 @@ export class SafeTabFilterComponent implements OnInit {
   }
 
   onKey(e: any, filterName: string): void {
-    if (e.target.value === '') { this.inputs = ''; }
+    if (e.target.value === '') {
+      this.inputs = '';
+    }
     if (e.keyCode === 8) {
       this.inputs = this.inputs.slice(0, this.inputs.length - 1);
     }
@@ -237,8 +277,13 @@ export class SafeTabFilterComponent implements OnInit {
       e.stopPropagation();
       e.target.value = this.inputs;
     }
-    if (this.inputs.length > 9 && !RegExp('\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])*').test(this.inputs)) {
-      this.form.controls[filterName].setErrors({incorrect: true});
+    if (
+      this.inputs.length > 9 &&
+      !RegExp('\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])*').test(
+        this.inputs
+      )
+    ) {
+      this.form.controls[filterName].setErrors({ incorrect: true });
     }
   }
 
@@ -246,7 +291,7 @@ export class SafeTabFilterComponent implements OnInit {
     const filter = this.formBuilder.group({
       field: '',
       operator: 'eq',
-      value: null
+      value: null,
     });
     this.filters.push(filter);
     this.selectedFields.push({});
@@ -254,7 +299,7 @@ export class SafeTabFilterComponent implements OnInit {
 
   onSetField(e: any, index: number): void {
     if (e.value) {
-      const field = this.fields.find(x => x.name === e.value);
+      const field = this.fields.find((x) => x.name === e.value);
       if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
         const type = field.type.name;
         const operator = TYPES[type].defaultOperator;
@@ -262,7 +307,7 @@ export class SafeTabFilterComponent implements OnInit {
         this.filters.at(index).get('value')?.setValue(null);
         this.selectedFields.splice(index, 1, {
           name: field.name,
-          type
+          type,
         });
       } else {
         this.selectedFields.splice(index, 1, {});
@@ -285,7 +330,7 @@ export class SafeTabFilterComponent implements OnInit {
   onAddFilterGroup(): void {
     const filter = this.formBuilder.group({
       logic: 'and',
-      filters: this.formBuilder.array([])
+      filters: this.formBuilder.array([]),
     });
     this.filters.push(filter);
     this.selectedFields.push({});

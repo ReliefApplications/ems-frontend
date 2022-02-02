@@ -4,10 +4,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { NOTIFICATIONS } from '../../const/notifications';
-import { EditUserProfileMutationResponse, EDIT_USER_PROFILE } from '../../graphql/mutations';
+import {
+  EditUserProfileMutationResponse,
+  EDIT_USER_PROFILE,
+} from '../../graphql/mutations';
 import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeSnackBarService } from '../../services/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared profile page.
@@ -16,10 +20,9 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 @Component({
   selector: 'safe-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
 })
 export class SafeProfileComponent implements OnInit, OnDestroy {
-
   /** Table data */
   dataSource = new MatTableDataSource<User>();
   /** Subscription to authentication service */
@@ -29,7 +32,12 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
   /** Form to edit the user */
   public userForm?: FormGroup;
   /** Displayed columns of table */
-  public displayedColumnsApps = ['name', 'role', 'positionAttributes', 'actions'];
+  public displayedColumnsApps = [
+    'name',
+    'role',
+    'positionAttributes',
+    'actions',
+  ];
 
   /**
    * Shared profile page.
@@ -44,8 +52,9 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private formBuilder: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder,
+    public translate: TranslateService
+  ) {}
 
   /**
    * Subscribes to authenticated user.
@@ -54,13 +63,11 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
-        this.user = { ...user};
-        this.userForm = this.formBuilder.group(
-          {
-            name: user.name,
-            username: [{ value: user.username, disabled: true }],
-          }
-        );
+        this.user = { ...user };
+        this.userForm = this.formBuilder.group({
+          name: user.name,
+          username: [{ value: user.username, disabled: true }],
+        });
       }
     });
   }
@@ -71,21 +78,23 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     const roles: any[] = [];
     this.user?.roles?.forEach((e: any) => {
-        roles.push(e.id);
-      });
-    this.apollo.mutate<EditUserProfileMutationResponse>({
-      mutation: EDIT_USER_PROFILE,
-      variables: {
-        profile: {
-          name: this.userForm?.value.name
-        }
-      }
-    }).subscribe(res => {
-      if (res.data) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
-        this.user.name = res.data.editUserProfile.name;
-      }
+      roles.push(e.id);
     });
+    this.apollo
+      .mutate<EditUserProfileMutationResponse>({
+        mutation: EDIT_USER_PROFILE,
+        variables: {
+          profile: {
+            name: this.userForm?.value.name,
+          },
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+          this.user.name = res.data.editUserProfile.name;
+        }
+      });
   }
 
   /**
@@ -99,19 +108,21 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
       this.user?.roles?.forEach((e: any) => {
         roles.push(e.id);
       });
-      this.apollo.mutate<EditUserProfileMutationResponse>({
-        mutation: EDIT_USER_PROFILE,
-        variables: {
-          profile: {
-            favoriteApp: application.id
+      this.apollo
+        .mutate<EditUserProfileMutationResponse>({
+          mutation: EDIT_USER_PROFILE,
+          variables: {
+            profile: {
+              favoriteApp: application.id,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+            this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }
-        }
-      }).subscribe(res => {
-        if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
-          this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
-          }
-      });
+        });
     }
   }
 
