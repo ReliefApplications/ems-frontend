@@ -16,6 +16,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [SafeChartSettingsComponent],
@@ -37,6 +40,9 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTabsModule,
     SafeButtonModule,
     TranslateModule,
+    SafeAggregationBuilderModule,
+    MatAutocompleteModule,
+    MatChipsModule,
   ],
   exports: [SafeChartSettingsComponent],
 })

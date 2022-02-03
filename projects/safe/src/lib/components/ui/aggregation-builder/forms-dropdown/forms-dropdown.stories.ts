@@ -108,10 +108,5 @@ DEFAULT.args = {
 export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
-  sourceControl: new FormControl({
-    id: '613b6c052921406adbfb54bd',
-    name: 'T Advanced feature',
-    core: false,
-    resource: undefined,
-  }),
+  sourceControl: new FormControl('613b6c052921406adbfb54bd'),
 };

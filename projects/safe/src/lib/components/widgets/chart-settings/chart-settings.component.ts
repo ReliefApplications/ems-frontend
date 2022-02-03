@@ -1,5 +1,10 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
+import { scrollFactory } from '../../query-builder/query-builder.component';
+import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
 import { Chart } from './charts/chart';
 import {
   CHART_TYPES,
@@ -12,6 +17,14 @@ import {
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
   styleUrls: ['./chart-settings.component.scss'],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory },
+  ],
 })
 /*  Modal content for the settings of the chart widgets.
  */

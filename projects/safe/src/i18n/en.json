@@ -401,7 +401,6 @@
         "filterVisibility": "Click to toggle visibility of filter"
     },
     "aggregation": {
-        "builderTitle": "Aggregation builder",
         "dataSource": "Select the data source",
         "sourceFields": "Select fields",
         "addStage": "Add stage",

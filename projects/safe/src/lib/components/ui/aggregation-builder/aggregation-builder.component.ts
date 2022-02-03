@@ -1,8 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
@@ -27,6 +34,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
     endCursor: '',
     hasNextPage: true,
   };
+  public loadingGrid = true;
+  public gridData: any = {
+    data: [],
+    total: 0,
+  };
+
   // Fields
   private queryName = '';
   private fields = new BehaviorSubject<any[]>([]);
@@ -35,8 +48,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
   public selectedFields$!: Observable<any[]>;
   private metaFields = new BehaviorSubject<any[]>([]);
   public metaFields$!: Observable<any[]>;
+  public mappingFields$!: Observable<any[]>;
+  public gridFields: any[] = [];
 
   // === REACTIVE FORM ===
+  @Input() rawPipelineForm!: AbstractControl;
   aggregationForm: FormGroup = new FormGroup({});
 
   constructor(
@@ -68,6 +84,44 @@ export class SafeAggregationBuilderComponent implements OnInit {
             )
           : []
       ),
+      mapping: this.formBuilder.group({
+        xAxis: [
+          this.settings && this.settings.mapping && this.settings.mapping.xAxis
+            ? this.settings.mapping.xAxis
+            : '',
+          Validators.required,
+        ],
+        yAxis: [
+          this.settings && this.settings.mapping && this.settings.mapping.yAxis
+            ? this.settings.mapping.yAxis
+            : '',
+          Validators.required,
+        ],
+      }),
+    });
+
+    // Update output raw aggregation
+    this.aggregationForm.valueChanges.subscribe((value) => {
+      if (this.aggregationForm.valid) {
+        const pipeline = this.aggregationBuilder.buildPipeline(value);
+        this.rawPipelineForm.setValue(pipeline);
+        this.loadingGrid = true;
+        this.gridFields = this.formatFields(
+          this.aggregationBuilder.fieldsAfter(
+            this.selectedFields.value,
+            value.pipeline
+          )
+        );
+        this.aggregationBuilder
+          .buildAggregation(pipeline)
+          .valueChanges.subscribe((res: any) => {
+            this.gridData = {
+              data: res.data.recordsAggregation,
+              total: res.data.recordsAggregation.length,
+            };
+            this.loadingGrid = res.loading;
+          });
+      }
     });
 
     // Data source query
@@ -89,11 +143,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationForm
       .get('dataSource')
       ?.valueChanges.pipe(debounceTime(300))
-      .subscribe((form) => {
-        if (form && form.id) {
+      .subscribe((form: string) => {
+        if (form.match(/^[0-9a-fA-F]{24}$/)) {
           this.aggregationForm.get('sourceFields')?.setValue([]);
-          this.queryName = form.name
-            ? this.queryBuilder.getQueryNameFromResourceName(form.name)
+          const formName = this.forms.value.find((x) => x.id === form)?.name;
+          this.queryName = formName
+            ? this.queryBuilder.getQueryNameFromResourceName(formName)
             : '';
           const fields = this.queryBuilder.getFields(this.queryName);
           console.log('FIELDS', fields);
@@ -107,11 +162,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fields) => {
-        const formattedFields = fields.map((field: any) => {
-          const formattedForm = this.queryBuilder.addNewField(field, true);
-          formattedForm.enable();
-          return formattedForm.value;
-        });
+        const formattedFields = this.formatFields(fields);
         this.selectedFields.next(fields);
         this.queryBuilder
           .buildMetaQuery({
@@ -125,10 +176,66 @@ export class SafeAggregationBuilderComponent implements OnInit {
             }
           });
       });
+
+    // Mapping fields
+    this.mappingFields$ =
+      this.aggregationForm.get('pipeline')?.valueChanges.pipe(
+        debounceTime(1000),
+        map((pipeline) =>
+          this.aggregationBuilder.fieldsAfter(
+            this.selectedFields.value,
+            pipeline
+          )
+        )
+      ) || this.selectedFields$;
+
+    // Preview grid
+    this.aggregationForm
+      .get('pipeline')
+      ?.valueChanges.pipe(debounceTime(1000))
+      .subscribe((pipeline) => {
+        if (this.aggregationForm.get('pipeline')?.valid) {
+          this.loadingGrid = true;
+          this.gridFields = this.formatFields(
+            this.aggregationBuilder.fieldsAfter(
+              this.selectedFields.value,
+              pipeline
+            )
+          );
+          this.aggregationBuilder
+            .buildAggregation(
+              this.aggregationBuilder.buildPipeline(
+                this.aggregationForm.value,
+                false
+              )
+            )
+            .valueChanges.subscribe((res: any) => {
+              this.gridData = {
+                data: res.data.recordsAggregation,
+                total: res.data.recordsAggregation.length,
+              };
+              this.loadingGrid = res.loading;
+            });
+        }
+      });
   }
 
   get pipelineForm(): FormArray {
     return this.aggregationForm.get('pipeline') as FormArray;
+  }
+
+  /**
+   * Format fields so they are aligned with the queryBuilder format.
+   *
+   * @param fields Raw fields to format.
+   * @return formatted fields.
+   */
+  private formatFields(fields: any[]): any[] {
+    return fields.map((field: any) => {
+      const formattedForm = this.queryBuilder.addNewField(field, true);
+      formattedForm.enable();
+      return formattedForm.value;
+    });
   }
 
   /**

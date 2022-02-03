@@ -15,11 +15,18 @@
 }
 
 .builder-form {
-  flex: 60%
+  flex: 60%;
+
+  .safe-pipeline {
+    min-height: 100px;
+  }
 }
 
 .preview {
   flex: 40%;
+  margin-left: 3%;
+  min-height: 200px;
+  height: 100%;
 }
 
 .layout {

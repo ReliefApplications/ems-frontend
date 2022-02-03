@@ -6,6 +6,8 @@ import { SafeFormsDropdownModule } from './forms-dropdown/forms-dropdown.module'
 import { SafePipelineModule } from './pipeline/pipeline.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeTagboxModule } from '../tagbox/tagbox.module';
+import { SafeSeriesMappingModule } from './series-mapping/series-mapping.module';
+import { SafeGridModule } from '../core-grid/grid/grid.module';
 
 @NgModule({
   declarations: [SafeAggregationBuilderComponent],
@@ -17,6 +19,8 @@ import { SafeTagboxModule } from '../tagbox/tagbox.module';
     SafeFormsDropdownModule,
     SafeTagboxModule,
     SafePipelineModule,
+    SafeSeriesMappingModule,
+    SafeGridModule,
   ],
   exports: [SafeAggregationBuilderComponent],
 })

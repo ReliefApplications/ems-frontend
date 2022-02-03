@@ -1,4 +1,3 @@
-<h2>{{ 'aggregation.builderTitle' | translate }}</h2>
 <div class="data-source">
   <safe-forms-dropdown
     class="forms-dropdown"
@@ -15,8 +14,24 @@
   ></safe-tagbox>
 </div>
 <div class="layout">
-  <safe-pipeline class="builder-form" [fields$]="selectedFields$" [metaFields$]="metaFields$" [pipelineForm]="pipelineForm"></safe-pipeline>
+  <div class="builder-form">
+    <safe-pipeline [fields$]="selectedFields$" [metaFields$]="metaFields$" [pipelineForm]="pipelineForm"></safe-pipeline>
+    <safe-series-mapping [fields$]="mappingFields$" [mappingForm]="aggregationForm.controls.mapping"></safe-series-mapping>
+  </div>
   <div class="preview">
-    <span>Preview</span>
+    <safe-grid
+        [loading]="loadingGrid"
+        [fields]="gridFields"
+        [data]="gridData"
+        [exportable]="false"
+        [resizable]="false"
+        [reorderable]="false"
+        [selectable]="false"
+        [multiSelect]="false"
+        [filterable]="false"
+        [sortable]="false"
+        [searchable]="false"
+        [hasDetails]="false"
+    ></safe-grid>
   </div>
 </div>

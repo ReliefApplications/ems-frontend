@@ -1,0 +1,18 @@
+<form [formGroup]="mappingGroup">
+  <mat-form-field appearance="outline">
+    <mat-label>X Axis</mat-label>
+    <mat-select formControlName="xAxis">
+        <mat-option *ngFor="let field of fields$ | async" [value]="field.name">
+            {{field.name}}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Y Axis</mat-label>
+    <mat-select formControlName="yAxis">
+        <mat-option *ngFor="let field of fields$ | async" [value]="field.name">
+            {{field.name}}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>

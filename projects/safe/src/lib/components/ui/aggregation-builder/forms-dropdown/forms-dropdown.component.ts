@@ -53,8 +53,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
     });
     this.sourceControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value: any) => {
-        if (typeof value === 'string') {
+      .subscribe((value: string) => {
+        // If not an ID
+        if (!value.match(/^[0-9a-fA-F]{24}$/)) {
           this.sourceFilter = value;
           this.filter.emit(value);
           this.filteredForms = this.filterForms(value);
@@ -80,10 +81,11 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Display function necessary for the autocomplete in order to display selected choice.
    *
-   * @param form Form to display.
+   * @param forms List of forms to compare with for display.
    */
-  public displayName(form: any): string {
-    return form && form.name ? form.name : form;
+  public displayName(forms: Form[]): (value: any) => string {
+    return (formId: string) =>
+      formId ? forms.find((x) => x.id === formId)?.name || '' : formId;
   }
 
   /**
