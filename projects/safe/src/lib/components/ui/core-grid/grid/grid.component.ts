@@ -538,14 +538,4 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-  public rowCallback(context: RowClassArgs) {
-    console.log("context = ", context);
-    console.log("rowCallback STYLE = ", this.styles);
-    const isEven = context.index % 2 == 0;
-    return {
-        even: isEven,
-        odd: !isEven
-    };
-  }
 }

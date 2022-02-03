@@ -1,39 +1,101 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeRuleListComponent } from './rule-list.component';
-import { SafeQueryBuilderModule } from '../../query-builder.module';
+import { SafeButtonModule } from '../../../ui/button/button.module';
 
 export default {
   component: SafeRuleListComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeQueryBuilderModule],
+      declarations: [SafeRuleListComponent],
+      imports: [SafeButtonModule],
     }),
   ],
-  title: 'UI/Rule',
+  title: 'UI/Rule-List',
 } as Meta;
 
 const TEMPLATE_DEFAULT: Story<SafeRuleListComponent> = (args) => ({
-  template: `<safe-rule [stylesList]="stylesList" [styleForm]="styleForm" [scalarFields]="scalarFields" [settings]="settings"
-  [availableFields]="availableFields" [factory]="factory"></safe-rule>`,
+  template: `<safe-rule-list [stylesList]="stylesList"></safe-rule-list>`,
   props: {
     ...args
   },
 });
 
 export const DEFAULT = TEMPLATE_DEFAULT.bind({});
+
 DEFAULT.args = {
-  styleForm: {
-    "formGroup": {
-      title: [`New rule`],
-      backgroundColor: '#1a0e06',
-      textColor: '#5dfdad',
-      textStyle: 'default',
-      styleAppliedTo: 'whole-row',
+  stylesList: [
+    {
+      backgroundColor: "",
       fields: [],
       filter: {
         logic: 'and',
-        filters: [],
+        filters: []
       },
+      styleAppliedTo: "whole-row",
+      textColor: "",
+      textStyle: "",
+      title: "New rule",
     },
-  } as any,
+  ]
+}
+
+export const CUSTOM = TEMPLATE_DEFAULT.bind({});
+
+CUSTOM.args = {
+  stylesList: [
+    {
+      backgroundColor: "rgba(19, 210, 35, 1)",
+      fields: [],
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+          field: "comment",
+          operator: "contains",
+          value: "commentaire"
+          }
+        ]
+      },
+      styleAppliedTo: "whole-row",
+      textColor: "rgba(0, 0, 0, 1)",
+      textStyle: "underline",
+      title: "Underline",
+    },
+    {
+      backgroundColor: "rgba(255, 0, 0, 1)",
+      fields: [],
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+          field: "comment",
+          operator: "contains",
+          value: "commentaire"
+          }
+        ]
+      },
+      styleAppliedTo: "whole-row",
+      textColor: "rgba(0, 0, 0, 1)",
+      textStyle: "bold",
+      title: "Bold",
+    },
+    {
+      backgroundColor: "rgba(64, 55, 161, 1)",
+      fields: [],
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+          field: "comment",
+          operator: "contains",
+          value: "commentaire"
+          }
+        ]
+      },
+      styleAppliedTo: "whole-row",
+      textColor: "rgba(0, 0, 0, 1)",
+      textStyle: "italic",
+      title: "Italic"
+    }
+  ]
 };
