@@ -462,7 +462,7 @@ export class QueryBuilderService {
   private createStyleForm(value: any): FormGroup {
     const styleForm = this.formBuilder.group({
       title: [
-        value && value.name ? value.name : 'New rule',
+        value && value.title ? value.title : 'New rule',
         Validators.required,
       ],
       backgroundColor: [

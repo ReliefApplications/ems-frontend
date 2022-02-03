@@ -14,6 +14,7 @@ import {
   GridDataResult,
   PageChangeEvent,
   RowArgs,
+  RowClassArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
@@ -167,6 +168,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
+  // === STYLE ===
+  @Input() styles: any[] = [];
+
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
@@ -175,6 +179,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    console.log("this styles = ", this.styles);
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
@@ -532,5 +537,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.action.emit({ action: 'edit', item, value });
       }
     });
+  }
+
+  public rowCallback(context: RowClassArgs) {
+    console.log("context = ", context);
+    console.log("rowCallback STYLE = ", this.styles);
+    const isEven = context.index % 2 == 0;
+    return {
+        even: isEven,
+        odd: !isEven
+    };
   }
 }
