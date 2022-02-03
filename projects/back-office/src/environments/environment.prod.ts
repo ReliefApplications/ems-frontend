@@ -22,4 +22,5 @@ export const environment = {
   module: 'backoffice',
   availableLanguages: ['en'],
   authConfig,
+  primaryColor: '#008dc9',
 };

@@ -24,4 +24,5 @@ export const environment = {
   module: 'frontoffice',
   availableLanguages: ['en'],
   authConfig,
+  primaryColor: '#008dc9',
 };

@@ -87,7 +87,8 @@ export class SafeRecordModalComponent implements OnInit {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-hover-color'] =
+      this.environment.primaryColor;
 
     Survey.StylesManager.applyTheme();
     const promises: Promise<
