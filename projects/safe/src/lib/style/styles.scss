@@ -1,6 +1,22 @@
 @use "~@angular/material" as mat;
-@include mat.core();
 @import "./variables.scss";
+@include mat.core();
+
+.sv_main {
+  --primary-color: #{$primary_500};
+  --secondary-color: #{$primary_500};
+  // --primary-text-color: #676a6c;
+  // --secondary-text-color: #a7a7a7;
+  // --inverted-text-color: #ffffff;
+  --primary-hover-color: #{$primary_500};
+  --selection-border-color: #{$primary_500};
+  // --primary-icon-color: #3d4d5d;
+  // --primary-bg-color: #fff;
+  // --secondary-bg-color: #f4f4f4;
+  // --primary-border-color: #e7eaec;
+  // --secondary-border-color: #ddd;
+  // --error-color: #ed5565;
+}
 
 $safe-palette: (
   50: $primary_50,

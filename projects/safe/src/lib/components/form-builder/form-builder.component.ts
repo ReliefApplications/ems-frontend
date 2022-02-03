@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
@@ -81,13 +82,15 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
-  // === SURVEY COLORS
-  primaryColor = '#008DC9';
+  environment: any;
 
   constructor(
+    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService
-  ) {}
+  ) {
+    this.environment = environment;
+  }
 
   ngOnInit(): void {
     const options = {
@@ -206,15 +209,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   setCustomTheme(): void {
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-hover-color'] =
+      this.environment.primaryColor;
 
     const defaultThemeColorsEditor =
       SurveyCreator.StylesManager.ThemeColors.default;
-    defaultThemeColorsEditor['$primary-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$secondary-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$primary-hover-color'] = this.primaryColor;
-    defaultThemeColorsEditor['$selection-border-color'] = this.primaryColor;
+    defaultThemeColorsEditor['$primary-color'] = this.environment.primaryColor;
+    defaultThemeColorsEditor['$secondary-color'] =
+      this.environment.primaryColor;
+    defaultThemeColorsEditor['$primary-hover-color'] =
+      this.environment.primaryColor;
+    defaultThemeColorsEditor['$selection-border-color'] =
+      this.environment.primaryColor;
 
     Survey.StylesManager.applyTheme();
     SurveyCreator.StylesManager.applyTheme();
