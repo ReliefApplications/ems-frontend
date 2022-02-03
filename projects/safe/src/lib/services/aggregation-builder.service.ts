@@ -74,7 +74,7 @@ export class AggregationBuilderService {
         $project: (settings.sourceFields as any[]).reduce(
           (o, field) =>
             Object.assign(o, {
-              [field.name]: `$data.${field.name}`,
+              [field]: `$data.${field}`,
             }),
           {}
         ),

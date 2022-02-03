@@ -132,7 +132,9 @@ export class SafeTagboxComponent implements OnInit {
       this.selectedChoices.push(
         this.currentChoices.find((x) => x[this.displayKey] === value)
       );
-      this.parentControl.setValue(this.selectedChoices);
+      this.parentControl.setValue(
+        this.selectedChoices.map((x) => x[this.valueKey])
+      );
       this.availableChoices.next(
         this.currentChoices.filter((x) => x[this.displayKey] !== value)
       );
@@ -158,7 +160,9 @@ export class SafeTagboxComponent implements OnInit {
         this.selectedChoices[index],
       ]);
       this.selectedChoices.splice(index, 1);
-      this.parentControl.setValue(this.selectedChoices);
+      this.parentControl.setValue(
+        this.selectedChoices.map((x) => x[this.valueKey])
+      );
     }
   }
 
@@ -174,7 +178,9 @@ export class SafeTagboxComponent implements OnInit {
         (x) => x[this.valueKey] === event.option.value[this.valueKey]
       )
     );
-    this.parentControl.setValue(this.selectedChoices);
+    this.parentControl.setValue(
+      this.selectedChoices.map((x) => x[this.valueKey])
+    );
     this.availableChoices.next(
       this.currentChoices.filter(
         (x) => x[this.valueKey] !== event.option.value[this.valueKey]

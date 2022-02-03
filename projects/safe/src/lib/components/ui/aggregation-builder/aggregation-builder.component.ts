@@ -156,14 +156,19 @@ export class SafeAggregationBuilderComponent implements OnInit {
         }
       });
 
+    // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
     this.metaFields$ = this.metaFields.asObservable();
     this.aggregationForm
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000))
-      .subscribe((fields) => {
-        const formattedFields = this.formatFields(fields);
-        this.selectedFields.next(fields);
+      .subscribe((fieldsNames: string[]) => {
+        const currentFields = this.fields.value;
+        const selectedFields = fieldsNames.map((x: string) =>
+          currentFields.find((y) => x === y.name)
+        );
+        const formattedFields = this.formatFields(selectedFields);
+        this.selectedFields.next(selectedFields);
         this.queryBuilder
           .buildMetaQuery({
             query: { name: this.queryName, fields: formattedFields },
