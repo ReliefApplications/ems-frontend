@@ -22,5 +22,5 @@ export const environment = {
   module: 'frontoffice',
   availableLanguages: ['en', 'test'],
   authConfig,
-  primaryColor: '#008dc9',
+  primaryColor: '#6f51ae',
 };

@@ -1,5 +1,5 @@
 @use "~@angular/material" as mat;
-@import "./variables.scss";
+@import "variables.scss";
 @include mat.core();
 
 .sv_main {
