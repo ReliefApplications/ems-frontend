@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import {
   Application,
   User,
@@ -13,6 +13,7 @@ import {
   NOTIFICATIONS,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 /**
  * Main component of Front-Office navigation.
@@ -25,6 +26,8 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
   /** Application title */
   public title = '';
+  /** Stores current app ID */
+  public appID = '';
   /** List of accessible applications */
   public applications: Application[] = [];
   /** List of application pages */
@@ -39,8 +42,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private permissions: Permission[] = [];
   /** Roles of the user */
   private roles: Role[] = [];
-  /** Stores if an application has been loaded */
-  private firstLoad = true;
 
   /**
    * Main component of Front-Office navigation.
@@ -70,16 +71,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
           const applications = user.applications || [];
           if (applications.length > 0) {
             this.applications = applications;
-            if (this.firstLoad) {
-              this.firstLoad = false;
+            this.applications.map((element) => {
+              if (element.id === this.router.url.slice(1, 25)) {
+                this.appID = this.router.url.slice(1, 25);
+              }
+            });
+            if (this.appID.length <= 0) {
               if (user.favoriteApp) {
-                this.applicationService.loadApplication(user.favoriteApp);
+                this.appID = user.favoriteApp;
               } else {
-                this.applicationService.loadApplication(
-                  applications[0].id || ''
-                );
+                this.appID = applications[0].id || '';
               }
             }
+            this.applicationService.loadApplication(this.appID);
             this.roles = user.roles || [];
             this.permissions = user.permissions || [];
           } else {
@@ -96,6 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.title = application.name || '';
+            this.appID = application.id || '';
             const adminNavItems: any[] = [];
             if (
               this.permissions.some(
@@ -111,7 +116,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ) {
               adminNavItems.push({
                 name: 'Users',
-                path: './settings/users',
+                path: `./${this.appID}/settings/users`,
                 icon: 'supervisor_account',
               });
             }
@@ -129,7 +134,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ) {
               adminNavItems.push({
                 name: 'Roles',
-                path: './settings/roles',
+                path: `./${this.appID}/settings/roles`,
                 icon: 'admin_panel_settings',
               });
             }
@@ -142,8 +147,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     name: x.name,
                     path:
                       x.type === ContentType.form
-                        ? `./${x.type}/${x.id}`
-                        : `./${x.type}/${x.content}`,
+                        ? `./${this.appID}/${x.type}/${x.id}`
+                        : `./${this.appID}/${x.type}/${x.content}`,
                     icon: this.getNavIcon(x.type || ''),
                   })),
               },
@@ -162,7 +167,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 if (firstPage) {
                   this.router.navigate(
                     [
-                      `./${firstPage.type}/${
+                      `./${this.appID}/${firstPage.type}/${
                         firstPage.type === ContentType.form
                           ? firstPage.id
                           : firstPage.content
@@ -171,7 +176,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     { relativeTo: this.route }
                   );
                 } else {
-                  this.router.navigate([`./`], { relativeTo: this.route });
+                  this.router.navigate([`./${this.appID}`], {
+                    relativeTo: this.route,
+                  });
                 }
               }
             }
@@ -192,6 +199,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 

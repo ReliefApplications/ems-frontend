@@ -13,12 +13,12 @@ const authConfig: AuthConfig = {
 };
 
 export const environment = {
-    production: true,
-    apiUrl: 'https://ems-safe-dev.who.int/api',
-    subscriptionApiUrl: 'wss://ems-safe-dev.who.int/api',
-    frontOfficeUri: 'https://ems-safe-dev.who.int/',
-    backOfficeUri: 'https://ems-safe-dev.who.int/backoffice/',
-    module: 'frontoffice',
-    availableLanguages: ['en'],
-    authConfig,
+  production: true,
+  apiUrl: 'https://ems-safe-dev.who.int/api',
+  subscriptionApiUrl: 'wss://ems-safe-dev.who.int/api',
+  frontOfficeUri: 'https://ems-safe-dev.who.int/',
+  backOfficeUri: 'https://ems-safe-dev.who.int/backoffice/',
+  module: 'frontoffice',
+  availableLanguages: ['en'],
+  authConfig,
 };
