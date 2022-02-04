@@ -1,4 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
+import { theme } from '../themes/oort';
 
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
@@ -22,5 +23,5 @@ export const environment = {
   module: 'frontoffice',
   availableLanguages: ['en', 'test'],
   authConfig,
-  primaryColor: '#6f51ae',
+  theme,
 };

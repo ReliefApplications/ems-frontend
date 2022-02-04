@@ -1,4 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
+import { theme } from '../themes/oort';
 
 const authConfig: AuthConfig = {
   issuer:
@@ -21,5 +22,5 @@ export const environment = {
   module: 'backoffice',
   availableLanguages: ['en'],
   authConfig,
-  primaryColor: '#008dc9',
+  theme,
 };

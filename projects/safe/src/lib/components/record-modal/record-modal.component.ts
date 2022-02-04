@@ -86,9 +86,9 @@ export class SafeRecordModalComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
     defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
     const promises: Promise<

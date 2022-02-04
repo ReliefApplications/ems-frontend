@@ -99,9 +99,9 @@ export class SafeFormModalComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
     defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 

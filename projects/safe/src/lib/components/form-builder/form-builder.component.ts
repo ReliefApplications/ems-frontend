@@ -209,19 +209,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   setCustomTheme(): void {
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
     defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
 
     const defaultThemeColorsEditor =
       SurveyCreator.StylesManager.ThemeColors.default;
-    defaultThemeColorsEditor['$primary-color'] = this.environment.primaryColor;
+    defaultThemeColorsEditor['$primary-color'] = this.environment.theme.primary;
     defaultThemeColorsEditor['$secondary-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
     defaultThemeColorsEditor['$primary-hover-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
     defaultThemeColorsEditor['$selection-border-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
     SurveyCreator.StylesManager.applyTheme();

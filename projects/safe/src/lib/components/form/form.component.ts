@@ -104,9 +104,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       SafeRecordHistoryComponent
     );
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
     defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.primaryColor;
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 
