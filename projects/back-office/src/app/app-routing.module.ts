@@ -6,15 +6,30 @@ import { AuthGuard } from './guards/auth.guard';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Applications',
+      },
+    },
     children: [
       {
         path: '',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         loadChildren: () =>
           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
         canActivate: [AccessGuard],
       },
       {
         path: 'applications',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         children: [
           {
             path: ':id',
@@ -30,17 +45,27 @@ const routes: Routes = [
           },
         ],
         canActivate: [AccessGuard],
-        data: {
-          breadcrumb: {
-            name: 'Applications',
-          },
-        },
       },
       {
         path: 'app-preview',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         children: [
           {
+            path: '',
+            redirectTo: '/applications',
+            pathMatch: 'full',
+          },
+          {
             path: ':id',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./app-preview/app-preview.module').then(
                 (m) => m.AppPreviewModule

@@ -5,6 +5,11 @@ import { ProfileComponent } from './profile.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Profile',
+      },
+    },
     component: ProfileComponent,
   },
 ];

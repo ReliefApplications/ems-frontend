@@ -42,6 +42,7 @@ export class UpdateRecordComponent implements OnInit {
           },
         })
         .valueChanges.subscribe((res) => {
+          console.log(res);
           this.form = res.data.form;
           this.loading = res.loading;
         });

@@ -19,6 +19,7 @@ import {
   SafeSnackBarService,
   Form,
   SafeConfirmModalComponent,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -69,7 +70,8 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {
     translate.stream('status').subscribe((status: any) => {
       this.statuses[0].text = status.active;
@@ -119,6 +121,10 @@ export class FormBuilderComponent implements OnInit {
         .valueChanges.subscribe(
           (res) => {
             if (res.data.form) {
+              this.breadcrumbService.setBreadcrumb(
+                '@formBuilder',
+                (res.data.form.name || '') + ' builder'
+              );
               this.loading = res.loading;
               this.form = res.data.form;
               this.nameForm = new FormGroup({

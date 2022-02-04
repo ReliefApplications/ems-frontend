@@ -17,6 +17,7 @@ import {
   SafeSnackBarService,
   NOTIFICATIONS,
   SafeDashboardService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
@@ -44,7 +45,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -64,6 +66,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.dashboard) {
               this.dashboard = res.data.dashboard;
+              this.breadcrumbService.setBreadcrumb(
+                '@dashboard',
+                this.dashboard.name || ''
+              );
               this.dashboardService.openDashboard(this.dashboard);
               this.tiles = res.data.dashboard.structure
                 ? res.data.dashboard.structure

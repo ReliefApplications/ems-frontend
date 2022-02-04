@@ -5,6 +5,11 @@ import { SettingsComponent } from './settings.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Settings',
+      },
+    },
     component: SettingsComponent,
   },
 ];

@@ -3,10 +3,10 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-interface Breadcrumb {
+export interface Breadcrumb {
   alias?: string;
+  url: string;
   name: string;
-  href: string;
   queryParams?: any;
 }
 
@@ -27,7 +27,7 @@ export class SafeBreadcrumbService {
 
   private createBreadcrumbs(
     route: ActivatedRoute,
-    url: string = '#',
+    url: string = '',
     breadcrumbs: Breadcrumb[] = []
   ): any {
     const children: ActivatedRoute[] = route.children;
@@ -43,12 +43,19 @@ export class SafeBreadcrumbService {
       if (routeURL !== '') {
         url += `/${routeURL}`;
       }
-
       const breadcrumb = child.snapshot.data?.breadcrumb;
       if (!(breadcrumb === null || breadcrumb === undefined)) {
         if (!breadcrumb.skip) {
-          console.log({ ...breadcrumb, ...{ url } });
-          breadcrumbs.push({ ...breadcrumb, ...{ url } });
+          if (
+            this.breadcrumbs.value[breadcrumbs.length] &&
+            this.breadcrumbs.value[breadcrumbs.length].url === url
+          ) {
+            console.log(this.breadcrumbs.value[breadcrumbs.length]);
+            breadcrumbs.push(this.breadcrumbs.value[breadcrumbs.length]);
+          } else {
+            console.log({ ...breadcrumb, ...{ url } });
+            breadcrumbs.push({ ...breadcrumb, ...{ url } });
+          }
         }
       }
 
@@ -62,7 +69,7 @@ export class SafeBreadcrumbService {
     const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
     console.log(breadcrumb);
     if (breadcrumb) {
-      breadcrumb.name = name;
+      breadcrumb.name = name[0].toUpperCase() + name.slice(1);
       this.breadcrumbs.next(breadcrumbs);
     }
   }

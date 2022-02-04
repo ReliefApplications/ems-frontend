@@ -12,6 +12,7 @@ import {
   SafeApplicationService,
   SafeWorkflowService,
   NOTIFICATIONS,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -56,7 +57,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +71,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowSubscription = this.workflowService.workflow$.subscribe(
       (workflow: Workflow | null) => {
         if (workflow) {
+          this.breadcrumbService.setBreadcrumb(
+            '@workflow',
+            workflow.name || ''
+          );
           this.steps = workflow.steps || [];
           this.workflowNameForm = new FormGroup({
             workflowName: new FormControl(workflow.name, Validators.required),

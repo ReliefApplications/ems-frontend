@@ -1,7 +1,22 @@
 .breadcrumb {
     display: flex;
+    cursor: default;
+    padding-bottom: 0.5em;
 }
 
 .breadcrumb-item {
     display: flex;
+    opacity: 40%;
+
+    .element {
+        padding: 0.3em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    div:hover {
+        border-radius: 4px;
+        background-color: #00000020;
+        cursor: pointer;
+    }
 }

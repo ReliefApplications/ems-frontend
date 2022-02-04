@@ -5,6 +5,11 @@ import { AddStepComponent } from './add-step.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'New step',
+      },
+    },
     component: AddStepComponent,
   },
 ];

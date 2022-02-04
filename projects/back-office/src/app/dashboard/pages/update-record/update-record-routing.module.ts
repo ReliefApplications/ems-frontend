@@ -5,6 +5,11 @@ import { UpdateRecordComponent } from './update-record.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Update record',
+      },
+    },
     component: UpdateRecordComponent,
   },
 ];

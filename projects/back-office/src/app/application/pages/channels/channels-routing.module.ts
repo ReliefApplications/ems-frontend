@@ -5,6 +5,11 @@ import { ChannelsComponent } from './channels.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Channels',
+      },
+    },
     component: ChannelsComponent,
   },
 ];

@@ -2,7 +2,13 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
+import {
+  Form,
+  Page,
+  Step,
+  SafeFormComponent,
+  SafeBreadcrumbService,
+} from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -40,7 +46,8 @@ export class FormComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -61,6 +68,7 @@ export class FormComponent implements OnInit {
           })
           .valueChanges.subscribe((res) => {
             this.step = res.data.step;
+            this.breadcrumbService.setBreadcrumb('@form', this.step.name || '');
             this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -83,6 +91,7 @@ export class FormComponent implements OnInit {
           })
           .valueChanges.subscribe((res) => {
             this.page = res.data.page;
+            this.breadcrumbService.setBreadcrumb('@form', this.page.name || '');
             this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,

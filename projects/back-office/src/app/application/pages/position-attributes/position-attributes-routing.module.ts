@@ -5,6 +5,11 @@ import { PositionAttributesComponent } from './position-attributes.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        alias: '@position',
+      },
+    },
     component: PositionAttributesComponent,
   },
 ];

@@ -14,6 +14,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         loadChildren: () =>
           import('./pages/home/home.module').then((m) => m.HomeModule),
         // canActivate: [SafePermissionGuard]
@@ -50,9 +55,19 @@ const routes: Routes = [
           },
           {
             path: 'position',
+            data: {
+              breadcrumb: {
+                name: 'Attributes',
+              },
+            },
             children: [
               {
                 path: '',
+                data: {
+                  breadcrumb: {
+                    skip: true,
+                  },
+                },
                 loadChildren: () =>
                   import('./pages/position/position.module').then(
                     (m) => m.PositionModule
@@ -61,6 +76,11 @@ const routes: Routes = [
               },
               {
                 path: ':id',
+                data: {
+                  breadcrumb: {
+                    skip: true,
+                  },
+                },
                 loadChildren: () =>
                   import(
                     './pages/position-attributes/position-attributes.module'
@@ -91,7 +111,7 @@ const routes: Routes = [
         path: 'dashboard/:id',
         data: {
           breadcrumb: {
-            name: '@dashboard',
+            alias: '@dashboard',
           },
         },
         loadChildren: () =>
@@ -102,6 +122,11 @@ const routes: Routes = [
       },
       {
         path: 'workflow/:id',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         loadChildren: () =>
           import('./pages/workflow/workflow.module').then(
             (m) => m.WorkflowModule
@@ -110,15 +135,30 @@ const routes: Routes = [
       },
       {
         path: 'form/:id',
+        data: {
+          breadcrumb: {
+            alias: '@form',
+          },
+        },
         children: [
           {
             path: '',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./pages/form/form.module').then((m) => m.FormModule),
             // canActivate: [SafePermissionGuard]
           },
           {
             path: 'builder/:id',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import(
                 '../dashboard/pages/form-builder/form-builder.module'

@@ -5,6 +5,11 @@ import { PullJobsComponent } from './pull-jobs.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        skip: true,
+      },
+    },
     component: PullJobsComponent,
   },
 ];

@@ -8,6 +8,7 @@ import {
   SafeConfirmModalComponent,
   Record,
   Form,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -82,7 +83,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -144,6 +146,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.data.resource) {
             this.resource = res.data.resource;
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.resource.name || ''
+            );
             this.dataSourceForms = this.resource.forms;
             this.setDisplayedColumns(false);
             this.loading = res.loading;

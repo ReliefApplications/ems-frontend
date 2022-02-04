@@ -5,6 +5,11 @@ import { RolesComponent } from './roles.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Roles',
+      },
+    },
     component: RolesComponent,
   },
 ];

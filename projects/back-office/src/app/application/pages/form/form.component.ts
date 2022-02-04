@@ -12,6 +12,7 @@ import {
   SafeSnackBarService,
   SafeWorkflowService,
   NOTIFICATIONS,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
@@ -61,7 +62,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -80,6 +82,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.step = res.data.step;
+            this.breadcrumbService.setBreadcrumb('@form', this.step.name || '');
             this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -110,6 +113,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.page = res.data.page;
+            this.breadcrumbService.setBreadcrumb('@form', this.page.name || '');
             this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,

@@ -5,6 +5,11 @@ import { FormComponent } from './form.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        alias: '@form',
+      },
+    },
     component: FormComponent,
   },
 ];

@@ -7,6 +7,7 @@ import {
   SafeSnackBarService,
   Workflow,
   NOTIFICATIONS,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -43,7 +44,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -67,6 +69,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.workflow) {
               this.workflow = res.data.workflow;
+              this.breadcrumbService.setBreadcrumb(
+                '@workflow',
+                this.workflow.name || ''
+              );
               this.steps = res.data.workflow.steps || [];
               this.loading = res.loading;
               if (this.steps.length > 0) {

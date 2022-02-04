@@ -5,6 +5,11 @@ import { DashboardComponent } from './dashboard.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        alias: '@dashboard',
+      },
+    },
     component: DashboardComponent,
   },
 ];

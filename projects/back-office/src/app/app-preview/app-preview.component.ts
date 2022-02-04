@@ -5,6 +5,7 @@ import {
   ContentType,
   Permissions,
   SafeApplicationService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
@@ -51,7 +52,8 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private applicationService: SafeApplicationService,
     private previewService: PreviewService,
-    private router: Router
+    private router: Router,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -69,6 +71,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.title = application.name + ' (Preview)';
+            this.breadcrumbService.setBreadcrumb('@application', this.title);
             const role = application.roles?.find((x) =>
               this.role ? x.id === this.role : true
             );

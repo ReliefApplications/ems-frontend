@@ -5,6 +5,11 @@ import { AddPageComponent } from './add-page.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Add a Page',
+      },
+    },
     component: AddPageComponent,
   },
 ];

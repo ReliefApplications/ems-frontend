@@ -5,6 +5,11 @@ import { SubscriptionsComponent } from './subscriptions.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        name: 'Subscriptions',
+      },
+    },
     component: SubscriptionsComponent,
   },
 ];

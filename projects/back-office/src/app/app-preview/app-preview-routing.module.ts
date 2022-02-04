@@ -6,6 +6,11 @@ const routes: Routes = [
   {
     path: '',
     component: AppPreviewComponent,
+    data: {
+      breadcrumb: {
+        alias: '@application',
+      },
+    },
     children: [
       {
         path: 'dashboard/:id',

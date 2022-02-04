@@ -6,6 +6,11 @@ import { CanDeactivateGuard } from '../../../guards/can-deactivate.guard';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        alias: '@formBuilder',
+      },
+    },
     component: FormBuilderComponent,
     canDeactivate: [CanDeactivateGuard],
   },

@@ -5,6 +5,11 @@ import { ApiConfigurationComponent } from './api-configuration.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        skip: true,
+      },
+    },
     component: ApiConfigurationComponent,
   },
 ];

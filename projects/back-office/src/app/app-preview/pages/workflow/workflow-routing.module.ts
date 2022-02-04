@@ -5,6 +5,11 @@ import { WorkflowComponent } from './workflow.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        alias: '@workflow',
+      },
+    },
     component: WorkflowComponent,
     children: [
       {

@@ -5,6 +5,11 @@ import { PositionComponent } from './position.component';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: {
+        skip: true,
+      },
+    },
     component: PositionComponent,
   },
 ];

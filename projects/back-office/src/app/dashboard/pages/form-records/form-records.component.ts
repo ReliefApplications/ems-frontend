@@ -31,6 +31,7 @@ import {
   SafeConfirmModalComponent,
   NOTIFICATIONS,
   SafeSnackBarService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
@@ -83,7 +84,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /*  Load the records, using the form id passed as a parameter.
@@ -145,6 +147,10 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe((res) => {
         if (res.data.form) {
           this.form = res.data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@records',
+            (this.form.name || '') + ' records'
+          );
           this.setDisplayedColumns();
           this.loading = res.loading;
         }

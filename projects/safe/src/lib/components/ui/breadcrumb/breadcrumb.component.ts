@@ -1,11 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SafeBreadcrumbService } from '../../../services/breadcrumb.service';
-
-interface Breadcrumb {
-  name: string;
-  href: string;
-  queryParams?: any;
-}
+import {
+  SafeBreadcrumbService,
+  Breadcrumb,
+} from '../../../services/breadcrumb.service';
 
 @Component({
   selector: 'safe-breadcrumb',

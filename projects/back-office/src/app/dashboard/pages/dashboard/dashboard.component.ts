@@ -17,6 +17,7 @@ import {
   SafeWorkflowService,
   NOTIFICATIONS,
   SafeDashboardService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -67,7 +68,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +88,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.dashboard) {
               this.dashboard = res.data.dashboard;
+              this.breadcrumbService.setBreadcrumb(
+                '@dashboard',
+                this.dashboard.name || ''
+              );
               this.dashboardService.openDashboard(this.dashboard);
               this.dashboardNameForm = new FormGroup({
                 dashboardName: new FormControl(

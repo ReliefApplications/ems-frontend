@@ -19,23 +19,48 @@ export const routes = [
       },
       {
         path: 'profile',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         loadChildren: () =>
           import('./pages/profile/profile.module').then((m) => m.ProfileModule),
       },
       {
         path: 'forms',
+        data: {
+          breadcrumb: {
+            name: 'Forms',
+          },
+        },
         children: [
           {
             path: '',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./pages/forms/forms.module').then((m) => m.FormsModule),
             // canActivate: [SafePermissionGuard]
           },
           {
             path: 'records/:id',
+            data: {
+              breadcrumb: {
+                alias: '@records',
+              },
+            },
             children: [
               {
                 path: '',
+                data: {
+                  breadcrumb: {
+                    skip: true,
+                  },
+                },
                 loadChildren: () =>
                   import('./pages/form-records/form-records.module').then(
                     (m) => m.FormRecordsModule
@@ -43,6 +68,11 @@ export const routes = [
               },
               {
                 path: 'update/:id',
+                data: {
+                  breadcrumb: {
+                    skip: true,
+                  },
+                },
                 loadChildren: () =>
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
@@ -53,6 +83,11 @@ export const routes = [
           },
           {
             path: 'answer/:id',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./pages/form-answer/form-answer.module').then(
                 (m) => m.FormAnswerModule
@@ -61,6 +96,11 @@ export const routes = [
           },
           {
             path: 'builder',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./pages/form-builder/form-builder.module').then(
                 (m) => m.FormBuilderModule
@@ -69,6 +109,11 @@ export const routes = [
           },
           {
             path: 'builder/:id',
+            data: {
+              breadcrumb: {
+                skip: true,
+              },
+            },
             loadChildren: () =>
               import('./pages/form-builder/form-builder.module').then(
                 (m) => m.FormBuilderModule
@@ -79,9 +124,19 @@ export const routes = [
       },
       {
         path: 'resources',
+        data: {
+          breadcrumb: {
+            name: 'Resources',
+          },
+        },
         children: [
           {
             path: '',
+            data: {
+              breadcrumb: {
+                skip: 'true',
+              },
+            },
             loadChildren: () =>
               import('./pages/resources/resources.module').then(
                 (m) => m.ResourcesModule
@@ -90,9 +145,19 @@ export const routes = [
           },
           {
             path: ':id',
+            data: {
+              breadcrumb: {
+                alias: '@resource',
+              },
+            },
             children: [
               {
                 path: '',
+                data: {
+                  breadcrumb: {
+                    skip: 'true',
+                  },
+                },
                 loadChildren: () =>
                   import('./pages/resource/resource.module').then(
                     (m) => m.ResourceModule
@@ -100,6 +165,11 @@ export const routes = [
               },
               {
                 path: 'update/:id',
+                data: {
+                  breadcrumb: {
+                    skip: 'true',
+                  },
+                },
                 loadChildren: () =>
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
@@ -135,8 +205,7 @@ export const routes = [
         path: 'applications',
         data: {
           breadcrumb: {
-            alias: 'applications',
-            name: 'Applications',
+            skip: true,
           },
         },
         children: [
@@ -158,24 +227,49 @@ export const routes = [
       },
       {
         path: 'settings',
+        data: {
+          breadcrumb: {
+            skip: true,
+          },
+        },
         children: [
           {
             path: 'users',
+            data: {
+              breadcrumb: {
+                name: 'Users',
+              },
+            },
             loadChildren: () =>
               import('./pages/users/users.module').then((m) => m.UsersModule),
             // canActivate: [SafePermissionGuard]
           },
           {
             path: 'roles',
+            data: {
+              breadcrumb: {
+                name: 'Roles',
+              },
+            },
             loadChildren: () =>
               import('./pages/roles/roles.module').then((m) => m.RolesModule),
             // canActivate: [SafePermissionGuard]
           },
           {
             path: 'apiconfigurations',
+            data: {
+              breadcrumb: {
+                name: 'API Configuration',
+              },
+            },
             children: [
               {
                 path: '',
+                data: {
+                  breadcrumb: {
+                    skip: true,
+                  },
+                },
                 loadChildren: () =>
                   import(
                     './pages/api-configurations/api-configurations.module'
@@ -184,6 +278,11 @@ export const routes = [
               },
               {
                 path: ':id',
+                data: {
+                  breadcrumb: {
+                    alias: '@APIConf',
+                  },
+                },
                 loadChildren: () =>
                   import(
                     './pages/api-configuration/api-configuration.module'
@@ -194,6 +293,11 @@ export const routes = [
           },
           {
             path: 'pulljobs',
+            data: {
+              breadcrumb: {
+                name: 'Pull jobs',
+              },
+            },
             loadChildren: () =>
               import('./pages/pull-jobs/pull-jobs.module').then(
                 (m) => m.PullJobsModule

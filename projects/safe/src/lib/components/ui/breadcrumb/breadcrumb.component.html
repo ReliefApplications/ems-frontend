@@ -1,6 +1,6 @@
 <div class="breadcrumb">
     <div *ngFor="let breadcrumb of breadcrumbs; let i = index;" class="breadcrumb-item">
-        <div>{{ breadcrumb.name }}</div>
-        <span *ngIf="(i + 1) < breadcrumbs.length">/</span>
+        <div class='element' [routerLink]="breadcrumb.url">{{ breadcrumb.name }}</div>
+        <span class='element' *ngIf="(i + 1) < breadcrumbs.length">/</span>
     </div>
 </div>
