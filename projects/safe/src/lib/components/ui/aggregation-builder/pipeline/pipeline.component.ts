@@ -3,6 +3,7 @@ import { FormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { Observable } from 'rxjs';
 import { StageType } from './pipeline-stages';
+import { stageForm } from '../aggregation-builder-forms';
 
 @Component({
   selector: 'safe-pipeline',
@@ -26,11 +27,9 @@ export class SafePipelineComponent implements OnInit {
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
-      console.log('FIELDS', fields);
     });
     this.metaFields$.subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
-      console.log('META', meta);
     });
   }
 
@@ -47,7 +46,7 @@ export class SafePipelineComponent implements OnInit {
   }
 
   public addStage(stage: string) {
-    this.pipelineForm.push(this.aggregationBuilder.stageForm({ type: stage }));
+    this.pipelineForm.push(stageForm({ type: stage }));
   }
 
   public deleteStage(index: number) {

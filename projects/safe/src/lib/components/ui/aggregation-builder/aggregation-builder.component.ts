@@ -1,19 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { isMongoId } from '../../../utils/is-mongo-id';
+import { addNewField } from '../../query-builder/query-builder-forms';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,9 +18,10 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./aggregation-builder.component.scss'],
 })
 export class SafeAggregationBuilderComponent implements OnInit {
+  // === REACTIVE FORM ===
+  @Input() aggregationForm: FormGroup = new FormGroup({});
+
   // === DATA ===
-  @Input() settings: any;
-  // Data sources
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -40,7 +36,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
     total: 0,
   };
 
-  // Fields
+  // === FIELDS ===
   private queryName = '';
   private fields = new BehaviorSubject<any[]>([]);
   public fields$!: Observable<any[]>;
@@ -48,94 +44,47 @@ export class SafeAggregationBuilderComponent implements OnInit {
   public selectedFields$!: Observable<any[]>;
   private metaFields = new BehaviorSubject<any[]>([]);
   public metaFields$!: Observable<any[]>;
+  private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
   public gridFields: any[] = [];
 
-  // === REACTIVE FORM ===
-  @Input() rawPipelineForm!: AbstractControl;
-  aggregationForm: FormGroup = new FormGroup({});
+  get pipelineForm(): FormArray {
+    return this.aggregationForm.get('pipeline') as FormArray;
+  }
 
   constructor(
     private apollo: Apollo,
-    private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {}
 
   ngOnInit(): void {
-    // Initialize the FormGroup
-    this.aggregationForm = this.formBuilder.group({
-      dataSource: [
-        this.settings && this.settings.dataSource
-          ? this.settings.dataSource
-          : null,
-        Validators.required,
-      ],
-      sourceFields: [
-        this.settings && this.settings.sourceFields
-          ? this.settings.sourceFields
-          : [],
-        Validators.required,
-      ],
-      pipeline: this.formBuilder.array(
-        this.settings && this.settings.pipeline && this.settings.pipeline.length
-          ? this.settings.pipeline.map((x: any) =>
-              this.aggregationBuilder.stageForm(x)
-            )
-          : []
-      ),
-      mapping: this.formBuilder.group({
-        xAxis: [
-          this.settings && this.settings.mapping && this.settings.mapping.xAxis
-            ? this.settings.mapping.xAxis
-            : '',
-          Validators.required,
-        ],
-        yAxis: [
-          this.settings && this.settings.mapping && this.settings.mapping.yAxis
-            ? this.settings.mapping.yAxis
-            : '',
-          Validators.required,
-        ],
-      }),
-    });
-
-    // Update output raw aggregation
-    this.aggregationForm.valueChanges.subscribe((value) => {
-      if (this.aggregationForm.valid) {
-        const pipeline = this.aggregationBuilder.buildPipeline(value);
-        this.rawPipelineForm.setValue(pipeline);
-        this.loadingGrid = true;
-        this.gridFields = this.formatFields(
-          this.aggregationBuilder.fieldsAfter(
-            this.selectedFields.value,
-            value.pipeline
-          )
-        );
-        this.aggregationBuilder
-          .buildAggregation(pipeline)
-          .valueChanges.subscribe((res: any) => {
-            this.gridData = {
-              data: res.data.recordsAggregation,
-              total: res.data.recordsAggregation.length,
-            };
-            this.loadingGrid = res.loading;
-          });
-      }
-    });
-
     // Data source query
+    const variables: any = {
+      first: ITEMS_PER_PAGE,
+    };
+    if (this.aggregationForm.value.dataSource) {
+      variables.filter = {
+        logic: 'and',
+        filters: [
+          {
+            field: 'ids',
+            operator: 'in',
+            value: [this.aggregationForm.value.dataSource],
+          },
+        ],
+      };
+    }
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORMS,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
+      variables,
     });
     this.forms$ = this.forms.asObservable();
     this.formsQuery.valueChanges.subscribe((res) => {
       this.forms.next(res.data.forms.edges.map((x) => x.node));
       this.pageInfo = res.data.forms.pageInfo;
       this.loading = res.loading;
+      this.initFields();
     });
 
     // Fields query
@@ -144,15 +93,9 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('dataSource')
       ?.valueChanges.pipe(debounceTime(300))
       .subscribe((form: string) => {
-        if (form.match(/^[0-9a-fA-F]{24}$/)) {
+        if (isMongoId(form)) {
           this.aggregationForm.get('sourceFields')?.setValue([]);
-          const formName = this.forms.value.find((x) => x.id === form)?.name;
-          this.queryName = formName
-            ? this.queryBuilder.getQueryNameFromResourceName(formName)
-            : '';
-          const fields = this.queryBuilder.getFields(this.queryName);
-          console.log('FIELDS', fields);
-          this.fields.next(fields.filter((x) => x.type.kind === 'SCALAR'));
+          this.updateFields(form);
         }
       });
 
@@ -163,70 +106,104 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fieldsNames: string[]) => {
-        const currentFields = this.fields.value;
-        const selectedFields = fieldsNames.map((x: string) =>
-          currentFields.find((y) => x === y.name)
-        );
-        const formattedFields = this.formatFields(selectedFields);
-        this.selectedFields.next(selectedFields);
-        this.queryBuilder
-          .buildMetaQuery({
-            query: { name: this.queryName, fields: formattedFields },
-          })
-          ?.subscribe((res) => {
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                this.metaFields.next(res.data[field]);
-              }
-            }
-          });
+        this.updateSelectedAndMetaFields(fieldsNames);
       });
 
-    // Mapping fields
-    this.mappingFields$ =
-      this.aggregationForm.get('pipeline')?.valueChanges.pipe(
-        debounceTime(1000),
-        map((pipeline) =>
-          this.aggregationBuilder.fieldsAfter(
-            this.selectedFields.value,
-            pipeline
-          )
-        )
-      ) || this.selectedFields$;
-
-    // Preview grid
+    // Preview grid and mapping fields
+    this.mappingFields$ = this.mappingFields.asObservable();
     this.aggregationForm
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((pipeline) => {
-        if (this.aggregationForm.get('pipeline')?.valid) {
-          this.loadingGrid = true;
-          this.gridFields = this.formatFields(
-            this.aggregationBuilder.fieldsAfter(
-              this.selectedFields.value,
-              pipeline
-            )
-          );
-          this.aggregationBuilder
-            .buildAggregation(
-              this.aggregationBuilder.buildPipeline(
-                this.aggregationForm.value,
-                false
-              )
-            )
-            .valueChanges.subscribe((res: any) => {
-              this.gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
-              this.loadingGrid = res.loading;
-            });
-        }
+        this.initGrid(pipeline);
+        this.mappingFields.next(
+          this.aggregationBuilder.fieldsAfter(
+            this.selectedFields.value,
+            pipeline
+          )
+        );
       });
   }
 
-  get pipelineForm(): FormArray {
-    return this.aggregationForm.get('pipeline') as FormArray;
+  /**
+   * Init all data necessary for the reactive form to work.
+   */
+  private initFields(): void {
+    this.updateFields(this.aggregationForm.value.dataSource);
+    this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
+    this.initGrid(this.aggregationForm.value.pipeline);
+  }
+
+  /**
+   * Update fields depending on selected form.
+   *
+   * @param form New form to fetch fields from.
+   */
+  private updateFields(form: string): void {
+    if (form) {
+      const formName = this.forms.value.find((x) => x.id === form)?.name;
+      this.queryName = formName
+        ? this.queryBuilder.getQueryNameFromResourceName(formName)
+        : '';
+      const fields = this.queryBuilder.getFields(this.queryName);
+      this.fields.next(fields.filter((x) => x.type.kind === 'SCALAR'));
+    }
+  }
+
+  /**
+   * Update selected, meta and mapping fields depending on tagbox value.
+   *
+   * @param fieldsNames Tagbox value.
+   */
+  private updateSelectedAndMetaFields(fieldsNames: string[]): void {
+    if (fieldsNames && fieldsNames.length) {
+      const currentFields = this.fields.value;
+      const selectedFields = fieldsNames.map((x: string) =>
+        currentFields.find((y) => x === y.name)
+      );
+      const formattedFields = this.formatFields(selectedFields);
+      this.selectedFields.next(selectedFields);
+      this.queryBuilder
+        .buildMetaQuery({
+          query: { name: this.queryName, fields: formattedFields },
+        })
+        ?.subscribe((res) => {
+          for (const field in res.data) {
+            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+              this.metaFields.next(res.data[field]);
+            }
+          }
+        });
+      this.mappingFields.next(
+        this.aggregationBuilder.fieldsAfter(
+          selectedFields,
+          this.aggregationForm.get('pipeline')?.value
+        )
+      );
+    }
+  }
+
+  /**
+   * Init preview grid using pipeline parameters.
+   *
+   * @param pipeline Array of stages.
+   */
+  private initGrid(pipeline: any[]): void {
+    if (this.aggregationForm.get('pipeline')?.valid && pipeline.length) {
+      this.loadingGrid = true;
+      this.gridFields = this.formatFields(
+        this.aggregationBuilder.fieldsAfter(this.selectedFields.value, pipeline)
+      );
+      this.aggregationBuilder
+        .buildAggregation(this.aggregationForm.value, false)
+        .valueChanges.subscribe((res: any) => {
+          this.gridData = {
+            data: res.data.recordsAggregation,
+            total: res.data.recordsAggregation.length,
+          };
+          this.loadingGrid = res.loading;
+        });
+    }
   }
 
   /**
@@ -237,7 +214,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
    */
   private formatFields(fields: any[]): any[] {
     return fields.map((field: any) => {
-      const formattedForm = this.queryBuilder.addNewField(field, true);
+      const formattedForm = addNewField(field, true);
       formattedForm.enable();
       return formattedForm.value;
     });

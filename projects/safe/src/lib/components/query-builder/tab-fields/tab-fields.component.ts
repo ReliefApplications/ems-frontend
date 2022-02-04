@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { addNewField } from '../query-builder-forms';
 
 @Component({
   selector: 'safe-tab-fields',
@@ -99,10 +100,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         );
         this.form.insert(
           event.currentIndex,
-          this.queryBuilder.addNewField(
-            this.selectedFields[event.currentIndex],
-            true
-          )
+          addNewField(this.selectedFields[event.currentIndex], true)
         );
       }
     }

@@ -39,10 +39,14 @@ export class SafeTagboxComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.choices$.subscribe((choices) => {
+    this.choices$.subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;
       this.availableChoices.next([...choices]);
-      this.selectedChoices = this.parentControl.value;
+      this.selectedChoices = this.choicesEmpty
+        ? []
+        : this.parentControl.value.map((value: string) =>
+            choices.find((choice) => value === choice[this.valueKey])
+          );
       // Set up filtered choices for the autocomplete
       this.filteredChoices = merge(
         this.inputControl.valueChanges,

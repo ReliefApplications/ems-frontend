@@ -4,6 +4,7 @@ import { SafeSeriesMappingComponent } from './series-mapping.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeSeriesMappingComponent],
@@ -13,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    TranslateModule,
   ],
   exports: [SafeSeriesMappingComponent],
 })

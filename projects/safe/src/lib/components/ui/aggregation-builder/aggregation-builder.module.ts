@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeTagboxModule } from '../tagbox/tagbox.module';
 import { SafeSeriesMappingModule } from './series-mapping/series-mapping.module';
 import { SafeGridModule } from '../core-grid/grid/grid.module';
+import { SafeSpinnerModule } from '../spinner/spinner.module';
 
 @NgModule({
   declarations: [SafeAggregationBuilderComponent],
@@ -21,6 +22,7 @@ import { SafeGridModule } from '../core-grid/grid/grid.module';
     SafePipelineModule,
     SafeSeriesMappingModule,
     SafeGridModule,
+    SafeSpinnerModule,
   ],
   exports: [SafeAggregationBuilderComponent],
 })

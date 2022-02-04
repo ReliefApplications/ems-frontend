@@ -23,11 +23,7 @@
         <div formGroupName="chart" *ngIf="chartForm">
             <mat-tab-group animationDuration="0ms" preserveContent="true">
                 <mat-tab [label]="'global.aggregation' | translate">
-                    <safe-button icon="refresh" category="secondary" variant="primary" (click)="refreshPipeline()"
-                        [disabled]="!pipelineChanged">
-                        {{'action.apply' | translate}}
-                    </safe-button>
-                    <safe-aggregation-builder [rawPipelineForm]="chartForm.controls.pipeline" [settings]="settings.chart.aggregation"></safe-aggregation-builder>
+                    <safe-aggregation-builder [aggregationForm]="aggregationForm"></safe-aggregation-builder>
                 </mat-tab>
                 <mat-tab [label]="'global.display' | translate">
                     <mat-accordion>

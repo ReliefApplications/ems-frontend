@@ -40,7 +40,8 @@
         "legend": "******",
         "orientation": "******",
         "aggregation": "******",
-        "id": "******"
+        "id": "******",
+        "none": "******"
     },
 
     "action": {
@@ -441,6 +442,10 @@
             "addFields": "******",
             "unwind": "******",
             "custom": "******"
+        },
+        "mapping": {
+            "xAxis": "******",
+            "yAxis": "******"
         }
     } 
 }

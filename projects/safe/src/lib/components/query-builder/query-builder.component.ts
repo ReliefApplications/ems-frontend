@@ -13,6 +13,7 @@ import { QueryBuilderService } from '../../services/query-builder.service';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
+import { createFilterGroup } from './query-builder-forms';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -77,10 +78,7 @@ export class SafeQueryBuilderComponent implements OnInit {
       if (this.form?.get('filter')) {
         this.form?.setControl(
           'filter',
-          this.queryBuilder.createFilterGroup(
-            this.form?.value.filter,
-            this.availableScalarFields
-          )
+          createFilterGroup(this.form?.value.filter, this.availableScalarFields)
         );
       }
     } else {
@@ -94,7 +92,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
           this.form?.setControl(
             'filter',
-            this.queryBuilder.createFilterGroup(
+            createFilterGroup(
               this.form?.value.filter,
               this.availableScalarFields
             )
@@ -106,10 +104,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           this.availableFields = this.queryBuilder.getFields(res);
           this.form?.setControl(
             'filter',
-            this.queryBuilder.createFilterGroup(
-              null,
-              this.availableScalarFields
-            )
+            createFilterGroup(null, this.availableScalarFields)
           );
           this.form?.setControl(
             'fields',
@@ -126,10 +121,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           this.availableFields = [];
           this.form?.setControl(
             'filter',
-            this.queryBuilder.createFilterGroup(
-              null,
-              this.availableScalarFields
-            )
+            createFilterGroup(null, this.availableScalarFields)
           );
           this.form?.setControl('fields', this.formBuilder.array([]));
           this.form?.setControl(

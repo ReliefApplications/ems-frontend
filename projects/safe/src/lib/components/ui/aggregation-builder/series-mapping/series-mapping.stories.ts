@@ -1,37 +1,29 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { SafeTagboxComponent } from './tagbox.component';
-import { SafeTagboxModule } from './tagbox.module';
-import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { BehaviorSubject } from 'rxjs';
+import { SafeSeriesMappingComponent } from './series-mapping.component';
+import { SafeSeriesMappingModule } from './series-mapping.module';
+import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
+import { aggregationForm } from '../aggregation-builder-forms';
 import { delay } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
 
 export default {
-  component: SafeTagboxComponent,
+  component: SafeSeriesMappingComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        SafeTagboxModule,
+        SafeSeriesMappingModule,
         BrowserAnimationsModule,
         StorybookTranslateModule,
       ],
     }),
   ],
-  title: 'UI/Tagbox',
+  title: 'UI/Aggregation builder/Series mapping',
   args: {
-    separatorKeysCodes: [ENTER, COMMA],
+    currentForms: [],
+    filteredForms: [],
   },
 } as Meta;
-
-const TEMPLATE: Story<SafeTagboxComponent> = (args) => ({
-  template:
-    '<safe-tagbox [choices$]=choices$ [parentControl]=parentControl [label]=label></safe-tagbox>',
-  props: {
-    ...args,
-  },
-});
 
 const DEFAULT_FIELDS = [
   {
@@ -151,18 +143,27 @@ const DEFAULT_FIELDS = [
   },
 ];
 
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.args = {
-  label: 'Select fields',
-  choices$: new BehaviorSubject(DEFAULT_FIELDS).asObservable().pipe(delay(500)),
-  availableChoices: new BehaviorSubject<any>([]),
-  selectedChoices: [],
-  parentControl: new FormControl([]),
-  inputControl: new FormControl(),
-};
+const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
+  template:
+    '<safe-series-mapping [fields$]=fields$ [mappingForm]=mappingForm></safe-series-mapping>',
+  props: {
+    fields$: new BehaviorSubject(DEFAULT_FIELDS)
+      .asObservable()
+      .pipe(delay(500)),
+    mappingForm: aggregationForm(
+      {
+        mapping: {
+          xAxis: 'date',
+          yAxis: 'follow',
+        },
+      },
+      'column'
+    ).controls.mapping,
+  },
+});
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.args = {
-  ...DEFAULT.args,
-  parentControl: new FormControl(['follow', 'date']),
+  controlNames: ['xAxis', 'yAxis'],
+  availableFields: [],
 };

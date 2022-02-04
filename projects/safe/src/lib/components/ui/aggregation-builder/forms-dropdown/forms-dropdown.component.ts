@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
+import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
@@ -24,7 +25,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   @Input() public forms$!: Observable<Form[]>;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
-  private loading = false;
+  public loading = true;
 
   // === REACTIVE FORM ===
   @Input() sourceControl!: AbstractControl;
@@ -43,8 +44,8 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
 
   ngOnInit(): void {
     this.sourceFilter =
-      this.sourceControl.value && this.sourceControl.value.name
-        ? this.sourceControl.value.name
+      this.sourceControl.value && !isMongoId(this.sourceControl.value)
+        ? this.sourceControl.value
         : '';
     this.forms$.subscribe((forms) => {
       this.currentForms = forms;
@@ -55,7 +56,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((value: string) => {
         // If not an ID
-        if (!value.match(/^[0-9a-fA-F]{24}$/)) {
+        if (!isMongoId(value)) {
           this.sourceFilter = value;
           this.filter.emit(value);
           this.filteredForms = this.filterForms(value);
@@ -83,9 +84,10 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    *
    * @param forms List of forms to compare with for display.
    */
-  public displayName(forms: Form[]): (value: any) => string {
-    return (formId: string) =>
-      formId ? forms.find((x) => x.id === formId)?.name || '' : formId;
+  public displayName(formId: string): string {
+    return this.currentForms && this.currentForms.length
+      ? this.currentForms.find((x) => x.id === formId)?.name || formId
+      : formId;
   }
 
   /**

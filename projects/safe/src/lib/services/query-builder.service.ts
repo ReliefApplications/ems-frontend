@@ -2,8 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { prettifyLabel } from '../utils/prettify';
+import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** List of fields part of the schema but not selectable */
@@ -305,126 +304,6 @@ export class QueryBuilderService {
         .find((x) => x.type.name.toLowerCase() === nameTrimmed + 'connection')
         ?.name || ''
     );
-  }
-
-  /**
-   * Builds a query form.
-   *
-   * @param value Initial value
-   * @param validators Enables or not the validators of the form
-   * @returns Query form
-   */
-  public createQueryForm(value: any, validators = true): FormGroup {
-    return this.formBuilder.group({
-      name: [value ? value.name : '', validators ? Validators.required : null],
-      template: [value ? value.template : '', null],
-      fields: this.formBuilder.array(
-        value && value.fields
-          ? value.fields.map((x: any) => this.addNewField(x))
-          : [],
-        validators ? Validators.required : null
-      ),
-      sort: this.formBuilder.group({
-        field: [value && value.sort ? value.sort.field : ''],
-        order: [value && value.sort ? value.sort.order : 'asc'],
-      }),
-      filter: this.createFilterGroup(
-        value && value.filter ? value.filter : {},
-        null
-      ),
-    });
-  }
-
-  /**
-   * Builds a filter form
-   *
-   * @param filter Initial filter
-   * @param fields List of fields
-   * @returns Filter form
-   */
-  public createFilterGroup(filter: any, fields: any): FormGroup {
-    if (filter) {
-      if (filter.filters) {
-        const filters = filter.filters.map((x: any) =>
-          this.createFilterGroup(x, fields)
-        );
-        return this.formBuilder.group({
-          logic: filter.logic || 'and',
-          filters: this.formBuilder.array(filters),
-        });
-      } else {
-        if (filter.field) {
-          return this.formBuilder.group({
-            field: filter.field,
-            operator: filter.operator || 'eq',
-            value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-          });
-        }
-      }
-    }
-    return this.formBuilder.group({
-      logic: 'and',
-      filters: this.formBuilder.array([]),
-    });
-  }
-
-  /**
-   * Adds a field to the query
-   *
-   * @param field Field definition
-   * @param newField Is the field new ?
-   * @returns Field form
-   */
-  public addNewField(field: any, newField?: boolean): FormGroup {
-    switch (newField ? field.type.kind : field.kind) {
-      case 'LIST': {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          label: [field.label],
-          type: [newField ? field.type.ofType.name : field.type],
-          kind: [newField ? field.type.kind : field.kind],
-          fields: this.formBuilder.array(
-            !newField && field.fields
-              ? field.fields.map((x: any) => this.addNewField(x))
-              : [],
-            Validators.required
-          ),
-          sort: this.formBuilder.group({
-            field: [field.sort ? field.sort.field : ''],
-            order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
-          }),
-          filter: newField
-            ? this.formBuilder.group({})
-            : this.createFilterGroup(field.filter, null),
-        });
-      }
-      case 'OBJECT': {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          type: [newField ? field.type.name : field.type],
-          kind: [newField ? field.type.kind : field.kind],
-          fields: this.formBuilder.array(
-            !newField && field.fields
-              ? field.fields.map((x: any) => this.addNewField(x))
-              : [],
-            Validators.required
-          ),
-        });
-      }
-      default: {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          type: [
-            { value: newField ? field.type.name : field.type, disabled: true },
-          ],
-          kind: [newField ? field.type.kind : field.kind],
-          label: [
-            field.label ? field.label : prettifyLabel(field.name),
-            Validators.required,
-          ],
-        });
-      }
-    }
   }
 
   /**

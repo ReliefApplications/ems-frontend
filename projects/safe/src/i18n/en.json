@@ -40,7 +40,8 @@
         "legend": "Legend",
         "orientation": "Orientation",
         "aggregation": "Aggregation",
-        "id": "Id"
+        "id": "Id",
+        "none": "-- None --"
     },
     "action": {
         "edit": "Edit",
@@ -411,6 +412,10 @@
             "addFields": "Add fields",
             "unwind": "Unwind",
             "custom": "Custom"
+        },
+        "mapping": {
+            "xAxis": "X Axis",
+            "yAxis": "Y Axis"
         }
     } 
 }
