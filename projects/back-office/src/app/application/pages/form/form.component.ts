@@ -44,6 +44,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public form?: Form;
   public completed = false;
   public hideNewRecord = false;
+  public loadingQueries = 0;
 
   // === TAB NAME EDITION ===
   public formActive = false;
@@ -70,6 +71,7 @@ export class FormComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
+      this.loadingQueries++;
       if (this.isStep) {
         this.apollo
           .watchQuery<GetStepByIdQueryResponse>({
@@ -98,6 +100,7 @@ export class FormComponent implements OnInit, OnDestroy {
                 this.applicationId =
                   this.step?.workflow?.page?.application?.id || '';
                 this.loading = res2.data.loading;
+                this.loadingQueries--;
               });
           });
       } else {
@@ -127,6 +130,7 @@ export class FormComponent implements OnInit, OnDestroy {
                 });
                 this.applicationId = this.page?.application?.id || '';
                 this.loading = res2.data.loading;
+                this.loadingQueries--;
               });
           });
       }

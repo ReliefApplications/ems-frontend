@@ -27,6 +27,8 @@ export class FormComponent implements OnInit, OnDestroy {
   private formComponent?: SafeFormComponent;
   /** Loading state of the page */
   public loading = true;
+  /** Number of currently loading queries */
+  public loadingQueries = 0;
   /** Current form id */
   public id = '';
   /** Current form */
@@ -67,6 +69,7 @@ export class FormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.loading = true;
+      this.loadingQueries++;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
       if (this.isStep) {
@@ -103,6 +106,7 @@ export class FormComponent implements OnInit, OnDestroy {
                   this.canCreateRecords = true;
                 }
                 this.loading = res2.data.loading;
+                this.loadingQueries--;
               });
           });
       } else {
@@ -139,6 +143,7 @@ export class FormComponent implements OnInit, OnDestroy {
                   this.canCreateRecords = true;
                 }
                 this.loading = res2.data.loading;
+                this.loadingQueries--;
               });
           });
       }
