@@ -63,7 +63,7 @@ export class FormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -72,7 +72,9 @@ export class FormComponent implements OnInit, OnDestroy {
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
       // If a query is already loading, cancel it
-      if (this.currentQuery) { this.currentQuery.unsubscribe(); }
+      if (this.currentQuery) {
+        this.currentQuery.unsubscribe();
+      }
       if (this.isStep) {
         this.currentQuery = this.apollo
           .watchQuery<GetStepByIdQueryResponse>({
