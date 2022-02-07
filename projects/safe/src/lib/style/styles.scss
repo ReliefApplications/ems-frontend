@@ -124,6 +124,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .warn {
     color: mat.get-color-from-palette($warn);
   }
+
+  .safe-add-application {
+    background-color:  mat.get-color-from-palette($primary, 50);
+
+    span {
+      color: mat.get-color-from-palette($primary);
+    }
+  }
 }
 
 @mixin chip($theme) {
