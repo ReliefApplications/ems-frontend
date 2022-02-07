@@ -33,6 +33,8 @@ export class FormComponent implements OnInit, OnDestroy {
   public form: Form = {};
   /** Is the form answered */
   public completed = false;
+  /** Ongoing query */
+  public currentQuery: any;
   /** Prevents new records to be created */
   public hideNewRecord = false;
   /** Prevents new records to be created */
@@ -69,8 +71,10 @@ export class FormComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
+      // If a query is already loading, cancel it
+      if (this.currentQuery) { this.currentQuery.unsubscribe(); }
       if (this.isStep) {
-        this.apollo
+        this.currentQuery = this.apollo
           .watchQuery<GetStepByIdQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
@@ -79,7 +83,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.step = res.data.step;
-            this.apollo
+            this.currentQuery = this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
@@ -106,7 +110,7 @@ export class FormComponent implements OnInit, OnDestroy {
               });
           });
       } else {
-        this.apollo
+        this.currentQuery = this.apollo
           .watchQuery<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
@@ -115,7 +119,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.page = res.data.page;
-            this.apollo
+            this.currentQuery = this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {

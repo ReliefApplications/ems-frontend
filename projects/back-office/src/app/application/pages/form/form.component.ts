@@ -44,6 +44,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public form?: Form;
   public completed = false;
   public hideNewRecord = false;
+  public currentQuery: any;
 
   // === TAB NAME EDITION ===
   public formActive = false;
@@ -62,7 +63,7 @@ export class FormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
@@ -70,8 +71,10 @@ export class FormComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
+      // If a query is already loading, cancel it
+      if (this.currentQuery) { this.currentQuery.unsubscribe(); }
       if (this.isStep) {
-        this.apollo
+        this.currentQuery = this.apollo
           .watchQuery<GetStepByIdQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
@@ -80,7 +83,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.step = res.data.step;
-            this.apollo
+            this.currentQuery = this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
@@ -101,7 +104,7 @@ export class FormComponent implements OnInit, OnDestroy {
               });
           });
       } else {
-        this.apollo
+        this.currentQuery = this.apollo
           .watchQuery<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
@@ -110,7 +113,7 @@ export class FormComponent implements OnInit, OnDestroy {
           })
           .valueChanges.subscribe((res) => {
             this.page = res.data.page;
-            this.apollo
+            this.currentQuery = this.apollo
               .watchQuery<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
