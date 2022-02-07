@@ -251,8 +251,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (this.appPage === 'profile' ||
         this.appPage === 'settings/users' ||
         this.appPage === 'settings/roles' ||
-        app.pages?.find((val: any) => ((val.type + '/' + val.content) === this.appPage ||
-                (val.type + '/' + val.id) === this.appPage ))
+        app.pages?.find((val: any) => val.type + '/' + val.content === this.appPage ||
+                val.type + '/' + val.id === this.appPage )
     )) {
       return true;
     }
