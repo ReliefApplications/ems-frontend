@@ -28,6 +28,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public title = '';
   /** Stores current app ID */
   public appID = '';
+  /** Stores current app page */
+  public appPage = '';
   /** List of accessible applications */
   public applications: Application[] = [];
   /** List of application pages */
@@ -74,6 +76,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.applications.map((element) => {
               if (element.id === this.router.url.slice(1, 25)) {
                 this.appID = this.router.url.slice(1, 25);
+                const temp = this.router.url.split('/');
+                if (temp[2]) {
+                  this.appPage = temp[2];
+                  if (temp[3]) {
+                    this.appPage += '/' + temp[3];
+                  }
+                }
               }
             });
             if (this.appID.length <= 0) {
@@ -159,10 +168,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ];
             if (!this.application || application.id !== this.application.id) {
               const [firstPage, ..._] = application.pages || [];
+              const find = !this.application
+                ? this.validPage(application)
+                : false;
               if (
-                this.router.url.endsWith('/') ||
-                application.id !== this.application?.id ||
-                !firstPage
+                !find &&
+                (this.router.url.endsWith('/') ||
+                  application.id !== this.application?.id ||
+                  !firstPage)
               ) {
                 if (firstPage) {
                   this.router.navigate(
@@ -183,6 +196,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               }
             }
             this.application = application;
+            this.appID = application.id || '';
           } else {
             this.navGroups = [];
           }
@@ -199,9 +213,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 
@@ -229,5 +240,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
       default:
         return 'dashboard';
     }
+  }
+
+  /**
+   * Checks if route page is valid.
+   */
+  private validPage(app: any): boolean {
+    if (
+      this.appPage &&
+      (this.appPage === 'profile' ||
+        this.appPage === 'settings/users' ||
+        this.appPage === 'settings/roles' ||
+        app.pages?.find((val: any) => ((val.type + '/' + val.content) === this.appPage ||
+                (val.type + '/' + val.id) === this.appPage ))
+    )) {
+      return true;
+    }
+    return false;
   }
 }
