@@ -1,5 +1,5 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading || loadingQueries"></mat-spinner>
-<ng-container *ngIf="!loading && form && !loadingQueries">
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && form">
   <div class="tab-name-container">
     <ng-container *ngIf="!formActive">
       <h1 class="tab-name" (click)="toggleFormActive()">{{page ? page.name : step ? step.name : ''}}</h1>
