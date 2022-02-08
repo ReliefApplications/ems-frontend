@@ -237,7 +237,6 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey Survey instance.
    */
   public completeMySurvey = (survey: any) => {
-    this.survey?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId)
       ? this.data.recordId.length
       : 1;
