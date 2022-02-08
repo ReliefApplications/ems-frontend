@@ -55,6 +55,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
+  @Input() profileRoute = '/profile';
+
   filteredNavGroups: any[] = [];
 
   currentLanguage = '';
@@ -257,7 +259,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onOpenProfile(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate([this.profileRoute]);
   }
 
   onSwitchOffice(): void {
