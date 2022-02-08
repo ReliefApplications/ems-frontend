@@ -12,6 +12,7 @@ import {
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { switchMap } from 'rxjs/operators';
 
 /**
  * Form page.
@@ -34,7 +35,7 @@ export class FormComponent implements OnInit, OnDestroy {
   /** Is the form answered */
   public completed = false;
   /** Ongoing query */
-  public currentQuery: any;
+  public querySubscription?: Subscription;
   /** Prevents new records to be created */
   public hideNewRecord = false;
   /** Prevents new records to be created */
@@ -72,80 +73,82 @@ export class FormComponent implements OnInit, OnDestroy {
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
       // If a query is already loading, cancel it
-      if (this.currentQuery) {
-        this.currentQuery.unsubscribe();
+      if (this.querySubscription) {
+        this.querySubscription.unsubscribe();
       }
       if (this.isStep) {
-        this.currentQuery = this.apollo
-          .watchQuery<GetStepByIdQueryResponse>({
+        this.querySubscription = this.apollo
+          .query<GetStepByIdQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
-            this.step = res.data.step;
-            this.currentQuery = this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.step = res.data.step;
+              return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
                 },
-              })
-              .valueChanges.subscribe((res2) => {
-                if (res2.data) {
-                  this.form = res2.data.form;
-                }
-                if (
-                  !this.form ||
-                  this.form.status !== 'active' ||
-                  !this.form.canCreateRecords
-                ) {
-                  this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectAccessDenied('form'),
-                    { error: true }
-                  );
-                } else {
-                  this.canCreateRecords = true;
-                }
-                this.loading = res2.data.loading;
               });
+            })
+          )
+          .subscribe((res) => {
+            if (res.data) {
+              this.form = res.data.form;
+            }
+            if (
+              !this.form ||
+              this.form.status !== 'active' ||
+              !this.form.canCreateRecords
+            ) {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.objectAccessDenied('form'),
+                { error: true }
+              );
+            } else {
+              this.canCreateRecords = true;
+            }
+            this.loading = res.data.loading;
           });
       } else {
-        this.currentQuery = this.apollo
-          .watchQuery<GetPageByIdQueryResponse>({
+        this.querySubscription = this.apollo
+          .query<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
-            this.page = res.data.page;
-            this.currentQuery = this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.page = res.data.page;
+              return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.page.content,
                 },
-              })
-              .valueChanges.subscribe((res2) => {
-                if (res2.data) {
-                  this.form = res2.data.form;
-                }
-                if (
-                  !this.form ||
-                  this.form.status !== 'active' ||
-                  !this.form.canCreateRecords
-                ) {
-                  this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectAccessDenied('form'),
-                    { error: true }
-                  );
-                } else {
-                  this.canCreateRecords = true;
-                }
-                this.loading = res2.data.loading;
               });
+            })
+          )
+          .subscribe((res) => {
+            if (res.data) {
+              this.form = res.data.form;
+            }
+            if (
+              !this.form ||
+              this.form.status !== 'active' ||
+              !this.form.canCreateRecords
+            ) {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.objectAccessDenied('form'),
+                { error: true }
+              );
+            } else {
+              this.canCreateRecords = true;
+            }
+            this.loading = res.data.loading;
           });
       }
     });
