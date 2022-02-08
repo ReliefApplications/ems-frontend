@@ -11,7 +11,6 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-resource.component.scss'],
 })
 export class AddResourceComponent implements OnInit {
-
   public addForm: FormGroup = new FormGroup({});
 
   /**
