@@ -239,19 +239,22 @@ export class QueryBuilderService {
         this.buildFields(builtQuery.fields)
       );
       const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean) {
+        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
           ${builtQuery.name}(
           first: $first,
           skip: $skip,
           sortField: $sortField,
           sortOrder: $sortOrder,
           filter: $filter,
-          display: $display
+          display: $display,
+          styles: $styles
           ) {
             edges {
+              cursor
               node {
                 ${fields}
               }
+              meta
             }
             totalCount
         }

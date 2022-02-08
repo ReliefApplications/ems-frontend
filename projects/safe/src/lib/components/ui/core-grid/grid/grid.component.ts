@@ -168,9 +168,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
-  // === STYLE ===
-  @Input() styles: any[] = [];
-
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
@@ -179,7 +176,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    console.log("this styles = ", this.styles);
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
