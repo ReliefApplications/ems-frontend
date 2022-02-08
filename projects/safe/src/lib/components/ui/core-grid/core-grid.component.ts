@@ -329,10 +329,20 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const dateFields = this.fields
       .filter((x) => ['Date', 'DateTime', 'Time'].includes(x.type))
       .map((x) => x.name);
+    const timeFields = this.fields
+      .filter((x) => ['Time'].includes(x.type))
+      .map((x) => x.name);
     items.map((x) => {
       for (const [key, value] of Object.entries(x)) {
         if (dateFields.includes(key)) {
           x[key] = x[key] && new Date(x[key]);
+          if (timeFields.includes(key)) {
+            x[key] =
+              x[key] &&
+              new Date(
+                x[key].getTime() + x[key].getTimezoneOffset() * 60 * 1000
+              );
+          }
         }
       }
     });
