@@ -24,10 +24,9 @@ interface ChartSeries {
 @Component({
   selector: 'safe-donut-chart',
   templateUrl: './donut-chart.component.html',
-  styleUrls: ['./donut-chart.component.scss']
+  styleUrls: ['./donut-chart.component.scss'],
 })
 export class SafeDonutChartComponent implements OnInit {
-
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -37,9 +36,7 @@ export class SafeDonutChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

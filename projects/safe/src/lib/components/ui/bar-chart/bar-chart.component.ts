@@ -25,10 +25,9 @@ interface ChartSeries {
 @Component({
   selector: 'safe-bar-chart',
   templateUrl: './bar-chart.component.html',
-  styleUrls: ['./bar-chart.component.scss']
+  styleUrls: ['./bar-chart.component.scss'],
 })
 export class SafeBarChartComponent implements OnInit {
-
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -42,9 +41,7 @@ export class SafeBarChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

@@ -8,70 +8,80 @@ import { GetUsersQueryResponse, GET_USERS } from '../../graphql/queries';
 
 /**
  * Inits the users component.
- * @param Survey Survey class.
+ *
+ * @param survey survey class.
  * @param domService Dom service.
  * @param apollo Apollo client.
  * @param dialog Dialog service.
  * @param formBuilder Form Builder service.
  */
-export function init(Survey: any, domService: DomService, apollo: Apollo, dialog: MatDialog, formBuilder: FormBuilder): void {
+export const init = (
+  survey: any,
+  domService: DomService,
+  apollo: Apollo,
+  dialog: MatDialog,
+  formBuilder: FormBuilder
+): void => {
+  const component = {
+    name: 'users',
+    title: 'Users',
+    category: 'Custom Questions',
+    questionJSON: {
+      name: 'users',
+      type: 'tagbox',
+      optionsCaption: 'Select users...',
+      choicesOrder: 'asc',
+      choices: [] as any[],
+    },
+    onInit: (): void => {
+      survey.Serializer.addProperty('users', {
+        name: 'applications',
+        category: 'Users properties',
+        type: 'applicationsDropdown',
+        isDynamicChoices: true,
+        visibleIndex: 3,
+        required: true,
+      });
 
-    const component = {
-        name: 'users',
-        title: 'Users',
-        category: 'Custom Questions',
-        questionJSON: {
-            name: 'users',
-            type: 'tagbox',
-            optionsCaption: 'Select users...',
-            choicesOrder: 'asc',
-            choices: [] as any[],
+      const applicationEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(
+            SafeApplicationDropdownComponent,
+            htmlElement
+          );
+          const instance: SafeApplicationDropdownComponent = dropdown.instance;
+          instance.value = question.applications;
+          instance.choice.subscribe((res) => editor.onChanged(res));
         },
-        onInit: (): void => {
-            Survey.Serializer.addProperty('users', {
-                name: 'applications',
-                category: 'Users properties',
-                type: 'applicationsDropdown',
-                isDynamicChoices: true,
-                visibleIndex: 3,
-                required: true
-            });
+      };
 
-            const applicationEditor = {
-                render: (editor: any, htmlElement: any) => {
-                    const question = editor.object;
-                    const dropdown = domService.appendComponentToBody(SafeApplicationDropdownComponent, htmlElement);
-                    const instance: SafeApplicationDropdownComponent = dropdown.instance;
-                    instance.value = question.applications;
-                    instance.choice.subscribe(res => {
-                        return editor.onChanged(res);
-                    });
-                }
-            };
-
-            SurveyCreator
-                .SurveyPropertyEditorFactory
-                .registerCustomEditor('applicationsDropdown', applicationEditor);
-        },
-        onLoaded(question: any): void {
-            apollo.query<GetUsersQueryResponse>({
-                query: GET_USERS,
-                variables: {
-                    applications:  question.applications
-                }
-            }).subscribe((res) => {
-                if (res.data.users) {
-                    const users: any = [];
-                    for (const user of res.data.users) {
-                        if (!users.some((el: any) => el.value === user.id)) {
-                            users.push({ value: user.id, text: user.username });
-                        }
-                    }
-                    question.contentQuestion.choices = users;
-                }
-            });
-        },
-        onAfterRender(question: any, el: any): void {}
-    };
-    Survey.ComponentCollection.Instance.add(component);
-}
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'applicationsDropdown',
+        applicationEditor
+      );
+    },
+    onLoaded: (question: any): void => {
+      apollo
+        .query<GetUsersQueryResponse>({
+          query: GET_USERS,
+          variables: {
+            applications: question.applications,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.users) {
+            const users: any = [];
+            for (const user of res.data.users) {
+              if (!users.some((el: any) => el.value === user.id)) {
+                users.push({ value: user.id, text: user.username });
+              }
+            }
+            question.contentQuestion.choices = users;
+          }
+        });
+    },
+    onAfterRender: (question: any, el: any): void => {},
+  };
+  survey.ComponentCollection.Instance.add(component);
+};

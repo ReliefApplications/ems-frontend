@@ -8,9 +8,8 @@ describe('SafeFloatingButtonSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeFloatingButtonSettingsComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeFloatingButtonSettingsComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

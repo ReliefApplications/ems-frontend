@@ -12,15 +12,15 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '15.x'
+    versionSpec: '16.x'
   displayName: 'Install Node.js'
 
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build --prod safe
-    npm run build:az:uat:front
-    npm run build:az:uat:back
+    ng build --configuration=production safe
+    ng build --configuration=azure-uat front-office
+    ng build --configuration=azure-uat back-office
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2

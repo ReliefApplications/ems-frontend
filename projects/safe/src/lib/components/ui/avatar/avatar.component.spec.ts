@@ -8,9 +8,8 @@ describe('AvatarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeAvatarComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeAvatarComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

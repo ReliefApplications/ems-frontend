@@ -1,13 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+} from '@angular/core';
 import { SafeDashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'safe-widget',
   templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+  styleUrls: ['./widget.component.scss'],
 })
 export class SafeWidgetComponent implements OnInit, OnChanges {
-
   @Input() widget: any;
   @Input() header = true;
   public layout: any;
@@ -15,9 +21,7 @@ export class SafeWidgetComponent implements OnInit, OnChanges {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private dashboardService: SafeDashboardService
-  ) { }
+  constructor(private dashboardService: SafeDashboardService) {}
 
   ngOnInit(): void {
     this.layout = this.dashboardService.getWidgetLayout(this.widget);

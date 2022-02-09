@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WorkflowComponent } from './workflow.component';
 
+/** List of routes of workflow page */
 const routes: Routes = [
   {
     path: '',
@@ -9,20 +10,25 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard/:id',
-        loadChildren: () => import('../dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        loadChildren: () =>
+          import('../dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: 'form/:id',
-        loadChildren: () => import('../form/form.module')
-          .then(m => m.FormModule),
-      }
-    ]
-  }
+        loadChildren: () =>
+          import('../form/form.module').then((m) => m.FormModule),
+      },
+    ],
+  },
 ];
 
+/**
+ * Routing module of Workflow page.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class WorkflowRoutingModule { }
+export class WorkflowRoutingModule {}

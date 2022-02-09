@@ -15,13 +15,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
     SafeQueryBuilderComponent,
     SafeTabFieldsComponent,
     SafeTabSortComponent,
-    SafeTabFilterComponent
+    SafeTabFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -36,11 +37,14 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatSelectModule,
     MatTooltipModule,
     MatAutocompleteModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
-    SafeTabFieldsComponent
-  ]
+    SafeTabFieldsComponent,
+    SafeTabFilterComponent,
+    SafeTabSortComponent,
+  ],
 })
-export class SafeQueryBuilderModule { }
+export class SafeQueryBuilderModule {}

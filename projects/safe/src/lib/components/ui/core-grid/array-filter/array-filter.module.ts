@@ -5,14 +5,8 @@ import { GridModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 @NgModule({
-  declarations: [
-    SafeArrayFilterComponent
-  ],
-  imports: [
-    CommonModule,
-    GridModule,
-    DropDownsModule
-  ],
-  exports: [SafeArrayFilterComponent]
+  declarations: [SafeArrayFilterComponent],
+  imports: [CommonModule, GridModule, DropDownsModule],
+  exports: [SafeArrayFilterComponent],
 })
-export class SafeArrayFilterModule { }
+export class SafeArrayFilterModule {}

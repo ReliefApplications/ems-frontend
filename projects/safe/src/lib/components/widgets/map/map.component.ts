@@ -14,7 +14,7 @@ const MARKER_OPTIONS = {
   weight: 12,
   fillColor: '#0090d1',
   fillOpacity: 1,
-  radius: 6
+  radius: 6,
 };
 
 @Component({
@@ -23,9 +23,8 @@ const MARKER_OPTIONS = {
   styleUrls: ['./map.component.scss'],
 })
 /*  Map widget using Leaflet.
-*/
+ */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
-
   // === MAP ===
   public mapId: string;
   private map: any;
@@ -50,6 +49,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === QUERY UPDATE INFO ===
+  public lastUpdate = '';
+
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
@@ -58,11 +60,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /*  Generation of an unique id for the map ( in case multiple widgets use map ).
-  */
+   */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
     for (let i = 0; i < parts; i++) {
-      // tslint:disable-next-line:no-bitwise
+      // eslint-disable-next-line no-bitwise
       const S4 = (((1 + Math.random()) * 0x10000) | 0)
         .toString(16)
         .substring(1);
@@ -72,21 +74,22 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /*  Once template is ready, build the map.
-  */
+   */
   ngAfterViewInit(): void {
     this.drawMap();
-    if (this.settings.query){
-      const builtQuery =  this.queryBuilder.buildQuery(this.settings);
+    if (this.settings.query) {
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
-          first: 100
-        }
+          first: 100,
+        },
       });
       this.getData();
     }
 
-    this.displayFields = this.settings.query?.fields.map((f: any) => f.name) || [];
+    this.displayFields =
+      this.settings.query?.fields.map((f: any) => f.name) || [];
 
     this.map.setMaxBounds(this.bounds);
     this.map.setZoom(this.settings.zoom);
@@ -95,7 +98,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /*  Create the map with all useful parameters
-  */
+   */
   private drawMap(): void {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
@@ -119,7 +122,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
-      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+      this.selectedItem = this.data.find(
+        (x) => x.id === event.layer.options.id
+      );
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
         .setContent(this.selectedItem ? this.selectedItem.data : '')
@@ -129,7 +134,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
-  /* Load the data, using widget parameters.
+ /**
+  * Loads the data, using widget parameters.
   */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
@@ -139,21 +145,29 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-      this.data = [];
-      this.selectedItem = null;
-      this.markersLayer.clearLayers();
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].edges.map((x: any) => this.drawMarkers(myIcon, x.node));
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+      (res: any) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
+        this.data = [];
+        this.selectedItem = null;
+        this.markersLayer.clearLayers();
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            res.data[field].edges.map((x: any) =>
+              this.drawMarkers(myIcon, x.node)
+            );
+          }
         }
       }
-      console.log(this.data);
-    });
+    );
   }
 
   /*  Draw markers on the map if the record has coordinates
-  */
+   */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
@@ -165,16 +179,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             data += `<div><b>${key}:</b> ${item[key]}</div>`;
           }
         }
-        const obj = {id: item.id, data};
+        const obj = { id: item.id, data };
         this.data.push(obj);
         const options = MARKER_OPTIONS;
-        Object.assign(options, {id: item.id});
-        const marker = L.circleMarker(
-          [
-            latitude,
-            longitude
-          ],
-          options);
+        Object.assign(options, { id: item.id });
+        const marker = L.circleMarker([latitude, longitude], options);
         this.markersLayer.addLayer(marker);
       }
     }

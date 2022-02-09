@@ -8,9 +8,8 @@ describe('SafeArrayFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeArrayFilterMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeArrayFilterMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('SafeEditAccessComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeEditAccessComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeEditAccessComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

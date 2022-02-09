@@ -3,14 +3,14 @@
     <div class="actions" *ngIf="!loading">
         <safe-button *ngIf="form.canUpdate && !showDeletedRecords" icon="search_off" category="primary" variant="danger"
             (click)="onSwitchView($event)">
-            Show archived records
+            {{'record.archived' | translate}}
         </safe-button>
         <safe-button *ngIf="form.canUpdate && showDeletedRecords" icon="restore_page" category="primary"
             variant="success" (click)="onSwitchView($event)">
-            Show active records
+            {{'record.active' | translate}}
         </safe-button>
         <safe-button icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-            Download records
+            {{'record.download' | translate}}
         </safe-button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -19,10 +19,10 @@
         <safe-button icon="file_upload" category="secondary" variant="primary"
             matTooltip="File should contain one record per row. Header row contains the names of data fields."
             [matMenuTriggerFor]="matUploadMenu" style="margin-left: 1rem">
-            Upload records
+            {{'record.upload' | translate}}
         </safe-button>
         <mat-menu #matUploadMenu="matMenu">
-            <button mat-menu-item (click)="onDownloadTemplate()">Download template</button>
+            <button mat-menu-item (click)="onDownloadTemplate()">{{'users.getTemplate' | translate}}</button>
             <input #xlsxFile type="file" data-max-size="5120" accept=".xlsx" (change)="onFileChange($event)" />
         </mat-menu>
     </div>
@@ -54,23 +54,23 @@
                         <mat-menu #menu="matMenu">
                             <button mat-menu-item color="warn" (click)="onViewHistory(element.id)">
                                 <mat-icon>library_books</mat-icon>
-                                History
+                                {{'table.history' | translate}}
                             </button>
                             <mat-divider></mat-divider>
                             <button *ngIf="!showDeletedRecords" mat-menu-item
-                                (click)="onDeleteRecord(element.id, $event)">
+                                (click)="onDeleteRecord(element, $event)">
                                 <mat-icon>delete</mat-icon>
-                                Delete
+                                {{'action.delete' | translate}}
                             </button>
                             <button *ngIf="showDeletedRecords" mat-menu-item
-                                (click)="onDeleteRecord(element.id, $event)">
+                                (click)="onDeleteRecord(element, $event)">
                                 <mat-icon>delete_forever</mat-icon>
-                                Delete permanently
+                                {{'action.deletePerm' | translate}}
                             </button>
                             <button *ngIf="showDeletedRecords" mat-menu-item
                                 (click)="onRestoreRecord(element.id, $event)">
                                 <mat-icon>unarchive</mat-icon>
-                                Restore
+                                {{'action.restore' | translate}}
                             </button>
                         </mat-menu>
                     </td>

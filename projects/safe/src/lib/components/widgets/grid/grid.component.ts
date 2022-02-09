@@ -1,19 +1,35 @@
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { EDIT_RECORD, EditRecordMutationResponse,
-  PUBLISH, PUBLISH_NOTIFICATION, PublishMutationResponse, PublishNotificationMutationResponse
+import {
+  EDIT_RECORD,
+  EditRecordMutationResponse,
+  EDIT_RECORDS,
+  EditRecordsMutationResponse,
+  PUBLISH,
+  PUBLISH_NOTIFICATION,
+  PublishMutationResponse,
+  PublishNotificationMutationResponse,
 } from '../../../graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
 import {
-  GetRecordDetailsQueryResponse, GET_RECORD_DETAILS,
-  GetRecordByIdQueryResponse, GET_RECORD_BY_ID
+  GetRecordDetailsQueryResponse,
+  GET_RECORD_DETAILS,
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
-  Component, OnInit, ViewChild, Input, Output, ComponentFactory,
-  ComponentFactoryResolver, EventEmitter, Inject
+  Component,
+  OnInit,
+  ViewChild,
+  Input,
+  Output,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  EventEmitter,
+  Inject,
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
@@ -21,6 +37,7 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 
@@ -31,12 +48,11 @@ const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 @Component({
   selector: 'safe-grid-widget',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss']
+  styleUrls: ['./grid.component.scss'],
 })
 /*  Grid widget using KendoUI.
-*/
+ */
 export class SafeGridWidgetComponent implements OnInit {
-
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
@@ -75,13 +91,17 @@ export class SafeGridWidgetComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private queryBuilder: QueryBuilderService
   ) {
-    this.isAdmin = this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
+    this.isAdmin =
+      this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(SafeRecordHistoryComponent);
+    this.factory = this.resolver.resolveComponentFactory(
+      SafeRecordHistoryComponent
+    );
   }
 
   private promisedChanges(items: any[]): Promise<any>[] {
@@ -89,37 +109,52 @@ export class SafeGridWidgetComponent implements OnInit {
     for (const item of items) {
       const data = Object.assign({}, item);
       delete data.id;
-      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: item.id,
-          data,
-          template: this.settings.query.template
-        }
-      }).toPromise());
+      promises.push(
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: EDIT_RECORD,
+            variables: {
+              id: item.id,
+              data,
+              template: this.settings.query.template,
+            },
+          })
+          .toPromise()
+      );
     }
     return promises;
   }
 
   /**
    * Executes sequentially actions enabled by settings for the floating button
+   *
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
     this.loading = true;
-    // Select all the records in the core grid
+    // Select all the records in the grid
     if (options.selectAll) {
-      this.grid.selectedRows = this.grid.gridData.data.map(x => x.id);
+      const query = this.queryBuilder.graphqlQuery(
+        this.grid.settings.query.name,
+        'id\n'
+      );
+      const records = await this.apollo
+        .query<any>({
+          query,
+          variables: {
+            first: this.grid.gridData.total,
+            filter: this.grid.queryFilter,
+          },
+        })
+        .toPromise();
+      this.grid.selectedRows = records.data[
+        this.grid.settings.query.name
+      ].edges.map((x: any) => x.node.id);
     }
-    // let rowsIndexToModify = [...this.selectedRowsIndex];
-    // if (options.autoSave && options.modifySelectedRows) {
-    //   const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
-    //   if (unionRows.length > 0) {
-    //     await Promise.all(this.promisedRowsModifications(options.modifications, unionRows));
-    //     this.updatedItems = this.updatedItems.filter(x => !unionRows.some(y => x.id === this.gridData.data[y].id));
-    //     rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
-    //   }
-    // }
+    // Select all the records in the active page
+    if (options.selectPage) {
+      this.grid.selectedRows = this.grid.gridData.data.map((x) => x.id);
+    }
 
     // Auto save all records
     if (options.autoSave) {
@@ -127,35 +162,53 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
-      await Promise.all(this.promisedRowsModifications(options.modifications, this.grid.selectedItems));
+      await this.promisedRowsModifications(
+        options.modifications,
+        this.grid.selectedRows
+      );
     }
 
     if (this.grid.selectedRows.length > 0) {
       // Attaches the records to another one.
       if (options.attachToRecord) {
-        await this.promisedAttachToRecord(this.grid.selectedItems, options.targetForm, options.targetFormField, options.targetFormQuery);
+        await this.promisedAttachToRecord(
+          this.grid.selectedRows,
+          options.targetForm,
+          options.targetFormField,
+          options.targetFormQuery
+        );
       }
       const promises: Promise<any>[] = [];
       // Notifies on a channel.
       if (options.notify) {
-        promises.push(this.apollo.mutate<PublishNotificationMutationResponse>({
-          mutation: PUBLISH_NOTIFICATION,
-          variables: {
-            action: options.notificationMessage ? options.notificationMessage : 'Records update',
-            content: this.grid.selectedItems,
-            channel: options.notificationChannel
-          }
-        }).toPromise());
+        promises.push(
+          this.apollo
+            .mutate<PublishNotificationMutationResponse>({
+              mutation: PUBLISH_NOTIFICATION,
+              variables: {
+                action: options.notificationMessage
+                  ? options.notificationMessage
+                  : 'Records update',
+                content: this.grid.selectedRows,
+                channel: options.notificationChannel,
+              },
+            })
+            .toPromise()
+        );
       }
       // Publishes on a channel.
       if (options.publish) {
-        promises.push(this.apollo.mutate<PublishMutationResponse>({
-          mutation: PUBLISH,
-          variables: {
-            ids: this.grid.selectedRows,
-            channel: options.publicationChannel
-          }
-        }).toPromise());
+        promises.push(
+          this.apollo
+            .mutate<PublishMutationResponse>({
+              mutation: PUBLISH,
+              variables: {
+                ids: this.grid.selectedRows,
+                channel: options.publicationChannel,
+              },
+            })
+            .toPromise()
+        );
       }
       if (promises.length > 0) {
         await Promise.all(promises);
@@ -165,15 +218,26 @@ export class SafeGridWidgetComponent implements OnInit {
         const emailSettings = {
           query: {
             name: this.settings.query.name,
-            fields: options.bodyFields
-          }
+            fields: options.bodyFields,
+          },
         };
         const sortField = this.grid.sortField || '';
         const sortOrder = this.grid.sortOrder || '';
-        this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
-          this.grid.selectedRows, sortField, sortOrder);
+        await this.emailService.sendMail(
+          options.distributionList,
+          options.subject,
+          options.bodyText,
+          emailSettings,
+          this.grid.selectedRows,
+          sortField,
+          sortOrder
+        );
         if (options.export) {
-          this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
+          this.grid.onExport({
+            records: 'all',
+            format: 'xlsx',
+            fields: 'visible',
+          });
         }
       }
 
@@ -182,14 +246,20 @@ export class SafeGridWidgetComponent implements OnInit {
         const promisedRecords: Promise<any>[] = [];
         // Fetches the record object for each selected record.
         for (const record of this.grid.selectedItems) {
-          promisedRecords.push(this.apollo.query<GetRecordDetailsQueryResponse>({
-            query: GET_RECORD_DETAILS,
-            variables: {
-              id: record.id
-            }
-          }).toPromise());
+          promisedRecords.push(
+            this.apollo
+              .query<GetRecordDetailsQueryResponse>({
+                query: GET_RECORD_DETAILS,
+                variables: {
+                  id: record.id,
+                },
+              })
+              .toPromise()
+          );
         }
-        const records = (await Promise.all(promisedRecords)).map(x => x.data.record);
+        const records = (await Promise.all(promisedRecords)).map(
+          (x) => x.data.record
+        );
 
         // Opens a modal containing the prefilled form.
         this.dialog.open(SafeFormModalComponent, {
@@ -197,9 +267,12 @@ export class SafeGridWidgetComponent implements OnInit {
             template: options.prefillTargetForm,
             locale: 'en',
             prefillRecords: records,
-            askForConfirm: false
+            askForConfirm: false,
           },
-          autoFocus: false
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
+          autoFocus: false,
         });
       }
     }
@@ -214,8 +287,8 @@ export class SafeGridWidgetComponent implements OnInit {
             title: `Close workflow`,
             content: options.confirmationText,
             confirmText: 'Yes',
-            confirmColor: 'primary'
-          }
+            confirmColor: 'primary',
+          },
         });
         dialogRef.afterClosed().subscribe((confirm: boolean) => {
           if (confirm) {
@@ -231,37 +304,40 @@ export class SafeGridWidgetComponent implements OnInit {
   /**
    * Returns a list of promises containing all the mutations in order to modify selected records accordingly to settings.
    * Applies inline edition before applying modifications.
+   *
    * @param modifications list of modifications to apply.
-   * @param rows rows to edit.
+   * @param ids records to edit.
    * @returns Array of Promises to execute.
    */
-  private promisedRowsModifications(modifications: any[], items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const data = Object.assign({}, item);
-      for (const modification of modifications) {
-        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-          data[modification.field.name] = this.getDateForFilter(modification.value);
-        } else {
-          data[modification.field.name] = modification.value;
-        }
+  private promisedRowsModifications(
+    modifications: any[],
+    ids: any[]
+  ): Promise<any> {
+    const update: any = {};
+    for (const modification of modifications) {
+      // modificationFields.push(modification.field.name);
+      if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getDateForFilter(
+          modification.value
+        );
+      } else {
+        update[modification.field.name] = modification.value;
       }
-      delete data.id;
-      delete data.__typename;
-      promises.push(this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: item.id,
-          data,
-          template: this.settings.query.template
-        }
-      }).toPromise());
     }
-    return promises;
+    return this.apollo
+      .mutate<EditRecordsMutationResponse>({
+        mutation: EDIT_RECORDS,
+        variables: {
+          ids,
+          data: update,
+        },
+      })
+      .toPromise();
   }
 
   /**
    * Gets from input date value the three dates used for filtering.
+   *
    * @param value input date value
    * @returns calculated day, beginning of day, and ending of day
    */
@@ -277,7 +353,7 @@ export class SafeGridWidgetComponent implements OnInit {
       date.setDate(date.getDate() + difference);
       // today - number of days
     } else if (REGEX_MINUS.test(value)) {
-      const difference = - parseInt(value.split('-')[1], 10);
+      const difference = -parseInt(value.split('-')[1], 10);
       date = new Date();
       date.setDate(date.getDate() + difference);
       // classic date
@@ -288,60 +364,80 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
-  */
+   */
   private async promisedAttachToRecord(
     // come from 'attach to record' button from grid component
-    selectedRecords: any[], targetForm: Form, targetFormField: string, targetFormQuery: any): Promise<void> {
+    selectedRecords: string[],
+    targetForm: Form,
+    targetFormField: string,
+    targetFormQuery: any
+  ): Promise<void> {
     const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
       data: {
         targetForm,
         targetFormField,
-        targetFormQuery
+        targetFormQuery,
       },
     });
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
     if (value && value.record) {
-      this.apollo.query<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id: value.record
-        }
-      }).subscribe(res => {
-        const resourceField = targetForm.fields?.find(field => field.resource && field.resource === this.settings.resource);
-        let data = res.data.record.data;
-        const key = resourceField.name;
-        if (resourceField.type === 'resource') {
-          data = { ...data, [key]: selectedRecords[0].id };
-        } else {
-          if (data[key]) {
-            const ids = selectedRecords.map(x => x.id);
-            data = { ...data, [key]: data[key].concat(ids) };
-          } else {
-            data = { ...data, [key]: selectedRecords.map(x => x.id) };
-          }
-        }
-        this.apollo.mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
+      this.apollo
+        .query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
           variables: {
             id: value.record,
-            data
-          }
-        }).subscribe(res2 => {
-          if (res2.data) {
-            const record = res2.data.editRecord;
-            if (record) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
-              this.dialog.open(SafeFormModalComponent, {
-                data: {
-                  recordId: record.id,
-                  locale: 'en'
-                },
-                autoFocus: false
-              });
+          },
+        })
+        .subscribe((res) => {
+          const resourceField = targetForm.fields?.find(
+            (field) =>
+              field.resource && field.resource === this.settings.resource
+          );
+          let data = res.data.record.data;
+          const key = resourceField.name;
+          if (resourceField.type === 'resource') {
+            data = { ...data, [key]: selectedRecords[0] };
+          } else {
+            if (data[key]) {
+              data = { ...data, [key]: data[key].concat(selectedRecords) };
+            } else {
+              data = { ...data, [key]: selectedRecords };
             }
           }
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: value.record,
+                data,
+              },
+            })
+            .subscribe((res2) => {
+              if (res2.data) {
+                const record = res2.data.editRecord;
+                if (record) {
+                  this.snackBar.openSnackBar(
+                    NOTIFICATIONS.addRowsToRecord(
+                      selectedRecords.length,
+                      key,
+                      record.data[targetFormField]
+                    )
+                  );
+                  this.dialog.open(SafeFormModalComponent, {
+                    disableClose: true,
+                    data: {
+                      recordId: record.id,
+                      locale: 'en',
+                    },
+                    height: '98%',
+                    width: '100vw',
+                    panelClass: 'full-screen-modal',
+                    autoFocus: false,
+                  });
+                }
+              }
+            });
         });
-      });
     }
   }
 
