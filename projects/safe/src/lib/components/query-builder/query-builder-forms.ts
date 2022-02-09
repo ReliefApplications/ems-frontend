@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { prettifyLabel } from '../../utils/prettify';
 
-const fb = new FormBuilder();
+const formBuilder = new FormBuilder();
 
 /**
  * Builds a filter form
@@ -16,13 +16,13 @@ export const createFilterGroup = (filter: any, fields: any): FormGroup => {
       const filters = filter.filters.map((x: any) =>
         createFilterGroup(x, fields)
       );
-      return fb.group({
+      return formBuilder.group({
         logic: filter.logic || 'and',
-        filters: fb.array(filters),
+        filters: formBuilder.array(filters),
       });
     } else {
       if (filter.field) {
-        return fb.group({
+        return formBuilder.group({
           field: filter.field,
           operator: filter.operator || 'eq',
           value: Array.isArray(filter.value) ? [filter.value] : filter.value,
@@ -30,9 +30,9 @@ export const createFilterGroup = (filter: any, fields: any): FormGroup => {
       }
     }
   }
-  return fb.group({
+  return formBuilder.group({
     logic: 'and',
-    filters: fb.array([]),
+    filters: formBuilder.array([]),
   });
 };
 
@@ -46,30 +46,32 @@ export const createFilterGroup = (filter: any, fields: any): FormGroup => {
 export const addNewField = (field: any, newField?: boolean): FormGroup => {
   switch (newField ? field.type.kind : field.kind) {
     case 'LIST': {
-      return fb.group({
+      return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
-        fields: fb.array(
+        fields: formBuilder.array(
           !newField && field.fields
             ? field.fields.map((x: any) => addNewField(x))
             : [],
           Validators.required
         ),
-        sort: fb.group({
+        sort: formBuilder.group({
           field: [field.sort ? field.sort.field : ''],
           order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
         }),
-        filter: newField ? fb.group({}) : createFilterGroup(field.filter, null),
+        filter: newField
+          ? formBuilder.group({})
+          : createFilterGroup(field.filter, null),
       });
     }
     case 'OBJECT': {
-      return fb.group({
+      return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         type: [newField ? field.type.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
-        fields: fb.array(
+        fields: formBuilder.array(
           !newField && field.fields
             ? field.fields.map((x: any) => addNewField(x))
             : [],
@@ -78,7 +80,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
       });
     }
     default: {
-      return fb.group({
+      return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         type: [
           { value: newField ? field.type.name : field.type, disabled: true },
@@ -101,14 +103,14 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
  * @returns Query form
  */
 export const createQueryForm = (value: any, validators = true): FormGroup =>
-  fb.group({
+  formBuilder.group({
     name: [value ? value.name : '', validators ? Validators.required : null],
     template: [value ? value.template : '', null],
-    fields: fb.array(
+    fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null
     ),
-    sort: fb.group({
+    sort: formBuilder.group({
       field: [value && value.sort ? value.sort.field : ''],
       order: [value && value.sort ? value.sort.order : 'asc'],
     }),

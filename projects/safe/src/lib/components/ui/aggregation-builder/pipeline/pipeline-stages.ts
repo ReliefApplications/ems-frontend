@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/*  Enum of StageType.
- */
 export enum StageType {
   FILTER = 'filter',
   SORT = 'sort',
