@@ -126,7 +126,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Init all data necessary for the reactive form to work.
+   * Initializes all data necessary for the reactive form to work.
    */
   private initFields(): void {
     this.updateFields(this.aggregationForm.value.dataSource);
@@ -135,7 +135,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Update fields depending on selected form.
+   * Updates fields depending on selected form.
    *
    * @param form New form to fetch fields from.
    */
@@ -151,7 +151,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Update selected, meta and mapping fields depending on tagbox value.
+   * Updates selected, meta and mapping fields depending on tagbox value.
    *
    * @param fieldsNames Tagbox value.
    */
@@ -184,7 +184,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Init preview grid using pipeline parameters.
+   * Initializes preview grid using pipeline parameters.
    *
    * @param pipeline Array of stages.
    */
@@ -207,7 +207,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Format fields so they are aligned with the queryBuilder format.
+   * Formats fields so they are aligned with the queryBuilder format.
    *
    * @param fields Raw fields to format.
    * @return formatted fields.
@@ -221,7 +221,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Filter data sources by names.
+   * Filters data sources by names.
    *
    * @param value string used to filter.
    */
@@ -233,7 +233,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Fetch next page of data source to add to list.
+   * Fetches next page of data source to add to list.
    *
    * @param value string used to filter.
    */
@@ -245,7 +245,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   }
 
   /**
-   * Fetch more data sources using filtering and pagination.
+   * Fetches more data sources using filtering and pagination.
    *
    * @param nextPage boolean to indicate if we must fetch the next page.
    */

@@ -31,9 +31,8 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
-<div class="add-stage">
-  <ng-container *ngFor=""></ng-container>
-  <safe-button icon="add" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+<div>
+  <safe-button icon="add" category="primary" [matMenuTriggerFor]="menu" [block]="true" (click)="$event.stopPropagation()">
     {{'aggregation.addStage' | translate}}
   </safe-button>
   <mat-menu #menu="matMenu">

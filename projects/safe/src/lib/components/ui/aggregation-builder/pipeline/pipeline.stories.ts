@@ -9,7 +9,7 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { StageType } from './pipeline-stages';
+import { PipelineStage } from './pipeline-stage.enum';
 import { BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
@@ -121,14 +121,14 @@ const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
     pipelineForm: new FormArray([
       fb.group({
-        type: new FormControl(StageType.FILTER),
+        type: new FormControl(PipelineStage.FILTER),
         form: fb.group({
           logic: 'and',
           filters: fb.array([]),
         }),
       }),
       fb.group({
-        type: new FormControl(StageType.SORT),
+        type: new FormControl(PipelineStage.SORT),
         form: fb.group({
           field: [''],
           order: ['asc'],

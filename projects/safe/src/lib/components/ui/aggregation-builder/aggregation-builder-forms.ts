@@ -1,6 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
-import { StageType } from './pipeline/pipeline-stages';
+import { PipelineStage } from './pipeline/pipeline-stage.enum';
 
 const formBuilder = new FormBuilder();
 
@@ -12,15 +12,15 @@ const formBuilder = new FormBuilder();
  */
 export const addStage = (value: any): FormGroup => {
   switch (value.type) {
-    case StageType.FILTER: {
+    case PipelineStage.FILTER: {
       return formBuilder.group({
-        type: [StageType.FILTER],
+        type: [PipelineStage.FILTER],
         form: createFilterGroup(value.form ? value.form : {}, null),
       });
     }
-    case StageType.SORT: {
+    case PipelineStage.SORT: {
       return formBuilder.group({
-        type: [StageType.SORT],
+        type: [PipelineStage.SORT],
         form: formBuilder.group({
           field: [
             value.form && value.form.field ? value.form.field : '',
@@ -33,29 +33,29 @@ export const addStage = (value: any): FormGroup => {
         }),
       });
     }
-    case StageType.GROUP: {
+    case PipelineStage.GROUP: {
       return formBuilder.group({
-        type: [StageType.GROUP],
+        type: [PipelineStage.GROUP],
       });
     }
-    case StageType.ADD_FIELDS: {
+    case PipelineStage.ADD_FIELDS: {
       return formBuilder.group({
-        type: [StageType.ADD_FIELDS],
+        type: [PipelineStage.ADD_FIELDS],
       });
     }
-    case StageType.UNWIND: {
+    case PipelineStage.UNWIND: {
       return formBuilder.group({
-        type: [StageType.UNWIND],
+        type: [PipelineStage.UNWIND],
       });
     }
-    case StageType.CUSTOM: {
+    case PipelineStage.CUSTOM: {
       return formBuilder.group({
-        type: [StageType.CUSTOM],
+        type: [PipelineStage.CUSTOM],
       });
     }
     default: {
       return formBuilder.group({
-        type: [StageType.FILTER],
+        type: [PipelineStage.FILTER],
       });
     }
   }

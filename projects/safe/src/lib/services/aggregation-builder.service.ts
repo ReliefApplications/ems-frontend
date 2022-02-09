@@ -1,6 +1,6 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { StageType } from '../components/ui/aggregation-builder/pipeline/pipeline-stages';
+import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 
 /**
  * Shared aggregation service.
@@ -60,19 +60,19 @@ export class AggregationBuilderService {
     const fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
-        case StageType.GROUP: {
+        case PipelineStage.GROUP: {
           // TO DO
           break;
         }
-        case StageType.ADD_FIELDS: {
+        case PipelineStage.ADD_FIELDS: {
           // TO DO
           break;
         }
-        case StageType.UNWIND: {
+        case PipelineStage.UNWIND: {
           // TO DO
           break;
         }
-        case StageType.CUSTOM: {
+        case PipelineStage.CUSTOM: {
           // TO DO
           break;
         }

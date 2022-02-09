@@ -1,4 +1,7 @@
-export enum StageType {
+/**
+ * Enum of available pipeline stage, for aggregation.
+ */
+export enum PipelineStage {
   FILTER = 'filter',
   SORT = 'sort',
   GROUP = 'group',

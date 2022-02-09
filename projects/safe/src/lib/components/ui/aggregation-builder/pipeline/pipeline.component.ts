@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { Observable } from 'rxjs';
-import { StageType } from './pipeline-stages';
+import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 
 @Component({
@@ -11,8 +11,8 @@ import { addStage } from '../aggregation-builder-forms';
   styleUrls: ['./pipeline.component.scss'],
 })
 export class SafePipelineComponent implements OnInit {
-  public stageType = StageType;
-  public stageList: string[] = Object.values(StageType);
+  public stageType = PipelineStage;
+  public stageList: string[] = Object.values(PipelineStage);
 
   // === DATA ===
   @Input() public fields$!: Observable<any[]>;
@@ -34,7 +34,7 @@ export class SafePipelineComponent implements OnInit {
   }
 
   /**
-   * Get available fields at given stage since stages will add / delete fields.
+   * Gets available fields at given stage since stages will add / delete fields.
    *
    * @param index index of the stage.
    */
@@ -45,10 +45,20 @@ export class SafePipelineComponent implements OnInit {
     );
   }
 
-  public addStage(stage: string) {
-    this.pipelineForm.push(addStage({ type: stage }));
+  /**
+   * Adds a stage to the aggregation pipeline.
+   *
+   * @param type type of stage
+   */
+  public addStage(type: string) {
+    this.pipelineForm.push(addStage({ type: type }));
   }
 
+  /**
+   * Deletes a stage at specified index.
+   *
+   * @param index index of stage to remove in pipeline.
+   */
   public deleteStage(index: number) {
     this.pipelineForm.removeAt(index);
   }
