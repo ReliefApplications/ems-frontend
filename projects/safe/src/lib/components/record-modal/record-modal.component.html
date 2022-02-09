@@ -7,11 +7,11 @@
         </mat-tab-group>
         <div class="versions-info" *ngIf="data.compareTo">
             <div class="version-info">
-                <div>Past version</div>
+                <div>{{'record.pastVersion' | translate}}</div>
                 <span>{{ data.compareTo.createdAt | date:'dd/MM/yy, h:mm a' }}</span>
             </div>
             <div class="version-info">
-                <div>Current version</div>
+                <div>{{'record.currentVersion' | translate}}</div>
                 <span>{{ record.modifiedAt | date:'dd/MM/yy, h:mm a' }}</span>
             </div>
         </div>
@@ -31,12 +31,12 @@
     </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button mat-dialog-close="true" cdkFocusInitial color="primary">Revert to past record</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button mat-dialog-close="true" cdkFocusInitial color="primary">{{'record.revert' | translate}}</button>
 </mat-dialog-actions>
 <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <button mat-button color="warn" (click)="onClose()">Close</button>
-    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">Previous</button>
-    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">Next</button>
-    <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">Edit record</button>
+    <button mat-button color="warn" (click)="onClose()">{{'action.close' | translate}}</button>
+    <button *ngIf="!survey.isFirstPage" mat-button color="primary" (click)="survey.prevPage()">{{'action.previous' | translate}}</button>
+    <button *ngIf="!survey.isLastPage" mat-button color="primary" (click)="survey.nextPage()">{{'action.next' | translate}}</button>
+    <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">{{'record.edit' | translate}}</button>
 </mat-dialog-actions>

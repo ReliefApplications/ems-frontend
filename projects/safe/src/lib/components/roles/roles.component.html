@@ -5,12 +5,12 @@
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
         <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          placeholder="Search...">
+          [placeholder]="'filter.search' | translate">
       </mat-form-field>
     </div>
     <div class="actions">
       <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-        Create a role
+        {{'roles.create' | translate}}
       </safe-button>
     </div>
   </div>
@@ -18,7 +18,7 @@
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Title
+          {{'global.title' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.title }}</td>
@@ -27,7 +27,7 @@
     <ng-container matColumnDef="usersCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Users
+          {{'global.users' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
@@ -41,12 +41,12 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onEdit(element)">
             <mat-icon>edit</mat-icon>
-            Edit
+            {{'action.edit' | translate}}
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item color="warn" (click)="onDelete(element)">
             <mat-icon>delete</mat-icon>
-            Delete
+            {{'action.delete' | translate}}
           </button>
         </mat-menu>
       </td>

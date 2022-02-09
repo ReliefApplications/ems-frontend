@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +18,6 @@ import { SafeDownloadService } from '../../services/download.service';
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-
   @Input() record: Record = {};
   @Input() revert: any;
   @Input() template?: string;
@@ -24,17 +30,19 @@ export class SafeRecordHistoryComponent implements OnInit {
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
 
-  @ViewChild('startDate', { read: MatStartDate }) startDate!: MatStartDate<string>;
+  @ViewChild('startDate', { read: MatStartDate })
+  startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
 
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService
-    ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.history = this.getHistory(this.record).filter((item) => item.changes.length > 0);
+    this.history = this.getHistory(this.record).filter(
+      (item) => item.changes.length > 0
+    );
     this.filterHistory = this.history;
     this.loading = false;
   }
@@ -44,13 +52,16 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /*  Get current and next record to see difference and put it in a string
-  */
+   */
   getDifference(current: any, after: any): string[] {
     const changes: any[] = [];
     if (current) {
       const keysCurrent = Object.keys(current);
-      keysCurrent.forEach(key => {
-        if (typeof after[key] === 'boolean' || typeof current[key] === 'boolean') {
+      keysCurrent.forEach((key) => {
+        if (
+          typeof after[key] === 'boolean' ||
+          typeof current[key] === 'boolean'
+        ) {
           if (current[key] !== null && after[key] !== current[key]) {
             changes.push(this.modifyField(key, after, current));
           }
@@ -72,13 +83,17 @@ export class SafeRecordHistoryComponent implements OnInit {
               }
             } else if (after[key] !== current[key]) {
               changes.push(this.modifyField(key, after, current));
-            }
-            else {
+            } else {
               changes.push(this.addField(key, current));
             }
           }
         } else {
-          if (!after[key] && current[key] || current[key] && after[key] && after[key].toString() !== current[key].toString()) {
+          if (
+            (!after[key] && current[key]) ||
+            (current[key] &&
+              after[key] &&
+              after[key].toString() !== current[key].toString())
+          ) {
             changes.push(this.modifyField(key, after, current));
           } else if (!after[key] && current[key]) {
             changes.push(this.addField(key, current));
@@ -88,19 +103,34 @@ export class SafeRecordHistoryComponent implements OnInit {
     }
 
     const keysAfter = Object.keys(after);
-    keysAfter.forEach(key => {
+    keysAfter.forEach((key) => {
       if (typeof after[key] === 'boolean') {
         if ((!current || current[key]) === null && after[key] !== null) {
-          changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
+          changes.push(
+            '<p><span class="add-field">Add field</span> <b>' +
+              key +
+              '</b> with value <b>' +
+              after[key] +
+              '</b> </p>'
+          );
         }
-      } else if ((!current || current[key] === null) && !Array.isArray(after[key]) && after[key] instanceof Object) {
+      } else if (
+        (!current || current[key] === null) &&
+        !Array.isArray(after[key]) &&
+        after[key] instanceof Object
+      ) {
         const element = this.addObject(after, key);
         if (element.length > 0) {
           changes.push(element);
         }
-      }
-      else if ((!current || current[key] === null) && after[key]) {
-        changes.push('<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + after[key] + '</b> </p>');
+      } else if ((!current || current[key] === null) && after[key]) {
+        changes.push(
+          '<p><span class="add-field">Add field</span> <b>' +
+            key +
+            '</b> with value <b>' +
+            after[key] +
+            '</b> </p>'
+        );
       }
     });
     return changes;
@@ -110,7 +140,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     const currentKeys = Object.keys(current[key]);
     let currentValuesHTML = '';
     let element = `<p> <span class="add-field">Add field</span> <b> ${key} </b> with value  `;
-    currentKeys.forEach(k => {
+    currentKeys.forEach((k) => {
       let currentValues;
       if (current[key][k] instanceof Object) {
         currentValues = Object.values(current[key][k]);
@@ -124,16 +154,34 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   private addField(key: string, current: any): string {
-    return '<p><span class="add-field">Add field</span> <b>' + key + '</b> with value <b>' + current[key] + '</b> </p>';
+    return (
+      '<p><span class="add-field">Add field</span> <b>' +
+      key +
+      '</b> with value <b>' +
+      current[key] +
+      '</b> </p>'
+    );
   }
 
   private modifyField(key: string, after: any, current: any): string {
     if (after[key] === null) {
-      return '<p> <span  class="remove-field">Remove field</span> <b>' + key + '</b> with value <b>' + current[key] +
-        '</b> </p>';
+      return (
+        '<p> <span  class="remove-field">Remove field</span> <b>' +
+        key +
+        '</b> with value <b>' +
+        current[key] +
+        '</b> </p>'
+      );
     } else {
-      return '<p> <span  class="modify-field">Change field</span> <b>' + key + '</b> from <b>' + current[key] +
-        '</b> to <b>' + after[key] + '</b> </p>';
+      return (
+        '<p> <span  class="modify-field">Change field</span> <b>' +
+        key +
+        '</b> from <b>' +
+        current[key] +
+        '</b> to <b>' +
+        after[key] +
+        '</b> </p>'
+      );
     }
   }
 
@@ -143,11 +191,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     let afterValuesHTML = '';
     let currentValuesHTML = '';
 
-    afterKeys.forEach(k => {
+    afterKeys.forEach((k) => {
       let afterValues = [];
       let currentValues = [];
       if (after[key] && after[key][k]) {
-        if (after[key][k] instanceof  Object) {
+        if (after[key][k] instanceof Object) {
           afterValues = Object.values(after[key][k]);
         } else {
           afterValues = after[key][k];
@@ -183,7 +231,7 @@ export class SafeRecordHistoryComponent implements OnInit {
         created: record.createdAt,
         createdBy: record.createdBy?.name,
         changes: difference,
-        id: record.id
+        id: record.id,
       });
       return res;
     }
@@ -192,7 +240,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       created: versions[0].createdAt,
       createdBy: record.createdBy?.name,
       changes: difference,
-      id: versions[0].id
+      id: versions[0].id,
     });
     for (let i = 1; i < versions.length; i++) {
       difference = this.getDifference(versions[i - 1].data, versions[i].data);
@@ -200,15 +248,18 @@ export class SafeRecordHistoryComponent implements OnInit {
         created: versions[i].createdAt,
         createdBy: versions[i - 1].createdBy?.name,
         changes: difference,
-        id: versions[i].id
+        id: versions[i].id,
       });
     }
-    difference = this.getDifference(versions[versions.length - 1].data, record.data);
+    difference = this.getDifference(
+      versions[versions.length - 1].data,
+      record.data
+    );
     res.push({
       created: record.modifiedAt,
       createdBy: versions[versions.length - 1].createdBy?.name,
       changes: difference,
-      id: record.id
+      id: record.id,
     });
     return res.reverse();
   }
@@ -218,16 +269,18 @@ export class SafeRecordHistoryComponent implements OnInit {
       data: {
         recordId: this.record.id,
         locale: 'en',
-        compareTo: this.record.versions?.find(x => x.id === item.id),
-        template: this.template
+        compareTo: this.record.versions?.find((x) => x.id === item.id),
+        template: this.template,
       },
       height: '98%',
       width: '100vw',
       panelClass: 'full-screen-modal',
-      autoFocus: false
+      autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) { this.revert(item); }
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.revert(item);
+      }
     });
   }
 
@@ -242,13 +295,22 @@ export class SafeRecordHistoryComponent implements OnInit {
   applyFilter(): void {
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
-    this.filterHistory = this.history.filter(item => !startDate || !endDate || item.created >= startDate && item.created <= endDate);
+    this.filterHistory = this.history.filter(
+      (item) =>
+        !startDate ||
+        !endDate ||
+        (item.created >= startDate && item.created <= endDate)
+    );
   }
 
   onDownload(type: string): void {
     const path = `download/form/records/${this.record.id}/history`;
     const fileName = `${this.record.id}.${type}`;
     const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(`${path}?${queryString}`, `text/${type};charset=utf-8;`, fileName);
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/${type};charset=utf-8;`,
+      fileName
+    );
   }
 }

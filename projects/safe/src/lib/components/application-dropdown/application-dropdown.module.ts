@@ -4,20 +4,18 @@ import { SafeApplicationDropdownComponent } from './application-dropdown.compone
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeApplicationDropdownComponent
-  ],
+  declarations: [SafeApplicationDropdownComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule,
   ],
-  exports: [
-    SafeApplicationDropdownComponent
-  ]
+  exports: [SafeApplicationDropdownComponent],
 })
-export class SafeApplicationDropdownModule { }
+export class SafeApplicationDropdownModule {}

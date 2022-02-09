@@ -1,15 +1,19 @@
-<h1 mat-dialog-title>Update channel</h1>
+<h1 mat-dialog-title>{{'channels.edit' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="roleForm">
         <div class="form-group">
             <mat-form-field>
-                <mat-label>Title</mat-label>
-                <input matInput formControlName="title" type='text' />
+                <mat-label>{{'global.title' | translate}}</mat-label>
+                <input matInput formControlName="title" type='text'
+                [placeholder]="'global.titlePlaceholder' | translate" />
             </mat-form-field>
         </div>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update channel</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="roleForm.value"
+    cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
+        {{'action.update' | translate}}
+    </button>
 </div>

@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeExpandedCommentComponent } from './expanded-comment.component';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeExpandedCommentComponent],
@@ -13,8 +14,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogModule,
     FormsModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule,
   ],
-  exports: [SafeExpandedCommentComponent]
+  exports: [SafeExpandedCommentComponent],
 })
-export class SafeExpandedCommentModule { }
+export class SafeExpandedCommentModule {}

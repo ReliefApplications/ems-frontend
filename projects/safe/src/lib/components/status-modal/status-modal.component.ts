@@ -10,11 +10,13 @@ interface StatusDialogData {
 @Component({
   selector: 'safe-status-modal',
   templateUrl: './status-modal.component.html',
-  styleUrls: ['./status-modal.component.css']
+  styleUrls: ['./status-modal.component.css'],
 })
 export class SafeStatusModalComponent implements OnInit {
-
-  constructor(private dialogRef: MatDialogRef<SafeStatusModalComponent>, @Inject(MAT_DIALOG_DATA) public data: StatusDialogData){
+  constructor(
+    private dialogRef: MatDialogRef<SafeStatusModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: StatusDialogData
+  ) {
     if (data) {
       this.dialogRef.updateSize('200px', '90px');
       if (!data.title && !data.content) {
@@ -23,7 +25,5 @@ export class SafeStatusModalComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

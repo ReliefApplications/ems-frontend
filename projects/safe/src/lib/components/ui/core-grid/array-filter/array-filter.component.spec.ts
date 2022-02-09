@@ -8,9 +8,8 @@ describe('SafeArrayFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeArrayFilterComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeArrayFilterComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

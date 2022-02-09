@@ -2,24 +2,36 @@
 <ng-container *ngIf="!loading">
     <div class="actions">
         <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-            Create a pull job
+          {{'pullJobs.create' | translate}}
         </safe-button>
     </div>
     <table mat-table [dataSource]="pullJobs">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Pull job name</th>
+          <th mat-header-cell *matHeaderCellDef>{{'global.name' | translate}}</th>
           <td mat-cell *matCellDef="let element">{{ element.name }}</td>
         </ng-container>
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'global.status' | translate}}</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-chip-list>
+                <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
+                  {{ 'status.active' | translate | titlecase }}
+                </mat-chip>
+                <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
+                  {{ 'status.pending' | translate | titlecase }}
+                </mat-chip>
+                <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
+                  {{ 'status.archived' | translate | titlecase }}
+                </mat-chip>
+              </mat-chip-list>
+            </td>
         </ng-container>
         <ng-container matColumnDef="apiConfiguration">
-            <th mat-header-cell *matHeaderCellDef>API Configuration</th>
+            <th mat-header-cell *matHeaderCellDef>{{'table.APIConf' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="convertTo">
-            <th mat-header-cell *matHeaderCellDef>Convert to</th>
+            <th mat-header-cell *matHeaderCellDef>{{'global.convert' | translate}}</th>
             <td mat-cell *matCellDef="let element">{{ element.convertTo ? element.convertTo.name : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="actions">
@@ -30,12 +42,12 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onEdit(element)">
                   <mat-icon>edit</mat-icon>
-                  Edit
+                  {{'action.edit' | translate}}
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item color="warn" (click)="onDelete(element)">
                   <mat-icon>delete</mat-icon>
-                  Delete
+                  {{'action.delete' | translate}}
                 </button>
               </mat-menu>
             </td>

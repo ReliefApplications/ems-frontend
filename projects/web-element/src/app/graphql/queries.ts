@@ -3,8 +3,8 @@ import { Application, Dashboard, Form, Workflow } from '@safe/builder';
 
 // === GET DASHBOARD BY ID ===
 export const GET_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!){
-    dashboard(id: $id){
+  query GetDashboardById($id: ID!) {
+    dashboard(id: $id) {
       id
       name
       structure
@@ -19,22 +19,23 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET FORM BY ID ===
 export const GET_SHORT_FORM_BY_ID = gql`
-query GetShortFormById($id: ID!) {
-  form(id: $id) {
-    id
-    name
-    structure
-    fields
-    status
-    canCreateRecords
-    uniqueRecord {
+  query GetShortFormById($id: ID!) {
+    form(id: $id) {
       id
-      modifiedAt
-      data
+      name
+      structure
+      fields
+      status
+      canCreateRecords
+      uniqueRecord {
+        id
+        modifiedAt
+        data
+      }
+      canUpdate
     }
-    canUpdate
   }
-}`;
+`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
@@ -43,8 +44,8 @@ export interface GetFormByIdQueryResponse {
 
 // === GET WORKFLOW BY ID ===
 export const GET_WORKFLOW_BY_ID = gql`
-  query GetWorkflowById($id: ID!){
-    workflow(id: $id){
+  query GetWorkflowById($id: ID!) {
+    workflow(id: $id) {
       id
       name
       createdAt
