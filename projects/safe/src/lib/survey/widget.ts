@@ -98,27 +98,29 @@ export const init = (
         )
       ) {
         const date = new Date(question.value);
-        const year = date.getFullYear();
-        const month = addZero(date.getMonth() + 1);
-        const day = addZero(date.getDate());
-        const hour = addZero(date.getUTCHours());
-        const minutes = addZero(date.getUTCMinutes());
-        switch (question.inputType) {
-          case 'date':
-            question.value = `${year}-${month}-${day}`;
-            break;
-          case 'datetime':
-            break;
-          case 'datetime-local':
-            question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
-            break;
-          case 'time':
-            question.value = `${hour}:${minutes}`;
-            break;
-          default:
-            break;
+        if (date.toString() !== 'Invalid Date') {
+          const year = date.getFullYear();
+          const month = addZero(date.getMonth() + 1);
+          const day = addZero(date.getDate());
+          const hour = addZero(date.getUTCHours());
+          const minutes = addZero(date.getUTCMinutes());
+          switch (question.inputType) {
+            case 'date':
+              question.value = `${year}-${month}-${day}`;
+              break;
+            case 'datetime':
+              break;
+            case 'datetime-local':
+              question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
+              break;
+            case 'time':
+              question.value = `${hour}:${minutes}`;
+              break;
+            default:
+              break;
+          }
+          el.value = question.value;
         }
-        el.value = question.value;
       }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {

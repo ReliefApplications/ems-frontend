@@ -399,6 +399,20 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const item of this.updatedItems) {
       const data = Object.assign({}, item);
       delete data.id;
+      for (const field of this.fields) {
+        if (field.type === 'Time') {
+          const time = data[field.name]
+            .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            .split(/:| /);
+          if (
+            (time[2] === 'PM' && time[0] !== '12') ||
+            (time[2] === 'AM' && time[0] === '12')
+          ) {
+            time[0] = (parseInt(time[0], 10) + 12).toString();
+          }
+          data[field.name] = time[0] + ':' + time[1];
+        }
+      }
       promises.push(
         this.apollo
           .mutate<EditRecordMutationResponse>({
