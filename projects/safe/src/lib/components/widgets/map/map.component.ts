@@ -132,7 +132,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ? Number(this.settings.centerLat)
       : 0;
 
-    const apiKey = this.esriApiKey;
     const basemapEnum = 'OSM:Standard';
 
     // Creates map
@@ -151,7 +150,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
-      apiKey,
+      apiKey: this.esriApiKey,
     }).addTo(this.map);
 
     // Popup at marker click
@@ -165,8 +164,42 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
     });
+
+    // Address searchbar
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
 
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [
+        L.esri.Geocoding.arcgisOnlineProvider({
+          apikey: this.esriApiKey,
+          nearby: {
+            lat: -33.8688,
+            lng: 151.2093,
+          },
+        }),
+      ],
+    }).addTo(this.map);
+
+    const results = L.layerGroup().addTo(this.map);
+
+    searchControl.on('results', (data: any) => {
+      results.clearLayers();
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        console.log(data.results[i]);
+        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
+        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
+        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
+        marker.bindPopup(`
+          <p>${data.results[i].properties.ShortLabel}</br>
+          <b>${'latitude: '}</b>${lat}</br>
+          <b>${'longitude: '}</b>${lng}</p>`);
+        results.addLayer(marker);
+        marker.openPopup();
+      }
+    });
     // Categories
     this.categoryField = this.settings.category;
   }
@@ -250,7 +283,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .subGroup(this.markersLayer, this.markersCategories[name])
         .addTo(this.map);
     });
-    if (this.categoryNames[1]) {
+    if (this.categoryNames) {
       this.layerControl = L.control
         .layers(null, this.overlays, { collapsed: true })
         .addTo(this.map);
