@@ -277,7 +277,8 @@
             "long": "******",
             "default": "******",
             "zoom": "******",
-            "category": "******"
+            "category": "******",
+            "basemap": "******"
         },
         "scheduler": {
             "new": "******",

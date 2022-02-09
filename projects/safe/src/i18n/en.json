@@ -277,7 +277,8 @@
             "long": "Longitude",
             "default": "Default display",
             "zoom": "Zoom",
-            "category": "Category"
+            "category": "Category",
+            "basemap":"Base map"
         },
         "scheduler": {
             "new": "New scheduler",

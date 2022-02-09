@@ -23,6 +23,22 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
+  public basemaps: any[] = [
+    'Sreets',
+    'Navigation',
+    'Topographic',
+    'Light Gray',
+    'Dark Gray',
+    'Streets Relief',
+    'Imagery',
+    'ChartedTerritory',
+    'ColoredPencil',
+    'Nova',
+    'Midcentury',
+    'OSM',
+    'OSM:Streets'
+  ];
+
   constructor(private formBuilder: FormBuilder) {}
 
   /*  Build the settings form, using the widget saved parameters.
@@ -45,6 +61,7 @@ export class SafeMapSettingsComponent implements OnInit {
         tileSettings && tileSettings.category ? tileSettings.category : null,
       ],
       zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
+      basemap: [(tileSettings && tileSettings.basemap) ? tileSettings.basemap : null],
       centerLong: [
         tileSettings && tileSettings.centerLong
           ? tileSettings.centerLong

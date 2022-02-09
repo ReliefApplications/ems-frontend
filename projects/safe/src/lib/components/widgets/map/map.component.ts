@@ -44,6 +44,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private bounds = L.latLngBounds(this.southWest, this.northEast);
   public esriApiKey: string;
 
+  // === BASEMAPS ===
+
+  private basemapLayers: any = {
+    Streets: 'ArcGIS:Streets',
+    Navigation: 'ArcGIS:Navigation',
+    Topographic: 'ArcGIS:Topographic',
+    'Light Gray': 'ArcGIS:LightGray',
+    'Dark Gray': 'ArcGIS:DarkGray',
+    'Streets Relief': 'ArcGIS:StreetsRelief',
+    Imagery: 'ArcGIS:Imagery',
+    ChartedTerritory: 'ArcGIS:ChartedTerritory',
+    ColoredPencil: 'ArcGIS:ColoredPencil',
+    Nova: 'ArcGIS:Nova',
+    Midcentury: 'ArcGIS:Midcentury',
+    OSM: 'OSM:Standard',
+    'OSM:Streets': 'OSM:Street'
+  };
+
   // === MARKERS ===
   private markersLayer: any;
   private markersLayerGroup: any;
@@ -58,7 +76,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
-
   private displayFields: string[] = [];
 
   // === WIDGET CONFIGURATION ===
@@ -132,8 +149,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ? Number(this.settings.centerLat)
       : 0;
 
-    const basemapEnum = 'OSM:Standard';
-
     // Creates map
     this.map = L.map(this.mapId, {
       zoomControl: false,
@@ -148,8 +163,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       })
       .addTo(this.map);
 
+    
+    const basemap = this.basemapLayers[this.settings.basemap]
+    ? this.basemapLayers[this.settings.basemap]
+    : this.basemapLayers.OSM;
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    L.esri.Vector.vectorBasemapLayer(basemapEnum, {
+    L.esri.Vector.vectorBasemapLayer(basemap, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
 
