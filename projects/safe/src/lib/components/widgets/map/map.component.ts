@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, Input, OnDestroy, Inject } from '@angular/core';
 import 'leaflet.markercluster';
-
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -31,6 +30,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private southWest = L.latLng(-89.98155760646617, -180);
   private northEast = L.latLng(89.99346179538875, 180);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
+  public esriApiKey: string;
 
   // === MARKERS ===
   private markersLayer: any;
@@ -53,9 +53,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   public lastUpdate = '';
 
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
+    this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
   }
 
@@ -103,7 +105,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
     const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
 
-    const apiKey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
+    const apiKey = this.esriApiKey;
     const basemapEnum = 'OSM:Standard';
 
     this.map = L.map(this.mapId, {
