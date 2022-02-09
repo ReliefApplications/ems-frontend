@@ -28,7 +28,7 @@
       "rules": {
         "prettier/prettier": 2,
         "@typescript-eslint/naming-convention": [
-          "warning",
+          1,
           {
             "selector": [
               "enumMember"
