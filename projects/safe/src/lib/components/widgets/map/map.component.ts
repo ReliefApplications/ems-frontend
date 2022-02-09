@@ -132,7 +132,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ? Number(this.settings.centerLat)
       : 0;
 
-    const apiKey = this.esriApiKey;
     const basemapEnum = 'OSM:Standard';
 
     // Creates map
@@ -151,7 +150,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
-      apiKey,
+      apiKey: this.esriApiKey,
     }).addTo(this.map);
 
     // Popup at marker click
@@ -175,7 +174,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       useMapBounds: false,
       providers: [
         L.esri.Geocoding.arcgisOnlineProvider({
-          apikey: apiKey,
+          apikey: this.esriApiKey,
           nearby: {
             lat: -33.8688,
             lng: 151.2093,
