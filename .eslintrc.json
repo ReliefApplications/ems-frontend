@@ -26,7 +26,16 @@
         "prettier"
       ],
       "rules": {
-        "prettier/prettier": 2
+        "prettier/prettier": 2,
+        "@typescript-eslint/naming-convention": [
+          "warning",
+          {
+            "selector": [
+              "enumMember"
+            ],
+            "format": ["camelCase", "UPPER_CASE"]
+          }
+        ]
       }
     },
     {

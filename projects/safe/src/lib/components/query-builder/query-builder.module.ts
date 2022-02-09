@@ -40,6 +40,11 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     TranslateModule,
   ],
-  exports: [SafeQueryBuilderComponent, SafeTabFieldsComponent],
+  exports: [
+    SafeQueryBuilderComponent,
+    SafeTabFieldsComponent,
+    SafeTabFilterComponent,
+    SafeTabSortComponent,
+  ],
 })
 export class SafeQueryBuilderModule {}

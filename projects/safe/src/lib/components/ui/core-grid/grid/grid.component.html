@@ -8,8 +8,8 @@
     (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
     (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->
-    <ng-template kendoGridToolbarTemplate position="top">
-        <input [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
+    <ng-template *ngIf="searchable || reorderable || actions.add || exportable || editable || filterable || admin || hasEnabledActions" kendoGridToolbarTemplate position="top">
+        <input *ngIf="searchable" [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' | translate}}</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">{{'action.export' | translate}}</button>
@@ -309,7 +309,7 @@
             </kendo-grid-column-group>
         </ng-container>
         <!-- ROW DETAILS -->
-        <kendo-grid-column [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
+        <kendo-grid-column *ngIf="hasDetails" [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
                     (click)="action.emit({ action: 'details', items: dataItem })" matTooltip="Open detail"></button>

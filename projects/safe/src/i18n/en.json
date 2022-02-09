@@ -40,7 +40,8 @@
         "legend": "Legend",
         "orientation": "Orientation",
         "aggregation": "Aggregation",
-        "id": "Id"
+        "id": "Id",
+        "none": "-- None --"
     },
     "action": {
         "edit": "Edit",
@@ -400,5 +401,22 @@
         "changeAccess": "Change access",
         "clearCache": "Clear cache",
         "filterVisibility": "Click to toggle visibility of filter"
-    }
+    },
+    "aggregation": {
+        "dataSource": "Select the data source",
+        "sourceFields": "Select fields",
+        "addStage": "Add stage",
+        "stages": {
+            "filter": "Filter",
+            "sort": "Sort",
+            "group": "Group",
+            "addFields": "Add fields",
+            "unwind": "Unwind",
+            "custom": "Custom"
+        },
+        "mapping": {
+            "xAxis": "X Axis",
+            "yAxis": "Y Axis"
+        }
+    } 
 }

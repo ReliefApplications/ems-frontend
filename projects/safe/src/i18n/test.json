@@ -40,7 +40,8 @@
         "legend": "******",
         "orientation": "******",
         "aggregation": "******",
-        "id": "******"
+        "id": "******",
+        "none": "******"
     },
     "action": {
         "edit": "******",
@@ -400,5 +401,22 @@
         "changeAccess": "******",
         "clearCache": "******",
         "filterVisibility": "******"
-    }
+    },
+    "aggregation": {
+        "dataSource": "******",
+        "sourceFields": "******",
+        "addStage":  "******",
+        "stages": {
+            "filter": "******",
+            "sort": "******",
+            "group": "******",
+            "addFields": "******",
+            "unwind": "******",
+            "custom": "******"
+        },
+        "mapping": {
+            "xAxis": "******",
+            "yAxis": "******"
+        }
+    } 
 }
