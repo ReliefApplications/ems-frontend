@@ -276,7 +276,8 @@
             "lat": "Latitude",
             "long": "Longitude",
             "default": "Default display",
-            "zoom": "Zoom"
+            "zoom": "Zoom",
+            "category": "Category"
         },
         "scheduler": {
             "new": "New scheduler",

@@ -1,5 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, AfterViewInit, Input, OnDestroy, Inject } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  Input,
+  OnDestroy,
+  Inject,
+} from '@angular/core';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -15,6 +21,11 @@ const MARKER_OPTIONS = {
   fillOpacity: 1,
   radius: 6,
 };
+
+// Declares an interface that will be used in the cluster markers layers
+interface IMarkersLayerValue {
+  [name: string]: any;
+}
 
 /**
  * Map Widget component.
@@ -37,6 +48,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private markersLayer: any;
   private markersLayerGroup: any;
   private popupMarker: any;
+  private markersCategories: IMarkersLayerValue = [];
+  private categoryNames: string[] = [];
+  private overlays: IMarkersLayerValue = {};
+  private layerControl: any;
 
   // === RECORDS ===
   private selectedItem: Record | null = null;
@@ -49,6 +64,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
+
+  // This will be substituted when the querry returns the catgory tippe
+  private categoryField: string = '';
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -79,7 +97,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /*  Once template is ready, build the map.
    */
   ngAfterViewInit(): void {
+    // Calls the function wich draw the map.
     this.drawMap();
+    // Gets the settings from the DB.
     if (this.settings.query) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
       this.dataQuery = this.apollo.watchQuery<any>({
@@ -88,6 +108,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           first: 100,
         },
       });
+      // Handles the settings data and changes the map accordingly.
       this.getData();
     }
 
@@ -100,11 +121,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
+  /**
+   * Creates the map with all useful parameters.
    */
   private drawMap(): void {
-    const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
-    const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
+    const centerLong = this.settings.centerLong
+      ? Number(this.settings.centerLong)
+      : 0;
+    const centerLat = this.settings.centerLat
+      ? Number(this.settings.centerLat)
+      : 0;
 
     const apiKey = this.esriApiKey;
     const basemapEnum = 'OSM:Standard';
@@ -112,20 +138,23 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Creates map
     this.map = L.map(this.mapId, {
       zoomControl: false,
-      minZoom: 1,
-      maxZoom: 18
+      minZoom: 2,
+      maxZoom: 18,
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
-    // Add zoom control
-    L.control.zoom({
-      position: 'bottomleft'
-    }).addTo(this.map);
+    // Adds a zoom control
+    L.control
+      .zoom({
+        position: 'bottomleft',
+      })
+      .addTo(this.map);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
-      apiKey
+      apiKey,
     }).addTo(this.map);
 
+    // Popup at marker click
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(
@@ -136,13 +165,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
     });
-
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
+    // Categories
+    this.categoryField = this.settings.category;
   }
 
- /**
-  * Loads the data, using widget parameters.
-  */
+  /**
+   * Loads the data, using widget parameters.
+   */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
@@ -158,21 +189,33 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           ('0' + today.getHours()).slice(-2) +
           ':' +
           ('0' + today.getMinutes()).slice(-2);
+        // Empties all variables used in map
         this.data = [];
+        this.categoryNames = [];
+        this.markersCategories = [];
         this.selectedItem = null;
         this.markersLayer.clearLayers();
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            res.data[field].edges.map((x: any) =>
-              this.drawMarkers(myIcon, x.node)
-            );
+            res.data[field].edges.map((x: any) => {
+              // Gets all markers categories
+              if (!this.categoryNames.includes(x.node[this.categoryField])) {
+                this.categoryNames.push(x.node[this.categoryField]);
+              }
+              this.drawMarkers(myIcon, x.node);
+            });
           }
         }
+        this.setMarkers();
       }
     );
   }
 
-  /*  Draw markers on the map if the record has coordinates
+  /**
+   *  Draws markers on the map if the record has coordinates.
+   *
+   * @param icon icon to draw
+   * @param item item to draw
    */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);
@@ -190,8 +233,27 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         const options = MARKER_OPTIONS;
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
-        this.markersLayer.addLayer(marker);
+        if (!this.markersCategories[item[this.categoryField]]) {
+          this.markersCategories[item[this.categoryField]] = [];
+        }
+        this.markersCategories[item[this.categoryField]].push(marker);
       }
+    }
+  }
+
+  private setMarkers(): void {
+    if (this.layerControl) {
+      this.layerControl.remove();
+    }
+    this.categoryNames.map((name: string) => {
+      this.overlays[name] = L.featureGroup
+        .subGroup(this.markersLayer, this.markersCategories[name])
+        .addTo(this.map);
+    });
+    if (this.categoryNames[1]) {
+      this.layerControl = L.control
+        .layers(null, this.overlays, { collapsed: true })
+        .addTo(this.map);
     }
   }
 
@@ -200,5 +262,4 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
-
 }
