@@ -8,9 +8,8 @@ describe('SafeExpandedWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeExpandedWidgetComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeExpandedWidgetComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

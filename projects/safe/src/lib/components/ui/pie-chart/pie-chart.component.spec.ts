@@ -8,9 +8,8 @@ describe('SafePieChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafePieChartComponent ]
-    })
-    .compileComponents();
+      declarations: [SafePieChartComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

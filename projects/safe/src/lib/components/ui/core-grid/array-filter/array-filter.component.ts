@@ -1,13 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
+import {
+  BaseFilterCellComponent,
+  FilterService,
+} from '@progress/kendo-angular-grid';
 
 @Component({
   selector: 'safe-array-filter',
   templateUrl: './array-filter.component.html',
-  styleUrls: ['./array-filter.component.scss']
+  styleUrls: ['./array-filter.component.scss'],
 })
-export class SafeArrayFilterComponent extends BaseFilterCellComponent implements OnInit {
-
+export class SafeArrayFilterComponent
+  extends BaseFilterCellComponent
+  implements OnInit
+{
   public get selectedValue(): any {
     const filter = this.filterByField(this.field);
     return filter ? filter.value : null;
@@ -40,14 +45,16 @@ export class SafeArrayFilterComponent extends BaseFilterCellComponent implements
       value === null
         ? this.removeFilter(this.valueField)
         : this.updateFilter({
-          field: this.field,
-          operator: 'contains',
-          value,
-        })
+            field: this.field,
+            operator: 'contains',
+            value,
+          })
     );
   }
 
   public handleFilter(value: string): void {
-    this.choices = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.choices = this.data.filter(
+      (x) => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
   }
 }

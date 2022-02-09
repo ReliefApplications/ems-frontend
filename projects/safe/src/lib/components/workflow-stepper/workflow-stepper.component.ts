@@ -5,10 +5,9 @@ import { Step } from '../../models/step.model';
 @Component({
   selector: 'safe-workflow-stepper',
   templateUrl: './workflow-stepper.component.html',
-  styleUrls: ['./workflow-stepper.component.scss']
+  styleUrls: ['./workflow-stepper.component.scss'],
 })
 export class SafeWorkflowStepperComponent implements OnInit {
-
   @Input() activeStep = 0;
   @Input() steps: Step[] = [];
   @Input() canUpdate = false;
@@ -18,10 +17,9 @@ export class SafeWorkflowStepperComponent implements OnInit {
   @Output() reorderSteps = new EventEmitter<Step[]>();
   public dragging = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   onDragStart(): void {
     this.dragging = true;
@@ -38,7 +36,7 @@ export class SafeWorkflowStepperComponent implements OnInit {
   }
 
   /* Drop a step dragged into the list
-  */
+   */
   dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
     const reorderedSteps = this.steps.slice();

@@ -8,9 +8,8 @@ describe('SafeApplicationSummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeApplicationSummaryComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeApplicationSummaryComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

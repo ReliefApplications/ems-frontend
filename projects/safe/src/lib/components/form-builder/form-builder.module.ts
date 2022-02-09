@@ -6,11 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [SafeFormBuilderComponent],
-  imports: [
-    CommonModule,
-    SafeFormModalModule,
-    MatDialogModule
-  ],
-  exports: [SafeFormBuilderComponent]
+  imports: [CommonModule, SafeFormModalModule, MatDialogModule],
+  exports: [SafeFormBuilderComponent],
 })
-export class SafeFormBuilderModule { }
+export class SafeFormBuilderModule {}

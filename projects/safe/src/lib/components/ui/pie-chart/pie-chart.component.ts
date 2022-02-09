@@ -24,10 +24,9 @@ interface ChartSeries {
 @Component({
   selector: 'safe-pie-chart',
   templateUrl: './pie-chart.component.html',
-  styleUrls: ['./pie-chart.component.scss']
+  styleUrls: ['./pie-chart.component.scss'],
 })
 export class SafePieChartComponent implements OnInit {
-
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -37,9 +36,7 @@ export class SafePieChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

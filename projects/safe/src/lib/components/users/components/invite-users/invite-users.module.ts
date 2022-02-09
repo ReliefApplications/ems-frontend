@@ -8,11 +8,10 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { SafeAddUserModule } from '../add-user/add-user.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    SafeInviteUsersComponent
-  ],
+  declarations: [SafeInviteUsersComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,8 +23,9 @@ import { SafeAddUserModule } from '../add-user/add-user.module';
     DropDownsModule,
     ButtonModule,
     ButtonsModule,
-    SafeAddUserModule
+    SafeAddUserModule,
+    TranslateModule,
   ],
-  exports: [SafeInviteUsersComponent]
+  exports: [SafeInviteUsersComponent],
 })
-export class SafeInviteUsersModule { }
+export class SafeInviteUsersModule {}

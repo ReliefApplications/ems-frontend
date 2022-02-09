@@ -2,14 +2,14 @@
     <div class="top">
         <mat-form-field appearance="outline">
             <mat-icon matPrefix>search</mat-icon>
-            <input id="custom-search" matInput [formControl]="search" type="search" placeholder="Search...">
+            <input id="custom-search" matInput [formControl]="search" type="search" [placeholder]="'filter.search' | translate">
         </mat-form-field>
-        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">{{ show ? 'Hide Filter' : 'Show Filter' }}
+        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">{{ show ? ('filter.hide' | translate) : 'filter.show' | translate }}
         </safe-button>
     </div>
     <div class="advanced" *ngIf="show">
         <mat-form-field appearance="outline">
-            <mat-label>Date Range</mat-label>
+            <mat-label>{{'filter.date' | translate}}</mat-label>
             <mat-date-range-input [rangePicker]="rangePicker">
                 <input formControlName="startDate" matStartDate>
                 <input formControlName="endDate" matEndDate>
@@ -17,25 +17,30 @@
             <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
             <mat-date-range-picker #rangePicker>
                 <mat-date-range-picker-actions>
-                    <safe-button matDateRangePickerCancel (click)="clearDateFilter()">Clear range</safe-button>
+                    <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
+                        {{'action.clear' | translate}}
+                    </safe-button>
                     <safe-button category="secondary" variant="primary" matDateRangePickerApply>
-                        Apply
+                        {{'action.apply' | translate}}
                     </safe-button>
                 </mat-date-range-picker-actions>
             </mat-date-range-picker>
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Status</mat-label>
+            <mat-label>{{'global.status' | translate}}</mat-label>
             <mat-select formControlName="status">
                 <mat-option>-</mat-option>
                 <mat-option value="active">
-                    Active
+                    {{'status.active' | translate}}
                 </mat-option>
                 <mat-option value="pending">
-                    Pending
+                    {{'status.pending' | translate}}
+                </mat-option>
+                <mat-option value="archived">
+                    {{'status.archived' | translate}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <safe-button variant="danger" (click)="clear()">Clear Filters</safe-button>
+        <safe-button variant="danger" (click)="clear()">{{'filter.clear' | translate}}</safe-button>
     </div>
 </div>

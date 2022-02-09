@@ -4,13 +4,12 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'safe-previous-button',
   templateUrl: './previous-button.component.html',
-  styleUrls: ['./previous-button.component.scss']
+  styleUrls: ['./previous-button.component.scss'],
 })
 export class SafePreviousButtonComponent implements OnInit {
-
   @Input() path = '';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {}
 

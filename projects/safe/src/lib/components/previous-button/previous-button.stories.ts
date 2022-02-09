@@ -7,22 +7,18 @@ export default {
   component: SafePreviousButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        RouterTestingModule.withRoutes([]),
-        SafePreviousButtonModule
-      ],
-      providers: []
-    })
+      imports: [RouterTestingModule.withRoutes([]), SafePreviousButtonModule],
+      providers: [],
+    }),
   ],
-  title: 'SAFE/Previous button'
+  title: 'SAFE/Previous button',
 } as Meta;
 
-
-const Template: Story<SafePreviousButtonComponent> = args => ({
+const TEMPLATE: Story<SafePreviousButtonComponent> = (args) => ({
   props: {
-    ...args
-  }
+    ...args,
+  },
 });
 
-export const Default = Template.bind({});
-Default.args = {};
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {};

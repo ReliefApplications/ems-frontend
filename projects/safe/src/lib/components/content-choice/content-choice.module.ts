@@ -12,8 +12,8 @@ import { SafeContentChoiceComponent } from './content-choice.component';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatRippleModule
+    MatRippleModule,
   ],
-  exports: [SafeContentChoiceComponent]
+  exports: [SafeContentChoiceComponent],
 })
-export class SafeContentChoiceModule { }
+export class SafeContentChoiceModule {}

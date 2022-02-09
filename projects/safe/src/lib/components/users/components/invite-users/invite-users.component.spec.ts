@@ -8,9 +8,8 @@ describe('SafeInviteUsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeInviteUsersComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeInviteUsersComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

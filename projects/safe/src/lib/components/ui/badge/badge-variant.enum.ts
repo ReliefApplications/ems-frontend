@@ -1,7 +1,7 @@
 export enum BadgeVariant {
-    DEFAULT = 'default',
-    PRIMARY = 'primary',
-    SUCCESS = 'success',
-    DANGER = 'danger',
-    WARNING = 'warning'
+  DEFAULT = 'default',
+  PRIMARY = 'primary',
+  SUCCESS = 'success',
+  DANGER = 'danger',
+  WARNING = 'warning',
 }
