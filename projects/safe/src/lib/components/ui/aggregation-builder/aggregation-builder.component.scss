@@ -1,35 +1,24 @@
-.data-source {
+.aggregation-data-source {
   display: flex;
-}
+  gap: 8px;
+  flex-wrap: wrap;
 
-.forms-dropdown {
-  display: flex;
-  flex: 30%;
-}
-
-.tagbox {
-  width: 100%;
-  display: flex;
-  flex: 70%;
-  height: 100%;
-}
-
-.builder-form {
-  flex: 60%;
-
-  .safe-pipeline {
-    min-height: 100px;
+  safe-tagbox {
+    flex: 1;
   }
 }
 
-.preview {
-  flex: 40%;
-  margin-left: 3%;
-  min-height: 200px;
-  height: 100%;
-}
-
-.layout {
+.aggregation-builder {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .aggregation-builder-form {
+    flex: 1;
+  }
+
+  .aggregation-preview {
+    flex: 1;
+  }
 }

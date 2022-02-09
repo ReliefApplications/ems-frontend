@@ -3,7 +3,7 @@ import { FormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { Observable } from 'rxjs';
 import { StageType } from './pipeline-stages';
-import { stageForm } from '../aggregation-builder-forms';
+import { addStage } from '../aggregation-builder-forms';
 
 @Component({
   selector: 'safe-pipeline',
@@ -46,7 +46,7 @@ export class SafePipelineComponent implements OnInit {
   }
 
   public addStage(stage: string) {
-    this.pipelineForm.push(stageForm({ type: stage }));
+    this.pipelineForm.push(addStage({ type: stage }));
   }
 
   public deleteStage(index: number) {

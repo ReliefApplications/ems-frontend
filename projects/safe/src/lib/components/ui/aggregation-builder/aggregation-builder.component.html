@@ -1,39 +1,44 @@
 <safe-spinner *ngIf="loading"></safe-spinner>
 <ng-container *ngIf="!loading">
-  <div class="data-source">
+  <div class="aggregation-data-source">
     <safe-forms-dropdown
-      class="forms-dropdown"
       [forms$]="forms$"
       [sourceControl]="aggregationForm.controls.dataSource"
       (filter)="onFilterDataSource($event)"
       (scrolled)="onScrollDataSource($event)"
     ></safe-forms-dropdown>
     <safe-tagbox
-      class="tagbox"
       [choices$]="fields$"
       [parentControl]="aggregationForm.controls.sourceFields"
       [label]="'aggregation.sourceFields' | translate"
     ></safe-tagbox>
   </div>
-  <div class="layout">
-    <div class="builder-form">
-      <safe-pipeline [fields$]="selectedFields$" [metaFields$]="metaFields$" [pipelineForm]="pipelineForm"></safe-pipeline>
-      <safe-series-mapping [fields$]="mappingFields$" [mappingForm]="aggregationForm.controls.mapping"></safe-series-mapping>
+  <div class="aggregation-builder">
+    <div class="aggregation-builder-form">
+      <safe-pipeline
+        [fields$]="selectedFields$"
+        [metaFields$]="metaFields$"
+        [pipelineForm]="pipelineForm"
+      ></safe-pipeline>
+      <safe-series-mapping
+        [fields$]="mappingFields$"
+        [mappingForm]="aggregationForm.controls.mapping"
+      ></safe-series-mapping>
     </div>
-    <div class="preview">
+    <div class="aggregation-preview">
       <safe-grid
-          [loading]="loadingGrid"
-          [fields]="gridFields"
-          [data]="gridData"
-          [exportable]="false"
-          [resizable]="false"
-          [reorderable]="false"
-          [selectable]="false"
-          [multiSelect]="false"
-          [filterable]="false"
-          [sortable]="false"
-          [searchable]="false"
-          [hasDetails]="false"
+        [loading]="loadingGrid"
+        [fields]="gridFields"
+        [data]="gridData"
+        [exportable]="false"
+        [resizable]="false"
+        [reorderable]="false"
+        [selectable]="false"
+        [multiSelect]="false"
+        [filterable]="false"
+        [sortable]="false"
+        [searchable]="false"
+        [hasDetails]="false"
       ></safe-grid>
     </div>
   </div>

@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { aggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
+import { createAggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
 export class Chart {
   public form: FormGroup;
@@ -14,7 +14,7 @@ export class Chart {
         settings && settings.type ? settings.type : null,
         Validators.required,
       ],
-      aggregation: aggregationForm(
+      aggregation: createAggregationForm(
         settings ? settings.aggregation : null,
         settings ? `${settings.type}-chart` : ''
       ),
