@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 interface DialogData {
@@ -8,10 +15,9 @@ interface DialogData {
 @Component({
   selector: 'safe-expanded-widget',
   templateUrl: './expanded-widget.component.html',
-  styleUrls: ['./expanded-widget.component.scss']
+  styleUrls: ['./expanded-widget.component.scss'],
 })
 export class SafeExpandedWidgetComponent implements OnInit {
-
   @Input() widget: any;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
@@ -20,13 +26,12 @@ export class SafeExpandedWidgetComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedWidgetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) { }
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /*  Close the modal without sending any data.
-  */
+   */
   onClose(): void {
     this.dialogRef.close();
   }

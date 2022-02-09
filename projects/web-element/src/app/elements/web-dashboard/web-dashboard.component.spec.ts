@@ -8,9 +8,8 @@ describe('WebDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WebDashboardComponent ]
-    })
-    .compileComponents();
+      declarations: [WebDashboardComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

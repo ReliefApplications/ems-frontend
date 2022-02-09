@@ -12,7 +12,7 @@
 </ng-template>
 
 <ng-template #floatingTemplate>
-    <div class="safe-floating-widget-choice">
+    <div class="safe-floating-widget-choice" cdkDrag>
         <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)"
             [matTooltip]="type.name" matTooltipPosition="above" (mouseover)="hovered = type.id"
             (mouseout)="hovered = ''">

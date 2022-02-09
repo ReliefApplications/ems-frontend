@@ -10,6 +10,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -24,8 +25,9 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
-    SafeQueryBuilderModule
+    SafeQueryBuilderModule,
+    TranslateModule,
   ],
-  exports: [SafeMapSettingsComponent]
+  exports: [SafeMapSettingsComponent],
 })
-export class SafeMapSettingsModule { }
+export class SafeMapSettingsModule {}

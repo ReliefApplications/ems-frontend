@@ -25,10 +25,9 @@ interface ChartSeries {
 @Component({
   selector: 'safe-column-chart',
   templateUrl: './column-chart.component.html',
-  styleUrls: ['./column-chart.component.scss']
+  styleUrls: ['./column-chart.component.scss'],
 })
 export class SafeColumnChartComponent implements OnInit {
-
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -42,9 +41,7 @@ export class SafeColumnChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

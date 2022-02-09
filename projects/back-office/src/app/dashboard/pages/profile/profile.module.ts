@@ -6,10 +6,6 @@ import { SafeProfileModule } from '@safe/builder';
 
 @NgModule({
   declarations: [ProfileComponent],
-  imports: [
-    CommonModule,
-    ProfileRoutingModule,
-    SafeProfileModule
-  ]
+  imports: [CommonModule, ProfileRoutingModule, SafeProfileModule],
 })
-export class ProfileModule { }
+export class ProfileModule {}

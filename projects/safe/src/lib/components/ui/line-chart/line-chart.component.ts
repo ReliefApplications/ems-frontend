@@ -25,10 +25,9 @@ interface ChartSeries {
 @Component({
   selector: 'safe-line-chart',
   templateUrl: './line-chart.component.html',
-  styleUrls: ['./line-chart.component.scss']
+  styleUrls: ['./line-chart.component.scss'],
 })
 export class SafeLineChartComponent implements OnInit {
-
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -40,12 +39,10 @@ export class SafeLineChartComponent implements OnInit {
 
   public categoryAxis: CategoryAxis = {
     type: 'date',
-    maxDivisions: 10
+    maxDivisions: 10,
   };
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

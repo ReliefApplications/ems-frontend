@@ -5,18 +5,16 @@ import { BadgeVariant } from './badge-variant.enum';
 @Component({
   selector: 'safe-badge',
   templateUrl: './badge.component.html',
-  styleUrls: ['./badge.component.scss']
+  styleUrls: ['./badge.component.scss'],
 })
 export class SafeBadgeComponent implements OnInit {
-
   @Input() size: BadgeSize | string = BadgeSize.MEDIUM;
 
   @Input() variant: BadgeVariant | string = BadgeVariant.DEFAULT;
 
   @Input() icon = '';
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

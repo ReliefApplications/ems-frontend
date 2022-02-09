@@ -16,6 +16,7 @@ import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SubscriptionsComponent, SubscriptionModalComponent],
@@ -36,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider';
     SafeConfirmModalModule,
     MatAutocompleteModule,
     MatDividerModule,
-    SafeButtonModule
-  ]
+    SafeButtonModule,
+    TranslateModule,
+  ],
 })
-export class SubscriptionsModule { }
+export class SubscriptionsModule {}

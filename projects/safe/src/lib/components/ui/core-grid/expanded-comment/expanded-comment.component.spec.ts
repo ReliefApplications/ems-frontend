@@ -8,9 +8,8 @@ describe('SafeExpandedCommentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeExpandedCommentComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeExpandedCommentComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

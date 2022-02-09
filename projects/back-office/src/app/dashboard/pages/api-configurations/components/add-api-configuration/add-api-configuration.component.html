@@ -1,16 +1,16 @@
-<h1 mat-dialog-title>New API Configuration</h1>
+<h1 mat-dialog-title>{{'APIConf.new' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="apiForm">
         <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
+            <mat-label>{{'global.name' | translate}}</mat-label>
+            <input matInput formControlName="name" type="text" [placeholder]="'global.namePlaceholder' | translate"/>
             <mat-error *ngIf="name?.errors">
-              Only letters, hypens, or underscores are accepted
+                {{'APIConf.warning' | translate}}
             </mat-error>
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="apiForm.value" cdkFocusInitial color="primary" [disabled]="!apiForm.valid">Create</button>
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="apiForm.value" cdkFocusInitial color="primary" [disabled]="!apiForm.valid">{{'action.create' | translate}}</button>
 </div>

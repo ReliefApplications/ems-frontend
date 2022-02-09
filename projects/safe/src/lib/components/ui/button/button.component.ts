@@ -1,4 +1,11 @@
-import { Component, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  Input,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
@@ -8,12 +15,9 @@ import { ButtonVariant } from './button-variant.enum';
 @Component({
   selector: 'safe-button',
   templateUrl: './button.component.html',
-  styleUrls: [
-    './button.component.scss'
-  ]
+  styleUrls: ['./button.component.scss'],
 })
-export class SafeButtonComponent implements OnInit  {
-
+export class SafeButtonComponent implements OnInit {
   @Input() category: ButtonCategory | string = ButtonCategory.PRIMARY;
 
   @Input() size: ButtonSize | string = ButtonSize.MEDIUM;
@@ -25,7 +29,8 @@ export class SafeButtonComponent implements OnInit  {
   @Input() block = false;
 
   @HostBinding('class.disabled')
-  @Input() disabled = false;
+  @Input()
+  disabled = false;
 
   @Input() loading = false;
 

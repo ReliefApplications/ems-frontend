@@ -8,9 +8,8 @@ describe('SafeFormModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeFormModalComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeFormModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

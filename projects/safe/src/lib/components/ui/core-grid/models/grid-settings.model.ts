@@ -5,25 +5,25 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
  * Grid Settings Interface.
  */
 export interface GridSettings {
-    id?: string;
-    query?: {
-        name: string;
-        fields: any[];
-        sort?: {
-            field?: string;
-            order?: 'asc' | 'desc';
-        },
-        filter?: CompositeFilterDescriptor
+  id?: string;
+  query?: {
+    name: string;
+    fields: any[];
+    sort?: {
+      field?: string;
+      order?: 'asc' | 'desc';
     };
-    actions?: {
-        delete?: boolean;
-        history?: boolean;
-        convert?: boolean;
-        update?: boolean;
-        inlineEdition?: boolean;
-    };
-    // showDetails?: boolean;
-    // showExport?: boolean;
-    // showFilters?: boolean;
-    defaultLayout?: any;
+    filter?: CompositeFilterDescriptor;
+  };
+  actions?: {
+    delete?: boolean;
+    history?: boolean;
+    convert?: boolean;
+    update?: boolean;
+    inlineEdition?: boolean;
+  };
+  // showDetails?: boolean;
+  // showExport?: boolean;
+  // showFilters?: boolean;
+  defaultLayout?: any;
 }
