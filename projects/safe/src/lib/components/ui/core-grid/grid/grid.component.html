@@ -316,7 +316,7 @@
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false">
+        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false" [sticky]="true">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <safe-grid-row-actions [item]="dataItem" [actions]="actions" (action)="action.emit($event)">
                 </safe-grid-row-actions>
