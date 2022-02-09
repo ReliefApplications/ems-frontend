@@ -184,7 +184,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.survey.showNavigationButtons = false;
     this.setPages();
-    this.survey.onComplete.add(this.complete);
+    this.survey.onComplete.add(this.onComplete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
@@ -241,7 +241,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    *
    * @param survey Survey instance.
    */
-  public complete = async () => {
+  public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
     const data = this.survey.data;
