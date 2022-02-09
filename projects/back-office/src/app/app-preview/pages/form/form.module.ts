@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import { SafeFormModule, SafeButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [FormComponent],
@@ -10,8 +11,9 @@ import { SafeFormModule, SafeButtonModule } from '@safe/builder';
     CommonModule,
     FormRoutingModule,
     SafeFormModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
-  exports: [FormComponent]
+  exports: [FormComponent],
 })
-export class FormModule { }
+export class FormModule {}

@@ -5,12 +5,12 @@ import { ApplicationsComponent } from './applications.component';
 const routes: Routes = [
   {
     path: '',
-    component: ApplicationsComponent
-  }
+    component: ApplicationsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ApplicationsRoutingModule { }
+export class ApplicationsRoutingModule {}

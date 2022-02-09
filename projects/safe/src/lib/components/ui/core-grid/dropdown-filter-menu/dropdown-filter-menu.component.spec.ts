@@ -8,9 +8,8 @@ describe('SafeDropdownFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeDropdownFilterMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeDropdownFilterMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

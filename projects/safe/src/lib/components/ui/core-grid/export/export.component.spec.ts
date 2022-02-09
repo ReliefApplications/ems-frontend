@@ -8,9 +8,8 @@ describe('SafeExportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeExportComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeExportComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

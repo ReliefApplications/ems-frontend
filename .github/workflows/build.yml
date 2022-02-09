@@ -6,6 +6,10 @@ on:
       - 'dev'
       - 'release-*'
       - 'hotfix-*'
+  pull_request:
+    branches:
+      - 'release-*'
+      - 'hotfix-*'
 
 jobs:
   build:
@@ -13,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [15.x]
+        node-version: [16.x]
 
     steps:
       - name: Checkout
@@ -36,6 +40,6 @@ jobs:
       - name: Build Shared Library
         run: npm run build -- --prod safe
       - name: Build Back-office
-        run: npm run build:az:uat:back
+        run: npm run build -- --configuration=azure-uat back-office
       - name: Build Front-office
-        run: npm run build:az:uat:front
+        run: npm run build -- --configuration=azure-uat front-office

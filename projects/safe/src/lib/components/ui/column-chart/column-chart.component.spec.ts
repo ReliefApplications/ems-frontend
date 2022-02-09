@@ -8,9 +8,8 @@ describe('SafeColumnChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeColumnChartComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeColumnChartComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

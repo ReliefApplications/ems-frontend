@@ -9,23 +9,23 @@
     </div>
     <div class="title">{{ application.name }}</div>
     <div class="bottom">
-        <span>Created: {{ application.createdAt | date: 'mediumDate' }}</span>
+        <span>{{'appSummary.created' | translate}}: {{ application.createdAt | date: 'mediumDate' }}</span>
         <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
         </safe-button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="preview.emit()">
                 <mat-icon>preview</mat-icon>
-                Preview
+                {{'action.preview' | translate}}
             </button>
             <button mat-menu-item (click)="clone.emit()" *ngIf="application.canUpdate">
                 <mat-icon>file_copy</mat-icon>
-                Duplicate
+                {{'action.duplicate' | translate}}
             </button>
             <ng-container *ngIf="application.canDelete">
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="delete.emit()">
                     <mat-icon>delete</mat-icon>
-                    Delete
+                    {{'action.delete' | translate}}
                 </button>
             </ng-container>
         </mat-menu>

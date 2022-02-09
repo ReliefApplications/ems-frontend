@@ -5,6 +5,11 @@
   "projects": {
     "safe": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/safe",
       "sourceRoot": "projects/safe/src",
       "prefix": "safe",
@@ -19,7 +24,8 @@
             "production": {
               "tsConfig": "projects/safe/tsconfig.lib.prod.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -30,14 +36,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/safe/tsconfig.lib.json",
-              "projects/safe/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/safe/**/*.ts",
+              "projects/safe/**/*.html"
             ]
           }
         }
@@ -64,6 +67,11 @@
             "tsConfig": "projects/back-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -115,7 +123,36 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.azure.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -138,11 +175,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -165,11 +204,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -198,7 +239,36 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.guyane.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -227,7 +297,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -235,19 +305,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "back-office:build"
+            "browserTarget": "back-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "back-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -263,6 +343,11 @@
             "tsConfig": "projects/back-office/tsconfig.spec.json",
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -280,29 +365,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/back-office/tsconfig.app.json",
-              "projects/back-office/tsconfig.spec.json",
-              "projects/back-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/back-office/**/*.ts",
+              "projects/back-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/back-office/e2e/protractor.conf.js",
-            "devServerTarget": "back-office:serve"
+            "protractorConfig": "projects/back-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "back-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "back-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -327,6 +411,11 @@
             "tsConfig": "projects/front-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -378,7 +467,34 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -405,7 +521,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -432,7 +548,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -459,7 +575,34 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.guyane.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -486,7 +629,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -494,19 +637,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "front-office:build"
+            "browserTarget": "front-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "front-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -522,6 +675,11 @@
             "tsConfig": "projects/front-office/tsconfig.spec.json",
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -535,29 +693,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/front-office/tsconfig.app.json",
-              "projects/front-office/tsconfig.spec.json",
-              "projects/front-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/front-office/**/*.ts",
+              "projects/front-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/front-office/e2e/protractor.conf.js",
-            "devServerTarget": "front-office:serve"
+            "protractorConfig": "projects/front-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "front-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "front-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -582,6 +739,11 @@
             "tsConfig": "projects/web-element/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],
@@ -631,7 +793,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "10mb"
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -639,19 +801,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "web-element:build"
+            "browserTarget": "web-element:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "web-element:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -667,6 +839,11 @@
             "tsConfig": "projects/web-element/tsconfig.spec.json",
             "karmaConfig": "projects/web-element/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-element/src/favicon.ico",
               "projects/web-element/src/assets"
             ],
@@ -679,29 +856,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/web-element/tsconfig.app.json",
-              "projects/web-element/tsconfig.spec.json",
-              "projects/web-element/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/web-element/**/*.ts",
+              "projects/web-element/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/web-element/e2e/protractor.conf.js",
-            "devServerTarget": "web-element:serve"
+            "protractorConfig": "projects/web-element/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "web-element:serve:production"
+            },
+            "development": {
+              "devServerTarget": "web-element:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }

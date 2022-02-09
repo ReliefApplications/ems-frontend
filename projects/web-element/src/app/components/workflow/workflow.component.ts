@@ -1,15 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Workflow, Step } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from '../../graphql/queries';
+import {
+  GetWorkflowByIdQueryResponse,
+  GET_WORKFLOW_BY_ID,
+} from '../../graphql/queries';
 
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  styleUrls: ['./workflow.component.scss']
+  styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent implements OnInit {
-
   @Input() id = '';
 
   // === DATA ===
@@ -21,26 +23,26 @@ export class WorkflowComponent implements OnInit {
   public activeStep = 0;
   public step: Step | null = null;
 
-  constructor(
-    private apollo: Apollo
-  ) { }
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.apollo.watchQuery<GetWorkflowByIdQueryResponse>({
-      query: GET_WORKFLOW_BY_ID,
-      variables: {
-        id: this.id
-      }
-    }).valueChanges.subscribe((res) => {
-      if (res.data.workflow) {
-        this.workflow = res.data.workflow;
-        this.steps = res.data.workflow.steps || [];
-        this.loading = res.loading;
-        if (this.steps.length > 0) {
-          this.onOpenStep(0);
+    this.apollo
+      .watchQuery<GetWorkflowByIdQueryResponse>({
+        query: GET_WORKFLOW_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+      .valueChanges.subscribe((res) => {
+        if (res.data.workflow) {
+          this.workflow = res.data.workflow;
+          this.steps = res.data.workflow.steps || [];
+          this.loading = res.loading;
+          if (this.steps.length > 0) {
+            this.onOpenStep(0);
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -54,7 +56,7 @@ export class WorkflowComponent implements OnInit {
   }
 
   /* Get data from within selected step
-  */
+   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {

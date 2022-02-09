@@ -6,11 +6,7 @@ import { SafeRecordHistoryModule } from '../record-history/record-history.module
 
 @NgModule({
   declarations: [RecordHistoryModalComponent],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    SafeRecordHistoryModule
-  ],
-  exports: [RecordHistoryModalComponent]
+  imports: [CommonModule, MatDialogModule, SafeRecordHistoryModule],
+  exports: [RecordHistoryModalComponent],
 })
-export class SafeRecordHistoryModalModule { }
+export class SafeRecordHistoryModalModule {}

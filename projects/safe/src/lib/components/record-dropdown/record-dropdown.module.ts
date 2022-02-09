@@ -6,18 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [
-    SafeRecordDropdownComponent
-  ],
+  declarations: [SafeRecordDropdownComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
   ],
-  exports: [
-    SafeRecordDropdownComponent
-  ]
+  exports: [SafeRecordDropdownComponent],
 })
-export class SafeRecordDropdownModule { }
+export class SafeRecordDropdownModule {}

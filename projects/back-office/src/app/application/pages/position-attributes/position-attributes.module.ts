@@ -9,11 +9,10 @@ import { MatTableModule } from '@angular/material/table';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
 import { PositionAttributesComponent } from './position-attributes.component';
 import { SafePreviousButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    PositionAttributesComponent,
-  ],
+  declarations: [PositionAttributesComponent],
   imports: [
     CommonModule,
     PositionAttributesRoutingModule,
@@ -22,8 +21,9 @@ import { SafePreviousButtonModule } from '@safe/builder';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    SafePreviousButtonModule
+    SafePreviousButtonModule,
+    TranslateModule,
   ],
-  exports: [PositionAttributesComponent]
+  exports: [PositionAttributesComponent],
 })
-export class PositionAttributesModule { }
+export class PositionAttributesModule {}

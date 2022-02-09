@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeFormComponent],
@@ -17,8 +18,9 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,
-    SafeRecordSummaryModule
+    SafeRecordSummaryModule,
+    TranslateModule,
   ],
-  exports: [SafeFormComponent]
+  exports: [SafeFormComponent],
 })
-export class SafeFormModule { }
+export class SafeFormModule {}
