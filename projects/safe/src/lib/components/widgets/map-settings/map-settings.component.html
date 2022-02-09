@@ -28,8 +28,9 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>Category</mat-label>
+                    <mat-label>{{'widgets.map.category' | translate}}</mat-label>
                     <mat-select formControlName="category">
+                        <mat-option [value]="">{{'global.none' | translate}}</mat-option>
                         <mat-option *ngFor="let field of selectedFields" [value]="field">
                             {{field}}
                         </mat-option>

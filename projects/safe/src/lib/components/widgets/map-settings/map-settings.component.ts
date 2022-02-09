@@ -23,10 +23,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService
-  ) {}
+  constructor(private formBuilder: FormBuilder) {}
 
   /*  Build the settings form, using the widget saved parameters.
    */
@@ -46,7 +43,6 @@ export class SafeMapSettingsComponent implements OnInit {
       ],
       category: [
         tileSettings && tileSettings.category ? tileSettings.category : null,
-        Validators.required,
       ],
       zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
       centerLong: [

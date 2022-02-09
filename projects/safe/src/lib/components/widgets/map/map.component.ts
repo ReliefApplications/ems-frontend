@@ -66,7 +66,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   // This will be substituted when the querry returns the catgory tippe
-  private placeholder = 'type';
+  private categoryField: string = '';
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -121,7 +121,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
+  /**
+   * Creates the map with all useful parameters.
    */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
@@ -165,6 +166,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .addTo(this.map);
     });
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
+    // Categories
+    this.categoryField = this.settings.category;
   }
 
   /**
@@ -195,9 +199,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             res.data[field].edges.map((x: any) => {
               // Gets all markers categories
-              if (!this.categoryNames.includes(x.node[this.placeholder])) {
-                console.log(x.node);
-                this.categoryNames.push(x.node[this.placeholder]);
+              if (!this.categoryNames.includes(x.node[this.categoryField])) {
+                this.categoryNames.push(x.node[this.categoryField]);
               }
               this.drawMarkers(myIcon, x.node);
             });
@@ -208,7 +211,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  /*  Draw markers on the map if the record has coordinates
+  /**
+   *  Draws markers on the map if the record has coordinates.
+   *
+   * @param icon icon to draw
+   * @param item item to draw
    */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);
@@ -226,10 +233,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         const options = MARKER_OPTIONS;
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
-        if (!this.markersCategories[item[this.placeholder]]) {
-          this.markersCategories[item[this.placeholder]] = [];
+        if (!this.markersCategories[item[this.categoryField]]) {
+          this.markersCategories[item[this.categoryField]] = [];
         }
-        this.markersCategories[item[this.placeholder]].push(marker);
+        this.markersCategories[item[this.categoryField]].push(marker);
       }
     }
   }
