@@ -1,10 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, AfterViewInit, Input, OnDestroy, Inject } from '@angular/core';
-import 'leaflet.markercluster';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-
+// Leaflet
+import 'leaflet.markercluster';
 declare let L: any;
 
 const MARKER_OPTIONS = {
@@ -16,13 +16,14 @@ const MARKER_OPTIONS = {
   radius: 6,
 };
 
+/**
+ * Map Widget component.
+ */
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-/*  Map widget using Leaflet.
- */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
@@ -108,16 +109,19 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const apiKey = this.esriApiKey;
     const basemapEnum = 'OSM:Standard';
 
+    // Creates map
     this.map = L.map(this.mapId, {
       zoomControl: false,
       minZoom: 1,
       maxZoom: 18
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
+    // Add zoom control
     L.control.zoom({
       position: 'bottomleft'
     }).addTo(this.map);
 
+    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemapEnum, {
       apiKey
     }).addTo(this.map);
