@@ -28,7 +28,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
-import { filter } from 'rxjs/operators';
 
 localStorage.setItem('loaded', 'false');
 
@@ -125,14 +124,6 @@ const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
     oauth.configure(environment.authConfig);
-    oauth.loadDiscoveryDocumentAndLogin();
-    oauth.events
-      .pipe(filter((e) => e.type === 'token_received'))
-      .subscribe((token) => {
-        console.log('new token');
-        localStorage.setItem('idtoken', oauth.getIdToken());
-        oauth.loadUserProfile();
-      });
   };
 
 /**
@@ -194,9 +185,5 @@ const imports: any[] = [];
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {
-    // REFRESH.asObservable().subscribe((res) => {
-    //   console.log('Schema generated without cache reloading.');
-    // });
-  }
+  constructor(private apollo: Apollo) {}
 }

@@ -2,5 +2,7 @@
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : ('widgets.map.new' | translate)}}</span>
   </kendo-tilelayout-item-header>
-  <div [id]="mapId" class="widget-content"></div>
+  <div [id]="mapId" class="widget-content">
+    <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
+  </div>
 </div>

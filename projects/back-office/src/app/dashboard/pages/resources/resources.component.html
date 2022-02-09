@@ -1,7 +1,16 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-  <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
+  <div class="resources-header">
+    <!-- FILTERING -->
+    <app-filter (filter)="onFilter($event)"></app-filter>
+    <!-- ACTIONS -->
+    <div class="actions">
+      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
+        {{'resources.create' | translate}}
+      </safe-button>
+    </div>
+  </div>
+  
   <table mat-table [dataSource]="resources" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>

@@ -158,6 +158,7 @@
         "tooltip": "If no template is selected, core structure will be loaded"
     },
     "resources": {
+        "create": "Create a resource",
         "delete": "Delete resource",
         "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
     },

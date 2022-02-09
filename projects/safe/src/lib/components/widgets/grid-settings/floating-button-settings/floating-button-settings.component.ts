@@ -241,6 +241,24 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
       });
 
+    this.buttonForm
+      ?.get('selectAll')
+      ?.valueChanges.subscribe((selectAll: boolean) => {
+        if (selectAll) {
+          this.buttonForm?.controls.selectPage.setValue(false);
+          this.buttonForm?.get('selectPage')?.updateValueAndValidity();
+        }
+      });
+
+    this.buttonForm
+      ?.get('selectPage')
+      ?.valueChanges.subscribe((selectPage: boolean) => {
+        if (selectPage) {
+          this.buttonForm?.controls.selectAll.setValue(false);
+          this.buttonForm?.get('selectAll')?.updateValueAndValidity();
+        }
+      });
+
     this.factory = this.componentFactoryResolver.resolveComponentFactory(
       SafeQueryBuilderComponent
     );

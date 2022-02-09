@@ -31,6 +31,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataQuery: any;
   private dataSubscription?: Subscription;
 
+  public lastUpdate = '';
+
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() export = true;
@@ -80,6 +82,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private getData(): void {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(
       (res: any) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
         if (
           ['pie', 'donut', 'line', 'bar', 'column'].includes(
             this.settings.chart.type
