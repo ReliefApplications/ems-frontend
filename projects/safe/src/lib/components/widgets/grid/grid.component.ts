@@ -169,7 +169,7 @@ export class SafeGridWidgetComponent implements OnInit {
       };
       const sortField = this.grid.sortField || '';
       const sortOrder = this.grid.sortOrder || '';
-      const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextNoSelected;
+      const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
       this.emailService.sendMail(options.distributionList, options.subject, body, emailSettings,
         this.grid.selectedRows, sortField, sortOrder);
       if (options.export && this.grid.selectedRows.length > 0) {

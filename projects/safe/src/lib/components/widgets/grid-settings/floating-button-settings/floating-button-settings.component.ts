@@ -173,7 +173,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     });
 
     this.buttonForm?.get('sendMail')?.valueChanges.subscribe((sendEmail: boolean) => {
-      console.log('sendMail');
       if (sendEmail) {
         this.buttonForm?.get('bodyFields')?.setValidators([Validators.required]);
       } else {

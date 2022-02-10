@@ -171,7 +171,7 @@
           <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 100px">
             <mat-tab>
               <ng-template mat-tab-label>
-                Selected records
+                With selected records
               </ng-template>
               <ng-template matTabContent>
                 <mat-form-field appearance="outline" style="width: 100%;">
@@ -187,12 +187,12 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                No records selected
+                With no record
               </ng-template>
               <ng-template matTabContent>
                 <mat-form-field appearance="outline" style="width: 100%;">
                   <mat-label>Body</mat-label>
-                  <textarea matInput formControlName="bodyTextNoSelected" placeholder="Please enter a body template for the email"
+                  <textarea matInput formControlName="bodyTextAlternate" placeholder="Please enter a body template for the email"
                     [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
                 </mat-form-field>
               </ng-template>

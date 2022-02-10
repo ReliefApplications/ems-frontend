@@ -195,7 +195,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x)) : [],
         value && value.sendMail ? Validators.required : null),
       bodyText: [value && value.bodyText ? value.bodyText : ''],
-      bodyTextNoSelected: [value && value.bodyTextNoSelected ? value.bodyTextNoSelected : '']
+      bodyTextAlternate: [value && value.bodyTextAlternate ? value.bodyTextAlternate : '']
     });
     return buttonForm;
   }
