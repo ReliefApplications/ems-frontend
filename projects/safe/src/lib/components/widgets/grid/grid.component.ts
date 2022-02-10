@@ -169,7 +169,8 @@ export class SafeGridWidgetComponent implements OnInit {
       };
       const sortField = this.grid.sortField || '';
       const sortOrder = this.grid.sortOrder || '';
-      this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+      const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextNoSelected;
+      this.emailService.sendMail(options.distributionList, options.subject, body, emailSettings,
         this.grid.selectedRows, sortField, sortOrder);
       if (options.export && this.grid.selectedRows.length > 0) {
         this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
