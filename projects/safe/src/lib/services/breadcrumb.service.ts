@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+/** Interface of breadcrumb */
 export interface Breadcrumb {
   alias?: string;
   url: string;
@@ -10,6 +11,10 @@ export interface Breadcrumb {
   queryParams?: any;
 }
 
+/**
+ * Shared Breadcrumb service.
+ * Breacrumbs are links put on top of pages, for internal navigation.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -25,6 +30,14 @@ export class SafeBreadcrumbService {
       );
   }
 
+  /**
+   * Generates breadcrumbs from routing.
+   *
+   * @param route current route
+   * @param url previous url
+   * @param breadcrumbs list of existing breadcrumbs
+   * @returns new bredcrumbs
+   */
   private createBreadcrumbs(
     route: ActivatedRoute,
     url: string = '',
@@ -50,26 +63,27 @@ export class SafeBreadcrumbService {
             this.breadcrumbs.value[breadcrumbs.length] &&
             this.breadcrumbs.value[breadcrumbs.length].url === url
           ) {
-            console.log(this.breadcrumbs.value[breadcrumbs.length]);
             breadcrumbs.push(this.breadcrumbs.value[breadcrumbs.length]);
           } else {
-            console.log({ ...breadcrumb, ...{ url } });
             breadcrumbs.push({ ...breadcrumb, ...{ url } });
           }
         }
       }
-
       return this.createBreadcrumbs(child, url, breadcrumbs);
     }
   }
 
-  public setBreadcrumb(alias: string, name: string) {
+  /**
+   * Edits a breadcrumb, if a placeholder was set for it.
+   *
+   * @param alias alias ( id ) of the breadcrumb.
+   * @param label label to apply
+   */
+  public setBreadcrumb(alias: string, label: string) {
     const breadcrumbs = this.breadcrumbs.getValue();
-    console.log(breadcrumbs);
     const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
-    console.log(breadcrumb);
     if (breadcrumb) {
-      breadcrumb.name = name[0].toUpperCase() + name.slice(1);
+      breadcrumb.name = label[0].toUpperCase() + label.slice(1);
       this.breadcrumbs.next(breadcrumbs);
     }
   }
