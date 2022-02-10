@@ -174,6 +174,8 @@ export class SafeTabFilterComponent implements OnInit {
           }
         });
       }
+    } else {
+      this.populateMetaFields();
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
@@ -209,6 +211,7 @@ export class SafeTabFilterComponent implements OnInit {
               JSON.parse(localRes),
               meta.choicesByUrl
             ),
+            choicesByUrl: null,
           };
         } else {
           const res: any =
@@ -217,6 +220,7 @@ export class SafeTabFilterComponent implements OnInit {
           this.metaFields[fieldName] = {
             ...meta,
             choices: this.extractChoices(res, meta.choicesByUrl),
+            choicesByUrl: null,
           };
         }
       }

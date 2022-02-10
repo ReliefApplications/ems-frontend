@@ -1,5 +1,11 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
+import { debounceTime } from 'rxjs/operators';
+import { scrollFactory } from '../../query-builder/query-builder.component';
+import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
 import { Chart } from './charts/chart';
 import {
   CHART_TYPES,
@@ -12,6 +18,14 @@ import {
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
   styleUrls: ['./chart-settings.component.scss'],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory },
+  ],
 })
 /*  Modal content for the settings of the chart widgets.
  */
@@ -35,12 +49,17 @@ export class SafeChartSettingsComponent implements OnInit {
   public type: any;
 
   // === DISPLAY PREVIEW ===
-  private pipeline?: string;
-  public pipelineChanged = false;
   public settings: any;
 
   public get chartForm(): FormGroup {
     return (this.tileForm?.controls.chart as FormGroup) || null;
+  }
+
+  public get aggregationForm(): FormGroup {
+    return (
+      ((this.tileForm?.controls.chart as FormGroup).controls
+        .aggregation as FormGroup) || null
+    );
   }
 
   constructor(private formBuilder: FormBuilder) {}
@@ -74,24 +93,15 @@ export class SafeChartSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    const chartForm = this.tileForm?.get('chart') as FormGroup;
-    chartForm.controls.type.valueChanges.subscribe((value) => {
+    this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
     });
 
-    this.pipeline = chartSettings.pipeline;
     this.settings = this.tileForm?.value;
-    chartForm.controls.pipeline.valueChanges.subscribe((value) => {
-      this.pipelineChanged = value !== this.pipeline;
-    });
-    chartForm.valueChanges.subscribe((value) => {
-      this.settings = { chart: { ...value, ...{ pipeline: this.pipeline } } };
-    });
-  }
-
-  public refreshPipeline(): void {
-    this.pipeline = this.tileForm?.get('chart.pipeline')?.value;
-    this.settings = this.tileForm?.value;
-    this.pipelineChanged = false;
+    this.aggregationForm.valueChanges
+      .pipe(debounceTime(1000))
+      .subscribe((value) => {
+        this.settings = this.tileForm?.value;
+      });
   }
 }

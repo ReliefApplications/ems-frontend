@@ -12,6 +12,7 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { createQueryForm } from '../query-builder/query-builder-forms';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -63,7 +64,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
           : this.queryBuilder.getQueryNameFromResourceName(
               this.data.resourceName
             );
-        this.form = this.queryBuilder.createQueryForm({
+        this.form = createQueryForm({
           name: queryName,
           fields: hasDataForm ? this.data.form.value.fields : [],
           sort: hasDataForm ? this.data.form.value.sort : {},

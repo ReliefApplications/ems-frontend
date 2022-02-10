@@ -28,6 +28,7 @@ import {
   EditPageMutationResponse,
   EDIT_PAGE,
 } from '../../../graphql/mutations';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-form',
@@ -45,6 +46,7 @@ export class FormComponent implements OnInit, OnDestroy {
   public form?: Form;
   public completed = false;
   public hideNewRecord = false;
+  public querySubscription?: Subscription;
 
   // === TAB NAME EDITION ===
   public formActive = false;
@@ -72,66 +74,66 @@ export class FormComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
+      // If a query is already loading, cancel it
+      if (this.querySubscription) {
+        this.querySubscription.unsubscribe();
+      }
       if (this.isStep) {
-        this.apollo
-          .watchQuery<GetStepByIdQueryResponse>({
+        this.querySubscription = this.apollo
+          .query<GetStepByIdQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
-            this.step = res.data.step;
-            this.breadcrumbService.setBreadcrumb('@form', this.step.name || '');
-            this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.step = res.data.step;
+              this.breadcrumbService.setBreadcrumb('@form', this.step.name || '');
+              return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
                 },
-              })
-              .valueChanges.subscribe((res2) => {
-                this.form = res2.data.form;
-                this.tabNameForm = new FormGroup({
-                  tabName: new FormControl(
-                    this.step?.name,
-                    Validators.required
-                  ),
-                });
-                this.applicationId =
-                  this.step?.workflow?.page?.application?.id || '';
-                this.loading = res2.data.loading;
               });
+            })
+          )
+          .subscribe((res) => {
+            this.form = res.data.form;
+            this.tabNameForm = new FormGroup({
+              tabName: new FormControl(this.step?.name, Validators.required),
+            });
+            this.applicationId =
+              this.step?.workflow?.page?.application?.id || '';
+            this.loading = res.data.loading;
           });
       } else {
-        this.apollo
-          .watchQuery<GetPageByIdQueryResponse>({
+        this.querySubscription = this.apollo
+          .query<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
-            this.page = res.data.page;
-            this.breadcrumbService.setBreadcrumb('@form', this.page.name || '');
-            this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.page = res.data.page;
+              this.breadcrumbService.setBreadcrumb('@form', this.page.name || '');
+              return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,
                 },
-              })
-              .valueChanges.subscribe((res2) => {
-                this.form = res2.data.form;
-                this.tabNameForm = new FormGroup({
-                  tabName: new FormControl(
-                    this.page?.name,
-                    Validators.required
-                  ),
-                });
-                this.applicationId = this.page?.application?.id || '';
-                this.loading = res2.data.loading;
               });
+            })
+          )
+          .subscribe((res2) => {
+            this.form = res2.data.form;
+            this.tabNameForm = new FormGroup({
+              tabName: new FormControl(this.page?.name, Validators.required),
+            });
+            this.applicationId = this.page?.application?.id || '';
+            this.loading = res2.data.loading;
           });
       }
     });
