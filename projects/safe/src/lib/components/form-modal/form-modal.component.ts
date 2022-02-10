@@ -75,8 +75,7 @@ export class SafeFormModalComponent implements OnInit {
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
-  // === SURVEY COLORS
-  primaryColor = '#008DC9';
+  environment: any;
 
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
@@ -84,6 +83,7 @@ export class SafeFormModalComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject('environment') environment: any,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
@@ -93,13 +93,15 @@ export class SafeFormModalComponent implements OnInit {
     private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
+    this.environment = environment;
   }
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
+    defaultThemeColorsSurvey['$main-hover-color'] =
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 

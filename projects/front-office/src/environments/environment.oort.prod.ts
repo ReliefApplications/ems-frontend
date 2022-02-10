@@ -1,4 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
+import { theme } from '../themes/oort';
 
 const authConfig: AuthConfig = {
   issuer:
@@ -24,5 +25,7 @@ export const environment = {
   module: 'frontoffice',
   availableLanguages: ['en'],
   authConfig,
-  esriApiKey: 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
+  esriApiKey:
+    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
+  theme,
 };
