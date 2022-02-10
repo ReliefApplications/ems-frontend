@@ -1,57 +1,75 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject} from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { request } from '@esri/arcgis-rest-request';
 import { ApiKey } from '@esri/arcgis-rest-auth';
 
+/**
+ * Shared ArcGIS service.
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeArcGISService {
+  private availableLayers = new BehaviorSubject<any[]>([]);
+  private selectedLayer = new BehaviorSubject<any>([]);
 
-  private suggestionsSource = new BehaviorSubject<any[]>([]);
-  private currentItemSource = new BehaviorSubject<any>([]);
+  public availableLayers$ = this.availableLayers.asObservable();
+  public selectedLayer$ = this.selectedLayer.asObservable();
 
-  public suggestions$ = this.suggestionsSource.asObservable();
-  public currentItem$ = this.currentItemSource.asObservable();
-
-  private apikey = 'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
   private authentication: any;
 
-  constructor() {
+  constructor(@Inject('environment') environment: any,) {
     this.authentication = new ApiKey({
-      key: this.apikey
+      key: environment.esriApiKey,
     });
   }
 
-  public getSuggestions(searchTerm: string): void
-  {
-    request('https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' + searchTerm, {
-      authentication: this.authentication
-    })
-      .then((response: any) => {
-        this.suggestionsSource.next(response.results);
-      });
+  /**
+   * Searchs through ArcGIS available layers, and returns filtered list.
+   *
+   * @param search search value
+   */
+  public searchLayers(search: string): void {
+    request(
+      'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
+        search,
+      {
+        authentication: this.authentication,
+      }
+    ).then((response: any) => {
+      this.availableLayers.next(response.results);
+    });
   }
 
-  public clearSuggestions(): void
-  {
-    this.suggestionsSource.next([]);
+  /**
+   * Clears search through layers.
+   */
+  public clearSearchLayers(): void {
+    this.availableLayers.next([]);
   }
 
-  public getItem(id: string): void
-  {
-    request('https://www.arcgis.com/sharing/rest/content/items/' + id + '?f=pjson', {
-      authentication: this.authentication
-    })
-      .then((response: any) => {
-        if (response) {
-          this.currentItemSource.next(response);
-        }
-      });
+  /**
+   * Gets layers by its id.
+   *
+   * @param id layer id.
+   */
+  public getLayer(id: string): void {
+    request(
+      'https://www.arcgis.com/sharing/rest/content/items/' + id + '?f=pjson',
+      {
+        authentication: this.authentication,
+      }
+    ).then((response: any) => {
+      if (response) {
+        this.selectedLayer.next(response);
+      }
+    });
   }
 
-  public clearItem(): void
-  {
-    this.currentItemSource.next([]);
+  /**
+   * Clears current selected layer.
+   */
+  public clearSelectedLayer(): void {
+    this.selectedLayer.next([]);
   }
 }

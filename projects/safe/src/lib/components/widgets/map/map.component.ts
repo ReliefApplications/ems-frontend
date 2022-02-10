@@ -13,6 +13,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import 'leaflet.markercluster';
 declare let L: any;
 
+/** Default marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
@@ -22,7 +23,7 @@ const MARKER_OPTIONS = {
   radius: 6,
 };
 
-// Declares an interface that will be used in the cluster markers layers
+/** Declares an interface that will be used in the cluster markers layers */
 interface IMarkersLayerValue {
   [name: string]: any;
 }
@@ -45,7 +46,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   public esriApiKey: string;
 
   // === BASEMAPS ===
-
+  /** Available basemaps */
   private basemapLayers: any = {
     Streets: 'ArcGIS:Streets',
     Navigation: 'ArcGIS:Navigation',
@@ -61,9 +62,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     OSM: 'OSM:Standard',
     'OSM:Streets': 'OSM:Streets',
   };
-
-  private apiKey =
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
 
   // === MARKERS ===
   private markersLayer: any;
@@ -100,7 +98,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  /**
+   * Generation of an unique id for the map ( in case multiple widgets use map ).
+   *
+   * @param parts number of parts
+   * @returns unique id
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -114,7 +116,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
+  /**
+   * Once template is ready, builds the map.
    */
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
@@ -254,7 +257,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  /* Adds each layer to the map.
+  /**
+   * Adds each layer to the map.
+   *
+   * @param res data query result
    */
   private setLayers(res: any): void {
     // Removes map layers
@@ -271,7 +277,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             this.categoryNames.push(x.node[this.settings.category]);
           }
           // Draws all markers
-          this.drawMarkers(x.node);
+          this.drawMarker(x.node);
         });
       }
     }
@@ -289,7 +295,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
           simplifyFactor: 1,
-          apikey: this.apiKey,
+          apikey: this.esriApiKey,
         });
         this.overlays[layer.title].metadata((error: any) => {
           if (!error) {
@@ -310,9 +316,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /*  Draw markers on the map if the record has coordinates
+  /**
+   * Draws markers on the map if the record has coordinates.
+   *
+   * @param item item to draw
    */
-  private drawMarkers(item: any): void {
+  private drawMarker(item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
@@ -336,6 +345,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Removes subscriptions of the component.
+   */
   public ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

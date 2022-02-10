@@ -43,9 +43,9 @@
       </ng-container>
     </div>
     <div class="form-group">
-      <div class="form-group-title">Online layers</div>
+      <div class="form-group-title">{{ 'widgets.map.layers.title' | translate }}</div>
       <mat-form-field appearance="outline">
-        <mat-label> Add new layer </mat-label>
+        <mat-label>{{ 'widgets.map.layers.add' | translate }}</mat-label>
         <input
           type="text"
           matInput
@@ -53,15 +53,16 @@
           [ngModelOptions]="{ standalone: true }"
           (input)="getContent()"
           autocomplete="off"
+          placeholder="{{ 'widgets.map.layers.placeholder' | translate }}"
         />
-        <div *ngIf="suggestions.length > 0" class="layer-list">
+        <div *ngIf="availableLayers.length > 0" class="layer-list">
           <button
-            *ngFor="let suggestion of suggestions"
+            *ngFor="let layer of availableLayers"
             mat-button
-            (click)="addOnlineLayer(suggestion)"
+            (click)="addOnlineLayer(layer)"
           >
-            {{ suggestion.title }}
-            <safe-badge *ngFor="let tag of suggestion.tags">{{
+            {{ layer.title }}
+            <safe-badge *ngFor="let tag of layer.tags">{{
               tag
             }}</safe-badge>
           </button>
@@ -72,7 +73,7 @@
           tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
         "
       >
-        Added layers
+        {{ 'widgets.map.layers.selected' | translate }}
       </h2>
       <h3 *ngFor="let layer of tileForm.value.onlineLayers">
         {{ layer.title }}

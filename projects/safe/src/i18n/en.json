@@ -278,7 +278,13 @@
             "default": "Default display",
             "zoom": "Zoom",
             "category": "Category",
-            "basemap":"Base map"
+            "basemap":"Base map",
+            "layers": {
+                "add": "Select a layer",
+                "title": "Additional layers",
+                "selected": "Selected layers",
+                "placeholder": "Search by name"
+            }
         },
         "scheduler": {
             "new": "New scheduler",

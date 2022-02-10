@@ -41,7 +41,7 @@ export class SafeMapSettingsComponent implements OnInit {
   ];
 
   public search = '';
-  public suggestions: any[] = [];
+  public availableLayers: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -102,13 +102,13 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
 
-    this.arcGisService.clearItem();
+    this.arcGisService.clearSelectedLayer();
 
-    this.arcGisService.suggestions$.subscribe(suggestions => {
-      this.suggestions = suggestions;
+    this.arcGisService.availableLayers$.subscribe(suggestions => {
+      this.availableLayers = suggestions;
     });
 
-    this.arcGisService.currentItem$.subscribe(item => {
+    this.arcGisService.selectedLayer$.subscribe(item => {
       if (item.id) {
         const temp: any[] = [];
         this.tileForm?.value.onlineLayers.map((layer: any) => {
@@ -147,18 +147,18 @@ export class SafeMapSettingsComponent implements OnInit {
   public getContent(): void
   {
     if (this.search === '') {
-      setTimeout(() => { this.arcGisService.clearSuggestions(); }, 400);
+      setTimeout(() => { this.arcGisService.clearSearchLayers(); }, 400);
     }
     else {
-      this.arcGisService.getSuggestions(this.search);
+      this.arcGisService.searchLayers(this.search);
     }
   }
 
   public addOnlineLayer(layer: any): void
   {
     this.search = '';
-    this.arcGisService.getItem(layer.id);
-    this.arcGisService.clearSuggestions();
+    this.arcGisService.getLayer(layer.id);
+    this.arcGisService.clearSearchLayers();
   }
 
   public removeOnlineLayer(id: any): void
