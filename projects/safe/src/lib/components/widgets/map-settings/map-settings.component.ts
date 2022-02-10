@@ -4,13 +4,14 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 
+/**
+ * Settings component of map widget.
+ */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-/*  Modal content for the settings of the map widgets.
- */
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -49,7 +50,8 @@ export class SafeMapSettingsComponent implements OnInit {
     private arcGisService: SafeArcGISService
   ) { }
 
-  /*  Build the settings form, using the widget saved parameters.
+  /**
+   * Builds the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
@@ -120,6 +122,12 @@ export class SafeMapSettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * Utility to have a flat copy of an array.
+   *
+   * @param arr array to flatten
+   * @returns flat copy of the array
+   */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce(
       (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
@@ -127,6 +135,12 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Gets flat copy of the fields
+   * @param fields form fields
+   * @param prefix object prefix
+   * @returns flap copy of fields
+   */
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(
       fields
@@ -144,6 +158,9 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Get Search layers content.
+   */
   public getContent(): void
   {
     if (this.search === '') {
@@ -154,6 +171,11 @@ export class SafeMapSettingsComponent implements OnInit {
     }
   }
 
+  /**
+   * Selects a new layer.
+   *
+   * @param layer layer to select.
+   */
   public addOnlineLayer(layer: any): void
   {
     this.search = '';
@@ -161,6 +183,11 @@ export class SafeMapSettingsComponent implements OnInit {
     this.arcGisService.clearSearchLayers();
   }
 
+  /**
+   * Removes a layer.
+   *
+   * @param id id of layer to remove
+   */
   public removeOnlineLayer(id: any): void
   {
     const temp: any[] = [];
@@ -171,5 +198,4 @@ export class SafeMapSettingsComponent implements OnInit {
     });
     this.tileForm?.controls.onlineLayers.setValue(temp);
   }
-
 }
