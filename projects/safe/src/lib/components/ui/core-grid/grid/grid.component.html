@@ -8,8 +8,8 @@
     (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
     (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->
-    <ng-template kendoGridToolbarTemplate position="top">
-        <input [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
+    <ng-template *ngIf="searchable || reorderable || actions.add || exportable || editable || filterable || admin || hasEnabledActions" kendoGridToolbarTemplate position="top">
+        <input *ngIf="searchable" [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
         <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' | translate}}</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">{{'action.export' | translate}}</button>
@@ -36,7 +36,7 @@
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}"
-            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
+            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect"  [sticky]="true">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->
         <ng-container *ngFor="let field of fields">
@@ -309,14 +309,14 @@
             </kendo-grid-column-group>
         </ng-container>
         <!-- ROW DETAILS -->
-        <kendo-grid-column [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
+        <kendo-grid-column *ngIf="hasDetails" [columnMenu]="false" [width]="54" [resizable]="false" title="Details">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <button style="text-align: center" kendoButton [icon]="'detail-section'" [look]="'flat'"
                     (click)="action.emit({ action: 'details', items: dataItem })" matTooltip="Open detail"></button>
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false">
+        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false" [sticky]="true">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <safe-grid-row-actions [item]="dataItem" [actions]="actions" (action)="action.emit($event)">
                 </safe-grid-row-actions>

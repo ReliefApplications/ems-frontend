@@ -19,6 +19,10 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
 import { Form } from '../../../models/form.model';
+import {
+  addNewField,
+  createQueryForm,
+} from '../../query-builder/query-builder-forms';
 
 @Component({
   selector: 'safe-grid-settings',
@@ -72,7 +76,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         tileSettings && tileSettings.title ? tileSettings.title : '',
         Validators.required,
       ],
-      query: this.queryBuilder.createQueryForm(tileSettings.query),
+      query: createQueryForm(tileSettings.query),
       resource: [
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
@@ -221,7 +225,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       targetFormField: [
         value && value.targetFormField ? value.targetFormField : null,
       ],
-      targetFormQuery: this.queryBuilder.createQueryForm(
+      targetFormQuery: createQueryForm(
         value && value.targetFormQuery ? value.targetFormQuery : null,
         Boolean(value && value.targetForm)
       ),
@@ -252,7 +256,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       export: [value && value.export ? value.export : false],
       bodyFields: this.formBuilder.array(
         value && value.bodyFields
-          ? value.bodyFields.map((x: any) => this.queryBuilder.addNewField(x))
+          ? value.bodyFields.map((x: any) => addNewField(x))
           : [],
         value && value.sendMail ? Validators.required : null
       ),

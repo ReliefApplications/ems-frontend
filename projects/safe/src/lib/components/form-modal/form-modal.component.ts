@@ -216,7 +216,7 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.showNavigationButtons = false;
     this.survey.render(this.containerId);
     this.setPages();
-    this.survey.onComplete.add(this.completeMySurvey);
+    this.survey.onComplete.add(this.onComplete);
   }
 
   /**
@@ -238,7 +238,7 @@ export class SafeFormModalComponent implements OnInit {
    *
    * @param survey Survey instance.
    */
-  public completeMySurvey = (survey: any) => {
+  public onComplete = (survey: any) => {
     this.survey?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId)
       ? this.data.recordId.length

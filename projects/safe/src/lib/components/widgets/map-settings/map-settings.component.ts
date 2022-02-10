@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { createQueryForm } from '../../query-builder/query-builder-forms';
 
 @Component({
   selector: 'safe-map-settings',
@@ -34,7 +35,7 @@ export class SafeMapSettingsComponent implements OnInit {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [tileSettings && tileSettings.title ? tileSettings.title : null],
-      query: this.queryBuilder.createQueryForm(tileSettings.query),
+      query: createQueryForm(tileSettings.query),
       latitude: [
         tileSettings && tileSettings.latitude ? tileSettings.latitude : null,
         Validators.required,

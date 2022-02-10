@@ -409,7 +409,7 @@ export class SafeGridWidgetComponent implements OnInit {
               mutation: EDIT_RECORD,
               variables: {
                 id: value.record,
-                data
+                data,
               },
             })
             .subscribe((res2) => {
