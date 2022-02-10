@@ -271,7 +271,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
-        styles: this.settings.query.style
+        styles: this.settings.query.style,
       },
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
@@ -417,12 +417,16 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataQuery) {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe(
         (res: any) => {
-          console.log("res data = ", res);
           this.loading = false;
           this.error = false;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              const nodes: any[] = [];
+              res.data[field].edges.map((x: any) => {
+                const tempNode = Object.assign({}, x.node);
+                tempNode.meta = x.meta;
+                nodes.push(tempNode);
+              });
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
@@ -918,7 +922,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
-        styles: this.settings.query.style
+        styles: this.settings.query.style,
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         // this.loading = false;

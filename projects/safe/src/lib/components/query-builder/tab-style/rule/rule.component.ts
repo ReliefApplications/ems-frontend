@@ -23,8 +23,8 @@ export class SafeRuleComponent implements OnInit {
   @Input() scalarFields: any[] = [];
   @Input() settings: any;
 
-  public selectedColumns: boolean = false;
-  
+  public selectedColumns = false;
+
   @Output() closeRule = new EventEmitter<any>();
   @Output() changeApplyTo = new EventEmitter<any>();
 

@@ -172,7 +172,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
   ) {}
 
   ngOnInit(): void {
@@ -533,5 +533,34 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.action.emit({ action: 'edit', item, value });
       }
     });
+  }
+
+  /**
+   * Apply custom style to cell
+   *
+   * @param item Item to apply style to.
+   */
+  getDataItemStyle(item: any, field: any): string {
+    let style = ``;
+    console.log('item = ', item);
+    if (item.meta.style.styleAppliedTo === 'selected-columns') {
+      for (const styleField of item.meta.style.fields) {
+        if (styleField.name === field.name) {
+          style = `color:${item.meta.style.textColor};
+            font-weight:${item.meta.style.textStyle} === 'bold' ? 'bold' : 'normal';
+            text-decoration:${item.meta.style.textStyle} === 'underline' ? 'underline' : 'none';
+            font-style:${item.meta.style.textStyle} === 'italic' ? 'italic' : 'normal';
+            background:${item.meta.style.backgroundColor};`;
+        }
+      }
+    } else if (item.meta.style.styleAppliedTo === 'whole-row') {
+      style = `color:${item.meta.style.textColor};
+      font-weight:${item.meta.style.textStyle} === 'bold' ? 'bold' : 'normal';
+      text-decoration:${item.meta.style.textStyle} === 'underline' ? 'underline' : 'none';
+      font-style:${item.meta.style.textStyle} === 'italic' ? 'italic' : 'normal';
+      background:${item.meta.style.backgroundColor};`;
+    }
+
+    return style;
   }
 }

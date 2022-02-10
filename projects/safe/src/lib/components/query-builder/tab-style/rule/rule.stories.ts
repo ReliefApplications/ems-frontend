@@ -1,5 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +24,7 @@ export default {
       declarations: [
         SafeRuleComponent,
         SafeTabFilterComponent,
-        SafeTabFieldsComponent
+        SafeTabFieldsComponent,
       ],
       imports: [
         SafeButtonModule,
@@ -31,7 +36,7 @@ export default {
         StorybookTranslateModule,
         ReactiveFormsModule,
         FormsModule,
-        HttpClientModule
+        HttpClientModule,
       ],
       providers: [
         {
@@ -48,7 +53,7 @@ const TEMPLATE_DEFAULT: Story<SafeRuleComponent> = (args) => ({
   template: `<safe-rule [stylesList]="stylesList" [styleForm]="styleForm" [styleIndex]="styleIndex" 
   [scalarFields]="scalarFields" [settings]="settings" [availableFields]="availableFields" [factory]="factory"></safe-rule>`,
   props: {
-    ...args
+    ...args,
   },
 });
 
@@ -61,7 +66,7 @@ const styleFormGroup = {
   fields: new FormControl([]),
   filter: new FormControl({
     logic: 'and',
-    filters: []
+    filters: [],
   }),
 };
 
@@ -86,36 +91,36 @@ DEFAULT.args = {
   availableFields: [
     {
       args: [],
-      name: "comment",
+      name: 'comment',
       type: {
-        kind: "SCALAR",
-        name: "String",
+        kind: 'SCALAR',
+        name: 'String',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
+      __typename: '__Field',
     },
     {
       args: [],
-      name: "createdAt",
+      name: 'createdAt',
       type: {
-        kind: "SCALAR",
-        name: "DateTime",
+        kind: 'SCALAR',
+        name: 'DateTime',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
+      __typename: '__Field',
     },
     {
       args: [],
-      name: "createdBy",
+      name: 'createdBy',
       type: {
-        kind: "OBJECT",
-        name: "User",
+        kind: 'OBJECT',
+        name: 'User',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
+      __typename: '__Field',
     },
   ],
   settings: {
@@ -125,180 +130,180 @@ DEFAULT.args = {
       delete: true,
       history: true,
       inlineEdition: true,
-      update: true
+      update: true,
     },
     floatingButtons: [],
     id: 7,
-    resource: "616839db04ef57001f8ca8c2",
-    title: "New grid",
+    resource: '616839db04ef57001f8ca8c2',
+    title: 'New grid',
     query: {
-      fields: [ 
+      fields: [
         {
-          kind: "SCALAR",
-          label: "Comment",
-          name: "comment",
-          type: "String"
+          kind: 'SCALAR',
+          label: 'Comment',
+          name: 'comment',
+          type: 'String',
         },
         {
-          kind: "SCALAR",
-          label: "Incremental Id",
-          name: "incrementalId",
-          type: "ID"
-        }
+          kind: 'SCALAR',
+          label: 'Incremental Id',
+          name: 'incrementalId',
+          type: 'ID',
+        },
       ],
       filter: {
-        logic: "or",
-        filters: []
+        logic: 'or',
+        filters: [],
       },
-      name: "allLotsOfRecords",
+      name: 'allLotsOfRecords',
       sort: {
-        field: "",
-        order: "asc"
+        field: '',
+        order: 'asc',
       },
-      template: "",
+      template: '',
       style: [
         {
-          backgroundColor: "rgba(19, 210, 35, 1)",
+          backgroundColor: 'rgba(19, 210, 35, 1)',
           fields: [],
           filter: {
             logic: 'and',
             filters: [
               {
-              field: "comment",
-              operator: "contains",
-              value: "commentaire"
-              }
-            ]
+                field: 'comment',
+                operator: 'contains',
+                value: 'commentaire',
+              },
+            ],
           },
-          styleAppliedTo: "whole-row",
-          textColor: "rgba(0, 0, 0, 1)",
-          textStyle: "underline",
-          title: "Underline",
+          styleAppliedTo: 'whole-row',
+          textColor: 'rgba(0, 0, 0, 1)',
+          textStyle: 'underline',
+          title: 'Underline',
         },
         {
-          backgroundColor: "rgba(255, 0, 0, 1)",
+          backgroundColor: 'rgba(255, 0, 0, 1)',
           fields: [],
           filter: {
             logic: 'and',
             filters: [
               {
-              field: "comment",
-              operator: "contains",
-              value: "commentaire"
-              }
-            ]
+                field: 'comment',
+                operator: 'contains',
+                value: 'commentaire',
+              },
+            ],
           },
-          styleAppliedTo: "whole-row",
-          textColor: "rgba(0, 0, 0, 1)",
-          textStyle: "bold",
-          title: "Bold",
+          styleAppliedTo: 'whole-row',
+          textColor: 'rgba(0, 0, 0, 1)',
+          textStyle: 'bold',
+          title: 'Bold',
         },
-      ]
-    }
+      ],
+    },
   },
   scalarFields: [
     {
       args: [],
-      name: "comment",
+      name: 'comment',
       type: {
-        kind: "SCALAR",
-        name: "String",
+        kind: 'SCALAR',
+        name: 'String',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
+      __typename: '__Field',
     },
     {
       args: [],
-      name: "createdAt",
+      name: 'createdAt',
       type: {
-        kind: "SCALAR",
-        name: "DateTime",
+        kind: 'SCALAR',
+        name: 'DateTime',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
+      __typename: '__Field',
     },
     {
       args: [],
-      name: "id",
+      name: 'id',
       type: {
-        kind: "SCALAR",
-        name: "ID",
+        kind: 'SCALAR',
+        name: 'ID',
         ofType: null,
-        __typename: "__Type"
+        __typename: '__Type',
       },
-      __typename: "__Field"
-    }
+      __typename: '__Field',
+    },
   ],
   styleForm: {
-    "formGroup": {
-      title: "Underline",
-      backgroundColor: "rgba(19, 210, 35, 1)",
-      textColor: "rgba(0, 0, 0, 1)",
-      textStyle: "underline",
-      styleAppliedTo: "whole-row",
+    formGroup: {
+      title: 'Underline',
+      backgroundColor: 'rgba(19, 210, 35, 1)',
+      textColor: 'rgba(0, 0, 0, 1)',
+      textStyle: 'underline',
+      styleAppliedTo: 'whole-row',
       fields: [],
       filter: {
         logic: 'and',
-        filters: []
+        filters: [],
       },
     },
   } as any,
   stylesList: [
     {
-      backgroundColor: "rgba(19, 210, 35, 1)",
+      backgroundColor: 'rgba(19, 210, 35, 1)',
       fields: [],
       filter: {
         logic: 'and',
         filters: [
           {
-          field: "comment",
-          operator: "contains",
-          value: "commentaire"
-          }
-        ]
+            field: 'comment',
+            operator: 'contains',
+            value: 'commentaire',
+          },
+        ],
       },
-      styleAppliedTo: "whole-row",
-      textColor: "rgba(0, 0, 0, 1)",
-      textStyle: "underline",
-      title: "Underline",
+      styleAppliedTo: 'whole-row',
+      textColor: 'rgba(0, 0, 0, 1)',
+      textStyle: 'underline',
+      title: 'Underline',
     },
     {
-      backgroundColor: "rgba(255, 0, 0, 1)",
+      backgroundColor: 'rgba(255, 0, 0, 1)',
       fields: [],
       filter: {
         logic: 'and',
         filters: [
           {
-          field: "comment",
-          operator: "contains",
-          value: "commentaire"
-          }
-        ]
+            field: 'comment',
+            operator: 'contains',
+            value: 'commentaire',
+          },
+        ],
       },
-      styleAppliedTo: "whole-row",
-      textColor: "rgba(0, 0, 0, 1)",
-      textStyle: "bold",
-      title: "Bold",
+      styleAppliedTo: 'whole-row',
+      textColor: 'rgba(0, 0, 0, 1)',
+      textStyle: 'bold',
+      title: 'Bold',
     },
     {
-      backgroundColor: "rgba(64, 55, 161, 1)",
+      backgroundColor: 'rgba(64, 55, 161, 1)',
       fields: [],
       filter: {
         logic: 'and',
         filters: [
           {
-          field: "comment",
-          operator: "contains",
-          value: "commentaire"
-          }
-        ]
+            field: 'comment',
+            operator: 'contains',
+            value: 'commentaire',
+          },
+        ],
       },
-      styleAppliedTo: "whole-row",
-      textColor: "rgba(0, 0, 0, 1)",
-      textStyle: "italic",
-      title: "Italic"
-    }
-  ]
+      styleAppliedTo: 'whole-row',
+      textColor: 'rgba(0, 0, 0, 1)',
+      textStyle: 'italic',
+      title: 'Italic',
+    },
+  ],
 };

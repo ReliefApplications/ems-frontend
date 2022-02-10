@@ -75,7 +75,7 @@ export class SafeTabStyleComponent implements OnInit {
       filter: this.formBuilder.group({
         logic: 'and',
         filters: this.formBuilder.array([], Validators.required),
-      })
+      }),
     });
     this.styles$.push(style);
     this.updateStylesList();
@@ -94,11 +94,11 @@ export class SafeTabStyleComponent implements OnInit {
   }
 
   public onApplyTo(value: boolean): void {
-      if (value) {
-        this.fieldForm?.get('fields')?.setValidators(Validators.required);
-      } else {
-        this.fieldForm?.get('fields')?.clearValidators();
-      }
-      this.fieldForm?.get('fields')?.updateValueAndValidity();
+    if (value) {
+      this.fieldForm?.get('fields')?.setValidators(Validators.required);
+    } else {
+      this.fieldForm?.get('fields')?.clearValidators();
+    }
+    this.fieldForm?.get('fields')?.updateValueAndValidity();
   }
 }

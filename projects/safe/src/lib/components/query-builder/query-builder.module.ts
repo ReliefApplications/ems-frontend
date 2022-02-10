@@ -32,7 +32,7 @@ import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component
     SafeTabFilterComponent,
     SafeTabStyleComponent,
     SafeRuleComponent,
-    SafeRuleListComponent
+    SafeRuleListComponent,
   ],
   imports: [
     CommonModule,
