@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   stories: [
     '../stories/**/*.stories.mdx',
@@ -21,6 +23,7 @@ module.exports = {
       },
     });
 
+    config.resolve.alias['variables.scss'] = path.resolve(__dirname, '../stories/variables.scss');
     // Return the altered config
     return config;
   },

@@ -1,4 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
+import { theme } from '../themes/default';
 
 // const authConfig: AuthConfig = {
 //   issuer:
@@ -27,13 +28,14 @@ const authConfig: AuthConfig = {
  */
 export const environment = {
   production: false,
-  // apiUrl: 'https://oort-dev.oortcloud.tech/api',
-  // subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
-  apiUrl: 'http://localhost:3000',
-  subscriptionApiUrl: 'ws://localhost:3000',
+  apiUrl: 'https://oort-dev.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
+  // apiUrl: 'http://localhost:3000',
+  // subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
   availableLanguages: ['en', 'test'],
   authConfig,
+  theme,
 };
