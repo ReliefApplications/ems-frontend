@@ -51,7 +51,7 @@ export class SafePipelineComponent implements OnInit {
    * @param type type of stage
    */
   public addStage(type: string) {
-    this.pipelineForm.push(addStage({ type: type }));
+    this.pipelineForm.push(addStage({ type }));
   }
 
   /**

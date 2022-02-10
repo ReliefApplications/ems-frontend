@@ -36,7 +36,7 @@
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}"
-            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect">
+            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect"  [sticky]="true">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->
         <ng-container *ngFor="let field of fields">
@@ -316,7 +316,7 @@
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false">
+        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false" [sticky]="true">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <safe-grid-row-actions [item]="dataItem" [actions]="actions" (action)="action.emit($event)">
                 </safe-grid-row-actions>
