@@ -61,13 +61,12 @@ export const addStage = (value: any): FormGroup => {
   }
 };
 
-export const mappingFields = (widgetType: string): string[] => {
+export const mappingFields = (widgetType: string): string[] =>
   // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
   //   return ['xAxis', 'yAxis'];
   // }
   // return [];
-  return ['xAxis', 'yAxis'];
-};
+  ['xAxis', 'yAxis'];
 
 /**
  * Generates a new aggregation form.
