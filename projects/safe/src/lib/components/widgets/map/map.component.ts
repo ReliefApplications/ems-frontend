@@ -13,6 +13,7 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import 'leaflet.markercluster';
 declare let L: any;
 
+/** Default marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
@@ -22,7 +23,7 @@ const MARKER_OPTIONS = {
   radius: 6,
 };
 
-// Declares an interface that will be used in the cluster markers layers
+/** Declares an interface that will be used in the cluster markers layers */
 interface IMarkersLayerValue {
   [name: string]: any;
 }
@@ -45,7 +46,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   public esriApiKey: string;
 
   // === BASEMAPS ===
-
+  /** Available basemaps */
   private basemapLayers: any = {
     Streets: 'ArcGIS:Streets',
     Navigation: 'ArcGIS:Navigation',
@@ -59,7 +60,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     Nova: 'ArcGIS:Nova',
     Midcentury: 'ArcGIS:Midcentury',
     OSM: 'OSM:Standard',
-    'OSM:Streets': 'OSM:Street'
+    'OSM:Streets': 'OSM:Streets',
   };
 
   // === MARKERS ===
@@ -97,7 +98,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  /**
+   * Generation of an unique id for the map ( in case multiple widgets use map ).
+   *
+   * @param parts number of parts
+   * @returns unique id
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -111,7 +116,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
+  /**
+   * Once template is ready, builds the map.
    */
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
@@ -163,10 +169,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       })
       .addTo(this.map);
 
-    
     const basemap = this.basemapLayers[this.settings.basemap]
-    ? this.basemapLayers[this.settings.basemap]
-    : this.basemapLayers.OSM;
+      ? this.basemapLayers[this.settings.basemap]
+      : this.basemapLayers.OSM;
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemap, {
       apiKey: this.esriApiKey,
@@ -247,29 +252,76 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.markersCategories = [];
         this.selectedItem = null;
         this.markersLayer.clearLayers();
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            res.data[field].edges.map((x: any) => {
-              // Gets all markers categories
-              if (!this.categoryNames.includes(x.node[this.categoryField])) {
-                this.categoryNames.push(x.node[this.categoryField]);
-              }
-              this.drawMarkers(myIcon, x.node);
-            });
-          }
-        }
-        this.setMarkers();
+        this.setLayers(res);
       }
     );
   }
 
   /**
-   *  Draws markers on the map if the record has coordinates.
+   * Adds each layer to the map.
    *
-   * @param icon icon to draw
+   * @param res data query result
+   */
+  private setLayers(res: any): void {
+    // Removes map layers
+    if (this.layerControl) {
+      this.layerControl.remove();
+    }
+
+    // Loops throught fields to get all custom markers
+    for (const field in res.data) {
+      if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+        res.data[field].edges.map((x: any) => {
+          // Gets all markers categories
+          if (!this.categoryNames.includes(x.node[this.settings.category])) {
+            this.categoryNames.push(x.node[this.settings.category]);
+          }
+          // Draws all markers
+          this.drawMarker(x.node);
+        });
+      }
+    }
+
+    // Add custom marker categories for each
+    this.categoryNames.map((name: string) => {
+      this.overlays[name] = L.featureGroup
+        .subGroup(this.markersLayer, this.markersCategories[name])
+        .addTo(this.map);
+    });
+
+    // Loops throught online layers and add them to the map
+    if (this.settings.onlineLayers) {
+      this.settings.onlineLayers.map((layer: any) => {
+        this.overlays[layer.title] = L.esri.featureLayer({
+          url: layer.url + '/0',
+          simplifyFactor: 1,
+          apikey: this.esriApiKey,
+        });
+        this.overlays[layer.title].metadata((error: any) => {
+          if (!error) {
+            this.overlays[layer.title].addTo(this.map);
+          } else {
+            console.log('Error at loadind "' + layer.title + '"');
+            console.log(error);
+          }
+        });
+      });
+    }
+
+    // Set ups layer control if more that one layer is added
+    if (this.categoryNames[1] || this.settings.onlineLayers) {
+      this.layerControl = L.control
+        .layers(null, this.overlays, { collapsed: true })
+        .addTo(this.map);
+    }
+  }
+
+  /**
+   * Draws markers on the map if the record has coordinates.
+   *
    * @param item item to draw
    */
-  private drawMarkers(icon: any, item: any): void {
+  private drawMarker(item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
@@ -293,22 +345,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private setMarkers(): void {
-    if (this.layerControl) {
-      this.layerControl.remove();
-    }
-    this.categoryNames.map((name: string) => {
-      this.overlays[name] = L.featureGroup
-        .subGroup(this.markersLayer, this.markersCategories[name])
-        .addTo(this.map);
-    });
-    if (this.categoryNames) {
-      this.layerControl = L.control
-        .layers(null, this.overlays, { collapsed: true })
-        .addTo(this.map);
-    }
-  }
-
+  /**
+   * Removes subscriptions of the component.
+   */
   public ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

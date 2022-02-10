@@ -278,7 +278,13 @@
             "default": "******",
             "zoom": "******",
             "category": "******",
-            "basemap": "******"
+            "basemap": "******",
+            "layers": {
+                "add": "******",
+                "title": "******",
+                "selected": "******",
+                "placeholder": "******"
+            }
         },
         "scheduler": {
             "new": "******",

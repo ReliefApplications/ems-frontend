@@ -1,15 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 
+/**
+ * Settings component of map widget.
+ */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-/*  Modal content for the settings of the map widgets.
- */
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -39,9 +41,17 @@ export class SafeMapSettingsComponent implements OnInit {
     'OSM:Streets'
   ];
 
-  constructor(private formBuilder: FormBuilder) {}
+  public search = '';
+  public availableLayers: any[] = [];
 
-  /*  Build the settings form, using the widget saved parameters.
+  constructor(
+    private formBuilder: FormBuilder,
+    private queryBuilder: QueryBuilderService,
+    private arcGisService: SafeArcGISService
+  ) { }
+
+  /**
+   * Builds the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
@@ -72,6 +82,7 @@ export class SafeMapSettingsComponent implements OnInit {
         tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
         [Validators.min(-90), Validators.max(90)],
       ],
+      onlineLayers: [(tileSettings && tileSettings.onlineLayers) ? tileSettings.onlineLayers : []]
     });
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
@@ -92,8 +103,31 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
+
+    this.arcGisService.clearSelectedLayer();
+
+    this.arcGisService.availableLayers$.subscribe(suggestions => {
+      this.availableLayers = suggestions;
+    });
+
+    this.arcGisService.selectedLayer$.subscribe(item => {
+      if (item.id) {
+        const temp: any[] = [];
+        this.tileForm?.value.onlineLayers.map((layer: any) => {
+          temp.push(layer);
+        });
+        temp.push(item);
+        this.tileForm?.controls.onlineLayers.setValue(temp);
+      }
+    });
   }
 
+  /**
+   * Utility to have a flat copy of an array.
+   *
+   * @param arr array to flatten
+   * @returns flat copy of the array
+   */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce(
       (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
@@ -101,6 +135,12 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Gets flat copy of the fields
+   * @param fields form fields
+   * @param prefix object prefix
+   * @returns flap copy of fields
+   */
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(
       fields
@@ -116,5 +156,46 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         })
     );
+  }
+
+  /**
+   * Get Search layers content.
+   */
+  public getContent(): void
+  {
+    if (this.search === '') {
+      setTimeout(() => { this.arcGisService.clearSearchLayers(); }, 400);
+    }
+    else {
+      this.arcGisService.searchLayers(this.search);
+    }
+  }
+
+  /**
+   * Selects a new layer.
+   *
+   * @param layer layer to select.
+   */
+  public addOnlineLayer(layer: any): void
+  {
+    this.search = '';
+    this.arcGisService.getLayer(layer.id);
+    this.arcGisService.clearSearchLayers();
+  }
+
+  /**
+   * Removes a layer.
+   *
+   * @param id id of layer to remove
+   */
+  public removeOnlineLayer(id: any): void
+  {
+    const temp: any[] = [];
+    this.tileForm?.value.onlineLayers.map((layer: any) => {
+      if (layer.id !== id) {
+        temp.push(layer);
+      }
+    });
+    this.tileForm?.controls.onlineLayers.setValue(temp);
   }
 }

@@ -1,70 +1,118 @@
 <ng-container *ngIf="tileForm">
-    <form [formGroup]="tileForm">
-        <div class="form-group">
-            <div class=form-group-title>{{'global.general' | translate}}</div>
-            <mat-form-field appearance="outline" >
-                <mat-label>{{'global.name' | translate}}</mat-label>
-                <input matInput formControlName="title" type="string" />
-            </mat-form-field>
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <div class="form-group-title">{{ 'global.general' | translate }}</div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'global.name' | translate }}</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">{{ 'widgets.map.data' | translate }}</div>
+      <safe-query-builder
+        [form]="$any(tileForm.controls.query)"
+        [canExpand]="false"
+      ></safe-query-builder>
+      <ng-container *ngIf="selectedFields.length > 0">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'widgets.map.lat' | translate }}</mat-label>
+          <mat-select formControlName="latitude">
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'widgets.map.long' | translate }}</mat-label>
+          <mat-select formControlName="longitude">
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'widgets.map.category' | translate }}</mat-label>
+          <mat-select formControlName="category">
+            <mat-option [value]="">{{ 'global.none' | translate }}</mat-option>
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+            <mat-option>none</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">{{ 'widgets.map.layers.title' | translate }}</div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'widgets.map.layers.add' | translate }}</mat-label>
+        <input
+          type="text"
+          matInput
+          [(ngModel)]="search"
+          [ngModelOptions]="{ standalone: true }"
+          (input)="getContent()"
+          autocomplete="off"
+          placeholder="{{ 'widgets.map.layers.placeholder' | translate }}"
+        />
+        <div *ngIf="availableLayers.length > 0" class="layer-list">
+          <button
+            *ngFor="let layer of availableLayers"
+            mat-button
+            (click)="addOnlineLayer(layer)"
+          >
+            {{ layer.title }}
+            <safe-badge *ngFor="let tag of layer.tags">{{
+              tag
+            }}</safe-badge>
+          </button>
         </div>
-        <div class="form-group">
-            <div class="form-group-title">{{'widgets.map.data' | translate}}</div>
-            <safe-query-builder [form]="$any(tileForm.controls.query)" [canExpand]="false"></safe-query-builder>
-            <ng-container *ngIf="selectedFields.length > 0">
-                <mat-form-field appearance="outline">
-                    <mat-label>{{'widgets.map.lat' | translate}}</mat-label>
-                    <mat-select formControlName="latitude">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>{{'widgets.map.long' | translate}}</mat-label>
-                    <mat-select formControlName="longitude">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>{{'widgets.map.category' | translate}}</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option [value]="">{{'global.none' | translate}}</mat-option>
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                        <mat-option>None</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </ng-container>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">{{'widgets.map.default' | translate}}</div>
-            <mat-form-field appearance="outline">
-                <mat-label>{{'widgets.map.basemap' | translate}}</mat-label>
-                <mat-select formControlName="basemap" placeholder="OSM">
-                    <mat-option *ngFor="let map of basemaps" [value]="map">
-                        {{map}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>{{'widgets.map.zoom' | translate}}</mat-label>
-                <input type="number" matInput formControlName="zoom">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>
-                    {{'widgets.map.lat' | translate}}
-                </mat-label>
-                <input type="string" matInput formControlName="centerLat">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>
-                    {{'widgets.map.long' | translate}}
-                </mat-label>
-                <input type="string" matInput formControlName="centerLong">
-            </mat-form-field>
-        </div>
-    </form>
+      </mat-form-field>
+      <h2
+        *ngIf="
+          tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
+        "
+      >
+        {{ 'widgets.map.layers.selected' | translate }}
+      </h2>
+      <h3 *ngFor="let layer of tileForm.value.onlineLayers">
+        {{ layer.title }}
+        <safe-button
+          icon="delete"
+          category="primary"
+          variant="danger"
+          (click)="removeOnlineLayer(layer.id)"
+        ></safe-button>
+      </h3>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">
+        {{ 'widgets.map.default' | translate }}
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'widgets.map.basemap' | translate }}</mat-label>
+        <mat-select formControlName="basemap" placeholder="OSM">
+          <mat-option *ngFor="let map of basemaps" [value]="map">
+            {{ map }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'widgets.map.zoom' | translate }}</mat-label>
+        <input type="number" matInput formControlName="zoom" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'widgets.map.lat' | translate }}
+        </mat-label>
+        <input type="string" matInput formControlName="centerLat" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'widgets.map.long' | translate }}
+        </mat-label>
+        <input type="string" matInput formControlName="centerLong" />
+      </mat-form-field>
+    </div>
+  </form>
 </ng-container>
