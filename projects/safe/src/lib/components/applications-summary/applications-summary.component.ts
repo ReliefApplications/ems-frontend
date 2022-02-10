@@ -1,13 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+} from '@angular/core';
 import { Application } from '../../models/application.model';
 
 @Component({
   selector: 'safe-applications-summary',
   templateUrl: './applications-summary.component.html',
-  styleUrls: ['./applications-summary.component.scss']
+  styleUrls: ['./applications-summary.component.scss'],
 })
 export class SafeApplicationsSummaryComponent implements OnInit {
-
   @Input() canCreate = false;
   @Input() applications: Application[] = [];
   @Output() add = new EventEmitter();
@@ -17,9 +23,7 @@ export class SafeApplicationsSummaryComponent implements OnInit {
   @Output() clone = new EventEmitter<Application>();
   @Output() editAccess = new EventEmitter<Application>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

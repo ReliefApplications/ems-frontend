@@ -1,28 +1,25 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { withKnobs } from '@storybook/addon-knobs';
 import { SafeAddStepComponent } from './add-step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
+import { StorybookTranslateModule } from '../../../../components/storybook-translate/storybook-translate-module';
 
 export default {
-    component: SafeAddStepComponent,
-    decorators: [
-        moduleMetadata({
-            imports: [
-                SafeWorkflowStepperModule
-            ],
-            providers: []
-        }),
-        withKnobs
-    ],
-    title: 'UI/Workflow/Add Step',
-    argTypes: {}
+  component: SafeAddStepComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [SafeWorkflowStepperModule, StorybookTranslateModule],
+      providers: [],
+    }),
+  ],
+  title: 'UI/Workflow/Add Step',
+  argTypes: {},
 } as Meta;
 
-const Template: Story<SafeAddStepComponent> = args => ({
-    props: {
-        ...args
-    }
+const TEMPLATE: Story<SafeAddStepComponent> = (args) => ({
+  props: {
+    ...args,
+  },
 });
 
-export const Default = Template.bind({});
-Default.args = {};
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.args = {};

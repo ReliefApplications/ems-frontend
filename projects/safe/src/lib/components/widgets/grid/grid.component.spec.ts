@@ -6,12 +6,13 @@ describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;
   let fixture: ComponentFixture<SafeGridWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SafeGridWidgetComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeGridWidgetComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeGridWidgetComponent);

@@ -8,9 +8,8 @@ describe('HistoryModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecordHistoryModalComponent ]
-    })
-    .compileComponents();
+      declarations: [RecordHistoryModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

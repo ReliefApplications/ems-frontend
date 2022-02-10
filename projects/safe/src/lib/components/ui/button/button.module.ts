@@ -6,17 +6,8 @@ import { SafeSpinnerModule } from '../spinner/spinner.module';
 import { SafeIconModule } from '../icon/icon.module';
 
 @NgModule({
-  declarations: [
-    SafeButtonComponent
-  ],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    SafeSpinnerModule,
-    SafeIconModule
-  ],
-  exports: [
-    SafeButtonComponent
-  ]
+  declarations: [SafeButtonComponent],
+  imports: [CommonModule, MatButtonModule, SafeSpinnerModule, SafeIconModule],
+  exports: [SafeButtonComponent],
 })
-export class SafeButtonModule { }
+export class SafeButtonModule {}

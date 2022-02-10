@@ -2,15 +2,16 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
+import { createQueryForm } from '../../query-builder/query-builder-forms';
+
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
-  styleUrls: ['./map-settings.component.scss']
+  styleUrls: ['./map-settings.component.scss'],
 })
 /*  Modal content for the settings of the map widgets.
-*/
+ */
 export class SafeMapSettingsComponent implements OnInit {
-
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
 
@@ -18,7 +19,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
@@ -49,20 +50,36 @@ export class SafeMapSettingsComponent implements OnInit {
   ) { }
 
   /*  Build the settings form, using the widget saved parameters.
-  */
+   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
-      title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
-      query: this.queryBuilder.createQueryForm(tileSettings.query),
-      latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
-      longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
-      category: [(tileSettings && tileSettings.category) ? tileSettings.category : null],
-      mapbase: [(tileSettings && tileSettings.mapbase) ? tileSettings.mapbase : null],
-      zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
-      centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
-      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]],
+      title: [tileSettings && tileSettings.title ? tileSettings.title : null],
+      query: createQueryForm(tileSettings.query),
+      latitude: [
+        tileSettings && tileSettings.latitude ? tileSettings.latitude : null,
+        Validators.required,
+      ],
+      longitude: [
+        tileSettings && tileSettings.longitude ? tileSettings.longitude : null,
+        Validators.required,
+      ],
+      category: [
+        tileSettings && tileSettings.category ? tileSettings.category : null,
+      ],
+      zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
+      basemap: [(tileSettings && tileSettings.basemap) ? tileSettings.basemap : null],
+      centerLong: [
+        tileSettings && tileSettings.centerLong
+          ? tileSettings.centerLong
+          : null,
+        [Validators.min(-180), Validators.max(180)],
+      ],
+      centerLat: [
+        tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
+        [Validators.min(-90), Validators.max(90)],
+      ],
       onlineLayers: [(tileSettings && tileSettings.onlineLayers) ? tileSettings.onlineLayers : []]
     });
     this.change.emit(this.tileForm);
@@ -104,20 +121,27 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   private flatDeep(arr: any[]): any[] {
-    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+    return arr.reduce(
+      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
+      []
+    );
   }
 
   private getFields(fields: any[], prefix?: string): any[] {
-    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, f.name);
-        }
-        default: {
-          return prefix ? `${prefix}.${f.name}` : f.name;
-        }
-      }
-    }));
+    return this.flatDeep(
+      fields
+        .filter((x) => x.kind !== 'LIST')
+        .map((f) => {
+          switch (f.kind) {
+            case 'OBJECT': {
+              return this.getFields(f.fields, f.name);
+            }
+            default: {
+              return prefix ? `${prefix}.${f.name}` : f.name;
+            }
+          }
+        })
+    );
   }
 
   public getContent(): void

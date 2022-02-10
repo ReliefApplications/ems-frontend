@@ -12,14 +12,13 @@ interface DialogData {
 @Component({
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
-  styleUrls: ['./search-resource-grid-modal.component.scss']
+  styleUrls: ['./search-resource-grid-modal.component.scss'],
 })
 export class SafeResourceGridModalComponent implements OnInit {
-
   public multiSelect = false;
   public gridSettings: GridSettings = {};
 
-  public selectedRows: any [] = [];
+  public selectedRows: any[] = [];
 
   get selectable(): boolean {
     return this.data.selectable || false;
@@ -28,7 +27,7 @@ export class SafeResourceGridModalComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
-    private ref: ApplicationRef,
+    private ref: ApplicationRef
   ) {
     this.multiSelect = this.data.multiselect;
     if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
@@ -42,7 +41,7 @@ export class SafeResourceGridModalComponent implements OnInit {
         convert: false,
         update: false,
         inlineEdition: false,
-      }
+      },
     };
     if (this.data.selectedRows) {
       this.selectedRows = [...this.data.selectedRows];
@@ -55,11 +54,17 @@ export class SafeResourceGridModalComponent implements OnInit {
   onSelectionChange(selection: any): void {
     if (this.multiSelect) {
       if (selection.selectedRows.length > 0) {
-        this.selectedRows = this.selectedRows.concat(selection.selectedRows.map((x: any) => x.dataItem.id));
+        this.selectedRows = this.selectedRows.concat(
+          selection.selectedRows.map((x: any) => x.dataItem.id)
+        );
       }
       if (selection.deselectedRows.length > 0) {
-        const deselectedRows = selection.deselectedRows.map((r: any) => r.dataItem.id);
-        this.selectedRows = this.selectedRows.filter((r: any) => !deselectedRows.includes(r));
+        const deselectedRows = selection.deselectedRows.map(
+          (r: any) => r.dataItem.id
+        );
+        this.selectedRows = this.selectedRows.filter(
+          (r: any) => !deselectedRows.includes(r)
+        );
       }
     } else {
       this.selectedRows = selection.selectedRows.map((x: any) => x.dataItem.id);

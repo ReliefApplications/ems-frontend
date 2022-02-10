@@ -5,10 +5,9 @@ import { FilterService } from '@progress/kendo-angular-grid';
 @Component({
   selector: 'safe-dropdown-filter-menu',
   templateUrl: './dropdown-filter-menu.component.html',
-  styleUrls: ['./dropdown-filter-menu.component.scss']
+  styleUrls: ['./dropdown-filter-menu.component.scss'],
 })
 export class SafeDropdownFilterMenuComponent implements OnInit {
-
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
@@ -33,26 +32,26 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   public logics = [
     {
       text: 'Or',
-      value: 'or'
+      value: 'or',
     },
     {
       text: 'And',
-      value: 'and'
-    }
+      value: 'and',
+    },
   ];
 
   public operators = [
     {
       text: 'Is equal to',
-      value: 'eq'
+      value: 'eq',
     },
     {
       text: 'Is not equal to',
-      value: 'neq'
-    }
+      value: 'neq',
+    },
   ];
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();
@@ -62,26 +61,40 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
       filters: this.fb.array([
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[0] ? this.filter.filters[0].operator : 'eq',
-          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : '')
+          operator: this.filter.filters[0]
+            ? this.filter.filters[0].operator
+            : 'eq',
+          value: this.fb.control(
+            this.filter.filters[0] ? this.filter.filters[0].value : ''
+          ),
         }),
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[1] ? this.filter.filters[1].operator : 'eq',
-          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : '')
-        })
-      ])
+          operator: this.filter.filters[1]
+            ? this.filter.filters[1].operator
+            : 'eq',
+          value: this.fb.control(
+            this.filter.filters[1] ? this.filter.filters[1].value : ''
+          ),
+        }),
+      ]),
     });
-    this.form.valueChanges.subscribe(value => {
+    this.form.valueChanges.subscribe((value) => {
       this.filterService?.filter(value);
     });
   }
 
   public handleFilter(value: string, index: number): void {
     if (index === 1) {
-      this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+      this.choices1 = this.data.filter(
+        (x) =>
+          x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+      );
     } else {
-      this.choices2 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+      this.choices2 = this.data.filter(
+        (x) =>
+          x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+      );
     }
   }
 }

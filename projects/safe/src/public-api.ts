@@ -1,6 +1,6 @@
 /*
  * Public API Surface of @safe/builder
-*/
+ */
 
 // === SERVICES ===
 export * from './lib/services/auth.service';
@@ -64,6 +64,7 @@ export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/status-modal/public-api';
+export * from './lib/components/search-menu/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
 export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
@@ -72,6 +73,8 @@ export * from './lib/components/applications-summary/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';
+export * from './lib/components/ui/aggregation-builder/public-api';
+export * from './lib/components/ui/tagbox/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

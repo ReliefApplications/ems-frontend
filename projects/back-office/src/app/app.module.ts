@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
@@ -18,52 +18,64 @@ import { setContext } from '@apollo/client/link/context';
 // Env
 import { environment } from '../environments/environment';
 
-// MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
+// Config
+import { BehaviorSubject } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { BehaviorSubject } from 'rxjs';
+import { MatDialogModule } from '@angular/material/dialog';
 
+// TRANSLATOR
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+localStorage.setItem('loaded', 'false');
 
-export const SCHEMA_UPDATE = new BehaviorSubject<boolean>(false);
+const REFRESH = new BehaviorSubject<boolean>(false);
 
-/*  Configuration of the Apollo client.
-*/
-export function provideApollo(httpLink: HttpLink): any {
+/**
+ * Configuration of the Apollo client.
+ *
+ * @param httpLink Apollo http link
+ * @returns void
+ */
+export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
-      Accept: 'charset=utf-8'
-    }
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'charset=utf-8',
+    },
   }));
-
 
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     return {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Authorization: `Bearer ${token}`,
+      },
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
+        authToken: localStorage.getItem('idtoken'),
       },
       connectionCallback: (error) => {
-        if (!error) {
-          SCHEMA_UPDATE.next(true);
+        if (localStorage.getItem('loaded') === 'true') {
+          // location.reload();
+          REFRESH.next(true);
+          localStorage.setItem('loaded', 'false');
         }
-      }
-    }
+        localStorage.setItem('loaded', 'true');
+      },
+    },
   });
 
   interface Definition {
@@ -71,14 +83,18 @@ export function provideApollo(httpLink: HttpLink): any {
     operation?: string;
   }
 
-  const link = ApolloLink.from([basic, auth, split(
-    ({ query }) => {
-      const { kind, operation }: Definition = getMainDefinition(query);
-      return kind === 'OperationDefinition' && operation === 'subscription';
-    },
-    ws,
-    http,
-  )]);
+  const link = ApolloLink.from([
+    basic,
+    auth,
+    split(
+      ({ query }) => {
+        const { kind, operation }: Definition = getMainDefinition(query);
+        return kind === 'OperationDefinition' && operation === 'subscription';
+      },
+      ws,
+      http
+    ),
+  ]);
 
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
@@ -99,15 +115,30 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       mutate: {
         errorPolicy: 'all',
-      }
-    }
+      },
+    },
   };
-}
+};
+
+const initializeAuth =
+  (oauth: OAuthService): any =>
+  () => {
+    oauth.configure(environment.authConfig);
+  };
+
+/**
+ * Sets up translator.
+ *
+ * @param http http client
+ * @returns Translator.
+ */
+export const httpTranslateLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http);
+
+const imports: any[] = [];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -116,64 +147,43 @@ export function provideApollo(httpLink: HttpLink): any {
     ReactiveFormsModule,
     MatSnackBarModule,
     BrowserAnimationsModule,
-    // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-      {
-        popUp: false,
-        consentScopes: [
-          'user.read',
-          'openid',
-          'profile',
-        ],
-        protectedResourceMap: [
-          ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-        ],
-        extraQueryParameters: {}
-      }),
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatDialogModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['http://localhost:9090/api'],
+        sendAccessToken: true,
+      },
+    }),
   ],
   providers: [
     {
       provide: 'environment',
-      useValue: environment
+      useValue: environment,
     },
     {
       // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
       provide: APOLLO_OPTIONS,
       useFactory: provideApollo,
-      deps: [HttpLink]
+      deps: [HttpLink],
     },
     {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
-    }
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      multi: true,
+      deps: [OAuthService],
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {
-    SCHEMA_UPDATE.asObservable().subscribe((refresh) => {
-      if (refresh) {
-        // TODO: we should either refresh the cache, or reload the schema
-        // this.apollo.client.cache.reset();
-        SCHEMA_UPDATE.next(false);
-      }
-    });
-  }
+  constructor(private apollo: Apollo) {}
 }

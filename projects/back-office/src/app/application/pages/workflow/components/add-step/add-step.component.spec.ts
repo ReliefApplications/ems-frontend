@@ -8,9 +8,8 @@ describe('AddStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddStepComponent ]
-    })
-    .compileComponents();
+      declarations: [AddStepComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -5,14 +5,17 @@ import { UsersComponent } from './users.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeUsersModule } from '@safe/builder';
 
+/**
+ * Users page module.
+ */
 @NgModule({
   declarations: [UsersComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,
     MatProgressSpinnerModule,
-    SafeUsersModule
+    SafeUsersModule,
   ],
-  exports: [UsersComponent]
+  exports: [UsersComponent],
 })
-export class UsersModule { }
+export class UsersModule {}

@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeBadgeModule } from '../../ui/badge/badge.module';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -28,8 +29,9 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeBadgeModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
-  exports: [SafeMapSettingsComponent]
+  exports: [SafeMapSettingsComponent],
 })
-export class SafeMapSettingsModule { }
+export class SafeMapSettingsModule {}
