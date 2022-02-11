@@ -1,13 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
+/**
+ * Map Clorophlet form component.
+ */
 @Component({
   selector: 'safe-tab-clorophlet',
   templateUrl: './tab-clorophlet.component.html',
-  styleUrls: ['./tab-clorophlet.component.scss']
+  styleUrls: ['./tab-clorophlet.component.scss'],
 })
 export class SafeTabClorophletComponent implements OnInit {
-
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
   @Input() selectedFields: any[] = [];
@@ -16,11 +18,9 @@ export class SafeTabClorophletComponent implements OnInit {
   geoJSONfields: any[] = [];
   selectableFields: any[] = [];
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    console.log(this.fields);
-    console.log(this.selectedFields);
     this.selectedFields.map((selectedField: any) => {
       this.fields.map((field: any) => {
         if (selectedField.label.toLowerCase() === field.name.toLowerCase()) {
@@ -28,39 +28,63 @@ export class SafeTabClorophletComponent implements OnInit {
         }
       });
     });
-    console.log(this.selectableFields);
     for (let i = 0; this.form.controls[i]; i++) {
-      this.updateGeoJSONfields((this.form.controls[i] as any).controls.geoJSON.value, i);
+      this.updateGeoJSONfields(
+        (this.form.controls[i] as any).controls.geoJSON.value,
+        i
+      );
     }
   }
 
+  /**
+   * Creates a new clorophlet.
+   */
   public newClorophlet(): void {
-    this.form.push(this.formBuilder.group({
-      name: ['', [Validators.required]],
-      geoJSON: ['', [Validators.required]],
-      geoJSONname: ['', [Validators.required]],
-      geoJSONfield: ['', [Validators.required]],
-      place: ['', [Validators.required]],
-      divisions: this.formBuilder.array([])
-    }));
+    this.form.push(
+      this.formBuilder.group({
+        name: ['', [Validators.required]],
+        geoJSON: ['', [Validators.required]],
+        geoJSONname: ['', [Validators.required]],
+        geoJSONfield: ['', [Validators.required]],
+        place: ['', [Validators.required]],
+        divisions: this.formBuilder.array([]),
+      })
+    );
     this.geoJSONfields.push([]);
   }
 
+  /**
+   * Removes a clorophlet from the list.
+   *
+   * @param index index of clorophlet.
+   */
   public removeClorophlet(index: number): void {
     this.form.removeAt(index);
     this.geoJSONfields.splice(index, 1);
   }
 
+  /**
+   * Adds a new division.
+   *
+   * @param form
+   */
   public newDivision(form: any): void {
-    form.controls.divisions.push(this.formBuilder.group({
-      color: [''],
-      filter: this.formBuilder.group({
-        logic: ['and'],
-        filters: this.formBuilder.array([])
+    form.controls.divisions.push(
+      this.formBuilder.group({
+        color: [''],
+        filter: this.formBuilder.group({
+          logic: ['and'],
+          filters: this.formBuilder.array([]),
+        }),
       })
-    }));
+    );
   }
 
+  /**
+   * Removes a division in target form.
+   * @param form 
+   * @param index 
+   */
   public removeDivision(form: any, index: number): void {
     form.controls.divisions.removeAt(index);
   }
@@ -70,9 +94,16 @@ export class SafeTabClorophletComponent implements OnInit {
 
     if (file) {
       if (file.files && file.files.length > 0) {
-        (this.form.controls[i] as any).controls.geoJSONname.setValue(file.files[0].name);
-        (this.form.controls[i] as any).controls.geoJSON.setValue(await file.files[0].text());
-        this.updateGeoJSONfields((this.form.controls[i] as any).controls.geoJSON.value, i);
+        (this.form.controls[i] as any).controls.geoJSONname.setValue(
+          file.files[0].name
+        );
+        (this.form.controls[i] as any).controls.geoJSON.setValue(
+          await file.files[0].text()
+        );
+        this.updateGeoJSONfields(
+          (this.form.controls[i] as any).controls.geoJSON.value,
+          i
+        );
       }
     }
   }

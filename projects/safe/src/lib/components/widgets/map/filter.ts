@@ -29,7 +29,7 @@ const operate = (field: any, operator: string, value: any): boolean => {
     case 'endswith':
       return field.endsWith(value);
     default:
-      return false;
+      return true;
   }
 };
 

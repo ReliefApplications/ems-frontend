@@ -111,8 +111,6 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
 
-    console.log(queryForm.value);
-
     this.arcGisService.clearSelectedLayer();
     this.arcGisService.searchLayers('');
 

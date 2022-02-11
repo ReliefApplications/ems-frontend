@@ -298,8 +298,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Loops throught clorophlets and add them to the map
-    if (this.settings.query.clorophlet) {
-      this.settings.query.clorophlet.map((value: any) => {
+    if (this.settings.query.clorophlets) {
+      this.settings.query.clorophlets.map((value: any) => {
         this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
           style: (feature: any): any => {
             let color = 'transparent';
@@ -319,8 +319,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 });
               }
             }
-
-            // if (filter(this.settings))
             return {
               fillColor: color,
               stroke: false,
@@ -334,7 +332,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
-        console.log(layer);
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
           simplifyFactor: 1,
