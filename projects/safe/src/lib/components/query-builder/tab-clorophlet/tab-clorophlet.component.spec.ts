@@ -8,9 +8,8 @@ describe('SafeTabClorophletComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeTabClorophletComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeTabClorophletComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

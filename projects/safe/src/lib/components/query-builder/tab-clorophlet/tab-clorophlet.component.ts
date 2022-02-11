@@ -82,8 +82,9 @@ export class SafeTabClorophletComponent implements OnInit {
 
   /**
    * Removes a division in target form.
-   * @param form 
-   * @param index 
+   *
+   * @param form
+   * @param index
    */
   public removeDivision(form: any, index: number): void {
     form.controls.divisions.removeAt(index);
