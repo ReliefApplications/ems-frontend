@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -15,7 +14,6 @@ import {
   GridDataResult,
   PageChangeEvent,
   RowArgs,
-  RowClassArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
@@ -174,7 +172,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
-    private elRef: ElementRef
   ) {}
 
   ngOnInit(): void {

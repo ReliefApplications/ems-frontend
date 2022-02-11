@@ -65,6 +65,18 @@
                 </ng-container>
                 <!-- DISPLAY -->
                 <ng-container *ngIf="field.meta">
+                    <!-- DISPLAY ( disabled fields ) -->
+                    <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
+                        *ngIf="!field.meta.type">
+                        <div class="translate textbox-container" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                            <div #refSpan class="textbox">
+                                {{getPropertyValue(dataItem, field.name)}}
+                            </div>
+                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm"
+                                (click)="onExpandText(dataItem, field.name)" [look]="'flat'"
+                                matTooltip="Open in full width"></button>
+                        </div>
+                    </ng-template>
                     <!-- DISPLAY ( text / comment ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'text'">
