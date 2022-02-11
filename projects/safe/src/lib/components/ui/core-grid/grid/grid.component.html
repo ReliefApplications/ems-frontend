@@ -243,7 +243,10 @@
                             </ng-container>
                             <!-- DISPLAY ( multipletext ) -->
                             <ng-container *ngIf="field.meta.type === 'multipletext' && dataItem[field.name]">
-                                <span class="translate" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">{{ dataItem[field.name][column.name] }}</span>
+                                <span class="translate" [style]="dataItem._fields.length > 0 ?
+                                     dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                                    {{ dataItem[field.name][column.name] }}
+                                </span>
                             </ng-container>
                         </ng-template>
                         <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">

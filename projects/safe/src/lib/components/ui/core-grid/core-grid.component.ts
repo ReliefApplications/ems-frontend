@@ -425,22 +425,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 res.data[field].edges.map((x: any) => ({
                   ...x.node,
                   _meta: {
-                    style: {
-                      backgroundColor: x.meta.style.backgroundColor,
-                      color: x.meta.style.textColor,
-                      'font-weight':
-                        x.meta.style.textStyle === 'bold' ? 'bold' : 'normal',
-                      'font-style':
-                        x.meta.style.textStyle === 'italic'
-                          ? 'italic'
-                          : 'normal',
-                      'text-decoration':
-                        x.meta.style.textStyle === 'underline'
-                          ? 'underline'
-                          : 'none',
-                    },
+                    style: x.meta.style[0],
                   },
-                  _fields: x.meta.style.fields,
+                  _fields: x.meta.style[1],
                 })) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
