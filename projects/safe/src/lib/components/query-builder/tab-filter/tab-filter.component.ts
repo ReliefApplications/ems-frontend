@@ -68,6 +68,11 @@ const TYPES: any = {
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Float: {
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
+  },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   String: {
     defaultOperator: 'eq',
@@ -120,6 +125,7 @@ const TYPES: any = {
 
 const AVAILABLE_TYPES = [
   'Int',
+  'Float',
   'String',
   'Boolean',
   'Date',

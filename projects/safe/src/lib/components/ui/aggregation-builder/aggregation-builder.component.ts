@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -26,6 +26,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
+  public loadingForm = false;
+  private loadingMore = false;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -83,8 +85,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.formsQuery.valueChanges.subscribe((res) => {
       this.forms.next(res.data.forms.edges.map((x) => x.node));
       this.pageInfo = res.data.forms.pageInfo;
-      this.loading = res.loading;
-      this.initFields();
+      this.loadingMore = res.loading;
+      if (this.loading) {
+        this.loading = res.loading;
+        this.initFields();
+      }
     });
 
     // Fields query
@@ -93,9 +98,14 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('dataSource')
       ?.valueChanges.pipe(debounceTime(300))
       .subscribe((form: string) => {
+        this.loadingForm = true;
         if (isMongoId(form)) {
           this.aggregationForm.get('sourceFields')?.setValue([]);
+          (this.aggregationForm.get('pipeline') as FormArray).clear();
+          this.aggregationForm.get('mapping')?.reset();
+          this.aggregationForm.updateValueAndValidity();
           this.updateFields(form);
+          this.loadingForm = false;
         }
       });
 
@@ -197,10 +207,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.aggregationBuilder
         .buildAggregation(this.aggregationForm.value, false)
         .valueChanges.subscribe((res: any) => {
-          this.gridData = {
-            data: res.data.recordsAggregation,
-            total: res.data.recordsAggregation.length,
-          };
+          if (res.data.recordsAggregation) {
+            this.gridData = {
+              data: res.data.recordsAggregation,
+              total: res.data.recordsAggregation.length,
+            };
+          }
           this.loadingGrid = res.loading;
         });
     }
@@ -226,8 +238,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * @param value string used to filter.
    */
   public onFilterDataSource(value: string): void {
-    if (!this.loading) {
-      this.loading = true;
+    if (!this.loadingMore) {
+      this.loadingMore = true;
       this.fetchMoreDataSources(false, value);
     }
   }
@@ -238,8 +250,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * @param value string used to filter.
    */
   public onScrollDataSource(value: boolean): void {
-    if (!this.loading && this.pageInfo.hasNextPage) {
-      this.loading = true;
+    if (!this.loadingMore && this.pageInfo.hasNextPage) {
+      this.loadingMore = true;
       this.fetchMoreDataSources(value);
     }
   }
@@ -253,18 +265,16 @@ export class SafeAggregationBuilderComponent implements OnInit {
     const variables: any = {
       first: ITEMS_PER_PAGE,
     };
-    if (filter) {
-      variables.filter = {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: filter,
-          },
-        ],
-      };
-    }
+    variables.filter = {
+      logic: 'and',
+      filters: [
+        {
+          field: 'name',
+          operator: 'contains',
+          value: filter,
+        },
+      ],
+    };
     if (nextPage) {
       variables.afterCursor = this.pageInfo.endCursor;
     }

@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="!loading" appearance="outline">
+<mat-form-field appearance="outline">
   <mat-label>{{'aggregation.dataSource' | translate}}</mat-label>
   <input type="text" [placeholder]="'filter.search' | translate" matInput [formControl]="sourceFormControl" [matAutocomplete]="auto">
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName.bind(this)" (opened)="onOpen($event)" (closed)="onClose($event)">

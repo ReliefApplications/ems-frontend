@@ -1,0 +1,9 @@
+<form [formGroup]="formGroup">
+  <mat-form-field appearance="outline">
+    <mat-label>{{'aggregation.groupBy' | translate}}</mat-label>
+    <mat-select formControlName="groupBy">
+      <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<safe-add-field-stage [fields]="fields" [form]="addFields" [operators]="operators"></safe-add-field-stage>

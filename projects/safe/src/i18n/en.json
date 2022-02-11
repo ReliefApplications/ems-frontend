@@ -417,6 +417,19 @@
         "mapping": {
             "xAxis": "X Axis",
             "yAxis": "Y Axis"
+        },
+        "groupBy": "Group by",
+        "addField": "Add field",
+        "fieldName": "Field name",
+        "operator": "Operator",
+        "operators": {
+          "sum": "Sum",
+          "avg": "Average",
+          "count": "Count",
+          "max": "Maximum",
+          "min": "Minimum",
+          "first": "First",
+          "last": "Last"
         }
     } 
 }

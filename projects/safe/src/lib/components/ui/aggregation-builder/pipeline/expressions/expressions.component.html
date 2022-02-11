@@ -1,0 +1,14 @@
+<form [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label>{{'aggregation.operator' | translate}}</mat-label>
+    <mat-select formControlName="operator">
+      <mat-option *ngFor="let operator of operatorsList" [value]="operator">{{ 'aggregation.operators.' + operator | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" *ngIf="form.value.operator && form.value.operator !== operators.COUNT">
+    <mat-label>{{'global.field' | translate}}</mat-label>
+    <mat-select formControlName="field">
+      <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>

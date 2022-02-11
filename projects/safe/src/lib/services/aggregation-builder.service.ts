@@ -1,6 +1,7 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
+import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
 
 /**
  * Shared aggregation service.
@@ -57,11 +58,37 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    const fields = [...initialFields];
+    let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
-          // TO DO
+          fields = [];
+          if (stage.form.groupBy) {
+            const groupByField = initialFields.find(
+              (x) => x.name === stage.form.groupBy
+            );
+            if (groupByField) {
+              fields.push(groupByField);
+            }
+          }
+          if (stage.form.addFields) {
+            for (const addField of stage.form.addFields) {
+              fields.push({
+                name: addField.name,
+                type: {
+                  name:
+                    addField.expression.operator === Accumulators.AVG
+                      ? 'Float'
+                      : addField.expression.operator === Accumulators.COUNT
+                      ? 'Int'
+                      : initialFields.find(
+                          (x) => x.name === addField.expression.field
+                        ).type.name,
+                  kind: 'SCALAR',
+                },
+              });
+            }
+          }
           break;
         }
         case PipelineStage.ADD_FIELDS: {

@@ -4,6 +4,7 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
 import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'safe-pipeline',
@@ -19,6 +20,7 @@ export class SafePipelineComponent implements OnInit {
   @Input() public metaFields$!: Observable<any[]>;
   public metaFields: any[] = [];
   public initialFields: any[] = [];
+  public fieldsPerStage: any[] = [];
 
   // === PARENT FORM ===
   @Input() pipelineForm!: FormArray;
@@ -27,22 +29,29 @@ export class SafePipelineComponent implements OnInit {
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
+      this.updateFieldsPerStage(
+        this.pipelineForm.valid ? this.pipelineForm.value : []
+      );
     });
     this.metaFields$.subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
     });
+    this.pipelineForm.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe((pipeline: any[]) => {
+        if (this.pipelineForm.valid) {
+          this.updateFieldsPerStage(pipeline);
+        }
+      });
   }
 
-  /**
-   * Gets available fields at given stage since stages will add / delete fields.
-   *
-   * @param index index of the stage.
-   */
-  public fieldsAtStage(index: number) {
-    return this.aggregationBuilder.fieldsAfter(
-      this.initialFields,
-      this.pipelineForm.value.slice(0, index)
-    );
+  private updateFieldsPerStage(pipeline: any[]) {
+    for (let index = 0; index < pipeline.length; index++) {
+      this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
+        this.initialFields,
+        pipeline.slice(0, index)
+      );
+    }
   }
 
   /**
