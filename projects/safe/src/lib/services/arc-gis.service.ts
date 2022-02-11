@@ -18,7 +18,7 @@ export class SafeArcGISService {
 
   private authentication: any;
 
-  constructor(@Inject('environment') environment: any,) {
+  constructor(@Inject('environment') environment: any) {
     this.authentication = new ApiKey({
       key: environment.esriApiKey,
     });
@@ -29,23 +29,20 @@ export class SafeArcGISService {
    *
    * @param search search value
    */
-  public searchLayers(search: string): void {
-    request(
-      'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
-        search,
-      {
-        authentication: this.authentication,
-      }
-    ).then((response: any) => {
-      this.availableLayers.next(response.results);
-    });
-  }
-
-  /**
-   * Clears search through layers.
-   */
-  public clearSearchLayers(): void {
-    this.availableLayers.next([]);
+  public searchLayers(searchTerm: string): void {
+    if (searchTerm === '') {
+      this.availableLayers.next([]);
+    } else {
+      request(
+        'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
+          searchTerm,
+        {
+          authentication: this.authentication,
+        }
+      ).then((response: any) => {
+        this.availableLayers.next(response.results);
+      });
+    }
   }
 
   /**

@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeTabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeTabFieldsComponent,
     SafeTabSortComponent,
     SafeTabFilterComponent,
+    SafeTabClorophletComponent,
   ],
   imports: [
     CommonModule,

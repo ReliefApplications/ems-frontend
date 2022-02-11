@@ -9,6 +9,9 @@ import {
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { applyFilters } from './filter';
+
+// Declares L to be able to use Leaflet from CDN
 // Leaflet
 import 'leaflet.markercluster';
 declare let L: any;
@@ -40,8 +43,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
   private map: any;
-  private southWest = L.latLng(-89.98155760646617, -180);
-  private northEast = L.latLng(89.99346179538875, 180);
+  private southWest = L.latLng(-89.98155760646617, -1000);
+  private northEast = L.latLng(89.99346179538875, 1000);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
   public esriApiKey: string;
 
@@ -84,7 +87,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() settings: any = null;
 
   // This will be substituted when the querry returns the catgory tippe
-  private categoryField: string = '';
+  private categoryField = '';
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -160,6 +163,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       zoomControl: false,
       minZoom: 2,
       maxZoom: 18,
+      worldCopyJump: true,
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     // Adds a zoom control
@@ -189,9 +193,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .addTo(this.map);
     });
 
-    // Address searchbar
+    // Adds layer contorl
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
 
+    // Adds searchbar
     const searchControl = L.esri.Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Enter an address or place e.g. 1 York St',
@@ -212,7 +217,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     searchControl.on('results', (data: any) => {
       results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
-        console.log(data.results[i]);
         const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
         const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
         const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
@@ -283,11 +287,47 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Add custom marker categories for each
-    this.categoryNames.map((name: string) => {
-      this.overlays[name] = L.featureGroup
-        .subGroup(this.markersLayer, this.markersCategories[name])
-        .addTo(this.map);
-    });
+    if (this.categoryNames.length !== 0) {
+      this.categoryNames.map((name: string) => {
+        this.overlays[name ? name : 'Markers'] = L.featureGroup
+          .subGroup(this.markersLayer, this.markersCategories[name])
+          .addTo(this.map);
+      });
+    } else {
+      this.overlays.markers = L.featureGroup(this.markersLayer).addTo(this.map);
+    }
+
+    // Loops throught clorophlets and add them to the map
+    if (this.settings.query.clorophlets) {
+      this.settings.query.clorophlets.map((value: any) => {
+        this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+          style: (feature: any): any => {
+            let color = 'transparent';
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                res.data[field].edges.map((entry: any) => {
+                  if (
+                    entry.node[value.place] ===
+                    feature.properties[value.geoJSONfield]
+                  ) {
+                    value.divisions.map((div: any) => {
+                      if (applyFilters(entry.node, div.filter)) {
+                        color = div.color;
+                      }
+                    });
+                  }
+                });
+              }
+            }
+            return {
+              fillColor: color,
+              stroke: false,
+              fillOpacity: 1,
+            };
+          },
+        }).addTo(this.map);
+      });
+    }
 
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
@@ -309,7 +349,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Set ups layer control if more that one layer is added
-    if (this.categoryNames[1] || this.settings.onlineLayers) {
+    if (
+      this.categoryNames.length !== 0 ||
+      this.settings.onlineLayers.length !== 0
+    ) {
       this.layerControl = L.control
         .layers(null, this.overlays, { collapsed: true })
         .addTo(this.map);

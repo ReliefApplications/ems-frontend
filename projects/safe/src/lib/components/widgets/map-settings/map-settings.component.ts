@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
-import { createQueryForm } from '../../query-builder/query-builder-forms';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { createQueryForm } from './map-forms';
 
 /**
  * Settings component of map widget.
@@ -38,17 +39,17 @@ export class SafeMapSettingsComponent implements OnInit {
     'Nova',
     'Midcentury',
     'OSM',
-    'OSM:Streets'
+    'OSM:Streets',
   ];
 
   public search = '';
+  private searchChanged: Subject<string> = new Subject<string>();
   public availableLayers: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService,
     private arcGisService: SafeArcGISService
-  ) { }
+  ) {}
 
   /**
    * Builds the settings form, using the widget saved parameters.
@@ -71,7 +72,9 @@ export class SafeMapSettingsComponent implements OnInit {
         tileSettings && tileSettings.category ? tileSettings.category : null,
       ],
       zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
-      basemap: [(tileSettings && tileSettings.basemap) ? tileSettings.basemap : null],
+      basemap: [
+        tileSettings && tileSettings.basemap ? tileSettings.basemap : null,
+      ],
       centerLong: [
         tileSettings && tileSettings.centerLong
           ? tileSettings.centerLong
@@ -82,7 +85,11 @@ export class SafeMapSettingsComponent implements OnInit {
         tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
         [Validators.min(-90), Validators.max(90)],
       ],
-      onlineLayers: [(tileSettings && tileSettings.onlineLayers) ? tileSettings.onlineLayers : []]
+      onlineLayers: [
+        tileSettings && tileSettings.onlineLayers
+          ? tileSettings.onlineLayers
+          : [],
+      ],
     });
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
@@ -105,12 +112,13 @@ export class SafeMapSettingsComponent implements OnInit {
     });
 
     this.arcGisService.clearSelectedLayer();
+    this.arcGisService.searchLayers('');
 
-    this.arcGisService.availableLayers$.subscribe(suggestions => {
+    this.arcGisService.availableLayers$.subscribe((suggestions) => {
       this.availableLayers = suggestions;
     });
 
-    this.arcGisService.selectedLayer$.subscribe(item => {
+    this.arcGisService.selectedLayer$.subscribe((item) => {
       if (item.id) {
         const temp: any[] = [];
         this.tileForm?.value.onlineLayers.map((layer: any) => {
@@ -120,6 +128,15 @@ export class SafeMapSettingsComponent implements OnInit {
         this.tileForm?.controls.onlineLayers.setValue(temp);
       }
     });
+
+    this.searchChanged
+      .pipe(
+        debounceTime(300), // wait 300ms after the last event before emitting last event
+        distinctUntilChanged()
+      ) // only emit if value is different from previous value
+      .subscribe((search) => {
+        this.arcGisService.searchLayers(search);
+      });
   }
 
   /**
@@ -136,7 +153,8 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * Gets flat copy of the fields
+   * Gets flat copy of the fields.
+   *
    * @param fields form fields
    * @param prefix object prefix
    * @returns flap copy of fields
@@ -161,14 +179,8 @@ export class SafeMapSettingsComponent implements OnInit {
   /**
    * Get Search layers content.
    */
-  public getContent(): void
-  {
-    if (this.search === '') {
-      setTimeout(() => { this.arcGisService.clearSearchLayers(); }, 400);
-    }
-    else {
-      this.arcGisService.searchLayers(this.search);
-    }
+  public getContent(search: string): void {
+    this.searchChanged.next(search);
   }
 
   /**
@@ -176,11 +188,10 @@ export class SafeMapSettingsComponent implements OnInit {
    *
    * @param layer layer to select.
    */
-  public addOnlineLayer(layer: any): void
-  {
+  public addOnlineLayer(layer: any): void {
     this.search = '';
+    this.arcGisService.searchLayers('');
     this.arcGisService.getLayer(layer.id);
-    this.arcGisService.clearSearchLayers();
   }
 
   /**
@@ -188,8 +199,7 @@ export class SafeMapSettingsComponent implements OnInit {
    *
    * @param id id of layer to remove
    */
-  public removeOnlineLayer(id: any): void
-  {
+  public removeOnlineLayer(id: any): void {
     const temp: any[] = [];
     this.tileForm?.value.onlineLayers.map((layer: any) => {
       if (layer.id !== id) {
