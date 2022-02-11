@@ -8,9 +8,8 @@ describe('ResourceTableModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeResourceGridModalComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeResourceGridModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

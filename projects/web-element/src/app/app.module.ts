@@ -1,7 +1,13 @@
-import { ElementRef, Injector, NgModule } from '@angular/core';
+import { DoBootstrap, ElementRef, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeButtonModule, SafeFormModule, SafeFormService, SafeWidgetGridModule, SafeWorkflowStepperModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeFormModule,
+  SafeFormService,
+  SafeWidgetGridModule,
+  SafeWorkflowStepperModule,
+} from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,38 +42,38 @@ import { WebWorkflowComponent } from './elements/web-workflow/web-workflow.compo
 import { WebFormComponent } from './elements/web-form/web-form.component';
 import { WebDashboardComponent } from './elements/web-dashboard/web-dashboard.component';
 import { WebApplicationComponent } from './elements/web-application/web-application.component';
-import { MsalModule } from '@azure/msal-angular';
 
 /*  Configuration of the Apollo client.
-*/
-export function provideApollo(httpLink: HttpLink): any {
+ */
+export const provideApollo = (httpLink: HttpLink): any => {
   const basic = setContext((operation, context) => ({
     headers: {
-      Accept: 'charset=utf-8'
-    }
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'charset=utf-8',
+    },
   }));
-
 
   const auth = setContext((operation, context) => {
     // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     return {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Authorization: `Bearer ${token}`,
+      },
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
+  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
 
   const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
+    uri: `${environment.subscriptionApiUrl}/graphql`,
     options: {
       reconnect: true,
       connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
-      }
-    }
+        authToken: localStorage.getItem('idtoken'),
+      },
+    },
   });
 
   interface Definition {
@@ -75,14 +81,18 @@ export function provideApollo(httpLink: HttpLink): any {
     operation?: string;
   }
 
-  const link = ApolloLink.from([basic, auth, split(
-    ({ query }) => {
-      const { kind, operation }: Definition = getMainDefinition(query);
-      return kind === 'OperationDefinition' && operation === 'subscription';
-    },
-    ws,
-    http,
-  )]);
+  const link = ApolloLink.from([
+    basic,
+    auth,
+    split(
+      ({ query }) => {
+        const { kind, operation }: Definition = getMainDefinition(query);
+        return kind === 'OperationDefinition' && operation === 'subscription';
+      },
+      ws,
+      http
+    ),
+  ]);
 
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
@@ -103,10 +113,10 @@ export function provideApollo(httpLink: HttpLink): any {
       },
       mutate: {
         errorPolicy: 'all',
-      }
-    }
+      },
+    },
   };
-}
+};
 
 @NgModule({
   declarations: [
@@ -118,7 +128,7 @@ export function provideApollo(httpLink: HttpLink): any {
     WebWorkflowComponent,
     WebFormComponent,
     WebDashboardComponent,
-    WebApplicationComponent
+    WebApplicationComponent,
   ],
   imports: [
     BrowserModule,
@@ -137,74 +147,50 @@ export function provideApollo(httpLink: HttpLink): any {
     SafeFormModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: false, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-    {
-      popUp: false,
-      consentScopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      protectedResourceMap: [
-        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-      ],
-      extraQueryParameters: {}
-    }),
   ],
   providers: [
     {
       provide: 'environment',
-      useValue: environment
+      useValue: environment,
     },
     {
       // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
       provide: APOLLO_OPTIONS,
       useFactory: provideApollo,
-      deps: [HttpLink]
+      deps: [HttpLink],
     },
     {
       provide: POPUP_CONTAINER,
-      useFactory: () => {
+      useFactory: () =>
         // return the container ElementRef, where the popup will be injected
-        return { nativeElement: document.body } as ElementRef;
-      }
-    }
+        ({ nativeElement: document.body } as ElementRef),
+    },
   ],
-  bootstrap: [
-    AppComponent
-  ]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
   constructor(
     private injector: Injector,
     private formService: SafeFormService
-  ) { }
+  ) {}
 
   ngDoBootstrap(): void {
     // Dashboard web element
-    const safeDashboard = createCustomElement(DashboardComponent, { injector: this.injector });
+    const safeDashboard = createCustomElement(DashboardComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-dashboard', safeDashboard);
 
     // Form web element
-    const safeForm = createCustomElement(FormComponent, { injector: this.injector });
+    const safeForm = createCustomElement(FormComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-form', safeForm);
 
     // Workflow web element
-    const safeWorkflow = createCustomElement(WorkflowComponent, { injector: this.injector });
+    const safeWorkflow = createCustomElement(WorkflowComponent, {
+      injector: this.injector,
+    });
     customElements.define('safe-workflow', safeWorkflow);
   }
 }

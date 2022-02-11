@@ -6,7 +6,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './tab-clorophlet.component.html',
   styleUrls: ['./tab-clorophlet.component.scss']
 })
-export class TabClorophletComponent implements OnInit {
+export class SafeTabClorophletComponent implements OnInit {
 
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];

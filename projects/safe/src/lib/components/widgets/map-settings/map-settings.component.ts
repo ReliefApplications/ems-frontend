@@ -4,15 +4,17 @@ import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { createQueryForm } from '../../query-builder/query-builder-forms';
+
+/**
+ * Settings component of map widget.
+ */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
-  styleUrls: ['./map-settings.component.scss']
+  styleUrls: ['./map-settings.component.scss'],
 })
-/*  Modal content for the settings of the map widgets.
-*/
 export class SafeMapSettingsComponent implements OnInit {
-
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
 
@@ -20,7 +22,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
@@ -38,35 +40,58 @@ export class SafeMapSettingsComponent implements OnInit {
     'Nova',
     'Midcentury',
     'OSM',
-    'OSM:Streets'
+    'OSM:Streets',
   ];
 
   public search = '';
   private searchChanged: Subject<string> = new Subject<string>();
-  public suggestions: any[] = [];
+  public availableLayers: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
     private arcGisService: SafeArcGISService
-  ) { }
+  ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-  */
+  /**
+   * Builds the settings form, using the widget saved parameters.
+   */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
-      title: [(tileSettings && tileSettings.title) ? tileSettings.title : null],
-      query: this.queryBuilder.createQueryForm(tileSettings.query, undefined, 'map'),
-      latitude: [(tileSettings && tileSettings.latitude) ? tileSettings.latitude : null, Validators.required],
-      longitude: [(tileSettings && tileSettings.longitude) ? tileSettings.longitude : null, Validators.required],
-      category: [(tileSettings && tileSettings.category) ? tileSettings.category : null],
-      mapbase: [(tileSettings && tileSettings.mapbase) ? tileSettings.mapbase : null],
-      zoom: [(tileSettings && tileSettings.zoom) ? tileSettings.zoom : null],
-      centerLong: [(tileSettings && tileSettings.centerLong) ? tileSettings.centerLong : null, [Validators.min(-180), Validators.max(180)]],
-      centerLat: [(tileSettings && tileSettings.centerLat) ? tileSettings.centerLat : null, [Validators.min(-90), Validators.max(90)]],
-      onlineLayers: [(tileSettings && tileSettings.onlineLayers) ? tileSettings.onlineLayers : []]
+      title: [tileSettings && tileSettings.title ? tileSettings.title : null],
+      query: createQueryForm(tileSettings.query),
+      latitude: [
+        tileSettings && tileSettings.latitude ? tileSettings.latitude : null,
+        Validators.required,
+      ],
+      longitude: [
+        tileSettings && tileSettings.longitude ? tileSettings.longitude : null,
+        Validators.required,
+      ],
+      category: [
+        tileSettings && tileSettings.category ? tileSettings.category : null,
+      ],
+      zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
+      basemap: [
+        tileSettings && tileSettings.basemap ? tileSettings.basemap : null,
+      ],
+      centerLong: [
+        tileSettings && tileSettings.centerLong
+          ? tileSettings.centerLong
+          : null,
+        [Validators.min(-180), Validators.max(180)],
+      ],
+      centerLat: [
+        tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
+        [Validators.min(-90), Validators.max(90)],
+      ],
+      onlineLayers: [
+        tileSettings && tileSettings.onlineLayers
+          ? tileSettings.onlineLayers
+          : [],
+      ],
     });
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
@@ -88,14 +113,14 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
 
-    this.arcGisService.clearItem();
-    this.arcGisService.getSuggestions('');
+    this.arcGisService.clearSelectedLayer();
+    this.arcGisService.searchLayers('');
 
-    this.arcGisService.suggestions$.subscribe(suggestions => {
-      this.suggestions = suggestions;
+    this.arcGisService.availableLayers$.subscribe((suggestions) => {
+      this.availableLayers = suggestions;
     });
 
-    this.arcGisService.currentItem$.subscribe(item => {
+    this.arcGisService.selectedLayer$.subscribe((item) => {
       if (item.id) {
         const temp: any[] = [];
         this.tileForm?.value.onlineLayers.map((layer: any) => {
@@ -106,45 +131,77 @@ export class SafeMapSettingsComponent implements OnInit {
       }
     });
 
-    this.searchChanged.pipe(
+    this.searchChanged
+      .pipe(
         debounceTime(300), // wait 300ms after the last event before emitting last event
-        distinctUntilChanged()) // only emit if value is different from previous value
-        .subscribe((search) => {
-            this.arcGisService.getSuggestions(search);
-        });
+        distinctUntilChanged()
+      ) // only emit if value is different from previous value
+      .subscribe((search) => {
+        this.arcGisService.searchLayers(search);
+      });
   }
 
+  /**
+   * Utility to have a flat copy of an array.
+   *
+   * @param arr array to flatten
+   * @returns flat copy of the array
+   */
   private flatDeep(arr: any[]): any[] {
-    return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
+    return arr.reduce(
+      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
+      []
+    );
   }
 
+  /**
+   * Gets flat copy of the fields.
+   *
+   * @param fields form fields
+   * @param prefix object prefix
+   * @returns flap copy of fields
+   */
   private getFields(fields: any[], prefix?: string): any[] {
-    return this.flatDeep(fields.filter(x => x.kind !== 'LIST').map(f => {
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, f.name);
-        }
-        default: {
-          return prefix ? `${prefix}.${f.name}` : f.name;
-        }
-      }
-    }));
+    return this.flatDeep(
+      fields
+        .filter((x) => x.kind !== 'LIST')
+        .map((f) => {
+          switch (f.kind) {
+            case 'OBJECT': {
+              return this.getFields(f.fields, f.name);
+            }
+            default: {
+              return prefix ? `${prefix}.${f.name}` : f.name;
+            }
+          }
+        })
+    );
   }
 
-  public getContent(search: string): void
-  {
+  /**
+   * Get Search layers content.
+   */
+  public getContent(search: string): void {
     this.searchChanged.next(search);
   }
 
-  public addOnlineLayer(layer: any): void
-  {
+  /**
+   * Selects a new layer.
+   *
+   * @param layer layer to select.
+   */
+  public addOnlineLayer(layer: any): void {
     this.search = '';
-    this.arcGisService.getSuggestions('');
-    this.arcGisService.getItem(layer.id);
+    this.arcGisService.searchLayers('');
+    this.arcGisService.getLayer(layer.id);
   }
 
-  public removeOnlineLayer(id: any): void
-  {
+  /**
+   * Removes a layer.
+   *
+   * @param id id of layer to remove
+   */
+  public removeOnlineLayer(id: any): void {
     const temp: any[] = [];
     this.tileForm?.value.onlineLayers.map((layer: any) => {
       if (layer.id !== id) {
@@ -153,5 +210,4 @@ export class SafeMapSettingsComponent implements OnInit {
     });
     this.tileForm?.controls.onlineLayers.setValue(temp);
   }
-
 }

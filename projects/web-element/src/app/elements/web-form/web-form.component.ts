@@ -1,31 +1,37 @@
-import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  Input,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
 @Component({
   selector: 'app-web-form',
   templateUrl: './web-form.component.html',
-  styleUrls: ['./web-form.component.scss']
+  styleUrls: ['./web-form.component.scss'],
 })
 export class WebFormComponent implements OnInit {
-
   @Input() id = '';
 
-  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
+  @ViewChild('rightSidenav', { read: ViewContainerRef })
+  rightSidenav?: ViewContainerRef;
 
   // === DISPLAY ===
   public showSidenav = false;
 
-  constructor(
-    private layoutService: SafeLayoutService
-  ) { }
+  constructor(private layoutService: SafeLayoutService) {}
 
   ngOnInit(): void {
-    this.layoutService.rightSidenav.subscribe(view => {
+    this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
-        const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
+        const componentRef: ComponentRef<any> =
+          this.rightSidenav.createComponent(view.factory);
         for (const [key, value] of Object.entries(view.inputs)) {
           componentRef.instance[key] = value;
         }

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TabClorophletComponent } from './tab-clorophlet.component';
+import { SafeTabClorophletComponent } from './tab-clorophlet.component';
 
-describe('TabClorophletComponent', () => {
-  let component: TabClorophletComponent;
-  let fixture: ComponentFixture<TabClorophletComponent>;
+describe('SafeTabClorophletComponent', () => {
+  let component: SafeTabClorophletComponent;
+  let fixture: ComponentFixture<SafeTabClorophletComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TabClorophletComponent ]
+      declarations: [ SafeTabClorophletComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabClorophletComponent);
+    fixture = TestBed.createComponent(SafeTabClorophletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,19 +4,31 @@ import { NOTIFICATIONS } from '../const/notifications';
 import { SafePreprocessorService } from './preprocessor.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 
+/**
+ * Shared email service.
+ * Used by widgets to open email clients and creates email text.
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeEmailService {
-
+  /**
+   * Shared email service.
+   * Used by widgets to open email clients and creates email text.
+   *
+   * @param snackBar Shared snackbar service
+   * @param preprocessor Shared preprocessor service
+   * @param clipboard Angular CDK clipboard service
+   */
   constructor(
     private snackBar: SafeSnackBarService,
     private preprocessor: SafePreprocessorService,
     private clipboard: Clipboard
-  ) { }
+  ) {}
 
   /**
    * Opens a mail client with items in the body.
+   *
    * @param recipient recipient of the email.
    * @param subject subject of the email.
    * @param body body of the email, if not given we put the formatted records.
@@ -26,12 +38,24 @@ export class SafeEmailService {
    * @param sortOrder sort order
    */
   public async sendMail(
-    recipient: string[], subject: string, body: string = '{dataset}', settings: any, ids: string[],
-    sortField?: string, sortOrder?: string): Promise<void> {
-
-    body = await this.preprocessor.preprocess(body, { settings, ids, sortField, sortOrder });
+    recipient: string[],
+    subject: string,
+    body: string = '{dataset}',
+    settings: any,
+    ids: string[],
+    sortField?: string,
+    sortOrder?: string
+  ): Promise<void> {
+    body = await this.preprocessor.preprocess(body, {
+      settings,
+      ids,
+      sortField,
+      sortOrder,
+    });
     this.clipboard.copy(body);
-    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, { duration: 3000 });
+    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, {
+      duration: 3000,
+    });
 
     subject = await this.preprocessor.preprocess(subject);
 
@@ -39,11 +63,16 @@ export class SafeEmailService {
     try {
       window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
     } catch (error) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), { error: true });
+      this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), {
+        error: true,
+      });
       try {
         window.location.href = `mailto:${recipient}?subject=${subject}`;
-      } catch (error) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.emailClientNotResponding(error), { error: true });
+      } catch (error2) {
+        this.snackBar.openSnackBar(
+          NOTIFICATIONS.emailClientNotResponding(error2),
+          { error: true }
+        );
       }
     }
   }

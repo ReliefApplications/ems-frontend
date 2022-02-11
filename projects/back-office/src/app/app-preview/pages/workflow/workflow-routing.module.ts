@@ -9,20 +9,22 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard/:id',
-        loadChildren: () => import('../dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        loadChildren: () =>
+          import('../dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: 'form/:id',
-        loadChildren: () => import('../form/form.module')
-          .then(m => m.FormModule),
-      }
-    ]
-  }
+        loadChildren: () =>
+          import('../form/form.module').then((m) => m.FormModule),
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class WorkflowRoutingModule { }
+export class WorkflowRoutingModule {}

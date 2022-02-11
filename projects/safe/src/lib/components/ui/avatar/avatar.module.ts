@@ -3,18 +3,9 @@ import { CommonModule } from '@angular/common';
 import { SafeAvatarComponent } from './avatar.component';
 import { SafeIconModule } from '../icon/icon.module';
 
-
-
 @NgModule({
-  declarations: [
-    SafeAvatarComponent
-  ],
-  imports: [
-    CommonModule,
-    SafeIconModule
-  ],
-  exports: [
-    SafeAvatarComponent
-  ]
+  declarations: [SafeAvatarComponent],
+  imports: [CommonModule, SafeIconModule],
+  exports: [SafeAvatarComponent],
 })
-export class SafeAvatarModule { }
+export class SafeAvatarModule {}

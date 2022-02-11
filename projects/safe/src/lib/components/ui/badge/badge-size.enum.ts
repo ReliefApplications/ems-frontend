@@ -1,4 +1,4 @@
 export enum BadgeSize {
-    SMALL = 'small',
-    MEDIUM = 'medium'
+  SMALL = 'small',
+  MEDIUM = 'medium',
 }

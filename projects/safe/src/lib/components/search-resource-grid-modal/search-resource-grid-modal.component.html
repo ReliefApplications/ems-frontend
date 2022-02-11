@@ -1,10 +1,10 @@
-<h2 mat-dialog-title>Search</h2>
+<h2 mat-dialog-title>{{'global.search' | translate}}</h2>
 <mat-dialog-content>
   <safe-core-grid [settings]="gridSettings" [multiSelect]="multiSelect" [selectedRows]="selectedRows"
     (selectionChange)="onSelectionChange($event)" style="height: 410px;" [selectable]="selectable">
   </safe-core-grid>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button matDialogClose (click)="closeModal(false)">Cancel</button>
-  <button mat-flat-button matDialogClose color="primary" (click)="closeModal()" *ngIf="selectable">Apply</button>
+  <button mat-button matDialogClose (click)="closeModal(false)">{{'action.cancel' | translate}}</button>
+  <button mat-flat-button matDialogClose color="primary" (click)="closeModal()" *ngIf="selectable">{{'action.apply' | translate}}</button>
 </mat-dialog-actions>

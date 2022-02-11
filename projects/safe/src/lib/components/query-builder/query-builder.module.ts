@@ -15,7 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { TabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
+import { SafeTabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { TabClorophletComponent } from './tab-clorophlet/tab-clorophlet.componen
     SafeTabFieldsComponent,
     SafeTabSortComponent,
     SafeTabFilterComponent,
-    TabClorophletComponent
+    SafeTabClorophletComponent,
   ],
   imports: [
     CommonModule,
@@ -38,11 +39,14 @@ import { TabClorophletComponent } from './tab-clorophlet/tab-clorophlet.componen
     MatSelectModule,
     MatTooltipModule,
     MatAutocompleteModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
-    SafeTabFieldsComponent
-  ]
+    SafeTabFieldsComponent,
+    SafeTabFilterComponent,
+    SafeTabSortComponent,
+  ],
 })
-export class SafeQueryBuilderModule { }
+export class SafeQueryBuilderModule {}

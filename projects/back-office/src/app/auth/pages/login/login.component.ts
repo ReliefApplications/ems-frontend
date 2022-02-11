@@ -1,23 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  constructor(private oauthService: OAuthService) {}
 
-  constructor(
-    private router: Router,
-  ) { }
-
-  ngOnInit(): void {
-  }
-
-  /* Redirect to Azure authentication page.
-  */
+  /**
+   * Redirects to Azure authentication page.
+   */
   onLogin(): void {
-    this.router.navigate(['/']);
+    this.oauthService.initLoginFlow();
   }
 }

@@ -15,7 +15,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-
 @NgModule({
   declarations: [DashboardsComponent, AddDashboardComponent],
   imports: [
@@ -31,8 +30,8 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
   ],
-  exports: [DashboardsComponent]
+  exports: [DashboardsComponent],
 })
-export class DashboardsModule { }
+export class DashboardsModule {}

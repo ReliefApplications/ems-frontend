@@ -6,12 +6,13 @@ describe('SafeTileDisplayComponent', () => {
   let component: SafeTileDisplayComponent;
   let fixture: ComponentFixture<SafeTileDisplayComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SafeTileDisplayComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeTileDisplayComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeTileDisplayComponent);

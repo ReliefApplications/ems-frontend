@@ -8,9 +8,8 @@ describe('WebFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WebFormComponent ]
-    })
-    .compileComponents();
+      declarations: [WebFormComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

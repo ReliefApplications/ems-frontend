@@ -4,12 +4,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'safe-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  styleUrls: ['./editor.component.scss'],
 })
 /*  Text widget using KendoUI.
-*/
+ */
 export class SafeEditorComponent implements OnInit {
-
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() public title = '';
@@ -18,10 +17,10 @@ export class SafeEditorComponent implements OnInit {
   // === TEXT SANITIZED ===
   public safeText: SafeHtml = '';
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer) {}
 
   /*  Sanitize the text.
-  */
+   */
   ngOnInit(): void {
     this.safeText = this.sanitizer.bypassSecurityTrustHtml(this.text);
   }

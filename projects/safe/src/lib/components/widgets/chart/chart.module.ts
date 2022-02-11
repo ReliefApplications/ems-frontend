@@ -7,20 +7,22 @@ import { SafeDonutChartModule } from '../../ui/donut-chart/donut-chart.module';
 import { SafeColumnChartModule } from '../../ui/column-chart/column-chart.module';
 import { SafePieChartModule } from '../../ui/pie-chart/pie-chart.module';
 import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
-import {SafeBarChartModule} from '../../ui/bar-chart/bar-chart.module';
+import { SafeBarChartModule } from '../../ui/bar-chart/bar-chart.module';
+import { LayoutModule } from '@progress/kendo-angular-layout';
 
 @NgModule({
   declarations: [SafeChartComponent],
-    imports: [
-        CommonModule,
-        MatProgressSpinnerModule,
-        SafeButtonModule,
-        SafeDonutChartModule,
-        SafePieChartModule,
-        SafeLineChartModule,
-        SafeColumnChartModule,
-        SafeBarChartModule
-    ],
-  exports: [SafeChartComponent]
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    LayoutModule,
+    SafeButtonModule,
+    SafeDonutChartModule,
+    SafePieChartModule,
+    SafeLineChartModule,
+    SafeColumnChartModule,
+    SafeBarChartModule,
+  ],
+  exports: [SafeChartComponent],
 })
-export class SafeChartModule { }
+export class SafeChartModule {}

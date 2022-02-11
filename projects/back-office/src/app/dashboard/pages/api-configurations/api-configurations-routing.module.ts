@@ -5,12 +5,12 @@ import { ApiConfigurationsComponent } from './api-configurations.component';
 const routes: Routes = [
   {
     path: '',
-    component: ApiConfigurationsComponent
-  }
+    component: ApiConfigurationsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ApiConfigurationsRoutingModule { }
+export class ApiConfigurationsRoutingModule {}
