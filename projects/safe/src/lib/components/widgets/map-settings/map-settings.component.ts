@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { createQueryForm } from '../../query-builder/query-builder-forms';
+import { createQueryForm } from './map-forms';
 
 /**
  * Settings component of map widget.
@@ -49,7 +48,6 @@ export class SafeMapSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService,
     private arcGisService: SafeArcGISService
   ) {}
 
@@ -112,6 +110,8 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
+
+    console.log(queryForm.value);
 
     this.arcGisService.clearSelectedLayer();
     this.arcGisService.searchLayers('');

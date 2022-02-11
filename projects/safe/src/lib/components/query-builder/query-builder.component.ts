@@ -117,8 +117,8 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
-          if (this.form?.get('clorophlet')) {
-            this.form?.setControl('clorophlet', this.formBuilder.array([]));
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
           }
         } else {
           this.availableFields = [];
@@ -134,8 +134,8 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
-          if (this.form?.get('clorophlet')) {
-            this.form?.setControl('clorophlet', this.formBuilder.array([]));
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
           }
         }
         this.filteredQueries = this.filterQueries(res);

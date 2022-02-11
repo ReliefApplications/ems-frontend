@@ -51,7 +51,7 @@
           matInput
           [(ngModel)]="search"
           [ngModelOptions]="{ standalone: true }"
-          (input)="getContent()"
+          (ngModelChange)="getContent($event)"
           autocomplete="off"
           placeholder="{{ 'widgets.map.layers.placeholder' | translate }}"
         />
