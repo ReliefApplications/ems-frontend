@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { request } from '@esri/arcgis-rest-request';
-import { ApiKey } from '@esri/arcgis-rest-auth';
+// import { request } from '@esri/arcgis-rest-request';
+// import { ApiKey } from '@esri/arcgis-rest-auth';
 
 /**
  * Shared ArcGIS service.
@@ -19,9 +19,9 @@ export class SafeArcGISService {
   private authentication: any;
 
   constructor(@Inject('environment') environment: any) {
-    this.authentication = new ApiKey({
-      key: environment.esriApiKey,
-    });
+    // this.authentication = new ApiKey({
+    //   key: environment.esriApiKey,
+    // });
   }
 
   /**
@@ -30,19 +30,19 @@ export class SafeArcGISService {
    * @param search search value
    */
   public searchLayers(searchTerm: string): void {
-    if (searchTerm === '') {
-      this.availableLayers.next([]);
-    } else {
-      request(
-        'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
-          searchTerm,
-        {
-          authentication: this.authentication,
-        }
-      ).then((response: any) => {
-        this.availableLayers.next(response.results);
-      });
-    }
+    // if (searchTerm === '') {
+    //   this.availableLayers.next([]);
+    // } else {
+    //   request(
+    //     'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
+    //       searchTerm,
+    //     {
+    //       authentication: this.authentication,
+    //     }
+    //   ).then((response: any) => {
+    //     this.availableLayers.next(response.results);
+    //   });
+    // }
   }
 
   /**
@@ -51,16 +51,16 @@ export class SafeArcGISService {
    * @param id layer id.
    */
   public getLayer(id: string): void {
-    request(
-      'https://www.arcgis.com/sharing/rest/content/items/' + id + '?f=pjson',
-      {
-        authentication: this.authentication,
-      }
-    ).then((response: any) => {
-      if (response) {
-        this.selectedLayer.next(response);
-      }
-    });
+    // request(
+    //   'https://www.arcgis.com/sharing/rest/content/items/' + id + '?f=pjson',
+    //   {
+    //     authentication: this.authentication,
+    //   }
+    // ).then((response: any) => {
+    //   if (response) {
+    //     this.selectedLayer.next(response);
+    //   }
+    // });
   }
 
   /**
