@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-// import { request } from '@esri/arcgis-rest-request';
-// import { ApiKey } from '@esri/arcgis-rest-auth';
+import { request } from '@esri/arcgis-rest-request';
+import { ApiKey } from '@esri/arcgis-rest-auth';
 
 /**
  * Shared ArcGIS service.
@@ -16,15 +16,11 @@ export class SafeArcGISService {
   public availableLayers$ = this.availableLayers.asObservable();
   public selectedLayer$ = this.selectedLayer.asObservable();
 
-  // CDN
-  private ApiKey = (window as any).arcgisRest.ApiKey;
-  private request = (window as any).arcgisRest.request;
-
   private authentication: any;
 
   constructor(@Inject('environment') environment: any) {
     console.log(window);
-    this.authentication = new this.ApiKey({
+    this.authentication = new ApiKey({
       key: environment.esriApiKey,
     });
   }
@@ -38,7 +34,7 @@ export class SafeArcGISService {
     if (searchTerm === '') {
       this.availableLayers.next([]);
     } else {
-      this.request(
+      request(
         'https://www.arcgis.com/sharing/rest/search/suggest?f=pjson&filter=type:"Feature Service"&suggest=' +
           searchTerm,
         {
@@ -56,7 +52,7 @@ export class SafeArcGISService {
    * @param id layer id.
    */
   public getLayer(id: string): void {
-    this.request(
+    request(
       'https://www.arcgis.com/sharing/rest/content/items/' + id + '?f=pjson',
       {
         authentication: this.authentication,
