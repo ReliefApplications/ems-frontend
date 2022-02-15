@@ -71,9 +71,10 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.ADD_FIELDS],
         form: formBuilder.array(
-          value.form && value.form.addFields
-            ? value.form.addFields.map((x: any) => addFieldsForm(x))
-            : []
+          value.form
+            ? value.form.map((x: any) => addFieldsForm(x))
+            : [addFieldsForm(null)],
+          Validators.required
         ),
       });
     }

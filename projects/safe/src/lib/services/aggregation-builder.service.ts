@@ -62,37 +62,22 @@ export class AggregationBuilderService {
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
-          fields = [];
           if (stage.form.groupBy) {
-            const groupByField = initialFields.find(
+            const groupByField = fields.find(
               (x) => x.name === stage.form.groupBy
             );
             if (groupByField) {
+              fields = [];
               fields.push(groupByField);
             }
           }
           if (stage.form.addFields) {
-            for (const addField of stage.form.addFields) {
-              fields.push({
-                name: addField.name,
-                type: {
-                  name:
-                    addField.expression.operator === Accumulators.AVG
-                      ? 'Float'
-                      : addField.expression.operator === Accumulators.COUNT
-                      ? 'Int'
-                      : initialFields.find(
-                          (x) => x.name === addField.expression.field
-                        ).type.name,
-                  kind: 'SCALAR',
-                },
-              });
-            }
+            this.addFields(fields, stage.form.addFields, initialFields);
           }
           break;
         }
         case PipelineStage.ADD_FIELDS: {
-          // TO DO
+          this.addFields(fields, stage.form, initialFields);
           break;
         }
         case PipelineStage.UNWIND: {
@@ -109,5 +94,24 @@ export class AggregationBuilderService {
       }
     }
     return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+  }
+
+  private addFields(fields: any[], form: any, initialFields: any[]): void {
+    for (const addField of form) {
+      fields.push({
+        name: addField.name,
+        type: {
+          name:
+            addField.expression.operator === Accumulators.AVG
+              ? 'Float'
+              : addField.expression.operator === Accumulators.COUNT
+              ? 'Int'
+              : initialFields.find(
+                  (x: any) => x.name === addField.expression.field
+                )?.type.name || 'String',
+          kind: 'SCALAR',
+        },
+      });
+    }
   }
 }

@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { Accumulators } from './operators';
+import {
+  Accumulators,
+  DefaultOperators,
+  NO_FIELD_OPERATORS,
+} from './operators';
 
 @Component({
   selector: 'safe-expressions',
@@ -10,15 +14,17 @@ import { Accumulators } from './operators';
 export class SafeExpressionsComponent implements OnInit {
   @Input() form!: FormGroup;
   @Input() fields: any[] = [];
-  @Input() operators = Accumulators;
+  @Input() operators: any = DefaultOperators;
   public operatorsList: string[] = Object.values(this.operators);
+  public noFieldOperators = NO_FIELD_OPERATORS;
 
   constructor() {}
 
   ngOnInit(): void {
+    this.operatorsList = Object.values(this.operators);
     this.form.get('operator')?.valueChanges.subscribe((operator: string) => {
       if (operator) {
-        if (operator === Accumulators.COUNT) {
+        if (this.noFieldOperators.includes(operator)) {
           this.form.get('field')?.setValue('');
           this.form.get('field')?.setValidators(null);
         } else {

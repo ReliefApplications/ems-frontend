@@ -46,7 +46,7 @@ export class SafePipelineComponent implements OnInit {
   }
 
   private updateFieldsPerStage(pipeline: any[]) {
-    for (let index = 0; index < pipeline.length; index++) {
+    for (let index = 0; index <= pipeline.length; index++) {
       this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
         this.initialFields,
         pipeline.slice(0, index)

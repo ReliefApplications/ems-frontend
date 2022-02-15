@@ -10,7 +10,7 @@ import { addFieldsForm } from '../../aggregation-builder-forms';
 export class SafeAddFieldStageComponent implements OnInit {
   @Input() form!: FormArray;
   @Input() fields: any[] = [];
-  @Input() operators!: any;
+  @Input() operators: any;
 
   constructor() {}
 
