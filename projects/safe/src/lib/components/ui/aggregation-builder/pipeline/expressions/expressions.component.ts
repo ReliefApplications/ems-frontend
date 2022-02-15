@@ -1,17 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
 import {
-  Accumulators,
-  DefaultOperators,
-  NO_FIELD_OPERATORS,
-} from './operators';
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
+import { DefaultOperators, NO_FIELD_OPERATORS } from './operators';
 
 @Component({
   selector: 'safe-expressions',
   templateUrl: './expressions.component.html',
   styleUrls: ['./expressions.component.scss'],
 })
-export class SafeExpressionsComponent implements OnInit {
+export class SafeExpressionsComponent implements OnInit, OnChanges {
   @Input() form!: FormGroup;
   @Input() fields: any[] = [];
   @Input() operators: any = DefaultOperators;
@@ -21,7 +23,6 @@ export class SafeExpressionsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.operatorsList = Object.values(this.operators);
     this.form.get('operator')?.valueChanges.subscribe((operator: string) => {
       if (operator) {
         if (this.noFieldOperators.includes(operator)) {
@@ -33,5 +34,11 @@ export class SafeExpressionsComponent implements OnInit {
         this.form.get('field')?.updateValueAndValidity();
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.operators && changes.operators.currentValue) {
+      this.operatorsList = Object.values(this.operators);
+    }
   }
 }

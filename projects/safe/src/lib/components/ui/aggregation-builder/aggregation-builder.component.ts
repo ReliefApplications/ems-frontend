@@ -105,6 +105,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
           this.aggregationForm.get('mapping')?.reset();
           this.aggregationForm.updateValueAndValidity();
           this.updateFields(form);
+          this.initGrid([]);
           this.loadingForm = false;
         }
       });
@@ -199,22 +200,33 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * @param pipeline Array of stages.
    */
   private initGrid(pipeline: any[]): void {
-    if (this.aggregationForm.get('pipeline')?.valid && pipeline.length) {
-      this.loadingGrid = true;
-      this.gridFields = this.formatFields(
-        this.aggregationBuilder.fieldsAfter(this.selectedFields.value, pipeline)
-      );
-      this.aggregationBuilder
-        .buildAggregation(this.aggregationForm.value, false)
-        .valueChanges.subscribe((res: any) => {
-          if (res.data.recordsAggregation) {
-            this.gridData = {
-              data: res.data.recordsAggregation,
-              total: res.data.recordsAggregation.length,
-            };
-          }
-          this.loadingGrid = res.loading;
-        });
+    if (this.aggregationForm.get('pipeline')?.valid) {
+      if (pipeline.length) {
+        this.loadingGrid = true;
+        this.gridFields = this.formatFields(
+          this.aggregationBuilder.fieldsAfter(
+            this.selectedFields.value,
+            pipeline
+          )
+        );
+        this.aggregationBuilder
+          .buildAggregation(this.aggregationForm.value, false)
+          .valueChanges.subscribe((res: any) => {
+            if (res.data.recordsAggregation) {
+              this.gridData = {
+                data: res.data.recordsAggregation,
+                total: res.data.recordsAggregation.length,
+              };
+            }
+            this.loadingGrid = res.loading;
+          });
+      } else {
+        this.gridFields = [];
+        this.gridData = {
+          data: [],
+          total: 0,
+        };
+      }
     }
   }
 

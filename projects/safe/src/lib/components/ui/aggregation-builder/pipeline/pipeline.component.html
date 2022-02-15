@@ -20,7 +20,7 @@
         <safe-add-field-stage [form]="$any(stageForm).controls.form" [fields]="fieldsPerStage[index]"></safe-add-field-stage>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.UNWIND">
-        In progress
+        <safe-field-dropdown [fieldControl]="$any(stageForm).controls.form.controls.field" [fields]="fieldsPerStage[index]"></safe-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
         In progress

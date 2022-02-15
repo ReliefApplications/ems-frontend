@@ -29,6 +29,7 @@ export class SafePipelineComponent implements OnInit {
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
+      this.fieldsPerStage = [];
       this.updateFieldsPerStage(
         this.pipelineForm.valid ? this.pipelineForm.value : []
       );

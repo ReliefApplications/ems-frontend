@@ -81,11 +81,14 @@ export class AggregationBuilderService {
           break;
         }
         case PipelineStage.UNWIND: {
-          // TO DO
-          break;
-        }
-        case PipelineStage.CUSTOM: {
-          // TO DO
+          fields = fields.map((field) => {
+            if (field.name === stage.form.field) {
+              const newField = Object.assign({}, field);
+              newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
+              return newField;
+            }
+            return field;
+          });
           break;
         }
         default: {

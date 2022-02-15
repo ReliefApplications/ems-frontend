@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.component';
 import { SafeExpressionsComponent } from './expressions/expressions.component';
+import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { SafeExpressionsComponent } from './expressions/expressions.component';
     SafeGroupStageComponent,
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
+    SafeFieldDropdownComponent,
   ],
   imports: [
     CommonModule,
@@ -39,6 +41,7 @@ import { SafeExpressionsComponent } from './expressions/expressions.component';
     SafeGroupStageComponent,
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
+    SafeFieldDropdownComponent,
   ],
 })
 export class SafePipelineModule {}

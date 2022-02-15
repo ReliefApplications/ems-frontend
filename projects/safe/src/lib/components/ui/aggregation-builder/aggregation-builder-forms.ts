@@ -81,6 +81,12 @@ export const addStage = (value: any): FormGroup => {
     case PipelineStage.UNWIND: {
       return formBuilder.group({
         type: [PipelineStage.UNWIND],
+        form: formBuilder.group({
+          field: [
+            value.form && value.form.field ? value.form.field : '',
+            Validators.required,
+          ],
+        }),
       });
     }
     case PipelineStage.CUSTOM: {
