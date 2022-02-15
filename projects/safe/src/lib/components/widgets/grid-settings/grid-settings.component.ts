@@ -14,6 +14,8 @@ import {
   GetRelatedFormsQueryResponse,
   GET_CHANNELS,
   GET_RELATED_FORMS,
+  GET_FORM_AS_TEMPLATE,
+  GetFormByIdQueryResponse,
 } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
@@ -135,8 +137,21 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                 })
                 .subscribe((res2) => {
                   if (res2.errors) {
-                    this.relatedForms = [];
-                    this.templates = [];
+                    this.apollo
+                      .query<GetFormByIdQueryResponse>({
+                        query: GET_FORM_AS_TEMPLATE,
+                        variables: {
+                          id: source,
+                        },
+                      })
+                      .subscribe((res3) => {
+                        if (res3.errors) {
+                          this.relatedForms = [];
+                          this.templates = [];
+                        } else {
+                          this.templates = [res3.data.form] || [];
+                        }
+                      });
                   } else {
                     this.relatedForms = res2.data.resource.relatedForms || [];
                     this.templates = res2.data.resource.forms || [];
