@@ -19,7 +19,6 @@ export class SafeArcGISService {
   private authentication: any;
 
   constructor(@Inject('environment') environment: any) {
-    console.log(window);
     this.authentication = new ApiKey({
       key: environment.esriApiKey,
     });
