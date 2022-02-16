@@ -8,6 +8,7 @@ import {
   SafeConfirmModalComponent,
   Record,
   Form,
+  SafeLayoutModalComponent,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -62,6 +63,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     '_actions',
   ];
   dataSourceForms: any[] = [];
+
+  // === LAYOUTS ===
+  displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
+  dataSourceLayouts: any[] = [];
 
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
@@ -145,6 +150,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
           if (res.data.resource) {
             this.resource = res.data.resource;
             this.dataSourceForms = this.resource.forms;
+            this.dataSourceLayouts = [
+              {
+                name: 'test',
+                createdAt: new Date(),
+              },
+            ];
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {
@@ -425,6 +436,37 @@ export class ResourceComponent implements OnInit, OnDestroy {
    */
   public filterTemplates(record: Record): Form[] {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
+  }
+
+  /**
+   * Edits a layout. Opens a popup for edition.
+   *
+   * @param id layout id
+   */
+  onEditLayout(id: string): void {
+    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
+      data: {},
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        console.log('edit layout');
+      }
+    });
+  }
+
+  /**
+   * Deletes a layout.
+   *
+   * @param id layout id
+   */
+  onDeleteLayout(id: string): void {
+    console.log('delete layout');
   }
 
   /**

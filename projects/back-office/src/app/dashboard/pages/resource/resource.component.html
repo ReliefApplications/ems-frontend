@@ -183,5 +183,47 @@
                 </table>
             </ng-container>
         </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                {{'resource.layouts' | translate}} ( 0 )
+            </ng-template>
+            <ng-container *ngIf="!loading">
+                <table mat-table [dataSource]="dataSourceLayouts">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> {{'global.name' | translate}} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="createdAt">
+                        <th mat-header-cell *matHeaderCellDef> {{'table.date' | translate}} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.createdAt | date}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="_actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element">
+                            <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="resMenu"
+                                (click)="$event.stopPropagation()"
+                                [disabled]="!(resource.canUpdate)">
+                            </safe-button>
+                            <mat-menu #resMenu="matMenu">
+                                <button mat-menu-item (click)="onEditLayout(element.id)">
+                                    <mat-icon>edit</mat-icon>
+                                    {{'action.edit' | translate}}
+                                </button>
+                                <button mat-menu-item  (click)="onDeleteLayout(element.id)">
+                                    <mat-icon>delete</mat-icon>
+                                    {{'action.delete' | translate}}
+                                </button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsLayouts;">
+                    </tr>
+                </table>
+            </ng-container>
+        </mat-tab>
     </mat-tab-group>
 </ng-container>
