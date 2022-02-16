@@ -221,15 +221,6 @@ export const GET_FORM_BY_ID = gql`
   }
 `;
 
-export const GET_FORM_AS_TEMPLATE = gql`
-  query GetFormAsTemplate($id: ID!) {
-    form(id: $id) {
-      id
-      name
-    }
-  }
-`;
-
 export const GET_FORM_STRUCTURE = gql`
   query GetFormStructure($id: ID!) {
     form(id: $id) {
