@@ -104,8 +104,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
           (this.aggregationForm.get('pipeline') as FormArray).clear();
           this.aggregationForm.get('mapping')?.reset();
           this.aggregationForm.updateValueAndValidity();
-          this.updateFields(form);
-          this.initGrid([]);
+          this.initFields();
           this.loadingForm = false;
         }
       });
@@ -191,6 +190,10 @@ export class SafeAggregationBuilderComponent implements OnInit {
           this.aggregationForm.get('pipeline')?.value
         )
       );
+    } else {
+      this.selectedFields.next([]);
+      this.metaFields.next([]);
+      this.mappingFields.next([]);
     }
   }
 
