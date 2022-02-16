@@ -299,7 +299,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                       this.templates = [];
                     } else {
                       this.templates = [res3.data.form] || [];
-                      this.tileForm?.get('query.template')?.setValue(res3.data.form.id);
+                      this.tileForm
+                        ?.get('query.template')
+                        ?.setValue(res3.data.form.id);
                       this.tileForm?.get('query.template')?.disable();
                     }
                   });
