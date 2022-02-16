@@ -31,7 +31,8 @@
       "@progress/kendo-angular-common": "@progress/kendo-angular-common",
       "@progress/kendo-angular-layout": "@progress/kendo-angular-layout",
       "@ngx-translate/core": "@ngx-translate/core",
-      "angular-oauth2-oidc": "angular-oauth2-oidc"
+      "angular-oauth2-oidc": "angular-oauth2-oidc",
+      "@esri/arcgis-rest-auth": "@esri/arcgis-rest-auth"
     }
   }
 }
