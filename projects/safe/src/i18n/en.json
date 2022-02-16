@@ -41,7 +41,8 @@
     "orientation": "Orientation",
     "aggregation": "Aggregation",
     "id": "Id",
-    "none": "-- None --"
+    "none": "-- None --",
+    "raw": "Raw JSON"
   },
   "action": {
     "edit": "Edit",
@@ -216,7 +217,6 @@
     "schedulePlaceholder": "Enter the schedule time for this Pull job",
     "mapping": "Mapping",
     "switch": "Switch mode",
-    "raw": "Raw JSON",
     "identifier": "Unique identifiers",
     "delete": "Delete pull job",
     "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"

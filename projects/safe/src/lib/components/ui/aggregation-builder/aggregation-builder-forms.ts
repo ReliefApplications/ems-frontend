@@ -92,11 +92,23 @@ export const addStage = (value: any): FormGroup => {
     case PipelineStage.CUSTOM: {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],
+        form: formBuilder.group({
+          raw: [
+            value.form && value.form.raw ? value.form.raw : '',
+            Validators.required,
+          ],
+        }),
       });
     }
     default: {
       return formBuilder.group({
-        type: [PipelineStage.FILTER],
+        type: [PipelineStage.CUSTOM],
+        form: formBuilder.group({
+          raw: [
+            value.form && value.form.raw ? value.form.raw : '',
+            Validators.required,
+          ],
+        }),
       });
     }
   }

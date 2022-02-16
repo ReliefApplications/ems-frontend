@@ -23,7 +23,11 @@
         <safe-field-dropdown [fieldControl]="$any(stageForm).controls.form.controls.field" [fields]="fieldsPerStage[index]"></safe-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        In progress
+        <mat-form-field appearance="outline">
+          <mat-label>{{'global.raw' | translate}}</mat-label>
+          <textarea matInput [formControl]="$any(stageForm).controls.form.controls.raw"
+            [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
+        </mat-form-field>
       </ng-container>
     </ng-container>
     <mat-action-row>
