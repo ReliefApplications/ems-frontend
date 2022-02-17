@@ -179,6 +179,8 @@ export class SafeGridService {
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
+        console.log('FIELDNAME', fieldName);
+        console.log('meta', meta);
         const url: string = meta.choicesByUrl.url;
         const localRes = localStorage.getItem(url);
         if (localRes) {
@@ -204,8 +206,11 @@ export class SafeGridService {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string, hasOther?: boolean }): { value: string, text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    if (choicesByUrl.hasOther) {
+      choices.push({ [choicesByUrl.value || 'value']: 'other', [choicesByUrl.text || 'text']: 'Other' });
+    }
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
       text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x
