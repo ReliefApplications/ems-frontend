@@ -299,6 +299,11 @@ export const GET_RESOURCE_BY_ID = gql`
       name
       createdAt
       fields
+      layouts {
+        id
+        name
+        createdAt
+      }
       forms {
         id
         name

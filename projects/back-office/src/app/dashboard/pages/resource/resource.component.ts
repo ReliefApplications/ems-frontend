@@ -150,12 +150,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
           if (res.data.resource) {
             this.resource = res.data.resource;
             this.dataSourceForms = this.resource.forms;
-            this.dataSourceLayouts = [
-              {
-                name: 'test',
-                createdAt: new Date(),
-              },
-            ];
+            this.dataSourceLayouts = this.resource.layouts;
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {
