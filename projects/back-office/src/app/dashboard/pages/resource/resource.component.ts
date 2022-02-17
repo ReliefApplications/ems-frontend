@@ -11,6 +11,8 @@ import {
   SafeLayoutModalComponent,
 } from '@safe/builder';
 import {
+  AddLayoutMutationResponse,
+  ADD_LAYOUT,
   DeleteFormMutationResponse,
   DeleteRecordMutationResponse,
   DELETE_FORM,
@@ -431,6 +433,40 @@ export class ResourceComponent implements OnInit, OnDestroy {
    */
   public filterTemplates(record: Record): Form[] {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
+  }
+
+  onAddLayout(): void {
+    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
+      data: {},
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<AddLayoutMutationResponse>({
+            mutation: ADD_LAYOUT,
+            variables: {
+              resource: this.id,
+              layout: value,
+            },
+          })
+          .subscribe((res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar('Error', { error: true });
+            } else {
+              this.dataSourceLayouts = [
+                ...this.resource.layouts,
+                res.data?.addLayout,
+              ];
+            }
+          });
+      }
+    });
   }
 
   /**

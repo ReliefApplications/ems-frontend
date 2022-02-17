@@ -13,6 +13,7 @@ import {
   Step,
   ApiConfiguration,
   PullJob,
+  Layout,
 } from '@safe/builder';
 
 // === EDIT USER ===
@@ -920,4 +921,19 @@ export const EDIT_PULL_JOB = gql`
 export interface EditPullJobMutationResponse {
   loading: boolean;
   editPullJob: PullJob;
+}
+
+export const ADD_LAYOUT = gql`
+  mutation addLayout($resource: ID, $layout: LayoutInputType!) {
+    addLayout(resource: $resource, layout: $layout) {
+      id
+      name
+      createdAt
+    }
+  }
+`;
+
+export interface AddLayoutMutationResponse {
+  loading: boolean;
+  addLayout: Layout;
 }

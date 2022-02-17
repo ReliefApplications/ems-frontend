@@ -185,9 +185,12 @@
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{'resource.layouts' | translate}} ( 0 )
+                {{'resource.layouts' | translate}} ( {{dataSourceLayouts.length}} )
             </ng-template>
             <ng-container *ngIf="!loading">
+                <div class="actions">
+                    <safe-button variant="primary" category="secondary" (click)="onAddLayout()"> {{ 'layouts.create' | translate }}</safe-button>
+                </div>
                 <table mat-table [dataSource]="dataSourceLayouts">
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef> {{'global.name' | translate}} </th>

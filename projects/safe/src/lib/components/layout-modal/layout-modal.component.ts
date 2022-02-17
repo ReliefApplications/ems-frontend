@@ -30,7 +30,7 @@ export class SafeLayoutModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      title: ['', Validators.required],
+      name: ['', Validators.required],
       query: createQueryForm(null),
     });
     this.queryName = this.form.get('query')?.value.name;
