@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { createQueryForm } from '../query-builder/query-builder-forms';
 
@@ -19,6 +19,10 @@ export class SafeLayoutModalComponent implements OnInit {
   private queryName = '';
   public templates: any[] = [];
 
+  get settings(): any {
+    return this.form?.getRawValue();
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeLayoutModalComponent> // @Inject(MAT_DIALOG_DATA) public data: DialogData
@@ -26,6 +30,7 @@ export class SafeLayoutModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
+      title: ['', Validators.required],
       query: createQueryForm(null),
     });
     this.queryName = this.form.get('query')?.value.name;

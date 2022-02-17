@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 
 @NgModule({
   declarations: [SafeLayoutModalComponent],
@@ -21,8 +23,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatTooltipModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatInputModule,
     SafeButtonModule,
     SafeQueryBuilderModule,
+    SafeCoreGridModule,
   ],
   exports: [SafeLayoutModalComponent],
 })
