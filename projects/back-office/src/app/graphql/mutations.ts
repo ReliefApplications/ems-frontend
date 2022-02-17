@@ -937,3 +937,18 @@ export interface AddLayoutMutationResponse {
   loading: boolean;
   addLayout: Layout;
 }
+
+export const DELETE_LAYOUT = gql`
+  mutation deleteLayout($resource: ID, $id: ID!) {
+    deleteLayout(resource: $resource, id: $id) {
+      id
+      name
+      createdAt
+    }
+  }
+`;
+
+export interface deleteLayoutMutationResponse {
+  loading: boolean;
+  deleteLayout: Layout;
+}

@@ -9,13 +9,16 @@ import {
   Record,
   Form,
   SafeLayoutModalComponent,
+  Layout,
 } from '@safe/builder';
 import {
   AddLayoutMutationResponse,
   ADD_LAYOUT,
   DeleteFormMutationResponse,
+  deleteLayoutMutationResponse,
   DeleteRecordMutationResponse,
   DELETE_FORM,
+  DELETE_LAYOUT,
   DELETE_RECORD,
   EditResourceMutationResponse,
   EDIT_RESOURCE,
@@ -494,10 +497,40 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Deletes a layout.
    *
-   * @param id layout id
+   * @param layout layout to delete
    */
-  onDeleteLayout(id: string): void {
-    console.log('delete layout');
+  onDeleteLayout(layout: Layout): void {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: this.translate.instant('layout.delete'),
+        content: this.translate.instant('layout.deleteDesc', {
+          name: layout.name,
+        }),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<deleteLayoutMutationResponse>({
+            mutation: DELETE_LAYOUT,
+            variables: {
+              resource: this.id,
+              id: layout.id,
+            },
+          })
+          .subscribe((res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar('Error', { error: true });
+            } else {
+              this.dataSourceLayouts = this.dataSourceLayouts.filter(
+                (x) => x.id !== layout.id
+              );
+            }
+          });
+      }
+    });
   }
 
   /**
