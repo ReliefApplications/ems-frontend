@@ -14,6 +14,8 @@ import {
   GetRelatedFormsQueryResponse,
   GET_CHANNELS,
   GET_RELATED_FORMS,
+  GET_FORM_AS_TEMPLATE,
+  GetFormByIdQueryResponse,
 } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
@@ -24,13 +26,14 @@ import {
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
 
+/**
+ * Modal content for the settings of the grid widgets.
+ */
 @Component({
   selector: 'safe-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
 })
-/*  Modal content for the settings of the grid widgets.
- */
 export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -97,12 +100,15 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       ),
     });
     this.queryName = this.tileForm.get('query')?.value.name;
+    this.getQueryMetaData();
 
-    this.tileForm.get('query')?.valueChanges.subscribe((res) => {
-      if (res.name) {
+    this.tileForm.get('query.name')?.valueChanges.subscribe((name) => {
+      if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
-        if (res.name !== this.queryName) {
-          this.queryName = res.name;
+        if (name !== this.queryName) {
+          this.queryName = name;
+          this.tileForm?.get('query.template')?.setValue(null);
+          this.tileForm?.get('query.template')?.enable();
           const floatingButtons = this.tileForm?.get(
             'floatingButtons'
           ) as FormArray;
@@ -118,36 +124,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
             bodyFields.clear();
           }
         }
-        this.fields = this.queryBuilder.getFields(res.name);
-        const query = this.queryBuilder.sourceQuery(this.queryName);
-        if (query) {
-          query.subscribe((res1: { data: any }) => {
-            // eslint-disable-next-line no-underscore-dangle
-            const source = res1.data[`_${this.queryName}Meta`]._source;
-            this.tileForm?.get('resource')?.setValue(source);
-            if (source) {
-              this.apollo
-                .query<GetRelatedFormsQueryResponse>({
-                  query: GET_RELATED_FORMS,
-                  variables: {
-                    resource: source,
-                  },
-                })
-                .subscribe((res2) => {
-                  if (res2.errors) {
-                    this.relatedForms = [];
-                    this.templates = [];
-                  } else {
-                    this.relatedForms = res2.data.resource.relatedForms || [];
-                    this.templates = res2.data.resource.forms || [];
-                  }
-                });
-            }
-          });
-        } else {
-          this.relatedForms = [];
-          this.templates = [];
-        }
+        this.getQueryMetaData();
       } else {
         this.fields = [];
       }
@@ -187,6 +164,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Floating button form factory.
+   *
+   * @param value default value ( if any )
+   * @returns new form group for the floating button.
+   */
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
@@ -265,14 +248,73 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     return buttonForm;
   }
 
+  /**
+   * Adds a floating button configuration.
+   */
   public addFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.push(this.createFloatingButtonForm({ show: true }));
   }
 
+  /**
+   * Deletes a floating button configuration.
+   */
   public deleteFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
+  }
+
+  /**
+   * Gets query metadata for grid settings, from the query name
+   */
+  private getQueryMetaData(): void {
+    this.fields = this.queryBuilder.getFields(this.queryName);
+    const query = this.queryBuilder.sourceQuery(this.queryName);
+    if (query) {
+      query.subscribe((res1: { data: any }) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const source = res1.data[`_${this.queryName}Meta`]._source;
+        this.tileForm?.get('resource')?.setValue(source);
+        if (source) {
+          this.apollo
+            .query<GetRelatedFormsQueryResponse>({
+              query: GET_RELATED_FORMS,
+              variables: {
+                resource: source,
+              },
+            })
+            .subscribe((res2) => {
+              if (res2.errors) {
+                this.apollo
+                  .query<GetFormByIdQueryResponse>({
+                    query: GET_FORM_AS_TEMPLATE,
+                    variables: {
+                      id: source,
+                    },
+                  })
+                  .subscribe((res3) => {
+                    if (res3.errors) {
+                      this.relatedForms = [];
+                      this.templates = [];
+                    } else {
+                      this.templates = [res3.data.form] || [];
+                      this.tileForm
+                        ?.get('query.template')
+                        ?.setValue(res3.data.form.id);
+                      this.tileForm?.get('query.template')?.disable();
+                    }
+                  });
+              } else {
+                this.relatedForms = res2.data.resource.relatedForms || [];
+                this.templates = res2.data.resource.forms || [];
+              }
+            });
+        }
+      });
+    } else {
+      this.relatedForms = [];
+      this.templates = [];
+    }
   }
 }
