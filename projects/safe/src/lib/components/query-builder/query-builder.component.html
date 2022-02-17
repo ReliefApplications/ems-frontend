@@ -48,7 +48,7 @@
       </mat-tab>
       <mat-tab [label]="'widgets.query.filter.title' | translate" *ngIf="form.get('filter')">
         <ng-template matTabContent>
-          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [settings]="settings">
+          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [query]="form.getRawValue()">
           </safe-tab-filter>
         </ng-template>
       </mat-tab>

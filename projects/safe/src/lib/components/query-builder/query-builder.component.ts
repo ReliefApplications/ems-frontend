@@ -21,6 +21,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   return block;
 }
 
+/**
+ * Main query builder component.
+ * Enables admin user to build a query from GraphQL API schema.
+ */
 @Component({
   selector: 'safe-query-builder',
   templateUrl: './query-builder.component.html',
@@ -49,7 +53,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() form?: FormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
-  @Input() settings: any;
   @Input() templates: Form[] = [];
 
   // === FIELD EDITION ===
@@ -62,6 +65,9 @@ export class SafeQueryBuilderComponent implements OnInit {
     private queryBuilder: QueryBuilderService
   ) {}
 
+  /**
+   * Allows to inject the component without creating circular dependency.
+   */
   ngOnInit(): void {
     this.factory = this.componentFactoryResolver.resolveComponentFactory(
       SafeQueryBuilderComponent
@@ -69,6 +75,9 @@ export class SafeQueryBuilderComponent implements OnInit {
     this.buildSettings();
   }
 
+  /**
+   * Builds the form from the type of field / query we inject.
+   */
   buildSettings(): void {
     if (this.form?.value.type) {
       this.isField = true;
@@ -137,15 +146,29 @@ export class SafeQueryBuilderComponent implements OnInit {
     }
   }
 
+  /**
+   * Closes the form.
+   */
   onCloseField(): void {
     this.closeField.emit(true);
   }
 
+  /**
+   * Sets a new value for the form.
+   *
+   * @param newForm new form value.
+   */
   setForm(newForm: FormGroup): void {
     this.form = newForm;
     this.buildSettings();
   }
 
+  /**
+   * Filters the queries using text value.
+   *
+   * @param value search value
+   * @returns filtered list of queries.
+   */
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));

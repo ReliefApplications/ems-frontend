@@ -164,9 +164,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       const formattedFields = this.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       this.queryBuilder
-        .buildMetaQuery({
-          query: { name: this.queryName, fields: formattedFields },
-        })
+        .buildMetaQuery({ name: this.queryName, fields: formattedFields })
         ?.subscribe((res) => {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
