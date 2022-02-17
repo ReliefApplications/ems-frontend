@@ -80,6 +80,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         Validators.required,
       ],
       query: createQueryForm(tileSettings.query),
+      layouts: [[]],
       resource: [
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
