@@ -210,7 +210,7 @@
                                 [disabled]="!(resource.canUpdate)">
                             </safe-button>
                             <mat-menu #resMenu="matMenu">
-                                <button mat-menu-item (click)="onEditLayout(element.id)">
+                                <button mat-menu-item (click)="onEditLayout(element)">
                                     <mat-icon>edit</mat-icon>
                                     {{'action.edit' | translate}}
                                 </button>

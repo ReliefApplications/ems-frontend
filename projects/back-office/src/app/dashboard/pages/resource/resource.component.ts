@@ -20,7 +20,9 @@ import {
   DELETE_FORM,
   DELETE_LAYOUT,
   DELETE_RECORD,
+  EditLayoutMutationResponse,
   EditResourceMutationResponse,
+  EDIT_LAYOUT,
   EDIT_RESOURCE,
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
@@ -475,12 +477,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Edits a layout. Opens a popup for edition.
    *
-   * @param id layout id
+   * @param layout Layout to edit
    */
-  onEditLayout(id: string): void {
+  onEditLayout(layout: Layout): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,
-      data: {},
+      data: {
+        layout,
+      },
       position: {
         bottom: '0',
         right: '0',
@@ -489,7 +493,28 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log('edit layout');
+        this.apollo
+          .mutate<EditLayoutMutationResponse>({
+            mutation: EDIT_LAYOUT,
+            variables: {
+              id: layout.id,
+              resource: this.id,
+              layout: value,
+            },
+          })
+          .subscribe((res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar('Error', { error: true });
+            } else {
+              this.dataSourceLayouts = this.dataSourceLayouts.map((x) => {
+                if (x.id === layout.id) {
+                  return res.data?.editLayout;
+                } else {
+                  return x;
+                }
+              });
+            }
+          });
       }
     });
   }
@@ -497,7 +522,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Deletes a layout.
    *
-   * @param layout layout to delete
+   * @param layout Layout to delete
    */
   onDeleteLayout(layout: Layout): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
