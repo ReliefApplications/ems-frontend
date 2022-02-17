@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Inject, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { createQueryForm } from '../query-builder/query-builder-forms';
 
 // interface DialogData {
 //   tile: any;
@@ -13,14 +14,22 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./layout-modal.component.scss'],
 })
 export class SafeLayoutModalComponent implements OnInit {
-  form?: FormGroup;
   @Input() layout: any;
+  public form?: FormGroup;
+  private queryName = '';
+  public templates: any[] = [];
 
   constructor(
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeLayoutModalComponent> // @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      query: createQueryForm(null),
+    });
+    this.queryName = this.form.get('query')?.value.name;
+  }
 
   /**
    * Closes the modal without sending any data.
