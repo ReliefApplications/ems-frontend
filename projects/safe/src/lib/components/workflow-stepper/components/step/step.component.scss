@@ -3,11 +3,12 @@
     height: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     cursor: pointer;
     border-radius: 8px;
     box-sizing: border-box;
+    padding: 6px;
 
     &:not(.active) {
         border: 1px solid #2F383E33;
@@ -18,22 +19,19 @@
 
     img {
         height: 36px;
-        margin-top: 22px;
     }
 
     span {
-        font-weight: 500;
-        margin-bottom: 8px;
-        margin-top: auto;
+        box-sizing: border-box;
         color: #6E7478;
         font-size: 12px;
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0 8px;
+        font-weight: 500;
         overflow: hidden;
+        text-align: center;
         text-overflow: ellipsis;
-        max-height: 30px;
+        width: 100%;
+        line-height: 16px;
+        max-height: 32px;
     }
 
     .safe-step-active {

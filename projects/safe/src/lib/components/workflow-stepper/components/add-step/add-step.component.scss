@@ -3,19 +3,19 @@
     height: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     cursor: pointer;
     border-radius: 8px;
     background-color: #ebf3f9;
 
     safe-icon {
-        margin-top: 32px;
+        margin-top: 24px;
     }
 
     span {
         font-weight: 500;
         color: #3b8cc4;
-        margin-bottom: 8px;
+        margin-bottom: 16px;
     }
 }
