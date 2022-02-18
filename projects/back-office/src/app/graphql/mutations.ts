@@ -944,6 +944,8 @@ export const EDIT_LAYOUT = gql`
       id
       name
       createdAt
+      query
+      display
     }
   }
 `;

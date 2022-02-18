@@ -73,6 +73,7 @@ export const GET_GRID_FORM_META = gql`
         name
         createdAt
         query
+        display
       }
     }
   }
@@ -119,6 +120,7 @@ export const GET_GRID_RESOURCE_META = gql`
         name
         query
         createdAt
+        display
       }
     }
   }

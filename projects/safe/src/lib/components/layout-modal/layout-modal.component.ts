@@ -1,8 +1,22 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { Layout } from '../../models/layout.model';
-import { createQueryForm } from '../query-builder/query-builder-forms';
+import {
+  createDisplayForm,
+  createQueryForm,
+} from '../query-builder/query-builder-forms';
+
+const DEFAULT_GRID_SETTINGS = {
+  actions: {
+    delete: false,
+    history: true,
+    convert: false,
+    update: false,
+    inlineEdition: false,
+  },
+};
 
 interface DialogData {
   layout?: Layout;
@@ -18,10 +32,7 @@ export class SafeLayoutModalComponent implements OnInit {
   public form?: FormGroup;
   private queryName = '';
   public templates: any[] = [];
-
-  get settings(): any {
-    return this.form?.getRawValue();
-  }
+  public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,8 +44,24 @@ export class SafeLayoutModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: [this.data.layout?.name, Validators.required],
       query: createQueryForm(this.data.layout?.query),
+      display: createDisplayForm(this.data.layout?.display),
     });
     this.queryName = this.form.get('query')?.value.name;
+    this.form.get('query')?.valueChanges.subscribe((value) => {
+      this.gridSettings = {
+        ...this.form?.getRawValue(),
+        ...DEFAULT_GRID_SETTINGS,
+      };
+    });
+  }
+
+  /**
+   * Updates layout parameters.
+   *
+   * @param value new value
+   */
+  onGridLayoutChange(value: any): void {
+    this.form?.get('display')?.setValue(value);
   }
 
   /**

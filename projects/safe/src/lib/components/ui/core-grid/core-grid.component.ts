@@ -595,10 +595,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
-      case 'saveLayout': {
-        this.saveDefaultLayout();
-        break;
-      }
       case 'resetLayout': {
         this.resetDefaultLayout();
         break;

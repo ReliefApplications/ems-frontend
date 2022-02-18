@@ -303,6 +303,8 @@ export const GET_RESOURCE_BY_ID = gql`
         id
         name
         createdAt
+        query
+        display
       }
       forms {
         id

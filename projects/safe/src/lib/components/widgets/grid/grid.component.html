@@ -12,7 +12,7 @@
     <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
   </ng-container>
   <!-- GRID CONTENT -->
-  <safe-core-grid [settings]="gridSettings" [admin]="isAdmin"></safe-core-grid>
+  <safe-core-grid [defaultLayout]="layout?.display || {}" [settings]="gridSettings" [admin]="isAdmin"></safe-core-grid>
 </div>
 
 <!-- TEMPLATE OF FLOATING BUTTONS -->

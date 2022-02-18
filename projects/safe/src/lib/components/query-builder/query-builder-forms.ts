@@ -116,3 +116,17 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
     }),
     filter: createFilterGroup(value && value.filter ? value.filter : {}, null),
   });
+
+/**
+ * Creates a display form.
+ *
+ * @param value Initial value.
+ * @returns Display form.
+ */
+export const createDisplayForm = (value: any): FormGroup =>
+  formBuilder.group({
+    showFilter: [value?.showFilter],
+    sort: [value?.sort || []],
+    fields: [value?.fields || null],
+    filter: [value?.filter || null],
+  });

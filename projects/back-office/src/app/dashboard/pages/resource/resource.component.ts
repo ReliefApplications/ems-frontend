@@ -493,6 +493,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
+        console.log(value);
         this.apollo
           .mutate<EditLayoutMutationResponse>({
             mutation: EDIT_LAYOUT,
