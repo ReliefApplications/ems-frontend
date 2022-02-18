@@ -1,5 +1,6 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
+    <!-- MAIN PARAMETERS -->
     <div class="form-group">
       <div class="form-group-title">{{'global.general' | translate}}</div>
       <mat-form-field appearance="outline">
@@ -7,13 +8,12 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
-    <div class="form-group">
+    <!-- SELECTION OF LAYOUTS -->
+    <div class="form-group" *ngIf="tileForm.value.form">
       <div class="form-group-title">{{'layouts.title' | translate}}</div>
       <safe-layouts-parameters></safe-layouts-parameters>
     </div>
-    <div class="form-group">
-      <safe-query-builder [form]="$any(tileForm.controls.query)" [templates]="templates"></safe-query-builder>
-    </div>
+    <!-- AVAILABLE ACTIONS -->
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">{{'widgets.grid.enabled' | translate}}</div>
       <mat-slide-toggle formControlName="delete">
@@ -35,6 +35,7 @@
         {{'widgets.grid.actions.add' | translate}}
       </mat-slide-toggle>
     </div>
+    <!-- BUTTONS -->
     <div class="form-group">
       <div class="form-group-title">{{'widgets.grid.quickBtn' | translate}}</div>
       <div class="info-text">{{'widgets.grid.quickBtnDesc' | translate}}</div>

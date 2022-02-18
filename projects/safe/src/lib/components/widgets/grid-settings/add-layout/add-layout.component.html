@@ -1,1 +1,22 @@
-<p>add-layout works!</p>
+<h1 mat-dialog-title>{{'layouts.new' | translate }}</h1>
+<div mat-dialog-content>
+    <div class="add-layout-choice" *ngIf="!nextStep">
+        <safe-button variant="primary" category="tertiary" (click)="nextStep = true">{{'layouts.load' | translate }}</safe-button>
+        <safe-button variant="primary" category="tertiary" (click)="onCreate()">{{'layouts.create' | translate }}</safe-button>
+    </div>
+    <div *ngIf="nextStep">
+        <div class="select-layout-header">
+            <safe-button [isIcon]="true" icon="arrow_back" (click)="nextStep = false"></safe-button>
+            <div>{{'layouts.load' | translate }}</div>
+        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'layouts.select' | translate}}</mat-label>
+            <mat-select (selectionChange)="onSelect($event)">
+                <mat-option *ngFor="let layout of layouts" [value]="layout.id">{{ layout.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+</div>

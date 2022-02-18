@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
+import { AddLayoutModule } from '../add-layout/add-layout.module';
 
 @NgModule({
   declarations: [LayoutsParametersComponent],
@@ -16,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatIconModule,
     SafeButtonModule,
+    AddLayoutModule,
   ],
   exports: [LayoutsParametersComponent],
 })
