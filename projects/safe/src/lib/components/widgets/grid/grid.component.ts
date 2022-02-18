@@ -456,8 +456,20 @@ export class SafeGridWidgetComponent implements OnInit {
     }
   }
 
+  /**
+   * Updates current layout.
+   *
+   * @param layout new layout.
+   */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
     this.gridSettings = { ...this.settings, ...this.layout };
+  }
+
+  /**
+   * Resets the current layout.
+   */
+  onResetLayout(): void {
+    this.onLayoutChange(this.layout || {});
   }
 }

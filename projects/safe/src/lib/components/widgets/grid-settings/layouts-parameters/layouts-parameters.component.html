@@ -52,6 +52,7 @@
     category="tertiary"
     variant="primary"
     (click)="onAdd()"
+    [disabled]="!resource && !form"
     >{{ 'layouts.add' | translate }}</safe-button
   >
 </div>

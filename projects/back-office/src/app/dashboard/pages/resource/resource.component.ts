@@ -10,19 +10,14 @@ import {
   Form,
   SafeLayoutModalComponent,
   Layout,
+  SafeGridLayoutService,
 } from '@safe/builder';
 import {
-  AddLayoutMutationResponse,
-  ADD_LAYOUT,
   DeleteFormMutationResponse,
-  deleteLayoutMutationResponse,
   DeleteRecordMutationResponse,
   DELETE_FORM,
-  DELETE_LAYOUT,
   DELETE_RECORD,
-  EditLayoutMutationResponse,
   EditResourceMutationResponse,
-  EDIT_LAYOUT,
   EDIT_RESOURCE,
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
@@ -94,7 +89,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private gridLayoutService: SafeGridLayoutService
   ) {}
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -452,18 +448,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.apollo
-          .mutate<AddLayoutMutationResponse>({
-            mutation: ADD_LAYOUT,
-            variables: {
-              resource: this.id,
-              layout: value,
-            },
-          })
-          .subscribe((res) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar('Error', { error: true });
-            } else {
+        this.gridLayoutService
+          .addLayout(value, this.id)
+          .subscribe((res: any) => {
+            if (res.data.addLayout) {
               this.dataSourceLayouts = [
                 ...this.resource.layouts,
                 res.data?.addLayout,
@@ -493,23 +481,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log(value);
-        this.apollo
-          .mutate<EditLayoutMutationResponse>({
-            mutation: EDIT_LAYOUT,
-            variables: {
-              id: layout.id,
-              resource: this.id,
-              layout: value,
-            },
-          })
-          .subscribe((res) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar('Error', { error: true });
-            } else {
+        this.gridLayoutService
+          .editLayout(layout, value, this.resource.id)
+          .subscribe((res: any) => {
+            if (res.data.editLayout) {
               this.dataSourceLayouts = this.dataSourceLayouts.map((x) => {
                 if (x.id === layout.id) {
-                  return res.data?.editLayout;
+                  return res.data.editLayout;
                 } else {
                   return x;
                 }
@@ -538,18 +516,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.apollo
-          .mutate<deleteLayoutMutationResponse>({
-            mutation: DELETE_LAYOUT,
-            variables: {
-              resource: this.id,
-              id: layout.id,
-            },
-          })
-          .subscribe((res) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar('Error', { error: true });
-            } else {
+        this.gridLayoutService
+          .deleteLayout(layout, this.id)
+          .subscribe((res: any) => {
+            if (res.data.deleteLayout) {
               this.dataSourceLayouts = this.dataSourceLayouts.filter(
                 (x) => x.id !== layout.id
               );

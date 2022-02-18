@@ -1,5 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Subscription } from 'rxjs';
+import { SafeSnackBarService } from './snackbar.service';
+import {
+  AddLayoutMutationResponse,
+  ADD_LAYOUT,
+  deleteLayoutMutationResponse,
+  DELETE_LAYOUT,
+  EditLayoutMutationResponse,
+  EDIT_LAYOUT,
+} from '../graphql/mutations';
 import {
   GetResourceByIdQueryResponse,
   GET_GRID_RESOURCE_META,
@@ -15,7 +25,7 @@ import { Layout } from '../models/layout.model';
   providedIn: 'root',
 })
 export class SafeGridLayoutService {
-  constructor(private apollo: Apollo) {}
+  constructor(private snackBar: SafeSnackBarService, private apollo: Apollo) {}
 
   /**
    * Gets list of layouts from source
@@ -60,5 +70,44 @@ export class SafeGridLayoutService {
             : layouts;
         }
       });
+  }
+
+  public editLayout(
+    layout: Layout,
+    value: Layout,
+    resource?: string,
+    form?: string
+  ) {
+    return this.apollo.mutate<EditLayoutMutationResponse>({
+      mutation: EDIT_LAYOUT,
+      variables: {
+        id: layout.id,
+        resource,
+        form,
+        layout: value,
+      },
+    });
+  }
+
+  public addLayout(value: Layout, resource?: string, form?: string) {
+    return this.apollo.mutate<AddLayoutMutationResponse>({
+      mutation: ADD_LAYOUT,
+      variables: {
+        resource,
+        form,
+        layout: value,
+      },
+    });
+  }
+
+  public deleteLayout(layout: Layout, resource?: string, form?: string) {
+    return this.apollo.mutate<deleteLayoutMutationResponse>({
+      mutation: DELETE_LAYOUT,
+      variables: {
+        resource,
+        form,
+        id: layout.id,
+      },
+    });
   }
 }

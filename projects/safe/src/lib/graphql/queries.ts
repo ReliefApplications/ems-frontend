@@ -106,6 +106,7 @@ export interface GetFormByIdQueryResponse {
 export const GET_GRID_RESOURCE_META = gql`
   query GetGridResourceMeta($resource: ID!) {
     resource(id: $resource) {
+      id
       forms {
         id
         name

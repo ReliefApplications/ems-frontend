@@ -5,11 +5,16 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
+import { SafeGridLayoutService } from '../../../../services/grid-layout.service';
+import { Form } from '../../../../models/form.model';
 import { Layout } from '../../../../models/layout.model';
+import { Resource } from '../../../../models/resource.model';
 import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
 
 interface DialogData {
   layouts: Layout[];
+  form?: Form;
+  resource?: Resource;
 }
 
 /**
@@ -22,15 +27,20 @@ interface DialogData {
   styleUrls: ['./add-layout.component.scss'],
 })
 export class AddLayoutComponent implements OnInit {
-  @Input() layouts: Layout[] = [];
+  private form?: Form;
+  private resource?: Resource;
+  public layouts: Layout[] = [];
   public nextStep = false;
 
   constructor(
     private dialogRef: MatDialogRef<AddLayoutComponent>,
     private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private gridLayoutService: SafeGridLayoutService
   ) {
     this.layouts = data.layouts;
+    this.form = data.form;
+    this.resource = data.resource;
   }
 
   ngOnInit(): void {}
@@ -41,6 +51,19 @@ export class AddLayoutComponent implements OnInit {
   public onCreate(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       data: {},
+    });
+    dialogRef.afterClosed().subscribe((layout) => {
+      if (layout) {
+        this.gridLayoutService
+          .addLayout(layout, this.resource?.id, this.form?.id)
+          .subscribe((res) => {
+            if (res.data?.addLayout) {
+              this.dialogRef.close(res.data.addLayout);
+            } else {
+              this.dialogRef.close();
+            }
+          });
+      }
     });
   }
 

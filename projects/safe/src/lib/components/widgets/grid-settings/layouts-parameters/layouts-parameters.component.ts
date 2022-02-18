@@ -31,13 +31,15 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   @Output() delete = new EventEmitter();
   @Output() edit = new EventEmitter();
 
-  layouts: any[] = [];
+  layouts: Layout[] = [];
+  allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     const defaultValue = this.selectedLayouts?.value;
+    this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
     this.selectedLayouts?.valueChanges.subscribe((value) => {
       this.setSelectedLayouts(value);
@@ -46,7 +48,25 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     const defaultValue = this.selectedLayouts?.value;
+    this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
+  }
+
+  /**
+   * Sets the list of all layouts from resource / form.
+   */
+  private setAllLayouts(): void {
+    if (this.form) {
+      this.allLayouts = this.form.layouts ? [...this.form.layouts] : [];
+    } else {
+      if (this.resource) {
+        this.allLayouts = this.resource.layouts
+          ? [...this.resource.layouts]
+          : [];
+      } else {
+        this.allLayouts = [];
+      }
+    }
   }
 
   /**
@@ -55,14 +75,8 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
    * @param value form control value.
    */
   private setSelectedLayouts(value: string[]): void {
-    if (this.resource) {
-      this.layouts =
-        this.resource.layouts?.filter((x) => x.id && value.includes(x.id)) ||
-        [];
-    } else {
-      this.layouts =
-        this.form?.layouts?.filter((x) => x.id && value.includes(x.id)) || [];
-    }
+    this.layouts =
+      this.allLayouts.filter((x) => x.id && value.includes(x.id)) || [];
   }
 
   /**
@@ -72,12 +86,15 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
         layouts: this.form ? this.form.layouts : this.resource?.layouts,
+        form: this.form,
+        resource: this.resource,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
+        this.allLayouts.push(value);
         this.selectedLayouts?.setValue(
-          this.selectedLayouts?.value.concat(value)
+          this.selectedLayouts?.value.concat(value.id)
         );
       }
     });
@@ -86,9 +103,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   /**
    * Edits existing layout.
    */
-  onEditLayout(layout: Layout): void {
-    console.log(layout);
-  }
+  onEditLayout(layout: Layout): void {}
 
   /**
    * Removes layout from list.
@@ -108,9 +123,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
    */
   public drop(event: any): void {
     const layouts = [...this.selectedLayouts?.value];
-    console.log(layouts);
     moveItemInArray(layouts, event.previousIndex, event.currentIndex);
-    console.log(layouts);
     this.selectedLayouts?.setValue(layouts);
   }
 }
