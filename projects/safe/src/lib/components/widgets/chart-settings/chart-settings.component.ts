@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { debounceTime } from 'rxjs/operators';
-import { scrollFactory } from '../../query-builder/query-builder.component';
+import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
 import { Chart } from './charts/chart';
 import {

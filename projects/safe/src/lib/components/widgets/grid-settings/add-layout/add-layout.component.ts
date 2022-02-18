@@ -1,7 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, Input, OnInit } from '@angular/core';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import { Layout } from '../../../../models/layout.model';
 import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
+
+interface DialogData {
+  layouts: Layout[];
+}
 
 /**
  * Add a layout modal.
@@ -18,8 +27,11 @@ export class AddLayoutComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<AddLayoutComponent>,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {
+    this.layouts = data.layouts;
+  }
 
   ngOnInit(): void {}
 
@@ -37,9 +49,7 @@ export class AddLayoutComponent implements OnInit {
    *
    * @param choice layout choice.
    */
-  public onSelect(choice: any): void {
-    console.log(typeof choice);
-    console.log(choice);
-    // this.dialogRef.close()
+  public onSelect(choice: MatSelectChange): void {
+    this.dialogRef.close(choice.value);
   }
 }
