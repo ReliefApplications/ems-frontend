@@ -63,11 +63,18 @@ export const GET_FORM_STRUCTURE = gql`
   }
 `;
 
-export const GET_FORM_AS_TEMPLATE = gql`
+export const GET_GRID_FORM_META = gql`
   query GetFormAsTemplate($id: ID!) {
     form(id: $id) {
       id
       name
+      layouts {
+        id
+        name
+        createdAt
+        query
+        display
+      }
     }
   }
 `;
@@ -96,9 +103,10 @@ export interface GetFormByIdQueryResponse {
 
 // === GET RELATED FORMS FROM RESOURCE ===
 
-export const GET_RELATED_FORMS = gql`
-  query GetRelatedForms($resource: ID!) {
+export const GET_GRID_RESOURCE_META = gql`
+  query GetGridResourceMeta($resource: ID!) {
     resource(id: $resource) {
+      id
       forms {
         id
         name
@@ -108,14 +116,16 @@ export const GET_RELATED_FORMS = gql`
         name
         fields
       }
+      layouts {
+        id
+        name
+        query
+        createdAt
+        display
+      }
     }
   }
 `;
-
-export interface GetRelatedFormsQueryResponse {
-  loading: boolean;
-  resource: Resource;
-}
 
 export const GET_SHORT_RESOURCE_BY_ID = gql`
   query GetShortResourceById($id: ID!) {

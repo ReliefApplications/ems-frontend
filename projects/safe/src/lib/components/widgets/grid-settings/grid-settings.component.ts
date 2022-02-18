@@ -11,11 +11,11 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
-  GetRelatedFormsQueryResponse,
   GET_CHANNELS,
-  GET_RELATED_FORMS,
-  GET_FORM_AS_TEMPLATE,
+  GET_GRID_FORM_META,
   GetFormByIdQueryResponse,
+  GET_GRID_RESOURCE_META,
+  GetResourceByIdQueryResponse,
 } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
@@ -25,6 +25,12 @@ import {
   addNewField,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { Observable } from 'rxjs';
+import { Overlay } from '@angular/cdk/overlay';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { scrollFactory } from '../../../utils/scroll-factory';
+import { Layout } from '../../../models/layout.model';
+import { Resource } from '../../../models/resource.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -33,6 +39,13 @@ import {
   selector: 'safe-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
@@ -54,8 +67,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
-  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
+  public availableQueries?: Observable<any[]>;
+  public allQueries: any[] = [];
+  public filteredQueries: any[] = [];
+  public form: Form | null = null;
+  public resource: Resource | null = null;
 
   get floatingButtons(): FormArray {
     return (this.tileForm?.controls.floatingButtons as FormArray) || null;
@@ -79,7 +97,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         tileSettings && tileSettings.title ? tileSettings.title : '',
         Validators.required,
       ],
-      query: createQueryForm(tileSettings.query),
+      query: this.formBuilder.group({
+        name: [
+          tileSettings.query ? tileSettings.query.name : '',
+          Validators.required,
+        ],
+        template: [tileSettings.query ? tileSettings.query.template : '', null],
+      }),
+      layouts: [tileSettings?.layouts || [], Validators.required],
       resource: [
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
@@ -99,6 +124,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           : [this.createFloatingButtonForm(null)]
       ),
     });
+    this.availableQueries = this.queryBuilder.availableQueries$;
+    this.availableQueries.subscribe((res) => {
+      if (res && res.length > 0) {
+        this.allQueries = res.map((x) => x.name);
+        this.filteredQueries = this.filterQueries(
+          this.tileForm?.value.query.name
+        );
+      }
+    });
+    this.tileForm?.get('query.name')?.valueChanges.subscribe((res) => {
+      this.filteredQueries = this.filterQueries(res);
+    });
+
     this.queryName = this.tileForm.get('query')?.value.name;
     this.getQueryMetaData();
 
@@ -107,6 +145,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         // Check if the query changed to clean modifications and fields for email in floating button
         if (name !== this.queryName) {
           this.queryName = name;
+          this.tileForm?.get('layouts')?.setValue([]);
           this.tileForm?.get('query.template')?.setValue(null);
           this.tileForm?.get('query.template')?.enable();
           const floatingButtons = this.tileForm?.get(
@@ -278,8 +317,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.tileForm?.get('resource')?.setValue(source);
         if (source) {
           this.apollo
-            .query<GetRelatedFormsQueryResponse>({
-              query: GET_RELATED_FORMS,
+            .query<GetResourceByIdQueryResponse>({
+              query: GET_GRID_RESOURCE_META,
               variables: {
                 resource: source,
               },
@@ -288,7 +327,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               if (res2.errors) {
                 this.apollo
                   .query<GetFormByIdQueryResponse>({
-                    query: GET_FORM_AS_TEMPLATE,
+                    query: GET_GRID_FORM_META,
                     variables: {
                       id: source,
                     },
@@ -297,7 +336,11 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                     if (res3.errors) {
                       this.relatedForms = [];
                       this.templates = [];
+                      this.form = null;
+                      this.resource = null;
                     } else {
+                      this.form = res3.data.form;
+                      this.resource = null;
                       this.templates = [res3.data.form] || [];
                       this.tileForm
                         ?.get('query.template')
@@ -306,6 +349,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                     }
                   });
               } else {
+                this.resource = res2.data.resource;
+                this.form = null;
                 this.relatedForms = res2.data.resource.relatedForms || [];
                 this.templates = res2.data.resource.forms || [];
               }
@@ -315,6 +360,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     } else {
       this.relatedForms = [];
       this.templates = [];
+      this.form = null;
+      this.resource = null;
     }
+  }
+
+  /**
+   * Filters the queries using text value.
+   *
+   * @param value search value
+   * @returns filtered list of queries.
+   */
+  private filterQueries(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
   }
 }

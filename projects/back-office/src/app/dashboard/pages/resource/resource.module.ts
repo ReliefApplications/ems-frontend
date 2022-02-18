@@ -12,6 +12,7 @@ import {
   SafeAccessModule,
   SafePreviousButtonModule,
   SafeButtonModule,
+  SafeLayoutModalModule
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -34,6 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
+    SafeLayoutModalModule,
   ],
   exports: [ResourceComponent],
 })

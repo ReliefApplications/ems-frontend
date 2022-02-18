@@ -41,7 +41,8 @@
         "orientation": "Orientation",
         "aggregation": "Aggregation",
         "id": "Id",
-        "none": "-- None --"
+        "none": "-- None --",
+        "preview": "Preview"
     },
     "action": {
         "edit": "Edit",
@@ -160,7 +161,8 @@
     "resources": {
         "create": "Create a resource",
         "delete": "Delete resource",
-        "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
+        "deleteDesc": "Do you confirm the deletion of the resource {{name}}?",
+        "layouts": "Layouts"
     },
     "users": {
         "export": "Export users",
@@ -315,7 +317,7 @@
         },
         "grid": {
             "save": "Save Layout as default",
-            "reset": "Reset default Layout",
+            "reset": "Reset layout",
             "invalid": "Invalid grid configuration",
             "noRecord": "No record detected",
             "selectDataset": "Select a dataset in settings",
@@ -418,5 +420,14 @@
             "xAxis": "X Axis",
             "yAxis": "Y Axis"
         }
-    } 
+    },
+    "layouts": {
+        "title": "Grid layouts",
+        "load": "Load existing layout",
+        "create": "Create a new layout",
+        "add": "Add a layout",
+        "preview": {
+            "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
+        }
+    }
 }

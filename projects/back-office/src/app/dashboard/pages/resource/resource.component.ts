@@ -8,6 +8,9 @@ import {
   SafeConfirmModalComponent,
   Record,
   Form,
+  SafeLayoutModalComponent,
+  Layout,
+  SafeGridLayoutService,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -63,6 +66,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   ];
   dataSourceForms: any[] = [];
 
+  // === LAYOUTS ===
+  displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
+  dataSourceLayouts: any[] = [];
+
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
 
@@ -82,7 +89,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private gridLayoutService: SafeGridLayoutService
   ) {}
 
   /*  Load data from the id of the resource passed as a parameter.
@@ -145,6 +153,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
           if (res.data.resource) {
             this.resource = res.data.resource;
             this.dataSourceForms = this.resource.forms;
+            this.dataSourceLayouts = this.resource.layouts;
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {
@@ -425,6 +434,99 @@ export class ResourceComponent implements OnInit, OnDestroy {
    */
   public filterTemplates(record: Record): Form[] {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
+  }
+
+  onAddLayout(): void {
+    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
+      data: {},
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.gridLayoutService
+          .addLayout(value, this.id)
+          .subscribe((res: any) => {
+            if (res.data.addLayout) {
+              this.dataSourceLayouts = [
+                ...this.resource.layouts,
+                res.data?.addLayout,
+              ];
+            }
+          });
+      }
+    });
+  }
+
+  /**
+   * Edits a layout. Opens a popup for edition.
+   *
+   * @param layout Layout to edit
+   */
+  onEditLayout(layout: Layout): void {
+    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
+      data: {
+        layout,
+      },
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.gridLayoutService
+          .editLayout(layout, value, this.resource.id)
+          .subscribe((res: any) => {
+            if (res.data.editLayout) {
+              this.dataSourceLayouts = this.dataSourceLayouts.map((x) => {
+                if (x.id === layout.id) {
+                  return res.data.editLayout;
+                } else {
+                  return x;
+                }
+              });
+            }
+          });
+      }
+    });
+  }
+
+  /**
+   * Deletes a layout.
+   *
+   * @param layout Layout to delete
+   */
+  onDeleteLayout(layout: Layout): void {
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: this.translate.instant('layout.delete'),
+        content: this.translate.instant('layout.deleteDesc', {
+          name: layout.name,
+        }),
+        confirmText: this.translate.instant('action.delete'),
+        cancelText: this.translate.instant('action.cancel'),
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.gridLayoutService
+          .deleteLayout(layout, this.id)
+          .subscribe((res: any) => {
+            if (res.data.deleteLayout) {
+              this.dataSourceLayouts = this.dataSourceLayouts.filter(
+                (x) => x.id !== layout.id
+              );
+            }
+          });
+      }
+    });
   }
 
   /**
